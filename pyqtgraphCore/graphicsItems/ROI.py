@@ -108,6 +108,7 @@ class ROI(GraphicsObject):
     sigRegionChangeStarted = QtCore.Signal(object)
     sigRegionChanged = QtCore.Signal(object)
     sigHoverEvent = QtCore.Signal(object)
+    sigHoverEnd = QtCore.Signal(object)
     sigClicked = QtCore.Signal(object, object)
     sigRemoveRequested = QtCore.Signal(object)
     
@@ -648,6 +649,7 @@ class ROI(GraphicsObject):
             return
         self.mouseHovering = hover
         self._updateHoverColor()
+        self.sigHoverEnd.emit(self)
         
     def _updateHoverColor(self):
         pen = self._makePen()
@@ -658,7 +660,7 @@ class ROI(GraphicsObject):
     def _makePen(self):
         # Generate the pen color for this ROI based on its current state.
         if self.mouseHovering:
-            return fn.mkPen(255, 255, 0)
+            return fn.mkPen('w')
         else:
             return self.pen
 
@@ -1315,7 +1317,7 @@ class Handle(UIGraphicsItem):
                     hover=True
                     
         if hover:
-            self.currentPen = fn.mkPen(255, 255,0)
+            self.currentPen = fn.mkPen(255, 255, 255)
         else:
             self.currentPen = self.pen
         self.update()
@@ -2145,7 +2147,7 @@ class _PolyLineSegment(LineSegmentROI):
         
     def _makePen(self):
         if self.mouseHovering or self._parentHovering:
-            return fn.mkPen(255, 255, 0)
+            return fn.mkPen(255, 255, 255)
         else:
             return self.pen
         

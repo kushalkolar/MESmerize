@@ -16,10 +16,14 @@ import os
 import numpy as np
 
 from ..Qt import QtCore, QtGui, USE_PYSIDE
+'''
 if USE_PYSIDE:
     from .ImageViewTemplate_pyside import *
 else:
     from .ImageViewTemplate_pyqt import *
+'''
+
+from .ImageView_pytemplate import *
     
 from ..graphicsItems.ImageItem import *
 from ..graphicsItems.ROI import *
@@ -32,18 +36,54 @@ from .. import debug as debug
 from ..SignalProxy import SignalProxy
 from .. import getConfigOption
 
+from MesmerizeCore import FileInput
+from MesmerizeCore.stimMapWidget import stimMapGUI
+
 try:
     from bottleneck import nanmin, nanmax
 except ImportError:
     from numpy import nanmin, nanmax
 
 
-class PlotROI(ROI):
-    def __init__(self, size):
-        ROI.__init__(self, pos=[0,0], size=size) #, scaleSnap=True, translateSnap=True)
-        self.addScaleHandle([1, 1], [0, 0])
-        self.addRotateHandle([0, 0], [0.5, 0.5])
+#class PlotROI(ROI):
+#    def __init__(self, size):
+#        ROI.__init__(self, pos=[0,0], size=size) #, scaleSnap=True, translateSnap=True)
+#        self.addScaleHandle([1, 1], [0, 0])
+#        self.addRotateHandle([0, 0], [0.5, 0.5])
 
+#class PolyROICurve(PolyLineROI):
+#    def __init__(self, curve, ID, tVals, img, imgItem, axes):
+#        PolyLineROI.__init__(self, [[0,0], [10,10], [10,30], [30,10]], 
+#                             closed=True, pos=[0,0], removable=True)
+#        self.curve = curve
+#        self.curve.show()
+#        self.tVals = tVals
+#        
+#        self.imageitem = imgItem
+#        self.img = img
+#        self.axes = axes
+#        self.setID(ID)
+#        self.updatePlot()
+#        self.sigRegionChanged.connect(self.updatePlot)
+#        self.sigRemoveRequested.connect(self.delPlot)
+#        
+#    def setID(self, ID):
+#        self.ID = ID
+#        ROIcolors=['m','r','y','g','c']
+#        self.color = ROIcolors[ID%(len(ROIcolors))]
+#        self.setPen(self.color)
+#        self.curve.setPen(self.color)
+#
+#    def updatePlot(self):
+#        print(self.getSceneHandlePositions())
+#        #data, coords = self.getArrayRegion(self.img, self.imageitem, 
+#        #                                   self.axes, returnMappedCoords=True)
+#        self.curve.setData(y=np.random.rand(1577)*2000, x=self.tVals)
+#        self.curve.show()
+#        
+#    def delPlot(self):
+#        self.curve.clear()
+#        self.curve = None
 
 class ImageView(QtGui.QWidget):
     """
@@ -108,6 +148,7 @@ class ImageView(QtGui.QWidget):
                 
             pg.ImageView(view=pg.PlotItem())
         """
+        # Just setup the pyqtgraph stuff
         QtGui.QWidget.__init__(self, parent, *args)
         self.levelMax = 4096
         self.levelMin = 0
@@ -118,6 +159,36 @@ class ImageView(QtGui.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.scene = self.ui.graphicsView.scene()
+        
+        
+        
+        self.ui.resetscaleBtn.clicked.connect(self.resetImgScale)
+        
+        # Set the main viewer objects to None so that proceeding methods know that these objects
+        # don't exist for certain cases.
+        self.currImgDataObj = None
+        self.mesfile = None
+        self.MesfileMap = None
+        self.ui.splitter.setEnabled(False)
+        
+        # Initialize list of bands that indicate stimulus times
+        self.currStimMapBg = []
+        
+        # Initialize empty ROI and curve lists        
+        self.ROIlist=[]
+        self.Curveslist=[]
+        
+        # ***** SHOULD USE PYQTGRAPH COLORMAP FUNCTION INSTEAD ****
+        self.ROIcolors=['m','r','y','g','c']
+        
+        # Connect all the button signals
+        self.ui.openFileBtn.clicked.connect(self.promptFileDialog)
+        self.ui.mesfile_listw.itemDoubleClicked.connect(self.updateImgObj)
+        self.ui.add_roi_Btn.clicked.connect(self.addROI)
+        self.ui.rigMotCheckBox.clicked.connect(self.checkSubArray)
+
+        
+        #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
         
         self.ignoreTimeLine = False
         
@@ -140,21 +211,27 @@ class ImageView(QtGui.QWidget):
         
         self.menu = None
         
-        self.ui.normGroup.hide()
-
-        self.roi = PlotROI(10)
-        self.roi.setZValue(20)
-        self.view.addItem(self.roi)
-        self.roi.hide()
-        self.normRoi = PlotROI(10)
-        self.normRoi.setPen('y')
-        self.normRoi.setZValue(20)
-        self.view.addItem(self.normRoi)
-        self.normRoi.hide()
-        self.roiCurve = self.ui.roiPlot.plot()
-        self.timeLine = InfiniteLine(0, movable=True)
+#        self.ui.normGroup.hide()
+#        #self.roi = PlotROI(10)
+#        #self.roi.setZValue(20)
+#        #self.view.addItem(self.roi)
+#        #self.roi.hide()
+#        self.normRoi = PlotROI(10)
+#        self.normRoi.setPen('y')
+#        self.normRoi.setZValue(20)
+#        self.view.addItem(self.normRoi)
+#        self.normRoi.hide()
+        
+        #self.roiCurve = self.ui.roiPlot.plot()
+        
+        
+        self.timeLine = InfiniteLine(0, movable=True, hoverPen=None)
         self.timeLine.setPen((255, 255, 0, 200))
-        self.timeLine.setZValue(1)
+        self.timeLine.setZValue(2)
+        self.timeLineBorder = InfiniteLine(0, movable=False, hoverPen=None)
+        self.timeLineBorder.setPen(color=(0,0,0,110), width=5)
+        self.timeLineBorder.setZValue(1)
+        self.ui.roiPlot.addItem(self.timeLineBorder)
         self.ui.roiPlot.addItem(self.timeLine)
         self.ui.splitter.setSizes([self.height()-35, 35])
         self.ui.roiPlot.hideAxis('left')
@@ -163,11 +240,11 @@ class ImageView(QtGui.QWidget):
         self.playTimer = QtCore.QTimer()
         self.playRate = 0
         self.lastPlayTime = 0
-        
-        self.normRgn = LinearRegionItem()
-        self.normRgn.setZValue(0)
-        self.ui.roiPlot.addItem(self.normRgn)
-        self.normRgn.hide()
+        self.playTimer.timeout.connect(self.timeout)
+#        self.normRgn = LinearRegionItem()
+#        self.normRgn.setZValue(0)
+#        self.ui.roiPlot.addItem(self.normRgn)
+#        self.normRgn.hide()
             
         ## wrap functions from view box
         for fn in ['addItem', 'removeItem']:
@@ -178,28 +255,153 @@ class ImageView(QtGui.QWidget):
             setattr(self, fn, getattr(self.ui.histogram, fn))
 
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
-        self.ui.roiBtn.clicked.connect(self.roiClicked)
-        self.roi.sigRegionChanged.connect(self.roiChanged)
+        #self.ui.roiBtn.clicked.connect(self.roiClicked)
+        
+        
+        #self.roi.sigRegionChanged.connect(self.roiChanged)
         #self.ui.normBtn.toggled.connect(self.normToggled)
-        self.ui.menuBtn.clicked.connect(self.menuClicked)
-        self.ui.normDivideRadio.clicked.connect(self.normRadioChanged)
-        self.ui.normSubtractRadio.clicked.connect(self.normRadioChanged)
-        self.ui.normOffRadio.clicked.connect(self.normRadioChanged)
-        self.ui.normROICheck.clicked.connect(self.updateNorm)
-        self.ui.normFrameCheck.clicked.connect(self.updateNorm)
-        self.ui.normTimeRangeCheck.clicked.connect(self.updateNorm)
-        self.playTimer.timeout.connect(self.timeout)
+#        self.ui.menuBtn.clicked.connect(self.menuClicked)
+#        self.ui.normDivideRadio.clicked.connect(self.normRadioChanged)
+#        self.ui.normSubtractRadio.clicked.connect(self.normRadioChanged)
+#        self.ui.normOffRadio.clicked.connect(self.normRadioChanged)
+#        self.ui.normROICheck.clicked.connect(self.updateNorm)
+#        self.ui.normFrameCheck.clicked.connect(self.updateNorm)
+#        self.ui.normTimeRangeCheck.clicked.connect(self.updateNorm)
         
-        self.normProxy = SignalProxy(self.normRgn.sigRegionChanged, slot=self.updateNorm)
-        self.normRoi.sigRegionChangeFinished.connect(self.updateNorm)
         
-        self.ui.roiPlot.registerPlot(self.name + '_ROI')
+#        self.normProxy = SignalProxy(self.normRgn.sigRegionChanged, slot=self.updateNorm)
+#        self.normRoi.sigRegionChangeFinished.connect(self.updateNorm)
+        
+        self.ui.roiPlot.registerPlot(self.name + '_ROI')# I don't know what this does,
+                                                        # It was included with the original ImageView class
         self.view.register(self.name)
         
-        self.noRepeatKeys = [QtCore.Qt.Key_Right, QtCore.Qt.Key_Left, QtCore.Qt.Key_Up, QtCore.Qt.Key_Down, QtCore.Qt.Key_PageUp, QtCore.Qt.Key_PageDown]
+        self.noRepeatKeys = [QtCore.Qt.Key_Right, QtCore.Qt.Key_Left, QtCore.Qt.Key_Up, 
+                             QtCore.Qt.Key_Down, QtCore.Qt.Key_PageUp, QtCore.Qt.Key_PageDown]
         
-        self.roiClicked() ## initialize roi plot to correct shape / visibility
+    ''' Set the ImgData object and pass the .seq of the ImgData object to setImage().
+        Argumments:
+            selection : object returned from self.ui.mesfile_listw.itemDoubleClicked
+    '''
+    def updateImgObj(self, selection):
+        self.ui.splitter.setEnabled(True) # Enable stuff in the image & curve working area
+        self.ui.MotionCorGroup.setEnabled(True)
+        
+        if self.askDiscardWorkEnv():
+            self.clearWorkEnv()
+            self.currImgDataObj = self.mesfile.load_img(selection.text().split('//')[0])
+            self.setImage(self.currImgDataObj.seq.T, pos=(0,0), scale=(1,1), 
+                          xvals=np.linspace(1, self.currImgDataObj.seq.T.shape[0], self.currImgDataObj.seq.T.shape[0]))
+            
+            # Set the stimulus map to the default one set for the entire mesfile (if any)
+            if self.MesfileMap is not None:
+                self.setStimMap()
+         
+    ''' Reset the current image to the center of the scene and reset the scale
+        doesn't work as intended in some weird circumstances when you repeatedly right click on the scene
+        and set the x & y axis to 'Auto' a bunch of times. But this bug is hard to recreate.'''
+    def resetImgScale(self):
+            self.setImage(self.currImgDataObj.seq.T, pos=(0,0), scale=(1,1), 
+                          xvals=np.linspace(1, self.currImgDataObj.seq.T.shape[0], self.currImgDataObj.seq.T.shape[0]))
+    
+    def promptFileDialog(self):
+        filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)', 
+                                                      '.', '(*.mes *.tif *.tiff)')
+        #try:
+        if filelist[0][0][-4:] == '.mes':
+            self.mesfile = FileInput.MES(filelist[0][0])
+            self.ui.mesfile_listw.setEnabled(True) # Enable the mesfile list widget
+            for i in self.mesfile.images:
+                j = self.mesfile.image_descriptions[i]
+                self.ui.mesfile_listw.addItem(i+'//'+j) # Get the names of the images and add them to the list
+            
+            # If Auxiliary output information is found in the mes file it will ask if you want to
+            # map them to anything
+            if len(self.mesfile.ao3VoltList) > 0:
+                self.initStimMapGUI(self.mesfile.ao3VoltList)# Init the stimMap GUI
+                self.ui.btnChangeSMap.setEnabled(True)
+                if QtGui.QMessageBox.question(self, '', 'This .mes file contains auxilliary output voltage ' + \
+                              'information, would you like to apply a Stimulus Map now?',
+                               QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+                    self.stimmap.ui.checkBoxSetAll.setChecked(True)                    
+                    self.stimmap.ui.checkBoxSetAll.setDisabled(True)
+                    self.ui.btnResetSMap.setEnabled(True)
+                    self.stimmapwindow.show()
+            else:
+                self.ui.btnResetSMap.setDisabled(True)
+                self.ui.btnChangeSMap.setDisabled(True)
+        # ****** Should look into except IOError and IndexError
+#        except:
+#            print('There''s an issue with the files you''ve selected')
+    def initStimMapGUI(self, voltList):
+        # Initialize stimMapWidget module in the background        
+        self.stimmapwindow = QtGui.QMainWindow()
+        self.stimmap = stimMapGUI()
+        self.stimmap.ui.setupUi(self.stimmap, voltList)
+        self.stimmapwindow.resize(520,120)
+        self.stimmapwindow.setCentralWidget(self.stimmap)
+        # If user wants to change the map for this particular ImgData object
+        self.ui.btnChangeSMap.clicked.connect(self.stimmapwindow.show)
+        # If user wants to set the map back to the one for the entire mes file
+        self.ui.btnResetSMap.clicked.connect(self.setStimMap)
+        self.stimmap.ui.setMapBtn.clicked.connect(self.storeStimMap)
+    # When the set map button is clicked
+    
+    def storeStimMap(self):
+        self.stimmapwindow.hide()
+        # store a map in memory for the whole mesfile in the current work environment
+        if self.stimmap.ui.checkBoxSetAll.isChecked():
+            self.MesfileMap = self.stimmap.getStimMap()
+            self.stimmap.ui.checkBoxSetAll.setChecked(False)
+            self.stimmap.ui.checkBoxSetAll.setEnabled(True)
 
+        # set a custom map just for the current image
+        else:
+            self.setStimMap(dm=self.stimmap.getStimMap())
+    
+    
+    # Set stim map for the current ImgData object
+    # specify dm if you want a custom map for this particular image which is different to the one
+    # set for the whole mesfile
+    def setStimMap(self, dm=None):
+        if dm is None:
+            dm = self.MesfileMap
+        self.currImgDataObj.setMap(dm)
+#        y = self.currImgDataObj.meta['AUXo3']['y']
+#        x = self.currImgDataObj.meta['AUXo3']['x'][1]
+#        firstFrameStartTime = self.currImgDataObj.meta['FoldedFrameInfo']['firstFrameStartTime']
+#        frameTimeLength = self.currImgDataObj.meta['FoldedFrameInfo']['frameTimeLength']
+#        self.currImgDataObj.map = []
+#        for i in range(0,y.shape[1]-1):
+#            voltage = str(y[1][i])
+#            tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
+#            if tstart_frame < 0:
+#                tstart_frame = 0
+#            tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
+            
+            #self.currImgDataObj.Map.append([dm[voltage], (tstart_frame, tend_frame)])
+        self.currStimMapBg = []
+        for stim in self.currImgDataObj.Map:
+            definitions = stim[0][0]
+            color = stim[0][-1]
+            frameStart = stim[-1][0]
+            frameEnd = stim[-1][1]
+            
+            
+            linReg = LinearRegionItem(values=[frameStart, frameEnd], 
+                            brush=color, movable=False, bounds=[frameStart, frameEnd])
+            linReg.lines[0].setPen(color)
+            linReg.lines[1].setPen(color)
+            
+            self.currStimMapBg.append(linReg)
+        
+        for linReg in self.currStimMapBg:
+            self.ui.roiPlot.addItem(linReg)
+            
+        for i in range(0,len(self.ROIlist)):
+            self.updatePlot(i)
+        #print(self.currImgDataObj.Map)
+    
     def setImage(self, img, autoRange=True, autoLevels=True, levels=None, axes=None, xvals=None, pos=None, scale=None, transform=None, autoHistogramRange=True):
         """
         Set the image to be displayed in the widget.
@@ -238,6 +440,7 @@ class ImageView(QtGui.QWidget):
         :ref:`global configuration option <apiref_config>`.
         
         """
+        
         profiler = debug.Profiler()
         
         if hasattr(img, 'implements') and img.implements('MetaArray'):
@@ -304,8 +507,8 @@ class ImageView(QtGui.QWidget):
         if levels is not None:  ## this does nothing since getProcessedImage sets these values again.
             self.setLevels(*levels)
             
-        if self.ui.roiBtn.isChecked():
-            self.roiChanged()
+        #if self.ui.roiBtn.isChecked():
+        #    self.roiChanged()
 
         profiler()
 
@@ -323,8 +526,8 @@ class ImageView(QtGui.QWidget):
             else:
                 start = 0
                 stop = 1
-            for s in [self.timeLine, self.normRgn]:
-                s.setBounds([start, stop])
+#            for s in [self.timeLine, self.normRgn]:
+#                s.setBounds([start, stop])
         #else:
             #self.ui.roiPlot.hide()
         profiler()
@@ -341,7 +544,7 @@ class ImageView(QtGui.QWidget):
 
         if autoRange:
             self.autoRange()
-        self.roiClicked()
+        #self.roiClicked()
 
         profiler()
 
@@ -380,8 +583,8 @@ class ImageView(QtGui.QWidget):
         This method also sets the attributes self.levelMin and self.levelMax 
         to indicate the range of data in the image."""
         if self.imageDisp is None:
-            image = self.normalize(self.image)
-            self.imageDisp = image
+            #image = self.normalize(self.image)
+            self.imageDisp = self.image
             self.levelMin, self.levelMax = list(map(float, self.quickMinMax(self.imageDisp)))
             
         return self.imageDisp
@@ -486,76 +689,101 @@ class ImageView(QtGui.QWidget):
         if self.axes['t'] is not None:
             self.setCurrentIndex(self.currentIndex + n)
 
-    def normRadioChanged(self):
-        self.imageDisp = None
-        self.updateImage()
-        self.autoLevels()
-        self.roiChanged()
-        self.sigProcessingChanged.emit(self)
-    
-    def updateNorm(self):
-        if self.ui.normTimeRangeCheck.isChecked():
-            self.normRgn.show()
-        else:
-            self.normRgn.hide()
-        
-        if self.ui.normROICheck.isChecked():
-            self.normRoi.show()
-        else:
-            self.normRoi.hide()
-        
-        if not self.ui.normOffRadio.isChecked():
-            self.imageDisp = None
-            self.updateImage()
-            self.autoLevels()
-            self.roiChanged()
-            self.sigProcessingChanged.emit(self)
-
-    def normToggled(self, b):
-        self.ui.normGroup.setVisible(b)
-        self.normRoi.setVisible(b and self.ui.normROICheck.isChecked())
-        self.normRgn.setVisible(b and self.ui.normTimeRangeCheck.isChecked())
+#    def normRadioChanged(self):
+#        self.imageDisp = None
+#        self.updateImage()
+#        self.autoLevels()
+#        #self.roiChanged()
+#        self.sigProcessingChanged.emit(self)
+#    
+#    def updateNorm(self):
+#        if self.ui.normTimeRangeCheck.isChecked():
+#            self.normRgn.show()
+#        else:
+#            self.normRgn.hide()
+#        
+#        if self.ui.normROICheck.isChecked():
+#            self.normRoi.show()
+#        else:
+#            self.normRoi.hide()
+#        
+#        if not self.ui.normOffRadio.isChecked():
+#            self.imageDisp = None
+#            self.updateImage()
+#            self.autoLevels()
+#            #self.roiChanged()
+#            self.sigProcessingChanged.emit(self)
+#
+#    def normToggled(self, b):
+#        self.ui.normGroup.setVisible(b)
+#        self.normRoi.setVisible(b and self.ui.normROICheck.isChecked())
+#        self.normRgn.setVisible(b and self.ui.normTimeRangeCheck.isChecked())
 
     def hasTimeAxis(self):
         return 't' in self.axes and self.axes['t'] is not None
 
-    def roiClicked(self):
-        showRoiPlot = False
-        if self.ui.roiBtn.isChecked():
-            showRoiPlot = True
-            self.roi.show()
-            #self.ui.roiPlot.show()
-            self.ui.roiPlot.setMouseEnabled(True, True)
-            self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])
-            self.roiCurve.show()
-            self.roiChanged()
-            self.ui.roiPlot.showAxis('left')
-        else:
-            self.roi.hide()
-            self.ui.roiPlot.setMouseEnabled(False, False)
-            self.roiCurve.hide()
-            self.ui.roiPlot.hideAxis('left')
-            
-        if self.hasTimeAxis():
-            showRoiPlot = True
-            mn = self.tVals.min()
-            mx = self.tVals.max()
-            self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
-            self.timeLine.show()
-            self.timeLine.setBounds([mn, mx])
-            self.ui.roiPlot.show()
-            if not self.ui.roiBtn.isChecked():
-                self.ui.splitter.setSizes([self.height()-35, 35])
-        else:
-            self.timeLine.hide()
-            #self.ui.roiPlot.hide()
-            
-        self.ui.roiPlot.setVisible(showRoiPlot)
-
-    def roiChanged(self):
-        if self.image is None:
-            return
-            
+    def getMouseClickPos(self):
+        pass
+    
+    def checkSubArray(self):
+        if self.currImgDataObj.isSubArray is False and self.ui.rigMotCheckBox.isChecked() and\
+                    QtGui.QMessageBox.question(self, 'Current ImgObj is not a sub-array', 
+                   'You haven''t created a sub-array! This might create issues with motion correction. ' + \
+                   'Continue anyways?',
+                   QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+            self.ui.rigMotCheckBox.setCheckState(False)
+        return
+    
+    ''' Method for adding PolyROI's to the plot '''
+    def addROI(self):
+        #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
+        #self.ROICurve = self.ui.roiPlot.plot()
+        
+        # Create polyROI instance
+        self.polyROI = PolyLineROI([[0,0], [10,10], [30,10]], 
+                             closed=True, pos=[0,0], removable=True)
+        # Create new plot instance for plotting the newly created ROI
+        self.curve = self.ui.roiPlot.plot()
+        self.Curveslist.append(self.curve)
+        
+        # Just some plot initializations, these are these from the original pyqtgraph ImageView class
+        self.ui.roiPlot.setMouseEnabled(True, True)
+        self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])        
+        self.ui.roiPlot.showAxis('left')
+        mn = self.tVals.min()
+        mx = self.tVals.max()
+        self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
+        self.timeLine.show()
+        self.timeLine.setBounds([mn, mx])
+        self.ui.roiPlot.show()
+        
+        # Connect signals to the newly created ROI
+        self.polyROI.sigRemoveRequested.connect(self.delROI)
+        self.polyROI.sigRegionChanged.connect(self.updatePlot)# This is how the curve is plotted to correspond to this ROI
+        self.polyROI.sigHoverEvent.connect(self.boldPlot)
+        self.polyROI.sigHoverEnd.connect(self.resetPlot)
+        
+        # Add the ROI to the scene so it can be seen
+        self.view.addItem(self.polyROI)
+        
+        # Append the ROI the ROIlist to keep track of them
+        self.ROIlist.append(self.polyROI)
+        # Update the plot to include this ROI which was just added
+        self.updatePlot(len(self.ROIlist)-1)
+    
+    
+    # Pass the index of the ROI OR the ROI object itself for which you want to update the plot
+    def updatePlot(self,ID):
+        ''' If the index of the ROI in the ROIlist isn't passed as an argument to this function
+         it will find the index of the ROI object which was passed. This comes from the Qt signal
+         from the ROI: PolyLineROI.sigRegionChanged.connect'''
+        if type(ID) != int:
+            ID = self.ROIlist.index(ID)
+        
+        color = self.ROIcolors[ID%(len(self.ROIcolors))]
+        self.ROIlist[ID].setPen(color)
+        
+        # This stuff is from pyqtgraph's original class
         image = self.getProcessedImage()
         if image.ndim == 2:
             axes = (0, 1)
@@ -564,18 +792,187 @@ class ImageView(QtGui.QWidget):
         else:
             return
         
-        data, coords = self.roi.getArrayRegion(image.view(np.ndarray), self.imageItem, axes, returnMappedCoords=True)
+        # Get the ROI region        
+        data = self.ROIlist[ID].getArrayRegion((image.view(np.ndarray)), self.imageItem, axes)#, returnMappedCoords=True)
+        #, returnMappedCoords=True)
         if data is not None:
             while data.ndim > 1:
-                data = data.mean(axis=1)
+                data = data.sum(axis=1)# Find the sum of pixel intensities
             if image.ndim == 3:
-                self.roiCurve.setData(y=data, x=self.tVals)
+                # Set the curve
+                self.Curveslist[ID].setData(y=data, x=self.tVals)
+                self.Curveslist[ID].setPen(color)
+                self.Curveslist[ID].show()
+                #self.ui.roiPlot.addItem(self.roiCurve)
+                #self.ui.roiPlot.addItem(self.roiCurve2)
             else:
                 while coords.ndim > 2:
                     coords = coords[:,:,0]
                 coords = coords - coords[:,0,np.newaxis]
                 xvals = (coords**2).sum(axis=0) ** 0.5
-                self.roiCurve.setData(y=data, x=xvals)
+                self.Curveslist[ID].setData(y=data, x=xvals)
+    
+    ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
+    # Make the curve bold & white. Used here when mouse hovers over the ROI. called by PolyLineROI.sigHoverEvent
+    def boldPlot(self, roiPicked):
+        ID = self.ROIlist.index(roiPicked)
+        self.Curveslist[ID].setPen(width=2)
+
+    ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
+    # Used to un-bold and un-white, called by PolyLineROI.sigHoverEnd
+    def resetPlot(self, roiPicked): #Set plot color back to what it was before
+        ID = self.ROIlist.index(roiPicked)
+        color = self.ROIcolors[ID%(len(self.ROIcolors))]
+        self.Curveslist[ID].setPen(color)
+    
+    # Checks if there are any variables in the work environment
+    def getWorkEnvVars(self):
+        stuff = []
+        
+        if len(self.ROIlist) > 0:
+            stuff.append('ROIs')
+            
+        if self.ui.rigMotCheckBox.isChecked():
+            stuff.append('Rigid Motion Correction Paramters')
+            if self.ui.elasMotCheckBox.isChecked():
+                stuff.append('Elastic Motion Correction Paramters')
+            
+        if stuff == []:
+            return None
+        else:
+            return stuff
+            
+    # Package the current work environment, can be used to add to batch. Returns None if there is
+    # no work environment.
+    def packageWorkEnv(self):
+        env = self.getWorkEnvVars()
+        if env is None:
+            print('Nothing in work environment to package!')
+            return
+        else:
+            print('The environment has: ' + env)
+            # package the environment here
+            pass
+    
+    # Check if there are unsaved stuff in the work environment
+    def askDiscardWorkEnv(self):
+        if self.getWorkEnvVars() is not None and QtGui.QMessageBox.question(self, 'Warning!', 
+                  'The following variables are unsaved in your work environment: ' + \
+                  ', '.join(self.getWorkEnvVars())  +'. Would you like to discard them and continue?',
+                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+                return False
+        return True
+    
+    # Clear the ROIs and plots
+    def clearWorkEnv(self):
+        # Remove any ROIs and associated curves on the plot
+        for i in range(0,len(self.ROIlist)):
+            self.delROI(self.ROIlist[0])
+            '''calls delROI method to remove the ROIs from the list.
+            You cannot simply reset the list to ROI = [] because objects must be removed from the scene
+            and curves removed from the plot. This is what delROI() does. Removes the 0th once in each 
+            iteration, number of iterations = len(ROIlist)'''
+            
+        # In case the user decided to add some of their own curves that don't correspond to the ROIs
+        if len(self.Curveslist) != 0:
+            for i in range(0,len(self.Curveslist)):
+                self.Curveslist[i].clear()
+        
+        # re-initialize ROI and curve lists
+        self.ROIlist = []
+        self.Curveslist = []
+        
+        # Remove the background bands showing stimulus times.
+        for linReg in self.currStimMapBg:
+            self.ui.roiPlot.removeItem(linReg)
+    
+    
+    def delROI(self,roiPicked):
+        ''' Pass in the roi object from ROI.sigRemoveRequested()
+        gets the index position of this particular ROI from the ROIlist
+        removes that ROI from the scene and removes it from the list
+        AND removes the corresponding curve.''' 
+        
+        ID = self.ROIlist.index(roiPicked)
+        
+        self.view.scene().removeItem(self.ROIlist[ID])
+        del self.ROIlist[ID]
+        
+        self.Curveslist[ID].clear()
+        del self.Curveslist[ID]
+        
+         # Resets the color in the order of a bright rainbow, kinda.
+         # ***** SHOULD REPLACE BY USING COLORMAP METHOD FROM PYQTGRAPH
+        for ID in range(0,len(self.ROIlist)):
+            color = self.ROIcolors[ID%(len(self.ROIcolors))]
+            self.ROIlist[ID].setPen(color)
+            self.Curveslist[ID].setPen(color)
+        
+#    def roiClicked(self):
+#        showRoiPlot = False
+#        if self.ui.roiBtn.isChecked():
+#            showRoiPlot = True
+#            self.roi.show()
+#            #self.ui.roiPlot.show()
+#            self.ui.roiPlot.setMouseEnabled(True, True)
+#            self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])
+#            self.roiCurve.show()
+#            self.roiCurve2 = self.ui.roiPlot.plot()
+#            self.CurvesList.append(roiCurve2)
+#            self.roiCurve2.show()
+#            self.roiChanged()
+#            self.ui.roiPlot.showAxis('left')
+#        else:
+#            self.roi.hide()
+#            self.ui.roiPlot.setMouseEnabled(False, False)
+#            self.roiCurve.hide()
+#            self.ui.roiPlot.hideAxis('left')
+#            
+#        if self.hasTimeAxis():
+#            showRoiPlot = True
+#            mn = self.tVals.min()
+#            mx = self.tVals.max()
+#            self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
+#            self.timeLine.show()
+#            self.timeLine.setBounds([mn, mx])
+#            self.ui.roiPlot.show()
+#            if not self.ui.roiBtn.isChecked():
+#                self.ui.splitter.setSizes([self.height()-35, 35])
+#        else:
+#            self.timeLine.hide()
+#            #self.ui.roiPlot.hide()
+#            
+#        self.ui.roiPlot.setVisible(showRoiPlot)
+
+#    def roiChanged(self):
+#        if self.image is None:
+#            return
+#            
+#        image = self.getProcessedImage()
+#        if image.ndim == 2:
+#            axes = (0, 1)
+#        elif image.ndim == 3:
+#            axes = (1, 2)
+#        else:
+#            return
+#        
+#        data, coords = self.roi.getArrayRegion(image.view(np.ndarray), self.imageItem, axes, returnMappedCoords=True)
+#        if data is not None:
+#            while data.ndim > 1:
+#                data = data.sum(axis=1)
+#            if image.ndim == 3:
+#                #self.roiCurve2 = self.roiCurve
+#                self.roiCurve2.setData(y=np.random.rand(1577)*2000, x=self.tVals)
+#                self.roiCurve2.show()
+#                self.roiCurve.setData(y=data, x=self.tVals)
+#                #self.ui.roiPlot.addItem(self.roiCurve)
+#                #self.ui.roiPlot.addItem(self.roiCurve2)
+#            else:
+#                while coords.ndim > 2:
+#                    coords = coords[:,:,0]
+#                coords = coords - coords[:,0,np.newaxis]
+#                xvals = (coords**2).sum(axis=0) ** 0.5
+#                self.roiCurve.setData(y=data, x=xvals)
 
     def quickMinMax(self, data):
         """
@@ -588,56 +985,57 @@ class ImageView(QtGui.QWidget):
             data = data[sl]
         return nanmin(data), nanmax(data)
 
-    def normalize(self, image):
-        """
-        Process *image* using the normalization options configured in the
-        control panel.
-        
-        This can be repurposed to process any data through the same filter.
-        """
-        if self.ui.normOffRadio.isChecked():
-            return image
-            
-        div = self.ui.normDivideRadio.isChecked()
-        norm = image.view(np.ndarray).copy()
-        #if div:
-            #norm = ones(image.shape)
-        #else:
-            #norm = zeros(image.shape)
-        if div:
-            norm = norm.astype(np.float32)
-            
-        if self.ui.normTimeRangeCheck.isChecked() and image.ndim == 3:
-            (sind, start) = self.timeIndex(self.normRgn.lines[0])
-            (eind, end) = self.timeIndex(self.normRgn.lines[1])
-            #print start, end, sind, eind
-            n = image[sind:eind+1].mean(axis=0)
-            n.shape = (1,) + n.shape
-            if div:
-                norm /= n
-            else:
-                norm -= n
-                
-        if self.ui.normFrameCheck.isChecked() and image.ndim == 3:
-            n = image.mean(axis=1).mean(axis=1)
-            n.shape = n.shape + (1, 1)
-            if div:
-                norm /= n
-            else:
-                norm -= n
-            
-        if self.ui.normROICheck.isChecked() and image.ndim == 3:
-            n = self.normRoi.getArrayRegion(norm, self.imageItem, (1, 2)).mean(axis=1).mean(axis=1)
-            n = n[:,np.newaxis,np.newaxis]
-            #print start, end, sind, eind
-            if div:
-                norm /= n
-            else:
-                norm -= n
-                
-        return norm
+#    def normalize(self, image):
+#        """
+#        Process *image* using the normalization options configured in the
+#        control panel.
+#        
+#        This can be repurposed to process any data through the same filter.
+#        """
+#        if self.ui.normOffRadio.isChecked():
+#            return image
+#            
+#        div = self.ui.normDivideRadio.isChecked()
+#        norm = image.view(np.ndarray).copy()
+#        #if div:
+#            #norm = ones(image.shape)
+#        #else:
+#            #norm = zeros(image.shape)
+#        if div:
+#            norm = norm.astype(np.float32)
+#            
+#        if self.ui.normTimeRangeCheck.isChecked() and image.ndim == 3:
+#            (sind, start) = self.timeIndex(self.normRgn.lines[0])
+#            (eind, end) = self.timeIndex(self.normRgn.lines[1])
+#            #print start, end, sind, eind
+#            n = image[sind:eind+1].mean(axis=0)
+#            n.shape = (1,) + n.shape
+#            if div:
+#                norm /= n
+#            else:
+#                norm -= n
+#                
+#        if self.ui.normFrameCheck.isChecked() and image.ndim == 3:
+#            n = image.mean(axis=1).mean(axis=1)
+#            n.shape = n.shape + (1, 1)
+#            if div:
+#                norm /= n
+#            else:
+#                norm -= n
+#            
+#        if self.ui.normROICheck.isChecked() and image.ndim == 3:
+#            n = self.normRoi.getArrayRegion(norm, self.imageItem, (1, 2)).mean(axis=1).mean(axis=1)
+#            n = n[:,np.newaxis,np.newaxis]
+#            #print start, end, sind, eind
+#            if div:
+#                norm /= n
+#            else:
+#                norm -= n
+#                
+#        return norm
         
     def timeLineChanged(self):
+        
         #(ind, time) = self.timeIndex(self.ui.timeSlider)
         if self.ignoreTimeLine:
             return
@@ -646,6 +1044,7 @@ class ImageView(QtGui.QWidget):
         if ind != self.currentIndex:
             self.currentIndex = ind
             self.updateImage()
+        self.timeLineBorder.setPos(time)
         #self.timeLine.setPos(time)
         #self.emit(QtCore.SIGNAL('timeChanged'), ind, time)
         self.sigTimeChanged.emit(ind, time)
@@ -730,26 +1129,26 @@ class ImageView(QtGui.QWidget):
         else:
             self.imageItem.save(fileName)
             
-    def exportClicked(self):
-        fileName = QtGui.QFileDialog.getSaveFileName()
-        if fileName == '':
-            return
-        self.export(fileName)
-        
-    def buildMenu(self):
-        self.menu = QtGui.QMenu()
-        self.normAction = QtGui.QAction("Normalization", self.menu)
-        self.normAction.setCheckable(True)
-        self.normAction.toggled.connect(self.normToggled)
-        self.menu.addAction(self.normAction)
-        self.exportAction = QtGui.QAction("Export", self.menu)
-        self.exportAction.triggered.connect(self.exportClicked)
-        self.menu.addAction(self.exportAction)
-        
-    def menuClicked(self):
-        if self.menu is None:
-            self.buildMenu()
-        self.menu.popup(QtGui.QCursor.pos())
+#    def exportClicked(self):
+#        fileName = QtGui.QFileDialog.getSaveFileName()
+#        if fileName == '':
+#            return
+#        self.export(fileName)
+#        
+#    def buildMenu(self):
+#        self.menu = QtGui.QMenu()
+#        self.normAction = QtGui.QAction("Normalization", self.menu)
+#        self.normAction.setCheckable(True)
+#        self.normAction.toggled.connect(self.normToggled)
+#        self.menu.addAction(self.normAction)
+#        self.exportAction = QtGui.QAction("Export", self.menu)
+#        self.exportAction.triggered.connect(self.exportClicked)
+#        self.menu.addAction(self.exportAction)
+#        
+#    def menuClicked(self):
+#        if self.menu is None:
+#            self.buildMenu()
+#        self.menu.popup(QtGui.QCursor.pos())
 
     def setColorMap(self, colormap):
         """Set the color map. 
