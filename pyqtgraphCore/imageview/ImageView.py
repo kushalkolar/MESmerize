@@ -38,6 +38,11 @@ from .. import getConfigOption
 
 from MesmerizeCore import FileInput
 from MesmerizeCore.stimMapWidget import stimMapGUI
+from MesmerizeCore.caimanMotionCorrect import caimanPipeline
+import time
+import configparser
+import pickle
+import tifffile
 
 try:
     from bottleneck import nanmin, nanmax
@@ -170,6 +175,7 @@ class ImageView(QtGui.QWidget):
         self.mesfile = None
         self.MesfileMap = None
         self.ui.splitter.setEnabled(False)
+        self.currBatch = None
         
         # Initialize list of bands that indicate stimulus times
         self.currStimMapBg = []
@@ -186,7 +192,9 @@ class ImageView(QtGui.QWidget):
         self.ui.mesfile_listw.itemDoubleClicked.connect(self.updateImgObj)
         self.ui.add_roi_Btn.clicked.connect(self.addROI)
         self.ui.rigMotCheckBox.clicked.connect(self.checkSubArray)
-
+        
+        self.ui.btnAddToBatch.clicked.connect(self.addToBatch)
+        self.ui.btnStartBatch.clicked.connect(self.startBatch)
         
         #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
         
@@ -825,6 +833,69 @@ class ImageView(QtGui.QWidget):
         color = self.ROIcolors[ID%(len(self.ROIcolors))]
         self.Curveslist[ID].setPen(color)
     
+    def addToBatch(self):
+        if self.currBatch is None:
+            self.currBatch = str(time.time())
+            self.currBatchDir = self.currProjDir + '/.' + self.currBatch
+            os.mkdir(self.currBatchDir)
+        
+        if self.currImgDataObj.isMotCor is False and self.ui.rigMotCheckBox.isChecked():
+            rigid_params, elas_params = self.getMotCorParams()
+        
+        name = self.currBatchDir + '/' + str(time.time())
+        tifffile.imsave(name+'.tiff', self.currImgDataObj.seq.T)
+        
+        meta = self.currImgDataObj.meta
+        isSubArray = self.currImgDataObj.isSubArray
+        isMotCor = self.currImgDataObj.isMotCor
+        isDenoised = self.currImgDataObj.isDenoised
+        
+        imdata = {'meta': meta, 'isSubArray': isSubArray, 'isMotCor': isMotCor,
+                  'isDenoised': isDenoised}
+        
+        data = {'imdata': imdata, 'rigid_params': rigid_params, 'elas_params': elas_params}
+        
+        pickle.dump(data, open(name+'.pik', 'wb'))
+        
+#        cfgFile = open(name+'.cfg', 'w')
+#        configparser.
+#        cfgFile.close()
+        # HOW TO COLOR ITEMS IN THE LIST???
+        self.ui.listwidgBatch.addItem(name)
+        self.ui.btnStartBatch.setEnabled(True)
+        
+    def startBatch(self):
+        batchSize = self.ui.listwidgBatch.count()
+        for i in range(0, batchSize):
+            cp = caimanPipeline(self.ui.listwidgBatch.item(i).text())
+            cp.start()
+            #print(self.ui.listwidgBatch.item(i).text())
+        pass
+    
+    # Get Motion Correction Parameters from the GUI
+    def getMotCorParams(self):
+        decay_time = float(self.ui.spinboxDecay.text())
+        num_iters_rigid = int(self.ui.spinboxIter.text())
+        rig_shifts_x = int(self.ui.spinboxX.text())
+        rig_shifts_y = int(self.ui.spinboxY.text())
+        num_threads = int(self.ui.spinboxThreads.text())
+        
+        rigid_params = {'decay_time': decay_time, 'num_iters_rigid': num_iters_rigid, 
+             'rig_shifts_x': rig_shifts_x, 'rig_shifts_y': rig_shifts_y,
+             'num_threads': num_threads}
+        
+        if self.ui.elasMotCheckBox.isChecked():        
+            strides = int(self.ui.sliderStrides.value())
+            overlaps = int(self.ui.sliderOverlaps.value())
+            upsample = int(self.ui.spinboxUpsample.text())
+            max_dev = int(self.ui.spinboxMaxDev.text())
+            
+            elas_params = {'strides': strides, 'overlaps': overlaps,
+                           'upsample': upsample, 'max_dev': max_dev}
+        else:
+            elas_params = None
+        return rigid_params, elas_params
+        
     # Checks if there are any variables in the work environment
     def getWorkEnvVars(self):
         stuff = []
@@ -843,15 +914,18 @@ class ImageView(QtGui.QWidget):
             return stuff
             
     # Package the current work environment, can be used to add to batch. Returns None if there is
-    # no work environment.
+    # no work environment. #USE UNIVERSALLY FOR ALL KINDS OF PACKAGING. TO CREATE A BATCH, BEFORE/AFTER
+    # DECONVOLUTION, ADDING TO THE PROJECT, AND FOR MODIFYING A PROJECT CURVE.
     def packageWorkEnv(self):
         env = self.getWorkEnvVars()
         if env is None:
             print('Nothing in work environment to package!')
             return
+        
         else:
+            
             print('The environment has: ' + env)
-            # package the environment here
+            
             pass
     
     # Check if there are unsaved stuff in the work environment

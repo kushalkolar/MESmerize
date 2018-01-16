@@ -421,19 +421,16 @@
        <property name="title">
         <string>Motion correction parameters</string>
        </property>
-       <widget class="QWidget" name="layoutWidget">
+       <widget class="QWidget" name="">
         <property name="geometry">
          <rect>
-          <x>10</x>
+          <x>11</x>
           <y>30</y>
           <width>1101</width>
           <height>114</height>
          </rect>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <property name="spacing">
-          <number>6</number>
-         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
@@ -451,6 +448,9 @@
                </property>
                <property name="text">
                 <string>decay time: </string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -477,6 +477,9 @@
                </property>
                <property name="text">
                 <string> iterations: </string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -609,20 +612,31 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_4">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>strides</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>strides</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelStridesValue">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
             <widget class="QSlider" name="sliderStrides">
@@ -632,20 +646,31 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_5">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>overlaps</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>overlaps</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelOverlapsValue">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -661,6 +686,9 @@
                <property name="text">
                 <string>upsample:</string>
                </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
               </widget>
              </item>
              <item>
@@ -674,6 +702,9 @@
               <widget class="QLabel" name="label_3">
                <property name="text">
                 <string>max deviation:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -698,7 +729,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="batch_listw">
+        <widget class="QListWidget" name="listwidgBatch">
          <property name="selectionMode">
           <enum>QAbstractItemView::MultiSelection</enum>
          </property>
@@ -712,7 +743,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="motioncorr_listw">
+        <widget class="QListWidget" name="listwidgMotCor">
          <property name="selectionMode">
           <enum>QAbstractItemView::MultiSelection</enum>
          </property>
@@ -733,12 +764,12 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnSaveBatch">
+        <widget class="QPushButton" name="btnStartBatch">
          <property name="enabled">
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Save batch</string>
+          <string>Start Batch</string>
          </property>
         </widget>
        </item>
@@ -802,18 +833,66 @@
    </hints>
   </connection>
   <connection>
-   <sender>batch_listw</sender>
-   <signal>itemClicked(QListWidgetItem*)</signal>
-   <receiver>btnSaveBatch</receiver>
-   <slot>toggle()</slot>
+   <sender>rigMotCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnAddToBatch</receiver>
+   <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1261</x>
-     <y>169</y>
+     <x>293</x>
+     <y>893</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1261</x>
-     <y>924</y>
+     <x>156</x>
+     <y>948</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rigMotCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnMotCorrNow</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>293</x>
+     <y>893</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>430</x>
+     <y>948</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderStrides</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>labelStridesValue</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>530</x>
+     <y>902</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>983</x>
+     <y>887</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderOverlaps</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>labelOverlapsValue</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>714</x>
+     <y>948</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>983</x>
+     <y>923</y>
     </hint>
    </hints>
   </connection>
