@@ -59,11 +59,13 @@ class main():
         self.viewer.setColorMap(cmap)
         
         
-        self.viewer.ui.btnAddToProj.clicked.connect(self.addImgDataObjtoProj)
+        self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addImgDataObjtoProj)
         
         if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
             QtGui.QApplication.instance().exec_()
     def showViewer(self, event):
+        if self.projBrowser.CurrProjName is not None:
+            self.viewer.currProjDir = self.projBrowser.projPath
         self.viewerWindow.show()
         
     def addImgDataObjtoProj(self):
