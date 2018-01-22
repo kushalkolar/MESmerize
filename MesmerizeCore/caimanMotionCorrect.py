@@ -16,7 +16,7 @@ from __future__ import division
 from __future__ import print_function
 from builtins import range
 import sys
-sys.path.append('/home/kushal/CaImAn_kushal_fork/')
+sys.path.append('/home/kushal/Sars_stuff/github-repos/CaImAn/')
 import cv2
 import glob
 
@@ -51,24 +51,24 @@ from caiman.components_evaluation import estimate_components_quality_auto
 import multiprocessing
 
 class caimanPipeline(multiprocessing.Process):
-    def __init__(self, item):
+    def __init__(self, fileName):
         multiprocessing.Process.__init__(self)
 #%% First setup some parameters
-        params = pickle.load(open(item+'.pik', 'rb'))
-        self.item = item
+        self.data = pickle.load(open(fileName+'.pik', 'rb'))
+        self.fileName = fileName
         # dataset dependent parameters
-        self.fname = [item+'.tiff']  # filename to be processed
+        self.fname = [fileName+'.tiff']  # filename to be processed
         
-        self.niter_rig = params['rigid_params']['num_iters_rigid']
-        self.max_shifts = (params['rigid_params']['rig_shifts_x'], params['rigid_params']['rig_shifts_y'])
-        self.splits_rig = params['rigid_params']['num_threads']
+        self.niter_rig = self.data['rigid_params']['num_iters_rigid']
+        self.max_shifts = (self.data['rigid_params']['rig_shifts_x'], self.data['rigid_params']['rig_shifts_y'])
+        self.splits_rig = self.data['rigid_params']['num_threads']
         
-        if params['elas_params'] is not None:
-            self.strides = (params['elas_params']['strides'], params['elas_params']['strides'])
-            self.overlaps = (params['elas_params']['overlaps'], params['elas_params']['overlaps'])
+        if self.data['elas_params'] is not None:
+            self.strides = (self.data['elas_params']['strides'], self.data['elas_params']['strides'])
+            self.overlaps = (self.data['elas_params']['overlaps'], self.data['elas_params']['overlaps'])
             self.splits_els = self.splits_rig
-            self.upsample_factor_grid = params['elas_params']['upsample']
-            self.max_deviation_rigid = params['elas_params']['max_dev']
+            self.upsample_factor_grid = self.data['elas_params']['upsample']
+            self.max_deviation_rigid = self.data['elas_params']['max_dev']
     
     #fr = 24                             # imaging rate in frames per second
     #decay_time = 0.5                    # length of a typical transient in seconds
@@ -149,7 +149,8 @@ class caimanPipeline(multiprocessing.Process):
         m_els = cm.load(mc.fname_tot_els)
         bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
                                          np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
-        np.savez(self.item+'_mc.npz', m_els)
+        np.savez(self.fileName+'_mc.npz', imgseq=m_els.T)
+        
 
     # maximum shift to be used for trimming against NaNs
     ##%% compare with original movie
@@ -172,9 +173,13 @@ class caimanPipeline(multiprocessing.Process):
     
         #%% restart cluster to clean up memory
         dview.terminate()
-        c, dview, n_processes = cm.cluster.setup_cluster(
-            backend='local', n_processes=None, single_thread=False)
-    
+#        c, dview, n_processes = cm.cluster.setup_cluster(
+#            backend='local', n_processes=None, single_thread=False)
+        
+
+if __name__ == '__main__':
+    cp = caimanPipeline('/home/kushal/Sars_stuff/github-repos/MESmerize/bahhh/.batches/1516644408.007424/a1_t3_1516644597.9165418')
+    cp.run()
     #%% RUN CNMF ON PATCHES
     
     # First extract spatial and temporal components on patches and combine them

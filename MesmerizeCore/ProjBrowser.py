@@ -10,8 +10,10 @@ sys.path.append('..')
 
 if __name__ == '__main__':
     from ProjBrowser_template import *
+    from packager import *
 else:
     from .ProjBrowser_template import *
+    from .packager import *
 from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE
 from pyqtgraphCore.graphicsItems.InfiniteLine import *
 import pyqtgraphCore
@@ -20,6 +22,7 @@ import os
 from PyQt5.QtGui import QIcon
 import pickle
 import pandas as pd
+
 
 
 class ProjBrowser(QtGui.QWidget):
@@ -45,8 +48,9 @@ class ProjBrowser(QtGui.QWidget):
             self.CurrProjName = projName
             path = parentPath + '/' + self.CurrProjName
             os.mkdir(path)
-            self.projIndexDataFrame = pd.DataFrame(data=None, columns=['definitions', 'type'])
-            self.projIndexDataFrame.to_csv(path + '/' + self.CurrProjName + '_index.mzp', index=False)
+            self.projDataFrame = empty_df()
+            self.projDataFrameFilePath = path + '/' + self.CurrProjName + '_index.mzp'
+            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
             self.setTree(path)
     
     def setTree(self, rootPath):
@@ -70,7 +74,8 @@ class ProjBrowser(QtGui.QWidget):
                                                       '.', '(*.mzp)')[0]
         print(path)
         if path != '':
-            self.projIndexDataFrame = pd.read_csv(path) 
+            self.projDataFrameFilePath = path
+            self.projDataFrame = pd.read_csv(path) 
             self.CurrProjName = path.split('/')[-1][:-4]
             self.setTree('/'.join((path.split('/')[:-1])))
             
