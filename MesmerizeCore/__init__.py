@@ -1,1 +1,1 @@
-__all__ = ['FileInput', 'DataTypes', 'ImgOut', 'ProjBrowser', 'stimMap', 'matlab']
+__all__ = ['FileInput', 'DataTypes', 'ImgOut', 'ProjBrowser', 'stimMap', 'matlab', 'packager', 'caimanPipeline']

@@ -15,10 +15,13 @@ meta : meta data dictionary
 import numpy as np
 
 class ImgData():
-    def __init__(self, seq, meta, isSubArray=False, isMotCor=False, isDenoised=False):
+    def __init__(self, seq, meta, AnimalID=None, TrialID=None, Map=None, 
+                 isSubArray=False, isMotCor=False, isDenoised=False):
         self.seq = seq
         self.meta = meta.copy()
-        self.Map = None
+        self.AnimalID = AnimalID
+        self.TrialID = TrialID
+        self.Map = Map
         self.isSubArray = isSubArray
         self.isMotCor = isMotCor
         self.isDenoised = isDenoised

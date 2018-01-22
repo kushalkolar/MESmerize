@@ -723,7 +723,7 @@
        <item>
         <widget class="QListWidget" name="listwidgBatch">
          <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
         </widget>
        </item>
@@ -737,7 +737,7 @@
        <item>
         <widget class="QListWidget" name="listwidgMotCor">
          <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
         </widget>
        </item>
