@@ -39,6 +39,7 @@ from .. import getConfigOption
 from MesmerizeCore import FileInput
 from MesmerizeCore.stimMapWidget import stimMapGUI
 from MesmerizeCore.caimanMotionCorrect import caimanPipeline
+from MesmerizeCore.packager import *
 import time
 import configparser
 import pickle
@@ -55,40 +56,6 @@ except ImportError:
 #        ROI.__init__(self, pos=[0,0], size=size) #, scaleSnap=True, translateSnap=True)
 #        self.addScaleHandle([1, 1], [0, 0])
 #        self.addRotateHandle([0, 0], [0.5, 0.5])
-
-#class PolyROICurve(PolyLineROI):
-#    def __init__(self, curve, ID, tVals, img, imgItem, axes):
-#        PolyLineROI.__init__(self, [[0,0], [10,10], [10,30], [30,10]], 
-#                             closed=True, pos=[0,0], removable=True)
-#        self.curve = curve
-#        self.curve.show()
-#        self.tVals = tVals
-#        
-#        self.imageitem = imgItem
-#        self.img = img
-#        self.axes = axes
-#        self.setID(ID)
-#        self.updatePlot()
-#        self.sigRegionChanged.connect(self.updatePlot)
-#        self.sigRemoveRequested.connect(self.delPlot)
-#        
-#    def setID(self, ID):
-#        self.ID = ID
-#        ROIcolors=['m','r','y','g','c']
-#        self.color = ROIcolors[ID%(len(ROIcolors))]
-#        self.setPen(self.color)
-#        self.curve.setPen(self.color)
-#
-#    def updatePlot(self):
-#        print(self.getSceneHandlePositions())
-#        #data, coords = self.getArrayRegion(self.img, self.imageitem, 
-#        #                                   self.axes, returnMappedCoords=True)
-#        self.curve.setData(y=np.random.rand(1577)*2000, x=self.tVals)
-#        self.curve.show()
-#        
-#    def delPlot(self):
-#        self.curve.clear()
-#        self.curve = None
 
 class ImageView(QtGui.QWidget):
     """
@@ -171,6 +138,7 @@ class ImageView(QtGui.QWidget):
         
         # Set the main viewer objects to None so that proceeding methods know that these objects
         # don't exist for certain cases.
+        self.workEnvOrigin = None
         self.currImgDataObj = None
         self.mesfile = None
         self.MesfileMap = None
@@ -179,6 +147,7 @@ class ImageView(QtGui.QWidget):
         
         # Initialize list of bands that indicate stimulus times
         self.currStimMapBg = []
+        self.bah ={'bah': []}
         
         # Initialize empty ROI and curve lists        
         self.ROIlist=[]
@@ -189,12 +158,19 @@ class ImageView(QtGui.QWidget):
         
         # Connect all the button signals
         self.ui.openFileBtn.clicked.connect(self.promptFileDialog)
-        self.ui.mesfile_listw.itemDoubleClicked.connect(self.updateImgObj)
+        self.ui.mesfile_listw.itemDoubleClicked.connect(lambda selection: 
+                                                        self.updateImgObj(selection, origin='mesfile'))
         self.ui.add_roi_Btn.clicked.connect(self.addROI)
         self.ui.rigMotCheckBox.clicked.connect(self.checkSubArray)
         
+        self.ui.btnSetID.clicked.connect(self.setAnimalTrialID)
+        
         self.ui.btnAddToBatch.clicked.connect(self.addToBatch)
         self.ui.btnStartBatch.clicked.connect(self.startBatch)
+        self.ui.btnOpenBatch.clicked.connect(self.openBatch)
+        
+        self.ui.listwidgMotCor.itemDoubleClicked.connect(lambda selection: 
+                                                         self.updateImgObj(selection, origin='MotCor'))
         
         #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
         
@@ -291,32 +267,48 @@ class ImageView(QtGui.QWidget):
         Argumments:
             selection : object returned from self.ui.mesfile_listw.itemDoubleClicked
     '''
-    def updateImgObj(self, selection):
+    def updateImgObj(self, selection, origin):
         self.ui.splitter.setEnabled(True) # Enable stuff in the image & curve working area
         self.ui.MotionCorGroup.setEnabled(True)
         
         if self.askDiscardWorkEnv():
             self.clearWorkEnv()
-            self.currImgDataObj = self.mesfile.load_img(selection.text().split('//')[0])
-            self.setImage(self.currImgDataObj.seq.T, pos=(0,0), scale=(1,1), 
-                          xvals=np.linspace(1, self.currImgDataObj.seq.T.shape[0], self.currImgDataObj.seq.T.shape[0]))
+            if origin == 'mesfile':
+                self.currImgDataObj = self.mesfile.load_img(selection.text().split('//')[0])
+                
+                
+                if self.MesfileMap is not None:
+                    self.setStimMap()
+                    # Set the stimulus map to the default one set for the entire mesfile (if any)
             
-            # Set the stimulus map to the default one set for the entire mesfile (if any)
-            if self.MesfileMap is not None:
-                self.setStimMap()
+            if origin == 'MotCor':
+                print(selection.text())
+                self.currImgDataObj = pickle2workEnv(selection.text()[:-7]+'.pik', selection.text())
+                self.currImgDataObj.isMotCor = True
+                if self.currImgDataObj.Map is not None:
+                    self.applyStimMap()
+            
+            self.setImage(self.currImgDataObj.seq.T, pos=(0,0), scale=(1,1), 
+                          xvals=np.linspace(1, self.currImgDataObj.seq.T.shape[0], 
+                                            self.currImgDataObj.seq.T.shape[0]))
+
          
-    ''' Reset the current image to the center of the scene and reset the scale
+    
+    def resetImgScale(self):
+        ''' 
+        Reset the current image to the center of the scene and reset the scale
         doesn't work as intended in some weird circumstances when you repeatedly right click on the scene
         and set the x & y axis to 'Auto' a bunch of times. But this bug is hard to recreate.'''
-    def resetImgScale(self):
-            self.setImage(self.currImgDataObj.seq.T, pos=(0,0), scale=(1,1), 
-                          xvals=np.linspace(1, self.currImgDataObj.seq.T.shape[0], self.currImgDataObj.seq.T.shape[0]))
+        self.setImage(self.currImgDataObj.seq.T, pos=(0,0), scale=(1,1), 
+                          xvals=np.linspace(1, self.currImgDataObj.seq.T.shape[0], 
+                                            self.currImgDataObj.seq.T.shape[0]))
     
     def promptFileDialog(self):
         filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)', 
                                                       '.', '(*.mes *.tif *.tiff)')
         #try:
         if filelist[0][0][-4:] == '.mes':
+            self.workEnvOrigin = 'mes'
             self.mesfile = FileInput.MES(filelist[0][0])
             self.ui.mesfile_listw.setEnabled(True) # Enable the mesfile list widget
             for i in self.mesfile.images:
@@ -338,6 +330,9 @@ class ImageView(QtGui.QWidget):
             else:
                 self.ui.btnResetSMap.setDisabled(True)
                 self.ui.btnChangeSMap.setDisabled(True)
+                
+        if filelist[0][0][-4:] == 'tiff':
+            self.workEnvOrigin = 'tiff'
         # ****** Should look into except IOError and IndexError
 #        except:
 #            print('There''s an issue with the files you''ve selected')
@@ -359,7 +354,10 @@ class ImageView(QtGui.QWidget):
         self.stimmapwindow.hide()
         # store a map in memory for the whole mesfile in the current work environment
         if self.stimmap.ui.checkBoxSetAll.isChecked():
-            self.MesfileMap = self.stimmap.getStimMap()
+            try:
+                self.MesfileMap = self.stimmap.getStimMap()
+            except:
+                print("There's no map set for the whole mesfile!")
             self.stimmap.ui.checkBoxSetAll.setChecked(False)
             self.stimmap.ui.checkBoxSetAll.setEnabled(True)
 
@@ -375,19 +373,9 @@ class ImageView(QtGui.QWidget):
         if dm is None:
             dm = self.MesfileMap
         self.currImgDataObj.setMap(dm)
-#        y = self.currImgDataObj.meta['AUXo3']['y']
-#        x = self.currImgDataObj.meta['AUXo3']['x'][1]
-#        firstFrameStartTime = self.currImgDataObj.meta['FoldedFrameInfo']['firstFrameStartTime']
-#        frameTimeLength = self.currImgDataObj.meta['FoldedFrameInfo']['frameTimeLength']
-#        self.currImgDataObj.map = []
-#        for i in range(0,y.shape[1]-1):
-#            voltage = str(y[1][i])
-#            tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
-#            if tstart_frame < 0:
-#                tstart_frame = 0
-#            tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
-            
-            #self.currImgDataObj.Map.append([dm[voltage], (tstart_frame, tend_frame)])
+        self.applyStimMap()
+
+    def applyStimMap(self):
         self.currStimMapBg = []
         for stim in self.currImgDataObj.Map:
             definitions = stim[0][0]
@@ -833,54 +821,95 @@ class ImageView(QtGui.QWidget):
         color = self.ROIcolors[ID%(len(self.ROIcolors))]
         self.Curveslist[ID].setPen(color)
     
+    def openBatch(self):
+        batchFolder = QtGui.QFileDialog.getExistingDirectory(self, 'Select batch Dir', 
+                                                      self.currProjDir + '/.batches/')
+        print(batchFolder)
+        for f in os.listdir(batchFolder):
+            if f.endswith('.pik'):
+                self.ui.listwidgBatch.addItem(batchFolder + '/' + f[:-4])
+            elif f.endswith('_mc.npz'):
+                self.ui.listwidgMotCor.addItem(batchFolder +'/' + f)
+        if self.ui.listwidgBatch.count() > 0:
+            self.ui.btnStartBatch.setEnabled(True)
+    
+    def setAnimalTrialID(self):
+        self.currImgDataObj.AnimalID = self.ui.lineEdAnimalID.text()
+        self.currImgDataObj.TrialID = self.ui.lineEdTrialID.text()
+        
     def addToBatch(self):
+        if os.path.isdir(self.currProjDir + '/.batches/') is False:
+            os.mkdir(self.currProjDir + '/.batches/')
         if self.currBatch is None:
             self.currBatch = str(time.time())
-            self.currBatchDir = self.currProjDir + '/.' + self.currBatch
+            self.currBatchDir = self.currProjDir + '/.batches/' + self.currBatch
             os.mkdir(self.currBatchDir)
         
         if self.currImgDataObj.isMotCor is False and self.ui.rigMotCheckBox.isChecked():
             rigid_params, elas_params = self.getMotCorParams()
         
-        name = self.currBatchDir + '/' + str(time.time())
-        tifffile.imsave(name+'.tiff', self.currImgDataObj.seq.T)
+        AnimalID = self.currImgDataObj.AnimalID 
+        TrialID = self.currImgDataObj.TrialID
+        
+        fileName = self.currBatchDir + '/' + AnimalID + '_' + TrialID + '_' + str(time.time())
+                
+        tifffile.imsave(fileName+'.tiff', self.currImgDataObj.seq.T)
         
         meta = self.currImgDataObj.meta
+        Map = self.currImgDataObj.Map
         isSubArray = self.currImgDataObj.isSubArray
         isMotCor = self.currImgDataObj.isMotCor
         isDenoised = self.currImgDataObj.isDenoised
         
-        imdata = {'meta': meta, 'isSubArray': isSubArray, 'isMotCor': isMotCor,
+        
+        imdata = {'AnimalID': AnimalID, 'TrialID': TrialID, 'meta': meta, 
+                  'Map': Map, 'isSubArray': isSubArray, 'isMotCor': isMotCor,
                   'isDenoised': isDenoised}
         
         data = {'imdata': imdata, 'rigid_params': rigid_params, 'elas_params': elas_params}
         
-        pickle.dump(data, open(name+'.pik', 'wb'))
+        pickle.dump(data, open(fileName+'.pik', 'wb'))
         
 #        cfgFile = open(name+'.cfg', 'w')
 #        configparser.
 #        cfgFile.close()
         # HOW TO COLOR ITEMS IN THE LIST???
-        self.ui.listwidgBatch.addItem(name)
+        self.ui.listwidgBatch.addItem(fileName)
         self.ui.btnStartBatch.setEnabled(True)
         
     def startBatch(self):
         batchSize = self.ui.listwidgBatch.count()
+        self.ui.progressBar.setEnabled(True)
+        self.ui.progressBar.setValue(1)
         for i in range(0, batchSize):
             cp = caimanPipeline(self.ui.listwidgBatch.item(i).text())
+            self.ui.abortBtn.setEnabled(True)
+            
             cp.start()
-            #print(self.ui.listwidgBatch.item(i).text())
-        pass
+            print('>>>>>>>>>>>>>>>>>>>> Starting item: ' + str(i) + ' <<<<<<<<<<<<<<<<<<<<')
+            while cp.is_alive():
+                time.sleep(10)
+            print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+            if os.path.isfile(self.ui.listwidgBatch.item(i).text()+'_mc.npz'):
+                self.ui.listwidgMotCor.addItem(self.ui.listwidgBatch.item(i).text()+'_mc.npz')
+                self.ui.listwidgMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
+            else:
+                self.ui.listwidgMotCor.addItem(self.ui.listwidgBatch.item(i).text()+'_mc.npz')
+                self.ui.listwidgMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
+            self.ui.progressBar.setValue(100/batchSize)
+        self.ui.abortBtn.setDisabled(True)
+        self.ui.progressBar.setValue(0)
+        self.ui.progressBar.setDisabled(True)
     
     # Get Motion Correction Parameters from the GUI
     def getMotCorParams(self):
-        decay_time = float(self.ui.spinboxDecay.text())
+        #decay_time = float(self.ui.spinboxDecay.text())
         num_iters_rigid = int(self.ui.spinboxIter.text())
         rig_shifts_x = int(self.ui.spinboxX.text())
         rig_shifts_y = int(self.ui.spinboxY.text())
         num_threads = int(self.ui.spinboxThreads.text())
         
-        rigid_params = {'decay_time': decay_time, 'num_iters_rigid': num_iters_rigid, 
+        rigid_params = {'decay_time': None, 'num_iters_rigid': num_iters_rigid, 
              'rig_shifts_x': rig_shifts_x, 'rig_shifts_y': rig_shifts_y,
              'num_threads': num_threads}
         
