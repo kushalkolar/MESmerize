@@ -5,10 +5,18 @@ Created on Tue Dec 22 19:01:21 2017
 
 @author: kushal
 
-Just a clean simple & independent image data class
+Chatzigeorgiou Group
+Sars International Centre for Marine Molecular Biology
+
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+Just a clean simple & independent image data class which is the core of the work
+envrionment in Mesmerize Viewer.
 
 seq : 3D array (2D + time) of the image sequence
 meta : meta data dictionary
+Map : Stimulus map. Contains the definitions of the stimuli & the time that they
+occured for the animal that was exposed to in this particular image sequence
 
 """
 

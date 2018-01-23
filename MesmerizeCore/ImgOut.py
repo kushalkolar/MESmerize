@@ -5,6 +5,11 @@ Created on Fri Nov 17 17:59:04 2017
 
 @author: kushal
 
+Chatzigeorgiou Group
+Sars International Centre for Marine Molecular Biology
+
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
 A simple class that does the back-end handilng to export image sequence data.
 
 """
@@ -14,6 +19,8 @@ import cv2
 import tifffile
 from functools import partial
 
+# vmin & vmax only has to be supplied for video outputs since videos cannot contain
+# the full range of 16 bit image depth (OpenCV & 16 bit grayscale is a nightmare to deal with)
 class ImgOut():
     def __init__(self, img_data, out_file, vmin=None, vmax=None):
         self.img_data = img_data
@@ -27,7 +34,7 @@ class ImgOut():
                    '.npz': self.npz,
                    '.avi': partial(self.vidWrite, 'MJPG'),
                    '.mp4': partial(self.vidWrite, 'X264')
-                }
+                   }
         formats[outFormat]()
     def tiff(self):
         tifffile.imsave(self.out_file,self.img_data.seq.T)
