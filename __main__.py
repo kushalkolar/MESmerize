@@ -4,6 +4,11 @@
 Created on Sun Jan  7 21:14:51 2018
 
 @author: kushal
+
+Chatzigeorgiou Group
+Sars International Centre for Marine Molecular Biology
+
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE
@@ -18,6 +23,13 @@ from MesmerizeCore.packager import workEnv2pandas
 from shutil import copyfile
 import time
 import pandas as pd
+
+'''
+Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
+I intend to create a headless mode for doing certain things on a cluster/supercomputer
+
+The instance of desktopApp is useful for communicating between the Viewer & Project Browser
+'''
 
 class main():
     def __init__(self, args=None):

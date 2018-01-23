@@ -3,6 +3,8 @@
 Created on Thu Nov  9 12:44:44 2017
 
 @author: ddo003
+
+For organizing weird matlab type objects. Used by MesmerizeCore.FileInput.
 """
 
 import scipy.io as spio
