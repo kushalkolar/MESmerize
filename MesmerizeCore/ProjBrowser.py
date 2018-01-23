@@ -4,6 +4,14 @@
 Created on Sun Jan  7 20:16:27 2018
 
 @author: kushal
+
+Chatzigeorgiou Group
+Sars International Centre for Marine Molecular Biology
+
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+The Project Browser GUI. Will be used for sorting/organizing/analysing the Calcium imaging
+traces
 """
 import sys
 sys.path.append('..')
@@ -38,7 +46,7 @@ class ProjBrowser(QtGui.QWidget):
         self.ui.treeView.doubleClicked.connect(self.loadFile)
         self.ui.treeView.clicked.connect(self.getSelectedPath)
 
-    def newProj(self):
+    def newProj(self):.
         parentPath = QtGui.QFileDialog.getExistingDirectory(self,'Choose location for new project')
         print('parentPath is: ' + parentPath)
         projName, start = QtGui.QInputDialog.getText(self, '', 'Project Name:', QtGui.QLineEdit.Normal, '')

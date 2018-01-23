@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+'''
+Modified ImageView class from the original pyqtgraph ImageView class.
+
+This provides all the UI functionality of the Mesmerize viewer.
+'''
 """
 ImageView.py -  Widget for basic image dispay and analysis
 Copyright 2010  Luke Campagnola

@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+
+'''
+Motion correction script adapted from the CaImAn library. Peforms all motion correction
+in a separate instance that is a separate process from the main desktop application. I
+intend to also use this as part of the headless version of Mesmerize so that motion correction
+(which is computationally intensive) can be done on a supercomputer/cluster
+'''
+
 """
 Complete demo pipeline for motion correction, source extraction, and
 deconvolution of two-photon calcium imaging data using the CaImAn package.

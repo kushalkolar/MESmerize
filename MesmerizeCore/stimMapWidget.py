@@ -4,7 +4,15 @@
 Created on Mon Jan  8 22:50:23 2018
 
 @author: kushal
+
+Chatzigeorgiou Group
+Sars International Centre for Marine Molecular Biology
+
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+Just a simple GUI for mapping any auxiliary voltage information to stimulus definitions.
 """
+
 import sys
 sys.path.append('..')
 if __name__ == '__main__':
