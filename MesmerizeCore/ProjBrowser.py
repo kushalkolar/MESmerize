@@ -46,7 +46,7 @@ class ProjBrowser(QtGui.QWidget):
         self.ui.treeView.doubleClicked.connect(self.loadFile)
         self.ui.treeView.clicked.connect(self.getSelectedPath)
 
-    def newProj(self):.
+    def newProj(self):
         parentPath = QtGui.QFileDialog.getExistingDirectory(self,'Choose location for new project')
         print('parentPath is: ' + parentPath)
         projName, start = QtGui.QInputDialog.getText(self, '', 'Project Name:', QtGui.QLineEdit.Normal, '')
