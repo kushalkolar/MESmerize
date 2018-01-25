@@ -169,15 +169,12 @@ class ImageView(QtGui.QWidget):
         self.ui.add_roi_Btn.clicked.connect(self.addROI)
         self.ui.rigMotCheckBox.clicked.connect(self.checkSubArray)
         
-        self.ui.btnSetID.clicked.connect(self.setAnimalTrialID)
+        self.ui.btnSetID.clicked.connect(self.setSampleID)
         
-        self.ui.btnAddToBatch.clicked.connect(self.addToBatch)
-        self.ui.btnStartBatch.clicked.connect(self.startBatch)
-        self.ui.btnOpenBatch.clicked.connect(self.openBatch)
+        self.ui.btnStartBatch.clicked.connect(self.startBatch)  
         
         self.ui.listwidgMotCor.itemDoubleClicked.connect(lambda selection: 
                                                          self.updateImgObj(selection, origin='MotCor'))
-        
         #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
         
         self.ignoreTimeLine = False
@@ -312,7 +309,8 @@ class ImageView(QtGui.QWidget):
     def promptFileDialog(self):
         filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)', 
                                                       '.', '(*.mes *.tif *.tiff)')
-        #try:
+        if filelist == '':
+            return
         if filelist[0][0][-4:] == '.mes':
             self.workEnvOrigin = 'mes'
             self.mesfile = FileInput.MES(filelist[0][0])
@@ -829,8 +827,9 @@ class ImageView(QtGui.QWidget):
     
     def openBatch(self):
         batchFolder = QtGui.QFileDialog.getExistingDirectory(self, 'Select batch Dir', 
-                                                      self.currProjDir + '/.batches/')
-        print(batchFolder)
+                                                      self.projPath + '/.batches/')
+        if batchFolder == '':
+            return
         for f in os.listdir(batchFolder):
             if f.endswith('.pik'):
                 self.ui.listwidgBatch.addItem(batchFolder + '/' + f[:-4])
@@ -839,25 +838,23 @@ class ImageView(QtGui.QWidget):
         if self.ui.listwidgBatch.count() > 0:
             self.ui.btnStartBatch.setEnabled(True)
     
-    def setAnimalTrialID(self):
-        self.currImgDataObj.AnimalID = self.ui.lineEdAnimalID.text()
-        self.currImgDataObj.TrialID = self.ui.lineEdTrialID.text()
+    def setSampleID(self):
+        self.currImgDataObj.SampleID = self.ui.lineEdAnimalID.text() + '_-_' +  self.ui.lineEdTrialID.text()
         
     def addToBatch(self):
-        if os.path.isdir(self.currProjDir + '/.batches/') is False:
-            os.mkdir(self.currProjDir + '/.batches/')
+        if os.path.isdir(self.projPath + '/.batches/') is False:
+            os.mkdir(self.projPath + '/.batches/')
         if self.currBatch is None:
             self.currBatch = str(time.time())
-            self.currBatchDir = self.currProjDir + '/.batches/' + self.currBatch
+            self.currBatchDir = self.projPath + '/.batches/' + self.currBatch
             os.mkdir(self.currBatchDir)
         
         if self.currImgDataObj.isMotCor is False and self.ui.rigMotCheckBox.isChecked():
             rigid_params, elas_params = self.getMotCorParams()
         
-        AnimalID = self.currImgDataObj.AnimalID 
-        TrialID = self.currImgDataObj.TrialID
+        SampleID = self.currImgDataObj.SampleID
         
-        fileName = self.currBatchDir + '/' + AnimalID + '_' + TrialID + '_' + str(time.time())
+        fileName = self.currBatchDir + '/' + SampleID + '_' + str(time.time())
                 
         tifffile.imsave(fileName+'.tiff', self.currImgDataObj.seq.T)
         
@@ -868,7 +865,7 @@ class ImageView(QtGui.QWidget):
         isDenoised = self.currImgDataObj.isDenoised
         
         
-        imdata = {'AnimalID': AnimalID, 'TrialID': TrialID, 'meta': meta, 
+        imdata = {'SampleID': SampleID, 'meta': meta, 
                   'Map': Map, 'isSubArray': isSubArray, 'isMotCor': isMotCor,
                   'isDenoised': isDenoised}
         
@@ -893,19 +890,21 @@ class ImageView(QtGui.QWidget):
             
             cp.start()
             print('>>>>>>>>>>>>>>>>>>>> Starting item: ' + str(i) + ' <<<<<<<<<<<<<<<<<<<<')
-            while cp.is_alive():
-                time.sleep(10)
-            print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-            if os.path.isfile(self.ui.listwidgBatch.item(i).text()+'_mc.npz'):
-                self.ui.listwidgMotCor.addItem(self.ui.listwidgBatch.item(i).text()+'_mc.npz')
-                self.ui.listwidgMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
-            else:
-                self.ui.listwidgMotCor.addItem(self.ui.listwidgBatch.item(i).text()+'_mc.npz')
-                self.ui.listwidgMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
-            self.ui.progressBar.setValue(100/batchSize)
+#            while cp.is_alive():
+#                time.sleep(10)
+        if os.path.isfile(self.ui.listwidgBatch.item(i).text()+'_mc.npz'):
+            self.ui.listwidgMotCor.addItem(self.ui.listwidgBatch.item(i).text()+'_mc.npz')
+            self.ui.listwidgMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
+        else:
+            self.ui.listwidgMotCor.addItem(self.ui.listwidgBatch.item(i).text()+'_mc.npz')
+            self.ui.listwidgMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
+#            self.ui.progressBar.setValue(100/batchSize)
         self.ui.abortBtn.setDisabled(True)
         self.ui.progressBar.setValue(0)
         self.ui.progressBar.setDisabled(True)
+    
+    def clearBatchList(self):
+        pass
     
     # Get Motion Correction Parameters from the GUI
     def getMotCorParams(self):

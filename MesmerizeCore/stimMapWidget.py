@@ -17,9 +17,9 @@ import sys
 sys.path.append('..')
 if __name__ == '__main__':
     #from stimMap_template import *
-    from stimMap_one_row import *
+    from stimMap_one_row_pytemplate import *
 else:
-    from .stimMap_one_row import *
+    from .stimMap_one_row_pytemplate import *
 from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE, QtWidgets
 import types
 
