@@ -185,38 +185,17 @@
          <item row="1" column="0" rowspan="6">
           <widget class="GraphicsView" name="graphicsView"/>
          </item>
-         <item row="4" column="2">
-          <widget class="QPushButton" name="btnResetSMap">
+         <item row="0" column="0" colspan="2">
+          <widget class="QProgressBar" name="progressBar">
            <property name="enabled">
             <bool>false</bool>
            </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>10</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>10</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Reset the Stimulus Map to the one set for this mes file</string>
-           </property>
-           <property name="text">
-            <string>Reset sMap</string>
+           <property name="value">
+            <number>0</number>
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
+         <item row="2" column="2">
           <widget class="QPushButton" name="btnChangeSMap">
            <property name="enabled">
             <bool>false</bool>
@@ -247,18 +226,11 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0" colspan="2">
-          <widget class="QProgressBar" name="progressBar">
+         <item row="5" column="1">
+          <widget class="QPushButton" name="btnConcatSeqs">
            <property name="enabled">
             <bool>false</bool>
            </property>
-           <property name="value">
-            <number>0</number>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QPushButton" name="btnConcatSeqs">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -307,31 +279,6 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="2">
-          <widget class="QPushButton" name="btnExport">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>10</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>10</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Export view</string>
-           </property>
-          </widget>
-         </item>
          <item row="6" column="1">
           <widget class="QPushButton" name="resetscaleBtn">
            <property name="sizePolicy">
@@ -357,7 +304,66 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="2">
+         <item row="1" column="1" colspan="2">
+          <widget class="HistogramLUTWidget" name="histogram"/>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="btnResetSMap">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>10</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Reset the Stimulus Map to the one set for this mes file</string>
+           </property>
+           <property name="text">
+            <string>Reset sMap</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QPushButton" name="btnExport">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>10</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Export view</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="2">
           <widget class="QPushButton" name="btnAddCurrEnvToProj">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -382,8 +388,33 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1" colspan="2">
-          <widget class="HistogramLUTWidget" name="histogram"/>
+         <item row="6" column="2">
+          <widget class="QPushButton" name="btnAddCurrEnvToProj_2">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>10</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Save changes</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -723,7 +754,7 @@
        <item>
         <widget class="QListWidget" name="listwidgBatch">
          <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
         </widget>
        </item>
@@ -737,7 +768,7 @@
        <item>
         <widget class="QListWidget" name="listwidgMotCor">
          <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
         </widget>
        </item>
@@ -749,7 +780,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="denoised_listw">
+        <widget class="QListWidget" name="listwidgDenoised">
          <property name="selectionMode">
           <enum>QAbstractItemView::MultiSelection</enum>
          </property>
