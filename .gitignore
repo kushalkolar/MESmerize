@@ -29,6 +29,22 @@ examples/
 #KDE Dolphin files
 .directory
 
+# Test projects
+./testprojects/*
+
+# Pycharm
+.idea
+.settings
+
+# Pydev
+.project
+.pydevproject
+
+# images
+*.png
+
+pandas_analysis.py
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.

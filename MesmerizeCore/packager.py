@@ -55,8 +55,7 @@ def pickle2workEnv(pikPath, npzPath):
         npz = np.load(npzPath)
         imgdata = ImgData(npz['imgseq'], 
                           pick['imdata']['meta'], 
-                          AnimalID=pick['imdata']['AnimalID'],
-                          TrialID=pick['imdata']['TrialID'],
+                          SampleID=pick['imdata']['SampleID'],
                           Map=pick['imdata']['Map'], 
                           isSubArray=pick['imdata']['isSubArray'])
         return imgdata
@@ -64,7 +63,7 @@ def pickle2workEnv(pikPath, npzPath):
 # Empty pandas dataframe with columns that is used for the project index file
 def empty_df():
     return pd.DataFrame(data=None, columns={'CurvePath', 'ImgPath', 'ImgInfoPath', 
-                                            'AnimalID', 'TrialID', 'Date', 'ROIhandles', 
+                                            'SampleID', 'Date', 'ROIhandles', 
                                             'Location', 'SubcellLocation','NucLocation', 
                                             'StimSet'})
 
@@ -78,7 +77,7 @@ def workEnv2pandas(df, projPath, imgdata, ROIlist, Curveslist):
         df = empty_df()
     
     # To save the image sequence array & metadata in the same folder as a the project
-    path = projPath + '/' + imgdata.AnimalID + '_' + imgdata.TrialID + '_' + str(time.time())
+    path = projPath + '/' + imgdata.SampleID + '_' + str(time.time())
     
     # Save image sequence
     imgPath = path + '_IMG' + '.tiff'
@@ -86,7 +85,7 @@ def workEnv2pandas(df, projPath, imgdata, ROIlist, Curveslist):
     
     # Organize metadata of the image & save as a pickle
     imgInfoPath = path + '_IMGINFO.pik'
-    imgInfo = {'AnimalID': imgdata.AnimalID, 'TrialID': imgdata.TrialID, 'meta': imgdata.meta, 
+    imgInfo = {'SampleID': imgdata.SampleID, 'meta': imgdata.meta, 
               'Map': imgdata.Map, 'isSubArray': imgdata.isSubArray, 'isMotCor': imgdata.isMotCor,
               'isDenoised': imgdata.isDenoised}
     pickle.dump(imgInfo, open(imgInfoPath, 'wb'))
@@ -98,19 +97,22 @@ def workEnv2pandas(df, projPath, imgdata, ROIlist, Curveslist):
     setOfStimMap = set(stimList)    
     
     # Add rows to pandas dataframe
+
     for ix in range(0,len(ROIlist)):
         curvePath = path + '_CURVE_' + str(ix).zfill(3) + '.npy'
         np.save(curvePath, Curveslist[ix].getData())
+    #------------------------------------------------------------------
+### TODO: CANNOT ALLOW NaN's in the dataframe!! Huge pain in the ass.
+    #------------------------------------------------------------------
         df = df.append({'CurvePath': curvePath,
                         'ImgPath': imgPath,
                         'ImgInfoPath': imgInfoPath,
-                        'AnimalID': imgdata.AnimalID,
-                        'TrialID': imgdata.TrialID,
+                        'SampleID': imgdata.SampleID,
                         'Date': imgdata.meta['MeasurementDate'],
-                        'ROIhandles': None,
-                        'Location': None,
-                        'SubcellLocation': None,
-                        'NucLocation': None,
+                        'ROIhandles': 'N/A',
+                        'Location': 'N/A',
+                        'SubcellLocation': 'N/A',
+                        'NucLocation': 'N/A',
                         'StimSet': setOfStimMap
                         }, ignore_index=True)
     return df
