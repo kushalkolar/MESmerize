@@ -56,44 +56,6 @@ class ProjBrowser(QtGui.QWidget):
                 
             elif self.ui.labelColumn_[colNum].text() == 'SampleID' or  'Date':
                 self.ui.listw_[colNum].addItems(list(set(df[self.ui.labelColumn_[colNum].text()])))
-            
-
-        
-#        self.CurrProjName = None
-#        
-#        self.ui.treeView.doubleClicked.connect(self.loadFile)
-#        self.ui.treeView.clicked.connect(self.getSelectedPath)
-
-#    def newProj(self):
-#        parentPath = QtGui.QFileDialog.getExistingDirectory(self,'Choose location for new project')
-#        print('parentPath is: ' + parentPath)
-#        projName, start = QtGui.QInputDialog.getText(self, '', 'Project Name:', QtGui.QLineEdit.Normal, '')
-##        start = True
-##        projName = 'bah'
-#        if start and projName != '':
-#            self.CurrProjName = projName
-#            path = parentPath + '/' + self.CurrProjName
-#            os.mkdir(path)
-#            self.projDataFrame = empty_df()
-#            self.projDataFrameFilePath = path + '/' + self.CurrProjName + '_index.mzp'
-#            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
-#            self.setupDataframeUI()
-#            
-#    def openProj(self):
-#        path = QtGui.QFileDialog.getOpenFileName(self, 'Select Project Index File', 
-#                                                      '.', '(*.mzp)')[0]
-#        print(path)
-#        if path != '':
-#            self.projDataFrameFilePath = path
-#            self.projDataFrame = pd.read_csv(path) 
-#            self.CurrProjName = path.split('/')[-1][:-4]
-#            self.setupDataframeUI()
-##            self.setTree('/'.join((path.split('/')[:-1])))
-            
-    def setupDataframeUI(self):
-        self.ui.BtnPlot.setEnabled(True)
-        self.ui.BtnResetFilters.setEnabled(True)
-        self.ui.setupColumns(self)
         
     def setupWorkEnv(self):
         pass
