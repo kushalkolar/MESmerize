@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from functools import partial
 
 class Ui_Form(object):
     def setupUi(self, Form, df, exclude, special):
@@ -103,12 +104,16 @@ class Ui_Form(object):
                 self.listw_.append(QtWidgets.QListWidget(self.widget[colNum]))
                 self.listw_[colNum].setAccessibleDescription("")
                 self.listw_[colNum].setObjectName("listw_"+str(colNum))
+                self.listw_[colNum].setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
                 self.gridLayout[colNum].addWidget(self.listw_[colNum], 1, 0, 1, 3)
                 self.lineEdFilter_.append(QtWidgets.QLineEdit(self.widget[colNum]))
                 self.lineEdFilter_[colNum].setAccessibleDescription("")
                 self.lineEdFilter_[colNum].setInputMask("")
                 self.lineEdFilter_[colNum].setObjectName("lineEdFilter_"+str(colNum))
                 self.lineEdFilter_[colNum].setToolTip('Separate multiple filters using commas ( , )')
+                
+                self.listw_[colNum].itemSelectionChanged.connect(partial(self.setLineEdFilter, colNum))
+                
                 self.gridLayout[colNum].addWidget(self.lineEdFilter_[colNum], 2, 0, 1, 1)
                 self.BtnApply_.append(QtWidgets.QPushButton(self.widget[colNum]))
                 sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -195,6 +200,13 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
+        
+    def setLineEdFilter(self, colNum):
+        f = ''
+        for item in self.listw_[colNum].selectedItems():
+            f = f + ',' + item.text()
+        f = f[1:]
+        self.lineEdFilter_[colNum].setText(f)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate

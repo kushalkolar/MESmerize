@@ -31,7 +31,7 @@ import pandas as pd
 from .packager import *
 from itertools import chain
 import ast
-
+from functools import partial
 
 class ProjBrowser(QtGui.QWidget):
     def __init__(self, parent=None, *args):
