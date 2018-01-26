@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+'''
+!!! ** NOT A PART OF MESMERIZE. JUST FOR TESTING ** !!!
+'''
 """
 This example demonstrates the use of ImageView, which is a high-level widget for 
 displaying and analyzing 2D and 3D data. ImageView provides:
@@ -10,6 +13,7 @@ displaying and analyzing 2D and 3D data. ImageView provides:
   4. Tools for very basic analysis of image data (see ROI and Norm buttons)
 
 """
+
 ## Add path to library (just for examples; you do not need this)
 #import initExample
 

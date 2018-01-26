@@ -56,7 +56,6 @@ class ProjBrowser(QtGui.QWidget):
                 
             elif self.ui.labelColumn_[colNum].text() == 'SampleID' or  'Date':
                 self.ui.listw_[colNum].addItems(list(set(df[self.ui.labelColumn_[colNum].text()])))
-
         
     def setupWorkEnv(self):
         pass
