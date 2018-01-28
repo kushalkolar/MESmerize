@@ -64,7 +64,7 @@ def pickle2workEnv(pikPath, npzPath):
 def empty_df():
     return pd.DataFrame(data=None, columns={'CurvePath', 'ImgPath', 'ImgInfoPath', 
                                             'SampleID', 'Date', 'ROIhandles', 
-                                            'Location', 'SubcellLocation','NucLocation', 
+                                            'ROI_DEF:Location', 'ROI_DEF:SubcellLocation','ROI_DEF:NucLocation', 
                                             'StimSet'})
 
 '''
@@ -72,7 +72,7 @@ Package the work environment into the organization of a pandas dataframe.
 Used for example to add the current work environment (the image sequence, ROIs, and Calcium imaging
 traces (curves)) to the project index which is a pandas dataframe
 '''
-def workEnv2pandas(df, projPath, imgdata, ROIlist, Curveslist):
+def workEnv2pandas(df, projPath, imgdata, ROIlist, ROItags, Curveslist):
     if df is None:
         df = empty_df()
     
@@ -101,20 +101,33 @@ def workEnv2pandas(df, projPath, imgdata, ROIlist, Curveslist):
     for ix in range(0,len(ROIlist)):
         curvePath = path + '_CURVE_' + str(ix).zfill(3) + '.npy'
         np.save(curvePath, Curveslist[ix].getData())
+        
+        roitags = {}
+        
+        for key in ROItags[ix]:
+            if ROItags[ix][key] == '':
+                ROItags[ix][key] = 'N/A'
+            roitags['ROI_DEF:'+key] = ROItags[ix][key]
+            
+#        ROItagsDf = pd.DataFrame(d, index=[0])
+            
+        d = {'CurvePath': curvePath,
+               'ImgPath': imgPath,
+               'ImgInfoPath': imgInfoPath,
+               'SampleID': imgdata.SampleID,
+               'Date': imgdata.meta['MeasurementDate'],
+               'ROIhandles': 'N/A',
+               'StimSet': setOfStimMap
+               }
+        
+        df = df.append({**d, **roitags}, ignore_index=True)
+
     #------------------------------------------------------------------
 ### TODO: CANNOT ALLOW NaN's in the dataframe!! Huge pain in the ass.
     #------------------------------------------------------------------
-        df = df.append({'CurvePath': curvePath,
-                        'ImgPath': imgPath,
-                        'ImgInfoPath': imgInfoPath,
-                        'SampleID': imgdata.SampleID,
-                        'Date': imgdata.meta['MeasurementDate'],
-                        'ROIhandles': 'N/A',
-                        'Location': 'N/A',
-                        'SubcellLocation': 'N/A',
-                        'NucLocation': 'N/A',
-                        'StimSet': setOfStimMap
-                        }, ignore_index=True)
+    
+
+        
     return df
 
 '''

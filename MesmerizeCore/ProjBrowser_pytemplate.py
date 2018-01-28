@@ -31,6 +31,11 @@ class Ui_Form(object):
         self.BtnPlot.setEnabled(False)
         self.BtnPlot.setObjectName("BtnPlot")
         self.horizontalLayout_3.addWidget(self.BtnPlot)
+        self.BtnCopyFilters = QtWidgets.QPushButton(self.layoutWidget)
+        self.BtnCopyFilters.setEnabled(False)
+        self.BtnCopyFilters.setObjectName("BtnCopyFilters")
+        self.BtnCopyFilters.setText('Copy Filters')
+        self.horizontalLayout_3.addWidget(self.BtnCopyFilters)
         self.BtnResetFilters = QtWidgets.QPushButton(self.layoutWidget)
         self.BtnResetFilters.setEnabled(False)
         self.BtnResetFilters.setObjectName("BtnResetFilters")
@@ -77,7 +82,7 @@ class Ui_Form(object):
             if col not in exclude:
                 colNum += 1
                 self.widget.append(QtWidgets.QWidget(self.widgetMasterColumnsContainer))
-                self.widget[colNum].setGeometry(QtCore.QRect((10 + colNum * 231), 10, 231, 321))
+                self.widget[colNum].setGeometry(QtCore.QRect((10 + colNum * 231), 10, 225, 321))
                 self.widget[colNum].setObjectName("widget"+str(colNum))
                 self.gridLayout.append(QtWidgets.QGridLayout(self.widget[colNum]))
                 self.gridLayout[colNum].setContentsMargins(0, 0, 0, 0)
@@ -103,14 +108,14 @@ class Ui_Form(object):
                 self.gridLayout[colNum].addWidget(self.rad_[colNum], 0, 1, 1, 2)
                 self.listw_.append(QtWidgets.QListWidget(self.widget[colNum]))
                 self.listw_[colNum].setAccessibleDescription("")
-                self.listw_[colNum].setObjectName("listw_"+str(colNum))
+                self.listw_[colNum].setObjectName(str(col))
                 self.listw_[colNum].setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
                 self.gridLayout[colNum].addWidget(self.listw_[colNum], 1, 0, 1, 3)
                 self.lineEdFilter_.append(QtWidgets.QLineEdit(self.widget[colNum]))
                 self.lineEdFilter_[colNum].setAccessibleDescription("")
                 self.lineEdFilter_[colNum].setInputMask("")
                 self.lineEdFilter_[colNum].setObjectName("lineEdFilter_"+str(colNum))
-                self.lineEdFilter_[colNum].setToolTip('Separate multiple filters using commas ( , )')
+                self.lineEdFilter_[colNum].setToolTip('Separate multiple filters using  ( | )')
                 
                 self.listw_[colNum].itemSelectionChanged.connect(partial(self.setLineEdFilter, colNum))
                 
@@ -134,6 +139,7 @@ class Ui_Form(object):
                 self.BtnReset_[colNum].setMaximumSize(QtCore.QSize(50, 16777215))
                 self.BtnReset_[colNum].setAccessibleDescription("")
                 self.BtnReset_[colNum].setObjectName("BtnReset_"+str(colNum))
+                self.BtnReset_[colNum].clicked.connect(partial(self.resetLineEdFilter, colNum))
                 self.gridLayout[colNum].addWidget(self.BtnReset_[colNum], 2, 2, 1, 1)
                 
                 self.labelColumn_[colNum].setText(str(col))
@@ -181,6 +187,7 @@ class Ui_Form(object):
                     self.gridLayout_2.addWidget(self.label, 0, 1, 1, 1)
                     self.spinBoxTStart = QtWidgets.QDoubleSpinBox(self.widget2)
                     self.spinBoxTStart.setMaximum(99900.0)
+                    self.spinBoxTStart.setMinimum(-9900.0)
                     self.spinBoxTStart.setObjectName("spinBoxTStart")
                     self.gridLayout_2.addWidget(self.spinBoxTStart, 0, 2, 1, 1)
                     self.label_2 = QtWidgets.QLabel(self.widget2)
@@ -188,6 +195,8 @@ class Ui_Form(object):
                     self.label_2.setObjectName("label_2")
                     self.gridLayout_2.addWidget(self.label_2, 1, 1, 1, 1)
                     self.spinBoxTEnd = QtWidgets.QDoubleSpinBox(self.widget2)
+                    self.spinBoxTEnd.setMaximum(99900.0)
+                    self.spinBoxTEnd.setMinimum(-9900.0)
                     self.spinBoxTEnd.setObjectName("spinBoxTEnd")
                     self.gridLayout_2.addWidget(self.spinBoxTEnd, 1, 2, 1, 1)
                     self.label_4.setText("Set x0 =")
@@ -195,8 +204,8 @@ class Ui_Form(object):
                     self.radTEnd.setText("tEnd")
                     self.radTCenter.setText("tCenter")
                     self.label_3.setText("Set offsets: ")
-                    self.label.setText("tStart (ms): ")
-                    self.label_2.setText("tEnd (ms): ")
+                    self.label.setText("tStart (s): ")
+                    self.label_2.setText("tEnd (s): ")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -204,9 +213,13 @@ class Ui_Form(object):
     def setLineEdFilter(self, colNum):
         f = ''
         for item in self.listw_[colNum].selectedItems():
-            f = f + ',' + item.text()
+            f = f + '|' + item.text()
         f = f[1:]
         self.lineEdFilter_[colNum].setText(f)
+    
+    def resetLineEdFilter(self, colNum):
+        self.lineEdFilter_[colNum].setText('')
+        self.listw_[colNum].clearSelection()
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
