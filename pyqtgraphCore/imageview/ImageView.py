@@ -158,6 +158,19 @@ class ImageView(QtGui.QWidget):
         # Initialize empty ROI and curve lists        
         self.ROIlist=[]
         self.Curveslist=[]
+        self.ROItags=[]
+        
+#        self.ui.lineEdROIDef1.textChanged.connect(self.updateROItag)
+#        self.ui.lineEdROIDef2.textChanged.connect(self.updateROItag)
+#        self.ui.lineEdROIDef3.textChanged.connect(self.updateROItag)
+#        self.ui.lineEdROIDef4.textChanged.connect(self.updateROItag)
+        
+        self.ui.BtnSetROIDefs.clicked.connect(self.updateROItag)
+        
+        self.ui.listwROIs.itemClicked.connect(self.setSelectedROI)
+        
+        self.ui.checkBoxShowAllROIs.clicked.connect(self.checkShowAllROIs)
+        self.ROIselected = -1
         
         # ***** SHOULD USE PYQTGRAPH COLORMAP FUNCTION INSTEAD ****
         self.ROIcolors=['m','r','y','g','c']
@@ -222,6 +235,9 @@ class ImageView(QtGui.QWidget):
         self.ui.roiPlot.addItem(self.timeLine)
         self.ui.splitter.setSizes([self.height()-35, 35])
         self.ui.roiPlot.hideAxis('left')
+        
+        self.ui.splitterLeft.setSizes([172,573,160])
+        self.ui.splitterBatches.setSizes([1215,221])
         
         self.keysPressed = {}
         self.playTimer = QtCore.QTimer()
@@ -742,6 +758,7 @@ class ImageView(QtGui.QWidget):
         # Create polyROI instance
         self.polyROI = PolyLineROI([[0,0], [10,10], [30,10]], 
                              closed=True, pos=[0,0], removable=True)
+            
         # Create new plot instance for plotting the newly created ROI
         self.curve = self.ui.roiPlot.plot()
         self.Curveslist.append(self.curve)
@@ -764,13 +781,96 @@ class ImageView(QtGui.QWidget):
         self.polyROI.sigHoverEnd.connect(self.resetPlot)
         
         # Add the ROI to the scene so it can be seen
-        self.view.addItem(self.polyROI)
+        #self.view.addItem(self.polyROI)
         
         # Append the ROI the ROIlist to keep track of them
+        
+        self.ui.listwROIs.addItem(str(len(self.ROIlist)))
         self.ROIlist.append(self.polyROI)
+        d = self.ROItagDict.copy()
+        self.ROItags.append(d)
         # Update the plot to include this ROI which was just added
-        self.updatePlot(len(self.ROIlist)-1)
+        #self.updatePlot(len(self.ROIlist)-1)
+        self.setSelectedROI(len(self.ROIlist)-1, reset=False)
     
+    def setSelectedROI(self, ID, reset=True):
+        if type(ID) is not int:
+            ID = int(self.ui.listwROIs.currentRow())
+        self.view.addItem(self.ROIlist[ID]) 
+        self.updatePlot(ID)
+        
+        self.ui.lineEdROIDef1.setText(self.ROItags[ID][self.ui.labelROIDef_1.text()])
+        self.ui.lineEdROIDef2.setText(self.ROItags[ID][self.ui.labelROIDef_2.text()])
+        self.ui.lineEdROIDef3.setText(self.ROItags[ID][self.ui.labelROIDef_3.text()])
+        self.ui.lineEdROIDef4.setText(self.ROItags[ID][self.ui.labelROIDef_4.text()])
+        
+        if reset:
+            self.resetPlot()
+            self.boldPlot(ID)
+            self.checkShowAllROIs()
+        
+    def checkShowAllROIs(self):
+        if self.ui.checkBoxShowAllROIs.isChecked():
+            for roi in self.ROIlist:
+                if roi not in self.view.addedItems:
+                    self.view.addItem(roi)
+            return
+        ID = int(self.ui.listwROIs.currentRow())
+        if ID == -1:
+            ID = 0
+        for roi in self.ROIlist:
+            self.view.removeItem(roi)
+        self.view.addItem(self.ROIlist[ID])
+        self.resetPlot()
+        self.boldPlot(ID)
+    
+    def updateROItag(self):
+        ID = int(self.ui.listwROIs.currentRow())
+        if ID == -1:
+            QtGui.QMessageBox.question(self, 'Message', 'Select an ROI form the list if you want to add tags ', QtGui.QMessageBox.Ok)
+            return
+        self.ROItags[ID][self.ui.labelROIDef_1.text()] = self.ui.lineEdROIDef1.text()
+        self.ROItags[ID][self.ui.labelROIDef_2.text()] = self.ui.lineEdROIDef2.text()
+        self.ROItags[ID][self.ui.labelROIDef_3.text()] = self.ui.lineEdROIDef3.text()
+        self.ROItags[ID][self.ui.labelROIDef_4.text()] = self.ui.lineEdROIDef4.text()
+        
+        self.setListwROIsText(ID)
+    
+    def setListwROIsText(self, ID):
+        if type(ID) is not int:
+            ID = int(ID)
+        self.ui.listwROIs.item(ID).setText(str(ID) +\
+                               ' // ' + self.ROItags[ID][self.ui.labelROIDef_1.text()] +\
+                               ' // ' + self.ROItags[ID][self.ui.labelROIDef_2.text()] +\
+                               ' // ' + self.ROItags[ID][self.ui.labelROIDef_3.text()] +\
+                               ' // ' + self.ROItags[ID][self.ui.labelROIDef_4.text()])
+                
+    def delROI(self,roiPicked):
+        ''' Pass in the roi object from ROI.sigRemoveRequested()
+        gets the index position of this particular ROI from the ROIlist
+        removes that ROI from the scene and removes it from the list
+        AND removes the corresponding curve.''' 
+        
+        ID = self.ROIlist.index(roiPicked)
+        
+        self.view.removeItem(self.ROIlist[ID])
+        del self.ROIlist[ID]
+        
+        del self.ROItags[ID]
+        
+        self.ui.listwROIs.takeItem(ID)
+        
+        for i in range(0,len(self.ui.listwROIs)):
+            self.setListwROIsText(i)
+        
+        self.Curveslist[ID].clear()
+        del self.Curveslist[ID]
+        
+         # Resets the color in the order of a bright rainbow, kinda.
+         # ***** SHOULD REPLACE BY USING COLORMAP METHOD FROM PYQTGRAPH
+        self.resetPlot()
+        for i in range(0,len(self.ROIlist)):
+            self.updatePlot(i)
     
     # Pass the index of the ROI OR the ROI object itself for which you want to update the plot
     def updatePlot(self,ID):
@@ -811,19 +911,21 @@ class ImageView(QtGui.QWidget):
                 coords = coords - coords[:,0,np.newaxis]
                 xvals = (coords**2).sum(axis=0) ** 0.5
                 self.Curveslist[ID].setData(y=data, x=xvals)
-    
+                
     ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
     # Make the curve bold & white. Used here when mouse hovers over the ROI. called by PolyLineROI.sigHoverEvent
-    def boldPlot(self, roiPicked):
-        ID = self.ROIlist.index(roiPicked)
+    def boldPlot(self, ID):
+        if type(ID) is not int:
+            ID = self.ROIlist.index(ID)
         self.Curveslist[ID].setPen(width=2)
 
     ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
     # Used to un-bold and un-white, called by PolyLineROI.sigHoverEnd
-    def resetPlot(self, roiPicked): #Set plot color back to what it was before
-        ID = self.ROIlist.index(roiPicked)
-        color = self.ROIcolors[ID%(len(self.ROIcolors))]
-        self.Curveslist[ID].setPen(color)
+    def resetPlot(self): #Set plot color back to what it was before
+        for ID in range(0,len(self.ROIlist)):
+            color = self.ROIcolors[ID%(len(self.ROIcolors))]
+            self.ROIlist[ID].setPen(color)
+            self.Curveslist[ID].setPen(color)
     
     def openBatch(self):
         batchFolder = QtGui.QFileDialog.getExistingDirectory(self, 'Select batch Dir', 
@@ -990,32 +1092,15 @@ class ImageView(QtGui.QWidget):
         self.ROIlist = []
         self.Curveslist = []
         
+        self.ROItagDict = {self.ui.labelROIDef_1.text(): '',
+                           self.ui.labelROIDef_2.text(): '',
+                           self.ui.labelROIDef_3.text(): '',
+                           self.ui.labelROIDef_4.text(): ''}
+        
         # Remove the background bands showing stimulus times.
         for linReg in self.currStimMapBg:
             self.ui.roiPlot.removeItem(linReg)
-    
-    
-    def delROI(self,roiPicked):
-        ''' Pass in the roi object from ROI.sigRemoveRequested()
-        gets the index position of this particular ROI from the ROIlist
-        removes that ROI from the scene and removes it from the list
-        AND removes the corresponding curve.''' 
-        
-        ID = self.ROIlist.index(roiPicked)
-        
-        self.view.scene().removeItem(self.ROIlist[ID])
-        del self.ROIlist[ID]
-        
-        self.Curveslist[ID].clear()
-        del self.Curveslist[ID]
-        
-         # Resets the color in the order of a bright rainbow, kinda.
-         # ***** SHOULD REPLACE BY USING COLORMAP METHOD FROM PYQTGRAPH
-        for ID in range(0,len(self.ROIlist)):
-            color = self.ROIcolors[ID%(len(self.ROIcolors))]
-            self.ROIlist[ID].setPen(color)
-            self.Curveslist[ID].setPen(color)
-        
+       
 #    def roiClicked(self):
 #        showRoiPlot = False
 #        if self.ui.roiBtn.isChecked():

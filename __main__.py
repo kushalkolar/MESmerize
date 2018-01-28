@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE
-from MesmerizeCore.ProjBrowser import ProjBrowser
+from MesmerizeCore import ProjBrowser
 from pyqtgraphCore.graphicsItems.InfiniteLine import *
 import pyqtgraphCore
 import numpy as np
@@ -25,6 +25,7 @@ import time
 import pandas as pd
 from MesmerizeCore.startWindow import startGUI
 import os
+from functools import partial
 
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
@@ -41,6 +42,8 @@ class main():
             
             self.viewer = None
             self.projName = None
+            
+            self.openProj('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
             
             if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
@@ -71,42 +74,64 @@ class main():
             # Start the Project Browser loaded with the dataframe columns in the listwidget
             self.initProjBrowser(self.projDataFrame)
     
-    def openProj(self):
-        self.projDataFrameFilePath = QtGui.QFileDialog.getOpenFileName(None, 'Select Project Index File', 
+    def openProjFileDialog(self):
+        mzpPath = QtGui.QFileDialog.getOpenFileName(None, 'Select Project Index File', 
                                                       '.', '(*.mzp)')[0]
-        print(self.projDataFrameFilePath)
+        self.openProj(self, mzpPath)
+        
+    def openProj(self, mzpPath):
+        self.projDataFrameFilePath = mzpPath
         if self.projDataFrameFilePath == '':
             return
         self.projPath = os.path.dirname(self.projDataFrameFilePath)
         self.projDataFrame = pd.read_csv(self.projDataFrameFilePath) 
         self.projName = self.projPath.split('/')[-1][:-4]
         # Start the Project Browser loaded with the dataframe columns in the listwidget
-        self.initProjBrowser(self.projDataFrame)
+        self.initProjBrowser()
         
-    def initProjBrowser(self, projDataFrame):
-        self.startWin.hide()
+    def initProjBrowser(self):
+        try:
+            self.startWin.hide()
+        except:
+            pass
+        special = {'Timings': 'StimSet'}
+        self.projBrowser = ProjBrowser.Window(self.projDataFrame, special=special)
+        self.projBrowser.resize(1000,840)
+        self.projBrowser.show()
+        
         ## Create window with Project Explorer widget
-        self.projectWindow = QtGui.QMainWindow()
-        self.projectWindow.resize(1000,800)
-        self.projectWindow.setWindowTitle('Mesmerize - Project Browser')
-        self.projBrowser = ProjBrowser()
-        self.projectWindow.setCentralWidget(self.projBrowser)
-        self.projBrowser.setupGUI(projDataFrame)
-        self.projectWindow.show()
+#        self.projectWindow = QtGui.QMainWindow()
+#        self.projectWindow.resize(1000,800)
+#        self.projectWindow.setWindowTitle('Mesmerize - Project Browser')
+#        self.projBrowser = ProjBrowser()
+#        self.projectWindow.setCentralWidget(self.projBrowser)
+#        exclude = ['ImgPath', 'ROIhandles', 'ImgInfoPath', 'CurvePath']
+#        
+#        special = {'Timings': 'StimSet'}
+#        self.projBrowser.setupGUI(projDataFrame, exclude, special)
+#        self.projectWindow.show()
         if self.viewer is None:
             self.initViewer()
         #self.projBrowser.ui.openViewerBtn.clicked.connect(self.viewerWindow.show())
         self.viewer.projPath = self.projPath
-#        self.viewer.show()
-        
+        n = 0
+        for col in self.projDataFrame.columns:
+            if col.startswith('ROI_DEF:'):
+                n+=1
+                s = 'self.viewer.ui.labelROIDef_'+str(n)+".setText('"+col[8:]+"')"
+                eval(s)
+            
     def initViewer(self):
-        self.startWin.hide()
+        try:
+            self.startWin.hide()
+        except:
+            pass
         # Interpret image data as row-major instead of col-major
         pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
     
         ## Create window with ImageView widget
         self.viewerWindow = QtGui.QMainWindow()
-        self.viewerWindow.resize(1400,980)
+        self.viewerWindow.resize(1458,931)
         self.viewer = pyqtgraphCore.ImageView()
         self.viewerWindow.setCentralWidget(self.viewer)
 #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
@@ -128,7 +153,7 @@ class main():
         self.viewer.ui.btnAddToBatch.clicked.connect(self.viewerAddToBatch)
         self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
         self.viewerWindow.show()
-    
+        
     def isProjLoaded(self):
         if self.projName is None:
             answer = QtGui.QMessageBox.question(self.viewer, 'Message', 
@@ -159,6 +184,7 @@ class main():
                                 self.projPath,
                                 self.viewer.currImgDataObj, 
                                 self.viewer.ROIlist,
+                                self.viewer.ROItags,
                                 self.viewer.Curveslist)
             print(df)
             # Create backup of index
@@ -168,9 +194,8 @@ class main():
             self.projDataFrame = df
             # Save index
             self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
-            
+            self.projBrowser.populateLists()
             
                 
 if __name__ == '__main__':
     gui = main()
-    
