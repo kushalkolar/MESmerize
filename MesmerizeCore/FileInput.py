@@ -39,10 +39,11 @@ if __name__ == '__main__':
     import matlab
     import numpy as np
     from DataTypes import ImgData
-else:
-    from . import matlab
-    import numpy as np
-    from .DataTypes import ImgData # Just a clean simple & independent image data object
+#else:
+#    import matlab
+#    from . import matlab
+#    import numpy as np
+#    from .DataTypes import ImgData # Just a clean simple & independent image data object
     
 # Loads the entire .mes file as an instance. 
 # The load_img() method can be used to return an ImgData class object for any particular image
@@ -86,8 +87,11 @@ class MES():
     
     # Returns image as ImgData class object.
     def load_img(self,d):
-        meta = self.main_dict["D"+d[1:6]].tolist()
-        meta = matlab._todict(meta[0])
+        try:
+            meta = self.main_dict["D"+d[1:6]].tolist()
+            meta = matlab._todict(meta[0])
+        except KeyError:
+            return False, None
         
         if len(meta["FoldedFrameInfo"]) > 0:
             start = meta["FoldedFrameInfo"]["firstFramePos"]
@@ -105,9 +109,9 @@ class MES():
             # Combine all the frames into one 3D array, 2D + time
             seq = np.dstack(image_sequence)
             
-            return ImgData(seq, meta)
-        else: 
-            return self.main_dict[d]
+            return True, ImgData(seq, meta)
+#        else: 
+#            return self.main_dict[d]
 
 
 class tiff():
@@ -121,6 +125,6 @@ class tiff():
     
 # For testing
 if __name__ == '__main__':
-    mesfile = MES('../Amazing animal.mes')
+    mesfile = MES('/home/kushal/Sars_stuff/Olfactory exps/NH4/Dec 3 a1.mes')
     imdata = mesfile.load_img('If0001_0001')
 #    y = imdata.meta['AUXo3']['y']

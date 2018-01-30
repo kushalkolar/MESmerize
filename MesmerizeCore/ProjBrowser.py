@@ -39,6 +39,7 @@ class TabPage(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent, *args)
         self.filtLog = ''
         self.filtLogPandas = ''
+    
         
     def setupGUI(self, df, exclude=[], special={}):
         
@@ -75,19 +76,20 @@ class TabPage(QtGui.QWidget):
             col.clear()
         
         for col in self.ui.listw_:
+            el = self.df[col.objectName()][self.minIndex]
             try:
                 print(col)
-                if type(ast.literal_eval(self.df[col.objectName()][self.minIndex])) == set:
+                if type(ast.literal_eval(el)) == set:
                     self.setExtract(col)
-                elif type(ast.literal_eval(self.df[col.objectName()][self.minIndex])) == int:
+                elif type(ast.literal_eval(el)) == int:
                     self.numExtract(col)
                     
             except (ValueError, SyntaxError):
-                if type(self.df[col.objectName()][self.minIndex]) == str:
+                if type(el) == str:
                     self.strExtract(col)
-                elif type(self.df[col.objectName()][self.minIndex]) is np.int64:
+                elif type(el) is np.int64:
                     self.numExtract(col)
-                elif type(self.df[col.objectName()][self.minIndex]) is np.float64:
+                elif type(el) is np.float64:
                     self.numExtract(col)
                 else:
                     self.unsupportedType(col)
@@ -115,6 +117,7 @@ class TabPage(QtGui.QWidget):
 
     def numExtract(self, col):
         col.addItems(list(map(str, set(self.df[col.objectName()]))))
+#        col.addItems(list(set(self.df[col.objectName()])))
     
     def emptyDf(self):
         for col in self.ui.listw_:
@@ -130,9 +133,14 @@ class TabPage(QtGui.QWidget):
         cb.clear(mode=cb.Clipboard )
         cb.setText('\n'.join(self.filtLogPandas.split('!&&!')), mode=cb.Clipboard)
         
+    def __repr__(self):
+        filtLog = '\n'.join(self.filtLogPandas.split('!&&!'))
+        return 'TabPage()\nDataFrame: {}\nFilter Log: {}\n'.format(self.df, filtLog)
+        
 #    def loadFile(self, selection):
 #        pass
-        
+
+# Window for containing the tabs for each dataframe
 class Window(QtWidgets.QWidget):
     def __init__(self, dfRoot, exclude=[], special={}):
         super().__init__()
@@ -149,29 +157,38 @@ class Window(QtWidgets.QWidget):
 #        self.tabs.setCornerWidget(button, QtCore.Qt.TopRightCorner)
         self.addNewTab(dfRoot, '>>R', '>>Root', '')
         self.tabs.tabBar().tabCloseRequested.connect(lambda n: self.tabs.removeTab(n))
-
+    
+    # 
     def addNewTab(self, df, tabTitle, filtLog, filtLogPandas):
+        # Adds a new tab, places an instance of TabPage widget which is displayed in the whole tab.
         self.tabs.addTab(TabPage(self.tabs), tabTitle)
+        # Setup the GUI in that tab
         self.tabs.widget(self.tabs.count() - 1).setupGUI(df, self.exclude, self.special)
+        # Populate the list in that tab according to its dataframe attribute
         self.tabs.widget(self.tabs.count() - 1).updateDf()
+        # Allow all tabs to be closed except for the tab with the Root dataframe
         self.tabs.setTabsClosable(True)
-        
         bar = self.tabs.tabBar()
         bar.setTabButton(0, bar.RightSide, None)
         
+        # Append the filterlog to the new tab
         self.tabs.widget(self.tabs.count() - 1).filtLogPandas = filtLogPandas
         self.tabs.widget(self.tabs.count() - 1).filtLog = '>>' + filtLog
-    
+        # Connect all the apply buttons in that tab.
         for i in range(0, len(self.tabs.widget(self.tabs.count() - 1).ui.BtnApply_)):
             #print(BtnApply)
             self.tabs.widget(self.tabs.count() - 1).ui.BtnApply_[i].clicked.connect(partial(self.applyFilterBtnPressed, i))
         
         self.tabs.setCurrentIndex(self.tabs.count() - 1)
         
-    def applyPdFilter(self, df, colNum):
+    ''' >>>>>> USE loc FOR FILTERING AND CREATE BOOLEAN ARRAY FOR ENTIRE DATAFRAME
+        >>>>>> THAT INCLUDES ALL FILTERES AND THEN APPLY TO THE DATAFRAME <<<<<<<<
+        ****** USING A DECORATOR SHOULD MAKE IT EASIER TO LOG??? ********* '''
+    def applyPdFilter(self, colNum):
+        df = self.tabs.currentWidget().df
         filt = self.tabs.currentWidget().ui.lineEdFilter_[colNum].text()
         colName = self.tabs.currentWidget().ui.listw_[colNum].objectName()
-
+        
         if filt.startswith('$'):
             if filt.startswith('$NOT:'):
                 filt=filt[5:]
@@ -196,11 +213,12 @@ class Window(QtWidgets.QWidget):
         
         for colNum in range(0, len(self.tabs.currentWidget().ui.lineEdFilter_)):
             if self.tabs.currentWidget().ui.lineEdFilter_[colNum].text() != '':
-                newDf, log, titleAdd = self.applyPdFilter(newDf, colNum)
+                newDf, log, filtLogPandas, titleAdd = self.applyPdFilter(newDf, colNum)
                 filtLog = filtLog + log
                 
         return newDf, filtLog, filtLogPandas, titleAdd
-                
+
+    ''' >>>>>>>>>>>> Possibly re-write using first class functions <<<<<<<<<<<<<<'''
     def applyFilterBtnPressed(self, colNum):
         key = QtGui.QApplication.keyboardModifiers()
         
@@ -209,7 +227,7 @@ class Window(QtWidgets.QWidget):
             if key == QtCore.Qt.ShiftModifier:
                 df, filtLog, filtLogPandas, titleAdd = self.applyPdFilterAll()
             else:
-                df, filtLog, filtLogPandas, title = self.applyPdFilter(self.tabs.currentWidget().df, colNum)
+                df, filtLog, filtLogPandas, title = self.applyPdFilter(colNum)
                 filtLog = self.tabs.currentWidget().filtLog + filtLog
                 filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
             self.addNewTab(df, 'bah', filtLog, filtLogPandas)
@@ -218,7 +236,7 @@ class Window(QtWidgets.QWidget):
         
         # Open new tab and filter selected column
         elif key == QtCore.Qt.ControlModifier:
-            df, filtLog, filtLogPandas, title = self.applyPdFilter(self.tabs.currentWidget().df, colNum)
+            df, filtLog, filtLogPandas, title = self.applyPdFilter(colNum)
             filtLog = self.tabs.currentWidget().filtLog + filtLog
             filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
             self.addNewTab(df, 'bah', filtLog, filtLogPandas)
@@ -241,7 +259,7 @@ class Window(QtWidgets.QWidget):
         
         # Filter single selected column here
         else:
-            df, filtLog, filtLogPandas, title = self.applyPdFilter(self.tabs.currentWidget().df, colNum)
+            df, filtLog, filtLogPandas, title = self.applyPdFilter(colNum)
             self.tabs.currentWidget().df = df
             self.tabs.currentWidget().filtLog = self.tabs.currentWidget().filtLog + filtLog
             self.tabs.currentWidget().filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
@@ -251,8 +269,8 @@ class Window(QtWidgets.QWidget):
 
 if __name__ == '__main__':
     
-    df = pickle.load(open('/home/kushal/Sars_stuff/github-repos/20180118_alldata.pickle', 'rb'))
-    #df = pd.read_csv('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
+    #df = pickle.load(open('/home/kushal/Sars_stuff/github-repos/20180118_alldata.pickle', 'rb'))
+    df = pd.read_csv('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
     special = {'Timings': 'StimSet'}
     
     app = QtWidgets.QApplication(sys.argv)

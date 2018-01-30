@@ -20,10 +20,8 @@ occured for the animal that was exposed to in this particular image sequence
 
 """
 
-import numpy as np
-
 class ImgData():
-    def __init__(self, seq, meta, SampleID=None, Map=None, 
+    def __init__(self, seq, meta={}, SampleID=None, Map=None, 
                  isSubArray=False, isMotCor=False, isDenoised=False):
         self.seq = seq
         self.meta = meta.copy()

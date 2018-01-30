@@ -43,7 +43,7 @@ class main():
             self.viewer = None
             self.projName = None
             
-            self.openProj('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
+            #self.openProj('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
             
             if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()
@@ -56,7 +56,7 @@ class main():
         self.startWin.show()
         self.startgui.ui.openViewerBtn.clicked.connect(self.initViewer)
         self.startgui.ui.newProjBtn.clicked.connect(self.newProj)
-        self.startgui.ui.openProjBtn.clicked.connect(self.openProj)
+        self.startgui.ui.openProjBtn.clicked.connect(self.openProjFileDialog)
         
     def newProj(self):
         parentPath = QtGui.QFileDialog.getExistingDirectory(None,'Choose location for new project')
@@ -70,21 +70,22 @@ class main():
             os.mkdir(self.projPath)
             self.projDataFrame = packager.empty_df()
             self.projDataFrameFilePath = self.projPath + '/' + self.projName + '_index.mzp'
-            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
+#            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
+            self.projDataFrame.to_pickle(self.projDataFrameFilePath, protocol=4)
             # Start the Project Browser loaded with the dataframe columns in the listwidget
-            self.initProjBrowser(self.projDataFrame)
+            self.initProjBrowser()
     
     def openProjFileDialog(self):
         mzpPath = QtGui.QFileDialog.getOpenFileName(None, 'Select Project Index File', 
                                                       '.', '(*.mzp)')[0]
-        self.openProj(self, mzpPath)
+        self.openProj(mzpPath)
         
     def openProj(self, mzpPath):
         self.projDataFrameFilePath = mzpPath
         if self.projDataFrameFilePath == '':
             return
         self.projPath = os.path.dirname(self.projDataFrameFilePath)
-        self.projDataFrame = pd.read_csv(self.projDataFrameFilePath) 
+        self.projDataFrame = pd.read_pickle(self.projDataFrameFilePath) 
         self.projName = self.projPath.split('/')[-1][:-4]
         # Start the Project Browser loaded with the dataframe columns in the listwidget
         self.initProjBrowser()
@@ -193,9 +194,11 @@ class main():
             
             self.projDataFrame = df
             # Save index
-            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
-            self.projBrowser.populateLists()
+#            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
+            self.projDataFrame.to_pickle(self.projDataFrameFilePath, protocol=4)
+            self.projBrowser.tabs.widget(0).df = df
+            self.projBrowser.tabs.widget(0).updateDf()
             
-                
+            
 if __name__ == '__main__':
     gui = main()

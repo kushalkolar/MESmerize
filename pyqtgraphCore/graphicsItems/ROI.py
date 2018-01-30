@@ -148,6 +148,7 @@ class ROI(GraphicsObject):
         self.translateSnap = translateSnap
         self.rotateSnap = rotateSnap
         self.scaleSnap = scaleSnap
+        self.tags = {}
         #self.setFlag(self.ItemIsSelectable, True)
     
     def getState(self):
