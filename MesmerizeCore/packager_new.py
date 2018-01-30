@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """
-Created on Sun Jan 21 17:12:37 2018
+Created on Mon Jan 29 21:08:09 2018
 
 @author: kushal
 
@@ -11,10 +10,8 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-For packaging the work environment for export, and importing saved work environments. For now
-it is used after motion correction (see the method pickle2workEnv) to get the motion corrected image sequence and open that
-on the Mesmerize Viewer so that ROIs can be drawn and the data saved (see the method workEnv2pandas).
 """
+
 import sys
 sys.path.append('..')
 if __name__ == '__main__':
@@ -39,41 +36,81 @@ from pyqtgraphCore.graphicsItems import ROI
 #        pass
 
 class viewerWorkEnv():
-    def __init__(self):
-        self.ROIlist = []
-        self.CurvesList = []
+    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], stimMap=None):
+        self.ROIlist = ROIList
+        self.CurvesList = CurvesList
 #        self.ROItags = []
-        self.imgdata = None
-        self.mesfileMap = None
-    
-    def __repr__(self):
-        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
-            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
+        self.imgdata = imgdata
+        if stimMap is not None:
+            self.setStimMap_from_mes(stimMap)
+        
+            
+#    def __repr__(self):
+#        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
+#            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
 
-    def load_pickle(self, pikPath, npzPath):
+    @classmethod
+    def from_pickle(cls, pikPath, npzPath):
         pick = pickle.load(open(pikPath, 'rb'))
         npz = np.load(npzPath)
-        self.imgdata = ImgData(npz['imgseq'], 
+        imdata = ImgData(npz['imgseq'], 
                           pick['imdata']['meta'], 
                           SampleID=pick['imdata']['SampleID'],
                           Map=pick['imdata']['Map'], 
                           isSubArray=pick['imdata']['isSubArray'])
-        return True
+        return cls(imdata)
     
-    def load_mesfile(self, path):
-        self.mesfile = MES(path)
-        
-    def load_mesImg(self, ref):
-        rval, imgdata = self.mesfile.load_img(ref)
+    @staticmethod
+    def load_mesfile(path):
+        return MES(path)
+    
+    @classmethod
+    def from_mesObj(cls, mesfile, ref, mesfileMap=None):
+        rval, imdata = mesfile.load_img(ref)
         if rval:
-            self.imgdata = imgdata
-            return True
+            return True, cls(imdata, mesfileMap)
         else:
-            return False
+            return False, None
+    
+    @classmethod
+    def from_tiff(cls, path):
+        seq = tifffile.imread(path)
+        imdata = ImgData(seq)
+        return cls(imdata)
+    
+    @classmethod
+    def from_project(imgPath, infoPath, curvesPath):
+        seq = tifffile.imread(imgPath)
+        meta = infoPath
         
-    def mes2StimMap(self,dm):
-        if dm is None:
-            dm = self.workEnv.mesfileMap
+    @classmethod
+    def from_split():
+        pass
+    
+    ''' USE THIS TO SET THE STIM-MAP INSTEAD '''
+    @property
+    def stimMap(self,dm):
+        pass
+#        if dm is None:
+#            dm = self.workEnv.mesfileMap
+#        y = self.imgdata.meta['AUXo3']['y']
+#        x = self.imgdata.meta['AUXo3']['x'][1]
+#        firstFrameStartTime = self.imgdata.meta['FoldedFrameInfo']['firstFrameStartTime']
+#        frameTimeLength = self.imgdata.meta['FoldedFrameInfo']['frameTimeLength']
+#        self.imgdata.Map = []
+#        for i in range(0,y.shape[1]-1):
+#            voltage = str(y[1][i])
+#            tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
+#            if tstart_frame < 0:
+#                tstart_frame = 0
+#            tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
+#            self.imgdata.Map.append([dm[voltage], (tstart_frame, tend_frame)])
+    
+    def setStimMap_from_standard():
+        pass
+    
+    # Takes mesfile maps dicts returned from the StimMapWidget GUI
+    def setStimMap_from_mes(self,dm):
         y = self.imgdata.meta['AUXo3']['y']
         x = self.imgdata.meta['AUXo3']['x'][1]
         firstFrameStartTime = self.imgdata.meta['FoldedFrameInfo']['firstFrameStartTime']
@@ -87,16 +124,28 @@ class viewerWorkEnv():
             tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
             self.imgdata.Map.append([dm[voltage], (tstart_frame, tend_frame)])
             
-    def csv2StimMap(self,csv):
+    def setStimMap_from_csv(self,csv):
         pass
-    def load_tiff():
-        pass
-    def load_pandas():
-        pass
-    def load_split():
-        pass
-    def to_pickle():
-        pass
+    
+    def to_pickle(self, dirPath, mc_params=None):
+        rigid_params, elas_params = mc_params
+        
+        try:
+            fileName = dirPath + '/' + SampleID + '_' + str(time.time())
+            
+            imginfo = {'SampleID': self.imgdata.SampleID, 'meta': self.imgdata.meta, 
+                      'Map': self.imgdata.Map, 'isSubArray': self.imgdata.isSubArray, 
+                      'isMotCor': self.imgdata.isMotCor,'isDenoised': self.imgdata.isDenoised}
+            
+            data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
+            
+            tifffile.imsave(fileName+'.tiff', self.imgdata.seq.T)
+            pickle.dump(data, open(fileName+'.pik', 'wb'))
+            
+            return True, fileName
+        except IOError:
+            return False, None
+    
     def to_pandas():
         pass
 '''
@@ -189,10 +238,7 @@ def workEnv2pandas(df, projPath, imgdata, ROIlist, ROItags, Curveslist):
 
     #------------------------------------------------------------------
 ### TODO: CANNOT ALLOW NaN's in the dataframe!! Huge pain in the ass.
-    #------------------------------------------------------------------
-    
-
-        
+    #------------------------------------------------------------------        
     return df
 
 '''

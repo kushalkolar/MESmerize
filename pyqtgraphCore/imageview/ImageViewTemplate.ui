@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1458</width>
-    <height>931</height>
+    <height>968</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,7 +53,7 @@
       <widget class="QWidget" name="layoutWidget">
        <layout class="QGridLayout" name="FileMenusLayout">
         <item row="0" column="0">
-         <widget class="QPushButton" name="openFileBtn">
+         <widget class="QPushButton" name="btnOpenFiles">
           <property name="text">
            <string>Open file(s)</string>
           </property>
@@ -67,7 +67,7 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QListWidget" name="imgs_listw">
+         <widget class="QListWidget" name="listwTiffs">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -87,14 +87,14 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QListWidget" name="mesfile_listw">
+         <widget class="QListWidget" name="listwMesfile">
           <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
         </item>
         <item row="2" column="2">
-         <widget class="QListWidget" name="listSplitSeq">
+         <widget class="QListWidget" name="listwSplits">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -195,7 +195,7 @@
           </widget>
          </item>
          <item row="6" column="1">
-          <widget class="QPushButton" name="resetscaleBtn">
+          <widget class="QPushButton" name="btnResetScale">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -354,7 +354,7 @@
           </widget>
          </item>
          <item row="3" column="2">
-          <widget class="QPushButton" name="add_roi_Btn">
+          <widget class="QPushButton" name="btnAddROI">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -402,6 +402,9 @@
        </widget>
       </widget>
       <widget class="QTabWidget" name="tabWidget">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -430,48 +433,17 @@
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
-       <widget class="QWidget" name="tab">
+       <widget class="QWidget" name="tabBatchParams">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <attribute name="title">
          <string>Batch Params</string>
         </attribute>
-        <widget class="QGroupBox" name="MotionCorGroup">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>1101</width>
-           <height>151</height>
-          </rect>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Add to batch parameters</string>
-         </property>
-         <widget class="QWidget" name="layoutWidget">
-          <property name="geometry">
-           <rect>
-            <x>12</x>
-            <y>31</y>
-            <width>591</width>
-            <height>111</height>
-           </rect>
-          </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
             <number>0</number>
@@ -493,6 +465,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QLineEdit" name="lineEdGenotype">
+               <property name="placeholderText">
+                <string>Genotype</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="btnSetID">
                <property name="text">
                 <string>Set</string>
@@ -504,7 +483,7 @@
            <item>
             <widget class="QCheckBox" name="rigMotCheckBox">
              <property name="text">
-              <string>Rigid motion correction</string>
+              <string>Motion Correction</string>
              </property>
             </widget>
            </item>
@@ -512,6 +491,24 @@
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QPushButton" name="pushButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>65</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="text">
                 <string>Measure</string>
                </property>
@@ -526,7 +523,7 @@
                 <enum>Qt::LeftToRight</enum>
                </property>
                <property name="text">
-                <string> max shifts X: </string>
+                <string> max shifts X (pixels): </string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -546,7 +543,7 @@
              <item>
               <widget class="QLabel" name="label_11">
                <property name="text">
-                <string> max shifts Y: </string>
+                <string> max shifts Y (pixels): </string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -580,6 +577,10 @@
                </property>
               </widget>
              </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QLabel" name="label_2">
                <property name="sizePolicy">
@@ -589,7 +590,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string> iterations: </string>
+                <string> iterations for rigid: </string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -606,51 +607,42 @@
                </property>
               </widget>
              </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
-              <widget class="QPushButton" name="btnAddToBatch">
+              <widget class="QLabel" name="label_8">
                <property name="text">
-                <string>Add to batch</string>
+                <string> upsample grid:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="btnMotCorrNow">
-               <property name="text">
-                <string>Process now</string>
+              <widget class="QSpinBox" name="spinboxUpsample">
+               <property name="minimum">
+                <number>1</number>
                </property>
               </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string> max deviation from rigid:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinboxMaxDev"/>
              </item>
             </layout>
            </item>
           </layout>
-         </widget>
-         <widget class="QWidget" name="layoutWidget">
-          <property name="geometry">
-           <rect>
-            <x>610</x>
-            <y>31</y>
-            <width>481</width>
-            <height>110</height>
-           </rect>
-          </property>
+         </item>
+         <item>
           <layout class="QVBoxLayout" name="verticalLayout">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QCheckBox" name="elasMotCheckBox">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Elastic motion correction</string>
-             </property>
-            </widget>
-           </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
@@ -662,7 +654,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>strides</string>
+                <string>strides (pixels): </string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -672,9 +664,22 @@
              <item>
               <widget class="QLabel" name="labelStridesValue">
                <property name="text">
-                <string/>
+                <string>labelStridesValue</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </item>
@@ -696,7 +701,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>overlaps</string>
+                <string>overlaps (pixels): </string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -706,58 +711,52 @@
              <item>
               <widget class="QLabel" name="labelOverlapsValue">
                <property name="text">
-                <string/>
+                <string>labelOverlapsValue</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
-              <widget class="QSlider" name="sliderOverlaps">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QSlider" name="sliderOverlaps">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
-              <widget class="QLabel" name="label_8">
+              <widget class="QPushButton" name="btnAddToBatch">
                <property name="text">
-                <string> upsample:</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <string>Add to batch</string>
                </property>
               </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="spinboxUpsample">
-               <property name="minimum">
-                <number>1</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string> max deviation:</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="spinboxMaxDev"/>
              </item>
             </layout>
            </item>
           </layout>
-         </widget>
-        </widget>
+         </item>
+        </layout>
        </widget>
-       <widget class="QWidget" name="tab_2">
+       <widget class="QWidget" name="tabROIs">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -784,137 +783,98 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="10" rowspan="5" colspan="2">
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <property name="spacing">
-            <number>2</number>
+         <item row="1" column="12" rowspan="5">
+          <widget class="QPlainTextEdit" name="textBoxComments">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="sizeConstraint">
-            <enum>QLayout::SetFixedSize</enum>
+           <property name="placeholderText">
+            <string>Comments</string>
            </property>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <item>
-              <widget class="QLabel" name="labelROIDef_1">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>ROI Def #1:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdROIDef1">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <item>
-              <widget class="QLabel" name="labelROIDef_2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>ROI Def #2:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdROIDef2">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_12">
-             <item>
-              <widget class="QLabel" name="labelROIDef_3">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>ROI Def #3:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdROIDef3">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_13">
-             <item>
-              <widget class="QLabel" name="labelROIDef_4">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>ROI Def #4:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdROIDef4">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
+          </widget>
          </item>
-         <item row="2" column="15">
+         <item row="0" column="11" rowspan="6">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>ROIs:   </string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4" colspan="3">
+          <widget class="QLineEdit" name="lineEdROIDef1">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3" rowspan="5">
+          <widget class="QListWidget" name="listWidget">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="4">
+          <widget class="QPushButton" name="BtnSetROIDefs">
+           <property name="text">
+            <string>Set ROI tag</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" rowspan="5" colspan="3">
+          <widget class="QListWidget" name="listwROIs">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="14">
           <widget class="QPushButton" name="btnAddCurrEnvToProj">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -939,20 +899,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="13" rowspan="5">
-          <widget class="QPlainTextEdit" name="textBoxComments">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="placeholderText">
-            <string>Comments</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="15">
+         <item row="2" column="14">
           <widget class="QPushButton" name="btnAddCurrEnvToProj_2">
            <property name="enabled">
             <bool>false</bool>
@@ -980,49 +927,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="12" rowspan="6">
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>ROIs:   </string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="10">
-          <widget class="QPushButton" name="BtnSetROIDefs">
-           <property name="text">
-            <string>Set ROI Defs</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" rowspan="5" colspan="3">
-          <widget class="QListWidget" name="listwROIs">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>350</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </widget>
@@ -1037,7 +941,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="listwidgBatch">
+        <widget class="QListWidget" name="listwBatch">
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
          </property>
@@ -1051,7 +955,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="listwidgMotCor">
+        <widget class="QListWidget" name="listwMotCor">
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
          </property>
@@ -1065,7 +969,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QListWidget" name="listwidgDenoised">
+        <widget class="QListWidget" name="listwDenoised">
          <property name="selectionMode">
           <enum>QAbstractItemView::MultiSelection</enum>
          </property>
@@ -1125,66 +1029,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>rigMotCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>elasMotCheckBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>293</x>
-     <y>893</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>845</x>
-     <y>864</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rigMotCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>btnAddToBatch</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>293</x>
-     <y>893</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>156</x>
-     <y>948</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rigMotCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>btnMotCorrNow</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>293</x>
-     <y>893</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>430</x>
-     <y>948</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>sliderStrides</sender>
    <signal>valueChanged(int)</signal>
    <receiver>labelStridesValue</receiver>
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>530</x>
-     <y>902</y>
+     <x>598</x>
+     <y>864</y>
     </hint>
     <hint type="destinationlabel">
-     <x>983</x>
-     <y>887</y>
+     <x>797</x>
+     <y>842</y>
     </hint>
    </hints>
   </connection>
@@ -1195,12 +1051,44 @@
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>714</x>
-     <y>948</y>
+     <x>704</x>
+     <y>936</y>
     </hint>
     <hint type="destinationlabel">
-     <x>983</x>
-     <y>923</y>
+     <x>820</x>
+     <y>904</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rigMotCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnAddToBatch</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>330</x>
+     <y>870</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1131</x>
+     <y>941</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdROIDef1</sender>
+   <signal>returnPressed()</signal>
+   <receiver>BtnSetROIDefs</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>585</x>
+     <y>860</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>580</x>
+     <y>876</y>
     </hint>
    </hints>
   </connection>
