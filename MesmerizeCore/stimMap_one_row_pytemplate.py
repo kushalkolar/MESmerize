@@ -10,7 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraphCore import ColorButton
 
 class Ui_Form(object):
-    def setupUi(self, Form, voltList):
+    def setupUi(self, Form, voltList, channel):
         Form.setObjectName("Form")
         Form.resize(500, 150)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -24,35 +24,47 @@ class Ui_Form(object):
         self.titleLabelVoltage.setToolTip("")
         self.titleLabelVoltage.setStatusTip("")
         self.titleLabelVoltage.setObjectName("titleLabelVoltage")
-        self.titleLabelAUXo1 = QtWidgets.QLabel(Form)
-        self.titleLabelAUXo1.setGeometry(QtCore.QRect(190, 20, 111, 21))
+
+        self.titleLabelChannel = QtWidgets.QLabel(Form)
+        self.titleLabelChannel.setGeometry(QtCore.QRect(18, 21, 120, 20))
         font = QtGui.QFont()
         font.setPointSize(16)
-        self.titleLabelAUXo1.setFont(font)
-        self.titleLabelAUXo1.setText("")
-        self.titleLabelAUXo1.setObjectName("titleLabelAUXo1")
+        self.titleLabelChannel.setFont(font)
+        self.titleLabelChannel.setText(channel+' : ')
+        self.titleLabelChannel.setObjectName(channel)
+
+        self.lineEdChannelName = QtWidgets.QLineEdit(Form)
+        self.lineEdChannelName.setGeometry(QtCore.QRect(130, 16, 200, 30))
+        self.lineEdChannelName.setToolTip("Enter a name for the this Auxiliary channel")
+        self.lineEdChannelName.setPlaceholderText("Enter Channel Name")
+        self.lineEdChannelName.setObjectName("lineEdChannelName")
+
+        self.checkBoxAutoColor = QtWidgets.QCheckBox(Form)
+        self.checkBoxAutoColor.setGeometry(QtCore.QRect(463, 30, 15, 15))
+
+        self.checkBoxAutoColor_label = QtWidgets.QLabel(Form)
+        self.checkBoxAutoColor_label.setGeometry(390, 27, 70, 20)
+        self.checkBoxAutoColor_label.setText('Auto Color :')
+        self.checkBoxAutoColor.setChecked(True)
+
         self.titleLabelColor = QtWidgets.QLabel(Form)
-        self.titleLabelColor.setGeometry(QtCore.QRect(452, 50, 40, 18))
+        self.titleLabelColor.setGeometry(QtCore.QRect(436, 50, 40, 18))
         self.titleLabelColor.setAlignment(QtCore.Qt.AlignCenter)
         self.titleLabelColor.setObjectName("titleLabelColor")
+
         self.titleLabelStimulus = QtWidgets.QLabel(Form)
         self.titleLabelStimulus.setGeometry(QtCore.QRect(90, 50, 58, 18))
         self.titleLabelStimulus.setObjectName("titleLabelStimulus")
+
         self.setMapBtn = QtWidgets.QPushButton(Form)
         self.setMapBtn.setGeometry(QtCore.QRect(150, (120 + (len(voltList) - 1) * 30), 181, 26))
         self.setMapBtn.setObjectName("setMapBtn")
-        
-        self.checkBoxSetAll = QtWidgets.QCheckBox(Form)
-        self.checkBoxSetAll.setGeometry(QtCore.QRect(340, (125 + (len(voltList) -1) * 30), 15, 15))
-        self.labelSetAll = QtWidgets.QLabel(Form)
-        self.labelSetAll.setGeometry(359, 126 + (len(voltList) -1) * 30, 150, 12)
-        self.labelSetAll.setText('Set for entire mes file')
-        
+        self.setMapBtn.setToolTip("This will set the entered Maps for EVERY CHANNEL, NOT just for < " + channel + " > on the current page.")
         
       #  self.checkBoxSetAll.se
         self.widget = []
         self.horizontalLayout = []
-        self.aux_1_volt_label = []
+        self.labelVoltage = []
         self.aux_1_stimBox = []
         self.aux_1_colorBtn = []
         self.stimLineEdit = []
@@ -68,32 +80,30 @@ class Ui_Form(object):
             self.horizontalLayout.append(QtWidgets.QHBoxLayout(self.widget[r]))
             self.horizontalLayout[r].setContentsMargins(0, 0, 0, 0)
             self.horizontalLayout[r].setObjectName("horizontalLayout"+str(r))
-            self.aux_1_volt_label.append(QtWidgets.QLabel(self.widget[r]))
-            self.aux_1_volt_label[r].setToolTip("Voltage pulled from the opened mes file")
-            self.aux_1_volt_label[r].setAlignment(QtCore.Qt.AlignCenter)
-            self.aux_1_volt_label[r].setObjectName("aux_1_volt_label"+str(r))
-            self.aux_1_volt_label[r].setText(str(voltList[r]))
-            self.horizontalLayout[r].addWidget(self.aux_1_volt_label[r])
+            self.labelVoltage.append(QtWidgets.QLabel(self.widget[r]))
+            self.labelVoltage[r].setToolTip("Voltage pulled from the opened mes file")
+            self.labelVoltage[r].setAlignment(QtCore.Qt.AlignCenter)
+            self.labelVoltage[r].setObjectName("labelVoltage"+str(r))
+            self.labelVoltage[r].setText(str(voltList[r]))
+            self.horizontalLayout[r].addWidget(self.labelVoltage[r])
             self.aux_1_stimBox.append(QtWidgets.QComboBox(self.widget[r]))
-            self.aux_1_stimBox[r].setMinimumSize(QtCore.QSize(120, 0))
+            self.aux_1_stimBox[r].setMinimumSize(QtCore.QSize(160, 0))
             self.aux_1_stimBox[r].setMaxVisibleItems(20)
             self.aux_1_stimBox[r].setObjectName("aux_1_stimBox"+str(r))
             self.horizontalLayout[r].addWidget(self.aux_1_stimBox[r])
+
             self.stimLineEdit.append(QtWidgets.QLineEdit(self.widget[r]))
             self.stimLineEdit[r].setToolTip("Enter stimulus if it\'s not already in the drop-down menu")
             self.stimLineEdit[r].setPlaceholderText("New Stim")
             self.stimLineEdit[r].setObjectName("stimLineEdit")
+            self.stimLineEdit[r].setMinimumSize(QtCore.QSize(150,0))
             self.horizontalLayout[r].addWidget(self.stimLineEdit[r])
-            self.substimLineEdit.append(QtWidgets.QLineEdit(self.widget[r]))
-            self.substimLineEdit[r].setToolTip("Enter sub-stimulus if it\'s not already in the drop-down menu")
-            self.substimLineEdit[r].setPlaceholderText("Sub-stim")
-            self.substimLineEdit[r].setObjectName("substimLineEdit")
-            self.horizontalLayout[r].addWidget(self.substimLineEdit[r])
-            self.aux_1_colorBtn.append(ColorButton())
 
+
+            self.aux_1_colorBtn.append(ColorButton())
             sizePolicy.setHeightForWidth(self.aux_1_colorBtn[r].sizePolicy().hasHeightForWidth())
             self.aux_1_colorBtn[r].setSizePolicy(sizePolicy)
-            self.aux_1_colorBtn[r].setMinimumSize(QtCore.QSize(30, 0))
+            self.aux_1_colorBtn[r].setMinimumSize(QtCore.QSize(10, 0))
             self.aux_1_colorBtn[r].setToolTip("Open color picker")
             self.aux_1_colorBtn[r].setObjectName("aux_1_colorBtn")
             self.aux_1_colorBtn[r].setText('Auto')
@@ -108,4 +118,4 @@ class Ui_Form(object):
         self.titleLabelVoltage.setText(_translate("Form", "Voltages"))
         self.titleLabelColor.setText(_translate("Form", "Color"))
         self.titleLabelStimulus.setText(_translate("Form", "Stimulus"))
-        self.setMapBtn.setText(_translate("Form", "Set Map!"))
+        self.setMapBtn.setText(_translate("Form", "Set ALL Maps!"))

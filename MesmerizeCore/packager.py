@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 """
-Created on Sun Jan 21 17:12:37 2018
+Created on Mon Jan 29 21:08:09 2018
 
 @author: kushal
 
@@ -11,10 +10,8 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-For packaging the work environment for export, and importing saved work environments. For now
-it is used after motion correction (see the method pickle2workEnv) to get the motion corrected image sequence and open that
-on the Mesmerize Viewer so that ROIs can be drawn and the data saved (see the method workEnv2pandas).
 """
+
 import sys
 sys.path.append('..')
 if __name__ == '__main__':
@@ -39,65 +36,90 @@ from pyqtgraphCore.graphicsItems import ROI
 #        pass
 
 class viewerWorkEnv():
-    def __init__(self):
-        self.ROIlist = []
-        self.CurvesList = []
+    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], Genotype=None):
+        self.ROIList = ROIList
+        self.CurvesList = CurvesList
 #        self.ROItags = []
-        self.imgdata = None
-        self.mesfileMap = None
-    
-    def __repr__(self):
-        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
-            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
+        self.imgdata = imgdata
+        self._saved = True
+        self.Genotype = Genotype
+#    def __repr__(self):
+#        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
+#            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
 
-    def load_pickle(self, pikPath, npzPath):
+    @classmethod
+    def from_pickle(cls, pikPath, npzPath):
         pick = pickle.load(open(pikPath, 'rb'))
         npz = np.load(npzPath)
-        self.imgdata = ImgData(npz['imgseq'], 
+        imdata = ImgData(npz['imgseq'], 
                           pick['imdata']['meta'], 
                           SampleID=pick['imdata']['SampleID'],
-                          Map=pick['imdata']['Map'], 
+                          Genotype=pick['imdata']['Genotype'],
+                          stimMaps=pick['imdata']['stimMaps'], 
                           isSubArray=pick['imdata']['isSubArray'])
-        return True
+        return cls(imdata)
+
+    @property
+    def saved(self):
+        return bool(self._saved)
+
+    @saved.setter
+    def saved(self, state):
+        self._saved = state
     
-    def load_mesfile(self, path):
-        self.mesfile = MES(path)
-        
-    def load_mesImg(self, ref):
-        rval, imgdata = self.mesfile.load_img(ref)
+    @staticmethod
+    def load_mesfile(path):
+        return MES(path)
+    
+    @classmethod
+    def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
+        rval, imdata = mesfile.load_img(ref)
         if rval:
-            self.imgdata = imgdata
-            return True
+            imdata.stimMaps = (mesfileMaps, 'mesfile')
+            return cls(imdata)
         else:
-            return False
+            return imdata
+    
+    @classmethod
+    def from_tiff(cls, path):
+        seq = tifffile.imread(path)
+        imdata = ImgData(seq)
+        return cls(imdata)
+    
+    @classmethod
+    def from_project(cls,imgPath, infoPath, curvesPath):
+        seq = tifffile.imread(imgPath)
+        meta = infoPath
         
-    def mes2StimMap(self,dm):
-        if dm is None:
-            dm = self.workEnv.mesfileMap
-        y = self.imgdata.meta['AUXo3']['y']
-        x = self.imgdata.meta['AUXo3']['x'][1]
-        firstFrameStartTime = self.imgdata.meta['FoldedFrameInfo']['firstFrameStartTime']
-        frameTimeLength = self.imgdata.meta['FoldedFrameInfo']['frameTimeLength']
-        self.imgdata.Map = []
-        for i in range(0,y.shape[1]-1):
-            voltage = str(y[1][i])
-            tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
-            if tstart_frame < 0:
-                tstart_frame = 0
-            tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
-            self.imgdata.Map.append([dm[voltage], (tstart_frame, tend_frame)])
+    @classmethod
+    def from_splits(cls):
+        pass
+
+    def _make_dict(self):
+        return {'SampleID': self.imgdata.SampleID, 'Genotype': self.imgdata.Genotype,
+                       'meta': self.imgdata.meta, 'stimMaps': self.imgdata.stimMaps,
+                       'isSubArray': self.imgdata.isSubArray, 'isMotCor': self.imgdata.isMotCor,
+                       'isDenoised': self.imgdata.isDenoised}
+
+    def to_pickle(self, dirPath, mc_params=None):
+        rigid_params, elas_params = mc_params
+        
+        try:
+            fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
             
-    def csv2StimMap(self,csv):
-        pass
-    def load_tiff():
-        pass
-    def load_pandas():
-        pass
-    def load_split():
-        pass
-    def to_pickle():
-        pass
-    def to_pandas():
+            imginfo = self._make_dict()
+            
+            data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
+            
+            tifffile.imsave(fileName+'.tiff', self.imgdata.seq.T)
+            pickle.dump(data, open(fileName+'.pik', 'wb'))
+            self._saved = True
+            return True, fileName
+        except IOError:
+            return False, None
+    
+    def to_pandas(self):
+        self._saved = True
         pass
 '''
 This will be to take information from the Mesmerize Viewer work environment, such as
@@ -114,16 +136,16 @@ def workEnv2pickle():
 Get pickled image data from a pickle file (such as after motion correction) and
 the corresponding npz array representing the image. Organize this info into an
 ImgData class object (See MesmerizeCore.DataTypes)
-'''
-def pickle2workEnv(pikPath, npzPath):
-        pick = pickle.load(open(pikPath, 'rb'))
-        npz = np.load(npzPath)
-        imgdata = ImgData(npz['imgseq'], 
-                          pick['imdata']['meta'], 
-                          SampleID=pick['imdata']['SampleID'],
-                          Map=pick['imdata']['Map'], 
-                          isSubArray=pick['imdata']['isSubArray'])
-        return imgdata
+#'''
+#def pickle2workEnv(pikPath, npzPath):
+#        pick = pickle.load(open(pikPath, 'rb'))
+#        npz = np.load(npzPath)
+#        imgdata = ImgData(npz['imgseq'], 
+#                          pick['imdata']['meta'], 
+#                          SampleID=pick['imdata']['SampleID'],
+#                          Map=pick['imdata']['Map'], 
+#                          isSubArray=pick['imdata']['isSubArray'])
+#        return imgdata
 
 # Empty pandas dataframe with columns that is used for the project index file
 def empty_df():
@@ -137,7 +159,7 @@ Package the work environment into the organization of a pandas dataframe.
 Used for example to add the current work environment (the image sequence, ROIs, and Calcium imaging
 traces (curves)) to the project index which is a pandas dataframe
 '''
-def workEnv2pandas(df, projPath, imgdata, ROIlist, ROItags, Curveslist):
+def workEnv2pandas(df, projPath, imgdata, ROIList, ROItags, Curveslist):
     if df is None:
         df = empty_df()
     
@@ -163,7 +185,7 @@ def workEnv2pandas(df, projPath, imgdata, ROIlist, ROItags, Curveslist):
     
     # Add rows to pandas dataframe
 
-    for ix in range(0,len(ROIlist)):
+    for ix in range(0,len(ROIList)):
         curvePath = path + '_CURVE_' + str(ix).zfill(3) + '.npy'
         np.save(curvePath, Curveslist[ix].getData())
         
@@ -189,10 +211,7 @@ def workEnv2pandas(df, projPath, imgdata, ROIlist, ROItags, Curveslist):
 
     #------------------------------------------------------------------
 ### TODO: CANNOT ALLOW NaN's in the dataframe!! Huge pain in the ass.
-    #------------------------------------------------------------------
-    
-
-        
+    #------------------------------------------------------------------        
     return df
 
 '''
