@@ -57,7 +57,7 @@ class TabPage(QtGui.QWidget):
 #        self.ui.BtnConsole2.setGeometry(QtCore.QRect(200, 740, 80, 26))
 #        self.ui.BtnConsole2.setObjectName("BtnConsole2")
 #        self.ui.BtnConsole2.setText("bahh")
-    def clearAllLineEdFilters(self):
+    def _clearAllLineEdFilters(self):
         for lineEd in self.ui.lineEdFilter_:
             lineEd.clear()
         for listw in self.ui.listw_:
@@ -94,41 +94,41 @@ class TabPage(QtGui.QWidget):
                 else:
                     self.unsupportedType(col)
     
-    def enablePlotBtns(self):
+    def _enablePlotBtns(self):
         self.ui.BtnPlot.setEnabled(True)
         self.ui.BtnConsole.setEnabled(True)
         self.ui.BtnResetFilters.setEnabled(True)
         self.ui.BtnJupyter.setEnabled(True)
         self.ui.BtnCopyFilters.setEnabled(True)
         
-    def disablePlotBtns(self):
+    def _disablePlotBtns(self):
         self.ui.BtnPlot.setDisabled(True)
         self.ui.BtnConsole.setDisabled(True)
         self.ui.BtnResetFilters.setDisabled(True)
         self.ui.BtnJupyter.setDisabled(True)
         self.ui.BtnCopyFilters.setDisabled(True)
         
-    def setExtract(self, col):
+    def _setExtract(self, col):
         # Yes I know this is abominable. I'm open to suggestions!
         col.addItems(list(set(chain(*self.df[col.objectName()].apply(lambda el:list(ast.literal_eval(el)))))))# At this point I'm writing with a lisp.
     
-    def strExtract(self, col):
+    def _strExtract(self, col):
         col.addItems(list(set(self.df[col.objectName()])))
 
-    def numExtract(self, col):
+    def _numExtract(self, col):
         col.addItems(list(map(str, set(self.df[col.objectName()]))))
 #        col.addItems(list(set(self.df[col.objectName()])))
     
-    def emptyDf(self):
+    def _emptyDf(self):
         for col in self.ui.listw_:
             col.addItem('Empty DataFrame')
             col.setDisabled(True)
-    def unsupportedType(self, col):
+    def _unsupportedType(self, col):
         col.addItems(['Unsupported type: ', str(type(self.df[col.objectName()][0]))])
         col.setDisabled(True)
     def setupWorkEnv(self):
         pass
-    def copyFilterClipboard(self):
+    def _copyFilterClipboard(self):
         cb = QtGui.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard )
         cb.setText('\n'.join(self.filtLogPandas.split('!&&!')), mode=cb.Clipboard)

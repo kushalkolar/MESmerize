@@ -43,7 +43,7 @@ class main():
             self.viewer = None
             self.projName = None
             
-            #self.openProj('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
+#            self.openProj('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
             
             if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
                 QtGui.QApplication.instance().exec_()

@@ -21,30 +21,66 @@ occured for the animal that was exposed to in this particular image sequence
 """
 
 class ImgData():
-    def __init__(self, seq, meta={}, SampleID=None, Map=None, 
+    def __init__(self, seq, meta={}, SampleID=None, stimMaps=None, 
                  isSubArray=False, isMotCor=False, isDenoised=False):
         self.seq = seq
         self.meta = meta.copy()
         self.SampleID = SampleID
-        self.Map = Map
+        self._stimMaps = stimMaps
         self.isSubArray = isSubArray
         self.isMotCor = isMotCor
         self.isDenoised = isDenoised
         #self.stimMap = mapDict()
     # Simple method to package the stimulus map into a list for each instance of a stimulus
-    def setMap(self, dm):
-        y = self.meta['AUXo3']['y']
-        x = self.meta['AUXo3']['x'][1]
-        firstFrameStartTime = self.meta['FoldedFrameInfo']['firstFrameStartTime']
-        frameTimeLength = self.meta['FoldedFrameInfo']['frameTimeLength']
-        self.Map = []
-        for i in range(0,y.shape[1]-1):
-            voltage = str(y[1][i])
-            tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
-            if tstart_frame < 0:
-                tstart_frame = 0
-            tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
-            self.Map.append([dm[voltage], (tstart_frame, tend_frame)])
+    @property
+    def stimMaps(self, map_name=None):
+        if map_name is None:
+            return self._stimMaps
+        else:
+            return self._stimMaps[map_name]
+        
+    @stimMaps.setter
+    def stimMaps(self, maps):
+        dm, origin = maps
+        if dm is None:
+            self._stimMaps = None
+            return
+        if origin == 'mesfile':
+            y = self.imgdata.meta['AUXo3']['y']
+            x = self.imgdata.meta['AUXo3']['x'][1]
+            firstFrameStartTime = self.imgdata.meta['FoldedFrameInfo']['firstFrameStartTime']
+            frameTimeLength = self.imgdata.meta['FoldedFrameInfo']['frameTimeLength']
+            self.imgdata.stimMaps = []
+            for i in range(0,y.shape[1]-1):
+                voltage = str(y[1][i])
+                tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
+                if tstart_frame < 0:
+                    tstart_frame = 0
+                tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
+            self.imgdata._stimMaps = ([dm[voltage], (tstart_frame, tend_frame)])
+            return
+        
+        elif origin == 'csv':
+            pass
+            return
+        
+        elif origin == 'manual-entry':
+            pass
+            return
+        
+        
+#        y = self.meta['AUXo3']['y']
+#        x = self.meta['AUXo3']['x'][1]
+#        firstFrameStartTime = self.meta['FoldedFrameInfo']['firstFrameStartTime']
+#        frameTimeLength = self.meta['FoldedFrameInfo']['frameTimeLength']
+#        self.Map = []
+#        for i in range(0,y.shape[1]-1):
+#            voltage = str(y[1][i])
+#            tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
+#            if tstart_frame < 0:
+#                tstart_frame = 0
+#            tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
+#            self.Map.append([dm[voltage], (tstart_frame, tend_frame)])
         
         ''' Stimulus Map list organization:
             [['StimName//SubstimName', <pyqtgraph color object>], (startFrame, endFrame)]
