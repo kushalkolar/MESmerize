@@ -25,7 +25,6 @@ import pickle
 import pandas as pd
 import time
 import tifffile
-from pyqtgraphCore.graphicsItems import ROI
 
 #class mesfile2workEnv():
 #    def __init__(self,):
@@ -73,10 +72,14 @@ class viewerWorkEnv():
     
     @classmethod
     def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
-        rval, imdata = mesfile.load_img(ref)
+        rval, seq, meta = mesfile.load_img(ref)
+        
         if rval:
+            imdata = ImgData(seq, meta)
             imdata.stimMaps = (mesfileMaps, 'mesfile')
+            
             return cls(imdata)
+        
         else:
             return imdata
     

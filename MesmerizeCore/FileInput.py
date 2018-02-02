@@ -36,11 +36,8 @@ class tiff:
 """
 import scipy.io as spio
 import numpy as np
-if __name__ == '__main__':
-    from DataTypes import ImgData
-else:
-    from .DataTypes import ImgData # Just a clean simple & independent image data object
-    
+from DataTypes import fix_fp_errors
+
 # Loads the entire .mes file as an instance. 
 # The load_img() method can be used to return an ImgData class object for any particular image
 # of interest from the created MES instance.
@@ -68,15 +65,17 @@ class MES():
                     channel = prefix+str(n)
                     if channel in meta.keys():
                         try:
-                            self.voltDict[channel] = list(set(np.round(np.unique(meta[channel]['y'][1]), decimals=1)))
-        #                    self.ao3VoltList = self.ao3VoltList + list((np.round(np.unique(meta['AUXo3']['y'][1]), decimals=1)))
+                            if meta[channel]['y'].ndim == 2:
+                                self.voltDict[channel] = list(set(fix_fp_errors(meta[channel]['y'][1])))
+        # self.ao3VoltList = self.ao3VoltList + list((np.round(np.unique(meta['AUXo3']['y'][1]), decimals=1)))
                         except (KeyError, IndexError):
                             print(meta['IMAGE'] + ' Does not have: ' + channel)
                             
             for channel in ['PMT_EN', 'Trig', 'PMTenUG', 'PMTenUR', 'PMTenUB']:
                 if channel in meta.keys():
                     try:
-                        self.voltDict[channel] = list(set(np.round(np.unique(meta[channel]['y'][1]), decimals=1)))
+                        if meta[channel]['y'].ndim == 2:
+                            self.voltDict[channel] = list(set(fix_fp_errors(meta[channel]['y'][1])))
                     except (KeyError, IndexError):
                         print(meta['IMAGE'] + ' Does not have: ' + channel)
             try:
@@ -149,10 +148,10 @@ class MES():
             # Combine all the frames into one 3D array, 2D + time
             seq = np.dstack(image_sequence)
             
-            return True, ImgData(seq, meta)
+            return True, seq, meta
 
 # For testing
 if __name__ == '__main__':
-    mesfile = MES('/home/kushal/Sars_stuff/Olfactory exps/NH4/Dec 3 a1.mes')
-    imdata = mesfile.load_img('IF0001_0001')
+    mesfile = MES('/home/kushal/Sars_stuff/github-repos/all_aux_mesfile_sample.mes')
+    rval, seq, meta = mesfile.load_img('If0001_0002')
 #    y = imdata.meta['AUXo3']['y']

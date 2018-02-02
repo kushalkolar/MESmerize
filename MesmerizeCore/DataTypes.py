@@ -19,6 +19,12 @@ Map : Stimulus map. Contains the definitions of the stimuli & the time that they
 occured for the animal that was exposed to in this particular image sequence
 
 """
+import numpy as np
+
+
+def fix_fp_errors(n):
+    fix = np.round(n, decimals=1) + 0.0
+    return fix
 
 class ImgData():
     def __init__(self, seq, meta={}, SampleID=None, stimMaps=None, 
@@ -37,34 +43,54 @@ class ImgData():
         if map_name is None:
             return self._stimMaps
         else:
-            return self._stimMaps[map_name]
+            try:
+                return self._stimMaps[map_name]
+            except KeyError:
+                print(str(KeyError))
         
     @stimMaps.setter
     def stimMaps(self, maps):
         dm, origin = maps
+
         if dm is None:
             self._stimMaps = None
             return
+
         if origin == 'mesfile':
-            y = self.imgdata.meta['AUXo3']['y']
-            x = self.imgdata.meta['AUXo3']['x'][1]
-            firstFrameStartTime = self.imgdata.meta['FoldedFrameInfo']['firstFrameStartTime']
-            frameTimeLength = self.imgdata.meta['FoldedFrameInfo']['frameTimeLength']
-            self.imgdata.stimMaps = []
-            for i in range(0,y.shape[1]-1):
-                voltage = str(y[1][i])
-                tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
-                if tstart_frame < 0:
-                    tstart_frame = 0
-                tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
-            self.imgdata._stimMaps = ([dm[voltage], (tstart_frame, tend_frame)])
+            self._stimMaps = {}
+
+            for machine_channel in dm.keys():
+                ch_dict = dm[machine_channel]
+                try:
+                    y = self.meta[machine_channel]['y']
+                    x = self.meta[machine_channel]['x'][1]
+
+                    firstFrameStartTime = self.meta['FoldedFrameInfo']['firstFrameStartTime']
+                    frameTimeLength = self.meta['FoldedFrameInfo']['frameTimeLength']
+
+                    current_map = []
+
+                    for i in range(0,y.shape[1]-1):
+                        # To convert negative zero to positive zero, and correct for floating point errors
+                        voltage = str(fix_fp_errors(y[1][i]))
+
+                        tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
+
+                        if tstart_frame < 0:
+                            tstart_frame = 0
+
+                        tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
+
+                        current_map.append([ch_dict['values'][voltage], (tstart_frame, tend_frame)])
+
+                    self._stimMaps[ch_dict['channel_name']] = current_map
+
+                except (KeyError, IndexError):
+                    print('Voltage values not found for: "' + str(ch_dict['channel_name']) + '" in <' + str(machine_channel) + '>')
+
             return
         
         elif origin == 'csv':
-            pass
-            return
-        
-        elif origin == 'manual-entry':
             pass
             return
         

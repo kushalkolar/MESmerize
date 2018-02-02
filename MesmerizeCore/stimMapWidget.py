@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 Just a simple GUI for mapping any auxiliary voltage information to stimulus definitions.
 """
-
+import pickle
 import sys
 sys.path.append('..')
 if __name__ == '__main__':
@@ -20,44 +20,102 @@ if __name__ == '__main__':
     from stimMap_one_row_pytemplate import *
 else:
     from .stimMap_one_row_pytemplate import *
-from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE, QtWidgets
-import types
+from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
 
-class stimMapWindow(QtWidgets.QWidget):
-    def __init__(self, voltagesDict):
+class Window(QtWidgets.QWidget):
+    def __init__(self, voltagesDict, proj_channel_names):
         super().__init__()
         self.voltagesDict = voltagesDict
         self.tabs = QtWidgets.QTabWidget()
+        self.setWindowTitle('Stimulus Maps Entry')
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.tabs)
         for channel in voltagesDict.keys():
-            self.tabs.addTab(stimMapGUI(self.tabs), channel)
+            self.tabs.addTab(TabPage(self.tabs), channel)
             # Setup the GUI in that tab
-            self.tabs.widget(self.tabs.count() -1).setupGUI(voltagesDict[channel], channel)
-            self.tabs.widget(self.tabs.count() -1).ui.setMapBtn.clicked.connect(self.getStimMap)
+            self.tabs.widget(self.tabs.count() -1).setupGUI(voltagesDict[channel], channel, proj_channel_names)
+            self.tabs.widget(self.tabs.count() -1).ui.exportBtn.clicked.connect(self._exportMap)
+            self.tabs.widget(self.tabs.count() - 1).ui.importBtn.clicked.connect(self._importMap)
 
-    def getStimMap(self):
+    def _exportMap(self):
+        currMap = self._getStimMap()
+        exportPath = QtGui.QFileDialog.getSaveFileName(self, 'Export Stimulus Map', '',
+                                                       '(*.smap)')
+        if exportPath[0].endswith('.smap'):
+            exportPath = exportPath[0]
+
+        else:
+            exportPath = exportPath[0] + '.smap'
+
+        pickle.dump(currMap, open(exportPath, 'wb'), protocol=4)
+
+    def _importMap(self):
+        path = QtGui.QFileDialog.getOpenFileName(self, 'Import stimulus map file', '', '(*.smap)')
+        dmap = pickle.load(open(path[0], 'rb'))
+
+        page = self.tabs.currentWidget()
+        keyval = list(dmap.keys())[0]
+        for i in range(0, len(page.ui.labelVoltage)):
+            if page.ui.labelVoltage[i].text() in dmap[keyval]['values'].keys():
+                page.ui.stimLineEdit[i].setText(dmap[keyval]['values'][page.ui.labelVoltage[i].text()][0])
+                page.ui.aux_1_colorBtn[i].setColor(dmap[keyval]['values'][page.ui.labelVoltage[i].text()][-1])
+
+    def _getStimMap(self, page=None):
+        if page is None:
+            page = self.tabs.currentWidget()
+        machine_channel = page.ui.titleLabelChannel.objectName()
+        d = {}
+
+        for i in range(0, len(page.ui.labelVoltage)):
+            d[page.ui.labelVoltage[i].text()] = [
+                str(page.ui.aux_1_stimBox[i].currentText()) + str(page.ui.stimLineEdit[i].text()),
+                page.ui.aux_1_colorBtn[i].color()]
+
+        page_map = {}
+        page_map[machine_channel] = {}
+        page_map[machine_channel]['channel_name'] = page.ui.lineEdChannelName.text()
+        page_map[machine_channel]['values'] = d
+
+        return page_map
+
+    def getAllStimMaps(self):
         mes_maps = {}
-        for c in range(0,self.tabs.count()):
-            d = {}
-            for i in range(0,len(self.tabs.widget(c).ui.labelVoltage)):
-                d[self.tabs.widget(c).ui.labelVoltage[i].text()] = \
-                    [str(self.tabs.widget(c).ui.aux_1_stimBox[i].currentText()) +
-                     str(self.tabs.widget(c).ui.stimLineEdit[i].text()),
-                     self.tabs.widget(c).ui.aux_1_colorBtn[i].color()]
 
-            mes_maps[self.tabs.widget(c).ui.titleLabelChannel.objectName()] = d
+        for c in range(0, self.tabs.count()):
+
+            if self.tabs.widget(c).ui.lineEdChannelName.text() == '':
+                continue
+
+            page = self.tabs.widget(c)
+
+            mes_maps = {**self._getStimMap(page), **mes_maps}
+
+            # machine_channel = self.tabs.widget(c).ui.titleLabelChannel.objectName()
+            # d = {}
+            #
+            # for i in range(0,len(self.tabs.widget(c).ui.labelVoltage)):
+            #     d[self.tabs.widget(c).ui.labelVoltage[i].text()] = [
+            #          str(self.tabs.widget(c).ui.aux_1_stimBox[i].currentText()) +\
+            #          str(self.tabs.widget(c).ui.stimLineEdit[i].text()),
+            #          self.tabs.widget(c).ui.aux_1_colorBtn[i].color()]
+            #
+            # mes_maps[machine_channel] = {}
+            # mes_maps[machine_channel]['channel_name'] = self.tabs.widget(c).ui.lineEdChannelName.text()
+            # mes_maps[machine_channel]['values'] = d
+
+
+
         return mes_maps
 
 
-class stimMapGUI(QtGui.QWidget):
+class TabPage(QtGui.QWidget):
     def __init__(self, parent=None, *args):
         QtGui.QWidget.__init__(self, parent, *args)
 
-    def setupGUI(self, voltList, channel):
+    def setupGUI(self, voltList, channel, proj_channel_names):
         self.ui = Ui_Form()
-        self.ui.setupUi(self, voltList, channel)
+        self.ui.setupUi(self, voltList, channel, proj_channel_names)
     # Returns the stimulus definitions as a dictionary where the keys are the voltages.
 
         #bah = ['1', '2', '3']
@@ -69,7 +127,7 @@ class stimMapGUI(QtGui.QWidget):
 # For testing
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    win = stimMapWindow(mesfile.voltDict)
+    win = Window(mesfile.voltDict)
     win.resize(520,120)
     win.show()
     import sys
