@@ -10,7 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraphCore import ColorButton
 
 class Ui_Form(object):
-    def setupUi(self, Form, voltList, channel):
+    def setupUi(self, Form, voltList, channel, proj_channel_names):
         Form.setObjectName("Form")
         Form.resize(500, 150)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -33,10 +33,14 @@ class Ui_Form(object):
         self.titleLabelChannel.setText(channel+' : ')
         self.titleLabelChannel.setObjectName(channel)
 
+
+
         self.lineEdChannelName = QtWidgets.QLineEdit(Form)
         self.lineEdChannelName.setGeometry(QtCore.QRect(130, 16, 200, 30))
         self.lineEdChannelName.setToolTip("Enter a name for the this Auxiliary channel")
         self.lineEdChannelName.setPlaceholderText("Enter Channel Name")
+        autocompleter = QtGui.QCompleter(proj_channel_names, self.lineEdChannelName)
+        self.lineEdChannelName.setCompleter(autocompleter)
         self.lineEdChannelName.setObjectName("lineEdChannelName")
 
         self.checkBoxAutoColor = QtWidgets.QCheckBox(Form)
@@ -48,7 +52,7 @@ class Ui_Form(object):
         self.checkBoxAutoColor.setChecked(True)
 
         self.titleLabelColor = QtWidgets.QLabel(Form)
-        self.titleLabelColor.setGeometry(QtCore.QRect(436, 50, 40, 18))
+        self.titleLabelColor.setGeometry(QtCore.QRect(433, 50, 40, 18))
         self.titleLabelColor.setAlignment(QtCore.Qt.AlignCenter)
         self.titleLabelColor.setObjectName("titleLabelColor")
 
@@ -57,10 +61,22 @@ class Ui_Form(object):
         self.titleLabelStimulus.setObjectName("titleLabelStimulus")
 
         self.setMapBtn = QtWidgets.QPushButton(Form)
-        self.setMapBtn.setGeometry(QtCore.QRect(150, (120 + (len(voltList) - 1) * 30), 181, 26))
+        self.setMapBtn.setGeometry(QtCore.QRect(315, (113 + (len(voltList) - 1) * 30), 181, 26))
         self.setMapBtn.setObjectName("setMapBtn")
         self.setMapBtn.setToolTip("This will set the entered Maps for EVERY CHANNEL, NOT just for < " + channel + " > on the current page.")
-        
+
+        self.exportBtn = QtWidgets.QPushButton(Form)
+        self.exportBtn.setGeometry(QtCore.QRect(63, (113 + (len(voltList) -1) * 30), 60, 26))
+        self.exportBtn.setObjectName("exportBtn")
+        self.exportBtn.setText("Export")
+        self.exportBtn.setToolTip("Export this map as a pickle?")
+
+        self.importBtn = QtWidgets.QPushButton(Form)
+        self.importBtn.setGeometry(QtCore.QRect(132, (113 + (len(voltList) - 1) * 30), 60, 26))
+        self.importBtn.setObjectName("importBtn")
+        self.importBtn.setText("Import")
+        self.importBtn.setToolTip("Import a map you've saved?")
+
       #  self.checkBoxSetAll.se
         self.widget = []
         self.horizontalLayout = []
@@ -98,7 +114,6 @@ class Ui_Form(object):
             self.stimLineEdit[r].setObjectName("stimLineEdit")
             self.stimLineEdit[r].setMinimumSize(QtCore.QSize(150,0))
             self.horizontalLayout[r].addWidget(self.stimLineEdit[r])
-
 
             self.aux_1_colorBtn.append(ColorButton())
             sizePolicy.setHeightForWidth(self.aux_1_colorBtn[r].sizePolicy().hasHeightForWidth())
