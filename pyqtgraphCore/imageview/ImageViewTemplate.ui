@@ -199,6 +199,9 @@
              <height>22</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>Reset scale of the image and timeline</string>
+           </property>
            <property name="text">
             <string>Reset scale</string>
            </property>
@@ -228,7 +231,7 @@
             </size>
            </property>
            <property name="toolTip">
-            <string>Reset the Stimulus Map to the one set for this mes file</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reset the Stimulus Map to the one set for this mes file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>Reset sMap</string>
@@ -259,7 +262,7 @@
             </size>
            </property>
            <property name="toolTip">
-            <string>Set a Stimulus Map for only the image currently open</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change the Stimulus Map.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>Change sMap</string>
@@ -287,7 +290,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Subarray</string>
+            <string>Crop</string>
            </property>
            <property name="iconSize">
             <size>
@@ -320,6 +323,9 @@
              <height>22</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>Add ROI to the image</string>
+           </property>
            <property name="text">
             <string>+ ROI</string>
            </property>
@@ -347,6 +353,9 @@
              <width>16777215</width>
              <height>22</height>
             </size>
+           </property>
+           <property name="toolTip">
+            <string>Choose a Stimulus Map to display on the Timeline</string>
            </property>
           </widget>
          </item>
@@ -409,7 +418,7 @@
         <enum>QTabWidget::West</enum>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tabBatchParams">
         <property name="enabled">
@@ -746,19 +755,6 @@
          <string>ROIs</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="lineEdROIDef1">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="3" rowspan="2">
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
@@ -853,6 +849,9 @@
                  <height>20</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>Show all ROIs or just the one selected from the list</string>
+               </property>
                <property name="text">
                 <string>Show all on image</string>
                </property>
@@ -898,6 +897,9 @@
                  <height>16777215</height>
                 </size>
                </property>
+               <property name="toolTip">
+                <string>ARRAYS START AT ZERO!</string>
+               </property>
               </widget>
              </item>
              <item>
@@ -919,6 +921,10 @@
                  <width>16777215</width>
                  <height>16777215</height>
                 </size>
+               </property>
+               <property name="toolTip">
+                <string>ROI Definitions pulled from your config file.
+To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</string>
                </property>
               </widget>
              </item>
@@ -987,6 +993,13 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEdROIDef">
+           <property name="placeholderText">
+            <string>Add Tag to ROI Definition</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -1138,18 +1151,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>lineEdROIDef1</sender>
+   <sender>lineEdROIDef</sender>
    <signal>returnPressed()</signal>
    <receiver>BtnSetROIDefs</receiver>
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>439</x>
-     <y>854</y>
+     <x>476</x>
+     <y>840</y>
     </hint>
     <hint type="destinationlabel">
-     <x>580</x>
-     <y>876</y>
+     <x>521</x>
+     <y>881</y>
     </hint>
    </hints>
   </connection>

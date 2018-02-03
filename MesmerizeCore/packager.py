@@ -51,7 +51,7 @@ class viewerWorkEnv():
         pick = pickle.load(open(pikPath, 'rb'))
         npz = np.load(npzPath)
         imdata = ImgData(npz['imgseq'], 
-                          pick['imdata']['meta'], 
+                          pick['imdata']['meta'],
                           SampleID=pick['imdata']['SampleID'],
                           Genotype=pick['imdata']['Genotype'],
                           stimMaps=pick['imdata']['stimMaps'], 
@@ -151,11 +151,10 @@ ImgData class object (See MesmerizeCore.DataTypes)
 #        return imgdata
 
 # Empty pandas dataframe with columns that is used for the project index file
-def empty_df():
-    return pd.DataFrame(data=None, columns={'CurvePath', 'ImgPath', 'ImgInfoPath', 
-                                            'SampleID', 'Date', 'ROIhandles', 
-                                            'ROI_DEF:Location', 'ROI_DEF:SubcellLocation','ROI_DEF:NucLocation', 
-                                            'StimSet'})
+def empty_df(cols):
+    if type(cols) is list:
+        cols = set(cols)
+    return pd.DataFrame(data=None, columns=cols)
 
 '''
 Package the work environment into the organization of a pandas dataframe.

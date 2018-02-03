@@ -163,10 +163,9 @@ class ImageView(QtGui.QWidget):
 #        self.ui.lineEdROIDef3.textChanged.connect(self.updateROItag)
 #        self.ui.lineEdROIDef4.textChanged.connect(self.updateROItag)
 
-        self.ui.BtnSetROIDefs.clicked.connect(self.updateROItag)
+        self.ui.BtnSetROIDefs.clicked.connect(self.addROITag)
 
         self.ui.listwROIs.itemClicked.connect(self.setSelectedROI)
-
         self.ui.checkBoxShowAllROIs.clicked.connect(self.setSelectedROI)
         self.priorlistwROIsSelection = None
 
@@ -222,7 +221,7 @@ class ImageView(QtGui.QWidget):
 
 #        self.ui.normGroup.hide()
 #        #self.roi = PlotROI(10)
-#        #self.roi.setZValue(20)
+#        self.roi.setZValue(20)
 #        #self.view.addItem(self.roi)
 #        #self.roi.hide()
 #        self.normRoi = PlotROI(10)
@@ -233,13 +232,25 @@ class ImageView(QtGui.QWidget):
 
         #self.roiCurve = self.ui.roiPlot.plot()
 
+        self.ui.roiPlot.registerPlot(self.name + '_ROI')# I don't know what this does,
+                                                        # It was included with the original ImageView class
+        self.view.register(self.name)
 
+        self.noRepeatKeys = [QtCore.Qt.Key_Right, QtCore.Qt.Key_Left, QtCore.Qt.Key_Up,
+                             QtCore.Qt.Key_Down, QtCore.Qt.Key_PageUp, QtCore.Qt.Key_PageDown]
+
+        self.watcherStarted = False
+
+        self.initROIPlot()
+
+    def initROIPlot(self):
         self.timeLine = InfiniteLine(0, movable=True, hoverPen=None)
         self.timeLine.setPen((255, 255, 0, 200))
-        self.timeLine.setZValue(2)
+        self.timeLine.setZValue(100)
         self.timeLineBorder = InfiniteLine(0, movable=False, hoverPen=None)
-        self.timeLineBorder.setPen(color=(0,0,0,110), width=5)
-        self.timeLineBorder.setZValue(1)
+        self.timeLineBorder.setPen(color=(0,0,0,115), width=7)
+        self.timeLineBorder.setZValue(99)
+
         self.ui.roiPlot.addItem(self.timeLineBorder)
         self.ui.roiPlot.addItem(self.timeLine)
         self.ui.splitter.setSizes([self.height()-35, 35])
@@ -284,52 +295,17 @@ class ImageView(QtGui.QWidget):
 #        self.normProxy = SignalProxy(self.normRgn.sigRegionChanged, slot=self.updateNorm)
 #        self.normRoi.sigRegionChangeFinished.connect(self.updateNorm)
 
-        self.ui.roiPlot.registerPlot(self.name + '_ROI')# I don't know what this does,
-                                                        # It was included with the original ImageView class
-        self.view.register(self.name)
 
-        self.noRepeatKeys = [QtCore.Qt.Key_Right, QtCore.Qt.Key_Left, QtCore.Qt.Key_Up,
-                             QtCore.Qt.Key_Down, QtCore.Qt.Key_PageUp, QtCore.Qt.Key_PageDown]
 
-        self.watcherStarted = False
 
-    def _workEnv_checkSaved(self):
-        if self.watcherStarted:
-            return
 
-        for ui_element in self.ui.tabBatchParams.children():
-            print(type(ui_element))
-            if type(ui_element) != QtWidgets.QLabel:
-                if type(ui_element) == QtWidgets.QSpinBox:# or QtWidgets.QPushButton or QtWidgets.QCheckBox or QtWidgets.QSpinBox or QtWidgets.QSlider):
-                    ui_element.valueChanged['int'].connect(self._workEnv_changed)
-                    print(self.workEnv.saved)
-                elif type(ui_element) == QtWidgets.QLineEdit:
-                    ui_element.textChanged.connect(self._workEnv_changed)
-                elif type(ui_element) == QtWidgets.QSlider:
-                    ui_element.valueChanged['int'].connect(self._workEnv_changed)
-        for ui_element in self.ui.tabROIs.children():
-            if type(ui_element) == QtWidgets.QLineEdit:
-                ui_element.textChanged.connect(self._workEnv_changed)
-            elif type(ui_element) == QtWidgets.QPlainTextEdit:
-                ui_element.textChanged.connect(self._workEnv_changed)
-        self.watcherStarted = True
-
-    def _workEnv_changed(self, element=None):
-        if self.workEnv is not None:
-            self.workEnv.saved = False
-        print(str(element) + ' has been changed')
-
-    ''' Set the ImgData object and pass the .seq of the ImgData object to setImage().
+    ''' ======================================================================================
+        Set the ImgData object and pass the .seq of the ImgData object to setImage().
         Argumments:
             selection : object returned from self.ui.listwMesfile.itemDoubleClicked
+        ======================================================================================
     '''
     def updateWorkEnv(self, selection, origin):
-
-        '''#################################################################################
-        ####################################################################################
-        >>>>>>>***** USE A OBSERVER PATTERN TO REGISTER workEnv.register WHEN CREATING WORK ENVIRONMENT?????
-        >>>>>>> DE-REGISTER AND SET workEnv = None WHEN DiscardWorkEnv() <<<<<<<<<<<<<<<<<<<<<
-        ####################################################################################'''
         if self.workEnv is not None:
             if self.DiscardWorkEnv() is False:
                 return
@@ -382,6 +358,12 @@ class ImageView(QtGui.QWidget):
                                             self.workEnv.imgdata.seq.T.shape[0]))
 
     def promptFileDialog(self):
+        if self.workEnv is not None:
+            if self.DiscardWorkEnv() is False:
+                return
+        self.ui.listwMesfile.clear()
+        self.ui.listwSplits.clear()
+        self.ui.listwTiffs.clear()
         filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
                                                       '.', '(*.mes *.tif *.tiff)')
         if filelist == '':
@@ -398,20 +380,6 @@ class ImageView(QtGui.QWidget):
 
             # If Auxiliary output information is found in the mes file it will ask if you want to
             # map them to anything
-            ''' #######################################################################################
-            ###########################################################################################
-            ###########################################################################################
-            >>>>>> ***** USE A FUNCTION TO GET VOLTAGES FROM ANY ARBITRARY AUX OUT OR AUX IN *** <<<<<<
-            >>>>>> CHECK ALL KEYS IN MAIN_DICT WITH KEYS STARTING WITH AUX* 
-            >>>>>>>>>>> **DIFFERENT TABS FOR DIFFERENT AUX. ** USER CAN GIVE A NAME TO THE CHANNEL. ***<<<
-            >>>>>> HAVE A COMBOBOX THAT THE USER CAN USE TO SET THE CURRENT MAP VISUALIZED ON THE TIMELINE
-            >>>>>> COMBOX ENTRY HAS THE NAME THE USER SET FOR THE AUX CHANELL
-            >>>>>> **** DATAFRAME COLUMN USES NAME THAT THE USER HAS SET FOR THIS CHANNEL. THEY CAN SET
-            >>>>>> **** A DIFFERENT NAME FOR EACH CHANNEL FOR A SINGLE IMG DATA OBJECT.
-            >>>>>> **** ImgData.maps has all the different maps as a dict, where each key is the NAME the user has set
-            ###########################################################################################
-            ###########################################################################################
-            ###########################################################################################'''
             if len(self.mesfile.voltDict) > 0:
                 self.initMesStimMapGUI()# Init the stimMap GUI
                 self.ui.btnChangeSMap.setEnabled(True)
@@ -431,6 +399,12 @@ class ImageView(QtGui.QWidget):
 #        except IOError:
 #            QtGui.QMessageBox.warning(self,'IOError', "There is an problem with the files you've selected", QtGui.QMessageBox.Ok)
     #            print('There''s an issue with the files you''ve selected')
+
+
+    '''##################################################################################################################
+                                            Stimulus Maps methods
+    ##################################################################################################################'''
+
     def initMesStimMapGUI(self):
         # Initialize stimMapWidget module in the background
         self.stimMapWin = stimMapWidget.Window(self.mesfile.voltDict, self.proj_stim_channel_names)
@@ -509,6 +483,10 @@ class ImageView(QtGui.QWidget):
         if map_name == '':
             return
 
+        if len(self.workEnv.CurvesList) > 0:
+            for i in range(0, len(self.workEnv.CurvesList)):
+                self.updatePlot(i)
+
         stims = self.workEnv.imgdata.stimMaps[map_name]
         self.currStimMapBg = []
 
@@ -521,6 +499,7 @@ class ImageView(QtGui.QWidget):
 
             linReg = LinearRegionItem(values=[frameStart, frameEnd],
                             brush=color, movable=False, bounds=[frameStart, frameEnd])
+            linReg.setZValue(0)
             linReg.lines[0].setPen(color)
             linReg.lines[1].setPen(color)
 
@@ -529,8 +508,6 @@ class ImageView(QtGui.QWidget):
         for linReg in self.currStimMapBg:
             self.ui.roiPlot.addItem(linReg)
 
-        for i in range(0,len(self.workEnv.ROIList)):
-            self.updatePlot(i)
         #print(self.workEnv.imgdata.Map)
 
     def setImage(self, img, autoRange=True, autoLevels=True, levels=None, axes=None, xvals=None, pos=None, scale=None, transform=None, autoHistogramRange=True):
@@ -681,6 +658,13 @@ class ImageView(QtGui.QWidget):
         #self.roiClicked()
 
         profiler()
+
+        self.ui.roiPlot.showAxis('left')
+        mn = self.tVals.min()
+        mx = self.tVals.max()
+        self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
+        self.timeLine.show()
+        self.timeLine.setBounds([mn, mx])
 
     def clear(self):
         self.image = None
@@ -868,28 +852,26 @@ class ImageView(QtGui.QWidget):
             self.ui.rigMotCheckBox.setCheckState(False)
         return
 
-    ''' Method for adding PolyROI's to the plot '''
+    '''==============================================================================================================
+                                                    ROI Methods
+       ==============================================================================================================
+    '''
+
     def addROI(self):
+        ''' Method for adding PolyROI's to the plot '''
         #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
         #self.ROICurve = self.ui.roiPlot.plot()
 
         # Create polyROI instance
         self.workEnv.ROIList.append(PolyLineROI([[0,0], [10,10], [30,10]],
                                                 closed=True, pos=[0,0], removable=True))
-
         # Create new plot instance for plotting the newly created ROI
         self.curve = self.ui.roiPlot.plot()
         self.workEnv.CurvesList.append(self.curve)
-
+        self.workEnv.CurvesList[-1].setZValue(len(self.workEnv.CurvesList))
         # Just some plot initializations, these are these from the original pyqtgraph ImageView class
         self.ui.roiPlot.setMouseEnabled(True, True)
         self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])
-        self.ui.roiPlot.showAxis('left')
-        mn = self.tVals.min()
-        mx = self.tVals.max()
-        self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
-        self.timeLine.show()
-        self.timeLine.setBounds([mn, mx])
         self.ui.roiPlot.show()
 
         # Connect signals to the newly created ROI
@@ -898,6 +880,7 @@ class ImageView(QtGui.QWidget):
         self.workEnv.ROIList[-1].sigRegionChanged.connect(self.updatePlot)# This is how the curve is plotted to correspond to this ROI
         self.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
         self.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
+        self.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
         self.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)
 
         # Add the ROI to the scene so it can be seen
@@ -911,17 +894,35 @@ class ImageView(QtGui.QWidget):
         self.updatePlot(len(self.workEnv.ROIList)-1)
         self.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList)-1)
 
-    def setSelectedROI(self, reset=True):
-        self.ui.lineEdROIDef1.clear()
-        ID = self.ui.listwROIs.currentRow()
+    def setSelectedROI(self, roi=None):
+        if type(roi) == PolyLineROI:
+            ID = self.workEnv.ROIList.index(roi)
+            self.ui.listwROIs.setCurrentRow(ID)
+        else:
+            if self.ui.listwROIs.currentRow() != -1:
+                ID = self.ui.listwROIs.currentRow()
+            else:
+                return
+
+        self.ui.lineEdROIDef.clear()
+
         self.checkShowAllROIs()
+
         self.workEnv.ROIList[ID].show()
+
         if self.priorlistwROIsSelection is not None:
             self.workEnv.ROIList[self.priorlistwROIsSelection].setMouseHover(False)
+
         self.priorlistwROIsSelection = ID
+
         self.resetPlot()
         self.workEnv.ROIList[ID].setMouseHover(True)
         self.boldPlot(ID)
+
+        if self.ui.listwROIDefs.count() > 0:
+            for def_id in range(0, self.ui.listwROIDefs.count()):
+                self.setROITagListText(ID, def_id)
+            self.ui.listwROIDefs.setCurrentRow(0)
 
     def checkShowAllROIs(self):
         if self.ui.checkBoxShowAllROIs.isChecked() == False:
@@ -933,14 +934,35 @@ class ImageView(QtGui.QWidget):
             for roi in self.workEnv.ROIList:
                 roi.show()
 
-
-    def updateROItag(self):
-        ID = int(self.ui.listwROIs.currentRow())
-        if ID == -1:
-            QtGui.QMessageBox.question(self, 'Message', 'Select an ROI form the list if you want to add tags ', QtGui.QMessageBox.Ok)
+    def addROITag(self):
+        if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
+            QtGui.QMessageBox.question(self, 'Message', 'Select an ROI Definition from the list if you want to add tags ', QtGui.QMessageBox.Ok)
             return
 
-        self.setListwROIsText(ID)
+        ROI_ID = self.ui.listwROIs.currentRow()
+        tag = self.ui.lineEdROIDef.text()
+        definition = self.ui.listwROIDefs.currentItem().text().split(': ')[0]
+
+        self.workEnv.ROIList[ROI_ID].tags[definition] = tag
+
+        self.setROITagListText(ROI_ID, self.ui.listwROIDefs.currentRow())
+
+        self.ui.lineEdROIDef.clear()
+        print(self.workEnv.ROIList[ROI_ID].tags)
+
+    def setROITagListText(self, ROI_ID, DEF_ID):
+        if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
+            return
+        definition = self.ui.listwROIDefs.item(DEF_ID).text().split(': ')[0]
+
+        try:
+            tag = self.workEnv.ROIList[ROI_ID].tags[definition]
+        except KeyError:
+            tag = ''
+            self.workEnv.ROIList[ROI_ID].tags[definition] = tag
+
+        self.ui.listwROIDefs.item(DEF_ID).setText(definition + ': ' + tag)
+        self.ui.listwROIDefs.setCurrentRow(min(DEF_ID + 1, self.ui.listwROIDefs.count() - 1))
 
     def delROI(self,roiPicked):
         ''' Pass in the roi object from ROI.sigRemoveRequested()
@@ -970,11 +992,16 @@ class ImageView(QtGui.QWidget):
         for ix in range(0,len(self.workEnv.ROIList)):
             self.updatePlot(ix)
 
+        '''==============================================================================================================
+                                                Plot methods
+        =============================================================================================================='''
+
     # Pass the index of the ROI OR the ROI object itself for which you want to update the plot
-    def updatePlot(self,ID):
+    def updatePlot(self, ID):
         ''' If the index of the ROI in the ROIlist isn't passed as an argument to this function
          it will find the index of the ROI object which was passed. This comes from the Qt signal
          from the ROI: PolyLineROI.sigRegionChanged.connect'''
+
         if type(ID) != int:
             ID = self.workEnv.ROIList.index(ID)
 
@@ -1024,6 +1051,12 @@ class ImageView(QtGui.QWidget):
             color = self.ROIcolors[ID%(len(self.ROIcolors))]
             self.workEnv.ROIList[ID].setPen(color)
             self.workEnv.CurvesList[ID].setPen(color)
+
+    '''##################################################################################################################
+                                        Motion Correction Batch methods
+##################################################################################################################
+'''
+
 
     def openBatch(self):
         batchFolder = QtGui.QFileDialog.getExistingDirectory(self, 'Select batch Dir',
@@ -1139,6 +1172,10 @@ class ImageView(QtGui.QWidget):
             elas_params = None
         return rigid_params, elas_params
 
+    '''###############################################################################################################
+                                        Work Env methods
+    ##################################################################################################################'''
+
 
     def DiscardWorkEnv(self):
         if (self.workEnv.saved == False) and (QtGui.QMessageBox.warning(self, 'Warning!',
@@ -1158,6 +1195,8 @@ class ImageView(QtGui.QWidget):
             and curves removed from the plot. This is what delROI() does. Removes the 0th once in each 
             iteration, number of iterations = len(ROIlist)'''
 
+        self.priorlistwROIsSelection = None
+
         # In case the user decided to add some of their own curves that don't correspond to the ROIs
         if len(self.workEnv.CurvesList) != 0:
             for i in range(0,len(self.workEnv.CurvesList)):
@@ -1167,9 +1206,40 @@ class ImageView(QtGui.QWidget):
         self.workEnv = None
 #        self._remove_workEnv_observer()
         self.ui.comboBoxStimMaps.setDisabled(True)
+
         # Remove the background bands showing stimulus times.
-        for linReg in self.currStimMapBg:
-            self.ui.roiPlot.removeItem(linReg)
+        for item in self.ui.roiPlot.items():
+            self.ui.roiPlot.removeItem(item)
+        self.currStimMapBg = []
+
+        self.initROIPlot()
+
+    def _workEnv_checkSaved(self):
+        if self.watcherStarted:
+            return
+
+        for ui_element in self.ui.tabBatchParams.children():
+            print(type(ui_element))
+            if type(ui_element) != QtWidgets.QLabel:
+                if type(
+                        ui_element) == QtWidgets.QSpinBox:  # or QtWidgets.QPushButton or QtWidgets.QCheckBox or QtWidgets.QSpinBox or QtWidgets.QSlider):
+                    ui_element.valueChanged['int'].connect(self._workEnv_changed)
+                    print(self.workEnv.saved)
+                elif type(ui_element) == QtWidgets.QLineEdit:
+                    ui_element.textChanged.connect(self._workEnv_changed)
+                elif type(ui_element) == QtWidgets.QSlider:
+                    ui_element.valueChanged['int'].connect(self._workEnv_changed)
+        for ui_element in self.ui.tabROIs.children():
+            if type(ui_element) == QtWidgets.QLineEdit:
+                ui_element.textChanged.connect(self._workEnv_changed)
+            elif type(ui_element) == QtWidgets.QPlainTextEdit:
+                ui_element.textChanged.connect(self._workEnv_changed)
+        self.watcherStarted = True
+
+    def _workEnv_changed(self, element=None):
+        if self.workEnv is not None:
+            self.workEnv.saved = False
+        print(str(element) + ' has been changed')
 
 #    def roiClicked(self):
 #        showRoiPlot = False

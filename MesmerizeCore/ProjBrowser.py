@@ -47,9 +47,9 @@ class TabPage(QtGui.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self, self.df, exclude, special)
         
-        self.ui.BtnCopyFilters.clicked.connect(self.copyFilterClipboard)
+        self.ui.BtnCopyFilters.clicked.connect(self._copyFilterClipboard)
         
-        self.ui.BtnResetFilters.clicked.connect(self.clearAllLineEdFilters)
+        self.ui.BtnResetFilters.clicked.connect(self._clearAllLineEdFilters)
 #        self.addBtn()
                 
 #    def addBtn(self):
@@ -65,11 +65,11 @@ class TabPage(QtGui.QWidget):
             
     def updateDf(self):
         if self.df.size < 1:
-            self.emptyDf()
-            self.disablePlotBtns()
+            self._emptyDf()
+            self._disablePlotBtns()
             return
         
-        self.enablePlotBtns()
+        self._enablePlotBtns()
         self.minIndex = self.df.index.values.min()
         
         for col in self.ui.listw_:
@@ -77,22 +77,22 @@ class TabPage(QtGui.QWidget):
         
         for col in self.ui.listw_:
             el = self.df[col.objectName()][self.minIndex]
-            try:
-                print(col)
-                if type(ast.literal_eval(el)) == set:
-                    self.setExtract(col)
-                elif type(ast.literal_eval(el)) == int:
-                    self.numExtract(col)
-                    
-            except (ValueError, SyntaxError):
-                if type(el) == str:
-                    self.strExtract(col)
-                elif type(el) is np.int64:
-                    self.numExtract(col)
-                elif type(el) is np.float64:
-                    self.numExtract(col)
-                else:
-                    self.unsupportedType(col)
+            # try:
+            #     print(col)
+            #     if type(ast.literal_eval(el)) == set:
+            #         self._setExtract(col)
+            #     elif type(ast.literal_eval(el)) == int:
+            #         self._numExtract(col)
+            #
+            # except (ValueError, SyntaxError):
+            if type(el) == str:
+                self._strExtract(col)
+            elif type(el) is np.int64:
+                self._numExtract(col)
+            elif type(el) is np.float64:
+                self._numExtract(col)
+            else:
+                self._unsupportedType(col)
     
     def _enablePlotBtns(self):
         self.ui.BtnPlot.setEnabled(True)
@@ -145,6 +145,7 @@ class Window(QtWidgets.QWidget):
     def __init__(self, dfRoot, exclude=[], special={}):
         super().__init__()
         self.tabs = QtWidgets.QTabWidget()
+
         self.exclude = exclude
         self.special = special
         
@@ -157,6 +158,8 @@ class Window(QtWidgets.QWidget):
 #        self.tabs.setCornerWidget(button, QtCore.Qt.TopRightCorner)
         self.addNewTab(dfRoot, '>>R', '>>Root', '')
         self.tabs.tabBar().tabCloseRequested.connect(lambda n: self.tabs.removeTab(n))
+
+
     
     # 
     def addNewTab(self, df, tabTitle, filtLog, filtLogPandas):
@@ -265,7 +268,18 @@ class Window(QtWidgets.QWidget):
             self.tabs.currentWidget().filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
             self.tabs.currentWidget().updateDf()
             
-            
+# class MainWindow(QtGui.QMainWindow):
+#     def __init__(self):
+#         QtGui.QMainWindow.__init__(self)
+#         menubar = self.menuBar()
+#         fileMenu = menubar.addMenu('&File')
+#         mBtnNewProj = fileMenu.addAction('New')
+#         mBtnNewProj.triggered.connect(self.newProj)
+#         editMenu = menubar.addMenu('&Edit')
+#
+#         aboutMenu = menubar.addMenu('&About')
+#         # self.show()
+
 
 if __name__ == '__main__':
     
@@ -274,9 +288,14 @@ if __name__ == '__main__':
     special = {'Timings': 'StimSet'}
     
     app = QtWidgets.QApplication(sys.argv)
+    
+    win = MainWindow()
+    win.resize(1000, 850)
     w = Window(df, special=special)
-    w.resize(1000,840)
-    w.show()
+#    w.resize(1000,840)
+#    w.show()
+    win.setCentralWidget(w)
+    win.show()
     
 #    app = QtGui.QApplication([])
 #    ## Create window with Project Explorer widget
