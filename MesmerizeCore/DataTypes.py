@@ -20,7 +20,7 @@ occured for the animal that was exposed to in this particular image sequence
 
 """
 import numpy as np
-
+from PyQt5 import QtGui
 
 def fix_fp_errors(n):
     fix = np.round(n, decimals=1) + 0.0
@@ -37,6 +37,7 @@ class ImgData():
         self.isMotCor = isMotCor
         self.isDenoised = isDenoised
         #self.stimMap = mapDict()
+
     # Simple method to package the stimulus map into a list for each instance of a stimulus
     @property
     def stimMaps(self, map_name=None):
@@ -70,7 +71,7 @@ class ImgData():
 
                     current_map = []
 
-                    for i in range(0,y.shape[1]-1):
+                    for i in range(0, y.shape[1]-1):
                         # To convert negative zero to positive zero, and correct for floating point errors
                         voltage = str(fix_fp_errors(y[1][i]))
 
@@ -86,7 +87,7 @@ class ImgData():
                     self._stimMaps[ch_dict['channel_name']] = current_map
 
                 except (KeyError, IndexError):
-                    print('Voltage values not found for: "' + str(ch_dict['channel_name']) + '" in <' + str(machine_channel) + '>')
+                    QtGui.QMessageBox.information(None, 'FYI: Missing channels in current image', 'Voltage values not found for: "' + str(ch_dict['channel_name']) + '" in <' + str(machine_channel) + '>', QtGui.QMessageBox.Ok)
 
             return
         

@@ -36,7 +36,7 @@ class tiff:
 """
 import scipy.io as spio
 import numpy as np
-from DataTypes import fix_fp_errors
+from .DataTypes import fix_fp_errors
 
 # Loads the entire .mes file as an instance. 
 # The load_img() method can be used to return an ImgData class object for any particular image

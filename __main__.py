@@ -13,6 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE
 from MesmerizeCore import ProjBrowser
+from MesmerizeCore import configwindow
 from pyqtgraphCore.graphicsItems.InfiniteLine import *
 import pyqtgraphCore
 import numpy as np
@@ -27,6 +28,7 @@ from MesmerizeCore.startWindow import startGUI
 import os
 from functools import partial
 
+
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
 I intend to create a headless mode for doing certain things on a cluster/supercomputer
@@ -34,71 +36,191 @@ I intend to create a headless mode for doing certain things on a cluster/superco
 The instance of desktopApp is useful for communicating between the Viewer & Project Browser
 '''
 
-class main():
-    def __init__(self, args=None):
-        if args is None:
-            self.app = QtGui.QApplication([])
-            self.initStartWindow()
-            
-            self.viewer = None
-            self.projName = None
-            
-#            self.openProj('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
-            
-            if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-                QtGui.QApplication.instance().exec_()
+# class main():
+#     def __init__(self, args=None):
+#         if args is None:
+#             self.app = QtGui.QApplication([])
+#
+#             self.viewer = None
+#             self.projName = None
 
-    def initStartWindow(self):
-        self.startWin = QtGui.QMainWindow()
-        self.startWin.resize(448,88)
-        self.startgui = startGUI()
-        self.startWin.setCentralWidget(self.startgui)
-        self.startWin.show()
-        self.startgui.ui.openViewerBtn.clicked.connect(self.initViewer)
-        self.startgui.ui.newProjBtn.clicked.connect(self.newProj)
-        self.startgui.ui.openProjBtn.clicked.connect(self.openProjFileDialog)
-        
-    def newProj(self):
-        parentPath = QtGui.QFileDialog.getExistingDirectory(None,'Choose location for new project')
+class MainWindow(QtGui.QMainWindow):
+    def __init__(self):
+        # QtGui.QMainWindow.__init__(self)
+        super().__init__()
+        self.viewer = None
+        self.projBrowserWin = None
+        self.projName = None
+        self.projDf = None
+        self.setWindowTitle('Mesmerize')
+        self.initMenuBar()
+    def initMenuBar(self):
+        self.menubar = self.menuBar()
+
+        fileMenu = self.menubar.addMenu('&File')
+
+        mBtnNewProj = fileMenu.addAction('New')
+        mBtnNewProj.triggered.connect(self.newProjFileDialog)
+
+        mBtnOpenProj = fileMenu.addAction('Open')
+        mBtnOpenProj.triggered.connect(self.openProjFileDialog)
+
+
+        dataframeMenu = self.menubar.addMenu('&DataFrame')
+
+        saveRootDf = dataframeMenu.addAction('Save Root')
+
+        saveChild = dataframeMenu.addAction('Save Current Child')
+
+        saveChildAs = dataframeMenu.addAction('Save Current Child As...')
+
+        saveAllChildren = dataframeMenu.addAction('Save All Children')
+
+        saveAsNewProj = dataframeMenu.addAction('New Project from Current Child')
+
+        deleteChild = dataframeMenu.addAction('Delete Current Child')
+
+
+
+        editMenu = self.menubar.addMenu('&Edit')
+
+        changeConfig = editMenu.addAction('Project Configuration')
+        changeConfig.triggered.connect(self.openCfgWindow)
+
+
+    def newProjFileDialog(self):
+        parentPath = QtGui.QFileDialog.getExistingDirectory(self, 'Choose location for new project')
         if parentPath == '':
             return
-        print('parentPath is: ' + parentPath)
-        projName, start = QtGui.QInputDialog.getText(None, '', 'Project Name:', QtGui.QLineEdit.Normal, '')
+
+        projName, start = QtGui.QInputDialog.getText(self, '', 'Project Name:', QtGui.QLineEdit.Normal, '')
+
         if start and projName != '':
-            self.projName = projName
-            self.projPath = parentPath + '/' + self.projName
+            self.projPath = parentPath + '/' + projName
             os.mkdir(self.projPath)
-            self.projDataFrame = packager.empty_df()
-            self.projDataFrameFilePath = self.projPath + '/' + self.projName + '_index.mzp'
-#            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
-            self.projDataFrame.to_pickle(self.projDataFrameFilePath, protocol=4)
-            # Start the Project Browser loaded with the dataframe columns in the listwidget
-            self.initProjBrowser()
-    
+
+            self.newProj()
+            # self.projDf = packager.empty_df()
+
+
+#            self.projDf.to_csv(self.projDfFilePath, index=False)
+
+
+    def newProj(self):
+        self.setupProjPaths()
+
+        self.config = configwindow
+
+        self.config.newConfig(self.projCfgPath)
+
+        self.openCfgWindow()
+
+        self.cfgWindow.tabs.widget(0).ui.btnSave.clicked.connect(self.createNewDf)
+
+    def setupProjPaths(self, checkPaths=False):
+
+        self.projDfsDir = self.projPath + '/dataframes'
+        self.projCfgPath = self.projPath + '/config.cfg'
+        self.projRootDfPath = self.projDfsDir + '/root.mzp'
+        self.projName = self.projPath.split('/')[-1]
+
+
+        if checkPaths:
+            if os.path.isdir(self.projDfsDir) == False:
+                QtGui.QMessageBox.warning(self, 'Project DataFrame Directory not found!', 'The selected directory is ' +\
+                    'not a valid Mesmerize Project since it doesn\'t contain a DataFrame directory!',
+                                          QtGui.QMessageBox.Ok)
+                return False
+            if (os.path.isfile(self.projRootDfPath) == False):
+                QtGui.QMessageBox.warning(self, 'Project Root DataFrame not found!',
+                                           'The selected directory does Not contain a Root DataFrame!', QtGui.QMessageBox.Ok)
+                return False
+
+            if os.path.isfile(self.projCfgPath) == False:
+                if QtGui.QMessageBox.warning(self, 'Project Config file not found!', 'The selected project does not ' +\
+                                            'contain a config file. Would you like to create one now?\nYou cannot proceed'
+                                            'without a config file.',
+                                          QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+                    return False
+
+        if checkPaths == False:
+            os.mkdir(self.projDfsDir)
+
+        self.setWindowTitle('Mesmerize - ' + self.projName)
+
+    def createNewDf(self):
+        include = self.config.cfg.options('INCLUDE')
+        exclude = self.config.cfg.options('EXCLUDE')
+
+        cols = include + exclude
+
+        self.projDf = packager.empty_df(cols)
+        self.projDf.to_pickle(self.projRootDfPath, protocol=4)
+
+        self.cfgWindow.tabs.widget(0).ui.btnSave.clicked.disconnect(self.createNewDf)
+
+        # Start the Project Browser loaded with the dataframe columns in the listwidget
+        self.initProjBrowser()
+
+
+    def openCfgWindow(self):
+        self.cfgWindow = self.config.Window(self.projCfgPath)
+        self.cfgWindow.tabs.widget(0).ui.btnSave.clicked.connect(self.updateCurrentConfiguration)
+        self.cfgWindow.resize(593, 617)
+        self.cfgWindow.show()
+
+    def updateCurrentConfiguration(self):
+        if self.viewer is not None:
+            self.viewer.ui.listwROIDefs.clear()
+            self.viewer.ui.listwROIDefs.addItems(self.config.cfg.options('ROI_DEFS'))
+            self.viewer.setSelectedROI()
+
+        ''' >>> ALSO UPDATE DATAFRAME COLUMNS ACCORDING TO UPDATED CONFIGURATION'''
+
     def openProjFileDialog(self):
-        mzpPath = QtGui.QFileDialog.getOpenFileName(None, 'Select Project Index File', 
-                                                      '.', '(*.mzp)')[0]
-        self.openProj(mzpPath)
-        
-    def openProj(self, mzpPath):
-        self.projDataFrameFilePath = mzpPath
-        if self.projDataFrameFilePath == '':
+        if (self.viewer is not None):
+            if QtGui.QMessageBox.warning(self, 'Close Viewer Window?', 'Would you like to discard any ' +\
+                                                                     'unsaved work in your Viewer window?',
+                                      QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+                self.viewerWindow.close()
+                self.viewer = None
+            else:
+                return
+
+        if (self.projBrowserWin is not None):
+            if QtGui.QMessageBox.warning(self, 'Close Current Project?', 'You currently have a project open, would you' +\
+                                          'like to discard any unsaved work and open another project?',
+                                         QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+                self.projBrowserWin.close()
+                self.projBrowserWin = None
+            else:
+                return
+
+        self.projPath = QtGui.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
+
+        if self.projPath == '':
             return
-        self.projPath = os.path.dirname(self.projDataFrameFilePath)
-        self.projDataFrame = pd.read_pickle(self.projDataFrameFilePath) 
+
+        if self.setupProjPaths(checkPaths=True) is not False:
+            self.openProj()
+        
+    def openProj(self):
+        self.projDf = pd.read_pickle(self.projRootDfPath)
+        self.config = configwindow
+        self.config.openConfig(self.projCfgPath)
         self.projName = self.projPath.split('/')[-1][:-4]
         # Start the Project Browser loaded with the dataframe columns in the listwidget
         self.initProjBrowser()
         
     def initProjBrowser(self):
-        try:
-            self.startWin.hide()
-        except:
-            pass
-        special = {'Timings': 'StimSet'}
-        self.projBrowser = ProjBrowser.Window(self.projDataFrame, special=special)
-        self.projBrowser.resize(1000,840)
-        self.projBrowser.show()
+        special = {'Timings': self.config.cfg.options('STIM_DEFS')}
+
+        self.projBrowserWin = ProjBrowser.Window(self.projDf, exclude=self.config.cfg.options('EXCLUDE'), special=special)
+
+        self.setCentralWidget(self.projBrowserWin)
+
+        # self.projBrowser.resize(1000,840)
+        # self.projBrowser.show()
         
         ## Create window with Project Explorer widget
 #        self.projectWindow = QtGui.QMainWindow()
@@ -115,18 +237,8 @@ class main():
             self.initViewer()
         #self.projBrowser.ui.openViewerBtn.clicked.connect(self.viewerWindow.show())
         self.viewer.projPath = self.projPath
-        n = 0
-        for col in self.projDataFrame.columns:
-            if col.startswith('ROI_DEF:'):
-                n+=1
-                s = 'self.viewer.ui.labelROIDef_'+str(n)+".setText('"+col[8:]+"')"
-                eval(s)
-            
+
     def initViewer(self):
-        try:
-            self.startWin.hide()
-        except:
-            pass
         # Interpret image data as row-major instead of col-major
         pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
     
@@ -136,7 +248,7 @@ class main():
         self.viewer = pyqtgraphCore.ImageView()
         self.viewerWindow.setCentralWidget(self.viewer)
 #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
-        self.viewerWindow.setWindowTitle('Mesmerize - viewer')
+        self.viewerWindow.setWindowTitle('Mesmerize - Viewer')
         
         ## Set a custom color map
         colors = [
@@ -150,11 +262,18 @@ class main():
         cmap = pyqtgraphCore.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
         self.viewer.setColorMap(cmap)
         
-        self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)        
+        # self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
         self.viewer.ui.btnAddToBatch.clicked.connect(self.viewerAddToBatch)
         self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
         self.viewerWindow.show()
-        
+
+        self.viewer.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in self.config.cfg.options('ROI_DEFS')])
+        self.viewer.proj_stim_channel_names = self.config.cfg.options('STIM_DEFS')
+
+        viewMenu = self.menubar.addMenu('&View')
+        showViewer = viewMenu.addAction('Show Viewer')
+        showViewer.triggered.connect(self.viewerWindow.show)
+
     def isProjLoaded(self):
         if self.projName is None:
             answer = QtGui.QMessageBox.question(self.viewer, 'Message', 
@@ -162,9 +281,9 @@ class main():
                         'Would you like to start a new project (Yes) or Open a project?', 
                         QtGui.QMessageBox.Yes, QtGui.QMessageBox.Open)
             if answer == QtGui.QMessageBox.Yes:
-                self.newProj()
+                self.newProjFileDialog()
             elif answer == QtGui.QMessageBox.Open:
-                self.openProj()
+                self.openProjFileDialog()
                 
             return False
         
@@ -179,26 +298,30 @@ class main():
         if self.isProjLoaded():
             self.viewer.openBatch()
     
-    def addWorkEnvToProj(self):
-        if self.isProjLoaded():
-            df = packager.workEnv2pandas(self.projDataFrame,
-                                self.projPath,
-                                self.viewer.currImgDataObj, 
-                                self.viewer.ROIlist,
-                                self.viewer.ROItags,
-                                self.viewer.Curveslist)
-            print(df)
-            # Create backup of index
-            copyfile(self.projDataFrameFilePath, 
-                     self.projDataFrameFilePath + '.BACKUP_' + str(time.time()))
-            
-            self.projDataFrame = df
-            # Save index
-#            self.projDataFrame.to_csv(self.projDataFrameFilePath, index=False)
-            self.projDataFrame.to_pickle(self.projDataFrameFilePath, protocol=4)
-            self.projBrowser.tabs.widget(0).df = df
-            self.projBrowser.tabs.widget(0).updateDf()
+#     def addWorkEnvToProj(self):
+#         if self.isProjLoaded():
+#             df = packager.workEnv2pandas(self.projDf,
+#                                 self.projPath,
+#                                 self.viewer.currImgDataObj,
+#                                 self.viewer.ROIlist,
+#                                 self.viewer.ROItags,
+#                                 self.viewer.Curveslist)
+#             print(df)
+#             # Create backup of index
+#             copyfile(self.projRootDfPath,
+#                      self.projRootDfPath + '.BACKUP_' + str(time.time()))
+#
+#             self.projDf = df
+#             # Save index
+# #            self.projDf.to_csv(self.projDfFilePath, index=False)
+#             self.projDf.to_pickle(self.projRootDfPath, protocol=4)
+#             self.projBrowser.tabs.widget(0).df = df
+#             self.projBrowser.tabs.widget(0).updateDf()
             
             
 if __name__ == '__main__':
-    gui = main()
+    app = QtGui.QApplication([])
+    gui = MainWindow()
+    gui.show()
+    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        QtGui.QApplication.instance().exec_()
