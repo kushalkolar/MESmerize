@@ -298,14 +298,15 @@ class MainWindow(QtGui.QMainWindow):
         if self.isProjLoaded():
             self.viewer.openBatch()
     
-#     def addWorkEnvToProj(self):
-#         if self.isProjLoaded():
-#             df = packager.workEnv2pandas(self.projDf,
-#                                 self.projPath,
-#                                 self.viewer.currImgDataObj,
-#                                 self.viewer.ROIlist,
-#                                 self.viewer.ROItags,
-#                                 self.viewer.Curveslist)
+    def addWorkEnvToProj(self):
+        if self.isProjLoaded():
+            pass
+            # df = packager.workEnv2pandas(self.projDf,
+            #                     self.projPath,
+            #                     self.viewer.currImgDataObj,
+            #                     self.viewer.ROIlist,
+            #                     self.viewer.ROItags,
+            #                     self.viewer.Curveslist)
 #             print(df)
 #             # Create backup of index
 #             copyfile(self.projRootDfPath,

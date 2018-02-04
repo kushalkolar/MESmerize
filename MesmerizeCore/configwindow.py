@@ -29,7 +29,7 @@ def saveConfig(path):
         cfg.write(configfile)
 
 def newConfig(path):
-    defaultInclude = ['SampleID', 'Date']
+    defaultInclude = ['SampleID', 'Genotype', 'Date']
     cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
     defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath']

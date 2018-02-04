@@ -25,7 +25,7 @@ import pickle
 import pandas as pd
 import time
 import tifffile
-
+from PyQt5 import QtGui
 #class mesfile2workEnv():
 #    def __init__(self,):
 #        pass
@@ -35,13 +35,16 @@ import tifffile
 #        pass
 
 class viewerWorkEnv():
-    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], Genotype=None):
+    def __init__(self, imgdata=None, ROIList=[], CurvesList=[]):
+        """
+
+        :type imgdata: ImgData
+        """
         self.ROIList = ROIList
         self.CurvesList = CurvesList
 #        self.ROItags = []
         self.imgdata = imgdata
         self._saved = True
-        self.Genotype = Genotype
 #    def __repr__(self):
 #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
 #            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
@@ -50,13 +53,22 @@ class viewerWorkEnv():
     def from_pickle(cls, pikPath, npzPath):
         pick = pickle.load(open(pikPath, 'rb'))
         npz = np.load(npzPath)
-        imdata = ImgData(npz['imgseq'], 
+        imdata = ImgData(npz['imgseq'],
                           pick['imdata']['meta'],
                           SampleID=pick['imdata']['SampleID'],
                           Genotype=pick['imdata']['Genotype'],
                           stimMaps=pick['imdata']['stimMaps'], 
                           isSubArray=pick['imdata']['isSubArray'])
-        return cls(imdata)
+        if 'ROIList' in pick:
+            ROIList = imdata['ROIList']
+        else:
+            ROIList = []
+        if 'CurvesList' in pick:
+            CurvesList = imdata['CurvesList']
+        else:
+            CurvesList = []
+
+        return cls(imdata, ROIList, CurvesList)
 
     @property
     def saved(self):
@@ -81,12 +93,13 @@ class viewerWorkEnv():
             return cls(imdata)
         
         else:
-            return imdata
+            return rval
     
     @classmethod
-    def from_tiff(cls, path):
+    def from_tiff(cls, path, csvMapPaths=None):
         seq = tifffile.imread(path)
-        imdata = ImgData(seq)
+        imdata = ImgData(seq.T)
+        imdata.stimMaps = (csvMapPaths, 'csv')
         return cls(imdata)
     
     @classmethod
@@ -99,31 +112,116 @@ class viewerWorkEnv():
         pass
 
     def _make_dict(self):
-        return {'SampleID': self.imgdata.SampleID, 'Genotype': self.imgdata.Genotype,
+
+        d = {'SampleID': self.imgdata.SampleID, 'Genotype': self.imgdata.Genotype,
                        'meta': self.imgdata.meta, 'stimMaps': self.imgdata.stimMaps,
                        'isSubArray': self.imgdata.isSubArray, 'isMotCor': self.imgdata.isMotCor,
                        'isDenoised': self.imgdata.isDenoised}
 
+        if len(self.ROIList) > 0:
+            d['ROIList'] = self.ROIList
+
+        if len(self.CurvesList) > 0:
+            d['CurvesList'] = self.CurvesList
+
+        return d
+
     def to_pickle(self, dirPath, mc_params=None):
+        if self.imgdata.SampleID is None:
+            QtGui.QMessageBox.warning(None, 'No Sample ID set!', 'You must enter an Animal ID and/or Trial ID'
+                                                                 'before you can continue.', QtGui.QMessageBox.Ok)
+            return False, None
+
         rigid_params, elas_params = mc_params
-        
         try:
             fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
             
             imginfo = self._make_dict()
-            
-            data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
+
+            if mc_params is not None:
+                data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
+            else:
+                data = {'imdata': imginfo}
             
             tifffile.imsave(fileName+'.tiff', self.imgdata.seq.T)
             pickle.dump(data, open(fileName+'.pik', 'wb'))
+
             self._saved = True
+
             return True, fileName
+
         except IOError:
             return False, None
     
-    def to_pandas(self):
+    def to_pandas(self, projPath):
+        # if df is None:
+        #     df = empty_df()
+        # To save the image sequence array & metadata in the same folder as the project
+        imgdir = projPath + '/images'#+ self.imgdata.SampleID + '_' + str(time.time())
+        rval, imgPath = self.to_pickle(imgdir)
+        if rval == False:
+            return
+
+        self._saved = False
+
+        # Save image sequence
+        #imgPath = path + '_IMG' + '.tiff'
+        # tifffile.imsave(imgPath, self.imgdata.seq.T)
+
+        # Organize metadata of the image & save as a pickle
+        #imgInfoPath = path + '_IMGINFO.pik'
+        # imgInfo = self._make_dict()
+        # pickle.dump(imgInfo, open(imgInfoPath, 'wb'))
+
+        # Get a set of all stimulus maps in this particular experiment
+        # stimList = []
+        # for stim in imgdata.Map:
+        #     stimList.append(stim[0][0])
+        # setOfStimMap = list(set(stimList))
+
+        stimMapsSet = {}
+
+        for stimMap in self.imgdata.stimMaps:
+            stimList = []
+            for stim in self.imgdata.stimMaps[stimChannel]:
+                stimList.append(stim[0][0])
+            stimMapsSet[stimMap] = list(set(stimList))
+
+        # Add rows to pandas dataframe
+        if self.imgdata.meta is not None:
+            try:
+                date = str(self.imgdata.meta['MeasurementDate'])
+            except KeyError:
+                date = 'Unknown'
+
+        for ix in range(0, len(ROIList)):
+            curvePath = projPath + '/curves/' + self.imgdata.SampleID + '_CURVE_' + str(ix).zfill(3) + '.npy'
+            np.save(curvePath, self.CurvesList[ix].getData())
+
+        # for roiDef in self.ROIList.tags:
+
+
+            # for key in self.ROIList.tags[ix]:
+            #     if ROItags[ix][key] == '':
+            #         ROItags[ix][key] = 'Untagged'
+            #     roitags['ROI_DEF:' + key] = ROItags[ix][key]
+
+                #        ROItagsDf = pd.DataFrame(d, index=[0])
+
+            d = {'CurvePath': curvePath,
+                 'ImgPath': imgPath + '.tiff',
+                 'ImgInfoPath': imgPath + '.pik'}
+
+            d = {**d, **stimChannels, **self.ROIList[ix].tags, 'Date': date}
+
+            #df = df.append({**d, **roitags})  # , ignore_index=True)
+
+            # ------------------------------------------------------------------
+            ### TODO: CANNOT ALLOW NaN's in the dataframe!! Huge pain in the ass.
+        # ------------------------------------------------------------------
+        print(d)
         self._saved = True
-        pass
+        return d
 '''
 This will be to take information from the Mesmerize Viewer work environment, such as
 the current ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
@@ -161,16 +259,16 @@ Package the work environment into the organization of a pandas dataframe.
 Used for example to add the current work environment (the image sequence, ROIs, and Calcium imaging
 traces (curves)) to the project index which is a pandas dataframe
 '''
-def workEnv2pandas(df, projPath, imgdata, ROIList, ROItags, Curveslist):
+def workEnv2pandas(df, projPath):
     if df is None:
         df = empty_df()
     
-    # To save the image sequence array & metadata in the same folder as a the project
-    path = projPath + '/' + imgdata.SampleID + '_' + str(time.time())
+    # To save the image sequence array & metadata in the same folder as the project
+    imgpath = projPath + '/images' + imgdata.SampleID + '_' + str(time.time())
     
     # Save image sequence
     imgPath = path + '_IMG' + '.tiff'
-    tifffile.imsave(imgPath, imgdata.seq.T)
+    tifffile.imsave(imgPath, self.imgdata.seq.T)
     
     # Organize metadata of the image & save as a pickle
     imgInfoPath = path + '_IMGINFO.pik'
