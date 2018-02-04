@@ -346,6 +346,7 @@ class ImageView(QtGui.QWidget):
             if self.workEnv.imgdata.stimMaps is not None:
                 self.populateStimMapComboBox()
                 self.displayStimMap()
+            self.ui.tabWidget.setCurrentWidget(self.ui.tabROIs)
 
         elif origin == 'tiff':
             csvfiles = None
