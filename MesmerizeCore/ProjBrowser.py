@@ -85,6 +85,9 @@ class TabPage(QtGui.QWidget):
             #         self._numExtract(col)
             #
             # except (ValueError, SyntaxError):
+
+
+
             if type(el) == str:
                 self._strExtract(col)
             elif type(el) is np.int64:
@@ -267,7 +270,9 @@ class Window(QtWidgets.QWidget):
             self.tabs.currentWidget().filtLog = self.tabs.currentWidget().filtLog + filtLog
             self.tabs.currentWidget().filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
             self.tabs.currentWidget().updateDf()
-            
+
+    def updateCfg(self):
+        pass
 # class MainWindow(QtGui.QMainWindow):
 #     def __init__(self):
 #         QtGui.QMainWindow.__init__(self)

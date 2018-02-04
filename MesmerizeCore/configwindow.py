@@ -20,7 +20,6 @@ else:
     from .configwindow_pytemplate import *
 import configparser
 
-
 cfg = configparser.RawConfigParser(allow_no_value=True)
 cfg.optionxform = str
 

@@ -171,6 +171,7 @@ class ROI(GraphicsObject):
         state['pos'] = tuple(self.state['pos'])
         state['size'] = tuple(self.state['size'])
         state['angle'] = self.state['angle']
+        state['tags'] = self.tags
         return state
     
     def setState(self, state, update=True):
@@ -181,6 +182,7 @@ class ROI(GraphicsObject):
         self.setPos(state['pos'], update=False)
         self.setSize(state['size'], update=False)
         self.setAngle(state['angle'], update=update)
+        self.tags = state['tags']
     
     def setZValue(self, z):
         QtGui.QGraphicsItem.setZValue(self, z)

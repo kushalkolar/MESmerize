@@ -51,7 +51,6 @@ class MainWindow(QtGui.QMainWindow):
         self.viewer = None
         self.projBrowserWin = None
         self.projName = None
-        self.projDf = None
         self.setWindowTitle('Mesmerize')
         self.initMenuBar()
     def initMenuBar(self):
@@ -145,6 +144,8 @@ class MainWindow(QtGui.QMainWindow):
 
         if checkPaths == False:
             os.mkdir(self.projDfsDir)
+            os.mkdir(self.projPath + '/images')
+            os.mkdir(self.projPath + '/curves')
 
         self.setWindowTitle('Mesmerize - ' + self.projName)
 
@@ -155,6 +156,7 @@ class MainWindow(QtGui.QMainWindow):
         cols = include + exclude
 
         self.projDf = packager.empty_df(cols)
+        assert isinstance(self.projDf, pd.DataFrame)
         self.projDf.to_pickle(self.projRootDfPath, protocol=4)
 
         self.cfgWindow.tabs.widget(0).ui.btnSave.clicked.disconnect(self.createNewDf)
@@ -174,6 +176,9 @@ class MainWindow(QtGui.QMainWindow):
             self.viewer.ui.listwROIDefs.clear()
             self.viewer.ui.listwROIDefs.addItems(self.config.cfg.options('ROI_DEFS'))
             self.viewer.setSelectedROI()
+
+        if self.projBrowserWin is not None:
+            self.projBrowserWin.updateCfg(self.config)
 
         ''' >>> ALSO UPDATE DATAFRAME COLUMNS ACCORDING TO UPDATED CONFIGURATION'''
 
@@ -206,6 +211,7 @@ class MainWindow(QtGui.QMainWindow):
         
     def openProj(self):
         self.projDf = pd.read_pickle(self.projRootDfPath)
+        assert isinstance(self.projDf, pd.DataFrame)
         self.config = configwindow
         self.config.openConfig(self.projCfgPath)
         self.projName = self.projPath.split('/')[-1][:-4]
@@ -269,6 +275,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.viewer.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in self.config.cfg.options('ROI_DEFS')])
         self.viewer.proj_stim_channel_names = self.config.cfg.options('STIM_DEFS')
+        self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
 
         viewMenu = self.menubar.addMenu('&View')
         showViewer = viewMenu.addAction('Show Viewer')
@@ -300,24 +307,17 @@ class MainWindow(QtGui.QMainWindow):
     
     def addWorkEnvToProj(self):
         if self.isProjLoaded():
-            pass
-            # df = packager.workEnv2pandas(self.projDf,
-            #                     self.projPath,
-            #                     self.viewer.currImgDataObj,
-            #                     self.viewer.ROIlist,
-            #                     self.viewer.ROItags,
-            #                     self.viewer.Curveslist)
-#             print(df)
-#             # Create backup of index
-#             copyfile(self.projRootDfPath,
-#                      self.projRootDfPath + '.BACKUP_' + str(time.time()))
-#
-#             self.projDf = df
-#             # Save index
-# #            self.projDf.to_csv(self.projDfFilePath, index=False)
-#             self.projDf.to_pickle(self.projRootDfPath, protocol=4)
-#             self.projBrowser.tabs.widget(0).df = df
-#             self.projBrowser.tabs.widget(0).updateDf()
+            r, d = self.viewer.workEnv.to_pandas(self.projPath)
+            if r is False:
+                return
+            copyfile(self.projRootDfPath, self.projRootDfPath + '_BACKUP' + str(time.time()))
+
+
+            self.projDf = self.projDf.append(pd.DataFrame(d), ignore_index=True)
+
+            self.projDf.to_pickle(self.projRootDfPath, protocol=4)
+            self.projBrowserWin.tabs.widget(0).df = self.projDf
+            self.projBrowserWin.tabs.widget(0).updateDf()
             
             
 if __name__ == '__main__':
