@@ -173,7 +173,19 @@ class ImageView(QtGui.QWidget):
         self.ROIcolors=['m','r','y','g','c']
 
         # Connect all the button signals
-        self.ui.btnOpenFiles.clicked.connect(self.promptFileDialog)
+        self.ui.btnTiffPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
+        self.ui.btnSplitsPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
+        self.ui.btnMesPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
+
+        self.ui.btnMCPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(1))
+        self.ui.btnDenPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(2))
+        self.ui.btnBatchPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(0))
+
+        self.ui.btnPlot.clicked.connect(self.plotAll)
+
+        self.ui.btnOpenMesFiles.clicked.connect(self.promptFileDialog)
+        self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
+
         self.mesfileMap = None
         self.ui.listwMesfile.itemDoubleClicked.connect(lambda selection:
                                                         self.updateWorkEnv(selection, origin='mesfile'))
@@ -182,6 +194,7 @@ class ImageView(QtGui.QWidget):
 
         self.ui.listwSplits.itemDoubleClicked.connect(lambda selection:
                                                         self.updateWorkEnv(selection, origin='splits'))
+
         self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
                                                       self.updateWorkEnv(selection, origin='MotCor'))
         self.ui.btnAddROI.clicked.connect(self.addROI)
@@ -241,7 +254,14 @@ class ImageView(QtGui.QWidget):
 
         self.watcherStarted = False
 
+        self.ui.splitterHighest.setSizes([700, 160])
+        self.ui.splitterFilesImage.setSizes([200, 500])
+
+        self.currStimMapBg = []
+
         self.initROIPlot()
+        self.enableUI(False)
+
 
     def initROIPlot(self):
         self.timeLine = InfiniteLine(0, movable=True, hoverPen=None)
@@ -256,8 +276,7 @@ class ImageView(QtGui.QWidget):
         self.ui.splitter.setSizes([self.height()-35, 35])
         self.ui.roiPlot.hideAxis('left')
 
-        self.ui.splitterLeft.setSizes([172,573,160])
-        self.ui.splitterBatches.setSizes([1215,221])
+
 
         self.keysPressed = {}
         self.playTimer = QtCore.QTimer()
@@ -312,7 +331,7 @@ class ImageView(QtGui.QWidget):
 
         if origin == 'mesfile':
             self.workEnv = viewerWorkEnv.from_mesfile(self.mesfile, selection.text().split('//')[0])
-            if self.workEnv is KeyError:
+            if self.workEnv is False:
                 QtGui.QMessageBox.information(self, 'KeyError', 'Could not find the selected'+\
                                               'image in the currently open mes file', QtGui.QMessageBox.Ok)
             if self.mesfileMap is not None:
@@ -325,11 +344,22 @@ class ImageView(QtGui.QWidget):
             self.workEnv = viewerWorkEnv.from_pickle(selection.text()[:-7]+'.pik', selection.text())
             self.workEnv.imgdata.isMotCor = True
             if self.workEnv.imgdata.stimMaps is not None:
+                self.populateStimMapComboBox()
                 self.displayStimMap()
 
         elif origin == 'tiff':
-            self.workEnv = viewerWorkEnv.from_tiff()
-            pass
+            csvfiles = None
+
+            if QtGui.QMessageBox.question(self, 'Open Stimulus Maps?',
+                                       'Would you like to open stimulus maps for this file?',
+                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+                paths = QtGui.QFileDialog.getOpenFileNames(self, 'Choose map file(s)',
+                                                      '.', '(*.csv)')
+
+                if paths != '':
+                    csvfiles = paths[0]
+
+            self.workEnv = viewerWorkEnv.from_tiff(selection.text(), csvfiles)
 
         elif origin == 'splits':
             pass
@@ -338,15 +368,24 @@ class ImageView(QtGui.QWidget):
                       xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
                                         self.workEnv.imgdata.seq.T.shape[0]))
 
+        x = self.workEnv.imgdata.seq.shape[0]
+        y = self.workEnv.imgdata.seq.shape[1]
+        self.ui.sliderStrides.setMaximum(int(max(x,y)/2))
+        self.ui.sliderOverlaps.setMaximum(int(max(x,y)/2))
+
+
         if self.workEnv.imgdata.stimMaps is not None:
             self.populateStimMapComboBox()
             self.displayStimMap()
 
         self._workEnv_checkSaved()
-        self.ui.splitter.setEnabled(True) # Enable stuff in the image & curve working area
-        self.ui.tabBatchParams.setEnabled(True)
-        self.ui.tabROIs.setEnabled(True)
+        self.enableUI(True)
 
+    def enableUI(self, b):
+        self.ui.splitter.setEnabled(b)  # Enable stuff in the image & curve working area
+        self.ui.tabBatchParams.setEnabled(b)
+        self.ui.tabROIs.setEnabled(b)
+        self.ui.toolBox.setEnabled(b)
 
     def resetImgScale(self):
         ''' 
@@ -362,14 +401,13 @@ class ImageView(QtGui.QWidget):
             if self.DiscardWorkEnv() is False:
                 return
         self.ui.listwMesfile.clear()
-        self.ui.listwSplits.clear()
-        self.ui.listwTiffs.clear()
+        # self.ui.listwSplits.clear()
+        # self.ui.listwTiffs.clear()
         filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
-                                                      '.', '(*.mes *.tif *.tiff)')
+                                                      '.', '(*.mes)')
         if filelist == '':
             return
-#        try:
-        if filelist[0][0][-4:] == '.mes':
+        try:
             self.mesfile = viewerWorkEnv.load_mesfile(filelist[0][0])
 #            self.workEnvOrigin = 'mes'
 #            self.mesfile = FileInput.MES(filelist[0][0])
@@ -393,13 +431,28 @@ class ImageView(QtGui.QWidget):
                 self.ui.btnResetSMap.setDisabled(True)
                 self.ui.btnChangeSMap.setDisabled(True)
 
-    #        if filelist[0][0][-4:] == 'tiff':
-    #            # Populate the list widget tiff file names, and store the file names as a var
-            # ****** Should look into except IOError and IndexError
-#        except IOError:
-#            QtGui.QMessageBox.warning(self,'IOError', "There is an problem with the files you've selected", QtGui.QMessageBox.Ok)
-    #            print('There''s an issue with the files you''ve selected')
+        except IOError:
+           QtGui.QMessageBox.warning(self,'IOError', "There is an problem with the files you've selected", QtGui.QMessageBox.Ok)
+        except IndexError:
+            return
 
+
+    def promTiffFileDialog(self):
+        if self.workEnv is not None:
+            if self.DiscardWorkEnv() is False:
+                return
+        self.ui.listwMesfile.clear()
+        # self.ui.listwSplits.clear()
+        # self.ui.listwTiffs.clear()
+        filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
+                                                      '.', '(*.tif *tiff)')
+        if filelist == '':
+            return
+
+        files = filelist[0]
+
+        self.ui.listwTiffs.addItems(files)
+        self.ui.listwTiffs.setEnabled(True)
 
     '''##################################################################################################################
                                             Stimulus Maps methods
@@ -483,12 +536,13 @@ class ImageView(QtGui.QWidget):
         if map_name == '':
             return
 
-        if len(self.workEnv.CurvesList) > 0:
-            for i in range(0, len(self.workEnv.CurvesList)):
-                self.updatePlot(i)
-
         stims = self.workEnv.imgdata.stimMaps[map_name]
-        self.currStimMapBg = []
+
+        if len(self.currStimMapBg) > 0:
+            for item in self.currStimMapBg:
+                self.ui.roiPlot.removeItem(item)
+
+            self.currStimMapBg = []
 
         for stim in stims:
             definitions = stim[0][0]
@@ -593,6 +647,8 @@ class ImageView(QtGui.QWidget):
                 self.axes[axes[i]] = i
         else:
             raise Exception("Can not interpret axis specification %s. Must be like {'t': 2, 'x': 0, 'y': 1} or ('t', 'x', 'y', 'c')" % (str(axes)))
+
+
 
         for x in ['t', 'x', 'y', 'c']:
             self.axes[x] = self.axes.get(x, None)
@@ -1001,6 +1057,8 @@ class ImageView(QtGui.QWidget):
         ''' If the index of the ROI in the ROIlist isn't passed as an argument to this function
          it will find the index of the ROI object which was passed. This comes from the Qt signal
          from the ROI: PolyLineROI.sigRegionChanged.connect'''
+        if self.ui.btnPlot.isChecked() == False:
+            return
 
         if type(ID) != int:
             ID = self.workEnv.ROIList.index(ID)
@@ -1052,6 +1110,12 @@ class ImageView(QtGui.QWidget):
             self.workEnv.ROIList[ID].setPen(color)
             self.workEnv.CurvesList[ID].setPen(color)
 
+    def plotAll(self):
+        if self.ui.btnPlot.isChecked() == False:
+            return
+        for ID in range(0, len(self.workEnv.ROIList)):
+            self.updatePlot(ID)
+
     '''##################################################################################################################
                                         Motion Correction Batch methods
 ##################################################################################################################
@@ -1073,6 +1137,7 @@ class ImageView(QtGui.QWidget):
 
     def setSampleID(self):
         self.workEnv.imgdata.SampleID = self.ui.lineEdAnimalID.text() + '_-_' +  self.ui.lineEdTrialID.text()
+        self.workEnv.imgdata.Genotype = self.ui.lineEdGenotype.text()
 
     def addToBatch(self):
         if os.path.isdir(self.projPath + '/.batches/') is False:
@@ -1118,9 +1183,10 @@ class ImageView(QtGui.QWidget):
             self.ui.lineEdAnimalID.clear()
             self.ui.lineEdTrialID.clear()
             self.ui.lineEdGenotype.clear()
+            self.workEnv.saved = True
 
         else:
-            print('Error when saving the file')
+            QtGui.QMessageBox.warning(self, 'Error', 'There was an error saving files for batch', QtGui.QMessageBox.Ok)
 
     def startBatch(self):
         batchSize = self.ui.listwBatch.count()
@@ -1128,7 +1194,7 @@ class ImageView(QtGui.QWidget):
         self.ui.progressBar.setValue(1)
         for i in range(0, batchSize):
             cp = caimanPipeline(self.ui.listwBatch.item(i).text())
-            self.ui.abortBtn.setEnabled(True)
+            self.ui.btnAbord.setEnabled(True)
             ''' USE AN OBSERVER PATTERN TO SEE WHEN THE PROCESS IS DONE!!!'''
             cp.start()
             print('>>>>>>>>>>>>>>>>>>>> Starting item: ' + str(i) + ' <<<<<<<<<<<<<<<<<<<<')
@@ -1136,10 +1202,10 @@ class ImageView(QtGui.QWidget):
 #                time.sleep(10)
         if os.path.isfile(self.ui.listwBatch.item(i).text()+'_mc.npz'):
             self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
-            self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
+            # self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
         else:
             self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
-            self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
+            # self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
 #            self.ui.progressBar.setValue(100/batchSize)
         self.ui.abortBtn.setDisabled(True)
         self.ui.progressBar.setValue(0)
@@ -1160,16 +1226,14 @@ class ImageView(QtGui.QWidget):
              'rig_shifts_x': rig_shifts_x, 'rig_shifts_y': rig_shifts_y,
              'num_threads': num_threads}
 
-        if self.ui.elasMotCheckBox.isChecked():
-            strides = int(self.ui.sliderStrides.value())
-            overlaps = int(self.ui.sliderOverlaps.value())
-            upsample = int(self.ui.spinboxUpsample.text())
-            max_dev = int(self.ui.spinboxMaxDev.text())
+        strides = int(self.ui.sliderStrides.value())
+        overlaps = int(self.ui.sliderOverlaps.value())
+        upsample = int(self.ui.spinboxUpsample.text())
+        max_dev = int(self.ui.spinboxMaxDev.text())
 
-            elas_params = {'strides': strides, 'overlaps': overlaps,
-                           'upsample': upsample, 'max_dev': max_dev}
-        else:
-            elas_params = None
+        elas_params = {'strides': strides, 'overlaps': overlaps,
+                       'upsample': upsample, 'max_dev': max_dev}
+
         return rigid_params, elas_params
 
     '''###############################################################################################################
@@ -1208,11 +1272,16 @@ class ImageView(QtGui.QWidget):
         self.ui.comboBoxStimMaps.setDisabled(True)
 
         # Remove the background bands showing stimulus times.
-        for item in self.ui.roiPlot.items():
-            self.ui.roiPlot.removeItem(item)
-        self.currStimMapBg = []
+        if len(self.currStimMapBg) > 0:
+            for item in self.currStimMapBg:
+                self.ui.roiPlot.removeItem(item)
 
-        self.initROIPlot()
+            self.currStimMapBg = []
+
+        # self.initROIPlot()
+        self.enableUI(False)
+
+
 
     def _workEnv_checkSaved(self):
         if self.watcherStarted:

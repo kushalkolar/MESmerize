@@ -21,17 +21,20 @@ occured for the animal that was exposed to in this particular image sequence
 """
 import numpy as np
 from PyQt5 import QtGui
+from pyqtgraphCore import fn
+import csv
 
 def fix_fp_errors(n):
     fix = np.round(n, decimals=1) + 0.0
     return fix
 
 class ImgData():
-    def __init__(self, seq, meta={}, SampleID=None, stimMaps=None, 
+    def __init__(self, seq, meta={}, SampleID=None, Genotype='Untagged', stimMaps=None,
                  isSubArray=False, isMotCor=False, isDenoised=False):
         self.seq = seq
         self.meta = meta.copy()
         self.SampleID = SampleID
+        self.Genotype = Genotype
         self._stimMaps = stimMaps
         self.isSubArray = isSubArray
         self.isMotCor = isMotCor
@@ -57,8 +60,10 @@ class ImgData():
             self._stimMaps = None
             return
 
+
+        self._stimMaps = {}
+
         if origin == 'mesfile':
-            self._stimMaps = {}
 
             for machine_channel in dm.keys():
                 ch_dict = dm[machine_channel]
@@ -92,7 +97,41 @@ class ImgData():
             return
         
         elif origin == 'csv':
-            pass
+            files = dm
+
+            for file in files:
+                currentMap = []
+                current_map = []
+
+                with open(file, newline='') as csvfile:
+                    f = csv.reader(csvfile, delimiter=',')
+
+                    for row in f:
+                        currentMap.append(row)
+
+                rmap = currentMap[1:]
+
+                colors = {}
+
+                i = 0
+                while rmap[i][1] != 'tstart':
+                    colors[rmap[i][0]] = fn.mkColor(rmap[i][1])
+                    i += 1
+
+                for r in range(i, len(rmap)):
+
+                    if rmap[r][1] == 'tstart':
+                        rmap[r][2] = int(0)
+                        continue
+
+                    if int(rmap[r][1]) == int(rmap[r-1][2]):
+                        rmap[r][1] = int(rmap[r][1]) + 1
+
+                    current_map.append([ [rmap[r][0], colors[rmap[r][0]] ],
+                                         (int(rmap[r][1]) * 24, int(rmap[r][2]) * 24)])
+
+                self._stimMaps[file.split('/')[-1].split('.csv')[0]] = current_map
+
             return
         
         

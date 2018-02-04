@@ -37,6 +37,7 @@ class tiff:
 import scipy.io as spio
 import numpy as np
 from .DataTypes import fix_fp_errors
+from PyQt5 import QtGui
 
 # Loads the entire .mes file as an instance. 
 # The load_img() method can be used to return an ImgData class object for any particular image
@@ -44,7 +45,12 @@ from .DataTypes import fix_fp_errors
 class MES():
     def __init__(self, filename):
         # Open the weird matlab type objects and organize the images & meta data
-        self.main_dict = self._loadmat(filename)
+        try:
+            self.main_dict = self._loadmat(filename)
+
+        except IOError:
+            QtGui.QMessageBox.warning(None, 'IOError', 'Unable to open the file you have selected', QtGui.QMessageBox.Ok)
+
         self.main_dict_keys = [x for x in self.main_dict.keys()]
         self.main_dict_keys.sort()     
         self.images = [x for x in self.main_dict_keys if "I" in x]
@@ -126,29 +132,31 @@ class MES():
     
     # Returns image as ImgData class object.
     def load_img(self,d):
-#        try:
-        meta = self.main_dict["D"+d[1:6]].tolist()
-        meta = self._todict(meta[0])
-#        except KeyError:
-#            return False, KeyError
-        
-        if len(meta["FoldedFrameInfo"]) > 0:
-            start = meta["FoldedFrameInfo"]["firstFramePos"]
-            stop = meta["TransversePixNum"]
-            #print("Images starting at: ",start)
-            #print("Frame width = ",stop)
-            im = self.main_dict[d]
-            # Trim the 2D array to start at where img acquisition actually begins
-            im = im[:,start:]
-            # Figure out where the 2D array stops at end of acquisition
-            im = im[:,:(im.shape[1] - (im.shape[1]%stop))]
-            # Divide the single large 2D array into individual arrays which each
-            # represent a single frame
-            image_sequence = np.hsplit(im, im.shape[1]/stop)
-            # Combine all the frames into one 3D array, 2D + time
-            seq = np.dstack(image_sequence)
-            
-            return True, seq, meta
+        try:
+            meta = self.main_dict["D"+d[1:6]].tolist()
+            meta = self._todict(meta[0])
+            #        except KeyError:
+            #            return False, KeyError
+
+            if len(meta["FoldedFrameInfo"]) > 0:
+                start = meta["FoldedFrameInfo"]["firstFramePos"]
+                stop = meta["TransversePixNum"]
+                #print("Images starting at: ",start)
+                #print("Frame width = ",stop)
+                im = self.main_dict[d]
+                # Trim the 2D array to start at where img acquisition actually begins
+                im = im[:,start:]
+                # Figure out where the 2D array stops at end of acquisition
+                im = im[:,:(im.shape[1] - (im.shape[1]%stop))]
+                # Divide the single large 2D array into individual arrays which each
+                # represent a single frame
+                image_sequence = np.hsplit(im, im.shape[1]/stop)
+                # Combine all the frames into one 3D array, 2D + time
+                seq = np.dstack(image_sequence)
+
+                return True, seq, meta
+        except KeyError:
+            return False
 
 # For testing
 if __name__ == '__main__':
