@@ -32,6 +32,9 @@ import pandas as pd
 from itertools import chain
 import ast
 from functools import partial
+from . import configuration
+
+from pyqtgraphCore import ImageView
 
 
 class TabPage(QtGui.QWidget):
@@ -41,11 +44,15 @@ class TabPage(QtGui.QWidget):
         self.filtLogPandas = ''
     
         
-    def setupGUI(self, df, exclude=[], special={}):
-        
+    def setupGUI(self, df):
         self.df = df
         self.ui = Ui_Form()
-        self.ui.setupUi(self, self.df, exclude, special)
+        # self.ui.setupUi(self, self.df,
+        #                 configuration.cfg.options('EXCLUDE'),
+        #                 configuration.special)
+        self.ui.setupUi(self, self.df,
+                        configuration.cfg.options('EXCLUDE'),
+                        configuration.special)
         
         self.ui.BtnCopyFilters.clicked.connect(self._copyFilterClipboard)
         
@@ -74,25 +81,19 @@ class TabPage(QtGui.QWidget):
         
         for col in self.ui.listw_:
             col.clear()
-        
+
         for col in self.ui.listw_:
             el = self.df[col.objectName()][self.minIndex]
-            # try:
-            #     print(col)
-            #     if type(ast.literal_eval(el)) == set:
-            #         self._setExtract(col)
-            #     elif type(ast.literal_eval(el)) == int:
-            #         self._numExtract(col)
-            #
-            # except (ValueError, SyntaxError):
-
-
-
-            if type(el) == str:
+            col.setEnabled(True)
+            if col.objectName() == 'SampleID':
+                col.itemDoubleClicked.connect(self._viewer)
+            if col.objectName() in configuration.cfg.options('STIM_DEFS'):
+                self._listExtract(col)
+            elif col.objectName() in configuration.cfg.options('ROI_DEFS'):
                 self._strExtract(col)
-            elif type(el) is np.int64:
-                self._numExtract(col)
-            elif type(el) is np.float64:
+            elif type(el) == str:
+                self._strExtract(col)
+            elif type(el) in configuration.num_types:
                 self._numExtract(col)
             else:
                 self._unsupportedType(col)
@@ -111,9 +112,11 @@ class TabPage(QtGui.QWidget):
         self.ui.BtnJupyter.setDisabled(True)
         self.ui.BtnCopyFilters.setDisabled(True)
         
-    def _setExtract(self, col):
+    def _listExtract(self, col):
+        col.addItems(list(set([a for b in self.df[col.objectName()].tolist() for a in b])))
+
         # Yes I know this is abominable. I'm open to suggestions!
-        col.addItems(list(set(chain(*self.df[col.objectName()].apply(lambda el:list(ast.literal_eval(el)))))))# At this point I'm writing with a lisp.
+        # col.addItems(list(set(chain(*self.df[col.objectName()].apply(lambda el:list(ast.literal_eval(el)))))))# At this point I'm writing with a lisp.
     
     def _strExtract(self, col):
         col.addItems(list(set(self.df[col.objectName()])))
@@ -126,31 +129,70 @@ class TabPage(QtGui.QWidget):
         for col in self.ui.listw_:
             col.addItem('Empty DataFrame')
             col.setDisabled(True)
+
     def _unsupportedType(self, col):
-        col.addItems(['Unsupported type: ', str(type(self.df[col.objectName()][0]))])
+        col.addItems(['Unsupported type: ', str(type(self.df[col.objectName()][self.minIndex]))])
         col.setDisabled(True)
+
     def setupWorkEnv(self):
         pass
+
     def _copyFilterClipboard(self):
         cb = QtGui.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard )
         cb.setText('\n'.join(self.filtLogPandas.split('!&&!')), mode=cb.Clipboard)
         
-    def __repr__(self):
+    def __repr__(self, filepath):
         filtLog = '\n'.join(self.filtLogPandas.split('!&&!'))
         return 'TabPage()\nDataFrame: {}\nFilter Log: {}\n'.format(self.df, filtLog)
-        
+
+    def _viewer(self):
+        pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
+
+        ## Create window with ImageView widget
+        self.viewerWindow = QtGui.QMainWindow()
+        self.viewerWindow.resize(1458, 931)
+        self.viewer = pyqtgraphCore.ImageView()
+        self.viewerWindow.setCentralWidget(self.viewer)
+        #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
+        self.viewerWindow.setWindowTitle('Mesmerize - Viewer - Project Browser Instance')
+
+        ## Set a custom color map
+        colors = [
+            (0, 0, 0),
+            (45, 5, 61),
+            (84, 42, 55),
+            (150, 87, 60),
+            (208, 171, 141),
+            (255, 255, 255)
+        ]
+        cmap = pyqtgraphCore.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
+        self.viewer.setColorMap(cmap)
+
+        # self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
+
+        self.viewerWindow.show()
+        '''***************************************************************************************************************
+        >>>>>>>>>>>>>>>>>>>>>>>> GET THE IMG PIK PATH AND TIFF PATH FROM THE SAME ROW AS THE SAMPLE ID!! <<<<<<<<<<<<<<<<
+        *****************************************************************************************************************'''
+        self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
+        self.viewer.ui.btnSaveChangesToProj.clicked.connect(self._saveSampleChanges)
+
+    def _saveSampleChanges(self):
+        if QtGui.QMessageBox.warning(self, 'Overwrite Sample data in DataFrame?', 'Are you sure you want to overwrite the ' +\
+                  'data for this SampleID in the root DataFrame?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+            return
+        pass
+
+
 #    def loadFile(self, selection):
 #        pass
 
 # Window for containing the tabs for each dataframe
 class Window(QtWidgets.QWidget):
-    def __init__(self, dfRoot, exclude=[], special={}):
+    def __init__(self, dfRoot):
         super().__init__()
         self.tabs = QtWidgets.QTabWidget()
-
-        self.exclude = exclude
-        self.special = special
         
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.tabs)
@@ -164,12 +206,12 @@ class Window(QtWidgets.QWidget):
 
 
     
-    # 
+
     def addNewTab(self, df, tabTitle, filtLog, filtLogPandas):
         # Adds a new tab, places an instance of TabPage widget which is displayed in the whole tab.
         self.tabs.addTab(TabPage(self.tabs), tabTitle)
         # Setup the GUI in that tab
-        self.tabs.widget(self.tabs.count() - 1).setupGUI(df, self.exclude, self.special)
+        self.tabs.widget(self.tabs.count() - 1).setupGUI(df)
         # Populate the list in that tab according to its dataframe attribute
         self.tabs.widget(self.tabs.count() - 1).updateDf()
         # Allow all tabs to be closed except for the tab with the Root dataframe
@@ -186,7 +228,19 @@ class Window(QtWidgets.QWidget):
             self.tabs.widget(self.tabs.count() - 1).ui.BtnApply_[i].clicked.connect(partial(self.applyFilterBtnPressed, i))
         
         self.tabs.setCurrentIndex(self.tabs.count() - 1)
-        
+
+    def refreshRoot(self, newdf):
+        oldRoot = self.tabs.widget(0)
+
+        self.addNewTab(newdf, '>>R', oldRoot.filtLog, oldRoot.filtLogPandas)
+        self.tabs.widget(0).df = None
+        self.tabs.removeTab(0)
+        self.tabs.tabBar().moveTab(self.tabs.count()-1, 0)
+        self.tabs.widget(0).setupGUI(newdf)
+        bar = self.tabs.tabBar()
+        bar.setTabButton(0, bar.RightSide, None)
+
+
     ''' >>>>>> USE loc FOR FILTERING AND CREATE BOOLEAN ARRAY FOR ENTIRE DATAFRAME
         >>>>>> THAT INCLUDES ALL FILTERES AND THEN APPLY TO THE DATAFRAME <<<<<<<<
         ****** USING A DECORATOR SHOULD MAKE IT EASIER TO LOG??? ********* '''
@@ -271,8 +325,7 @@ class Window(QtWidgets.QWidget):
             self.tabs.currentWidget().filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
             self.tabs.currentWidget().updateDf()
 
-    def updateCfg(self):
-        pass
+        # self.tabs.widget(0).df[]
 # class MainWindow(QtGui.QMainWindow):
 #     def __init__(self):
 #         QtGui.QMainWindow.__init__(self)

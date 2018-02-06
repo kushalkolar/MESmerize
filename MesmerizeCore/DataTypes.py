@@ -23,6 +23,7 @@ import numpy as np
 from PyQt5 import QtGui
 from pyqtgraphCore import fn
 import csv
+from . import configuration
 
 def fix_fp_errors(n):
     fix = np.round(n, decimals=1) + 0.0
@@ -57,9 +58,7 @@ class ImgData():
         dm, origin = maps
 
         if dm is None:
-            self._stimMaps = None
             return
-
 
         self._stimMaps = {}
 
@@ -91,8 +90,10 @@ class ImgData():
 
                     self._stimMaps[ch_dict['channel_name']] = current_map
 
-                except (KeyError, IndexError):
-                    QtGui.QMessageBox.information(None, 'FYI: Missing channels in current image', 'Voltage values not found for: "' + str(ch_dict['channel_name']) + '" in <' + str(machine_channel) + '>', QtGui.QMessageBox.Ok)
+                except (KeyError, IndexError) as e:
+                    QtGui.QMessageBox.information(None, 'FYI: Missing channels in current image',
+                          'Voltage values not found for: "' + str(ch_dict['channel_name']) +\
+                          '" in <' + str(machine_channel) + '>.\n' + str(e), QtGui.QMessageBox.Ok)
 
             return
         
@@ -103,32 +104,53 @@ class ImgData():
                 currentMap = []
                 current_map = []
 
-                with open(file, newline='') as csvfile:
-                    f = csv.reader(csvfile, delimiter=',')
+                try:
+                    with open(file, newline='') as csvfile:
+                        f = csv.reader(csvfile, delimiter=',')
 
-                    for row in f:
-                        currentMap.append(row)
+                        for row in f:
+                            currentMap.append(row)
+                except IOError as e:
+                    QtGui.QMessageBox.warning(None, 'Invalid Map file!',
+                          'IOError while reading the file.\n' + str(e))
+                    return
 
-                rmap = currentMap[1:]
+                try:
+                    rmap = currentMap[1:]
+                except IndexError as e:
+                    QtGui.QMessageBox.warning(None, 'Invalid Map file!',
+                          'This does not appear to be a stimulus map file! ' +\
+                          'It is not formatted correctly..\n' + str(e))
+                    return
 
                 colors = {}
-
                 i = 0
-                while rmap[i][1] != 'tstart':
-                    colors[rmap[i][0]] = fn.mkColor(rmap[i][1])
-                    i += 1
+                try:
+                    while rmap[i][1] != 'tstart':
+                        colors[rmap[i][0]] = fn.mkColor(rmap[i][1])
+                        i += 1
+                except (IndexError, UnboundLocalError) as e:
+                    QtGui.QMessageBox.warning(None, 'Invalid Map file!',
+                          'This does not appear to be a stimulus map file! ' +\
+                          'It is not formatted correctly.\n' + str(e))
+                    return
 
-                for r in range(i, len(rmap)):
+                try:
+                    for r in range(i, len(rmap)):
 
-                    if rmap[r][1] == 'tstart':
-                        rmap[r][2] = int(0)
-                        continue
+                        if rmap[r][1] == 'tstart':
+                            rmap[r][2] = int(0)
+                            continue
 
-                    if int(rmap[r][1]) == int(rmap[r-1][2]):
-                        rmap[r][1] = int(rmap[r][1]) + 1
+                        if int(rmap[r][1]) == int(rmap[r-1][2]):
+                            rmap[r][1] = int(rmap[r][1]) + 1
 
-                    current_map.append([ [rmap[r][0], colors[rmap[r][0]] ],
-                                         (int(rmap[r][1]) * 24, int(rmap[r][2]) * 24)])
+                        current_map.append([ [rmap[r][0], colors[rmap[r][0]] ],
+                                             (int(rmap[r][1]) * 24, int(rmap[r][2]) * 24)])
+                except (IndexError, ValueError) as e:
+                    QtGui.QMessageBox.warning(None, 'Invalid Map file!',
+                          'This does not appear to be a stimulus map file! ' + \
+                          'It is not formatted correctly..\n' + str(e))
 
                 self._stimMaps[file.split('/')[-1].split('.csv')[0]] = current_map
 

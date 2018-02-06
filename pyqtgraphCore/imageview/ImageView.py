@@ -45,8 +45,8 @@ from .. import getConfigOption
 from MesmerizeCore import stimMapWidget
 from MesmerizeCore.caimanMotionCorrect import caimanPipeline
 from MesmerizeCore.packager import viewerWorkEnv
+from MesmerizeCore import configuration
 import time
-import configparser
 import pickle
 import tifffile
 from functools import partial
@@ -185,6 +185,7 @@ class ImageView(QtGui.QWidget):
 
         self.ui.btnOpenMesFiles.clicked.connect(self.promptFileDialog)
         self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
+        self.ui.btnImportSMap.clicked.connect(self.importCSVMap)
 
         self.mesfileMap = None
         self.ui.listwMesfile.itemDoubleClicked.connect(lambda selection:
@@ -207,7 +208,6 @@ class ImageView(QtGui.QWidget):
 
         self.ui.comboBoxStimMaps.setDisabled(True)
         self.ui.comboBoxStimMaps.currentIndexChanged[str].connect(self.displayStimMap)
-        self.proj_stim_channel_names = []
 
         #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
 
@@ -261,6 +261,12 @@ class ImageView(QtGui.QWidget):
 
         self.initROIPlot()
         self.enableUI(False)
+        self.update_from_config()
+
+    def update_from_config(self):
+        self.ui.listwROIDefs.clear()
+        self.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in configuration.cfg.options('ROI_DEFS')])
+        self.setSelectedROI()
 
 
     def initROIPlot(self):
@@ -275,8 +281,6 @@ class ImageView(QtGui.QWidget):
         self.ui.roiPlot.addItem(self.timeLine)
         self.ui.splitter.setSizes([self.height()-35, 35])
         self.ui.roiPlot.hideAxis('left')
-
-
 
         self.keysPressed = {}
         self.playTimer = QtCore.QTimer()
@@ -349,18 +353,14 @@ class ImageView(QtGui.QWidget):
             self.ui.tabWidget.setCurrentWidget(self.ui.tabROIs)
 
         elif origin == 'tiff':
-            csvfiles = None
-
+            self.workEnv = viewerWorkEnv.from_tiff(selection.text())
             if QtGui.QMessageBox.question(self, 'Open Stimulus Maps?',
                                        'Would you like to open stimulus maps for this file?',
                                        QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
-                paths = QtGui.QFileDialog.getOpenFileNames(self, 'Choose map file(s)',
-                                                      '.', '(*.csv)')
+                self.importCSVMap()
 
-                if paths != '':
-                    csvfiles = paths[0]
 
-            self.workEnv = viewerWorkEnv.from_tiff(selection.text(), csvfiles)
+
 
         elif origin == 'splits':
             pass
@@ -387,6 +387,9 @@ class ImageView(QtGui.QWidget):
         self.ui.tabBatchParams.setEnabled(b)
         self.ui.tabROIs.setEnabled(b)
         self.ui.toolBox.setEnabled(b)
+        self.ui.lineEdAnimalID.clear()
+        self.ui.lineEdTrialID.clear()
+        self.ui.lineEdGenotype.clear()
 
     def resetImgScale(self):
         ''' 
@@ -398,15 +401,14 @@ class ImageView(QtGui.QWidget):
                                             self.workEnv.imgdata.seq.T.shape[0]))
 
     def promptFileDialog(self):
-        if self.workEnv is not None:
-            if self.DiscardWorkEnv() is False:
-                return
+        if self.workEnv is not None and self.DiscardWorkEnv() is False:
+            return
         self.ui.listwMesfile.clear()
         # self.ui.listwSplits.clear()
         # self.ui.listwTiffs.clear()
-        filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
+        filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose ONE mes file',
                                                       '.', '(*.mes)')
-        if filelist == '':
+        if len(filelist) == 0:
             return
         try:
             self.mesfile = viewerWorkEnv.load_mesfile(filelist[0][0])
@@ -439,15 +441,14 @@ class ImageView(QtGui.QWidget):
 
 
     def promTiffFileDialog(self):
-        if self.workEnv is not None:
-            if self.DiscardWorkEnv() is False:
-                return
+        if self.workEnv is not None and self.DiscardWorkEnv() is False:
+            return
         self.ui.listwMesfile.clear()
         # self.ui.listwSplits.clear()
         # self.ui.listwTiffs.clear()
         filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
                                                       '.', '(*.tif *tiff)')
-        if filelist == '':
+        if len(filelist[0]) == 0:
             return
 
         files = filelist[0]
@@ -455,13 +456,42 @@ class ImageView(QtGui.QWidget):
         self.ui.listwTiffs.addItems(files)
         self.ui.listwTiffs.setEnabled(True)
 
+
     '''##################################################################################################################
                                             Stimulus Maps methods
     ##################################################################################################################'''
 
+    def importCSVMap(self):
+        paths = QtGui.QFileDialog.getOpenFileNames(self, 'Choose map file(s)',
+                                                   '.', '(*.csv)')
+        if len(paths[0]) == 0:
+            return
+
+        csvfiles = paths[0]
+
+        new_channels = []
+        for file in csvfiles:
+            if file.split('/')[-1].split('.csv')[0] not in configuration.cfg.options('STIM_DEFS'):
+                new_channels.append(file.split('/')[-1].split('.csv')[0])
+
+        if len(new_channels) > 0:
+            QtGui.QMessageBox.warning(self, 'Stimulus Definition not in project!', 'The following stimulus ' + \
+                  ' definitions were not found in your project configuration.\n' + \
+                  '\n'.join(new_channels) + '\nYou must add these' + \
+                  ' stimulus definitions to your project configuration before you can proceed.\nOn the Menubar go to ' + \
+                  '"Edit" -> "Project Configuration" and add this new stimulus, click Save in the config window, and ' + \
+                  'then click "Set ALL Maps" again in this window', QtGui.QMessageBox.Ok)
+            return
+
+        self.workEnv.imgdata.stimMaps = (csvfiles, 'csv')
+        if self.workEnv.imgdata.stimMaps is not None:
+            self.populateStimMapComboBox()
+            self.displayStimMap()
+
+
     def initMesStimMapGUI(self):
         # Initialize stimMapWidget module in the background
-        self.stimMapWin = stimMapWidget.Window(self.mesfile.voltDict, self.proj_stim_channel_names)
+        self.stimMapWin = stimMapWidget.Window(self.mesfile.voltDict)
         self.stimMapWin.resize(520, 120)
         for i in range(0, self.stimMapWin.tabs.count()):
             self.stimMapWin.tabs.widget(i).ui.setMapBtn.clicked.connect(self.storeMesStimMap)
@@ -476,10 +506,13 @@ class ImageView(QtGui.QWidget):
 
     def storeMesStimMap(self):
         empty_channels = []
+        new_channels = []
 
         for i in range(0, self.stimMapWin.tabs.count()):
             if self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text() == '':
                 empty_channels.append(self.stimMapWin.tabs.widget(i).ui.titleLabelChannel.objectName())
+            elif self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text() not in configuration.cfg.options('STIM_DEFS'):
+                new_channels.append(self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text())
 
         if len(empty_channels) > 0:
             empty_channels = '\n'.join(empty_channels)
@@ -488,6 +521,17 @@ class ImageView(QtGui.QWidget):
                                       empty_channels + '\nWould you like to discard these channels' +\
                                       ' and continue?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No):
                 return
+            else:
+                self.stimMapWin.activateWindow()
+        if len(new_channels) > 0:
+            QtGui.QMessageBox.warning(self, 'Stimulus Definition not in project!', 'The following stimulus ' +\
+                ' definitions were not found in your project configuration.\n' +\
+                '\n'.join(new_channels) + '\nYou must add these' +\
+                ' stimulus definitions to your project configuration before you can proceed.\nOn the Menubar go to ' +\
+                '"Edit" -> "Project Configuration" and add this new stimulus, click Save in the config window, and ' +\
+                'then click "Set ALL Maps" again in this window', QtGui.QMessageBox.Ok)
+            self.stimMapWin.activateWindow()
+            return
 
         self.stimMapWin.hide()
 
@@ -950,6 +994,8 @@ class ImageView(QtGui.QWidget):
         # Update the plot to include this ROI which was just added
         self.updatePlot(len(self.workEnv.ROIList)-1)
         self.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList)-1)
+        # So that ROI.tags is never = {}, which would result in NaN's
+        self.setSelectedROI(len(self.workEnv.ROIList)-1)
 
     def setSelectedROI(self, roi=None):
         if type(roi) == PolyLineROI:
@@ -1137,10 +1183,29 @@ class ImageView(QtGui.QWidget):
             self.ui.btnStartBatch.setEnabled(True)
 
     def setSampleID(self):
+        if self.ui.lineEdAnimalID.text() == '' or self.ui.lineEdTrialID.text() == '':
+            QtGui.QMessageBox.warning(self, 'No Sample ID set!', 'You must enter an Animal ID and/or Trial ID'
+                                 ' before you can continue.', QtGui.QMessageBox.Ok)
+            return False
+
         self.workEnv.imgdata.SampleID = self.ui.lineEdAnimalID.text() + '_-_' +  self.ui.lineEdTrialID.text()
         self.workEnv.imgdata.Genotype = self.ui.lineEdGenotype.text()
 
+        if self.workEnv.imgdata.Genotype is None or self.workEnv.imgdata.Genotype == '':
+            if QtGui.QMessageBox.warning(None, 'No Genotype set!', 'You have not entered a genotype for this sample ' +\
+                'Would you like to continue anyways?',QtGui.QMessageBox.Yes,
+                                         QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+
+                return False
+            else:
+                self.workEnv.imgdata.Genotype = 'untagged'
+
+        return True
+
     def addToBatch(self):
+        if self.setSampleID() is False:
+            return
+
         if os.path.isdir(self.projPath + '/.batches/') is False:
             os.mkdir(self.projPath + '/.batches/')
         if self.currBatch is None:
@@ -1153,7 +1218,7 @@ class ImageView(QtGui.QWidget):
         else:
             mc_params = None
 
-        self.setSampleID()
+
 #        SampleID = self.workEnv.imgdata.SampleID
 #
 #        fileName = self.currBatchDir + '/' + SampleID + '_' + str(time.time())
@@ -1180,10 +1245,6 @@ class ImageView(QtGui.QWidget):
         if rval:
             self.ui.listwBatch.addItem(fileName)
             self.ui.btnStartBatch.setEnabled(True)
-
-            self.ui.lineEdAnimalID.clear()
-            self.ui.lineEdTrialID.clear()
-            self.ui.lineEdGenotype.clear()
             self.workEnv.saved = True
 
         else:
@@ -1289,7 +1350,6 @@ class ImageView(QtGui.QWidget):
             return
 
         for ui_element in self.ui.tabBatchParams.children():
-            print(type(ui_element))
             if type(ui_element) != QtWidgets.QLabel:
                 if type(
                         ui_element) == QtWidgets.QSpinBox:  # or QtWidgets.QPushButton or QtWidgets.QCheckBox or QtWidgets.QSpinBox or QtWidgets.QSlider):
@@ -1309,7 +1369,6 @@ class ImageView(QtGui.QWidget):
     def _workEnv_changed(self, element=None):
         if self.workEnv is not None:
             self.workEnv.saved = False
-        print(str(element) + ' has been changed')
 
 #    def roiClicked(self):
 #        showRoiPlot = False

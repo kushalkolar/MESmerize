@@ -29,6 +29,7 @@ import tifffile
 from PyQt5 import QtGui
 from pyqtgraphCore import PolyLineROI
 import os
+from . import configuration
 
 
 # class mesfile2workEnv():
@@ -138,11 +139,6 @@ class viewerWorkEnv():
         return d
 
     def to_pickle(self, dirPath, mc_params=None):
-        if self.imgdata.SampleID is None:
-            QtGui.QMessageBox.warning(None, 'No Sample ID set!', 'You must enter an Animal ID and/or Trial ID'
-                                                                 'before you can continue.', QtGui.QMessageBox.Ok)
-            return False, None
-
         if mc_params is not None:
             rigid_params, elas_params = mc_params
         try:
@@ -175,12 +171,30 @@ class viewerWorkEnv():
         self._saved = False
 
         stimMapsSet = {}
+        new_stims = []
+        if self.imgdata.stimMaps is None:
+            stimMapsSet = ['No_Stims']
+        else:
+            for stimMap in self.imgdata.stimMaps:
+                stimList = []
+                for stim in self.imgdata.stimMaps[stimMap]:
+                    if stim is None:
+                        stim = 'untagged'
+                    stimList.append(stim[0][0])
+                stimMapsSet[stimMap] = list(set(stimList))
 
-        for stimMap in self.imgdata.stimMaps:
-            stimList = []
-            for stim in self.imgdata.stimMaps[stimMap]:
-                stimList.append(stim[0][0])
-            stimMapsSet[stimMap] = list(set(stimList))
+                for key in configuration.cfg.options('STIM_DEFS'):
+                    if key not in self.imgdata.stimMaps.keys():
+                        stimMapsSet[key] = ['untagged']
+
+                for stim in stimMapsSet[stimMap]:
+                    if stim not in configuration.cfg['ALL_STIMS'].keys():
+                        new_stims.append(stim)
+
+        print(stimMapsSet)
+
+        configuration.cfg['ALL_STIMS'] = {**configuration.cfg['ALL_STIMS'], **dict.fromkeys(new_stims)}
+        configuration.saveConfig()
 
         if self.imgdata.meta is not None:
             try:
@@ -203,7 +217,8 @@ class viewerWorkEnv():
             d = {'SampleID': self.imgdata.SampleID,
                  'CurvePath': curvePath,
                  'ImgPath': imgPath + '.tiff',
-                 'ImgInfoPath': imgPath + '.pik'}
+                 'ImgInfoPath': imgPath + '.pik',
+                 'Genotype': self.imgdata.Genotype}
 
             dicts.append({**d, **stimMapsSet, 'Date': date, **self.ROIList[ix].tags})
 

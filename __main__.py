@@ -13,7 +13,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE
 from MesmerizeCore import ProjBrowser
-from MesmerizeCore import configwindow
+from MesmerizeCore import ConfigWindow
+from MesmerizeCore import configuration
 from pyqtgraphCore.graphicsItems.InfiniteLine import *
 import pyqtgraphCore
 import numpy as np
@@ -53,6 +54,7 @@ class MainWindow(QtGui.QMainWindow):
         self.projName = None
         self.setWindowTitle('Mesmerize')
         self.initMenuBar()
+        self.resize(1000,845)
     def initMenuBar(self):
         self.menubar = self.menuBar()
 
@@ -84,7 +86,7 @@ class MainWindow(QtGui.QMainWindow):
         editMenu = self.menubar.addMenu('&Edit')
 
         changeConfig = editMenu.addAction('Project Configuration')
-        changeConfig.triggered.connect(self.openCfgWindow)
+        changeConfig.triggered.connect(self.openConfigWindow)
 
 
     def newProjFileDialog(self):
@@ -104,85 +106,19 @@ class MainWindow(QtGui.QMainWindow):
 
 #            self.projDf.to_csv(self.projDfFilePath, index=False)
 
-
     def newProj(self):
+        self.checkProjOpen()
         self.setupProjPaths()
 
-        self.config = configwindow
+        self.configwin = ConfigWindow
 
-        self.config.newConfig(self.projCfgPath)
+        configuration.newConfig()
 
-        self.openCfgWindow()
+        self.openConfigWindow()
 
-        self.cfgWindow.tabs.widget(0).ui.btnSave.clicked.connect(self.createNewDf)
+        self.configwin.tabs.widget(0).ui.btnSave.clicked.connect(self.createNewDf)
 
-    def setupProjPaths(self, checkPaths=False):
-
-        self.projDfsDir = self.projPath + '/dataframes'
-        self.projCfgPath = self.projPath + '/config.cfg'
-        self.projRootDfPath = self.projDfsDir + '/root.mzp'
-        self.projName = self.projPath.split('/')[-1]
-
-
-        if checkPaths:
-            if os.path.isdir(self.projDfsDir) == False:
-                QtGui.QMessageBox.warning(self, 'Project DataFrame Directory not found!', 'The selected directory is ' +\
-                    'not a valid Mesmerize Project since it doesn\'t contain a DataFrame directory!',
-                                          QtGui.QMessageBox.Ok)
-                return False
-            if (os.path.isfile(self.projRootDfPath) == False):
-                QtGui.QMessageBox.warning(self, 'Project Root DataFrame not found!',
-                                           'The selected directory does Not contain a Root DataFrame!', QtGui.QMessageBox.Ok)
-                return False
-
-            if os.path.isfile(self.projCfgPath) == False:
-                if QtGui.QMessageBox.warning(self, 'Project Config file not found!', 'The selected project does not ' +\
-                                            'contain a config file. Would you like to create one now?\nYou cannot proceed'
-                                            'without a config file.',
-                                          QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
-                    return False
-
-        if checkPaths == False:
-            os.mkdir(self.projDfsDir)
-            os.mkdir(self.projPath + '/images')
-            os.mkdir(self.projPath + '/curves')
-
-        self.setWindowTitle('Mesmerize - ' + self.projName)
-
-    def createNewDf(self):
-        include = self.config.cfg.options('INCLUDE')
-        exclude = self.config.cfg.options('EXCLUDE')
-
-        cols = include + exclude
-
-        self.projDf = packager.empty_df(cols)
-        assert isinstance(self.projDf, pd.DataFrame)
-        self.projDf.to_pickle(self.projRootDfPath, protocol=4)
-
-        self.cfgWindow.tabs.widget(0).ui.btnSave.clicked.disconnect(self.createNewDf)
-
-        # Start the Project Browser loaded with the dataframe columns in the listwidget
-        self.initProjBrowser()
-
-
-    def openCfgWindow(self):
-        self.cfgWindow = self.config.Window(self.projCfgPath)
-        self.cfgWindow.tabs.widget(0).ui.btnSave.clicked.connect(self.updateCurrentConfiguration)
-        self.cfgWindow.resize(593, 617)
-        self.cfgWindow.show()
-
-    def updateCurrentConfiguration(self):
-        if self.viewer is not None:
-            self.viewer.ui.listwROIDefs.clear()
-            self.viewer.ui.listwROIDefs.addItems(self.config.cfg.options('ROI_DEFS'))
-            self.viewer.setSelectedROI()
-
-        if self.projBrowserWin is not None:
-            self.projBrowserWin.updateCfg(self.config)
-
-        ''' >>> ALSO UPDATE DATAFRAME COLUMNS ACCORDING TO UPDATED CONFIGURATION'''
-
-    def openProjFileDialog(self):
+    def checkProjOpen(self):
         if (self.viewer is not None):
             if QtGui.QMessageBox.warning(self, 'Close Viewer Window?', 'Would you like to discard any ' +\
                                                                      'unsaved work in your Viewer window?',
@@ -201,6 +137,82 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 return
 
+    def setupProjPaths(self, checkPaths=False):
+
+        self.projDfsDir = self.projPath + '/dataframes'
+        configuration.configpath = self.projPath + '/config.cfg'
+        self.projRootDfPath = self.projDfsDir + '/root.mzp'
+        self.projName = self.projPath.split('/')[-1]
+
+
+        if checkPaths:
+            if os.path.isdir(self.projDfsDir) == False:
+                QtGui.QMessageBox.warning(self, 'Project DataFrame Directory not found!', 'The selected directory is ' +\
+                    'not a valid Mesmerize Project since it doesn\'t contain a DataFrame directory!',
+                                          QtGui.QMessageBox.Ok)
+                return False
+            if (os.path.isfile(self.projRootDfPath) == False):
+                QtGui.QMessageBox.warning(self, 'Project Root DataFrame not found!',
+                                           'The selected directory does Not contain a Root DataFrame!', QtGui.QMessageBox.Ok)
+                return False
+
+            if os.path.isfile(configuration.configpath) == False:
+                if QtGui.QMessageBox.warning(self, 'Project Config file not found!', 'The selected project does not ' +\
+                                            'contain a config file. Would you like to create one now?\nYou cannot proceed'
+                                            'without a config file.',
+                                          QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+                    return False
+
+        if checkPaths == False:
+            os.mkdir(self.projDfsDir)
+            os.mkdir(self.projPath + '/images')
+            os.mkdir(self.projPath + '/curves')
+
+        self.setWindowTitle('Mesmerize - ' + self.projName)
+
+    def createNewDf(self):
+        self.configwin.tabs.widget(0).ui.btnSave.clicked.disconnect(self.createNewDf)
+
+        include = configuration.cfg.options('INCLUDE')
+        exclude = configuration.cfg.options('EXCLUDE')
+
+        cols = include + exclude
+
+        self.projDf = packager.empty_df(cols)
+        assert isinstance(self.projDf, pd.DataFrame)
+        self.projDf.to_pickle(self.projRootDfPath, protocol=4)
+
+        # Start the Project Browser loaded with the dataframe columns in the listwidget
+        self.initProjBrowser()
+
+
+    def openConfigWindow(self):
+        self.configwin = ConfigWindow.Window()
+        self.configwin.tabs.widget(0).ui.btnSave.clicked.connect(self.update_all_from_config)
+        self.configwin.resize(593, 617)
+        self.configwin.show()
+
+    def update_all_from_config(self):
+        self.configwin.tabs.widget(0).ui.btnSave.clicked.disconnect(self.update_all_from_config)
+
+        if self.viewer is not None:
+            self.viewer.update_from_config()
+
+        if self.projBrowserWin is not None:
+            for col in configuration.cfg.options('ROI_DEFS') + configuration.cfg.options('STIM_DEFS'):
+                if col not in self.projDf.columns:
+                    self.projDf[col] = 'untagged'
+
+        copyfile(self.projRootDfPath, self.projRootDfPath + '_BACKUP' + str(time.time()))
+        self.projDf.to_pickle(self.projRootDfPath, protocol=4)
+        QtGui.QMessageBox.information(self, 'Config saved, restart.', 'You must restart Mesmerize and re-open your '
+                                            'project for changes to take effect.')
+
+        ''' >>> ALSO UPDATE DATAFRAME COLUMNS ACCORDING TO UPDATED CONFIGURATION'''
+
+    def openProjFileDialog(self):
+        self.checkProjOpen()
+
         self.projPath = QtGui.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
 
         if self.projPath == '':
@@ -212,33 +224,18 @@ class MainWindow(QtGui.QMainWindow):
     def openProj(self):
         self.projDf = pd.read_pickle(self.projRootDfPath)
         assert isinstance(self.projDf, pd.DataFrame)
-        self.config = configwindow
-        self.config.openConfig(self.projCfgPath)
+        configuration.openConfig()
+        self.configwin = ConfigWindow
         self.projName = self.projPath.split('/')[-1][:-4]
         # Start the Project Browser loaded with the dataframe columns in the listwidget
         self.initProjBrowser()
         
     def initProjBrowser(self):
-        special = {'Timings': self.config.cfg.options('STIM_DEFS')}
 
-        self.projBrowserWin = ProjBrowser.Window(self.projDf, exclude=self.config.cfg.options('EXCLUDE'), special=special)
+        self.projBrowserWin = ProjBrowser.Window(self.projDf)
 
         self.setCentralWidget(self.projBrowserWin)
 
-        # self.projBrowser.resize(1000,840)
-        # self.projBrowser.show()
-        
-        ## Create window with Project Explorer widget
-#        self.projectWindow = QtGui.QMainWindow()
-#        self.projectWindow.resize(1000,800)
-#        self.projectWindow.setWindowTitle('Mesmerize - Project Browser')
-#        self.projBrowser = ProjBrowser()
-#        self.projectWindow.setCentralWidget(self.projBrowser)
-#        exclude = ['ImgPath', 'ROIhandles', 'ImgInfoPath', 'CurvePath']
-#        
-#        special = {'Timings': 'StimSet'}
-#        self.projBrowser.setupGUI(projDataFrame, exclude, special)
-#        self.projectWindow.show()
         if self.viewer is None:
             self.initViewer()
         #self.projBrowser.ui.openViewerBtn.clicked.connect(self.viewerWindow.show())
@@ -273,8 +270,6 @@ class MainWindow(QtGui.QMainWindow):
         self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
         self.viewerWindow.show()
 
-        self.viewer.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in self.config.cfg.options('ROI_DEFS')])
-        self.viewer.proj_stim_channel_names = self.config.cfg.options('STIM_DEFS')
         self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
 
         viewMenu = self.menubar.addMenu('&View')
@@ -307,17 +302,17 @@ class MainWindow(QtGui.QMainWindow):
     
     def addWorkEnvToProj(self):
         if self.isProjLoaded():
+            if self.viewer.setSampleID() is False:
+                return
             r, d = self.viewer.workEnv.to_pandas(self.projPath)
             if r is False:
                 return
             copyfile(self.projRootDfPath, self.projRootDfPath + '_BACKUP' + str(time.time()))
-
-
             self.projDf = self.projDf.append(pd.DataFrame(d), ignore_index=True)
-
             self.projDf.to_pickle(self.projRootDfPath, protocol=4)
             self.projBrowserWin.tabs.widget(0).df = self.projDf
             self.projBrowserWin.tabs.widget(0).updateDf()
+
             
             
 if __name__ == '__main__':

@@ -8,9 +8,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraphCore import ColorButton
+from functools import partial
 
 class Ui_Form(object):
-    def setupUi(self, Form, voltList, channel, proj_channel_names):
+    def setupUi(self, Form, voltList, channel, proj_channel_names, allstims):
+        voltList.sort(key=float)
         Form.setObjectName("Form")
         Form.resize(500, 150)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -106,6 +108,8 @@ class Ui_Form(object):
             self.aux_1_stimBox[r].setMinimumSize(QtCore.QSize(160, 0))
             self.aux_1_stimBox[r].setMaxVisibleItems(20)
             self.aux_1_stimBox[r].setObjectName("aux_1_stimBox"+str(r))
+            self.aux_1_stimBox[r].addItem('')
+            self.aux_1_stimBox[r].addItems(allstims)
             self.horizontalLayout[r].addWidget(self.aux_1_stimBox[r])
 
             self.stimLineEdit.append(QtWidgets.QLineEdit(self.widget[r]))
@@ -113,7 +117,10 @@ class Ui_Form(object):
             self.stimLineEdit[r].setPlaceholderText("New Stim")
             self.stimLineEdit[r].setObjectName("stimLineEdit")
             self.stimLineEdit[r].setMinimumSize(QtCore.QSize(150,0))
+            self.stimLineEdit[r].textChanged.connect(partial(self.aux_1_stimBox[r].setCurrentIndex, 0))
             self.horizontalLayout[r].addWidget(self.stimLineEdit[r])
+
+            self.aux_1_stimBox[r].currentIndexChanged.connect(self.stimLineEdit[r].clear)
 
             self.aux_1_colorBtn.append(ColorButton())
             sizePolicy.setHeightForWidth(self.aux_1_colorBtn[r].sizePolicy().hasHeightForWidth())

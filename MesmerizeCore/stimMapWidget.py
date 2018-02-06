@@ -18,13 +18,16 @@ sys.path.append('..')
 if __name__ == '__main__':
     #from stimMap_template import *
     from stimMap_one_row_pytemplate import *
+    import configuration
 else:
     from .stimMap_one_row_pytemplate import *
+    from . import configuration
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
 
+
 class Window(QtWidgets.QWidget):
-    def __init__(self, voltagesDict, proj_channel_names):
+    def __init__(self, voltagesDict):
         super().__init__()
         self.voltagesDict = voltagesDict
         self.tabs = QtWidgets.QTabWidget()
@@ -34,7 +37,9 @@ class Window(QtWidgets.QWidget):
         for channel in voltagesDict.keys():
             self.tabs.addTab(TabPage(self.tabs), channel)
             # Setup the GUI in that tab
-            self.tabs.widget(self.tabs.count() -1).setupGUI(voltagesDict[channel], channel, proj_channel_names)
+            self.tabs.widget(self.tabs.count() -1).setupGUI(voltagesDict[channel], channel)
+
+
             self.tabs.widget(self.tabs.count() -1).ui.exportBtn.clicked.connect(self._exportMap)
             self.tabs.widget(self.tabs.count() - 1).ui.importBtn.clicked.connect(self._importMap)
 
@@ -42,6 +47,9 @@ class Window(QtWidgets.QWidget):
         currMap = self._getStimMap()
         exportPath = QtGui.QFileDialog.getSaveFileName(self, 'Export Stimulus Map', '',
                                                        '(*.smap)')
+        if exportPath == '':
+            return
+
         if exportPath[0].endswith('.smap'):
             exportPath = exportPath[0]
 
@@ -52,6 +60,10 @@ class Window(QtWidgets.QWidget):
 
     def _importMap(self):
         path = QtGui.QFileDialog.getOpenFileName(self, 'Import stimulus map file', '', '(*.smap)')
+
+        if path == '':
+            return
+
         dmap = pickle.load(open(path[0], 'rb'))
 
         page = self.tabs.currentWidget()
@@ -91,21 +103,6 @@ class Window(QtWidgets.QWidget):
 
             mes_maps = {**self._getStimMap(page), **mes_maps}
 
-            # machine_channel = self.tabs.widget(c).ui.titleLabelChannel.objectName()
-            # d = {}
-            #
-            # for i in range(0,len(self.tabs.widget(c).ui.labelVoltage)):
-            #     d[self.tabs.widget(c).ui.labelVoltage[i].text()] = [
-            #          str(self.tabs.widget(c).ui.aux_1_stimBox[i].currentText()) +\
-            #          str(self.tabs.widget(c).ui.stimLineEdit[i].text()),
-            #          self.tabs.widget(c).ui.aux_1_colorBtn[i].color()]
-            #
-            # mes_maps[machine_channel] = {}
-            # mes_maps[machine_channel]['channel_name'] = self.tabs.widget(c).ui.lineEdChannelName.text()
-            # mes_maps[machine_channel]['values'] = d
-
-
-
         return mes_maps
 
 
@@ -113,9 +110,10 @@ class TabPage(QtGui.QWidget):
     def __init__(self, parent=None, *args):
         QtGui.QWidget.__init__(self, parent, *args)
 
-    def setupGUI(self, voltList, channel, proj_channel_names):
+    def setupGUI(self, voltList, channel):
         self.ui = Ui_Form()
-        self.ui.setupUi(self, voltList, channel, proj_channel_names)
+        self.ui.setupUi(self, voltList, channel, configuration.cfg.options('STIM_DEFS'),
+                        configuration.cfg.options('ALL_STIMS'))
     # Returns the stimulus definitions as a dictionary where the keys are the voltages.
 
         #bah = ['1', '2', '3']

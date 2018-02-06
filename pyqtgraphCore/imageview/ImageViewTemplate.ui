@@ -861,6 +861,40 @@
                </property>
               </widget>
              </item>
+             <item row="2" column="2">
+              <widget class="QPushButton" name="btnImportSMap">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>10</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Import sMap</string>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </widget>
@@ -1030,7 +1064,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabBatchParams">
        <property name="enabled">
@@ -1762,6 +1796,54 @@ To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</
     <hint type="destinationlabel">
      <x>625</x>
      <y>561</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdAnimalID</sender>
+   <signal>returnPressed()</signal>
+   <receiver>btnSetID</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>162</x>
+     <y>495</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>546</x>
+     <y>489</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdTrialID</sender>
+   <signal>returnPressed()</signal>
+   <receiver>btnSetID</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>499</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>569</x>
+     <y>498</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdGenotype</sender>
+   <signal>returnPressed()</signal>
+   <receiver>btnSetID</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>430</x>
+     <y>503</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>552</x>
+     <y>495</y>
     </hint>
    </hints>
   </connection>
