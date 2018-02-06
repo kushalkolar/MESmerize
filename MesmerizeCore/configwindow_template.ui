@@ -481,6 +481,16 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Base column extraction on:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox"/>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
         <widget class="QPushButton" name="btnClose">
@@ -547,7 +557,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>252</x>
-     <y>538</y>
+     <y>523</y>
     </hint>
    </hints>
   </connection>
@@ -558,12 +568,12 @@
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>511</x>
-     <y>542</y>
+     <x>517</x>
+     <y>527</y>
     </hint>
     <hint type="destinationlabel">
-     <x>563</x>
-     <y>536</y>
+     <x>569</x>
+     <y>521</y>
     </hint>
    </hints>
   </connection>

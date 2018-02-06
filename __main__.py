@@ -52,6 +52,7 @@ class MainWindow(QtGui.QMainWindow):
         self.viewer = None
         self.projBrowserWin = None
         self.projName = None
+        self.projDf = None
         self.setWindowTitle('Mesmerize')
         self.initMenuBar()
         self.resize(1000,845)
@@ -195,20 +196,30 @@ class MainWindow(QtGui.QMainWindow):
     def update_all_from_config(self):
         self.configwin.tabs.widget(0).ui.btnSave.clicked.disconnect(self.update_all_from_config)
 
+        if self.projDf is not None and self.projDf.empty:
+            self.projDf = packager.empty_df(configuration.cfg.options('INCLUDE') + configuration.cfg.options('EXCLUDE'))
+
         if self.viewer is not None:
             self.viewer.update_from_config()
 
         if self.projBrowserWin is not None:
-            for col in configuration.cfg.options('ROI_DEFS') + configuration.cfg.options('STIM_DEFS'):
+
+            for col in configuration.cfg.options('ROI_DEFS'):
                 if col not in self.projDf.columns:
                     self.projDf[col] = 'untagged'
 
-        copyfile(self.projRootDfPath, self.projRootDfPath + '_BACKUP' + str(time.time()))
-        self.projDf.to_pickle(self.projRootDfPath, protocol=4)
-        QtGui.QMessageBox.information(self, 'Config saved, restart.', 'You must restart Mesmerize and re-open your '
-                                            'project for changes to take effect.')
+            for col in configuration.cfg.options('STIM_DEFS'):
+                if col not in self.projDf.columns:
+                    self.projDf[col] = [['untagged']] * len(self.projDf)
 
-        ''' >>> ALSO UPDATE DATAFRAME COLUMNS ACCORDING TO UPDATED CONFIGURATION'''
+            copyfile(self.projRootDfPath, self.projRootDfPath + '_BACKUP' + str(time.time()))
+            self.projDf.to_pickle(self.projRootDfPath, protocol=4)
+            self.projBrowserWin.close()
+            self.projBrowserWin = None
+            self.initProjBrowser()
+        # QtGui.QMessageBox.information(self, 'Config saved, restart.', 'You must restart Mesmerize and re-open your '
+        #                                     'project for changes to take effect.')
+
 
     def openProjFileDialog(self):
         self.checkProjOpen()
@@ -279,9 +290,8 @@ class MainWindow(QtGui.QMainWindow):
     def isProjLoaded(self):
         if self.projName is None:
             answer = QtGui.QMessageBox.question(self.viewer, 'Message', 
-                        'You don''t have any project open! ' +\
-                        'Would you like to start a new project (Yes) or Open a project?', 
-                        QtGui.QMessageBox.Yes, QtGui.QMessageBox.Open)
+                'You don''t have any project open! Would you like to start a new project (Yes) or Open a project?',
+                QtGui.QMessageBox.Yes, QtGui.QMessageBox.Open)
             if answer == QtGui.QMessageBox.Yes:
                 self.newProjFileDialog()
             elif answer == QtGui.QMessageBox.Open:
@@ -304,6 +314,12 @@ class MainWindow(QtGui.QMainWindow):
         if self.isProjLoaded():
             if self.viewer.setSampleID() is False:
                 return
+            if any(self.projDf['SampleID'].str.match(self.viewer.workEnv.imgdata.SampleID)):
+                QtGui.QMessageBox.warning(self, 'Sample ID already exists!', 'The following SampleID already exists'+\
+                          ' in your DataFrame. Use a unique Sample ID for each sample.\n' +\
+                          self.viewer.workEnv.imgdata.SampleID, QtGui.QMessageBox.Ok)
+                return
+
             r, d = self.viewer.workEnv.to_pandas(self.projPath)
             if r is False:
                 return

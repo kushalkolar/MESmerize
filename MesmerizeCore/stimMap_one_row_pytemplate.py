@@ -45,6 +45,12 @@ class Ui_Form(object):
         self.lineEdChannelName.setCompleter(autocompleter)
         self.lineEdChannelName.setObjectName("lineEdChannelName")
 
+        self.btnRefresh = QtWidgets.QPushButton(Form)
+        self.btnRefresh.setGeometry(QtCore.QRect(337, 18, 23, 25))
+        self.btnRefresh.setText('R')
+        self.btnRefresh.setObjectName('btnRefresh')
+        self.btnRefresh.setToolTip('Refresh Stimulus Definitions & tags from config file.')
+
         self.checkBoxAutoColor = QtWidgets.QCheckBox(Form)
         self.checkBoxAutoColor.setGeometry(QtCore.QRect(463, 30, 15, 15))
 

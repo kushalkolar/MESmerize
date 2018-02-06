@@ -42,14 +42,16 @@ class ColumnsPage(QtGui.QWidget):
 
     def _addROIDef(self):
         if self.ui.lineEdNewROIDef.text() != '':
-            self.ui.listwROIDefs.addItem(self.ui.lineEdNewROIDef.text())
-            self.ui.listwInclude.addItem(self.ui.lineEdNewROIDef.text())
+            text = self.ui.lineEdNewROIDef.text().replace(' ', '_')
+            self.ui.listwROIDefs.addItem(text)
+            self.ui.listwInclude.addItem(text)
             self.ui.lineEdNewROIDef.clear()
         
     def _addStimDef(self):
         if self.ui.lineEdNewStimCol.text() != '':
-            self.ui.listwStimDefs.addItem(self.ui.lineEdNewStimCol.text())
-            self.ui.listwInclude.addItem(self.ui.lineEdNewStimCol.text())
+            text = self.ui.lineEdNewStimCol.text().replace(' ', '_')
+            self.ui.listwStimDefs.addItem(text)
+            self.ui.listwInclude.addItem(text)
             self.ui.lineEdNewStimCol.clear()
     
     def _delROIDef(self):
