@@ -110,6 +110,7 @@ class Ui_Form(object):
                 self.listw_[colNum].setAccessibleDescription("")
                 self.listw_[colNum].setObjectName(str(col))
                 self.listw_[colNum].setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+                self.listw_[colNum].setAlternatingRowColors(True)
                 self.gridLayout[colNum].addWidget(self.listw_[colNum], 1, 0, 1, 3)
                 self.lineEdFilter_.append(QtWidgets.QLineEdit(self.widget[colNum]))
                 self.lineEdFilter_[colNum].setAccessibleDescription("")

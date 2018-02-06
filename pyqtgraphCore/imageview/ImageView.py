@@ -156,6 +156,7 @@ class ImageView(QtGui.QWidget):
         # Initialize list of bands that indicate stimulus times
         self.currStimMapBg = []
 #        self.bah ={'bah': []}
+        self.stimMapWin = None
 
 
 #        self.ui.lineEdROIDef1.textChanged.connect(self.updateROItag)
@@ -329,9 +330,8 @@ class ImageView(QtGui.QWidget):
         ======================================================================================
     '''
     def updateWorkEnv(self, selection, origin):
-        if self.workEnv is not None:
-            if self.DiscardWorkEnv() is False:
-                return
+        if self.workEnv is not None and self.DiscardWorkEnv() is False:
+            return
 
         if origin == 'mesfile':
             self.workEnv = viewerWorkEnv.from_mesfile(self.mesfile, selection.text().split('//')[0])
@@ -490,15 +490,20 @@ class ImageView(QtGui.QWidget):
 
 
     def initMesStimMapGUI(self):
+        if self.stimMapWin is not None:
+            self.stimMapWin.close()
+            self.stimMapWin = None
         # Initialize stimMapWidget module in the background
         self.stimMapWin = stimMapWidget.Window(self.mesfile.voltDict)
         self.stimMapWin.resize(520, 120)
         for i in range(0, self.stimMapWin.tabs.count()):
             self.stimMapWin.tabs.widget(i).ui.setMapBtn.clicked.connect(self.storeMesStimMap)
+            self.stimMapWin.tabs.widget(i).ui.btnRefresh.clicked.connect(self.initMesStimMapGUI)
         # If user wants to change the map for this particular ImgData object
         self.ui.btnChangeSMap.clicked.connect(self.stimMapWin.show)
         # If user wants to set the map back to the one for the entire mes file
         self.ui.btnResetSMap.clicked.connect(self.resetStimMap)
+
 
     def resetStimMap(self):
         self.workEnv.imgdata.stimMaps = (self.mesfileMap, 'mesfile')
@@ -959,6 +964,7 @@ class ImageView(QtGui.QWidget):
     '''
 
     def addROI(self):
+        self._workEnv_changed()
         ''' Method for adding PolyROI's to the plot '''
         #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
         #self.ROICurve = self.ui.roiPlot.plot()
@@ -966,6 +972,7 @@ class ImageView(QtGui.QWidget):
         # Create polyROI instance
         self.workEnv.ROIList.append(PolyLineROI([[0,0], [10,10], [30,10]],
                                                 closed=True, pos=[0,0], removable=True))
+        self.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.cfg.options('ROI_DEFS'), '')
         # Create new plot instance for plotting the newly created ROI
         self.curve = self.ui.roiPlot.plot()
         self.workEnv.CurvesList.append(self.curve)
@@ -1014,7 +1021,10 @@ class ImageView(QtGui.QWidget):
         self.workEnv.ROIList[ID].show()
 
         if self.priorlistwROIsSelection is not None:
-            self.workEnv.ROIList[self.priorlistwROIsSelection].setMouseHover(False)
+            try:
+                self.workEnv.ROIList[self.priorlistwROIsSelection].setMouseHover(False)
+            except IndexError:
+                pass
 
         self.priorlistwROIsSelection = ID
 
@@ -1256,7 +1266,7 @@ class ImageView(QtGui.QWidget):
         self.ui.progressBar.setValue(1)
         for i in range(0, batchSize):
             cp = caimanPipeline(self.ui.listwBatch.item(i).text())
-            self.ui.btnAbord.setEnabled(True)
+            self.ui.btnAbort.setEnabled(True)
             ''' USE AN OBSERVER PATTERN TO SEE WHEN THE PROCESS IS DONE!!!'''
             cp.start()
             print('>>>>>>>>>>>>>>>>>>>> Starting item: ' + str(i) + ' <<<<<<<<<<<<<<<<<<<<')
@@ -1269,7 +1279,7 @@ class ImageView(QtGui.QWidget):
             self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
             # self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
 #            self.ui.progressBar.setValue(100/batchSize)
-        self.ui.abortBtn.setDisabled(True)
+        self.ui.btnAbort.setEnabled(True)
         self.ui.progressBar.setValue(0)
         self.ui.progressBar.setDisabled(True)
 

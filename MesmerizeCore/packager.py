@@ -127,6 +127,10 @@ class viewerWorkEnv():
                 if self.ROIList[ix].tags[roi_def] == '':
                     self.ROIList[ix].tags[roi_def] = 'untagged'
 
+            for roi_def in configuration.cfg.options('ROI_DEFS'):
+                if roi_def not in self.ROIList[ix].tags.keys():
+                    self.ROIList[ix].tags[roi_def] = 'untagged'
+
         roi_states = []
         for roi in self.ROIList:
             roi_states.append(roi.saveState())
@@ -173,7 +177,8 @@ class viewerWorkEnv():
         stimMapsSet = {}
         new_stims = []
         if self.imgdata.stimMaps is None:
-            stimMapsSet = ['No_Stims']
+            for stim_def in configuration.cfg.options('STIM_DEFS'):
+                stimMapsSet[stim_def] = ['untagged']
         else:
             for stimMap in self.imgdata.stimMaps:
                 stimList = []
