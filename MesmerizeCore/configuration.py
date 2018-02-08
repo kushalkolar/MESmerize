@@ -17,7 +17,7 @@ cfg = configparser.RawConfigParser(allow_no_value=True)
 cfg.optionxform = str
 
 configpath = None
-
+projPath = None
 special = {}
 
 num_types = [int, float, np.int64, np.float64]
