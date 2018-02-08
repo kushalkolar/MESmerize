@@ -140,10 +140,6 @@ class viewerWorkEnv():
             roi_states.append(self.ROIList[ID].saveState())
         d['roi_states'] = roi_states
 
-        #
-        # if len(self.CurvesList) > 0:
-        #     d['CurvesList'] = self.CurvesList
-
         return d
 
     def to_pickle(self, dirPath, mc_params=None, filename=None):
