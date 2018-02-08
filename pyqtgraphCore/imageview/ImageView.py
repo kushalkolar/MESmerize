@@ -144,13 +144,7 @@ class ImageView(QtGui.QWidget):
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
         # don't exist for certain cases.
-
         self.workEnv = None
-#        self.workEnvOrigin = None
-#        self.workEnv.imgdata = None
-#        self.mesfile = None
-#        self.MesfileMap = None
-        self.ui.splitter.setEnabled(False)
         self.currBatch = None
 
         # Initialize list of bands that indicate stimulus times
@@ -163,10 +157,9 @@ class ImageView(QtGui.QWidget):
         self.ui.checkBoxShowAllROIs.clicked.connect(self.setSelectedROI)
         self.priorlistwROIsSelection = None
 
-        # ***** SHOULD USE PYQTGRAPH COLORMAP FUNCTION INSTEAD ****
         self.ROIcolors=['m','r','y','g','c']
 
-        # Connect all the button signals
+        # Connect many UI signals
         self.ui.btnTiffPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
         self.ui.btnSplitsPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
         self.ui.btnMesPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
@@ -194,7 +187,7 @@ class ImageView(QtGui.QWidget):
                                                         self.updateWorkEnv(selection, origin='splits'))
         self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
                                                       self.updateWorkEnv(selection, origin='MotCor'))
-        self.ui.btnAddROI.clicked.connect(lambda: self.addROI())
+        self.ui.btnAddROI.clicked.connect(self.addROI)
         self.ui.listwBatch.itemSelectionChanged.connect(self.setSelectedROI)
         self.ui.rigMotCheckBox.clicked.connect(self.checkSubArray)
 
@@ -230,21 +223,7 @@ class ImageView(QtGui.QWidget):
 
         self.menu = None
 
-#        self.ui.normGroup.hide()
-#        #self.roi = PlotROI(10)
-#        self.roi.setZValue(20)
-#        #self.view.addItem(self.roi)
-#        #self.roi.hide()
-#        self.normRoi = PlotROI(10)
-#        self.normRoi.setPen('y')
-#        self.normRoi.setZValue(20)
-#        self.view.addItem(self.normRoi)
-#        self.normRoi.hide()
-
-        #self.roiCurve = self.ui.roiPlot.plot()
-
-        self.ui.roiPlot.registerPlot(self.name + '_ROI')# I don't know what this does,
-                                                        # It was included with the original ImageView class
+        self.ui.roiPlot.registerPlot(self.name + '_ROI')  # I don't know what this does, It was included with the original ImageView class
         self.view.register(self.name)
 
         self.noRepeatKeys = [QtCore.Qt.Key_Right, QtCore.Qt.Key_Left, QtCore.Qt.Key_Up,
@@ -252,21 +231,29 @@ class ImageView(QtGui.QWidget):
 
         self.watcherStarted = False
 
+        # This is the splitter separating the ImageView and ROI Plot
+        self.ui.splitter.setEnabled(False)
+
+        # Set starting sizes of the other splitters
         self.ui.splitterHighest.setSizes([700, 160])
         self.ui.splitterFilesImage.setSizes([200, 500])
 
+        # List for holding the linear regions that are used to illustrate the stimulus timings on the background
+        # of the timeline in the ROI plot
         self.currStimMapBg = []
 
         self.initROIPlot()
         self.enableUI(False)
+
         self.update_from_config()
 
+        # For illustrating the quilt on the image to assist with setting motion correction parameters
         self.ui.sliderOverlaps.valueChanged.connect(self.drawStrides)
         self.ui.sliderStrides.valueChanged.connect(self.drawStrides)
         self.overlapsV = []
         self.overlapsH = []
 
-    # Update stuff from project configuration
+    # Called from __main__ when btnSave in ConfigWindow is clicked.
     def update_from_config(self):
         self.ui.listwROIDefs.clear()
         self.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in configuration.cfg.options('ROI_DEFS')])
@@ -305,22 +292,6 @@ class ImageView(QtGui.QWidget):
             setattr(self, fn, getattr(self.ui.histogram, fn))
 
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
-        #self.ui.roiBtn.clicked.connect(self.roiClicked)
-
-
-        #self.roi.sigRegionChanged.connect(self.roiChanged)
-        #self.ui.normBtn.toggled.connect(self.normToggled)
-#        self.ui.menuBtn.clicked.connect(self.menuClicked)
-#        self.ui.normDivideRadio.clicked.connect(self.normRadioChanged)
-#        self.ui.normSubtractRadio.clicked.connect(self.normRadioChanged)
-#        self.ui.normOffRadio.clicked.connect(self.normRadioChanged)
-#        self.ui.normROICheck.clicked.connect(self.updateNorm)
-#        self.ui.normFrameCheck.clicked.connect(self.updateNorm)
-#        self.ui.normTimeRangeCheck.clicked.connect(self.updateNorm)
-
-
-#        self.normProxy = SignalProxy(self.normRgn.sigRegionChanged, slot=self.updateNorm)
-#        self.normRoi.sigRegionChangeFinished.connect(self.updateNorm)
 
     '''##############################################################################################################
                                 Work Environment Creation & open file dialogs
@@ -329,9 +300,18 @@ class ImageView(QtGui.QWidget):
     def updateWorkEnv(self, selection, origin, iterate=False, qtsig=True):
         ''' ======================================================================================
             Set the ImgData object and pass the .seq of the ImgData object to setImage().
-            Argumments:
-                selection : object returned from self.ui.listwMesfile.itemDoubleClicked
-            ======================================================================================
+            :param selection:   Item object that is send from the Qt listwidget's signal
+
+            :param origin:      Type of origin to determine the classmethod decorator that should be used to create an
+                                instance of workEnv
+
+            :param iterate:     Disable GUI popups, for performing iterations over many workEnv instances created in
+                                succession. For example useful for stitching ROI plots of all splits in splitseq mode
+
+            :param qtsig:       When false, it will interpret the selection as not coming from a Qt signal.
+
+            :return:            None
+            =======================================================================================
         '''
         # Prevent losing unsaved workEnv
         if self.workEnv is not None and self.DiscardWorkEnv() is False:
@@ -356,6 +336,7 @@ class ImageView(QtGui.QWidget):
                 self.displayStimMap()
             self.ui.tabWidget.setCurrentWidget(self.ui.tabROIs)
 
+        # For loading from tiff files
         elif origin == 'tiff':
             if iterate is False:
                 self.workEnv = viewerWorkEnv.from_tiff(selection.text())
@@ -364,36 +345,44 @@ class ImageView(QtGui.QWidget):
                                            QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
                     self.importCSVMap()
             else:
+                # Just here if someone wants to process many tiff files in the same way they can iterate over them
+                # without having the QMessageBox show up every time.
                 self.workEnv = viewerWorkEnv.from_tiff(selection)
 
+        # For loading splits of a sequence in splitseq mode
         elif origin == 'splits':
+            # TODO: THERE HAS TO BE A BETTER WAY TO DO THIS!! CHECK IF TYPE IS QTSIGNAL OR SOMETHING, & IF SO INTERPRET
+            # TODO: IT AS PLAIN STRING?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             if qtsig == False:
                 self.workEnv = viewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection + '.pik', tiffPath=self.splitsDir + '/' + selection + '.tiff')
             else:
                 self.workEnv = viewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection.text() + '.pik', tiffPath=self.splitsDir + '/' + selection.text() + '.tiff')
 
+        # Set the image
         self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
                       xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
                                         self.workEnv.imgdata.seq.T.shape[0]))
 
+        # If the newly spawned workEnv has any ROI states saved, then load them all.
+        # Use for example in splitseq mode
         for ID in range(0, len(self.workEnv.roi_states)):
             self.addROI(load=self.workEnv.roi_states[ID])
             # self.view.addItem(self.workEnv.ROIList[-1])
             # self.updatePlot(ID, force=True)
 
-
+        # Get image dimensions to set limits on the sliders for motion correction parameters
         x = self.workEnv.imgdata.seq.shape[0]
         y = self.workEnv.imgdata.seq.shape[1]
         self.ui.sliderStrides.setMaximum(int(max(x,y)/2))
         self.ui.sliderOverlaps.setMaximum(int(max(x,y)/2))
 
-
+        # Activate the stimulus illustration GUI stuff if the newly spawed work environment has a stimulus map.
         if self.workEnv.imgdata.stimMaps is not None:
             self.populateStimMapComboBox()
             self.displayStimMap()
 
         self.workEnv.saved = True
-        self._workEnv_checkSaved()
+        self._workEnv_checkSaved() # Connect signals of many Qt UI elements to a method that sets workEnv.save = False
         self.enableUI(True)
 
     def enableUI(self, b):
@@ -415,7 +404,7 @@ class ImageView(QtGui.QWidget):
                                             self.workEnv.imgdata.seq.T.shape[0]))
 
     def promptFileDialog(self):
-        if self.workEnv is not None and self.DiscardWorkEnv() is False:
+        if self.workEnv is not None and self.DiscardWorkEnv() is False:  # If workEnv is not saved, warn the user.
             return
         self.ui.listwMesfile.clear()
         # self.ui.listwSplits.clear()
@@ -425,18 +414,18 @@ class ImageView(QtGui.QWidget):
         if len(filelist) == 0:
             return
         try:
+            # Creates an instance of MES, see MesmerizeCore.FileInput
             self.mesfile = viewerWorkEnv.load_mesfile(filelist[0][0])
-#            self.workEnvOrigin = 'mes'
-#            self.mesfile = FileInput.MES(filelist[0][0])
-            self.ui.listwMesfile.setEnabled(True) # Enable the mesfile list widget
+            self.ui.listwMesfile.setEnabled(True)
+
+            # Get the references of the images, their descriptions, and add them to the list
             for i in self.mesfile.images:
                 j = self.mesfile.image_descriptions[i]
-                self.ui.listwMesfile.addItem(i+'//'+j) # Get the names of the images and add them to the list
+                self.ui.listwMesfile.addItem(i+'//'+j)
 
-            # If Auxiliary output information is found in the mes file it will ask if you want to
-            # map them to anything
+            # If Auxiliary voltage info is found in the mes file, ask the user if they want to map these to stimuli
             if len(self.mesfile.voltDict) > 0:
-                self.initMesStimMapGUI()# Init the stimMap GUI
+                self.initMesStimMapGUI()
                 self.ui.btnChangeSMap.setEnabled(True)
                 if QtGui.QMessageBox.question(self, '', 'This .mes file contains auxilliary output voltage ' + \
                               'information, would you like to apply a Stimulus Map now?',
@@ -448,10 +437,9 @@ class ImageView(QtGui.QWidget):
                 self.ui.btnResetSMap.setDisabled(True)
                 self.ui.btnChangeSMap.setDisabled(True)
 
-        except IOError:
-           QtGui.QMessageBox.warning(self,'IOError', "There is an problem with the files you've selected", QtGui.QMessageBox.Ok)
-        except IndexError:
-            return
+        except (IOError, IndexError) as exc:
+           QtGui.QMessageBox.warning(self,'IOError or IndexError', "There is an problem with the files you've selected:\n" + str(exc), QtGui.QMessageBox.Ok)
+        return
 
 
     def promTiffFileDialog(self):
@@ -478,9 +466,11 @@ class ImageView(QtGui.QWidget):
                                         == QtGui.QMessageBox.No:
                 return
             self.splitSeqMode = True
+            # Create temp dir to hold the splits
             self.splitsDir = configuration.projPath + '/tmp/splits/' + str(time.time())
             os.makedirs(self.splitsDir)
 
+            # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
             self.ui.btnAddROI.setDisabled(True)
             self.ui.btnSubArray.setDisabled(True)
             self.ui.btnChangeSMap.setDisabled(True)
@@ -489,33 +479,48 @@ class ImageView(QtGui.QWidget):
             self.ui.listwSplits.setEnabled(True)
             self.ui.btnPlotSplits.setEnabled(True)
 
+            # Each split is portrayed as an index item on the ui.listwSplits Qt widget
             currentSplit = 0
             self.ui.listwSplits.addItems([str(currentSplit).zfill(3)])
             self.ui.listwSplits.setCurrentRow(0)
             self.ui.stackedWidget.setCurrentIndex(2)
+
+        # Cannot split at zero because there is nothing before the 0th index of an image seq
         if self.currentIndex == 0:
             QtGui.QMessageBox.warning(self, 'Index = 0!', 'You cannot slice at the 0th index! '+\
                                       'What\'s the point in that?!', QtGui.QMessageBox.Ok)
             return
 
+        # Store the next sequence to spawn the next workEnv
         nextseq = self.workEnv.imgdata.seq[:, :, self.currentIndex:]
         print(self.workEnv.imgdata.seq.shape)
+        # Set current workEnv.seq up to the current index in the image sequence
         self.workEnv.imgdata.seq = self.workEnv.imgdata.seq[:, :, :self.currentIndex]
         print(self.workEnv.imgdata.seq.shape)
 
+        # Set index of this current split of the current WorkEnv.seq to the index of the listwidget
         currentSplit = int(self.ui.listwSplits.currentItem().text())
 
         print('currentSplit is: ' + str(currentSplit))
 
-        self.splitSeq(currentSplit)
+        self.splitSeq(currentSplit)  # Save this split by basically using workEnv.to_pickle
 
+        # Spawn new workEnv from the just saved sequence which is the rest of the image sequence after the
+        # previous once was cut-off
         self.workEnv.imgdata.seq = nextseq
 
+        # Get the number of splits that have currently been done
         num_splits = int(self.ui.listwSplits.count())
         print('Number of splits is: ' + str(num_splits))
 
+        # See if the split we had just saved to disk was a "middle split"
+        # I.e. if it was a split of a sequence that itself was already a split.
+        # In other terms, if it was not a terminal split, or basically it that split
+        # was not from the end of the image.
         if int(self.ui.listwSplits.count()) > int(currentSplit) + 1:
             print('middle split!!')
+            # If it was a middle split, rename all splits after that one so that we make space to not
+            # overwrite the new split, i.e. nextseq
             for fname in reversed(range(currentSplit + 2, num_splits + 1)):
                 dst = self.splitsDir + '/' + str(fname).zfill(3)
                 src = self.splitsDir + '/' + str(fname - 1).zfill(3)
@@ -523,22 +528,26 @@ class ImageView(QtGui.QWidget):
                 os.rename(src + '.pik', dst + '.pik')
                 os.rename(src + '.tiff', dst + '.tiff')
 
+        # Add references for all the splits to the list widget
         l = list(range(num_splits + 1))
         print('new list items are: ' + str(l))
         self.ui.listwSplits.clear()
         self.ui.listwSplits.addItems([str(i).zfill(3) for i in l])
 
+        # Save nextseq to disk
         self.splitSeq(currentSplit + 1)
         self.ui.listwSplits.setCurrentRow(currentSplit + 1)
 
     def splitSeq(self, splitNum):
-        self.resetImgScale()
+        self.resetImgScale()  # New splits are a spawned instance of workEnv. Calling resetImgScale() will set the image
+                              # in the imageview so that plots can updated from the ROIs.
         for ID in range(0, len(self.workEnv.ROIList)):
-            self.updatePlot(ID, force=True)
+            self.updatePlot(ID, force=True)  # Force update of the plot to get intensity values for each ROI.
         fn = str(splitNum).zfill(3)
         print('Saving to disk! ' + fn)
-        self.workEnv.to_pickle(self.splitsDir, filename=fn)
+        self.workEnv.to_pickle(self.splitsDir, filename=fn)  # Save the split
 
+    # Just a function that ultimately stiches together ROI plotting under all the splits
     def splitsPlot(self):
         masterCurvesList = []
         for i in range(0, self.ui.listwSplits.count()):
@@ -556,13 +565,11 @@ class ImageView(QtGui.QWidget):
             plot(curve[1])
 
 
-
-
-
     '''##################################################################################################################
                                             Stimulus Maps methods
     ##################################################################################################################'''
 
+    # Just a simple method to load stimulus maps from a CSV file.
     def importCSVMap(self):
         paths = QtGui.QFileDialog.getOpenFileNames(self, 'Choose map file(s)',
                                                    '.', '(*.csv)')
@@ -590,7 +597,7 @@ class ImageView(QtGui.QWidget):
             self.populateStimMapComboBox()
             self.displayStimMap()
 
-
+    # Just the StimMap GUI stuff
     def initMesStimMapGUI(self):
         if self.stimMapWin is not None:
             self.stimMapWin.close()
@@ -606,18 +613,22 @@ class ImageView(QtGui.QWidget):
         # If user wants to set the map back to the one for the entire mes file
         self.ui.btnResetSMap.clicked.connect(self.resetStimMap)
 
-
+    # Reset stimulus maps to the one set for the entire mesfile, if the user has set a map for the entire mesfile.
     def resetStimMap(self):
         self.workEnv.imgdata.stimMaps = (self.mesfileMap, 'mesfile')
         self.displayStimMap()
 
+    # Set stimulus maps that were set via the stimMapWidget GUI for a mesfile obj/image
+    # Basically sends a dict to the ImgData class' stimMaps property decorator's setter. See MesmerizeCore.DataTypes
     def storeMesStimMap(self):
         empty_channels = []
         new_channels = []
 
         for i in range(0, self.stimMapWin.tabs.count()):
+            # Check if the user has left some chanels blank
             if self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text() == '':
                 empty_channels.append(self.stimMapWin.tabs.widget(i).ui.titleLabelChannel.objectName())
+            # Check if the user has entered any stimulus definitions that aren't a part of the project.
             elif self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text() not in configuration.cfg.options('STIM_DEFS'):
                 new_channels.append(self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text())
 
@@ -642,25 +653,32 @@ class ImageView(QtGui.QWidget):
 
         self.stimMapWin.hide()
 
-        dmaps = self.stimMapWin.getAllStimMaps()
+        dmaps = self.stimMapWin.getAllStimMaps()  # Get the stim maps as a dict from the GUI
 
+        # Ask the user if they want to apply these stimulus maps for the whole mesfile
         if self.workEnv is not None:
             if QtGui.QMessageBox.question(self, 'Apply for whole mes file?', 'Would you like to load these maps ' +\
                         'for the entire mes file?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
                 self.mesfileMap = dmaps
 
-            self.workEnv.imgdata.stimMaps = (dmaps, 'mesfile')
+            self.workEnv.imgdata.stimMaps = (dmaps, 'mesfile')  # Set stimMap via the property decorator
             self.populateStimMapComboBox()
             return
         self.mesfileMap = dmaps
 
+    # Add stimulus choices that already exist in the project to the comboboxes in the stimMapWidget GUI
     def populateStimMapComboBox(self):
         self.ui.comboBoxStimMaps.clear()
         self.ui.comboBoxStimMaps.addItems(list(self.workEnv.imgdata.stimMaps.keys()))
         self.ui.comboBoxStimMaps.setCurrentIndex(0)
         self.ui.comboBoxStimMaps.setEnabled(True)
 
+    # Create and show the linear regions to illustrate stimulus timings
     def displayStimMap(self, map_name=None):
+        """
+        :param map_name: Name of the stimulus map (dict key of ImgData.stimMaps property) to illustrate.
+                         Passed by the comboBox Qt signal.
+        """
         print(map_name)
         if self.workEnv is None:
             return
@@ -673,12 +691,14 @@ class ImageView(QtGui.QWidget):
 
         stims = self.workEnv.imgdata.stimMaps[map_name]
 
+        # Remove any stimulus illustrations that're already displayed on the plot
         if len(self.currStimMapBg) > 0:
             for item in self.currStimMapBg:
                 self.ui.roiPlot.removeItem(item)
 
             self.currStimMapBg = []
 
+        # Draw the linear regions according to the stimulus timings
         for stim in stims:
             definitions = stim[0][0]
             color = stim[0][-1]
@@ -688,7 +708,7 @@ class ImageView(QtGui.QWidget):
 
             linReg = LinearRegionItem(values=[frameStart, frameEnd],
                             brush=color, movable=False, bounds=[frameStart, frameEnd])
-            linReg.setZValue(0)
+            linReg.setZValue(0)  # Set it so that all other plot items (the curve/traces and the timeline are above the illustration)
             linReg.lines[0].setPen(color)
             linReg.lines[1].setPen(color)
 
@@ -1000,36 +1020,6 @@ class ImageView(QtGui.QWidget):
         if self.axes['t'] is not None:
             self.setCurrentIndex(self.currentIndex + n)
 
-#    def normRadioChanged(self):
-#        self.imageDisp = None
-#        self.updateImage()
-#        self.autoLevels()
-#        #self.roiChanged()
-#        self.sigProcessingChanged.emit(self)
-#
-#    def updateNorm(self):
-#        if self.ui.normTimeRangeCheck.isChecked():
-#            self.normRgn.show()
-#        else:
-#            self.normRgn.hide()
-#
-#        if self.ui.normROICheck.isChecked():
-#            self.normRoi.show()
-#        else:
-#            self.normRoi.hide()
-#
-#        if not self.ui.normOffRadio.isChecked():
-#            self.imageDisp = None
-#            self.updateImage()
-#            self.autoLevels()
-#            #self.roiChanged()
-#            self.sigProcessingChanged.emit(self)
-#
-#    def normToggled(self, b):
-#        self.ui.normGroup.setVisible(b)
-#        self.normRoi.setVisible(b and self.ui.normROICheck.isChecked())
-#        self.normRgn.setVisible(b and self.ui.normTimeRangeCheck.isChecked())
-
     def hasTimeAxis(self):
         return 't' in self.axes and self.axes['t'] is not None
 
@@ -1050,7 +1040,7 @@ class ImageView(QtGui.QWidget):
        ################################################################################################################
     '''
 
-    def addROI(self, load=None):
+    def addROI(self, ev=None, load=None):
         ''' Method for adding PolyROI's to the plot '''
         self._workEnv_changed()
         #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
@@ -1339,6 +1329,7 @@ class ImageView(QtGui.QWidget):
             self.ui.btnAbort.setEnabled(True)
             ''' USE AN OBSERVER PATTERN TO SEE WHEN THE PROCESS IS DONE!!!'''
             cp.start()
+            # TODO: >>>>>>>>>>>>>>>>>>>>>>> **** USE A SEMAPHORE TO KEEP CONTROL OF PROCESSES!!! **** <<<<<<<<<<<<<<<<<<
             print('>>>>>>>>>>>>>>>>>>>> Starting item: ' + str(i) + ' <<<<<<<<<<<<<<<<<<<<')
 #            while cp.is_alive():
 #                time.sleep(10)
@@ -1510,71 +1501,6 @@ class ImageView(QtGui.QWidget):
                                     Original pyqtgraph methods
     ################################################################################################################
     '''
-#    def roiClicked(self):
-#        showRoiPlot = False
-#        if self.ui.roiBtn.isChecked():
-#            showRoiPlot = True
-#            self.roi.show()
-#            #self.ui.roiPlot.show()
-#            self.ui.roiPlot.setMouseEnabled(True, True)
-#            self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])
-#            self.roiCurve.show()
-#            self.roiCurve2 = self.ui.roiPlot.plot()
-#            self.CurvesList.append(roiCurve2)
-#            self.roiCurve2.show()
-#            self.roiChanged()
-#            self.ui.roiPlot.showAxis('left')
-#        else:
-#            self.roi.hide()
-#            self.ui.roiPlot.setMouseEnabled(False, False)
-#            self.roiCurve.hide()
-#            self.ui.roiPlot.hideAxis('left')
-#
-#            showRoiPlot = True
-#            mn = self.tVals.min()
-#            mx = self.tVals.max()
-#            self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
-#            self.timeLine.show()
-#            self.timeLine.setBounds([mn, mx])
-#            self.ui.roiPlot.show()
-#            if not self.ui.roiBtn.isChecked():
-#                self.ui.splitter.setSizes([self.height()-35, 35])
-#        else:
-#        if self.hasTimeAxis():
-#            self.timeLine.hide()
-#            #self.ui.roiPlot.hide()
-#
-#        self.ui.roiPlot.setVisible(showRoiPlot)
-
-#    def roiChanged(self):
-#        if self.image is None:
-#            return
-#
-#        image = self.getProcessedImage()
-#        if image.ndim == 2:
-#            axes = (0, 1)
-#        elif image.ndim == 3:
-#            axes = (1, 2)
-#        else:
-#            return
-#
-#        data, coords = self.roi.getArrayRegion(image.view(np.ndarray), self.imageItem, axes, returnMappedCoords=True)
-#        if data is not None:
-#            while data.ndim > 1:
-#                data = data.sum(axis=1)
-#            if image.ndim == 3:
-#                #self.roiCurve2 = self.roiCurve
-#                self.roiCurve2.setData(y=np.random.rand(1577)*2000, x=self.tVals)
-#                self.roiCurve2.show()
-#                self.roiCurve.setData(y=data, x=self.tVals)
-#                #self.ui.roiPlot.addItem(self.roiCurve)
-#                #self.ui.roiPlot.addItem(self.roiCurve2)
-#            else:
-#                while coords.ndim > 2:
-#                    coords = coords[:,:,0]
-#                coords = coords - coords[:,0,np.newaxis]
-#                xvals = (coords**2).sum(axis=0) ** 0.5
-#                self.roiCurve.setData(y=data, x=xvals)
 
     def quickMinMax(self, data):
         """
@@ -1586,55 +1512,6 @@ class ImageView(QtGui.QWidget):
             sl[ax] = slice(None, None, 2)
             data = data[sl]
         return nanmin(data), nanmax(data)
-
-#    def normalize(self, image):
-#        """
-#        Process *image* using the normalization options configured in the
-#        control panel.
-#
-#        This can be repurposed to process any data through the same filter.
-#        """
-#        if self.ui.normOffRadio.isChecked():
-#            return image
-#
-#        div = self.ui.normDivideRadio.isChecked()
-#        norm = image.view(np.ndarray).copy()
-#        #if div:
-#            #norm = ones(image.shape)
-#        #else:
-#            #norm = zeros(image.shape)
-#        if div:
-#            norm = norm.astype(np.float32)
-#
-#        if self.ui.normTimeRangeCheck.isChecked() and image.ndim == 3:
-#            (sind, start) = self.timeIndex(self.normRgn.lines[0])
-#            (eind, end) = self.timeIndex(self.normRgn.lines[1])
-#            #print start, end, sind, eind
-#            n = image[sind:eind+1].mean(axis=0)
-#            n.shape = (1,) + n.shape
-#            if div:
-#                norm /= n
-#            else:
-#                norm -= n
-#
-#        if self.ui.normFrameCheck.isChecked() and image.ndim == 3:
-#            n = image.mean(axis=1).mean(axis=1)
-#            n.shape = n.shape + (1, 1)
-#            if div:
-#                norm /= n
-#            else:
-#                norm -= n
-#
-#        if self.ui.normROICheck.isChecked() and image.ndim == 3:
-#            n = self.normRoi.getArrayRegion(norm, self.imageItem, (1, 2)).mean(axis=1).mean(axis=1)
-#            n = n[:,np.newaxis,np.newaxis]
-#            #print start, end, sind, eind
-#            if div:
-#                norm /= n
-#            else:
-#                norm -= n
-#
-#        return norm
 
     def timeLineChanged(self):
 
@@ -1730,27 +1607,6 @@ class ImageView(QtGui.QWidget):
             self.updateImage()
         else:
             self.imageItem.save(fileName)
-
-#    def exportClicked(self):
-#        fileName = QtGui.QFileDialog.getSaveFileName()
-#        if fileName == '':
-#            return
-#        self.export(fileName)
-#
-#    def buildMenu(self):
-#        self.menu = QtGui.QMenu()
-#        self.normAction = QtGui.QAction("Normalization", self.menu)
-#        self.normAction.setCheckable(True)
-#        self.normAction.toggled.connect(self.normToggled)
-#        self.menu.addAction(self.normAction)
-#        self.exportAction = QtGui.QAction("Export", self.menu)
-#        self.exportAction.triggered.connect(self.exportClicked)
-#        self.menu.addAction(self.exportAction)
-#
-#    def menuClicked(self):
-#        if self.menu is None:
-#            self.buildMenu()
-#        self.menu.popup(QtGui.QCursor.pos())
 
     def setColorMap(self, colormap):
         """Set the color map. 
