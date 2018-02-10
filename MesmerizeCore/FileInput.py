@@ -28,11 +28,6 @@ class MES:
 		    
             imdata = mesfile.load_img('IF0001_0001')
 
-
-class tiff:
-	Extracts any available meta data from the list of tiff files selected. The 
-	load_img() method returns a 3D array (2D + time) of the image sequence and meta 
-	data as a ImgData class object.
 """
 import scipy.io as spio
 import numpy as np
@@ -132,6 +127,10 @@ class MES():
     
     # Returns image as ImgData class object.
     def load_img(self,d):
+        """
+        :param d: The image reference, usually IFxxxx_xxxx or Ifxxxx_xxxx
+        :return: Boolean, numpy array of the image sequence, meta data dict
+        """
         try:
             meta = self.main_dict["D"+d[1:6]].tolist()
             meta = self._todict(meta[0])
@@ -156,7 +155,7 @@ class MES():
 
                 return True, seq, meta
         except KeyError:
-            return False
+            return False, None, None
 
 # For testing
 if __name__ == '__main__':

@@ -45,6 +45,16 @@ class ImgData():
     # Simple method to package the stimulus map into a list for each instance of a stimulus
     @property
     def stimMaps(self, map_name=None):
+        ''' stimMaps property organization:
+            Each items of the dict is a list of lists.
+
+            Each list is organized in this way:
+
+            [['StimName//SubstimName', <pyqtgraph color object>], (startFrame, endFrame)]
+
+            list index 0: A list with all stimuli & substimuli. Color object is specified at index -1
+            list index 1: Tuple that has the start and end frame of this stimulus
+        '''
         if map_name is None:
             return self._stimMaps
         else:
@@ -63,7 +73,7 @@ class ImgData():
         self._stimMaps = {}
 
         if origin == 'mesfile':
-
+            # Organize stimulus maps from mesfile objects
             for machine_channel in dm.keys():
                 ch_dict = dm[machine_channel]
                 try:
@@ -98,6 +108,7 @@ class ImgData():
             return
         
         elif origin == 'csv':
+            # Oraganize stimulus maps from CSV files
             files = dm
 
             for file in files:
@@ -155,24 +166,3 @@ class ImgData():
                 self._stimMaps[file.split('/')[-1].split('.csv')[0]] = current_map
 
             return
-        
-        
-#        y = self.meta['AUXo3']['y']
-#        x = self.meta['AUXo3']['x'][1]
-#        firstFrameStartTime = self.meta['FoldedFrameInfo']['firstFrameStartTime']
-#        frameTimeLength = self.meta['FoldedFrameInfo']['frameTimeLength']
-#        self.Map = []
-#        for i in range(0,y.shape[1]-1):
-#            voltage = str(y[1][i])
-#            tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
-#            if tstart_frame < 0:
-#                tstart_frame = 0
-#            tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
-#            self.Map.append([dm[voltage], (tstart_frame, tend_frame)])
-        
-        ''' Stimulus Map list organization:
-            [['StimName//SubstimName', <pyqtgraph color object>], (startFrame, endFrame)]
-            
-            list index 0: A list with all stimuli & substimuli. Color object is specified at index -1
-            list index 1: Tuple that has the start and end frame of this stimulus
-        '''
