@@ -27,23 +27,13 @@ import pandas as pd
 import time
 import tifffile
 from PyQt5 import QtGui
-from pyqtgraphCore import PolyLineROI
 import os
 from . import configuration
 
 
-# class mesfile2workEnv():
-#    def __init__(self,):
-#        pass
-#
-# class tiff2workEnv():
-#    def __init__(self,):
-#        pass
-
 class viewerWorkEnv():
     def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[]):
         """
-
         :type imgdata: ImgData
         """
         self.ROIList = ROIList
@@ -59,6 +49,18 @@ class viewerWorkEnv():
 
     @classmethod
     def from_pickle(cls, pikPath, npzPath=None, tiffPath=None):
+        '''
+        Get pickled image data from a pickle file & image sequence from a npz or tiff. Used after motion correction
+        & to view a sample from a project DataFrame. Create ImgData class object (See MesmerizeCore.DataTypes) and
+        return instance of the work environment.
+
+        :param: pikPath:    str of the full path to the pickle containing image metadata, stim maps, and roi_states
+
+        :param: npzPath:    str of the full path to a npz containing the image sequence numpy array
+
+        :param: tiffPath:   str of the full path to a tiff file containing the image sequence
+        '''
+
         pick = pickle.load(open(pikPath, 'rb'))
         if npzPath is not None:
             npz = np.load(npzPath)
@@ -74,8 +76,8 @@ class viewerWorkEnv():
                          isSubArray=pick['imdata']['isSubArray'])
         roi_states = []
         if 'roi_states' in pick['imdata']:
-            for roi_state in pick['imdata']['roi_states']:
-                roi_states.append(roi_state)
+            for ID in range(0, len(pick['imdata']['roi_states'])):
+                roi_states.append(pick['imdata']['roi_states'][ID])
 
         return cls(imdata, roi_states=roi_states)
 
@@ -89,10 +91,30 @@ class viewerWorkEnv():
 
     @staticmethod
     def load_mesfile(path):
+        '''
+        Just passes the path of a .mes file to the constructor of class MES in MesmerizeCore.FileInput.
+        Loads .mes file & constructs MES obj from which individual images & their respective metadata can be loaded
+        to construct viewer work environments using the classmethod viewerWorkEnv.from_mesfile.
+
+        :param path: str of the full path to the .mes file.
+
+        :return: MES object
+        '''
         return MES(path)
 
     @classmethod
     def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
+        '''
+        Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
+        MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.
+
+        :param      mesfile:        MES obj, from MesmerizeCore.FileInput.
+
+        :param      ref:            str of the reference of the image to load
+
+        :param      mesfileMaps:    if there's a stimulus map that has been set by the user to load upon creation of the
+                                    work environment.
+        '''
         rval, seq, meta = mesfile.load_img(ref)
 
         if rval:
@@ -106,6 +128,15 @@ class viewerWorkEnv():
 
     @classmethod
     def from_tiff(cls, path, csvMapPaths=None):
+        '''
+        Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
+        tifffile.imread and any csv stimulus map that the user may want to apply.
+
+        :param path:        str of the full path to the tiff file
+
+        :param csvMapPaths: list of full paths to csv files to load with the ImgData object into the work environment
+        '''
+
         seq = tifffile.imread(path)
         imdata = ImgData(seq.T)
         imdata.stimMaps = (csvMapPaths, 'csv')
@@ -116,7 +147,7 @@ class viewerWorkEnv():
         pass
 
     def _make_dict(self):
-
+        # Dict that's later used for pickling
         d = {'SampleID': self.imgdata.SampleID, 'Genotype': self.imgdata.Genotype,
              'meta': self.imgdata.meta, 'stimMaps': self.imgdata.stimMaps,
              'isSubArray': self.imgdata.isSubArray, 'isMotCor': self.imgdata.isMotCor,
@@ -132,21 +163,31 @@ class viewerWorkEnv():
                     self.ROIList[ix].tags[roi_def] = 'untagged'
 
         roi_states = []
-        for roi in self.ROIList:
-            roi_states.append(roi.saveState())
+        for ID in range(0, len(self.ROIList)):
+            roi_states.append(self.ROIList[ID].saveState())
         d['roi_states'] = roi_states
-
-        #
-        # if len(self.CurvesList) > 0:
-        #     d['CurvesList'] = self.CurvesList
 
         return d
 
-    def to_pickle(self, dirPath, mc_params=None):
+    def to_pickle(self, dirPath, mc_params=None, filename=None):
+        '''
+        Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
+        for motion correction and package them into a pickle & image seq array. Use for batch motion correction and
+        for saving current sample to the project. Image sequence is saved as a tiff and other information about the
+        image is saved in a pickle.
+
+        :rtype:     bool, str
+        :param      dirPath: str
+        :param      mc_params: dict
+        :return:    bool if no exceptions, str of filename
+        '''
         if mc_params is not None:
             rigid_params, elas_params = mc_params
         try:
-            fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
+            if filename is None:
+                fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
+            else:
+                fileName = dirPath + '/' + filename
 
             imginfo = self._make_dict()
 
@@ -166,15 +207,28 @@ class viewerWorkEnv():
             return False, None
 
     def to_pandas(self, projPath):
+        '''
+        :param      projPath: Root path of the current project
+
+        :return:    True if no exceptions, list of dicts that each correspond to a single curve that can be appended
+                    as a row to the project dataframe
+        '''
+        # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = projPath + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
         rval, imgPath = self.to_pickle(imgdir)
 
+        # Check if the img saving and pickling worked
         if rval == False:
             return False, None
 
+        # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False
 
+        # Create a dict that contains all stim definitions as keys that refer to a list of all the stims for that sample
         stimMapsSet = {}
+        # This list is just used for gathering all new stims to add to the config file. This is just used for
+        # populating the comboBoxes in the stimMapWidget GUI so that the widget doesn't need to access the DataFrame
+        # for this simple task.
         new_stims = []
         if self.imgdata.stimMaps is None:
             for stim_def in configuration.cfg.options('STIM_DEFS'):
@@ -225,6 +279,7 @@ class viewerWorkEnv():
                  'ImgInfoPath': imgPath + '.pik',
                  'Genotype': self.imgdata.Genotype}
 
+            # Final list of dicts that are each appended as rows to the project DataFrame
             dicts.append({**d, **stimMapsSet, 'Date': date, **self.ROIList[ix].tags})
 
             # df = df.append({**d, **roitags})  # , ignore_index=True)
@@ -236,41 +291,11 @@ class viewerWorkEnv():
         self._saved = True
         return True, dicts
 
-
-'''
-This will be to take information from the Mesmerize Viewer work environment, such as
-the current ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
-for motion correction and package them into a pickle & image seq array. Not yet implemented
-in this module, it is currently done within the Mesmerize Viewer (modified pyqtgraph ImageView class)
-but that class is getting clunky
-'''
-
-
-def workEnv2pickle():
-    pass
-
-
-'''
-Get pickled image data from a pickle file (such as after motion correction) and
-the corresponding npz array representing the image. Organize this info into an
-ImgData class object (See MesmerizeCore.DataTypes)
-#'''
-
-
-# def pickle2workEnv(pikPath, npzPath):
-#        pick = pickle.load(open(pikPath, 'rb'))
-#        npz = np.load(npzPath)
-#        imgdata = ImgData(npz['imgseq'], 
-#                          pick['imdata']['meta'], 
-#                          SampleID=pick['imdata']['SampleID'],
-#                          Map=pick['imdata']['Map'], 
-#                          isSubArray=pick['imdata']['isSubArray'])
-#        return imgdata
-
-# Empty pandas dataframe with columns that is used for the project index file
-
 def empty_df(cols):
     """
+    Just returns an empty DataFrame based on columns in the project's config.cfg file. Only really used when a new
+    project is started.
+
     :rtype: pd.DataFrame
     """
     if type(cols) is list:

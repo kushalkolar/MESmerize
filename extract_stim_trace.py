@@ -12,29 +12,42 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 import pyqtgraph as pg
-
-p = pg.plot()
+import numpy as np
 #%%
+p = pg.plot()
+
 
 stim_def = 'odor'
 stim_tag = 'NH4//0.25 mM'
+#stim_tag = 'ASW//MS-222'
 curves = []
-def extractStimTrace(stim_def, stim_tag):
+def extractStimTrace(stim_def, stim_tag, start_offset=0, end_offset=0, zero_pos='start_offset'):
     for file in df['CurvePath']:
         npz = np.load(file)
-        curve = npz.f.curve[1]
+        curve = npz.f.curve
+        
         smap = npz.f.stimMaps.flatten()[0][stim_def]
         for stim in smap:
             if stim[0][0] == stim_tag:
-                if curve is None:
+                if curve[1] is None:
                     continue
-                p.plot(curve[stim[-1][0]:stim[-1][1]]/min(curve[stim[-1][0]:stim[-1][1]]))
-#                print(stim[-1][0] stim[-1][1])
+                stim_start = stim[-1][0]
+                stim_end = stim[-1][1]
                 
-                print(stim[0][0])
-#            
-        
-        
-#        curves.append(curve)
+                if zero_pos == 'start_offset':
+                    
+                    tstart = max(stim_start + start_offset, 0)
+                    tend = min(stim_end + end_offset, int(curve[0][-1]))
+                    
+                elif zero_pos == 'stim_end':
+                    tstart = stim_end
+                    tend = tstart + end_offset
+                    
+                elif zero_pos == 'stim_center':
+                    tstart = int(((stim_start + stim_end) / 2)) + start_offset
+                    tend = min(stim_end + end_offset, int(curve[0][-1]))
+                
+                p.plot(curve[1][tstart:tend]/min(curve[1][tstart:tend]))
+#
 
-extractStimTrace(stim_def, stim_tag)
+extractStimTrace(stim_def, stim_tag, 0, 600, zero_pos='start_offset')
