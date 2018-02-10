@@ -1318,7 +1318,9 @@ class ImageView(QtGui.QWidget):
             self.workEnv.saved = True
 
         else:
-            QtGui.QMessageBox.warning(self, 'Error', 'There was an error saving files for batch', QtGui.QMessageBox.Ok)
+            QtGui.QMessageBox.warning(self, 'Error',
+                                      'There was an error saving files for batch',
+                                      QtGui.QMessageBox.Ok)
 
     def startBatch(self):
         batchSize = self.ui.listwBatch.count()
