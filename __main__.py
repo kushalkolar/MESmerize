@@ -15,26 +15,22 @@ from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE
 from MesmerizeCore import ProjBrowser
 from MesmerizeCore import ConfigWindow
 from MesmerizeCore import configuration
-from pyqtgraphCore.graphicsItems.InfiniteLine import *
 import pyqtgraphCore
 import numpy as np
 import pickle
 import sys
-import ast
 from MesmerizeCore import packager
 from shutil import copyfile
 import time
 import pandas as pd
-from MesmerizeCore.startWindow import startGUI
 import os
-from functools import partial
 
 
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
 I intend to create a headless mode for doing certain things on a cluster/supercomputer
 
-The instance of desktopApp is useful for communicating between the Viewer & Project Browser
+The instance of MainWindow is useful for communicating between the Viewer & Project Browser
 '''
 
 # class main():
@@ -57,6 +53,7 @@ class MainWindow(QtGui.QMainWindow):
         self.initMenuBar()
         self.resize(1000,845)
     def initMenuBar(self):
+        # Menurbar
         self.menubar = self.menuBar()
 
         fileMenu = self.menubar.addMenu('&File')
@@ -91,6 +88,7 @@ class MainWindow(QtGui.QMainWindow):
 
 
     def newProjFileDialog(self):
+        # Opens a file dialog to selected a parent dir for a new project
         parentPath = QtGui.QFileDialog.getExistingDirectory(self, 'Choose location for new project')
         if parentPath == '':
             return
@@ -108,22 +106,21 @@ class MainWindow(QtGui.QMainWindow):
 #            self.projDf.to_csv(self.projDfFilePath, index=False)
 
     def newProj(self):
-        self.checkProjOpen()
+        self.checkProjOpen()  # If a project is already open, prevent loosing unsaved work
+        # setup paths for the project files
         self.setupProjPaths()
-
+        # Initialize a configuration for the project
         self.configwin = ConfigWindow
-
         configuration.newConfig()
-
         self.openConfigWindow()
-
         self.configwin.tabs.widget(0).ui.btnSave.clicked.connect(self.createNewDf)
 
     def checkProjOpen(self):
+        # Function to check if any project is already open to prevnet losing unsaved work.
         if (self.viewer is not None):
             if QtGui.QMessageBox.warning(self, 'Close Viewer Window?', 'Would you like to discard any ' +\
-                                                                     'unsaved work in your Viewer window?',
-                                      QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+                                                'unsaved work in your Viewer window?', QtGui.QMessageBox.Yes,
+                                                QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
                 self.viewerWindow.close()
                 self.viewer = None
             else:
@@ -139,13 +136,13 @@ class MainWindow(QtGui.QMainWindow):
                 return
 
     def setupProjPaths(self, checkPaths=False):
-
+        # Create important path attributes for the project
         self.projDfsDir = self.projPath + '/dataframes'
         configuration.configpath = self.projPath + '/config.cfg'
         self.projRootDfPath = self.projDfsDir + '/root.mzp'
         self.projName = self.projPath.split('/')[-1]
 
-
+        # If opening a project check if this is a valid Mesmerize project by checking for paths
         if checkPaths:
             if os.path.isdir(self.projDfsDir) == False:
                 QtGui.QMessageBox.warning(self, 'Project DataFrame Directory not found!', 'The selected directory is ' +\
@@ -163,15 +160,18 @@ class MainWindow(QtGui.QMainWindow):
                                             'without a config file.',
                                           QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
                     return False
-
+        # create dirs if new project
         if checkPaths == False:
             os.mkdir(self.projDfsDir)
             os.mkdir(self.projPath + '/images')
             os.mkdir(self.projPath + '/curves')
 
+        configuration.projPath = self.projPath
+
         self.setWindowTitle('Mesmerize - ' + self.projName)
 
     def createNewDf(self):
+        # Create empty DataFrame
         self.configwin.tabs.widget(0).ui.btnSave.clicked.disconnect(self.createNewDf)
 
         include = configuration.cfg.options('INCLUDE')
@@ -194,6 +194,7 @@ class MainWindow(QtGui.QMainWindow):
         self.configwin.show()
 
     def update_all_from_config(self):
+        # To update the project configuration when the user changes the configuration in the middle of a project.
         self.configwin.tabs.widget(0).ui.btnSave.clicked.disconnect(self.update_all_from_config)
 
         if self.projDf is not None and self.projDf.empty:
@@ -222,8 +223,8 @@ class MainWindow(QtGui.QMainWindow):
 
 
     def openProjFileDialog(self):
+        # File dialog to open an existing project
         self.checkProjOpen()
-
         self.projPath = QtGui.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
 
         if self.projPath == '':
@@ -319,7 +320,8 @@ class MainWindow(QtGui.QMainWindow):
                           ' in your DataFrame. Use a unique Sample ID for each sample.\n' +\
                           self.viewer.workEnv.imgdata.SampleID, QtGui.QMessageBox.Ok)
                 return
-
+            for ID in range(0, len(self.viewer.workEnv.ROIList)):
+                self.viewer.updatePlot(ID, force=True)
             r, d = self.viewer.workEnv.to_pandas(self.projPath)
             if r is False:
                 return

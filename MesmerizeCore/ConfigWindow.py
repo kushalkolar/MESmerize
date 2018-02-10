@@ -21,7 +21,9 @@ else:
     from . import configuration
     from .configwindow_pytemplate import *
 
-
+'''
+Just a simple GUI for modifying the project config.cfg file.
+'''
 class ColumnsPage(QtGui.QWidget):
     def __init__(self, parent=None, *args):
         QtGui.QWidget.__init__(self, parent, *args)
