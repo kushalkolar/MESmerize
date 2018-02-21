@@ -21,12 +21,12 @@ class MES:
         Example:
             mesfile = MES.('/home/kushal/olfactory/experiment_Dec_25.mes')
 		    
-            Pass a dictionary key (extracted by the __init__ method) as a string 
-            which refers to the desired image to load. 
-            
-            Returns ImgData class object. (See MesmerizeCore.DataTypes)
+            To get images from the mesfile object:
+
+                Pass a dictionary key (extracted by the __init__ method) as a string
+                which refers to the desired image to load.
 		    
-            imdata = mesfile.load_img('IF0001_0001')
+                imdata = mesfile.load_img('IF0001_0001')
 
 """
 import scipy.io as spio

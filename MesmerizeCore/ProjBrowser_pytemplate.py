@@ -36,10 +36,18 @@ class Ui_Form(object):
         self.BtnCopyFilters.setObjectName("BtnCopyFilters")
         self.BtnCopyFilters.setText('Copy Filters')
         self.horizontalLayout_3.addWidget(self.BtnCopyFilters)
+
+
         self.BtnResetFilters = QtWidgets.QPushButton(self.layoutWidget)
         self.BtnResetFilters.setEnabled(False)
         self.BtnResetFilters.setObjectName("BtnResetFilters")
         self.horizontalLayout_3.addWidget(self.BtnResetFilters)
+
+        self.BtnOpenCaAnlysis = QtWidgets.QPushButton(self.layoutWidget)
+        self.BtnOpenCaAnlysis.setEnabled(False)
+        self.BtnOpenCaAnlysis.setObjectName("BtnResetFilters")
+        self.BtnOpenCaAnlysis.addWidget(self.BtnResetFilters)
+
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout_3)

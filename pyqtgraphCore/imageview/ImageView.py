@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-
 '''
 Modified ImageView class from the original pyqtgraph ImageView class.
-
 This provides all the UI functionality of the Mesmerize viewer.
-'''
-"""
+
+
 ImageView.py -  Widget for basic image dispay and analysis
 Copyright 2010  Luke Campagnola
 Distributed under MIT/X11 license. See license.txt for more infomation.
@@ -17,17 +15,17 @@ Widget used for displaying 2D or 3D data. Features:
   - time slider for 3D data sets
   - ROI plotting
   - Image normalization through a variety of methods
-"""
+'''
 import os
 import numpy as np
 
-from ..Qt import QtCore, QtGui, USE_PYSIDE
-'''
-if USE_PYSIDE:
-    from .ImageViewTemplate_pyside import *
-else:
-    from .ImageViewTemplate_pyqt import *
-'''
+from ..Qt import QtCore, QtGui
+
+# if USE_PYSIDE:
+#     from .ImageViewTemplate_pyside import *
+# else:
+#     from .ImageViewTemplate_pyqt import *
+
 
 from .ImageView_pytemplate import *
 from ..graphicsItems.ImageItem import *
@@ -56,12 +54,6 @@ try:
 except ImportError:
     from numpy import nanmin, nanmax
 
-
-#class PlotROI(ROI):
-#    def __init__(self, size):
-#        ROI.__init__(self, pos=[0,0], size=size) #, scaleSnap=True, translateSnap=True)
-#        self.addScaleHandle([1, 1], [0, 0])
-#        self.addRotateHandle([0, 0], [0.5, 0.5])
 
 class ImageView(QtGui.QWidget):
     """
@@ -278,10 +270,7 @@ class ImageView(QtGui.QWidget):
         self.playRate = 0
         self.lastPlayTime = 0
         self.playTimer.timeout.connect(self.timeout)
-#        self.normRgn = LinearRegionItem()
-#        self.normRgn.setZValue(0)
-#        self.ui.roiPlot.addItem(self.normRgn)
-#        self.normRgn.hide()
+
 
         ## wrap functions from view box
         for fn in ['addItem', 'removeItem']:
@@ -831,9 +820,6 @@ class ImageView(QtGui.QWidget):
         if levels is not None:  ## this does nothing since getProcessedImage sets these values again.
             self.setLevels(*levels)
 
-        #if self.ui.roiBtn.isChecked():
-        #    self.roiChanged()
-
         profiler()
 
         if self.axes['t'] is not None:
@@ -852,8 +838,6 @@ class ImageView(QtGui.QWidget):
                 stop = 1
 #            for s in [self.timeLine, self.normRgn]:
 #                s.setBounds([start, stop])
-        #else:
-            #self.ui.roiPlot.hide()
         profiler()
 
         self.imageItem.resetTransform()
@@ -868,7 +852,6 @@ class ImageView(QtGui.QWidget):
 
         if autoRange:
             self.autoRange()
-        #self.roiClicked()
 
         profiler()
 
@@ -914,7 +897,6 @@ class ImageView(QtGui.QWidget):
         This method also sets the attributes self.levelMin and self.levelMax 
         to indicate the range of data in the image."""
         if self.imageDisp is None:
-            #image = self.normalize(self.image)
             self.imageDisp = self.image
             self.levelMin, self.levelMax = list(map(float, self.quickMinMax(self.imageDisp)))
 
@@ -1225,8 +1207,6 @@ class ImageView(QtGui.QWidget):
                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
                 self.workEnv.CurvesList[ID].setPen(color)
                 self.workEnv.CurvesList[ID].show()
-                #self.ui.roiPlot.addItem(self.roiCurve)
-                #self.ui.roiPlot.addItem(self.roiCurve2)
             else:
                 while coords.ndim > 2:
                     coords = coords[:,:,0]
@@ -1351,7 +1331,6 @@ class ImageView(QtGui.QWidget):
 
     # Get Motion Correction Parameters from the GUI
     def getMotCorParams(self):
-        #decay_time = float(self.ui.spinboxDecay.text())
         num_iters_rigid = int(self.ui.spinboxIter.text())
         rig_shifts_x = int(self.ui.spinboxX.text())
         rig_shifts_y = int(self.ui.spinboxY.text())

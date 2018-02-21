@@ -277,7 +277,6 @@ class MainWindow(QtGui.QMainWindow):
         cmap = pyqtgraphCore.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
         self.viewer.setColorMap(cmap)
         
-        # self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
         self.viewer.ui.btnAddToBatch.clicked.connect(self.viewerAddToBatch)
         self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
         self.viewerWindow.show()
