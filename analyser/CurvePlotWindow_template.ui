@@ -26,8 +26,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockProcessTools">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Processing</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -37,6 +43,9 @@
   <widget class="QDockWidget" name="dockConsole">
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Console</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>

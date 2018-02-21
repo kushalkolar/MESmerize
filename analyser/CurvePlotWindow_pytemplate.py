@@ -23,6 +23,8 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.dockProcessTools = QtWidgets.QDockWidget(MainWindow)
+        self.dockProcessTools.setAutoFillBackground(False)
+        self.dockProcessTools.setFloating(False)
         self.dockProcessTools.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable|QtWidgets.QDockWidget.DockWidgetMovable)
         self.dockProcessTools.setObjectName("dockProcessTools")
         self.dockWidgetContents = QtWidgets.QWidget()
@@ -43,4 +45,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.dockProcessTools.setWindowTitle(_translate("MainWindow", "Processing"))
+        self.dockConsole.setWindowTitle(_translate("MainWindow", "Console"))
 
