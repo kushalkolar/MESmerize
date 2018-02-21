@@ -56,7 +56,7 @@ class ConcreteStrategyA(Strategy):  # Savitzky-Golay filter for example
         kwargs = args[1]
         args = args[0]
         print('Doing algorithm A with signal: ' + str(signal) + ', additional args '+ str(args) + ', and kwargs ' + str(kwargs))
-        self.result = signal * 2
+        self.result = np.sin(signal)
         return super(ConcreteStrategyA, self).algorithm_interface(self)
     
 class ConcreteStrategyB(Strategy):  # Get the derivative for example
@@ -68,7 +68,7 @@ class ConcreteStrategyB(Strategy):  # Get the derivative for example
         kwargs = args[1]
         args = args[0]
         print('Doing algorithm B with signal: ' + str(signal) + ', additional args '+ str(args) + ', and kwargs ' + str(kwargs))
-        self.result = signal * 3
+        self.result = np.cos(signal)
         return super(ConcreteStrategyB, self).algorithm_interface(self)
 
 
@@ -83,7 +83,12 @@ def main():
     
     # Using StrategyB
     context = Context(ConcreteStrategyB())
-    processed = context.context_interface(sig, 'pos_arg1', 'pos_arg2', keyarg1='karg1', keyarg2='karg2')
+    processed = context.context_interface(sig, 'B_pos_arg1', Bkeyarg1='B_karg1', Bkeyarg2='B_karg2')
+    print(processed)
+    
+    # Iterate StrategyB again
+    context = Context(ConcreteStrategyB())
+    processed = context.context_interface(processed, 'B_pos_arg1', Bkeyarg1='B_karg1', Bkeyarg2='B_karg2')
     print(processed)
 
 if __name__ == "__main__":
