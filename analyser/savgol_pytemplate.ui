@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>249</width>
+    <height>296</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="toolTip">
+      <string>window_length : int
+
+The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.</string>
+     </property>
+     <property name="text">
+      <string>*window_length</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSpinBox" name="spinBoxWindow_length">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="singleStep">
+      <number>2</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="toolTip">
+      <string>polyorder : int
+
+The order of the polynomial used to fit the samples. polyorder must be less than window_length.</string>
+     </property>
+     <property name="text">
+      <string>*polyorder (must be &lt; window_length)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSpinBox" name="spinBoxPolyorder"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="toolTip">
+      <string>deriv : int, optional
+
+The order of the derivative to compute. This must be a nonnegative integer. The default is 0, which means to filter the data without differentiating.</string>
+     </property>
+     <property name="text">
+      <string>deriv</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSpinBox" name="spinBoxDeriv"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="toolTip">
+      <string>delta : float, optional
+
+The spacing of the samples to which the filter will be applied. This is only used if deriv &gt; 0. Default is 1.0</string>
+     </property>
+     <property name="text">
+      <string>delta (only if deriv &gt; 0)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDoubleSpinBox" name="SpinBoxDelta">
+     <property name="decimals">
+      <number>4</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_5">
+     <property name="toolTip">
+      <string>mode : str, optional
+
+Must be ‘mirror’, ‘constant’, ‘nearest’, ‘wrap’ or ‘interp’. This determines the type of
+extension to use for the padded signal to which the filter is applied. When mode is
+‘constant’, the padding value is given by cval. See the Notes for more details on
+‘mirror’, ‘constant’, ‘wrap’, and ‘nearest’. When the ‘interp’ mode is 
+selected (the default), no extension is used. Instead, a degree polyorder polynomial is
+fit to the last window_length values of the edges, and this polynomial is used to
+evaluate the last window_length // 2 output values.</string>
+     </property>
+     <property name="text">
+      <string>mode</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBoxMode"/>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>spinBoxWindow_length</tabstop>
+  <tabstop>spinBoxPolyorder</tabstop>
+  <tabstop>spinBoxDeriv</tabstop>
+  <tabstop>SpinBoxDelta</tabstop>
+  <tabstop>comboBoxMode</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
