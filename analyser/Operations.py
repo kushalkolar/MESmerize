@@ -41,36 +41,46 @@ class Strategy(metaclass=abc.ABCMeta):  # This would be class algorithms
     uses this interface to call the algorithm defined by a
     ConcreteStrategy.
     """
-
-    @classmethod
+    def __init__(self):
+        self.points = False
+        
+#    @classmethod
     @abc.abstractmethod
-    def algorithm_interface(cls, self):
+    def algorithm_interface(self):
+        if self.points:
+            print('points!')
         return self.result
 
 class ConcreteStrategyA(Strategy):  # Savitzky-Golay filter for example
     """
     Implement the algorithm using the Strategy interface.
     """
-
     def algorithm_interface(self, signal,  *args):
         kwargs = args[1]
         args = args[0]
         print('Doing algorithm A with signal: ' + str(signal) + ', additional args '+ str(args) + ', and kwargs ' + str(kwargs))
         self.result = np.sin(signal)
-        return super(ConcreteStrategyA, self).algorithm_interface(self)
+        return super(ConcreteStrategyA, self).algorithm_interface()
     
 class ConcreteStrategyB(Strategy):  # Get the derivative for example
     """
     Implement the algorithm using the Strategy interface.
     """
-
     def algorithm_interface(self, signal,  *args):
         kwargs = args[1]
         args = args[0]
         print('Doing algorithm B with signal: ' + str(signal) + ', additional args '+ str(args) + ', and kwargs ' + str(kwargs))
         self.result = np.cos(signal)
-        return super(ConcreteStrategyB, self).algorithm_interface(self)
-
+        return super(ConcreteStrategyB, self).algorithm_interface()
+    
+class get_zero_crossings(Strategy):
+    def algorithm_interface(self, signal, *args):
+        kwargs = args[1]
+        args = args[0]
+        print('Doing get_zero_crossings  with signal: ' + str(signal) + ', additional args '+ str(args) + ', and kwargs ' + str(kwargs))
+        self.result = np.tan(signal)
+        self.points = True
+        return super(get_zero_crossings, self).algorithm_interface()
 
 def main():
     concrete_strategy_a = ConcreteStrategyA()
@@ -87,8 +97,8 @@ def main():
     print(processed)
     
     # Iterate StrategyB again
-    context = Context(ConcreteStrategyB())
-    processed = context.context_interface(processed, 'B_pos_arg1', Bkeyarg1='B_karg1', Bkeyarg2='B_karg2')
+    context = Context(get_zero_crossings())
+    processed = context.context_interface(processed, 'G_pos_arg1', Gkeyarg1='G_karg1', Gkeyarg2='G_karg2')
     print(processed)
 
 if __name__ == "__main__":
