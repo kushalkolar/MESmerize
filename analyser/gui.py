@@ -25,6 +25,7 @@ from pyqtgraphCore.console import ConsoleWidget
 import numpy as np
 import scipy
 
+
 class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
     def __init__(self, parent=None, *args):
         super().__init__()
@@ -43,11 +44,11 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
               "tab0 = curr_tab()\ntab0.p1.plot(x, np.sin(x))"
 
         self.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile='./test_history.pik', editor='gedit'))
+                                                 historyFile='./test_history.pik'))
 
 
 
-class TabsWidget(QtGui.QWidget):
+class TabsWidget(QtWidgets.QWidget):
     def __init__(self, parent=None, *args):
         QtWidgets.QWidget.__init__(self, parent, *args)
         self.tabs = QtWidgets.QTabWidget()
@@ -61,10 +62,12 @@ class TabsWidget(QtGui.QWidget):
         self.tabs.setCurrentIndex(self.tabs.count() -1)
 
 
-class TabPage(QtGui.QWidget, uiPlots.Ui_Form):
+class TabPage(QtWidgets.QWidget, uiPlots.Ui_Form):
     def __init__(self, parent=None, *args):
-        QtGui.QWidget.__init__(self, parent, *args)
+        QtWidgets.QWidget.__init__(self, parent, *args)
         self.setupUi(self)
+
+
 
 
 if __name__ == '__main__':

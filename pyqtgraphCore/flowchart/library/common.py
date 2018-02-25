@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ...Qt import QtCore, QtGui
+from ...Qt import QtCore, QtGui, QtWidgets
 from ...widgets.SpinBox import SpinBox
 #from ...SignalProxy import SignalProxy
 from ...WidgetGroup import WidgetGroup
@@ -31,6 +31,7 @@ def generateUi(opts):
         else:
             raise Exception("Widget specification must be (name, type) or (name, type, {opts})")
         if t == 'intSpin':
+            # w = QtGui.QSpinBox()
             w = QtGui.QSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
@@ -38,6 +39,9 @@ def generateUi(opts):
                 w.setMinimum(o['min'])
             if 'value' in o:
                 w.setValue(o['value'])
+            if 'step' in o:
+                w.setSingleStep(o['step'])
+
         elif t == 'doubleSpin':
             w = QtGui.QDoubleSpinBox()
             if 'max' in o:
@@ -46,17 +50,35 @@ def generateUi(opts):
                 w.setMinimum(o['min'])                
             if 'value' in o:
                 w.setValue(o['value'])
+            if 'step' in o:
+                w.setSingleStep(o['step'])
         elif t == 'spin':
             w = SpinBox()
             w.setOpts(**o)
         elif t == 'check':
-            w = QtGui.QCheckBox()
+            w = QtWidgets.QCheckBox()
             if 'checked' in o:
                 w.setChecked(o['checked'])
         elif t == 'combo':
-            w = QtGui.QComboBox()
+            w = QtWidgets.QComboBox()
             for i in o['values']:
-                w.addItem(i)
+                if i != '':
+                    w.addItem(i)
+        elif t == 'lineEdit':
+            w = QtWidgets.QLineEdit()
+            if 'placeHolder' in o:
+                w.setPlaceholderText(o['placeHolder'])
+            if 'text' in o:
+                w.setText(o['text'])
+        elif t == 'checkBtn':
+            w = QtWidgets.QPushButton()
+            w.setCheckable(True)
+            if 'text' in o:
+                w.setText(o['text'])
+            if 'checked' in o:
+                w.setChecked(o['checked'])
+            w.clicked.connect(w.toggle)
+
         #elif t == 'colormap':
             #w = ColorMapper()
         elif t == 'color':
@@ -96,7 +118,8 @@ class CtrlNode(Node):
         
         self.ui, self.stateGroup, self.ctrls = generateUi(ui)
         self.stateGroup.sigChanged.connect(self.changed)
-       
+        self.count = 0
+
     def ctrlWidget(self):
         return self.ui
        
@@ -138,7 +161,7 @@ class PlottingCtrlNode(CtrlNode):
         #print "PlottingCtrlNode.__init__ called."
         CtrlNode.__init__(self, name, ui=ui, terminals=terminals)
         self.plotTerminal = self.addOutput('plot', optional=True)
-        
+
     def connected(self, term, remote):
         CtrlNode.connected(self, term, remote)
         if term is not self.plotTerminal:
