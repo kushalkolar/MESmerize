@@ -5,6 +5,8 @@ from ...Qt import QtCore, QtGui
 from ...graphicsItems.ScatterPlotItem import ScatterPlotItem
 from ...graphicsItems.PlotCurveItem import PlotCurveItem
 from ... import PlotDataItem, ComboBox
+from ... import metaarray
+from analyser.DataTypes import Transmission
 
 from .common import *
 import numpy as np
@@ -44,41 +46,125 @@ class PlotWidgetNode(Node):
         
     def getPlot(self):
         return self.plot
-        
+
+    # def process(self, In, display=True):
+    #     for data in In['curve']:
+    #         data = list(data)
+    #         data = metaarray.MetaArray(data, info=[{'name': 'Time', 'values': np.linspace(0, len(data), len(data))}, {}])
+    #         print(data)
+    #         self._plot(data, display=True)
+
+    # def Aprocess(self, In, display=True):
+    #     # print(In)
+    #     if display and self.plot is not None:
+    #         items = set()
+    #         # Add all new input items to selected plot
+    #         for name, vals in In.items():
+    #             if vals is None:
+    #                 continue
+    #             if type(vals) is not list:
+    #                 vals = [vals]
+    #
+    #             for val in vals:
+    #                 vid = id(val)
+    #                 if vid in self.items and self.items[vid].scene() is self.plot.scene():
+    #                     # Item is already added to the correct scene
+    #                     #   possible bug: what if two plots occupy the same scene? (should
+    #                     #   rarely be a problem because items are removed from a plot before
+    #                     #   switching).
+    #                     items.add(vid)
+    #                 else:
+    #                     # Add the item to the plot, or generate a new item if needed.
+    #                     if isinstance(val, QtGui.QGraphicsItem):
+    #                         self.plot.addItem(val)
+    #                         item = val
+    #                     else:
+    #                         item = self.plot.plot(val)
+    #                         print(val)
+    #                     self.items[vid] = item
+    #                     items.add(vid)
+    #
+    #         # Any left-over items that did not appear in the input must be removed
+    #         for vid in list(self.items.keys()):
+    #             if vid not in items:
+    #                 self.plot.removeItem(self.items[vid])
+    #                 del self.items[vid]
+
     def process(self, In, display=True):
+        # print(type(In))
+        print(In)
+        curves = []
         if display and self.plot is not None:
+            for transmission in In.items():
+                if len(transmission) < 2:
+                    continue
+                transmission = transmission[1]
+                if transmission.src == 'deriv':
+                    print('SOURCE IS DERIV')
+                # print(transmission)
+                if not isinstance(transmission, Transmission):
+                    continue
+                df = transmission.df
+                plot_this = transmission.plot_this
+                if transmission.src == 'deriv':
+                    print('PLOTTING DERIVATIVE')
+                # print(df)
+                if plot_this not in df:
+                    # print('not here')
+                    continue
+                for data in df[plot_this]:
+                    if data is None:
+                        continue
+                    # print(data)
+                    # data = list(data)
+                    data = metaarray.MetaArray(data,
+                                               info=[{'name': 'Time', 'values': np.linspace(0, len(data), len(data))}, {}])
+                    curves.append(data)
+                    # self.plot.plot(data)
+                    # print(data)
+                    # print(curves)
+
+            # curves = set(curves)
+            # print(curves)
             items = set()
             # Add all new input items to selected plot
-            for name, vals in In.items():
-                if vals is None:
-                    continue
-                if type(vals) is not list:
-                    vals = [vals]
-                    
-                for val in vals:
-                    vid = id(val)
-                    if vid in self.items and self.items[vid].scene() is self.plot.scene():
-                        # Item is already added to the correct scene
-                        #   possible bug: what if two plots occupy the same scene? (should
-                        #   rarely be a problem because items are removed from a plot before
-                        #   switching).
-                        items.add(vid)
+            # for val in curves:
+                # # print(curve)
+                # for vals in curve:
+                #     print("YAY")
+                #     # print(vals)
+                #     if vals is None:
+                #         continue
+                #     if type(vals) is not list:
+                #         vals = [vals]
+            for val in curves:
+                vid = id(val)
+                # print(id(val))
+                if vid in self.items and self.items[vid].scene() is self.plot.scene():
+                    # Item is already added to the correct scene
+                    #   possible bug: what if two plots occupy the same scene? (should
+                    #   rarely be a problem because items are removed from a plot before
+                    #   switching).
+                    items.add(vid)
+                else:
+                    # Add the item to the plot, or generate a new item if needed.
+                    if isinstance(val, QtGui.QGraphicsItem):
+                        self.plot.addItem(val)
+                        item = val
                     else:
-                        # Add the item to the plot, or generate a new item if needed.
-                        if isinstance(val, QtGui.QGraphicsItem):
-                            self.plot.addItem(val)
-                            item = val
-                        else:
-                            item = self.plot.plot(val)
-                        self.items[vid] = item
-                        items.add(vid)
-                        
-            # Any left-over items that did not appear in the input must be removed
-            for vid in list(self.items.keys()):
-                if vid not in items:
-                    self.plot.removeItem(self.items[vid])
-                    del self.items[vid]
-            
+                        # print('adding to plot')
+                        # print(val)
+                        item = self.plot.plot(val/min(val))
+                        # print('added')
+                    self.items[vid] = item
+                    items.add(vid)
+
+        # Any left-over items that did not appear in the input must be removed
+        for vid in list(self.items.keys()):
+            if vid not in items:
+                self.plot.removeItem(self.items[vid])
+                del self.items[vid]
+
     def processBypassed(self, args):
         if self.plot is None:
             return
