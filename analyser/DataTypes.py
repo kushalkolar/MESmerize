@@ -20,13 +20,14 @@ from MesmerizeCore import configuration
 from collections import OrderedDict
 
 class Transmission:
-    def __init__(self, df, src, dst=None):
+    def __init__(self, df, src, data_column='', dst=None):
         """
         :type df: pd.DataFrame
         """
         self.df = df.copy()
         self.src = src
         self.dst = dst
+        self.data_column = data_column
         self.STIM_DEFS = configuration.cfg.options('STIM_DEFS')
         self.ROI_DEFS = configuration.cfg.options('ROI_DEFS')
         self.plot_this = 'curve'
@@ -36,7 +37,7 @@ class Transmission:
         assert isinstance(df, pd.DataFrame)
         df[['curve', 'meta', 'stimMaps']] = df.apply(Transmission._load_files, axis=1)
 
-        return cls(df, src=[{'raw': ''}])
+        return cls(df, src=[{'raw': ''}], data_column='curve')
 
     @staticmethod
     def _load_files(row):
@@ -52,10 +53,10 @@ class Transmission:
     @classmethod
     def from_pickle(cls, path):
         p = pickle.load(open(path, 'rb'))
-        return cls(p['df'], p['src'])
+        return cls(p['df'], p['src'], p['data_column'])
 
     def to_pickle(self, path):
-        d = {'df': self.df, 'src': self.src, 'dst': self.dst}
+        d = {'df': self.df, 'src': self.src, 'data_column': self.data_column, 'dst': self.dst}
         pickle.dump(d, path, protocol=4)
 
     def copy(self):

@@ -22,7 +22,7 @@ class AlignStims(CtrlNode):
     """Align Stimulus Definitions"""
     nodeName = 'AlignStims'
     uiTemplate = [('Stimulus_Type', 'combo', {'values': []}),
-                  ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus and/or Substim', 'text': 'NH4'}),
+                  ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus and/or Substim', 'text': ''}),
                   ('start_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('end_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
@@ -77,7 +77,7 @@ class AlignStims(CtrlNode):
             except KeyError:
                 continue
             # print(r)
-            curve = r['curve']
+            curve = r[self.transmission.data_column]
             for stim in smap:
                 if stim_tag in stim[0][0]:
                     if curve is None:
@@ -100,13 +100,15 @@ class AlignStims(CtrlNode):
 
                     rn = r.copy()
 
-                    rn['curve'] = curve[int(tstart):int(tend)] / min(curve[int(tstart):int(tend)])
+                    rn[self.transmission.data_column] = curve[int(tstart):int(tend)] / min(curve[int(tstart):int(tend)])
                     rn[stim_def] = stim[0][0]
                     #
                     t.df = t.df.append(rn, ignore_index=True)
         print(t.df)
 
         t.src.append({'AlignStims': params})
+        t.data_column = self.transmission.data_column
+        t.plot_this = t.data_column
         return t
 
 class DF_IDX(CtrlNode):

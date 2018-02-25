@@ -6,6 +6,7 @@ from .Terminal import *
 from ..pgcollections import OrderedDict
 from ..debug import *
 import numpy as np
+from MesmerizeCore import configuration
 
 
 def strDict(d):
@@ -300,7 +301,10 @@ class Node(QtCore.QObject):
             if self.isBypassed():
                 out = self.processBypassed(vals)
             else:
-                out = self.process(**strDict(vals))
+                try:
+                    out = self.process(**strDict(vals))
+                except TypeError:
+                    out = self.process(self.forceValue)
             #print "  output:", out
             if out is not None:
                 if signal:
@@ -373,7 +377,10 @@ class Node(QtCore.QObject):
         pos = self.graphicsItem().pos()
         state = {'pos': (pos.x(), pos.y()), 'bypass': self.isBypassed()}
         termsEditable = self._allowAddInput | self._allowAddOutput
-        for term in self._inputs.values() + self._outputs.values():
+        d = self._inputs
+        d.update(self._outputs)
+        # for term in self._inputs.values() + self._outputs.values():
+        for term in d.values():
             termsEditable |= term._renamable | term._removable | term._multiable
         if termsEditable:
             state['terminals'] = self.saveTerminals()

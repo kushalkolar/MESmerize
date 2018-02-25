@@ -92,13 +92,12 @@ def generateUi(opts):
             if 'toolTip' in o:
                 w.setToolTip(o['toolTip'])
 
-        elif t == 'checkBtn':
+        elif t == 'button':
             w = QtWidgets.QPushButton()
-            w.setCheckable(True)
             if 'text' in o:
                 w.setText(o['text'])
-            if 'checked' in o:
-                w.setChecked(o['checked'])
+            if 'checkable' in o:
+                w.setChecked(o['checkable'])
 
         #elif t == 'colormap':
             #w = ColorMapper()

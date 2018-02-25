@@ -28,8 +28,8 @@ class Derivative(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
         t = transmission.copy()
-        t.df['curve'] = t.df['curve'].apply(np.gradient)
-        t.plot_this = 'curve'
+        t.df[t.data_column] = t.df[t.data_column].apply(np.gradient)
+        t.plot_this = t.data_column
         t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
         return t
 
@@ -52,15 +52,16 @@ class ButterWorth(CtrlNode):
 
         b, a = signal.butter(N, Wn)
         sig = signal.filtfilt(b, a, x)
-        return pd.Series({'curve': sig})
+        return pd.Series({self.t.data_column: sig})
 
     def processData(self, transmission):
         if self.ctrls['Apply'] is False:
             return
-        t = transmission.copy()
+        self.t = transmission.copy()
 
-        t.df['curve'] = t.df.apply(lambda x: self._func(x['curve'], x['meta']), axis=1)
-        return t
+        self.t.df[self.t.data_column] = self.t.df.apply(lambda x: self._func(x[self.t.data_column], x['meta']), axis=1)
+        self.t.plot_this = self.t.data_column
+        return self.t
 
 
 class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
@@ -75,7 +76,7 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
     def processData(self, transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
-        t = transmission.copy()
+        self.t = transmission.copy()
         print(self.ctrls)
         w = self.ctrls['window_length'].value()
         p = self.ctrls['polyorder'].value()
@@ -90,19 +91,36 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
 
         # t.df['curve'].apply(lambda x: self._func)
 
-        t.df['curve'] = t.df['curve'].apply(signal.savgol_filter, window_length=w, polyorder=p)
+        self.t.df[self.t.data_column] = self.t.df[self.t.data_column].apply(signal.savgol_filter, window_length=w, polyorder=p)
 
         params = {'window_length': w,
                   'polyorder': p}
 
-        t.src.append({'SavitzkyGolay': params})
-        return t
+        self.t.src.append({'SavitzkyGolay': params})
+        self.t.plot_this = self.t.data_column
+        return self.t
 
+
+
+'''####################################################################################################'''
+'''####################################################################################################'''
+# TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
 class PeakDetect(CtrlNode):
-    """Detect peaks by finding zero-crossings events"""
+    """Detect peaks & bases by finding local-maxima. Use this after the Derivative Filter"""
     nodeName = 'PeakDetect'
+    uiTemplate = [
+            ('min_slope', 'doubleSpin', {'min': 0.000, 'max': 999.000, 'value': 1.000, 'step': 0.100}),
+            ('min_ampl', 'doubleSpin', {'min': 0.000, 'max': 999.000, 'value': 1.000, 'step': 0.100}),
+            ('Apply', 'check', {'checked': True, 'applyBox': True})
+        ]
 
-    # def _func(self, x):
+    def processData(self, transmission):
+        self.t = transmission.copy()
+        return None
+'''####################################################################################################'''
+'''####################################################################################################'''
+
+        # def _func(self, x):
     #     b, a = signal.butter(2, (1 / 25) / 10)
     #     sig = signal.filtfilt(b, a, x)
     #     return sig
