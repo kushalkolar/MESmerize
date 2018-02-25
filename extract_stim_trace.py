@@ -38,12 +38,17 @@ t = Transmission(empty_df(), transmission.src, transmission.dst)
 
 def extractStimTrace(stim_def, stim_tag, start_offset=0, end_offset=0, zero_pos='start_offset'):
         for ix, r in transmission.df.iterrows():
+            
             try:
                 smap = r['stimMaps'].flatten()[0][stim_def]
             except KeyError:
                 continue
             
             curve = r['curve']
+#            p.plot(curve/min(curve))
+#extractStimTrace(stim_def, stim_tag, start_offset=0, end_offset=300, zero_pos='stim_end')
+
+            
             for stim in smap:
                 if stim_tag in stim[0][0]:
                     if curve is None:

@@ -32,7 +32,7 @@ def generateUi(opts):
             raise Exception("Widget specification must be (name, type) or (name, type, {opts})")
         if t == 'intSpin':
             # w = QtGui.QSpinBox()
-            w = QtGui.QSpinBox()
+            w = QtWidgets.QSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
             if 'min' in o:
@@ -52,24 +52,46 @@ def generateUi(opts):
                 w.setValue(o['value'])
             if 'step' in o:
                 w.setSingleStep(o['step'])
+
         elif t == 'spin':
             w = SpinBox()
             w.setOpts(**o)
+
         elif t == 'check':
             w = QtWidgets.QCheckBox()
             if 'checked' in o:
                 w.setChecked(o['checked'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
+            if 'applyBox' in o:
+                if o['applyBox'] is True:
+                    w.setToolTip('When checked this node will process all incoming data.\n'
+                                 'Therefore note that this will cause the program to behave\n'
+                                 'slowly if you are constantly changing things around\n'
+                                 'while keeping this checked.')
+
         elif t == 'combo':
             w = QtWidgets.QComboBox()
             for i in o['values']:
                 if i != '':
                     w.addItem(i)
+
         elif t == 'lineEdit':
             w = QtWidgets.QLineEdit()
             if 'placeHolder' in o:
                 w.setPlaceholderText(o['placeHolder'])
             if 'text' in o:
                 w.setText(o['text'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
+
+        elif t == 'label':
+            w = QtWidgets.QLabel()
+            if 'text' in o:
+                w.setText(o['text'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
+
         elif t == 'checkBtn':
             w = QtWidgets.QPushButton()
             w.setCheckable(True)
@@ -77,7 +99,6 @@ def generateUi(opts):
                 w.setText(o['text'])
             if 'checked' in o:
                 w.setChecked(o['checked'])
-            w.clicked.connect(w.toggle)
 
         #elif t == 'colormap':
             #w = ColorMapper()

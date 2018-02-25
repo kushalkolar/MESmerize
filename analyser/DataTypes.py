@@ -10,12 +10,14 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
-
+import sys
+# sys.path.append('..')
 import pandas as pd
 import numpy as np
 import pickle
 from copy import deepcopy
 from MesmerizeCore import configuration
+from collections import OrderedDict
 
 class Transmission:
     def __init__(self, df, src, dst=None):
@@ -26,21 +28,26 @@ class Transmission:
         self.src = src
         self.dst = dst
         self.STIM_DEFS = configuration.cfg.options('STIM_DEFS')
-        if src == 'raw' or 'deriv':
-            self.plot_this = 'curve'
+        self.ROI_DEFS = configuration.cfg.options('ROI_DEFS')
+        self.plot_this = 'curve'
 
     @classmethod
     def from_proj(cls, df):
         assert isinstance(df, pd.DataFrame)
-        df[['raw', 'stimMaps']] = df.apply(Transmission._loadnpz, axis=1)
+        df[['curve', 'meta', 'stimMaps']] = df.apply(Transmission._load_files, axis=1)
 
-        return cls(df, src='raw')
+        return cls(df, src=[{'raw': ''}])
 
     @staticmethod
-    def _loadnpz(row):
+    def _load_files(row):
         path = row['CurvePath']
         npz = np.load(path)
-        return pd.Series({'curve': npz.f.curve[1], 'stimMaps': npz.f.stimMaps})
+        
+        pikPath = row['ImgInfoPath']
+        pik = pickle.load(open(pikPath, 'rb'))
+        meta = pik['imdata']['meta']
+        
+        return pd.Series({'curve': npz.f.curve[1], 'meta': meta, 'stimMaps': npz.f.stimMaps})
 
     @classmethod
     def from_pickle(cls, path):
@@ -62,3 +69,10 @@ class Transmission:
     # def src(self, source):
     #     self._src = source + '_' + uuid4().hex
 
+if __name__ == '__main__':
+    configuration.configpath = '/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/config.cfg'
+    configuration.openConfig()
+    pick = pickle.load(open('../df_with_curves', 'rb'))
+    # data = list(pick['curve'][0])
+    t = Transmission.from_proj(pick)
+    df = t.df

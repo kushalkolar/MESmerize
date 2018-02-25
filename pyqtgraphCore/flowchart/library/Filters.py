@@ -11,21 +11,55 @@ from ... import Point
 from ... import metaarray as metaarray
 from analyser.DataTypes import Transmission
 from scipy import signal
+from functools import partial
+import pandas as pd
 
 
 class Derivative(CtrlNode):
     """Return the Derivative of a curve."""
     nodeName = 'Derivative'
     uiTemplate = [
-        ('dt', 'intSpin', {'min': 0, 'max': 100, 'value': 1, 'step': 1})
+        ('dt', 'intSpin', {'min': 0, 'max': 100, 'value': 1, 'step': 1}),
+        ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
     # @metaArrayWrapper
     def processData(self, transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
         t = transmission.copy()
         t.df['curve'] = t.df['curve'].apply(np.gradient)
         t.plot_this = 'curve'
-        t.src = 'Derivative'
+        t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
+        return t
+
+class ButterWorth(CtrlNode):
+    """Butterworth Filter"""
+    nodeName = 'ButterWorth'
+    uiTemplate = [
+        ('order', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 2}),
+        ('freqDivider', 'doubleSpin', {'min': 0.01, 'max': 100.00, 'step': 0.05, 'value': 2.00}),
+        ('Apply', 'check', {'checked': True, 'applyBox': True})
+    ]
+
+    def _func(self, x, meta):
+        N = self.ctrls['order'].value()
+
+        freq = 1/meta['FoldedFrameInfo']['frameTimeLength']
+        divider = self.ctrls['freqDivider'].value()
+
+        Wn = freq/divider
+
+        b, a = signal.butter(N, Wn)
+        sig = signal.filtfilt(b, a, x)
+        return pd.Series({'curve': sig})
+
+    def processData(self, transmission):
+        if self.ctrls['Apply'] is False:
+            return
+        t = transmission.copy()
+
+        t.df['curve'] = t.df.apply(lambda x: self._func(x['curve'], x['meta']), axis=1)
         return t
 
 
@@ -33,11 +67,14 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
     """Savitzky-Golay filter."""
     nodeName = 'Savitzky_Golay'
     uiTemplate = [
-        ('window_length', 'intSpin', {'min': 0, 'max': 100, 'value': 3, 'step': 2}),
-        ('polyorder', 'intSpin', {'min': 1, 'max': 100, 'value': 1, 'step': 1})
+        ('window_length', 'intSpin', {'min': 3, 'max': 999, 'value': 3, 'step': 2}),
+        ('polyorder', 'intSpin', {'min': 1, 'max': 998, 'value': 1, 'step': 1}),
+        ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
     def processData(self, transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
         t = transmission.copy()
         print(self.ctrls)
         w = self.ctrls['window_length'].value()
@@ -51,9 +88,24 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
             QtGui.QMessageBox.warning(None, 'Invalid value!', 'window_length MUST be an odd number!')
             return None
 
-        t.df['curve'].apply(lambda x: signal.savgol_filter(x, window_length=w, polyorder=p))
-        t.src = 'SavitzkyGolay'
+        # t.df['curve'].apply(lambda x: self._func)
+
+        t.df['curve'] = t.df['curve'].apply(signal.savgol_filter, window_length=w, polyorder=p)
+
+        params = {'window_length': w,
+                  'polyorder': p}
+
+        t.src.append({'SavitzkyGolay': params})
         return t
+
+class PeakDetect(CtrlNode):
+    """Detect peaks by finding zero-crossings events"""
+    nodeName = 'PeakDetect'
+
+    # def _func(self, x):
+    #     b, a = signal.butter(2, (1 / 25) / 10)
+    #     sig = signal.filtfilt(b, a, x)
+    #     return sig
 
 
 
