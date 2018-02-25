@@ -57,7 +57,7 @@ win.show()
 pick = pickle.load(open('./df_with_curves', 'rb'))
 #data = list(pick['curve'][0])
 data = Transmission.from_proj(pick)
-
+data.data_column = 'curve'
 
 #data = np.random.normal(size=1000)
 #data[200:300] += 1
