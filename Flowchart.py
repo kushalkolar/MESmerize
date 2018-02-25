@@ -56,9 +56,7 @@ win.show()
 ## generate signal data to pass through the flowchart
 pick = pickle.load(open('./df_with_curves', 'rb'))
 #data = list(pick['curve'][0])
-data = pick
-
-data = Transmission(data, 'curve')
+data = Transmission.from_proj(pick)
 
 
 #data = np.random.normal(size=1000)

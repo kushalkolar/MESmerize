@@ -92,22 +92,21 @@ class PlotWidgetNode(Node):
 
     def process(self, In, display=True):
         # print(type(In))
-        print(In)
+        # print(self.plot.scene())
+        self.plot.clear()
         curves = []
         if display and self.plot is not None:
             for transmission in In.items():
                 if len(transmission) < 2:
                     continue
                 transmission = transmission[1]
-                if transmission.src == 'deriv':
-                    print('SOURCE IS DERIV')
+                src = transmission.src[-1]
+                print('SOURCE IS: ' + str(src))
                 # print(transmission)
                 if not isinstance(transmission, Transmission):
                     continue
                 df = transmission.df
                 plot_this = transmission.plot_this
-                if transmission.src == 'deriv':
-                    print('PLOTTING DERIVATIVE')
                 # print(df)
                 if plot_this not in df:
                     # print('not here')
@@ -154,7 +153,7 @@ class PlotWidgetNode(Node):
                     else:
                         # print('adding to plot')
                         # print(val)
-                        item = self.plot.plot(val/min(val))
+                        item = self.plot.plot(val/val.min())
                         # print('added')
                     self.items[vid] = item
                     items.add(vid)
