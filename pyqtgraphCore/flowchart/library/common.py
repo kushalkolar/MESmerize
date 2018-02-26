@@ -126,7 +126,7 @@ class CtrlNode(Node):
     
     sigStateChanged = QtCore.Signal(object)
     
-    def __init__(self, name, ui=None, terminals=None):
+    def __init__(self, name, ui=None, terminals=None, **kwargs):
         if ui is None:
             if hasattr(self, 'uiTemplate'):
                 ui = self.uiTemplate

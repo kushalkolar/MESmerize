@@ -20,11 +20,12 @@ from MesmerizeCore import configuration
 from collections import OrderedDict
 
 class Transmission:
-    def __init__(self, df, src, data_column='', dst=None):
+    def __init__(self, df, src, data_column, dst=None):
         """
         :type df: pd.DataFrame
         """
         self.df = df.copy()
+        #TODO: Make a graphical thing that display the source history of any node and can be accessed while looking at stastics too
         self.src = src
         self.dst = dst
         self.data_column = data_column

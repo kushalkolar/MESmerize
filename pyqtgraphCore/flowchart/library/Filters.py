@@ -23,7 +23,6 @@ class Derivative(CtrlNode):
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
-    # @metaArrayWrapper
     def processData(self, transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return

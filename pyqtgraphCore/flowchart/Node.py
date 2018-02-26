@@ -301,10 +301,11 @@ class Node(QtCore.QObject):
             if self.isBypassed():
                 out = self.processBypassed(vals)
             else:
-                try:
-                    out = self.process(**strDict(vals))
-                except TypeError:
+                if self._name == 'Save':
                     out = self.process(self.forceValue)
+                else:
+                    out = self.process(**strDict(vals))
+
             #print "  output:", out
             if out is not None:
                 if signal:

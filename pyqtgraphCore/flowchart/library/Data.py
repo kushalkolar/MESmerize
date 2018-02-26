@@ -10,7 +10,9 @@ from ...graphicsItems.LinearRegionItem import LinearRegionItem
 import pickle
 from . import functions
 from collections import OrderedDict
+from functools import partial
 
+## TODO: THIS IS NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class Load(CtrlNode):
     """Load Transmission data object from pickled file"""
     nodeName = 'Load'
@@ -29,7 +31,7 @@ class Load(CtrlNode):
         try:
             # self._inputs = {'Input': pickle.load(open(path[0], 'rb'))}
             self.transmission = pickle.load(open(path[0], 'rb'))
-            fname = self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
+            self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
             # print(self.transmission)
         except Exception as e:
             QtGui.QMessageBox.warning(None, 'Cannot open file!', 'Unable to open the selected file\n' + str(e))
@@ -88,6 +90,56 @@ class Save(CtrlNode):
             return
         if self.ctrls['path'].text() != '':
             pickle.dump(transmission, open(self.ctrls['path'].text(), 'wb'), protocol=4)
+
+
+class RunScript(CtrlNode):
+    """Run a python script"""
+    nodeName = 'RunScript'
+    uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog'}),
+                  ('fname', 'label', {'text': ': '}),
+                  ('Run', 'button', {'text': 'Run Script'})
+                  ]
+
+    def __init__(self, name):
+        # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
+        CtrlNode.__init__(self, name, terminals={
+                'In': {'io': 'in', 'renamable': True, 'multiable': True},
+                'Out': {'io': 'out', 'renamable': True, 'multiable': True}},
+                allowAddInput=True, allowAddOutput=True)
+
+        self.ctrls['Open'].clicked.connect(self._fileDialog)
+        self.previous_output = None
+        self.script="return 'No Script'"
+        self.ctrls['Run'].clicked.connect(self._execute)
+
+    def _fileDialog(self):
+        self.path = QtGui.QFileDialog.getOpenFileName(None, 'Select script', '', '(*.py)')
+        if self.path == '':
+            return
+        self.ctrls['fname'].setText(self.path[0].split('/')[-1][:-3])
+
+    def _execute(self):
+        try:
+            self.f = open(self.path[0], 'r')
+            self.script = self.f.read()
+        except Exception as e:
+            QtGui.QMessageBox.warning(None, 'File open error',
+                                      'Cannot open the selected file\n%s' % e)
+        self.update()
+
+    def process(self, **kwargs):
+        output = None
+        # try:
+        # fn = "def fn(**kwargs):\n"
+        # run = "\noutput=fn(**kwargs)\n"
+        # text = fn + "".join(["    " + x for x in self.script]) + run
+        # exec(text)
+        exec(self.script)
+        output = globals()['output']
+        # except Exception as e:
+        #     output = {'Out': "Error processing node: \n" + str(e)}
+        # out = {'Out': In}
+        return globals()['output']
 
 class ColumnSelectNode(Node):
     """Select named columns from a record array or MetaArray."""
@@ -304,6 +356,7 @@ class EvalNode(Node):
     def process(self, display=True, **args):
         l = locals()
         l.update(args)
+        output = None
         ## try eval first, then exec
         try:
             text = str(self.text.toPlainText()).replace('\n', ' ')
