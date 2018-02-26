@@ -42,7 +42,6 @@ class AlignStims(CtrlNode):
         # Very messy work-around because the usual widget clear() and removeItem() result in
         # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
         # Results in a really stupid bug where stuff in the comboBox is duplicated.
-
         all_stims = []
         for i in range(self.ctrls['Stimulus_Type'].count()):
             all_stims.append(self.ctrls['Stimulus_Type'].itemText(i))
@@ -69,8 +68,9 @@ class AlignStims(CtrlNode):
                   'zero_pos': zero_pos
                   }
 
-        t = Transmission(empty_df(), self.transmission.src, self.transmission.dst)
+        t = Transmission(empty_df(), self.transmission.src, self.transmission.data_column, dst=self.transmission.dst)
         for ix, r in self.transmission.df.iterrows():
+            ## TODO: Should use an if-continue block, just not critical at the moment
             try:
                 smap = r['stimMaps'].flatten()[0][stim_def]
                 # print(smap)
@@ -165,9 +165,10 @@ class ROI_Include(CtrlNode):
         chosen_tags = [tag.strip() for tag in self.ctrls['ROI_Tags'].text().split(',')]
 
         t = self.transmission.copy()
-
-        t.df = t.df[~t.df[self.ctrls['ROI_Type'].currentText()].isin(chosen_tags)]
-
+        '''***************************************************************************'''
+        ## TODO: CHECK IF THIS IS ACTUALLY DOING THE RIGHT THING!!!!
+        t.df = t.df[t.df[self.ctrls['ROI_Type'].currentText()].isin(chosen_tags)]
+        '''***************************************************************************'''
         return t
 
 
