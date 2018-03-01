@@ -81,11 +81,13 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
         p = self.ctrls['polyorder'].value()
 
         if p > w:
-            QtGui.QMessageBox.warning(None, 'Invalid value!', 'polyorder MUST be less than window_length')
+            QtGui.QMessageBox.warning(None, 'Invalid value!',
+                                            'polyorder MUST be less than window_length')
             return None
 
         if w % 2 == 0:
-            QtGui.QMessageBox.warning(None, 'Invalid value!', 'window_length MUST be an odd number!')
+            QtGui.QMessageBox.warning(None, 'Invalid value!',
+                                            'window_length MUST be an odd number!')
             return None
 
         # t.df['curve'].apply(lambda x: self._func)
