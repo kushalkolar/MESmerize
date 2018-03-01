@@ -17,7 +17,7 @@ class PlotWidgetNode(Node):
     sigPlotChanged = QtCore.Signal(object)
     
     def __init__(self, name):
-        Node.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        Node.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Peaks': {'io': 'in'}})
         self.plot = None  # currently selected plot 
         self.plots = {}   # list of available plots user may select from
         self.ui = None 
@@ -47,95 +47,44 @@ class PlotWidgetNode(Node):
     def getPlot(self):
         return self.plot
 
-    # def process(self, In, display=True):
-    #     for data in In['curve']:
-    #         data = list(data)
-    #         data = metaarray.MetaArray(data, info=[{'name': 'Time', 'values': np.linspace(0, len(data), len(data))}, {}])
-    #         print(data)
-    #         self._plot(data, display=True)
+    def _plot_pbs(self):
+        pass
 
-    # def Aprocess(self, In, display=True):
-    #     # print(In)
-    #     if display and self.plot is not None:
-    #         items = set()
-    #         # Add all new input items to selected plot
-    #         for name, vals in In.items():
-    #             if vals is None:
-    #                 continue
-    #             if type(vals) is not list:
-    #                 vals = [vals]
-    #
-    #             for val in vals:
-    #                 vid = id(val)
-    #                 if vid in self.items and self.items[vid].scene() is self.plot.scene():
-    #                     # Item is already added to the correct scene
-    #                     #   possible bug: what if two plots occupy the same scene? (should
-    #                     #   rarely be a problem because items are removed from a plot before
-    #                     #   switching).
-    #                     items.add(vid)
-    #                 else:
-    #                     # Add the item to the plot, or generate a new item if needed.
-    #                     if isinstance(val, QtGui.QGraphicsItem):
-    #                         self.plot.addItem(val)
-    #                         item = val
-    #                     else:
-    #                         item = self.plot.plot(val)
-    #                         print(val)
-    #                     self.items[vid] = item
-    #                     items.add(vid)
-    #
-    #         # Any left-over items that did not appear in the input must be removed
-    #         for vid in list(self.items.keys()):
-    #             if vid not in items:
-    #                 self.plot.removeItem(self.items[vid])
-    #                 del self.items[vid]
-
-    def process(self, In, display=True):
-        # print(type(In))
-        # print(self.plot.scene())
+    def process(self, **kwargs):
+        In = kwargs['In']
         self.plot.clear()
         curves = []
-        if display and self.plot is not None:
+
+        # if kwargs['display'] and self.plot is not None:
+        if self.plot is not None:
+
             for transmission in In.items():
+
                 if len(transmission) < 2:
                     continue
+
                 transmission = transmission[1]
                 src = transmission.src[-1]
+
                 print('SOURCE IS: ' + str(src))
-                # print(transmission)
+
                 if not isinstance(transmission, Transmission):
                     continue
                 df = transmission.df
                 plot_this = transmission.plot_this
-                # print(df)
+
                 if plot_this not in df:
-                    # print('not here')
                     continue
                 for data in df[plot_this]:
                     if data is None:
                         continue
-                    # print(data)
-                    # data = list(data)
-                    data = metaarray.MetaArray(data,
-                                               info=[{'name': 'Time', 'values': np.linspace(0, len(data), len(data))}, {}])
-                    curves.append(data)
-                    # self.plot.plot(data)
-                    # print(data)
-                    # print(curves)
 
-            # curves = set(curves)
-            # print(curves)
+                    data = metaarray.MetaArray(data,
+                                               info=[{'name': 'Time',
+                                                      'values': np.linspace(0, len(data), len(data))}, {}])
+                    curves.append(data)
+
             items = set()
-            # Add all new input items to selected plot
-            # for val in curves:
-                # # print(curve)
-                # for vals in curve:
-                #     print("YAY")
-                #     # print(vals)
-                #     if vals is None:
-                #         continue
-                #     if type(vals) is not list:
-                #         vals = [vals]
             for val in curves:
                 vid = id(val)
                 # print(id(val))
@@ -157,6 +106,24 @@ class PlotWidgetNode(Node):
                         # print('added')
                     self.items[vid] = item
                     items.add(vid)
+
+                #
+                # if 'Peaks' in kwargs:
+                #     peaks_inputs = kwargs['Peaks']
+                #     for peaks_transmission in peaks_inputs.items():
+                #         peaks_transmission = peaks_transmission[1]
+                #
+                #         for peaks_bases in peaks_transmission.df[peaks_transmission.data_column]:
+                #
+                #             peaks_plot = ScatterPlotItem(name='peaks', pen=None, symbol='o', size=10,
+                #                                          brush=(255, 0, 0, 150))
+                #             bases_plot = ScatterPlotItem(name='bases', pen=None, symbol='o', size=10,
+                #                                          brush=(0, 255, 0, 150))
+                #
+                #             peaks_plot.setData(peaks_bases[0].index
+                #
+                #             self.plot.addItem(peaks_plot)
+                #             self.plot.addItem(bases_plot)
 
         # Any left-over items that did not appear in the input must be removed
         for vid in list(self.items.keys()):

@@ -11,6 +11,8 @@ import pickle
 from . import functions
 from collections import OrderedDict
 from functools import partial
+from analyser.DataTypes import Transmission
+import MesmerizeCore.misc_funcs
 
 ## TODO: THIS IS NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 class Load(CtrlNode):
@@ -28,13 +30,12 @@ class Load(CtrlNode):
         path = QtGui.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
         if path == '':
             return
-        try:
-            # self._inputs = {'Input': pickle.load(open(path[0], 'rb'))}
-            self.transmission = pickle.load(open(path[0], 'rb'))
-            self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
-            # print(self.transmission)
-        except Exception as e:
-            QtGui.QMessageBox.warning(None, 'Cannot open file!', 'Unable to open the selected file\n' + str(e))
+        rval, self.transmission = Transmission.from_pickle(path[0])
+        if rval is False:
+            MesmerizeCore.misc_funcs.fileOpenErrorMsg(self.transmission)
+            return
+        self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
+        # print(self.transmission)
         # self.update()
         self.forceValue = self.transmission
         self.update()
@@ -55,6 +56,7 @@ class Save(CtrlNode):
         # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}})
         self.ctrls['saveBtn'].clicked.connect(self._fileDialog)
+        # self.ctrls['Apply'].clicked.connect(self.update)
 
         # if ui is None:
         #     if hasattr(self, 'uiTemplate'):
@@ -89,7 +91,12 @@ class Save(CtrlNode):
         if self.ctrls['Apply'].isChecked is False:
             return
         if self.ctrls['path'].text() != '':
-            pickle.dump(transmission, open(self.ctrls['path'].text(), 'wb'), protocol=4)
+            print('TO PICKLE CALLED!!!')
+            print(transmission)
+            rval, e = transmission.to_pickle(self.ctrls['path'].text())
+            if rval is False:
+                MesmerizeCore.misc_funcs.fileSaveErrorMsg(e)
+            # pickle.dump(transmission, open(self.ctrls['path'].text(), 'wb'), protocol=4)
 
 
 class RunScript(CtrlNode):
@@ -104,7 +111,7 @@ class RunScript(CtrlNode):
         # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
         CtrlNode.__init__(self, name, terminals={
                 'In': {'io': 'in', 'renamable': True, 'multiable': True},
-                'Out': {'io': 'out', 'renamable': True, 'multiable': True}},
+                'Out': {'io': 'out', 'bypass': 'In', 'renamable': True, 'multiable': True}},
                 allowAddInput=True, allowAddOutput=True)
 
         self.ctrls['Open'].clicked.connect(self._fileDialog)
@@ -123,23 +130,19 @@ class RunScript(CtrlNode):
             self.f = open(self.path[0], 'r')
             self.script = self.f.read()
         except Exception as e:
-            QtGui.QMessageBox.warning(None, 'File open error',
-                                      'Cannot open the selected file\n%s' % e)
+            MesmerizeCore.misc_funcs.fileOpenErrorMsg(e)
+
         self.update()
 
     def process(self, **kwargs):
-        output = None
-        # try:
-        # fn = "def fn(**kwargs):\n"
-        # run = "\noutput=fn(**kwargs)\n"
-        # text = fn + "".join(["    " + x for x in self.script]) + run
-        # exec(text)
-        exec(self.script)
-        output = globals()['output']
-        # except Exception as e:
-        #     output = {'Out': "Error processing node: \n" + str(e)}
-        # out = {'Out': In}
-        return globals()['output']
+        if self.path == '':
+            return
+
+        g = globals()
+        l = locals()
+        exec(self.script, g, l)
+
+        return l['output']
 
 class ColumnSelectNode(Node):
     """Select named columns from a record array or MetaArray."""
