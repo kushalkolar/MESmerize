@@ -54,13 +54,14 @@ layout.addWidget(pw2, 1, 1)
 win.show()
 
 ## generate signal data to pass through the flowchart
-pick = pickle.load(open('./df_with_curves', 'rb'))
-#data = list(pick['curve'][0])
-data = Transmission.from_proj(pick)
-data.data_column = 'curve'
+#pick = pickle.load(open('./df_with_curves', 'rb'))
+##data = list(pick['curve'][0])
+#data = Transmission.from_proj(pick)
+#data.data_column = 'curve'
 
-#data = np.random.normal(size=1000)
-#data[200:300] += 1
+r, data = Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/raw_transmission_test.trn')
+
+#data = t:300] += 1
 #data += np.sin(np.linspace(0, 100, 1000))
 #data = metaarray.MetaArray(data, info=[{'name': 'Time', 'values': np.linspace(0, 1.0, len(data))}, {}])
 #data = metaarray.MetaArray(data, info=[{'name': 'Time', 'values': np.linspace(0, len(data), len(data))}, {}])

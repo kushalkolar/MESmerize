@@ -15,6 +15,7 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
+from MesmerizeCore import misc_funcs
 
 if __name__ == '__main__':
     from peak_base_editor_pytemplate import *
@@ -30,18 +31,36 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(PBWindow, self).__init__()
         # Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        assert isinstance(trans_curves, Transmission)
-        self.tc = trans_curves
-        assert isinstance(trans_peaks_bases, Transmission)
-        self.tpb = trans_peaks_bases.copy()
-        self.listwIndices.addItems(list(map(str, [*range(self.tc.df.index.size)])))
-        # self.plots = pg.PlotItem()
-        # self.graphicsView.addItem(self.plots)
+        self.update_transmission(trans_curves, trans_peaks_bases)
+        self._reset_listw()
         self.listwIndices.currentItemChanged.connect(self._set_row)
         self.listwIndices.itemClicked.connect(self._set_row)
         self.sliderDotSize.valueChanged.connect(self._set_pens)
 
         self.brush_size = 12
+
+    def update_transmission(self, trans_curves, trans_peaks_bases):
+        assert isinstance(trans_curves, Transmission)
+
+        if hasattr(self, 'tc'):
+            if self.tc.df.index.size != trans_curves.df.index.size:
+                self.tc = trans_curves
+                self._reset_listw()
+
+            elif self.tc != trans_curves:
+                self.tc = trans_curves
+                self._set_row()
+        else:
+            self.tc = trans_curves
+
+        assert isinstance(trans_peaks_bases, Transmission)
+        self.tpb = trans_peaks_bases.copy()
+        self._set_row()
+
+
+    def _reset_listw(self):
+        self.listwIndices.clear()
+        self.listwIndices.addItems(list(map(str, [*range(self.tc.df.index.size)])))
 
     def _set_row(self):
         self.graphicsView.clear()
@@ -56,6 +75,8 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for ix in ixs:
             curve_plot = pg.PlotDataItem()
             curve = self.tc.df[self.tc.data_column].iloc[ix]
+            # if curve is None:
+            #     QtGui.QMessageBox.warning(None, 'Empty Curve')
             curve_plot.setData(curve/min(curve))
 
             self.graphicsView.addItem(curve_plot)
@@ -66,13 +87,22 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'peak'].tolist()
 
             peaks_plot = pg.ScatterPlotItem(name='peaks', pen=None, symbol='o', size=self.brush_size, brush=(255, 0, 0, 150))
-            peaks_plot.setData(peaks, np.take(curve, peaks)/min(curve))
+
+            try:
+                peaks_plot.setData(peaks, np.take(curve, peaks)/min(curve))
+            except IndexError as e:
+                QtGui.QMessageBox.warning(None, 'IndexError!', str(e))
+                return
 
             bases = self.tpb.df[self.tpb.data_column].iloc[ix]['event'][
                 self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'base'].tolist()
 
             bases_plot = pg.ScatterPlotItem(name='bases', pen=None, symbol='o', size=self.brush_size, brush=(0, 255, 0, 150))
-            bases_plot.setData(bases, np.take(curve, bases)/min(curve))
+            try:
+                bases_plot.setData(bases, np.take(curve, bases)/min(curve))
+            except IndexError as e:
+                QtGui.QMessageBox.warning(None, 'IndexError!', str(e))
+                return
 
             self.graphicsView.addItem(peaks_plot)
             self.s_plots.append(peaks_plot)
@@ -83,6 +113,9 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lastClicked = []
             peaks_plot.sigClicked.connect(self._clicked)
             bases_plot.sigClicked.connect(self._clicked)
+
+    def _set_next_row(self):
+        pass
 
     def _clicked(self, plot, points):
         for p in self.lastClicked:
@@ -96,11 +129,6 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for plot in self.s_plots:
             plot.setSize(n)
             self.brush_size = n
-
-    def updateAll(self, trans_curve, trans_peaks_bases):
-        self.tpb = trans_peaks_bases.copy()
-        self.tc = trans_curve
-        self._set_row()
 
     def _getBases(self):
         pass

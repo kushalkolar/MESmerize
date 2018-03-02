@@ -22,7 +22,7 @@ configuration.openConfig()
 class AlignStims(CtrlNode):
     """Align Stimulus Definitions"""
     nodeName = 'AlignStims'
-    uiTemplate = [('Stimulus_Type', 'combo', {'values': []}),
+    uiTemplate = [('Stim_Type', 'combo', {'values': []}),
                   ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus and/or Substim', 'text': ''}),
                   ('start_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('end_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
@@ -39,25 +39,25 @@ class AlignStims(CtrlNode):
     #     pass
 
     def processData(self, transmission):
-        self.transmission = transmission
+        self.transmission = transmission.copy()
         assert isinstance(self.transmission, Transmission)
         # Very messy work-around because the usual widget clear() and removeItem() result in
         # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
         # Results in a really stupid bug where stuff in the comboBox is duplicated.
         all_stims = []
-        for i in range(self.ctrls['Stimulus_Type'].count()):
-            all_stims.append(self.ctrls['Stimulus_Type'].itemText(i))
+        for i in range(self.ctrls['Stim_Type'].count()):
+            all_stims.append(self.ctrls['Stim_Type'].itemText(i))
         for item in self.transmission.STIM_DEFS:
             if item in all_stims:
                 continue
             else:
-                self.ctrls['Stimulus_Type'].addItem(item)
+                self.ctrls['Stim_Type'].addItem(item)
 
-        self.ctrls['Stimulus_Type'].currentTextChanged.connect(self.setAutoCompleter)
+        self.ctrls['Stim_Type'].currentTextChanged.connect(self.setAutoCompleter)
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        stim_def = self.ctrls['Stimulus_Type'].currentText()
+        stim_def = self.ctrls['Stim_Type'].currentText()
         stim_tag = self.ctrls['Stimulus'].text()
         start_offset = self.ctrls['start_offset'].value()
         end_offset = self.ctrls['end_offset'].value()
@@ -106,12 +106,16 @@ class AlignStims(CtrlNode):
                     rn[stim_def] = stim[0][0]
                     #
                     t.df = t.df.append(rn, ignore_index=True)
-        print(t.df)
+        # print(t.df)
 
         t.src.append({'AlignStims': params})
+        print('ALIGN_STIMS APPENDED')
+        print(t.src)
         t.data_column = self.transmission.data_column
         t.plot_this = t.data_column
+
         return t
+
 
 class DF_IDX(CtrlNode):
     """Pass only one or multiple DataFrame Indices"""
@@ -125,20 +129,21 @@ class DF_IDX(CtrlNode):
         self.ctrls['Index'].valueChanged.connect(partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
 
         indices = [int(ix.strip()) for ix in self.ctrls['Indices'].text().split(',')]
-        print(indices)
         t = transmission.copy()
         t.df = t.df.iloc[indices, :]
         t.src.append({'DF_IDX': {'indices': indices}})
         return t
 
 
-class ROI_Include(CtrlNode):
-    """Align ROI Definitions"""
-    nodeName = 'ROI_Include'
+class ROI_Selection(CtrlNode):
+    """Pass-through DataFrame rows if they have the chosen tags"""
+    nodeName = 'ROI_Selection'
     uiTemplate = [('ROI_Type', 'combo', {'values': []}),
                   ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
                   ('ROI_Tags', 'lineEdit', {'toolTip': 'Enter one or many tags separated by commas (,)\n' +\
                                                        'Spaces before or after commas do not matter'}),
+                  ('Include', 'radioBtn', {'checked': True}),
+                  ('Exclude', 'radioBtn', {'checked': False}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
@@ -149,13 +154,17 @@ class ROI_Include(CtrlNode):
 
     def processData(self, transmission):
         assert isinstance(transmission, Transmission)
-        self.transmission = transmission
+        self.transmission = transmission.copy()
 
+        # Very messy work-around because the usual widget clear() and removeItem() result in
+        # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
+        # Results in a really stupid bug where stuff in the comboBox is duplicated.
         all_roi_defs = []
         for i in range(self.ctrls['ROI_Type'].count()):
             all_roi_defs.append(self.ctrls['ROI_Type'].itemText(i))
-        for item in self.transmission.ROI_DEFS:
-            if item in all_roi_defs:
+
+        for item in self.transmission.ROI_DEFS:  # transmission.ROI_DEFS comes from MesmerizeCore.configuration
+            if item in all_roi_defs:             # during the creation of the Transmission class object
                 continue
             else:
                 self.ctrls['ROI_Type'].addItem(item)
@@ -172,7 +181,47 @@ class ROI_Include(CtrlNode):
         ## TODO: CHECK IF THIS IS ACTUALLY DOING THE RIGHT THING!!!!
         t.df = t.df[t.df[self.ctrls['ROI_Type'].currentText()].isin(chosen_tags)]
         '''***************************************************************************'''
+
+        params = {'ROI_DEF': self.ctrls['ROI_Type'].currentText(),
+                  'tags': chosen_tags}
+
+        t.src.append({'ROI_Include': params})
+
         return t
+
+
+class PeakFeaturesExtract(CtrlNode):
+    """Extract peak features. Use this after the Peak_Detect node."""
+    nodeName = 'Peak_Features_Extract'
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
+
+                  ('Amplitude', 'check', {'checked': True}),
+                  ('Peak_Area', 'check', {'checked': True}),
+
+                  ('Rising_Slope_avg', 'check', {'checked': True}),
+                  ('Falling_Slope_avg', 'check', {'checked': True}),
+
+                  ('Peak_Duration_Base', 'check', {'checked': True}),
+                  ('Peak_Duration_Mid', 'check', {'checked': True}),
+                  ('Inter_Peak_Interval', 'check', {'checked': True}),
+                  ]
+
+    def __init__(self, name):
+        # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
+        self.ctrls['Apply'].clicked.connect(self._fileDialog)
+
+    def process(self, In, display=True):
+        self._update_stats(In)
+
+    def _update_stats(self, In):
+        print(In)
+        pass
+
+
+# class StatsPlots(CtrlNode):
+#     """Perform statistics and draw plots"""
+
 
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
@@ -195,8 +244,11 @@ class PeakDetect(CtrlNode):
     @staticmethod
     def _get_zero_crossings(dsig):
         """
+        Determine the peaks and bases of the signal by finding zero crossing in the first derivative of the signal
         :param dsig: The first derivative of the signal
-        :return: Indices of peaks & bases of the curve
+        :type dsig: np.array
+        :return: DataFrame, all zero crossing events in one column, another column denotes it as a peak or base.
+        :rtype: pd.DataFrame
         """
         sc = np.diff(np.sign(dsig))
 
@@ -225,7 +277,6 @@ class PeakDetect(CtrlNode):
         return {'Out': out}
 
     def processData(self, **inputs):
-        print(inputs)
         if self.editor_output:
             return self.t
 
@@ -239,10 +290,18 @@ class PeakDetect(CtrlNode):
                 return self.t
         self.data_modified = False
 
+        if inputs['Derivative'] is None:
+            raise Exception('No incoming Derivative transmission. '
+                            'You must input both a curve and its derivative')
+
+        if inputs['Curve'] is None:
+            raise Exception('No incoming Curve transmission.'
+                            ' You must input both a curve and its derivative')
+
         if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
             QtGui.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
                                                            ' MUST match!')
-            return self.t
+            raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
 
         self.t = inputs['Derivative'].copy()
         self.t_curve = inputs['Curve']
@@ -255,7 +314,7 @@ class PeakDetect(CtrlNode):
         self.t.data_column = 'peaks_bases'
 
         if hasattr(self, 'pbw'):
-            self.pbw.updateAll(self.t_curve, self.t)
+            self.pbw.update_transmission(self.t_curve, self.t)
 
         return self.t
 
