@@ -19,7 +19,7 @@ class Derivative(CtrlNode):
     """Return the Derivative of a curve."""
     nodeName = 'Derivative'
     uiTemplate = [
-        ('dt', 'intSpin', {'min': 0, 'max': 100, 'value': 1, 'step': 1}),
+        ('dt', 'intSpin', {'min': 1, 'max': 999, 'value': 1, 'step': 1}),
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
@@ -31,6 +31,7 @@ class Derivative(CtrlNode):
         t.plot_this = t.data_column
         t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
         return t
+
 
 class ButterWorth(CtrlNode):
     """Butterworth Filter"""
@@ -47,9 +48,9 @@ class ButterWorth(CtrlNode):
         freq = 1/meta['FoldedFrameInfo']['frameTimeLength']
         divider = self.ctrls['freqDivider'].value()
 
-        Wn = freq/divider
+        self.Wn = freq/divider
 
-        b, a = signal.butter(N, Wn)
+        b, a = signal.butter(N, self.Wn)
         sig = signal.filtfilt(b, a, x)
         return pd.Series({self.t.data_column: sig})
 
@@ -60,6 +61,13 @@ class ButterWorth(CtrlNode):
 
         self.t.df[self.t.data_column] = self.t.df.apply(lambda x: self._func(x[self.t.data_column], x['meta']), axis=1)
         self.t.plot_this = self.t.data_column
+
+        params = {'N - order': self.ctrls['order'].value(),
+                  'Wn - freq/divider': self.Wn,
+                  'divider': self.ctrls['freqDivider'].value()
+                  }
+        self.t.src.append({'ButterWorth': params})
+
         return self.t
 
 
@@ -76,19 +84,19 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
         if self.ctrls['Apply'].isChecked() is False:
             return
         self.t = transmission.copy()
-        print(self.ctrls)
+        # print(self.ctrls)
         w = self.ctrls['window_length'].value()
         p = self.ctrls['polyorder'].value()
 
         if p > w:
             QtGui.QMessageBox.warning(None, 'Invalid value!',
-                                            'polyorder MUST be less than window_length')
-            return None
+                                            ' polyorder MUST be less than window_length')
+            raise ValueError('Invalid value! polyorder MUST be less than window_length')
 
         if w % 2 == 0:
             QtGui.QMessageBox.warning(None, 'Invalid value!',
-                                            'window_length MUST be an odd number!')
-            return None
+                                            ' window_length MUST be an odd number!')
+            raise ValueError('Invalid value! window_length MUST be an odd number!')
 
         # t.df['curve'].apply(lambda x: self._func)
 

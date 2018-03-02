@@ -8,7 +8,6 @@ from ..debug import *
 import numpy as np
 from MesmerizeCore import configuration
 
-
 def strDict(d):
     return dict([(str(k), v) for k, v in d.items()])
 
@@ -71,6 +70,9 @@ class Node(QtCore.QObject):
         self._allowAddInput = allowAddInput   ## flags to allow the user to add/remove terminals
         self._allowAddOutput = allowAddOutput
         self._allowRemove = allowRemove
+
+        self._saveNode = False
+        self._loadNode = False
         
         self.exception = None
         if terminals is None:
@@ -301,7 +303,7 @@ class Node(QtCore.QObject):
             if self.isBypassed():
                 out = self.processBypassed(vals)
             else:
-                if self._name == 'Save':
+                if self._loadNode:
                     out = self.process(self.forceValue)
                 else:
                     out = self.process(**strDict(vals))

@@ -7,6 +7,7 @@ from ...WidgetGroup import WidgetGroup
 from ..Node import Node
 import numpy as np
 from ...widgets.ColorButton import ColorButton
+from analyser.DataTypes import Transmission
 try:
     import metaarray
     HAVE_METAARRAY = True
@@ -69,6 +70,11 @@ def generateUi(opts):
                                  'Therefore note that this will cause the program to behave\n'
                                  'slowly if you are constantly changing things around\n'
                                  'while keeping this checked.')
+
+        elif t == 'radioBtn':
+            w = QtWidgets.QRadioButton()
+            if 'checked' in o:
+                w.setChecked(o['checked'])
 
         elif t == 'combo':
             w = QtWidgets.QComboBox()
@@ -147,7 +153,23 @@ class CtrlNode(Node):
         self.update()
         self.sigStateChanged.emit(self)
 
-    def process(self, In, display=True):
+    def process(self, **kwargs):#In, display=True):
+        In = kwargs['In']
+
+        if 'Out' in kwargs.items():
+            print(' !!!!!!!!! >>>>>>>>>> OUT PASSED INTO process() <<<<<<<<<<<<<<< !!!!!!!!!!!!')
+            print(kwargs['Out'])
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+
+        if isinstance(In, Transmission):
+            if In.df.empty:
+                QtGui.QMessageBox.warning(None, 'IndexError!',
+                                                'The DataFrame of the incoming transmission is empty!')
+                raise IndexError('The DataFrame of the incoming transmission is empty!')
+
+        if type(In) is None:
+            raise TypeError('Incoming tranmission is None')
+
         out = self.processData(In)
         return {'Out': out}
     

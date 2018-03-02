@@ -37,20 +37,23 @@ class Transmission:
         :type plot_this: str
         """
         self.df = df.copy()
+        assert isinstance(self.df, pd.DataFrame)
         # TODO: Make a graphical thing that display the source history of any node and can be accessed while looking at stastics too
         self.data_column = data_column
-        self.src = src
-        self.dst = dst
-
-        if (STIM_DEFS is None) or (ROI_DEFS is None):
-            from MesmerizeCore import configuration
-            if STIM_DEFS is None:
-                self.STIM_DEFS = configuration.cfg.options('STIM_DEFS')
-            if ROI_DEFS is None:
-                self.ROI_DEFS = configuration.cfg.options('ROI_DEFS')
-
+        
         if plot_this is None:
             self.plot_this = self.data_column
+        else:
+            self.plot_this = plot_this
+            
+        self.src = src
+        
+        self.STIM_DEFS = STIM_DEFS
+        self.ROI_DEFS = ROI_DEFS
+        
+        self.dst = dst
+
+        
 
     @classmethod
     def from_proj(cls, df):
@@ -60,9 +63,13 @@ class Transmission:
         """
         assert isinstance(df, pd.DataFrame)
         df[['curve', 'meta', 'stimMaps']] = df.apply(Transmission._load_files, axis=1)
+        
+        from MesmerizeCore import configuration
+        stim_defs = configuration.cfg.options('STIM_DEFS')
+        roi_defs = configuration.cfg.options('ROI_DEFS')
 
-        return cls(df, src=[{'raw': ''}], data_column='curve')
-
+        return cls(df, src=[{'raw': ''}], data_column='curve', STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
+    
     @staticmethod
     def _load_files(row):
         """Loads npz and pickle files of Curves & Img metadata according to the paths specified in each row of the

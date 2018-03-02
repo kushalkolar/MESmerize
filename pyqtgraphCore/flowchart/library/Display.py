@@ -17,7 +17,7 @@ class PlotWidgetNode(Node):
     sigPlotChanged = QtCore.Signal(object)
     
     def __init__(self, name):
-        Node.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Peaks': {'io': 'in'}})
+        Node.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
         self.plot = None  # currently selected plot 
         self.plots = {}   # list of available plots user may select from
         self.ui = None 
@@ -64,7 +64,7 @@ class PlotWidgetNode(Node):
                     continue
 
                 transmission = transmission[1]
-                src = transmission.src[-1]
+                src = transmission.src
 
                 print('SOURCE IS: ' + str(src))
 

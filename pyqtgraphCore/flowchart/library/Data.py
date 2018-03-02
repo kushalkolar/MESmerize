@@ -25,6 +25,7 @@ class Load(CtrlNode):
         CtrlNode.__init__(self, name, terminals={'Out': {'io': 'out'}})
         self.ctrls['loadBtn'].clicked.connect(self._fileDialog)
         self.transmission = None
+        self._loadNode = True
 
     def _fileDialog(self):
         path = QtGui.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
@@ -40,8 +41,8 @@ class Load(CtrlNode):
         self.forceValue = self.transmission
         self.update()
 
-    def processData(self, transmission):
-        return self.transmission
+    def process(self):
+        return {'Out': self.transmission}
 
 
 class Save(CtrlNode):
@@ -55,7 +56,11 @@ class Save(CtrlNode):
     def __init__(self, name):
         # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}})
+        self._bypass = False
+        self.bypassButton = None
         self.ctrls['saveBtn'].clicked.connect(self._fileDialog)
+        self._saveNode = True
+        self.saveValue = None
         # self.ctrls['Apply'].clicked.connect(self.update)
 
         # if ui is None:
@@ -73,7 +78,10 @@ class Save(CtrlNode):
         # self.ctrls['saveBtn'].clicked.connect(self._fileDialog)
 
     def process(self, In, display=True):
-        self._save(In)
+        if In is not None:
+            self._save(In)
+        else:
+            raise Exception('No incoming transmission to save!')
 
     def _fileDialog(self):
         path = QtGui.QFileDialog.getSaveFileName(None, 'Save Transmission as', '', '(*.trn)')
@@ -90,12 +98,11 @@ class Save(CtrlNode):
         # self.ctrls['saveBtn'].clicked.connect(self._fileDialog)
         if self.ctrls['Apply'].isChecked is False:
             return
+
         if self.ctrls['path'].text() != '':
-            print('TO PICKLE CALLED!!!')
-            print(transmission)
             rval, e = transmission.to_pickle(self.ctrls['path'].text())
             if rval is False:
-                MesmerizeCore.misc_funcs.fileSaveErrorMsg(e)
+                MesmerizeCore.misc_funcs.Messsage.fileSaveError(e)
             # pickle.dump(transmission, open(self.ctrls['path'].text(), 'wb'), protocol=4)
 
 
