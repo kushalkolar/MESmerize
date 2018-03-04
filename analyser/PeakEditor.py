@@ -25,6 +25,8 @@ else:
     from .DataTypes import Transmission
 
 
+# TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
+
 class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, trans_curves, trans_peaks_bases):
         # super().__init__()
@@ -74,7 +76,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for ix in ixs:
             curve_plot = pg.PlotDataItem()
-            curve = self.tc.df[self.tc.data_column].iloc[ix]
+            curve = self.tc.df[self.tc.data_column['curve']].iloc[ix]
             # if curve is None:
             #     QtGui.QMessageBox.warning(None, 'Empty Curve')
             curve_plot.setData(curve/min(curve))
@@ -83,8 +85,8 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # peak_ixs = self.tpb.df[self.tpb.data_column].iloc[ix].index[self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'peak'].tolist()
 
-            peaks = self.tpb.df[self.tpb.data_column].iloc[ix]['event'][
-                self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'peak'].tolist()
+            peaks = self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['event'][
+                    self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['label'] == 'peak'].tolist()
 
             peaks_plot = pg.ScatterPlotItem(name='peaks', pen=None, symbol='o', size=self.brush_size, brush=(255, 0, 0, 150))
 
@@ -94,8 +96,8 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.warning(None, 'IndexError!', str(e))
                 return
 
-            bases = self.tpb.df[self.tpb.data_column].iloc[ix]['event'][
-                self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'base'].tolist()
+            bases = self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['event'][
+                    self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['label'] == 'base'].tolist()
 
             bases_plot = pg.ScatterPlotItem(name='bases', pen=None, symbol='o', size=self.brush_size, brush=(0, 255, 0, 150))
             try:

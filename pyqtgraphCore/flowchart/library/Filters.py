@@ -27,8 +27,8 @@ class Derivative(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
         t = transmission.copy()
-        t.df[t.data_column] = t.df[t.data_column].apply(np.gradient)
-        t.plot_this = t.data_column
+        t.df[t.data_column['curve']] = t.df[t.data_column['curve']].apply(np.gradient)
+        t.plot_this = t.data_column['curve']
         t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
         return t
 
@@ -52,15 +52,15 @@ class ButterWorth(CtrlNode):
 
         b, a = signal.butter(N, self.Wn)
         sig = signal.filtfilt(b, a, x)
-        return pd.Series({self.t.data_column: sig})
+        return pd.Series({self.t.data_column['curve']: sig})
 
     def processData(self, transmission):
         if self.ctrls['Apply'] is False:
             return
         self.t = transmission.copy()
 
-        self.t.df[self.t.data_column] = self.t.df.apply(lambda x: self._func(x[self.t.data_column], x['meta']), axis=1)
-        self.t.plot_this = self.t.data_column
+        self.t.df[self.t.data_column['curve']] = self.t.df.apply(lambda x: self._func(x[self.t.data_column['curve']], x['meta']), axis=1)
+        self.t.plot_this = self.t.data_column['curve']
 
         params = {'N - order': self.ctrls['order'].value(),
                   'Wn - freq/divider': self.Wn,
@@ -100,34 +100,15 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
 
         # t.df['curve'].apply(lambda x: self._func)
 
-        self.t.df[self.t.data_column] = self.t.df[self.t.data_column].apply(signal.savgol_filter, window_length=w, polyorder=p)
+        self.t.df[self.t.data_column['curve']] = self.t.df[self.t.data_column['curve']].apply(signal.savgol_filter, window_length=w, polyorder=p)
 
         params = {'window_length': w,
                   'polyorder': p}
 
         self.t.src.append({'SavitzkyGolay': params})
-        self.t.plot_this = self.t.data_column
+        self.t.plot_this = self.t.data_column['curve']
         return self.t
 
-
-
-'''####################################################################################################'''
-'''####################################################################################################'''
-# TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
-class PeakDetect(CtrlNode):
-    """Detect peaks & bases by finding local-maxima. Use this after the Derivative Filter"""
-    nodeName = 'PeakDetect'
-    uiTemplate = [
-            ('min_slope', 'doubleSpin', {'min': 0.000, 'max': 999.000, 'value': 1.000, 'step': 0.100}),
-            ('min_ampl', 'doubleSpin', {'min': 0.000, 'max': 999.000, 'value': 1.000, 'step': 0.100}),
-            ('Apply', 'check', {'checked': True, 'applyBox': True})
-        ]
-
-    def processData(self, transmission):
-        self.t = transmission.copy()
-        return None
-'''####################################################################################################'''
-'''####################################################################################################'''
 
         # def _func(self, x):
     #     b, a = signal.butter(2, (1 / 25) / 10)
