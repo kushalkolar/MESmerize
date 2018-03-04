@@ -53,7 +53,7 @@ class PeakFeatures:
             return {}
 
         try:
-            ixp = np.where(self.all_peaks == ix_peak_abs)[0][0] - 1
+            ixp = np.where(self.all_peaks == ix_peak_abs)[0][0]
             ix_pre_peak = self.pb_df[self.all_peaks[ixp - 1]]
             ix_nex_peak = self.pb_df[self.all_peaks[ixp + 1]]
         except IndexError:
