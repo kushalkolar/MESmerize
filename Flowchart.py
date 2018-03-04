@@ -53,18 +53,11 @@ layout.addWidget(pw2, 1, 1)
 
 win.show()
 
-## generate signal data to pass through the flowchart
-#pick = pickle.load(open('./df_with_curves', 'rb'))
-##data = list(pick['curve'][0])
-#data = Transmission.from_proj(pick)
-#data.data_column = 'curve'
+## generate signal data to pass through the flow
 
 r, data = Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/raw_transmission_test.trn')
 
-#data = t:300] += 1
-#data += np.sin(np.linspace(0, 100, 1000))
-#data = metaarray.MetaArray(data, info=[{'name': 'Time', 'values': np.linspace(0, 1.0, len(data))}, {}])
-#data = metaarray.MetaArray(data, info=[{'name': 'Time', 'values': np.linspace(0, len(data), len(data))}, {}])
+data.data_column = {'curve': 'curve'}
 
 ## Feed data into the input terminal of the flowchart
 fc.setInput(dataIn=data)
@@ -80,36 +73,6 @@ pw1Node.setPlot(pw1)
 pw2Node = fc.createNode('PlotWidget', pos=(150, -150))
 pw2Node.setPlot(pw2)
 pw2Node.setPlotList(plotList)
-
-#fNode = fc.createNode('GaussianFilter', pos=(0, 0))
-# fNode.ctrls['sigma'].setValue(5)
-#fc.connectTerminals(fc['dataIn'], fNode['In'])
-#fc.connectTerminals(fc['dataIn'], pw1Node['In'])
-#fc.connectTerminals(fNode['Out'], pw2Node['In'])
-#fc.connectTerminals(fNode['Out'], fc['dataOut'])
-#
-# library = fclib.LIBRARY.copy() # start with the default node set
-#
-# library.addNodeType(SavitzkyGolay, [('Filters',)])
-# library.addNodeType(Derivative, [('Filteres',)])
-#
-# fc.setLibrary(library)
-#
-# class SavitzkyGolay(Filter):  # Savitzky-Golay filter for example
-#     def process(self, df, *args):
-#         kwargs = args[1]
-#         args = args[0]
-#
-#         self.output = df['curve'].apply(lambda x :signal.savgol_filter(x, 3, 2))
-#         return {'dataOut': self.output}
-#
-# class Derivative(Filter):  # Get the derivative for example
-#     def process(self, df, *args):
-#         kwargs = args[1]
-#         args = args[0]
-#
-#         self.output = df['curve'].apply(np.gradient)
-#         return {'dataOut': self.output}
 
 
 

@@ -615,10 +615,10 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         
         self.chartWidget = FlowchartWidget(chart, self)
         #self.chartWidget.viewBox().autoRange()
-        self.cwWin = QtGui.QMainWindow()
-        self.cwWin.setWindowTitle('Flowchart')
-        self.cwWin.setCentralWidget(self.chartWidget)
-        self.cwWin.resize(1000,800)
+        # self.cwWin = QtGui.QMainWindow()
+        # self.cwWin.setWindowTitle('Flowchart')
+        # self.cwWin.setCentralWidget(self.chartWidget)
+        # self.cwWin.resize(1000,800)
         
         h = self.ui.ctrlList.header()
         if not USE_PYQT5:

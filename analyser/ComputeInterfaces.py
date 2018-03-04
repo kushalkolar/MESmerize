@@ -21,14 +21,14 @@ class Static:
         self.func_names = [f for f in self.args_dict.keys() if hasattr(self.compute_class, f)]
         self.Q = Queue()
 
-    def run(self):
+    def compute(self):
         for func in self.func_names:
             f = getattr(self.compute_class, func)
             a = tuple([self.Q] + self.args_dict[func])
             proc = Process(target=f, args=a)
             proc.start()
             proc.join()
-
-    def get_results(self):
-        return self.Q.get()
-
+        l = {}
+        while self.Q.qsize() > 0:
+            l.update(self.Q.get())
+        return l

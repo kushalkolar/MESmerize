@@ -43,6 +43,7 @@ def generateUi(opts):
             if 'step' in o:
                 w.setSingleStep(o['step'])
 
+
         elif t == 'doubleSpin':
             w = QtGui.QDoubleSpinBox()
             if 'max' in o:
@@ -161,14 +162,14 @@ class CtrlNode(Node):
             print(kwargs['Out'])
             print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
-        if isinstance(In, Transmission):
-            if In.df.empty:
-                QtGui.QMessageBox.warning(None, 'IndexError!',
-                                                'The DataFrame of the incoming transmission is empty!')
-                raise IndexError('The DataFrame of the incoming transmission is empty!')
-
         if type(In) is None:
             raise TypeError('Incoming tranmission is None')
+
+        if isinstance(In, Transmission):
+            if In.df.empty:
+                # QtGui.QMessageBox.warning(None, 'IndexError!',
+                #                                 'The DataFrame of the incoming transmission is empty!')
+                raise IndexError('The DataFrame of the incoming transmission is empty!')
 
         out = self.processData(In)
         return {'Out': out}

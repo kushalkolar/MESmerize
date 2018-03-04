@@ -13,6 +13,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import numpy as np
 from scipy import integrate
+import os
+os.system("taskset -p 0xff %d" % os.getpid())
 
 
 class PeakFeatures:
@@ -63,8 +65,8 @@ class PeakFeatures:
     @staticmethod
     def inter_peak_interval(q, ix_peak_abs, ix_pre_peak, ix_nex_peak):
         if (ix_pre_peak is None) or (ix_nex_peak is None):
-            q.put({'inter_peak_interval': 'Uncomputable'})
-
-        result = {'pre': ix_peak_abs - ix_pre_peak, 'post': ix_nex_peak - ix_peak_abs}
+            result = 'BAAAAAAAAAH'
+        else:
+            result = {'pre': ix_peak_abs - ix_pre_peak, 'post': ix_nex_peak - ix_peak_abs}
 
         q.put({'inter_peak_interval': result})

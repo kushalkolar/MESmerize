@@ -7,9 +7,38 @@ from ...graphicsItems.PlotCurveItem import PlotCurveItem
 from ... import PlotDataItem, ComboBox
 from ... import metaarray
 from analyser.DataTypes import Transmission
-
 from .common import *
 import numpy as np
+
+class Plot(CtrlNode):
+    """Plot curves and/or scatter points"""
+    nodeName = 'Plot'
+    uiTemplate = [('tab', 'intSpin', {'min': 0, 'max': 0, 'value': 0, 'step': 1}),
+                  ('plot', 'intSpin', {'min': 1, 'max': 4, 'value': 1, 'step': 1}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('Advanced', 'button', {'text': 'Advanced'})
+                   ]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plots = []
+        self.ctrls['tab'].valueChanged.connect(self._change_plot)
+        self.ctrls['plot'].valueChanged.connect(self._change_plot)
+        self.ctrls['tab'].setMaximum(tabs_widget.count() - 1)
+        self.ctrls['tab'].setValue(tabs_widget.currentIndex())
+
+    def _change_plot(self):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+    def process(self, **kwargs):
+        if (tabs_widget.count() - 1) < self.ctrls['tab'].value():
+            raise IndexError('Cannot plot in tab#: %s because  it does not exist')
+
+        Inputs = kwargs['In']
+
+
+
 
 class PlotWidgetNode(Node):
     """Connection to PlotWidget. Will plot arrays, metaarrays, and display event lists."""
