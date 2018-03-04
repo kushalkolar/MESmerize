@@ -14,6 +14,7 @@ from MesmerizeCore.misc_funcs import empty_df
 from MesmerizeCore import configuration
 from functools import partial
 from analyser import PeakEditor
+from analyser import Extraction
 
 configuration.configpath = '/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/config.cfg'
 configuration.openConfig()
@@ -197,32 +198,42 @@ class ROI_Selection(CtrlNode):
 
 class PeakFeaturesExtract(CtrlNode):
     """Extract peak features. Use this after the Peak_Detect node."""
-    nodeName = 'Peak_Features_Extract'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-
-                  ('Amplitude', 'check', {'checked': True}),
-                  ('Peak_Area', 'check', {'checked': True}),
-
-                  ('Rising_Slope_avg', 'check', {'checked': True}),
-                  ('Falling_Slope_avg', 'check', {'checked': True}),
-
-                  ('Peak_Duration_Base', 'check', {'checked': True}),
-                  ('Peak_Duration_Mid', 'check', {'checked': True}),
-                  ('Inter_Peak_Interval', 'check', {'checked': True}),
+    nodeName = 'Peak_Features'
+    uiTemplate = [('Extract', 'button', {'text': 'Compute'})
                   ]
 
     def __init__(self, name):
-        # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
-        self.ctrls['Apply'].clicked.connect(self._fileDialog)
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out'}})
+        self.ctrls['Extract'].clicked.connect(self._extract)
+        self.results = []
 
-    def process(self, In, display=True):
-        self._update_stats(In)
 
-    def _update_stats(self, In):
+    def processData(self, In):
+        self.In = In
+        return self.results
 
-        print(In)
-        pass
+    def _extract(self):
+        if self.In is None:
+            self.results = None
+            return
+
+        # items = []
+        # for item in self.In.items():
+        #     items.append(item[1])
+        #     if 'peaks_bases' not in items[-1].df.columns:
+        #         QtGui.QMessageBox.warning(None, 'No peaks_bases columns',
+        #                                   'At least one incoming transmission does not have a column indicating peaks & bases.'
+        #                                   ' Data must pass through the PeakDetect node before using this node.')
+        #         return
+
+        # self.results = []
+        # for trans in items:
+        # print(trans)
+        pf = Extraction.PeakFeatures(self.In)
+        self.results = pf.get_all()
+            # print(result)
+            # self.results.append(result)
+        self.update()
 
 
 class Universal_Statistics_Of_Type_ANOVA_For_Example(CtrlNode):
