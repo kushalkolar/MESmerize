@@ -26,8 +26,8 @@ class Transmission:
         :type df: pd.DataFrame
         :param src: History of the nodes & node parameters the transmission has been processed through
         :type src: dict
-        :param data_column: Data column of the dataframe which should be worked on by Node.process() in the flowchart
-        :type data_column: str
+        :param data_column: Data column of interest by process methods of nodes.
+        :type data_column: dict
         :param dst:
         :param STIM_DEFS: STIM_DEF columns, used by the AlignStims control node for example
         :type STIM_DEFS: list
@@ -53,8 +53,6 @@ class Transmission:
         
         self.dst = dst
 
-        
-
     @classmethod
     def from_proj(cls, df):
         """
@@ -68,7 +66,7 @@ class Transmission:
         stim_defs = configuration.cfg.options('STIM_DEFS')
         roi_defs = configuration.cfg.options('ROI_DEFS')
 
-        return cls(df, src=[{'raw': ''}], data_column='curve', STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
+        return cls(df, src=[{'raw': ''}], data_column={'curve': 'curve'}, STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
     
     @staticmethod
     def _load_files(row):

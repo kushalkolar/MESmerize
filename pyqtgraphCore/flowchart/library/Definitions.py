@@ -15,7 +15,6 @@ from MesmerizeCore import configuration
 from functools import partial
 from analyser import PeakEditor
 
-
 configuration.configpath = '/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/config.cfg'
 configuration.openConfig()
 
@@ -70,7 +69,7 @@ class AlignStims(CtrlNode):
                   'zero_pos': zero_pos
                   }
 
-        t = Transmission(empty_df(), self.transmission.src, self.transmission.data_column, dst=self.transmission.dst)
+        t = Transmission(empty_df(), self.transmission.src, self.transmission.data_column['curve'], dst=self.transmission.dst)
         for ix, r in self.transmission.df.iterrows():
             ## TODO: Should use an if-continue block, just not critical at the moment
             try:
@@ -79,40 +78,46 @@ class AlignStims(CtrlNode):
             except KeyError:
                 continue
             # print(r)
-            curve = r[self.transmission.data_column]
+            curve = r[self.transmission.data_column['curve']]
             for stim in smap:
                 if stim_tag in stim[0][0]:
-                    if curve is None:
-                        continue
-                    stim_start = stim[-1][0]
-                    stim_end = stim[-1][1]
+                    continue
+                if curve is None:
+                    continue
+                stim_start = stim[-1][0]
+                stim_end = stim[-1][1]
 
-                    if zero_pos == 'start_offset':
+                if zero_pos == 'start_offset':
 
-                        tstart = max(stim_start + start_offset, 0)
-                        tend = min(stim_end + end_offset, len(curve))
+                    tstart = max(stim_start + start_offset, 0)
+                    tend = min(stim_end + end_offset, np.size(curve))
 
-                    elif zero_pos == 'stim_end':
-                        tstart = stim_end
-                        tend = tstart + end_offset
+                elif zero_pos == 'stim_end':
+                    tstart = stim_end
+                    tend = tstart + end_offset
 
-                    elif zero_pos == 'stim_center':
-                        tstart = int(((stim_start + stim_end) / 2)) + start_offset
-                        tend = min(stim_end + end_offset, len(curve))
+                elif zero_pos == 'stim_center':
+                    tstart = int(((stim_start + stim_end) / 2)) + start_offset
+                    tend = min(stim_end + end_offset, np.size(curve))
 
-                    rn = r.copy()
+                rn = r.copy()
 
-                    rn[self.transmission.data_column] = curve[int(tstart):int(tend)] / min(curve[int(tstart):int(tend)])
-                    rn[stim_def] = stim[0][0]
-                    #
-                    t.df = t.df.append(rn, ignore_index=True)
+                tstart = int(tstart)
+                tend = int(tend)
+
+                sliced_curve = np.take(curve, np.arange(tstart, tend), axis=0)
+
+                rn[self.transmission.data_column['curve']] = sliced_curve / np.min(sliced_curve)
+                rn[stim_def] = stim[0][0]
+
+                t.df = t.df.append(rn, ignore_index=True)
         # print(t.df)
 
         t.src.append({'AlignStims': params})
         print('ALIGN_STIMS APPENDED')
         print(t.src)
-        t.data_column = self.transmission.data_column
-        t.plot_this = t.data_column
+        t.data_column['curve'] = self.transmission.data_column['curve']
+        t.plot_this = t.data_column['curve']
 
         return t
 
@@ -215,14 +220,24 @@ class PeakFeaturesExtract(CtrlNode):
         self._update_stats(In)
 
     def _update_stats(self, In):
+
         print(In)
+        pass
+
+
+class Universal_Statistics_Of_Type_ANOVA_For_Example(CtrlNode):
+    """Takes in a transmission that comes from certain types of nodes that output data
+    which can be used by this node to do the final stats and draw plots."""
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+
+    def processData(self, **kwargs):
         pass
 
 
 # class StatsPlots(CtrlNode):
 #     """Perform statistics and draw plots"""
 
-
+# TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
     nodeName = 'Peak_Detect'
@@ -268,6 +283,9 @@ class PeakDetect(CtrlNode):
         peaks_bases_df = peaks_bases_df.sort_values('event')
         peaks_bases_df = peaks_bases_df.reset_index(drop=True)
 
+        peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
+        peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
+
         # print(peaks_bases_df)
 
         return peaks_bases_df
@@ -309,9 +327,11 @@ class PeakDetect(CtrlNode):
         assert isinstance(self.t, Transmission)
         assert isinstance(self.t_curve, Transmission)
 
-        self.t.df['peaks_bases'] = self.t.df[self.t.data_column].apply(lambda s: PeakDetect._get_zero_crossings(s))
-        self.t.df.drop(self.t.data_column, axis=1, inplace=True)
-        self.t.data_column = 'peaks_bases'
+        self.t.data_column['peaks_bases'] = 'peaks_bases'
+        self.t.df[self.t.data_column['peaks_bases']] = self.t.df[self.t.data_column['curve']].apply(lambda s: PeakDetect._get_zero_crossings(s))
+
+        self.t.df[self.t.data_column['curve']] = deepcopy(self.t_curve.df[self.t_curve.data_column['curve']])
+
 
         if hasattr(self, 'pbw'):
             self.pbw.update_transmission(self.t_curve, self.t)
