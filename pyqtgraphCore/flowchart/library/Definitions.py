@@ -22,7 +22,7 @@ configuration.openConfig()
 class AlignStims(CtrlNode):
     """Align Stimulus Definitions"""
     nodeName = 'AlignStims'
-    uiTemplate = [('Stim_Type', 'combo', {'values': []}),
+    uiTemplate = [('Stim_Type', 'lineEdit', {'text': '', 'placeHolder': 'Enter Stimulus type'}),
                   ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus and/or Substim', 'text': ''}),
                   ('start_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('end_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
@@ -30,10 +30,15 @@ class AlignStims(CtrlNode):
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
-    def setAutoCompleter(self, stim_def):
+    def setAutoCompleter(self):
+        stim_def = self.ctrls['Stim_Type'].text()
         stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
         autocompleter = QtGui.QCompleter(stims, self.ctrls['Stimulus'])
         self.ctrls['Stimulus'].setCompleter(autocompleter)
+
+    def _setAutoCompleterLineEdit(self):
+        pass
+
 
     # def connected(self, localTerm, remoteTerm):
     #     pass
@@ -44,20 +49,24 @@ class AlignStims(CtrlNode):
         # Very messy work-around because the usual widget clear() and removeItem() result in
         # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
         # Results in a really stupid bug where stuff in the comboBox is duplicated.
-        all_stims = []
-        for i in range(self.ctrls['Stim_Type'].count()):
-            all_stims.append(self.ctrls['Stim_Type'].itemText(i))
-        for item in self.transmission.STIM_DEFS:
-            if item in all_stims:
-                continue
-            else:
-                self.ctrls['Stim_Type'].addItem(item)
+        # all_stims = []
+        # for i in range(self.ctrls['Stim_Type'].count()):
+        #     all_stims.append(self.ctrls['Stim_Type'].itemText(i))
 
-        self.ctrls['Stim_Type'].currentTextChanged.connect(self.setAutoCompleter)
+        # for item in self.transmission.STIM_DEFS:
+        #     if item in all_stims:
+        #         continue
+        #     else:
+        #         self.ctrls['Stim_Type'].addItem(item)
+
+        ac = QtGui.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
+        self.ctrls['Stim_Type'].setCompleter(ac)
+
+        self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        stim_def = self.ctrls['Stim_Type'].currentText()
+        stim_def = self.ctrls['Stim_Type'].text()
         stim_tag = self.ctrls['Stimulus'].text()
         start_offset = self.ctrls['start_offset'].value()
         end_offset = self.ctrls['end_offset'].value()
@@ -144,7 +153,7 @@ class DF_IDX(CtrlNode):
 class ROI_Selection(CtrlNode):
     """Pass-through DataFrame rows if they have the chosen tags"""
     nodeName = 'ROI_Selection'
-    uiTemplate = [('ROI_Type', 'combo', {'values': []}),
+    uiTemplate = [('ROI_Type', 'lineEdit', {'text': '', 'placeHolder': 'Enter ROI type'}),
                   ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
                   ('ROI_Tags', 'lineEdit', {'toolTip': 'Enter one or many tags separated by commas (,)\n' +\
                                                        'Spaces before or after commas do not matter'}),
@@ -153,10 +162,15 @@ class ROI_Selection(CtrlNode):
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
-    def _setAvailTags(self, roi_def):
-        tags = list(set(self.transmission.df[roi_def]))
+    def _setAvailTags(self):
+        tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
         self.ctrls['availTags'].setText(', '.join(tags))
         self.ctrls['availTags'].setToolTip('\n'.join(tags))
+        self._setROITagAutoCompleter(tags)
+
+    def _setROITagAutoCompleter(self, tags):
+        ac = QtGui.QCompleter(tags, self.ctrls['ROI_Tags'])
+        self.ctrls['ROI_Tags'].setCompleter(ac)
 
     def processData(self, transmission):
         assert isinstance(transmission, Transmission)
@@ -165,17 +179,20 @@ class ROI_Selection(CtrlNode):
         # Very messy work-around because the usual widget clear() and removeItem() result in
         # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
         # Results in a really stupid bug where stuff in the comboBox is duplicated.
-        all_roi_defs = []
-        for i in range(self.ctrls['ROI_Type'].count()):
-            all_roi_defs.append(self.ctrls['ROI_Type'].itemText(i))
+        # all_roi_defs = []
+        # for i in range(self.ctrls['ROI_Type'].count()):
+        #     all_roi_defs.append(self.ctrls['ROI_Type'].itemText(i))
+        #
+        # for item in self.transmission.ROI_DEFS:  # transmission.ROI_DEFS comes from MesmerizeCore.configuration
+        #     if item in all_roi_defs:             # during the creation of the Transmission class object
+        #         continue
+        #     else:
+        #         self.ctrls['ROI_Type'].addItem(item)
 
-        for item in self.transmission.ROI_DEFS:  # transmission.ROI_DEFS comes from MesmerizeCore.configuration
-            if item in all_roi_defs:             # during the creation of the Transmission class object
-                continue
-            else:
-                self.ctrls['ROI_Type'].addItem(item)
+        ac = QtGui.QCompleter(self.transmission.ROI_DEFS, self.ctrls['ROI_Type'])
+        self.ctrls['ROI_Type'].setCompleter(ac)
 
-        self.ctrls['ROI_Type'].currentTextChanged.connect(self._setAvailTags)
+        self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
         if self.ctrls['Apply'].isChecked() is False:
             return
@@ -185,7 +202,7 @@ class ROI_Selection(CtrlNode):
         t = self.transmission.copy()
         '''***************************************************************************'''
         ## TODO: CHECK IF THIS IS ACTUALLY DOING THE RIGHT THING!!!!
-        t.df = t.df[t.df[self.ctrls['ROI_Type'].currentText()].isin(chosen_tags)]
+        t.df = t.df[t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
         '''***************************************************************************'''
 
         params = {'ROI_DEF': self.ctrls['ROI_Type'].currentText(),
@@ -194,6 +211,28 @@ class ROI_Selection(CtrlNode):
         t.src.append({'ROI_Include': params})
 
         return t
+
+class CaPreStats(CtrlNode):
+    """Converge incoming transmissions and label what groups they belong to"""
+    nodeName = 'CaPreStats'
+    uiTemplate = [('SetGrps', 'button', {'text': 'Set Groups'}),
+                  ('Save', 'button', {'text': 'Save Groups'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'Out'}})
+
+    def process(self, **kwargs):
+        transmissions = kwargs['In']
+        if not len(transmissions) > 0:
+            raise Exception('No incoming transmissions')
+
+        for t in transmissions.items():
+            t = t[1]
+
+            if t is None:
+                raise IndexError('One of your incoming tranmissions is None')
+
+
 
 
 class PeakFeaturesExtract(CtrlNode):
@@ -231,6 +270,8 @@ class PeakFeaturesExtract(CtrlNode):
         # print(trans)
         pf = Extraction.PeakFeatures(self.In)
         self.results = pf.get_all()
+        self.results.src.append({'Peak_Features'})
+        self.results.plot_this = 'curve'
             # print(result)
             # self.results.append(result)
         self.update()
@@ -347,6 +388,7 @@ class PeakDetect(CtrlNode):
         if hasattr(self, 'pbw'):
             self.pbw.update_transmission(self.t_curve, self.t)
 
+        self.t.src.append({'Peak_Detect': {'SlopeThr': 'Not Implemented', 'AmpThr': 'Not Implemented'}})
         return self.t
 
     def _set_editor_output(self):

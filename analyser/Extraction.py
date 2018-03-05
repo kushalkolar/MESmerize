@@ -87,7 +87,7 @@ class PeakFeatures:
         # ix_base_left_abs is the index of the left base of the peak
         # ix_base_right_abs is the index of the right base of the peak
         if (ix_base_left_abs is None) or (ix_base_right_abs is None):
-            peak_curve  = None
+            peak_curve = None
             ix_peak_rel = None
         else:
             peak_curve = np.take(self.curve, np.arange(ix_base_left_abs, ix_base_right_abs))
@@ -105,6 +105,7 @@ class PeakFeatures:
                   'duration_mid': [peak_curve],
                   'inter_peak_interval': [ix_peak_abs, ix_pre_peak, ix_nex_peak]
                   }
+        # print(args_d)
         
         if __name__ == '__main__':
             import Compute
@@ -113,10 +114,10 @@ class PeakFeatures:
         
         to_compute = Compute.PeakFeatures
         # Create instance of Static interface by passing in Compute class and args dictionary
-        compute_interface = ComputeInterfaces.Static(to_compute, args_d)
+        compute_interface = ComputeInterfaces.StaticMP(to_compute, args_d)
         # Spawn and run the processes, and get results
         peak_features = compute_interface.compute()
-#        print(peak_features)
+        print(peak_features)
         return peak_features
 
         # With this I can get a list of all the static methods in

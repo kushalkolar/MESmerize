@@ -304,7 +304,7 @@ class Node(QtCore.QObject):
                 out = self.processBypassed(vals)
             else:
                 if self._loadNode:
-                    out = self.process(self.forceValue)
+                    out = self.process()
                 else:
                     out = self.process(**strDict(vals))
 

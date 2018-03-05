@@ -11,24 +11,53 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue as Q_p
+from threading import Thread
+from queue import Queue as Q_t
+import abc
 
 
-class Static:
+class Interface(metaclass=abc.ABCMeta):
     def __init__(self, compute_class, args_dict):
         self.compute_class = compute_class
         self.args_dict = args_dict
         self.func_names = [f for f in self.args_dict.keys() if hasattr(self.compute_class, f)]
-        self.Q = Queue()
+        self.funcs = None
+        self.Q = None
 
+    @abc.abstractmethod
     def compute(self):
+        pass
+
+    def get_results(self):
+        if self.Q is None:
+            raise Exception('You must run the compute method first')
+
+        l = {}
+        while self.Q.qsize() > 0:
+            l.update(self.Q.get())
+        return l
+
+
+class StaticMP(Interface):
+    def compute(self):
+        self.Q = Q_p()
         for func in self.func_names:
             f = getattr(self.compute_class, func)
             a = tuple([self.Q] + self.args_dict[func])
             proc = Process(target=f, args=a)
             proc.start()
             proc.join()
-        l = {}
-        while self.Q.qsize() > 0:
-            l.update(self.Q.get())
-        return l
+        return self.get_results()
+
+
+class StaticMT(Interface):
+    def compute(self):
+        self.Q = Q_t()
+        for func in self.func_names:
+            f = getattr(self.compute_class, func)
+            a = tuple([self.Q] + self.args_dict[func])
+            thread = Thread(target=f, args=a)
+            thread.start()
+            thread.join()
+        return self.get_results()

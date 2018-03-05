@@ -18,6 +18,9 @@ class Ui_Form(object):
         self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
+        self.fileNameLabel = QtWidgets.QLabel(Form)
+        self.fileNameLabel.setObjectName("fileNameLabel")
+        self.verticalLayout.addWidget(self.fileNameLabel)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.loadBtn = QtWidgets.QPushButton(Form)
@@ -57,6 +60,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
+        self.fileNameLabel.setText(_translate("Form", "Unsaved"))
         self.loadBtn.setText(_translate("Form", "Load.."))
         self.saveBtn.setText(_translate("Form", "Save"))
         self.saveAsBtn.setText(_translate("Form", "Save As.."))
