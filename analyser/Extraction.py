@@ -16,10 +16,13 @@ if __name__ == '__main__':
     from DataTypes import Transmission
 #    import Compute
     import ComputeInterfaces
+    import Compute
+
 else:
     from .DataTypes import Transmission
 #    from . import Compute
     from . import ComputeInterfaces
+    from . import Compute
 
 
 class PeakFeatures:
@@ -30,10 +33,14 @@ class PeakFeatures:
     def get_all(self):
         self.row = 0
 #        self.t.df['peaks_bases']['bah'] = self.t.df[['curve', 'peaks_bases']].apply(lambda x: self._per_curve(x['curve'], x['peaks_bases']), axis=1)
-        self.t.df['peaks_bases'] = self.t.df.apply(lambda x: self._per_curve(x['curve'], x['peaks_bases']), axis=1)
+#        self.t.df['peaks_bases'] = self.t.df.apply(lambda x: self._per_curve(x['curve'], x['peaks_bases']), axis=1)
+        
+        newdf = Transmission.empty_df(self.t)
+        
+        newdf = self.t.df.apply(lambda x: self._per_curve(x['curve'], x['peaks_bases']), axis=1)
 
         print('Reaches here')
-        return self.t#self.t.df
+        return newdf#self.t#self.t.df
 
     def _per_curve(self, curve, pb_df):
         # assert isinstance(pb_df, pd.DataFrame)
@@ -42,7 +49,9 @@ class PeakFeatures:
         # self.peaks = pb_df['event'][pb_df['peak']]
         self.all_peaks = np.where(self.pb_df['peak'])[0]
 #        self.pb_df['features'] = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else {}, axis=1)
+        
         features = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else {}, axis=1)
+        
 #        self.pb_df.apply(lambda x: print(x), axis=1)
 #        print(self.pb_df)
         print('Finished with curve' +str(self.row))
@@ -107,22 +116,77 @@ class PeakFeatures:
                   }
         # print(args_d)
         
-        if __name__ == '__main__':
-            import Compute
-        else:
-            from . import Compute
-        
         to_compute = Compute.PeakFeatures
         # Create instance of Static interface by passing in Compute class and args dictionary
         compute_interface = ComputeInterfaces.StaticMT(to_compute, args_d)
         # Spawn and run the processes, and get results
         peak_features = compute_interface.compute()
-        print(peak_features)
+        peak_features.update({'ix_peak_abs': ix_peak_abs, 'ix_peak_rel': ix_peak_rel, 'peak_curve': peak_curve})
+#        print(peak_features)
         return peak_features
 
         # With this I can get a list of all the static methods in
+
+
+class PeakFeaturesIter(PeakFeatures):
+    def __init__(self, transmission):
+        PeakFeatures.__init__(self, transmission)
+
+    def get_all(self):
+        self.row = 0
+        new_t = Transmission.empty_df(self.t, addCols=['peak_features'])
+        new_t.df = new_t.df.drop(columns=['curve', 'peaks_bases'])
+
+        # new_t.df['peak_features'] =
+
+        df_exist = False
+        for ix, r in self.t.df.iterrows():
+            assert isinstance(r, pd.Series)
+            peak_features = self._per_curve(r['curve'], r['peaks_bases'])
+            r = r.drop(['peaks_bases', 'curve'])
+            for i, p in peak_features.iterrows():
+
+                # rp = pd.concat([r.transpose(), pd.DataFrame.from_dict(p['peak_features'])])
+                # print(rp)
+
+                # pdf = pd.DataFrame(p['peak_features'])
+                # print(pdf)
+
+                if not df_exist:
+                    new_t.df = pd.concat([r.transpose()])#, pdf], axis=1)
+                    df_exist = True
+
+                else:
+                    # df = pd.concat([r, pdf])
+                    new_t.df = pd.concat([new_t.df, r.transpose()])
+
+        return new_t
+
+    def _per_curve(self, curve, pb_df):
+        assert isinstance(pb_df, pd.DataFrame)
+        self.curve = curve
+        self.pb_df = pb_df
+        # self.peaks = pb_df['event'][pb_df['peak']]
+        self.all_peaks = np.where(self.pb_df['peak'])[0]
+#        self.pb_df['features'] = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else {}, axis=1)
+
+        self.pb_df['peak_features'] = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else False, axis=1)
+        self.pb_df.drop(self.pb_df[self.pb_df['peak_features'] == False].index, inplace=True)
+        self.pb_df.reset_index(drop=True)
+        # self.pb_df = self.pb_df[~self.pb_df['peak_features'] == {}]
+#        self.pb_df.apply(lambda x: print(x), axis=1)
+#        print(self.pb_df)
+#         print('Finished with curve' +str(self.row))
+        self.row +=1
+#        print(type(self.pb_df.transpose()))
+#        return self.pb_df
+#        return features
+#        return pd.concat([self.pb_df.transporesse, features])
+#         self.pb_df['features'] = features
+        return pb_df
         
 if __name__ == '__main__':
-    r, t = Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/peaks_new_with_bool.trn')
-    pf = PeakFeatures(t)
-    result = pf.get_all()
+    transmission = Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/peaks_new_with_bool.trn')
+    t = transmission.copy()
+    pf = PeakFeaturesIter(t)
+    r = pf.get_all()

@@ -23,6 +23,7 @@ configuration.openConfig()
 class AlignStims(CtrlNode):
     """Align Stimulus Definitions"""
     nodeName = 'AlignStims'
+    # Cannot use QComboBox for Stim_type since it leads to a stack overflow in Node.__getattr__ when removing or clearing the combobox
     uiTemplate = [('Stim_Type', 'lineEdit', {'text': '', 'placeHolder': 'Enter Stimulus type'}),
                   ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus and/or Substim', 'text': ''}),
                   ('start_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
@@ -127,34 +128,6 @@ class AlignStims(CtrlNode):
                     rn[stim_def] = stim[0][0]
                     #
                     t.df = t.df.append(rn, ignore_index=True)
-                    # if zero_pos == 'start_offset':
-                    #
-                    #     tstart = max(stim_start + start_offset, 0)
-                    #     tend = min(stim_end + end_offset, np.size(curve))
-                    #
-                    # elif zero_pos == 'stim_end':
-                    #     tstart = stim_end
-                    #     tend = tstart + end_offset
-                    #
-                    # elif zero_pos == 'stim_center':
-                    #     tstart = int(((stim_start + stim_end) / 2)) + start_offset
-                    #     tend = min(stim_end + end_offset, np.size(curve))
-                    #
-                    # rn = r.copy()
-                    #
-                    # tstart = int(tstart)
-                    # tend = int(tend)
-                    #
-                    # # sliced_curve = np.take(curve, np.arange(tstart, tend))
-                    # sliced_curve = curve[tstart:tend]
-                    #
-                    # rn['curve'] = curve[int(tstart):int(tend)] / min(curve[int(tstart):int(tend)])
-                    #
-                    # # rn['curve'] = sliced_curve / min(sliced_curve)
-                    # rn[stim_def] = stim[0][0]
-                    #
-                    # t.df = t.df.append(rn, ignore_index=True)
-        # print(t.df)
 
         t.src.append({'AlignStims': params})
         print('ALIGN_STIMS APPENDED')
@@ -184,6 +157,7 @@ class DF_IDX(CtrlNode):
 class ROI_Selection(CtrlNode):
     """Pass-through DataFrame rows if they have the chosen tags"""
     nodeName = 'ROI_Selection'
+    # Cannot use QComboBox for ROI_Type since it leads to a stack overflow in Node.__getattr__ when removing or clearing the combobox
     uiTemplate = [('ROI_Type', 'lineEdit', {'text': '', 'placeHolder': 'Enter ROI type'}),
                   ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
                   ('ROI_Tags', 'lineEdit', {'toolTip': 'Enter one or many tags separated by commas (,)\n' + \
@@ -223,19 +197,6 @@ class ROI_Selection(CtrlNode):
             return
 
         self.transmission = transmission.copy()
-
-        # Very messy work-around because the usual widget clear() and removeItem() result in
-        # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
-        # Results in a really stupid bug where stuff in the comboBox is duplicated.
-        # all_roi_defs = []
-        # for i in range(self.ctrls['ROI_Type'].count()):
-        #     all_roi_defs.append(self.ctrls['ROI_Type'].itemText(i))
-        #
-        # for item in self.transmission.ROI_DEFS:  # transmission.ROI_DEFS comes from MesmerizeCore.configuration
-        #     if item in all_roi_defs:             # during the creation of the Transmission class object
-        #         continue
-        #     else:
-        #         self.ctrls['ROI_Type'].addItem(item)
 
         chosen_tags = [tag.strip() for tag in self.ctrls['ROI_Tags'].text().split(',')]
 
@@ -291,7 +252,7 @@ class PeakFeaturesExtract(CtrlNode):
         self.results = []
 
     def processData(self, In):
-        self.In = In
+        self.In = In.copy()
         return self.results
 
     def _extract(self):
@@ -311,8 +272,8 @@ class PeakFeaturesExtract(CtrlNode):
         # self.results = []
         # for trans in items:
         # print(trans)
-        transmission = self.In.copy()
-        pf = Extraction.PeakFeatures(transmission)
+        # transmission = self.In.copy()
+        pf = Extraction.PeakFeatures(self.In)
         self.results = pf.get_all()
         self.results.src.append({'Peak_Features'})
         self.results.plot_this = 'curve'
@@ -419,6 +380,7 @@ class PeakDetect(CtrlNode):
 
         self.t = inputs['Derivative'].copy()
         self.t_curve = inputs['Curve']
+        self.t['raw_curve'] = self.t_curve['curve']
 
         assert isinstance(self.t, Transmission)
         assert isinstance(self.t_curve, Transmission)

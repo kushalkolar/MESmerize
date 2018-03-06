@@ -65,8 +65,8 @@ class Flowchart(Node):
         
         self.inputNode = Node('Input', allowRemove=False, allowAddOutput=True)
         self.outputNode = Node('Output', allowRemove=False, allowAddInput=True)
-        self.addNode(self.inputNode, 'Input', [-150, 0])
-        self.addNode(self.outputNode, 'Output', [300, 0])
+        self.addNode(self.inputNode, 'Input', [-150, -150])
+        self.addNode(self.outputNode, 'Output', [300, 150])
         
         self.outputNode.sigOutputChanged.connect(self.outputChanged)
         self.outputNode.sigTerminalRenamed.connect(self.internalTerminalRenamed)

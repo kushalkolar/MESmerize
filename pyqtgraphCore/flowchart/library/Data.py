@@ -13,11 +13,58 @@ from collections import OrderedDict
 from functools import partial
 from analyser.DataTypes import Transmission
 import MesmerizeCore.misc_funcs
+from MesmerizeCore import configuration
+import builtins
 
 ## TODO: THIS IS NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-class Load(CtrlNode):
+
+class LoadProjDF(CtrlNode):
+    """Load raw project DataFrames as Transmission"""
+    nodeName = 'Load_Proj_DF'
+    uiTemplate = [('DF_Name', 'combo'),
+                  ('Update', 'button', {'text': 'Update', 'toolTip': 'When clicked this node will update'
+                                                                     ' from the project DataFrame'}),
+                  ('PinDF', 'check', {'text': 'Yes', 'toolTip': 'Pin the DataFrame to the flowchart, this way\n'
+                                                                'you can open another project and still propogate\n'
+                                                                'the data from this node.'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'Out': {'io': 'out'}})
+        self._loadNode = True
+        self.t = None
+        self.ctrls['DF_Name'].addItems([''] + list(configuration.df_refs.keys()))
+        self.ctrls['Update'].clicked.connect(self.update)
+        # print('Node Refs:')
+        # print(configuration.df_refs)
+
+    def process(self):
+        print('#######Weak Refs Dict########')
+        print(configuration.df_refs)
+
+        if self.ctrls['PinDF'].isEnabled():
+            if self.ctrls['PinDF'].isChecked():
+                # self.t = self.t.copy()
+                self.ctrls['PinDF'].setDisabled(True)
+                self.ctrls['Update'].setDisabled(True)
+                return {'Out': self.t}
+
+            if self.ctrls['DF_Name'].currentText() == '':
+                return
+            df_ref = configuration.df_refs[self.ctrls['DF_Name'].currentText()]
+            df = df_ref()
+            print('*****************config df ref hex ID:*****************')
+            print(hex(id(df)))
+            self.t = Transmission.from_proj(df, self.ctrls['DF_Name'].currentText())
+
+            print('Tranmission dataframe hexID:')
+            print(hex(id(self.t.df)))
+
+        return {'Out': self.t}
+
+
+class LoadFile(CtrlNode):
     """Load Transmission data object from pickled file"""
-    nodeName = 'Load'
+    nodeName = 'LoadFile'
     uiTemplate = [('loadBtn', 'button', {'text': 'OpenFileDialog'}),
                   ('fname', 'label', {'text': ''}),
                   ]

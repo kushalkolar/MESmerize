@@ -33,37 +33,45 @@ from itertools import chain
 import ast
 from functools import partial
 from . import configuration
-
+import builtins
 from pyqtgraphCore import ImageView
+import weakref
 
 
-class TabPage(QtGui.QWidget):
+class TabPage(QtWidgets.QWidget):
     def __init__(self, parent=None, *args):
-        QtGui.QWidget.__init__(self, parent, *args)
+        QtWidgets.QWidget.__init__(self, parent, *args)
         self.filtLog = ''
         self.filtLogPandas = ''
-    
         
-    def setupGUI(self, df):
+    def setupGUI(self, df, tabTitle):
+        self.tabTitle = tabTitle
         self.df = df
         self.ui = Ui_Form()
-        # self.ui.setupUi(self, self.df,
+        # self.ui.setupUi(self, self._df,
         #                 configuration.cfg.options('EXCLUDE'),
         #                 configuration.special)
-        self.ui.setupUi(self, self.df,
+        self.ui.setupUi(self, self._df,
                         configuration.cfg.options('EXCLUDE'),
                         configuration.special)
         
         self.ui.BtnCopyFilters.clicked.connect(self._copyFilterClipboard)
         
         self.ui.BtnResetFilters.clicked.connect(self._clearAllLineEdFilters)
-#        self.addBtn()
-                
-#    def addBtn(self):
-#        self.ui.BtnConsole2 = QtWidgets.QPushButton(self)
-#        self.ui.BtnConsole2.setGeometry(QtCore.QRect(200, 740, 80, 26))
-#        self.ui.BtnConsole2.setObjectName("BtnConsole2")
-#        self.ui.BtnConsole2.setText("bahh")
+
+    @property
+    def df(self):
+        return self._df
+
+    @df.setter
+    def df(self, df):
+        self._df = df
+        wr_df = weakref.ref(self._df)
+        if self.tabTitle in configuration.df_refs.keys():
+            configuration.df_refs[self.tabTitle] = wr_df
+        else:
+            configuration.df_refs.update({self.tabTitle: wr_df})
+
     def _clearAllLineEdFilters(self):
         for lineEd in self.ui.lineEdFilter_:
             lineEd.clear()
@@ -71,19 +79,19 @@ class TabPage(QtGui.QWidget):
             listw.clearSelection()
             
     def updateDf(self):
-        if self.df.size < 1:
+        if self._df.size < 1:
             self._emptyDf()
             self._disablePlotBtns()
             return
         
         self._enablePlotBtns()
-        self.minIndex = self.df.index.values.min()
+        self.minIndex = self._df.index.values.min()
         
         for col in self.ui.listw_:
             col.clear()
 
         for col in self.ui.listw_:
-            el = self.df[col.objectName()][self.minIndex]
+            el = self._df[col.objectName()][self.minIndex]
             col.setEnabled(True)
             if col.objectName() == 'SampleID':
                 col.itemDoubleClicked.connect(self._viewer)
@@ -99,31 +107,31 @@ class TabPage(QtGui.QWidget):
                 self._unsupportedType(col)
     
     def _enablePlotBtns(self):
-        self.ui.BtnPlot.setEnabled(True)
-        self.ui.BtnConsole.setEnabled(True)
+        # self.ui.BtnPlot.setEnabled(True)
+        # self.ui.BtnConsole.setEnabled(True)
         self.ui.BtnResetFilters.setEnabled(True)
-        self.ui.BtnJupyter.setEnabled(True)
+        # self.ui.BtnJupyter.setEnabled(True)
         self.ui.BtnCopyFilters.setEnabled(True)
         
     def _disablePlotBtns(self):
-        self.ui.BtnPlot.setDisabled(True)
-        self.ui.BtnConsole.setDisabled(True)
+        # self.ui.BtnPlot.setDisabled(True)
+        # self.ui.BtnConsole.setDisabled(True)
         self.ui.BtnResetFilters.setDisabled(True)
-        self.ui.BtnJupyter.setDisabled(True)
+        # self.ui.BtnJupyter.setDisabled(True)
         self.ui.BtnCopyFilters.setDisabled(True)
         
     def _listExtract(self, col):
-        col.addItems(list(set([a for b in self.df[col.objectName()].tolist() for a in b])))
+        col.addItems(list(set([a for b in self._df[col.objectName()].tolist() for a in b])))
 
         # Yes I know this is abominable. I'm open to suggestions!
-        # col.addItems(list(set(chain(*self.df[col.objectName()].apply(lambda el:list(ast.literal_eval(el)))))))# At this point I'm writing with a lisp.
+        # col.addItems(list(set(chain(*self._df[col.objectName()].apply(lambda el:list(ast.literal_eval(el)))))))# At this point I'm writing with a lisp.
     
     def _strExtract(self, col):
-        col.addItems(list(set(self.df[col.objectName()])))
+        col.addItems(list(set(self._df[col.objectName()])))
 
     def _numExtract(self, col):
-        col.addItems(list(map(str, set(self.df[col.objectName()]))))
-#        col.addItems(list(set(self.df[col.objectName()])))
+        col.addItems(list(map(str, set(self._df[col.objectName()]))))
+#        col.addItems(list(set(self._df[col.objectName()])))
     
     def _emptyDf(self):
         for col in self.ui.listw_:
@@ -131,7 +139,7 @@ class TabPage(QtGui.QWidget):
             col.setDisabled(True)
 
     def _unsupportedType(self, col):
-        col.addItems(['Unsupported type: ', str(type(self.df[col.objectName()][self.minIndex]))])
+        col.addItems(['Unsupported type: ', str(type(self._df[col.objectName()][self.minIndex]))])
         col.setDisabled(True)
 
     def setupWorkEnv(self):
@@ -144,7 +152,7 @@ class TabPage(QtGui.QWidget):
         
     def __repr__(self, filepath):
         filtLog = '\n'.join(self.filtLogPandas.split('!&&!'))
-        return 'TabPage()\nDataFrame: {}\nFilter Log: {}\n'.format(self.df, filtLog)
+        return 'TabPage()\nDataFrame: {}\nFilter Log: {}\n'.format(self._df, filtLog)
 
     def _viewer(self):
         pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
@@ -192,26 +200,38 @@ class TabPage(QtGui.QWidget):
 class Window(QtWidgets.QWidget):
     def __init__(self, dfRoot):
         super().__init__()
+        # self.scrollArea = QtWidgets.QScrollArea()
         self.tabs = QtWidgets.QTabWidget()
-        
         layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.tabs)
+        # self.scrollArea.setWidgetResizable(True)
+        # self.scrollArea.setWidget(self.tabs)
+        # layout.addWidget(self.tabs)
 #        button = QtWidgets.QToolButton()
 #        button.setToolTip('Add New Tab')
 #        button.clicked.connect(partial(self.addNewTab, dfRoot, 'Root', self.exclude, self.special))
 #        button.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DialogYesButton))
 #        self.tabs.setCornerWidget(button, QtCore.Qt.TopRightCorner)
-        self.addNewTab(dfRoot, '>>R', '>>Root', '')
+        self.addNewTab(dfRoot, 'Root', '>>Root', '')
         self.tabs.tabBar().tabCloseRequested.connect(lambda n: self.tabs.removeTab(n))
-
-
-    
+        builtins.tab_refs = {}
 
     def addNewTab(self, df, tabTitle, filtLog, filtLogPandas):
+        if self.tabs.count() > 0:
+            tabTitle = QtWidgets.QInputDialog.getText(self, None, 'Enter tab name: ')
+            if tabTitle[0] == '' or tabTitle[1] is False:
+                return
+            elif tabTitle[0] in configuration.df_refs.keys():
+                self._name_exists(df, tabTitle, filtLog, filtLogPandas)
+        else:
+            tabTitle='Root'
+        tabTitle = tabTitle[0]
+
+        # elif tabTitle
         # Adds a new tab, places an instance of TabPage widget which is displayed in the whole tab.
         self.tabs.addTab(TabPage(self.tabs), tabTitle)
         # Setup the GUI in that tab
-        self.tabs.widget(self.tabs.count() - 1).setupGUI(df)
+        self.tabs.widget(self.tabs.count() - 1).setupGUI(df, tabTitle)
         # Populate the list in that tab according to its dataframe attribute
         self.tabs.widget(self.tabs.count() - 1).updateDf()
         # Allow all tabs to be closed except for the tab with the Root dataframe
@@ -226,17 +246,24 @@ class Window(QtWidgets.QWidget):
         for i in range(0, len(self.tabs.widget(self.tabs.count() - 1).ui.BtnApply_)):
             #print(BtnApply)
             self.tabs.widget(self.tabs.count() - 1).ui.BtnApply_[i].clicked.connect(partial(self.applyFilterBtnPressed, i))
-        
+
         self.tabs.setCurrentIndex(self.tabs.count() - 1)
+        # print('Proj Browser Refs:')
+        # print(configuration.tab_refs.keys())
+
+    def _name_exists(self, df, tabTitle, filtLog, filtLogPandas):
+        QtGui.QMessageBox.warning(self, 'DataFrame title already exists!',
+                                      'That name already exists in your project, choose a different name!')
+        self.addNewTab(df, tabTitle, filtLog, filtLogPandas)
 
     def refreshRoot(self, newdf):
         oldRoot = self.tabs.widget(0)
 
-        self.addNewTab(newdf, '>>R', oldRoot.filtLog, oldRoot.filtLogPandas)
+        self.addNewTab(newdf, 'Root', oldRoot.filtLog, oldRoot.filtLogPandas)
         self.tabs.widget(0).df = None
         self.tabs.removeTab(0)
         self.tabs.tabBar().moveTab(self.tabs.count()-1, 0)
-        self.tabs.widget(0).setupGUI(newdf)
+        self.tabs.widget(0).setupGUI(newdf, 'Root')
         bar = self.tabs.tabBar()
         bar.setTabButton(0, bar.RightSide, None)
 
@@ -267,13 +294,13 @@ class Window(QtWidgets.QWidget):
         return newDf, filtLog, filtLogPandas, tabTitleAdd
     
     def applyPdFilterAll(self):
-        newDf = self.tabs.currentWidget().df
+        # newDf = self.tabs.currentWidget().df
         filtLog = self.tabs.currentWidget().filtLog
         filtLogPandas = self.tabs.currentWidget().filtLogPandas
         
         for colNum in range(0, len(self.tabs.currentWidget().ui.lineEdFilter_)):
             if self.tabs.currentWidget().ui.lineEdFilter_[colNum].text() != '':
-                newDf, log, filtLogPandas, titleAdd = self.applyPdFilter(newDf, colNum)
+                newDf, log, filtLogPandas, titleAdd = self.applyPdFilter(colNum)
                 filtLog = filtLog + log
                 
         return newDf, filtLog, filtLogPandas, titleAdd
@@ -347,7 +374,7 @@ if __name__ == '__main__':
     
     app = QtWidgets.QApplication(sys.argv)
     
-    win = MainWindow()
+    win = Window()
     win.resize(1000, 850)
     w = Window(df, special=special)
 #    w.resize(1000,840)

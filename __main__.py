@@ -11,7 +11,9 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.Qt import QtCore, QtGui, USE_PYSIDE
+from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from pyqtgraphCore.console import ConsoleWidget
+from mainwindow import Ui_MainWindow
 from MesmerizeCore import ProjBrowser
 from MesmerizeCore import ConfigWindow
 from MesmerizeCore import configuration
@@ -24,7 +26,9 @@ from shutil import copyfile
 import time
 import pandas as pd
 import os
-
+from functools import partial
+from MesmerizeCore import misc_funcs
+import analyser.gui
 
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
@@ -41,50 +45,28 @@ The instance of MainWindow is useful for communicating between the Viewer & Proj
 #             self.viewer = None
 #             self.projName = None
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         # QtGui.QMainWindow.__init__(self)
         super().__init__()
+        self.setupUi(self)
+        self.dockWidget.hide()
         self.viewer = None
         self.projBrowserWin = None
         self.projName = None
         self.projDf = None
         self.setWindowTitle('Mesmerize')
-        self.initMenuBar()
-        self.resize(1000,845)
-    def initMenuBar(self):
-        # Menurbar
-        self.menubar = self.menuBar()
+        self.connect_sigs_MenuBar()
+        self.resize(700, 400)
+        self.analysisWindows = []
 
-        fileMenu = self.menubar.addMenu('&File')
-
-        mBtnNewProj = fileMenu.addAction('New')
-        mBtnNewProj.triggered.connect(self.newProjFileDialog)
-
-        mBtnOpenProj = fileMenu.addAction('Open')
-        mBtnOpenProj.triggered.connect(self.openProjFileDialog)
+    def connect_sigs_MenuBar(self):
+        self.actionNew.triggered.connect(self.newProjFileDialog)
 
 
-        dataframeMenu = self.menubar.addMenu('&DataFrame')
-
-        saveRootDf = dataframeMenu.addAction('Save Root')
-
-        saveChild = dataframeMenu.addAction('Save Current Child')
-
-        saveChildAs = dataframeMenu.addAction('Save Current Child As...')
-
-        saveAllChildren = dataframeMenu.addAction('Save All Children')
-
-        saveAsNewProj = dataframeMenu.addAction('New Project from Current Child')
-
-        deleteChild = dataframeMenu.addAction('Delete Current Child')
-
-
-
-        editMenu = self.menubar.addMenu('&Edit')
-
-        changeConfig = editMenu.addAction('Project Configuration')
-        changeConfig.triggered.connect(self.openConfigWindow)
+        self.actionOpen.triggered.connect(self.openProjFileDialog)
+        self.actionProject_Configuration.triggered.connect(self.openConfigWindow)
+        self.actionNewAnalyzerInstance.triggered.connect(self.initAnalyzer)
 
 
     def newProjFileDialog(self):
@@ -92,6 +74,7 @@ class MainWindow(QtGui.QMainWindow):
         parentPath = QtGui.QFileDialog.getExistingDirectory(self, 'Choose location for new project')
         if parentPath == '':
             return
+
 
         projName, start = QtGui.QInputDialog.getText(self, '', 'Project Name:', QtGui.QLineEdit.Normal, '')
 
@@ -170,6 +153,10 @@ class MainWindow(QtGui.QMainWindow):
 
         self.setWindowTitle('Mesmerize - ' + self.projName)
 
+        self.menuEdit.setEnabled(True)
+        self.menuDataFrame.setEnabled(True)
+        self.actionNewAnalyzerInstance.setEnabled(True)
+
     def createNewDf(self):
         # Create empty DataFrame
         self.configwin.tabs.widget(0).ui.btnSave.clicked.disconnect(self.createNewDf)
@@ -179,7 +166,7 @@ class MainWindow(QtGui.QMainWindow):
 
         cols = include + exclude
 
-        self.projDf = packager.empty_df(cols)
+        self.projDf = misc_funcs.empty_df(cols)
         assert isinstance(self.projDf, pd.DataFrame)
         self.projDf.to_pickle(self.projRootDfPath, protocol=4)
 
@@ -244,9 +231,42 @@ class MainWindow(QtGui.QMainWindow):
         
     def initProjBrowser(self):
 
+        # self.projScollArea = QtWidgets.QScrollArea()
+
+
+
         self.projBrowserWin = ProjBrowser.Window(self.projDf)
 
         self.setCentralWidget(self.projBrowserWin)
+        # self.projScollArea.setWidget(self.projBrowserWin)
+        # self.scrollArea.setWidget(self.projBrowserWin)
+        # self.scrollArea.setWidgetResizable(True)
+        # self.setCentralWidget(self.projBrowserWin)
+
+        ns = {'pd': pd,
+              'curr_tab': self.projBrowserWin.tabs.currentWidget,
+              'pbwin': self.projBrowserWin,
+              'addTab': self.projBrowserWin.addNewTab,
+              'viewer': self.viewer,
+              'main': self
+              }
+
+        txt = "Namespaces:\n" \
+              "pandas as pd\n" \
+              "viewer as viewer\n" \
+              "self as main\n" \
+              "call curr_tab() to return current tab widget\n" \
+              "call addTab(<dataframe>, <title>, <filtLog>, <filtLogPandas>) to add a new tab\n"
+
+        self.dockWidget.setWidget(ConsoleWidget(namespace=ns, text=txt,
+                                                 historyFile='./test_history.pik'))
+
+        self.dockWidget.hide()
+
+        if len(configuration.cfg.options('INCLUDE')) > 8:
+            self.resize(1900,900)
+        else:
+            self.resize(1900,600)
 
         if self.viewer is None:
             self.initViewer()
@@ -258,8 +278,8 @@ class MainWindow(QtGui.QMainWindow):
         pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
     
         ## Create window with ImageView widget
-        self.viewerWindow = QtGui.QMainWindow()
-        self.viewerWindow.resize(1458,931)
+        self.viewerWindow = QtWidgets.QMainWindow()
+        self.viewerWindow.resize(1460, 950)
         self.viewer = pyqtgraphCore.ImageView()
         self.viewerWindow.setCentralWidget(self.viewer)
 #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
@@ -279,13 +299,12 @@ class MainWindow(QtGui.QMainWindow):
         
         self.viewer.ui.btnAddToBatch.clicked.connect(self.viewerAddToBatch)
         self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
-        self.viewerWindow.show()
+        # self.viewerWindow.show()
 
         self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
 
-        viewMenu = self.menubar.addMenu('&View')
-        showViewer = viewMenu.addAction('Show Viewer')
-        showViewer.triggered.connect(self.viewerWindow.show)
+        self.actionShow_Viewer.setEnabled(True)
+        self.actionShow_Viewer.triggered.connect(self.viewerWindow.show)
 
     def isProjLoaded(self):
         if self.projName is None:
@@ -330,7 +349,16 @@ class MainWindow(QtGui.QMainWindow):
             self.projBrowserWin.tabs.widget(0).df = self.projDf
             self.projBrowserWin.tabs.widget(0).updateDf()
 
-            
+    # def loadCurveFiles(self, row):
+    #     path = row['CurvePath']
+    #     print(path)
+    #     npz = np.load(path)
+    #     return pd.Series({'curve': npz.f.curve, 'stimMaps': npz.f.stimMaps})
+
+    def initAnalyzer(self):
+        self.analysisWindows.append(analyser.gui.Window())
+        self.analysisWindows[-1].show()
+
             
 if __name__ == '__main__':
     app = QtGui.QApplication([])

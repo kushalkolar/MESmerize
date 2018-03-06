@@ -21,13 +21,10 @@ occured for the animal that was exposed to in this particular image sequence
 """
 import numpy as np
 from PyQt5 import QtGui
-from pyqtgraphCore import fn
+import pyqtgraphCore.functions as fn
 import csv
 from . import configuration
-
-def fix_fp_errors(n):
-    fix = np.round(n, decimals=1) + 0.0
-    return fix
+from . misc_funcs import fix_fp_errors
 
 class ImgData():
     def __init__(self, seq, meta={}, SampleID=None, Genotype='Untagged', stimMaps=None,
@@ -65,6 +62,11 @@ class ImgData():
         
     @stimMaps.setter
     def stimMaps(self, maps):
+        """
+
+        :param maps: tuple in the format: (<dict of stimulus maps>, <str, originating source of the map>)
+        :return: None
+        """
         dm, origin = maps
 
         if dm is None:
