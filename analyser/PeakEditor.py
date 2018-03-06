@@ -23,6 +23,7 @@ if __name__ == '__main__':
 else:
     from .peak_base_editor_pytemplate import *
     from .DataTypes import Transmission
+    from .HistoryWidget import HistoryTreeWidget
 
 
 # TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
@@ -33,12 +34,15 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(PBWindow, self).__init__()
         # Ui_MainWindow.__init__(self)
         self.setupUi(self)
+        self.setWindowTitle('Mesmerize - Peak-Base editor')
+        self.history_tree = HistoryTreeWidget()
+        self.history_tree.fill_widget([trans_peaks_bases.src])
         self.update_transmission(trans_curves, trans_peaks_bases)
         self._reset_listw()
         self.listwIndices.currentItemChanged.connect(self._set_row)
         self.listwIndices.itemClicked.connect(self._set_row)
         self.sliderDotSize.valueChanged.connect(self._set_pens)
-
+        self.dockWidget.setWidget(self.history_tree)
         self.brush_size = 12
 
     def update_transmission(self, trans_curves, trans_peaks_bases):
@@ -58,6 +62,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         assert isinstance(trans_peaks_bases, Transmission)
         self.tpb = trans_peaks_bases.copy()
         self._set_row()
+        self.history_tree.fill_widget([trans_peaks_bases.src])
 
 
     def _reset_listw(self):
@@ -76,7 +81,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for ix in ixs:
             curve_plot = pg.PlotDataItem()
-            curve = self.tc.df[self.tc.data_column['curve']].iloc[ix]
+            curve = self.tc.df['curve'].iloc[ix]
             # if curve is None:
             #     QtGui.QMessageBox.warning(None, 'Empty Curve')
             curve_plot.setData(curve/min(curve))
@@ -85,8 +90,8 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # peak_ixs = self.tpb.df[self.tpb.data_column].iloc[ix].index[self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'peak'].tolist()
 
-            peaks = self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['event'][
-                    self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['label'] == 'peak'].tolist()
+            peaks = self.tpb.df['peaks_bases'].iloc[ix]['event'][
+                    self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'peak'].tolist()
 
             peaks_plot = pg.ScatterPlotItem(name='peaks', pen=None, symbol='o', size=self.brush_size, brush=(255, 0, 0, 150))
 
@@ -96,8 +101,8 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.warning(None, 'IndexError!', str(e))
                 return
 
-            bases = self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['event'][
-                    self.tpb.df[self.tpb.data_column['peaks_bases']].iloc[ix]['label'] == 'base'].tolist()
+            bases = self.tpb.df['peaks_bases'].iloc[ix]['event'][
+                    self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'base'].tolist()
 
             bases_plot = pg.ScatterPlotItem(name='bases', pen=None, symbol='o', size=self.brush_size, brush=(0, 255, 0, 150))
             try:

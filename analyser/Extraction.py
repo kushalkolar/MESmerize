@@ -114,7 +114,7 @@ class PeakFeatures:
         
         to_compute = Compute.PeakFeatures
         # Create instance of Static interface by passing in Compute class and args dictionary
-        compute_interface = ComputeInterfaces.StaticMP(to_compute, args_d)
+        compute_interface = ComputeInterfaces.StaticMT(to_compute, args_d)
         # Spawn and run the processes, and get results
         peak_features = compute_interface.compute()
         print(peak_features)

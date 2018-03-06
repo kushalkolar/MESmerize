@@ -14,11 +14,13 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
 
 class HistoryTreeWidget(QtWidgets.QTreeWidget):
-    def fill_widget(self, value):
-        # self.widget = QtWidgets.QTreeWidget()
-        # self.widget.clear()
+    def fill_widget(self, src_list):
+        """
+        :param src_list: List of Transmission.src objects.
+        :type src_list: list
+        """
         self.clear()
-        self._fill_item(self.invisibleRootItem(), value)
+        self._fill_item(self.invisibleRootItem(), src_list)
 
     def _fill_item(self, item, value):
         tn = 0
@@ -56,3 +58,13 @@ class HistoryTreeWidget(QtWidgets.QTreeWidget):
         for key in d.keys():
             k = key + k
         return k
+    
+if __name__ == '__main__':
+    app = QtWidgets.QApplication([])
+    win = QtWidgets.QMainWindow()
+    history_tree = HistoryTreeWidget()
+    win.setCentralWidget(history_tree)
+    win.show()
+    import sys
+    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        QtGui.QApplication.instance().exec_()

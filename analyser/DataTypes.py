@@ -40,17 +40,17 @@ class Transmission:
         assert isinstance(self.df, pd.DataFrame)
         # TODO: Make a graphical thing that display the source history of any node and can be accessed while looking at stastics too
         self.data_column = data_column
-        
+
         if plot_this is None:
             self.plot_this = self.data_column
         else:
             self.plot_this = plot_this
-            
+
         self.src = src
-        
+
         self.STIM_DEFS = STIM_DEFS
         self.ROI_DEFS = ROI_DEFS
-        
+
         self.dst = dst
 
     @classmethod
@@ -61,13 +61,13 @@ class Transmission:
         """
         assert isinstance(df, pd.DataFrame)
         df[['curve', 'meta', 'stimMaps']] = df.apply(Transmission._load_files, axis=1)
-        
+
         from MesmerizeCore import configuration
         stim_defs = configuration.cfg.options('STIM_DEFS')
         roi_defs = configuration.cfg.options('ROI_DEFS')
 
         return cls(df, src=[{'raw': ''}], data_column={'curve': 'curve'}, STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
-    
+
     @staticmethod
     def _load_files(row):
         """Loads npz and pickle files of Curves & Img metadata according to the paths specified in each row of the
@@ -88,18 +88,14 @@ class Transmission:
         :param path: Path to the pickle file
         :return: Transmission class object
         """
-        try:
-            p = pickle.load(open(path, 'rb'))
-            return True, cls(p['df'],
-                             p['src'],
-                             p['data_column'],
-                             p['dst'],
-                             p['STIM_DEFS'],
-                             p['ROI_DEFS'],
-                             p['plot_this'])
-
-        except Exception as e:
-            return False, e
+        p = pickle.load(open(path, 'rb'))
+        return cls(p['df'],
+                   p['src'],
+                   p['data_column'],
+                   p['dst'],
+                   p['STIM_DEFS'],
+                   p['ROI_DEFS'],
+                   p['plot_this'])
 
     def _make_dict(self):
         d = {'df': self.df,
@@ -116,11 +112,8 @@ class Transmission:
         """
         :param path: Path of where to store pickle
         """
-        try:
-            pickle.dump(self._make_dict(), open(path, 'wb'), protocol=4)
-            return True, None
-        except Exception as e:
-            return False, e
+        pickle.dump(self._make_dict(), open(path, 'wb'), protocol=4)
+
 
     def copy(self):
         return deepcopy(self)
@@ -136,12 +129,14 @@ class GroupTranmission:
         :type: groups_list: list
         """
         self.df = df
+        assert isinstance(self.df, pd.DataFrame)
         self.src = src
         self.groups_list = groups_list
 
     @classmethod
     def from_ca_data(cls, transmission, groups_list):
-        if not (any('Peak_Features' in d for d in transmission.src) or any('AlignStims' in d for d in transmission.src)):
+        if not (
+            any('Peak_Features' in d for d in transmission.src) or any('AlignStims' in d for d in transmission.src)):
             raise IndexError('No Peak Features or Stimulus Alignment data to group the data.')
 
         if any('Peak_Features' in d for d in transmission.src):
@@ -169,7 +164,7 @@ class GroupTranmission:
         return df
 
     @classmethod
-    def from_beh_data(cls, transmission, groups_list):
+    def from_behav_data(cls, transmission, groups_list):
         pass
 
     @classmethod
@@ -192,6 +187,28 @@ class GroupTranmission:
     def copy(self):
         return deepcopy(self)
 
-# class GroupsMerged:
-    # def __init__(self, groups):
-    #     TAKES IN LIST OF GroupTranmission INSTANCES
+    @staticmethod
+    def merge(group_trans_list):
+        """
+        :param group_trans_list list of GroupTransmission objects
+        :type group_trans_list: list
+        """
+        all_groups = []
+        for trans in group_trans_list:
+            assert isinstance(trans, GroupTranmission)
+            all_groups += trans.groups_list
+
+        all_df = []
+
+        for trans in group_trans_list:
+            assert isinstance(trans, GroupTranmission)
+            for group in all_groups:
+                if group in trans.groups_list:
+                    trans.df[group] = True
+                else:
+                    trans.df[group] = False
+
+            all_df.append(trans.df)
+
+        df = pd.concat(all_df)
+        return df

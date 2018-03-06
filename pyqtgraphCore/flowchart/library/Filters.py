@@ -27,8 +27,7 @@ class Derivative(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
         t = transmission.copy()
-        t.df[t.data_column['curve']] = t.df[t.data_column['curve']].apply(np.gradient)
-        t.plot_this = t.data_column['curve']
+        t.df['curve'] = t.df['curve'].apply(np.gradient)
         t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
         return t
 
@@ -52,15 +51,15 @@ class ButterWorth(CtrlNode):
 
         b, a = signal.butter(N, self.Wn)
         sig = signal.filtfilt(b, a, x)
-        return pd.Series({self.t.data_column['curve']: sig})
+        return pd.Series({'curve': sig})
 
     def processData(self, transmission):
         if self.ctrls['Apply'] is False:
             return
         self.t = transmission.copy()
 
-        self.t.df[self.t.data_column['curve']] = self.t.df.apply(lambda x: self._func(x[self.t.data_column['curve']], x['meta']), axis=1)
-        self.t.plot_this = self.t.data_column['curve']
+        self.t.df['curve'] = self.t.df.apply(lambda x: self._func(x['curve'], x['meta']), axis=1)
+        # self.t.plot_this = self.t.data_column['curve']
 
         params = {'N - order': self.ctrls['order'].value(),
                   'Wn - freq/divider': self.Wn,
@@ -100,13 +99,13 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
 
         # t.df['curve'].apply(lambda x: self._func)
 
-        self.t.df[self.t.data_column['curve']] = self.t.df[self.t.data_column['curve']].apply(signal.savgol_filter, window_length=w, polyorder=p)
+        self.t.df['curve'] = self.t.df['curve'].apply(signal.savgol_filter, window_length=w, polyorder=p)
 
         params = {'window_length': w,
                   'polyorder': p}
 
         self.t.src.append({'SavitzkyGolay': params})
-        self.t.plot_this = self.t.data_column['curve']
+        # self.t.plot_this = self.t.data_column['curve']
         return self.t
 
 

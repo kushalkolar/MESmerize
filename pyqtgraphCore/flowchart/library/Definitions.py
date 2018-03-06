@@ -19,6 +19,7 @@ from analyser import Extraction
 configuration.configpath = '/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/config.cfg'
 configuration.openConfig()
 
+
 class AlignStims(CtrlNode):
     """Align Stimulus Definitions"""
     nodeName = 'AlignStims'
@@ -29,23 +30,38 @@ class AlignStims(CtrlNode):
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+        self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
 
     def setAutoCompleter(self):
         stim_def = self.ctrls['Stim_Type'].text()
-        stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
+        try:
+            stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
+        except (KeyError, IndexError) as e:
+            QtGui.QMessageBox.warning(None, 'Stimulus type not found',
+                                      'The stimulus type which you have entered'
+                                      ' does not exist in the incoming dataframe\n'
+                                      + str(e))
+            return
         autocompleter = QtGui.QCompleter(stims, self.ctrls['Stimulus'])
         self.ctrls['Stimulus'].setCompleter(autocompleter)
+        self.ctrls['Stimulus'].setToolTip('\n'.join(stims))
 
     def _setAutoCompleterLineEdit(self):
         pass
 
-
-    # def connected(self, localTerm, remoteTerm):
-    #     pass
-
     def processData(self, transmission):
+        assert isinstance(transmission, Transmission)
+        self.transmission = transmission
+        ac = QtGui.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
+        self.ctrls['Stim_Type'].setCompleter(ac)
+        self.ctrls['Stim_Type'].setToolTip('\n'.join(self.transmission.STIM_DEFS))
+
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
         self.transmission = transmission.copy()
-        assert isinstance(self.transmission, Transmission)
         # Very messy work-around because the usual widget clear() and removeItem() result in
         # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
         # Results in a really stupid bug where stuff in the comboBox is duplicated.
@@ -59,12 +75,7 @@ class AlignStims(CtrlNode):
         #     else:
         #         self.ctrls['Stim_Type'].addItem(item)
 
-        ac = QtGui.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
-        self.ctrls['Stim_Type'].setCompleter(ac)
 
-        self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
-        if self.ctrls['Apply'].isChecked() is False:
-            return
 
         stim_def = self.ctrls['Stim_Type'].text()
         stim_tag = self.ctrls['Stimulus'].text()
@@ -79,7 +90,7 @@ class AlignStims(CtrlNode):
                   'zero_pos': zero_pos
                   }
 
-        t = Transmission(empty_df(), self.transmission.src, self.transmission.data_column['curve'], dst=self.transmission.dst)
+        t = Transmission(empty_df(), self.transmission.src, 'curve', dst=self.transmission.dst)
         for ix, r in self.transmission.df.iterrows():
             ## TODO: Should use an if-continue block, just not critical at the moment
             try:
@@ -88,47 +99,66 @@ class AlignStims(CtrlNode):
             except KeyError:
                 continue
             # print(r)
-            curve = r[self.transmission.data_column['curve']]
+            curve = r['curve']
             for stim in smap:
                 if stim_tag in stim[0][0]:
-                    continue
-                if curve is None:
-                    continue
-                stim_start = stim[-1][0]
-                stim_end = stim[-1][1]
+                    if curve is None:
+                        continue
+                    stim_start = stim[-1][0]
+                    stim_end = stim[-1][1]
 
-                if zero_pos == 'start_offset':
+                    if zero_pos == 'start_offset':
 
-                    tstart = max(stim_start + start_offset, 0)
-                    tend = min(stim_end + end_offset, np.size(curve))
+                        tstart = max(stim_start + start_offset, 0)
+                        tend = min(stim_end + end_offset, len(curve))
 
-                elif zero_pos == 'stim_end':
-                    tstart = stim_end
-                    tend = tstart + end_offset
+                    elif zero_pos == 'stim_end':
+                        tstart = stim_end
+                        tend = tstart + end_offset
 
-                elif zero_pos == 'stim_center':
-                    tstart = int(((stim_start + stim_end) / 2)) + start_offset
-                    tend = min(stim_end + end_offset, np.size(curve))
+                    elif zero_pos == 'stim_center':
+                        tstart = int(((stim_start + stim_end) / 2)) + start_offset
+                        tend = min(stim_end + end_offset, len(curve))
 
-                rn = r.copy()
-
-                tstart = int(tstart)
-                tend = int(tend)
-
-                sliced_curve = np.take(curve, np.arange(tstart, tend), axis=0)
-
-                rn[self.transmission.data_column['curve']] = sliced_curve / np.min(sliced_curve)
-                rn[stim_def] = stim[0][0]
-
-                t.df = t.df.append(rn, ignore_index=True)
+                    rn = r.copy()
+                    # stim_extract = curve[int(tstart):int(tend)]
+                    stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
+                    rn['curve'] = stim_extract / np.min(stim_extract)
+                    rn[stim_def] = stim[0][0]
+                    #
+                    t.df = t.df.append(rn, ignore_index=True)
+                    # if zero_pos == 'start_offset':
+                    #
+                    #     tstart = max(stim_start + start_offset, 0)
+                    #     tend = min(stim_end + end_offset, np.size(curve))
+                    #
+                    # elif zero_pos == 'stim_end':
+                    #     tstart = stim_end
+                    #     tend = tstart + end_offset
+                    #
+                    # elif zero_pos == 'stim_center':
+                    #     tstart = int(((stim_start + stim_end) / 2)) + start_offset
+                    #     tend = min(stim_end + end_offset, np.size(curve))
+                    #
+                    # rn = r.copy()
+                    #
+                    # tstart = int(tstart)
+                    # tend = int(tend)
+                    #
+                    # # sliced_curve = np.take(curve, np.arange(tstart, tend))
+                    # sliced_curve = curve[tstart:tend]
+                    #
+                    # rn['curve'] = curve[int(tstart):int(tend)] / min(curve[int(tstart):int(tend)])
+                    #
+                    # # rn['curve'] = sliced_curve / min(sliced_curve)
+                    # rn[stim_def] = stim[0][0]
+                    #
+                    # t.df = t.df.append(rn, ignore_index=True)
         # print(t.df)
 
         t.src.append({'AlignStims': params})
         print('ALIGN_STIMS APPENDED')
         print(t.src)
-        t.data_column['curve'] = self.transmission.data_column['curve']
-        t.plot_this = t.data_column['curve']
-
         return t
 
 
@@ -140,8 +170,9 @@ class DF_IDX(CtrlNode):
                   ]
 
     def processData(self, transmission):
-        self.ctrls['Index'].setMaximum(len(transmission.df.index)-1)
-        self.ctrls['Index'].valueChanged.connect(partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
+        self.ctrls['Index'].setMaximum(len(transmission.df.index) - 1)
+        self.ctrls['Index'].valueChanged.connect(
+            partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
 
         indices = [int(ix.strip()) for ix in self.ctrls['Indices'].text().split(',')]
         t = transmission.copy()
@@ -155,15 +186,24 @@ class ROI_Selection(CtrlNode):
     nodeName = 'ROI_Selection'
     uiTemplate = [('ROI_Type', 'lineEdit', {'text': '', 'placeHolder': 'Enter ROI type'}),
                   ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
-                  ('ROI_Tags', 'lineEdit', {'toolTip': 'Enter one or many tags separated by commas (,)\n' +\
+                  ('ROI_Tags', 'lineEdit', {'toolTip': 'Enter one or many tags separated by commas (,)\n' + \
                                                        'Spaces before or after commas do not matter'}),
                   ('Include', 'radioBtn', {'checked': True}),
                   ('Exclude', 'radioBtn', {'checked': False}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+        self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
     def _setAvailTags(self):
-        tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
+        try:
+            tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
+        except (KeyError, IndexError) as e:
+            QtGui.QMessageBox.warning(None, 'ROI type not found',
+                                      'The ROI type which you have entered'
+                                      ' does not exist in the incoming dataframe\n' + str(e))
+            return
         self.ctrls['availTags'].setText(', '.join(tags))
         self.ctrls['availTags'].setToolTip('\n'.join(tags))
         self._setROITagAutoCompleter(tags)
@@ -174,6 +214,14 @@ class ROI_Selection(CtrlNode):
 
     def processData(self, transmission):
         assert isinstance(transmission, Transmission)
+        self.transmission = transmission
+        ac = QtGui.QCompleter(self.transmission.ROI_DEFS, self.ctrls['ROI_Type'])
+        self.ctrls['ROI_Type'].setCompleter(ac)
+        self.ctrls['ROI_Type'].setToolTip('\n'.join(self.transmission.ROI_DEFS))
+
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
         self.transmission = transmission.copy()
 
         # Very messy work-around because the usual widget clear() and removeItem() result in
@@ -189,28 +237,26 @@ class ROI_Selection(CtrlNode):
         #     else:
         #         self.ctrls['ROI_Type'].addItem(item)
 
-        ac = QtGui.QCompleter(self.transmission.ROI_DEFS, self.ctrls['ROI_Type'])
-        self.ctrls['ROI_Type'].setCompleter(ac)
-
-        self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
-
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
         chosen_tags = [tag.strip() for tag in self.ctrls['ROI_Tags'].text().split(',')]
 
         t = self.transmission.copy()
         '''***************************************************************************'''
         ## TODO: CHECK IF THIS IS ACTUALLY DOING THE RIGHT THING!!!!
-        t.df = t.df[t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
+        if self.ctrls['Include'].isChecked():
+            t.df = t.df[t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
+            prefix = 'include tags'
+        elif self.ctrls['Exclude'].isChecked():
+            t.df = t.df[~t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
+            prefix = 'exclude tags'
         '''***************************************************************************'''
 
-        params = {'ROI_DEF': self.ctrls['ROI_Type'].currentText(),
-                  'tags': chosen_tags}
+        params = {'ROI_DEF': self.ctrls['ROI_Type'].text(),
+                  prefix: chosen_tags}
 
         t.src.append({'ROI_Include': params})
 
         return t
+
 
 class CaPreStats(CtrlNode):
     """Converge incoming transmissions and label what groups they belong to"""
@@ -233,8 +279,6 @@ class CaPreStats(CtrlNode):
                 raise IndexError('One of your incoming tranmissions is None')
 
 
-
-
 class PeakFeaturesExtract(CtrlNode):
     """Extract peak features. Use this after the Peak_Detect node."""
     nodeName = 'Peak_Features'
@@ -242,10 +286,9 @@ class PeakFeaturesExtract(CtrlNode):
                   ]
 
     def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out'}})
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out','bypass': 'In'}})
         self.ctrls['Extract'].clicked.connect(self._extract)
         self.results = []
-
 
     def processData(self, In):
         self.In = In
@@ -268,12 +311,13 @@ class PeakFeaturesExtract(CtrlNode):
         # self.results = []
         # for trans in items:
         # print(trans)
-        pf = Extraction.PeakFeatures(self.In)
+        transmission = self.In.copy()
+        pf = Extraction.PeakFeatures(transmission)
         self.results = pf.get_all()
         self.results.src.append({'Peak_Features'})
         self.results.plot_this = 'curve'
-            # print(result)
-            # self.results.append(result)
+        # print(result)
+        # self.results.append(result)
         self.update()
 
 
@@ -302,7 +346,7 @@ class PeakDetect(CtrlNode):
     def __init__(self, name, **kwargs):
         CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
                                                  'Curve': {'io': 'in'},
-                                                 'Out': {'io': 'out', 'bypass': 'In'}}, **kwargs)
+                                                 'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
         self.data_modified = False
         self.editor_output = False
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
@@ -379,11 +423,10 @@ class PeakDetect(CtrlNode):
         assert isinstance(self.t, Transmission)
         assert isinstance(self.t_curve, Transmission)
 
-        self.t.data_column['peaks_bases'] = 'peaks_bases'
-        self.t.df[self.t.data_column['peaks_bases']] = self.t.df[self.t.data_column['curve']].apply(lambda s: PeakDetect._get_zero_crossings(s))
+        # self.t.data_column['peaks_bases'] = 'peaks_bases'
+        self.t.df['peaks_bases'] = self.t.df['curve'].apply(lambda s: PeakDetect._get_zero_crossings(s))
 
-        self.t.df[self.t.data_column['curve']] = deepcopy(self.t_curve.df[self.t_curve.data_column['curve']])
-
+        self.t.df['curve'] = deepcopy(self.t_curve.df['curve'])
 
         if hasattr(self, 'pbw'):
             self.pbw.update_transmission(self.t_curve, self.t)

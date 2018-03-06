@@ -31,10 +31,10 @@ class Load(CtrlNode):
         path = QtGui.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
         if path == '':
             return
-        rval, self.transmission = Transmission.from_pickle(path[0])
-
-        if rval is False:
-            QtGui.QMessageBox.warning(None, 'File open Errow', 'Could not open the chosen file\n' + str(self.transmission))
+        try:
+            self.transmission = Transmission.from_pickle(path[0])
+        except Exception as e:
+            QtGui.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
 
         self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
@@ -101,11 +101,11 @@ class Save(CtrlNode):
             return
 
         if self.ctrls['path'].text() != '':
-            rval, e = transmission.to_pickle(self.ctrls['path'].text())
-            if rval is False:
-                MesmerizeCore.misc_funcs.Messsage.fileSaveError(e)
-            # pickle.dump(transmission, open(self.ctrls['path'].text(), 'wb'), protocol=4)
-
+            try:
+                transmission.to_pickle(self.ctrls['path'].text())
+            except Exception as e:
+                QtGui.QMessageBox.warning(None, 'File save error', 'Could not save the tranmission to file.\n'
+                                          + str(e))
 
 class RunScript(CtrlNode):
     """Run a python script"""

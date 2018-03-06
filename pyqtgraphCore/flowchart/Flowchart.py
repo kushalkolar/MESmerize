@@ -718,6 +718,7 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         byp = QtGui.QPushButton('X')
         byp.setCheckable(True)
         byp.setFixedWidth(20)
+        byp.setStyleSheet("QPushButton:checked { background-color: red; }")
         item.bypassBtn = byp
         self.ui.ctrlList.setItemWidget(item, 1, byp)
         byp.node = node
@@ -885,6 +886,7 @@ class FlowchartWidget(dockarea.DockArea):
         else:
             item = items[0]
             if hasattr(item, 'node') and isinstance(item.node, Node):
+
                 n = item.node
                 self.ctrl.select(n)
                 data = {'outputs': n.outputValues(), 'inputs': n.inputValues()}
@@ -916,6 +918,7 @@ class FlowchartWidget(dockarea.DockArea):
             if isinstance(val, ndarray):
                 val = "%s %s %s" % (type(val).__name__, str(val.shape), str(val.dtype))
             else:
+                # print(val)
                 val = str(val)
                 if len(val) > 400:
                     val = val[:400] + "..."
