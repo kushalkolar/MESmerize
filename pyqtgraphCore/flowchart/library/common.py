@@ -91,7 +91,7 @@ def generateUi(opts):
                 w.setText(o['text'])
             if 'toolTip' in o:
                 w.setToolTip(o['toolTip'])
-                
+
 
         elif t == 'label':
             w = QtWidgets.QLabel()
@@ -157,6 +157,9 @@ class CtrlNode(Node):
 
     def process(self, **kwargs):#In, display=True):
         In = kwargs['In']
+
+        if In is None:
+            return
 
         if 'Out' in kwargs.items():
             print(' !!!!!!!!! >>>>>>>>>> OUT PASSED INTO process() <<<<<<<<<<<<<<< !!!!!!!!!!!!')
