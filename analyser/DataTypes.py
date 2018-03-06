@@ -17,34 +17,24 @@ import numpy as np
 import pickle
 from copy import deepcopy
 from collections import OrderedDict
-
+from MesmerizeCore.misc_funcs import empty_df
 
 class Transmission:
-    def __init__(self, df, src, data_column, dst=None, STIM_DEFS=None, ROI_DEFS=None, plot_this=None):
+    def __init__(self, df, src, dst=None, STIM_DEFS=None, ROI_DEFS=None, weakref=False):
         """
         :param df: DataFrame
         :type df: pd.DataFrame
         :param src: History of the nodes & node parameters the transmission has been processed through
         :type src: dict
-        :param data_column: Data column of interest by process methods of nodes.
-        :type data_column: dict
         :param dst:
         :param STIM_DEFS: STIM_DEF columns, used by the AlignStims control node for example
         :type STIM_DEFS: list
         :param ROI_DEFS: ROI_DEF columns, used by the ROI selection control node for example
         :type ROI_DEFS: list
-        :param plot_this: Data column which should be plotted by plot widgets
-        :type plot_this: str
         """
-        self.df = df.copy()
+        self.df = df
         assert isinstance(self.df, pd.DataFrame)
         # TODO: Make a graphical thing that display the source history of any node and can be accessed while looking at stastics too
-        self.data_column = data_column
-
-        if plot_this is None:
-            self.plot_this = self.data_column
-        else:
-            self.plot_this = plot_this
 
         self.src = src
 
@@ -54,11 +44,12 @@ class Transmission:
         self.dst = dst
 
     @classmethod
-    def from_proj(cls, df):
+    def from_proj(cls, dataframe, df_name='', weakref=False):
         """
         :param df: Chosen Child DataFrame from the Mesmerize Project
         :return: Transmission class object
         """
+        df = dataframe.copy()
         assert isinstance(df, pd.DataFrame)
         df[['curve', 'meta', 'stimMaps']] = df.apply(Transmission._load_files, axis=1)
 
@@ -66,7 +57,7 @@ class Transmission:
         stim_defs = configuration.cfg.options('STIM_DEFS')
         roi_defs = configuration.cfg.options('ROI_DEFS')
 
-        return cls(df, src=[{'raw': ''}], data_column={'curve': 'curve'}, STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
+        return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs, weakref=weakref)
 
     @staticmethod
     def _load_files(row):
@@ -91,20 +82,17 @@ class Transmission:
         p = pickle.load(open(path, 'rb'))
         return cls(p['df'],
                    p['src'],
-                   p['data_column'],
                    p['dst'],
                    p['STIM_DEFS'],
-                   p['ROI_DEFS'],
-                   p['plot_this'])
+                   p['ROI_DEFS'])
 
     def _make_dict(self):
         d = {'df': self.df,
              'src': self.src,
-             'data_column': self.data_column,
              'dst': self.dst,
              'STIM_DEFS': self.STIM_DEFS,
-             'ROI_DEFS': self.ROI_DEFS,
-             'plot_this': self.plot_this}
+             'ROI_DEFS': self.ROI_DEFS
+             }
 
         return d
 
@@ -117,6 +105,16 @@ class Transmission:
 
     def copy(self):
         return deepcopy(self)
+
+    @classmethod
+    def empty_df(cls, transmission, addCols=[]):
+        """
+        :rtype: pd.DataFrame
+        """
+        c = list(transmission.df.columns)
+        e_df = empty_df(cols=c, addCols=addCols)
+        return cls(e_df, src=transmission.src, dst=transmission.dst,
+                   STIM_DEFS=transmission.STIM_DEFS, ROI_DEFS=transmission.ROI_DEFS)
 
 
 class GroupTranmission:

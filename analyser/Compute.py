@@ -20,17 +20,26 @@ os.system("taskset -p 0xff %d" % os.getpid())
 class PeakFeatures:
     @staticmethod
     def amplitude_relative(q, peak_curve, ix_peak_rel):
-        result = abs(min(peak_curve) - peak_curve[ix_peak_rel])
+        try:
+            result = abs(min(peak_curve) - peak_curve[ix_peak_rel])
+        except Exception:
+            result = 'Error'
         q.put({'amplitude_relative': result})
 
     @staticmethod
     def amplitude_abs(q, pre_peak_baseline, ix_peak_abs):
-        result = ix_peak_abs - pre_peak_baseline
+        try:
+            result = ix_peak_abs - pre_peak_baseline
+        except Exception:
+            result = 'Error'
         q.put({'amplitude_abs': result})
 
     @staticmethod
     def area(q, peak_curve):
-        result = integrate.simps(peak_curve)
+        try:
+            result = integrate.simps(peak_curve)
+        except Exception:
+            result = 'Error'
         q.put({'area': result})
 
     @staticmethod
@@ -39,8 +48,11 @@ class PeakFeatures:
 
     @staticmethod
     def rising_slope_avg(q, peak_curve, ix_peak_rel):
-        dy = abs(peak_curve[0] - peak_curve[ix_peak_rel])
-        result = dy / ix_peak_rel
+        try:
+            dy = abs(peak_curve[0] - peak_curve[ix_peak_rel])
+            result = dy / ix_peak_rel
+        except Exception:
+            result = 'Error'
         q.put({'rising_slope_avg': result})
 
     @staticmethod
@@ -49,13 +61,19 @@ class PeakFeatures:
 
     @staticmethod
     def falling_slope_avg(q, peak_curve, ix_peak_rel):
-        dy = abs(peak_curve[-1] - peak_curve[ix_peak_rel])
-        result = dy / abs(len(peak_curve) - ix_peak_rel)
+        try:
+            dy = abs(peak_curve[-1] - peak_curve[ix_peak_rel])
+            result = dy / abs(len(peak_curve) - ix_peak_rel)
+        except Exception:
+            result = 'Error'
         q.put({'falling_slope_avg': result})
 
     @staticmethod
     def duration_base(q, peak_curve):
-        result = np.size(peak_curve)
+        try:
+            result = np.size(peak_curve)
+        except Exception:
+            result = 'Error'
         q.put({'duration_base': result})
 
     @staticmethod
@@ -64,9 +82,11 @@ class PeakFeatures:
 
     @staticmethod
     def inter_peak_interval(q, ix_peak_abs, ix_pre_peak, ix_nex_peak):
-        if (ix_pre_peak is None) or (ix_nex_peak is None):
-            result = 'BAAAAAAAAAH'
-        else:
-            result = {'pre': ix_peak_abs - ix_pre_peak, 'post': ix_nex_peak - ix_peak_abs}
-
+        try:
+            if (ix_pre_peak is None) or (ix_nex_peak is None):
+                result = 'BAAAAAAAAAH'
+            else:
+                result = {'pre': ix_peak_abs - ix_pre_peak, 'post': ix_nex_peak - ix_peak_abs}
+        except Exception:
+            result = 'Error'
         q.put({'inter_peak_interval': result})

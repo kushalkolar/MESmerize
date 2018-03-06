@@ -31,7 +31,7 @@ class MES:
 """
 import scipy.io as spio
 import numpy as np
-from .DataTypes import fix_fp_errors
+from .misc_funcs import fix_fp_errors
 from PyQt5 import QtGui
 
 # Loads the entire .mes file as an instance. 
@@ -40,6 +40,11 @@ from PyQt5 import QtGui
 class MES():
     def __init__(self, filename):
         # Open the weird matlab type objects and organize the images & meta data
+        """
+
+        :param filename: full path of a single .mes file
+        :type filename: str
+        """
         try:
             self.main_dict = self._loadmat(filename)
 
@@ -96,7 +101,7 @@ class MES():
         as it cures the problem of not properly recovering python dictionaries
         from mat files. It calls the function check keys to cure all entries
         which are still mat-objects
-        
+
         from: `StackOverflow <http://stackoverflow.com/questions/7008608/scipy-io-loadmat-nested-structures-i-e-dictionaries>`_
         '''
         data = spio.loadmat(filename, struct_as_record=False, squeeze_me=True)
@@ -128,8 +133,11 @@ class MES():
     # Returns image as ImgData class object.
     def load_img(self,d):
         """
-        :param d: The image reference, usually IFxxxx_xxxx or Ifxxxx_xxxx
-        :return: Boolean, numpy array of the image sequence, meta data dict
+        :param d: The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx
+        :type d: dict
+        :return: Boolean, numpy array of the image sequence, dict of metadata
+        :rtype: (bool, np.array, dict)
+
         """
         try:
             meta = self.main_dict["D"+d[1:6]].tolist()

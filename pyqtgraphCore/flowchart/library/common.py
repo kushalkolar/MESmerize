@@ -79,9 +79,10 @@ def generateUi(opts):
 
         elif t == 'combo':
             w = QtWidgets.QComboBox()
-            for i in o['values']:
-                if i != '':
-                    w.addItem(i)
+            if 'values' in o.keys():
+                for i in o['values']:
+                    if i != '':
+                        w.addItem(i)
 
         elif t == 'lineEdit':
             w = QtWidgets.QLineEdit()
@@ -106,6 +107,8 @@ def generateUi(opts):
                 w.setText(o['text'])
             if 'checkable' in o:
                 w.setChecked(o['checkable'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
 
         #elif t == 'colormap':
             #w = ColorMapper()

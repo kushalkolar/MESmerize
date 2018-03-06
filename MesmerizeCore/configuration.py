@@ -18,10 +18,15 @@ import configparser
 import numpy as np
 cfg = configparser.RawConfigParser(allow_no_value=True)
 cfg.optionxform = str
-
 configpath = None
 projPath = None
 special = {}
+
+df_refs = {}
+
+def add_df_ref(ref):
+    global df_refs
+    df_refs.update(ref)
 
 num_types = [int, float, np.int64, np.float64]
 
