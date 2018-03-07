@@ -259,7 +259,8 @@ class PeakFeaturesExtract(CtrlNode):
         for t in transmissions.items():
             t = t[1]
             if t is None:
-                self.peak_results.append({'srcs': None, 'transmission': None})
+                continue
+                QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
             elif not any('Peak_Detect' in d for d in t.src):
                 raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
                                  'a Peak_Detect node before this one.')

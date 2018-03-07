@@ -17,38 +17,10 @@ class Ui_MainWindow(object):
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setEnabled(True)
         self.tabWidget.setObjectName("tabWidget")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
-        self.pushButton = QtWidgets.QPushButton(self.tab)
-        self.pushButton.setGeometry(QtCore.QRect(10, 50, 80, 26))
-        self.pushButton.setObjectName("pushButton")
-        self.widget = QtWidgets.QWidget(self.tab)
-        self.widget.setGeometry(QtCore.QRect(11, 11, 597, 28))
-        self.widget.setObjectName("widget")
-
-
-        
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.labelTransmission = QtWidgets.QLabel(self.widget)
-        self.labelTransmission.setObjectName("labelTransmission")
-        self.horizontalLayout.addWidget(self.labelTransmission)
-        self.lineEditGroup = QtWidgets.QLineEdit(self.widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lineEditGroup.sizePolicy().hasHeightForWidth())
-        self.lineEditGroup.setSizePolicy(sizePolicy)
-        self.lineEditGroup.setMinimumSize(QtCore.QSize(500, 0))
-        self.lineEditGroup.setMaximumSize(QtCore.QSize(500, 16777215))
-        self.lineEditGroup.setBaseSize(QtCore.QSize(120, 0))
-        self.lineEditGroup.setObjectName("lineEditGroup")
-        self.horizontalLayout.addWidget(self.lineEditGroup)
-
-
-
         self.tabWidget.addTab(self.tab, "")
         self.violinPlots = QtWidgets.QWidget()
         self.violinPlots.setObjectName("violinPlots")
@@ -94,9 +66,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "Set Groups"))
-        self.labelTransmission.setText(_translate("MainWindow", "Transmission 0"))
-        self.lineEditGroup.setPlaceholderText(_translate("MainWindow", "Group names"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Groups"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.violinPlots), _translate("MainWindow", "Violin Plots"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.boxPlots), _translate("MainWindow", "Box Plots"))
