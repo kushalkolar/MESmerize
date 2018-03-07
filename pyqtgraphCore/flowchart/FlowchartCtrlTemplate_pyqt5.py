@@ -51,6 +51,9 @@ class Ui_Form(object):
         self.showChartBtn.setCheckable(True)
         self.showChartBtn.setObjectName("showChartBtn")
         self.horizontalLayout_2.addWidget(self.showChartBtn)
+        self.BtnResetView = QtWidgets.QPushButton(Form)
+        self.BtnResetView.setObjectName("BtnResetView")
+        self.horizontalLayout_2.addWidget(self.BtnResetView)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
@@ -66,6 +69,7 @@ class Ui_Form(object):
         self.saveAsBtn.setText(_translate("Form", "Save As.."))
         self.reloadBtn.setText(_translate("Form", "Reload Libs"))
         self.showChartBtn.setText(_translate("Form", "Flowchart"))
+        self.BtnResetView.setText(_translate("Form", "Reset view"))
 
 from ..widgets.FeedbackButton import FeedbackButton
 from ..widgets.TreeWidget import TreeWidget

@@ -34,8 +34,6 @@ class Transmission:
         """
         self.df = df
         assert isinstance(self.df, pd.DataFrame)
-        # TODO: Make a graphical thing that display the source history of any node and can be accessed while looking at stastics too
-
         self.src = src
 
         self.STIM_DEFS = STIM_DEFS
@@ -133,33 +131,19 @@ class GroupTranmission:
 
     @classmethod
     def from_ca_data(cls, transmission, groups_list):
-        if not (
-            any('Peak_Features' in d for d in transmission.src) or any('AlignStims' in d for d in transmission.src)):
+        if not (any('Peak_Features' in d for d in transmission.src) or
+                any('AlignStims' in d for d in transmission.src)):
             raise IndexError('No Peak Features or Stimulus Alignment data to group the data.')
 
-        if any('Peak_Features' in d for d in transmission.src):
-            df = GroupTranmission._organize_peak_features(transmission.df)
+        t = transmission.copy()
 
-        else:
-            df = transmission.df
+        for group in groups_list:
+            group = '_' + group
+            t.df[group] = True
 
-        transmission.src.append({'Grouped': ', '.join(groups_list)})
+        t.src.append({'Grouped': ', '.join(groups_list)})
 
-        return cls(df, transmission.src, groups_list)
-
-    @staticmethod
-    def _organize_peak_features(df):
-        g_df = df['peaks_bases'].apply(lambda x: GroupTranmission._remove_empty_features(x[0]))
-        g_df = g_df.values.flatten()
-        g_df = pd.concat(g_df)
-        g_df = g_df.reset_index(drop=True)
-        return g_df
-
-    @staticmethod
-    def _remove_empty_features(df):
-        df = df[df['features'] != {}]
-        df = df['features']
-        return df
+        return cls(t.df, t.src, groups_list)
 
     @classmethod
     def from_behav_data(cls, transmission, groups_list):
