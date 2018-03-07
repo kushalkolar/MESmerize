@@ -33,7 +33,7 @@ class LoadProjDF(CtrlNode):
         self._loadNode = True
         self.t = None
         self.ctrls['DF_Name'].addItems([''] + list(configuration.df_refs.keys()))
-        self.ctrls['Update'].clicked.connect(self.update)
+        self.ctrls['Update'].clicked.connect(self.changed)
         # print('Node Refs:')
         # print(configuration.df_refs)
 
@@ -87,7 +87,7 @@ class LoadFile(CtrlNode):
         self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
         # print(self.transmission)
         # self.update()
-        self.update()
+        self.changed()
 
     def process(self):
         return {'Out': self.transmission}

@@ -20,7 +20,7 @@ class Plot(CtrlNode):
                   ]
 
     def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out'}})
         self.trans_ids = []
         self.pwin = plot_window.Window()
         self.ctrls['Apply'].clicked.connect(self.update)
@@ -31,30 +31,49 @@ class Plot(CtrlNode):
             return
 
         transmissions = kwargs['In']
+
         if not len(transmissions) > 0:
             raise Exception('No incoming transmissions')
 
         self.pwin.graphicsView.clear()
 
         srcs = []
+        plots = []
+
         for t in transmissions.items():
             t = t[1]
-
             if t is None:
-                raise IndexError('One of your incoming tranmissions is None')
+                srcs.append(str(type(None)))
+                continue
 
             if id(t) in self.trans_ids:
                 continue
 
             for ix, r in t.df.iterrows():
-                plot = PlotDataItem()
 
-                plot.setData(r['curve']/np.min(r['curve']))
+                if 'curve' in r.index:
+                    data = r['curve']
+                elif 'peak_curve' in r.index:
+                    data = r['peak_curve']
+                else:
+                    srcs.append('No curve data found!')
+                    continue
+                if data is None:
+                    srcs.append('No curve data found!')
+
+                plot = PlotDataItem()
+                try:
+                    plot.setData(data / np.min(data))
+                except:
+                    srcs.append('Plotting error')
+                    continue
+
                 self.pwin.graphicsView.addItem(plot)
 
             srcs.append(t.src)
 
         self.pwin.set_history_widget(srcs)
+        # return {'Out': kwargs}
 
 #
 # class PlotWidgetNode(Node):

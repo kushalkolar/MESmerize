@@ -15,7 +15,7 @@ from MesmerizeCore import configuration
 from functools import partial
 from analyser import PeakEditor
 from analyser import Extraction
-
+from analyser.HistoryWidget import HistoryTreeWidget
 configuration.configpath = '/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/config.cfg'
 configuration.openConfig()
 
@@ -63,20 +63,6 @@ class AlignStims(CtrlNode):
             return
 
         self.transmission = transmission.copy()
-        # Very messy work-around because the usual widget clear() and removeItem() result in
-        # stack overflow from recursion over here. Something to do with Node.__get__attr I think.
-        # Results in a really stupid bug where stuff in the comboBox is duplicated.
-        # all_stims = []
-        # for i in range(self.ctrls['Stim_Type'].count()):
-        #     all_stims.append(self.ctrls['Stim_Type'].itemText(i))
-
-        # for item in self.transmission.STIM_DEFS:
-        #     if item in all_stims:
-        #         continue
-        #     else:
-        #         self.ctrls['Stim_Type'].addItem(item)
-
-
 
         stim_def = self.ctrls['Stim_Type'].text()
         stim_tag = self.ctrls['Stimulus'].text()
@@ -91,9 +77,8 @@ class AlignStims(CtrlNode):
                   'zero_pos': zero_pos
                   }
 
-        t = Transmission(empty_df(), self.transmission.src, 'curve', dst=self.transmission.dst)
+        t = Transmission.empty_df(self.transmission)#empty_df(), self.transmission.src)
         for ix, r in self.transmission.df.iterrows():
-            ## TODO: Should use an if-continue block, just not critical at the moment
             try:
                 smap = r['stimMaps'].flatten()[0][stim_def]
                 # print(smap)
@@ -130,8 +115,8 @@ class AlignStims(CtrlNode):
                     t.df = t.df.append(rn, ignore_index=True)
 
         t.src.append({'AlignStims': params})
-        print('ALIGN_STIMS APPENDED')
-        print(t.src)
+        # print('ALIGN_STIMS APPENDED')
+        # print(t.src)
         return t
 
 
@@ -243,43 +228,64 @@ class CaPreStats(CtrlNode):
 class PeakFeaturesExtract(CtrlNode):
     """Extract peak features. Use this after the Peak_Detect node."""
     nodeName = 'Peak_Features'
-    uiTemplate = [('Extract', 'button', {'text': 'Compute'})
+    uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
+                  ('Stats', 'button', {'text': 'Statistics/Plotting'})
                   ]
 
     def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out','bypass': 'In'}})
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True},
+                                                 'Out': {'io': 'out'}})
         self.ctrls['Extract'].clicked.connect(self._extract)
-        self.results = []
+        self.ctrls['GroupData'].setEnabled(False)
+        self.ctrls['GroupData'].clicked.connect(self._open_stats_gui)
+        self.peak_results = None
 
-    def processData(self, In):
-        self.In = In.copy()
-        return self.results
+    def process(self, **kwargs):
+        self.kwargs = kwargs.copy()
+        return {'Out': self.peak_results}
 
     def _extract(self):
-        if self.In is None:
-            self.results = None
+        if self.kwargs is None:
+            self.peak_results = None
             return
 
-        # items = []
-        # for item in self.In.items():
-        #     items.append(item[1])
-        #     if 'peaks_bases' not in items[-1].df.columns:
-        #         QtGui.QMessageBox.warning(None, 'No peaks_bases columns',
-        #                                   'At least one incoming transmission does not have a column indicating peaks & bases.'
-        #                                   ' Data must pass through the PeakDetect node before using this node.')
-        #         return
+        transmissions = self.kwargs['In']
 
-        # self.results = []
-        # for trans in items:
-        # print(trans)
-        # transmission = self.In.copy()
-        pf = Extraction.PeakFeatures(self.In)
-        self.results = pf.get_all()
-        self.results.src.append({'Peak_Features'})
-        self.results.plot_this = 'curve'
-        # print(result)
-        # self.results.append(result)
-        self.update()
+        if not len(transmissions) > 0:
+            raise Exception('No incoming transmissions')
+
+        self.peak_results = []
+        self.srcs = []
+        for t in transmissions.items():
+            t = t[1]
+            if t is None:
+                self.peak_results.append({'srcs': None, 'transmission': None})
+            elif not any('Peak_Detect' in d for d in t.src):
+                raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
+                                 'a Peak_Detect node before this one.')
+            t = t.copy()
+            try:
+                pf = Extraction.PeakFeaturesIter(t)
+                tran_with_features = pf.get_all()
+
+                self.srcs.append(tran_with_features.src)
+                self.peak_results.append(tran_with_features)
+
+            except Exception as e:
+                QtGui.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak extraction:\n'
+                                                                   + str(e))
+
+        self.changed()
+        self.ctrls['GroupData'].setEnabled(True)
+
+    def _open_stats_gui(self):
+        if hasattr(self, 'stats_gui'):
+            self.history_widget.show()
+            return
+        self.history_widget = HistoryTreeWidget()
+        self.history_widget.fill_widget(self.srcs)
+        self.history_widget.show()
+
 
 
 class Universal_Statistics_Of_Type_ANOVA_For_Example(CtrlNode):
@@ -367,33 +373,36 @@ class PeakDetect(CtrlNode):
 
         if inputs['Derivative'] is None:
             raise Exception('No incoming Derivative transmission. '
-                            'You must input both a curve and its derivative')
+                            'You must input at least a derivative')
 
-        if inputs['Curve'] is None:
-            raise Exception('No incoming Curve transmission.'
-                            ' You must input both a curve and its derivative')
-
-        if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
-            QtGui.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
-                                                           ' MUST match!')
-            raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
 
         self.t = inputs['Derivative'].copy()
-        self.t_curve = inputs['Curve']
-        self.t['raw_curve'] = self.t_curve['curve']
+
+        if inputs['Curve'] is not None:
+            if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
+                QtGui.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
+                                                               ' MUST match!')
+                raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
+
+            selected = inputs['Curve'].copy()
+            self.t.df['raw_curve'] = selected.df['curve']
+            selected = None
+            on_raw = False
+        else:
+            on_raw = True
 
         assert isinstance(self.t, Transmission)
-        assert isinstance(self.t_curve, Transmission)
 
         # self.t.data_column['peaks_bases'] = 'peaks_bases'
         self.t.df['peaks_bases'] = self.t.df['curve'].apply(lambda s: PeakDetect._get_zero_crossings(s))
 
-        self.t.df['curve'] = deepcopy(self.t_curve.df['curve'])
+        self.t.df['curve'] = self.t.df['raw_curve']
+        self.t.df.drop(columns=['raw_curve'])
 
         if hasattr(self, 'pbw'):
-            self.pbw.update_transmission(self.t_curve, self.t)
+            self.pbw.update_transmission(self.t, self.t)
 
-        self.t.src.append({'Peak_Detect': {'SlopeThr': 'Not Implemented', 'AmpThr': 'Not Implemented'}})
+        self.t.src.append({'Peak_Detect': {'SlopeThr': 'Not Implemented', 'AmpThr': 'Not Implemented', 'on_raw': on_raw}})
         return self.t
 
     def _set_editor_output(self):
@@ -402,9 +411,9 @@ class PeakDetect(CtrlNode):
         self.t = self.pbw.getData()
         self.pbw = None
         self.data_modified = True
-        self.update()
+        self.changed()
 
     def _peak_editor(self):
-        self.pbw = PeakEditor.PBWindow(self.t_curve, self.t)
+        self.pbw = PeakEditor.PBWindow(self.t, self.t)
         self.pbw.show()
         self.pbw.btnDone.clicked.connect(self._set_editor_output)
