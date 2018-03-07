@@ -56,31 +56,6 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
 
         self.setCentralWidget(self.fc_widget.chartWidget)
 
-# class TabsWidget(QtWidgets.QWidget):
-#     def __init__(self, parent=None, *args):
-#         QtWidgets.QWidget.__init__(self, parent, *args)
-#         self.tabs = QtWidgets.QTabWidget()
-#
-#         # tabs_widget_ref = weakref.ref(self.tabs)
-#         # plot_refs.set(self.tabs)
-#         # print(plot_refs.tabs_widget_ref)
-#
-#         layout = QtWidgets.QVBoxLayout(self)
-#         layout.addWidget(self.tabs)
-#         self.tabs.addTab(TabPage(), 'Root')
-#         root = self.tabs.widget(0)
-#
-#     def addTab(self):
-#         self.tabs.addTab(TabPage(), 'bah')
-#         self.tabs.setCurrentIndex(self.tabs.count() -1)
-#
-#
-# class TabPage(QtWidgets.QWidget, uiPlots.Ui_Form):
-#     def __init__(self, parent=None, *args):
-#         QtWidgets.QWidget.__init__(self, parent, *args)
-#         self.setupUi(self)
-
-
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
     analyzer_gui = Window()

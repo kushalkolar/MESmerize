@@ -65,8 +65,9 @@ class Flowchart(Node):
         
         self.inputNode = Node('Input', allowRemove=False, allowAddOutput=True)
         self.outputNode = Node('Output', allowRemove=False, allowAddInput=True)
-        self.addNode(self.inputNode, 'Input', [-150, -150])
-        self.addNode(self.outputNode, 'Output', [300, 150])
+        # self.addNode(self.inputNode, 'Input', [-150, -150])
+        # self.addNode(self.outputNode, 'Output', [300, 150])
+
         
         self.outputNode.sigOutputChanged.connect(self.outputChanged)
         self.outputNode.sigTerminalRenamed.connect(self.internalTerminalRenamed)
@@ -77,7 +78,7 @@ class Flowchart(Node):
         self.inputNode.sigTerminalAdded.connect(self.internalTerminalAdded)
         
         self.viewBox.autoRange(padding = 0.04)
-            
+
         for name, opts in terminals.items():
             self.addTerminal(name, **opts)
       
@@ -614,6 +615,7 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         self.ui.ctrlList.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         
         self.chartWidget = FlowchartWidget(chart, self)
+        self.ui.BtnResetView.clicked.connect(self.chartWidget.resetView)
         #self.chartWidget.viewBox().autoRange()
         # self.cwWin = QtGui.QMainWindow()
         # self.cwWin.setWindowTitle('Flowchart')
@@ -818,7 +820,10 @@ class FlowchartWidget(dockarea.DockArea):
         #self.view.sigClicked.connect(self.showViewMenu)
         #self._scene.sigSceneContextMenu.connect(self.showViewMenu)
         #self._viewBox.sigActionPositionChanged.connect(self.menuPosChanged)
-        
+        self.resetView()
+
+    def resetView(self):
+        self._viewBox.setRange(xRange=(-300, 300), yRange=(-200, 200), disableAutoRange=False)
         
     def reloadLibrary(self):
         #QtCore.QObject.disconnect(self.nodeMenu, QtCore.SIGNAL('triggered(QAction*)'), self.nodeMenuTriggered)

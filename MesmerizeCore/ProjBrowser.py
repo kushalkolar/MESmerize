@@ -281,6 +281,22 @@ class Window(QtWidgets.QWidget):
                 filt=filt[5:]
                 newDf = df[~df[colName].str.contains(filt)]
                 prefix = '~'
+            elif filt.startswith('$>:'):
+                filt = filt[3:]
+                pass
+            elif filt.startswith('$<:'):
+                filt = filt[3:]
+                pass
+            elif filt.startswith('$==:'):
+                filt = filt[4:]
+                pass
+            elif filt.startswith('$NOT==:'):
+                filt = filt[6:]
+                pass
+            elif filt.startswith('$END:'):
+                filt = filt[5:]
+                pass
+
         else:
             prefix = ''
             newDf = df[df[colName].str.contains(filt)]
@@ -351,20 +367,6 @@ class Window(QtWidgets.QWidget):
             self.tabs.currentWidget().filtLog = self.tabs.currentWidget().filtLog + filtLog
             self.tabs.currentWidget().filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
             self.tabs.currentWidget().updateDf()
-
-        # self.tabs.widget(0).df[]
-# class MainWindow(QtGui.QMainWindow):
-#     def __init__(self):
-#         QtGui.QMainWindow.__init__(self)
-#         menubar = self.menuBar()
-#         fileMenu = menubar.addMenu('&File')
-#         mBtnNewProj = fileMenu.addAction('New')
-#         mBtnNewProj.triggered.connect(self.newProj)
-#         editMenu = menubar.addMenu('&Edit')
-#
-#         aboutMenu = menubar.addMenu('&About')
-#         # self.show()
-
 
 if __name__ == '__main__':
     
