@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ImageViewTemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -33,7 +33,6 @@ class Ui_Form(object):
         self.page_3 = QtWidgets.QWidget()
         self.page_3.setObjectName("page_3")
         self.gridLayout_7 = QtWidgets.QGridLayout(self.page_3)
-        self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_7.setObjectName("gridLayout_7")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_7.addItem(spacerItem, 0, 1, 1, 1)
@@ -61,7 +60,6 @@ class Ui_Form(object):
         self.page_4 = QtWidgets.QWidget()
         self.page_4.setObjectName("page_4")
         self.gridLayout_5 = QtWidgets.QGridLayout(self.page_4)
-        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_5.setObjectName("gridLayout_5")
         self.btnOpenTiff = QtWidgets.QPushButton(self.page_4)
         self.btnOpenTiff.setObjectName("btnOpenTiff")
@@ -94,7 +92,6 @@ class Ui_Form(object):
         self.page_5 = QtWidgets.QWidget()
         self.page_5.setObjectName("page_5")
         self.gridLayout_6 = QtWidgets.QGridLayout(self.page_5)
-        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_6.setObjectName("gridLayout_6")
         spacerItem4 = QtWidgets.QSpacerItem(109, 13, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_6.addItem(spacerItem4, 0, 0, 1, 1)
@@ -123,7 +120,6 @@ class Ui_Form(object):
         self.page_6 = QtWidgets.QWidget()
         self.page_6.setObjectName("page_6")
         self.gridLayout = QtWidgets.QGridLayout(self.page_6)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.listwBatch = QtWidgets.QListWidget(self.page_6)
         self.listwBatch.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
@@ -157,7 +153,6 @@ class Ui_Form(object):
         self.page_7 = QtWidgets.QWidget()
         self.page_7.setObjectName("page_7")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.page_7)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.motioncorrlistLabel = QtWidgets.QLabel(self.page_7)
         self.motioncorrlistLabel.setObjectName("motioncorrlistLabel")
@@ -182,7 +177,6 @@ class Ui_Form(object):
         self.page_8 = QtWidgets.QWidget()
         self.page_8.setObjectName("page_8")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.page_8)
-        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.btnBatchPage = QtWidgets.QPushButton(self.page_8)
         self.btnBatchPage.setMaximumSize(QtCore.QSize(125, 16))
@@ -214,7 +208,7 @@ class Ui_Form(object):
         self.toolBox.setMidLineWidth(1)
         self.toolBox.setObjectName("toolBox")
         self.page_9 = QtWidgets.QWidget()
-        self.page_9.setGeometry(QtCore.QRect(0, 0, 329, 101))
+        self.page_9.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.page_9.setObjectName("page_9")
         self.layoutWidget_2 = QtWidgets.QWidget(self.page_9)
         self.layoutWidget_2.setGeometry(QtCore.QRect(10, 0, 311, 101))
@@ -417,7 +411,6 @@ class Ui_Form(object):
         self.tabBatchParams.setEnabled(False)
         self.tabBatchParams.setObjectName("tabBatchParams")
         self.horizontalLayout_10 = QtWidgets.QHBoxLayout(self.tabBatchParams)
-        self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_10.setObjectName("horizontalLayout_10")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setSpacing(0)
@@ -594,7 +587,6 @@ class Ui_Form(object):
         self.tabROIs.setMinimumSize(QtCore.QSize(0, 0))
         self.tabROIs.setObjectName("tabROIs")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.tabROIs)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         spacerItem14 = QtWidgets.QSpacerItem(203, 114, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_2.addItem(spacerItem14, 3, 1, 2, 1)
@@ -694,8 +686,8 @@ class Ui_Form(object):
         self.gridLayout_10.addWidget(self.splitterHighest, 0, 0, 1, 1)
 
         self.retranslateUi(Form)
-        self.stackedWidget.setCurrentIndex(2)
-        self.stackedWidget_2.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget_2.setCurrentIndex(0)
         self.toolBox.setCurrentIndex(1)
         self.tabWidget.setCurrentIndex(0)
         self.sliderStrides.valueChanged['int'].connect(self.labelStridesValue.setNum)
