@@ -15,7 +15,9 @@ from MesmerizeCore import configuration
 from functools import partial
 from analyser import PeakEditor
 from analyser import Extraction
+from analyser.stats_gui import StatsWindow
 from analyser.HistoryWidget import HistoryTreeWidget
+import pickle
 configuration.configpath = '/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/config.cfg'
 configuration.openConfig()
 
@@ -233,16 +235,15 @@ class PeakFeaturesExtract(CtrlNode):
                   ]
 
     def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True},
-                                                 'Out': {'io': 'out'}})
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
         self.ctrls['Extract'].clicked.connect(self._extract)
-        self.ctrls['GroupData'].setEnabled(False)
-        self.ctrls['GroupData'].clicked.connect(self._open_stats_gui)
+        self.ctrls['Stats'].setEnabled(False)
+        self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
         self.peak_results = None
 
     def process(self, **kwargs):
         self.kwargs = kwargs.copy()
-        return {'Out': self.peak_results}
+        # return {'Out': self.peak_results}
 
     def _extract(self):
         if self.kwargs is None:
@@ -255,12 +256,11 @@ class PeakFeaturesExtract(CtrlNode):
             raise Exception('No incoming transmissions')
 
         self.peak_results = []
-        self.srcs = []
         for t in transmissions.items():
             t = t[1]
             if t is None:
-                continue
                 QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                continue
             elif not any('Peak_Detect' in d for d in t.src):
                 raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
                                  'a Peak_Detect node before this one.')
@@ -269,7 +269,6 @@ class PeakFeaturesExtract(CtrlNode):
                 pf = Extraction.PeakFeaturesIter(t)
                 tran_with_features = pf.get_all()
 
-                self.srcs.append(tran_with_features.src)
                 self.peak_results.append(tran_with_features)
 
             except Exception as e:
@@ -277,16 +276,16 @@ class PeakFeaturesExtract(CtrlNode):
                                                                    + str(e))
 
         self.changed()
-        self.ctrls['GroupData'].setEnabled(True)
+        self.ctrls['Stats'].setEnabled(True)
 
     def _open_stats_gui(self):
         if hasattr(self, 'stats_gui'):
-            self.history_widget.show()
+            self.stats_gui.show()
             return
-        self.history_widget = HistoryTreeWidget()
-        self.history_widget.fill_widget(self.srcs)
-        self.history_widget.show()
-
+        pickle.dump(self.peak_results, open('/home/kushal/Sars_stuff/github-repos/MESmerize/analyser/test_features_pik.pik', 'wb'))
+        self.stats_gui = StatsWindow()
+        self.stats_gui.input_transmissions(self.peak_results)
+        self.stats_gui.show()
 
 
 class Universal_Statistics_Of_Type_ANOVA_For_Example(CtrlNode):

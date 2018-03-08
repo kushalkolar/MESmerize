@@ -47,6 +47,9 @@
     <addaction name="actionNew_Viewer_instance"/>
     <addaction name="separator"/>
     <addaction name="actionNewAnalyzerInstance"/>
+    <addaction name="actionShow_all_Analyzer_windows"/>
+    <addaction name="actionNew_Stats_Plots_instance"/>
+    <addaction name="actionShow_all_Stats_Plots_windows"/>
     <addaction name="separator"/>
     <addaction name="actionConsole"/>
    </widget>
@@ -161,6 +164,21 @@
    </property>
    <property name="text">
     <string>Hide Console</string>
+   </property>
+  </action>
+  <action name="actionNew_Stats_Plots_instance">
+   <property name="text">
+    <string>New Stats/Plots instance</string>
+   </property>
+  </action>
+  <action name="actionShow_all_Analyzer_windows">
+   <property name="text">
+    <string>Show all Analyzer windows</string>
+   </property>
+  </action>
+  <action name="actionShow_all_Stats_Plots_windows">
+   <property name="text">
+    <string>Show all Stats/Plots windows</string>
    </property>
   </action>
  </widget>

@@ -24,6 +24,7 @@ class LoadProjDF(CtrlNode):
     uiTemplate = [('DF_Name', 'combo'),
                   ('Update', 'button', {'text': 'Update', 'toolTip': 'When clicked this node will update'
                                                                      ' from the project DataFrame'}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False}),
                   ('PinDF', 'check', {'text': 'Yes', 'toolTip': 'Pin the DataFrame to the flowchart, this way\n'
                                                                 'you can open another project and still propogate\n'
                                                                 'the data from this node.'})]

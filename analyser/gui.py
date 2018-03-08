@@ -26,6 +26,7 @@ else:
     from . import mainwindow_pytemplate as uiWin
     from .DataTypes import Transmission
 from pyqtgraphCore.console import ConsoleWidget
+import pickle
 
 
 class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
@@ -37,9 +38,12 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
         ns = {'np': np,
               'scipy': scipy,
               'pd': pd,
+              'pickle': pickle,
               }
 
-        txt = "Namespaces:\nTabsWidget as 'w'\nnumpy as 'np'\nEntire " +\
+        txt = "Namespaces:\nTabsWidget as 'w'\n" \
+              "pickle as 'pickle'\n" \
+              "numpy as 'np'\nEntire " +\
               "tabbed area as 'tabsW'\n\nTo access plots in current tab call curr_tab()\nExample:\n" \
               "tab0 = curr_tab()\ntab0.p1.plot(x, np.sin(x))"
 

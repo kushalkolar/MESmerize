@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1008</width>
-    <height>632</height>
+    <width>1042</width>
+    <height>709</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1008</width>
+     <width>1042</width>
      <height>23</height>
     </rect>
    </property>
@@ -56,11 +56,21 @@
      <string>File</string>
     </property>
     <addaction name="actionSave_Statistics_DataFrame"/>
+    <addaction name="actionOpen_Statistics_DataFrame"/>
     <addaction name="separator"/>
     <addaction name="actionSave_Group_Transmissions"/>
     <addaction name="actionLoad_Groups"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_Incoming_Transmissions"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionConsole"/>
    </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockWidget">
@@ -73,10 +83,31 @@
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
+   <property name="windowTitle">
+    <string>Transmissions w/history</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="dockConsole">
+   <property name="minimumSize">
+    <size>
+     <width>59</width>
+     <height>200</height>
+    </size>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Statistics Console</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2"/>
   </widget>
   <action name="actionSave_Statistics_DataFrame">
    <property name="text">
@@ -93,7 +124,42 @@
     <string>Load Groups</string>
    </property>
   </action>
+  <action name="actionConsole">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
+  <action name="actionSave_Incoming_Transmissions">
+   <property name="text">
+    <string>Save Incoming Raw Transmissions</string>
+   </property>
+  </action>
+  <action name="actionOpen_Statistics_DataFrame">
+   <property name="text">
+    <string>Open Statistics DataFrame</string>
+   </property>
+  </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionConsole</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dockConsole</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>520</x>
+     <y>585</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

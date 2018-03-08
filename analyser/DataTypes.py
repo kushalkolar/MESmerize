@@ -18,6 +18,7 @@ import pickle
 from copy import deepcopy
 from collections import OrderedDict
 from MesmerizeCore.misc_funcs import empty_df
+from uuid import uuid4
 
 
 class _TRANSMISSION:
@@ -120,7 +121,7 @@ class Transmission(_TRANSMISSION):
                    ROI_DEFS=transmission.ROI_DEFS)
 
 
-class GroupTranmission(_TRANSMISSION):
+class GroupTransmission(_TRANSMISSION):
     """Transmission class for setting groups to individual transmissions and mergeing them into a
     uniform stats format"""
     @classmethod
@@ -131,9 +132,13 @@ class GroupTranmission(_TRANSMISSION):
 
         t = transmission.copy()
 
-        t.df = GroupTranmission._append_group_bools(t.df, groups_list)
+        t.df, groups_list = GroupTransmission._append_group_bools(t.df, groups_list)
 
-        t.src.append({'Grouped': ', '.join(groups_list)})
+        gid = uuid4()
+
+        t.df['uuid'] = gid
+
+        t.src.append({'Group uuid': gid, 'Grouped': ', '.join(groups_list)})
 
         return cls(t.df, t.src, groups_list=groups_list)
 
@@ -143,10 +148,13 @@ class GroupTranmission(_TRANSMISSION):
 
     @staticmethod
     def _append_group_bools(df, groups_list):
+        new_gl = []
         for group in groups_list:
             group = '_' + group
+            new_gl.append(group)
             df[group] = True
-        return df
+
+        return df, new_gl
 
 
 class StatsTransmission(_TRANSMISSION):
@@ -157,21 +165,22 @@ class StatsTransmission(_TRANSMISSION):
         :type group_trans_list: list
         """
         all_groups = []
-        for trans in transmissions:
-            assert isinstance(trans, GroupTranmission)
-            all_groups += trans.groups_list
+        for tran in transmissions:
+            assert isinstance(tran, GroupTransmission)
+            all_groups += tran.groups_list
 
         all_df = []
-
+        all_srcs = []
         for tran in transmissions:
-            assert isinstance(trans, GroupTranmission)
+            tran = tran.copy()
+            assert isinstance(tran, GroupTransmission)
             for group in all_groups:
-                if group in trans.groups_list:
+                if group in tran.groups_list:
                     tran.df[group] = True
                 else:
                     tran.df[group] = False
-
-            all_df.append(trans.df)
+            all_srcs.append(tran.src)
+            all_df.append(tran.df)
 
         df = pd.concat(all_df)
-        return df
+        return cls(df, all_srcs)
