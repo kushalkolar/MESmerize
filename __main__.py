@@ -29,6 +29,7 @@ import os
 from functools import partial
 from MesmerizeCore import misc_funcs
 import analyser.gui
+from analyser.stats_gui import StatsWindow
 
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
@@ -59,6 +60,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.connect_sigs_MenuBar()
         self.resize(700, 400)
         self.analysisWindows = []
+        self.statsWindows = []
 
     def connect_sigs_MenuBar(self):
         self.actionNew.triggered.connect(self.newProjFileDialog)
@@ -67,6 +69,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionOpen.triggered.connect(self.openProjFileDialog)
         self.actionProject_Configuration.triggered.connect(self.openConfigWindow)
         self.actionNewAnalyzerInstance.triggered.connect(self.initAnalyzer)
+        self.actionShow_all_Analyzer_windows.triggered.connect(self.showAllAnalyzerWindows)
+        self.actionNew_Stats_Plots_instance.triggered.connect(self.initStatsPlotsWin)
+        self.actionShow_all_Stats_Plots_windows.triggered.connect(self.showAllStatWindows)
+
 
 
     def newProjFileDialog(self):
@@ -230,11 +236,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.initProjBrowser()
         
     def initProjBrowser(self):
-
-        # self.projScollArea = QtWidgets.QScrollArea()
-
-
-
         self.projBrowserWin = ProjBrowser.Window(self.projDf)
 
         self.setCentralWidget(self.projBrowserWin)
@@ -244,6 +245,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.setCentralWidget(self.projBrowserWin)
 
         ns = {'pd': pd,
+              'pickle': pickle,
               'curr_tab': self.projBrowserWin.tabs.currentWidget,
               'pbwin': self.projBrowserWin,
               'addTab': self.projBrowserWin.addNewTab,
@@ -253,6 +255,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         txt = "Namespaces:\n" \
               "pandas as pd\n" \
+              "pickle as 'pickle\n" \
               "viewer as viewer\n" \
               "self as main\n" \
               "call curr_tab() to return current tab widget\n" \
@@ -358,6 +361,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def initAnalyzer(self):
         self.analysisWindows.append(analyser.gui.Window())
         self.analysisWindows[-1].show()
+
+    def initStatsPlotsWin(self):
+        self.statsWindows.append(StatsWindow())
+        self.statsWindows[-1].show()
+
+    def showAllAnalyzerWindows(self):
+        for win in self.analysisWindows:
+            win.show()
+
+    def showAllStatWindows(self):
+        for win in self.statsWindows:
+            self.statsWindows.show()
 
             
 if __name__ == '__main__':
