@@ -10,40 +10,49 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
+import sys
+sys.path.append('..')
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
+from pyqtgraphCore import ColorButton
 
 if __name__ == '__main__':
     from stats_window import *
     import DataTypes
+    from HistoryWidget import HistoryTreeWidget
+    import matplotlib_widget
 else:
     from .stats_window import *
     from . import DataTypes
     from .HistoryWidget import HistoryTreeWidget
+    from . import matplotlib_widget
 import sys
 import numpy as np
 import scipy as scipy
 import pandas as pd
-import matplotlib.pyplot as pyplot
 from functools import partial
 import pickle
+
 
 class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(StatsWindow, self).__init__()
         self.setupUi(self)
         self.setWindowTitle('Mesmerize - Stats & Plots')
-        self.dockWidget.hide()
         self.actionSave_Statistics_DataFrame.triggered.connect(self._save_stats_transmission)
-        self.actionSave_Group_Transmissions.triggered.connect(self._save_groups)
         self.actionOpen_Statistics_DataFrame.triggered.connect(self._open_stats_transmission)
+        self.actionSave_Group_Transmissions.triggered.connect(self._save_groups)
+        self.actionLoad_Groups.triggered.connect(self._open_groups)
+        self.actionSave_Incoming_Transmissions.triggered.connect(self._save_raw_trans)
+        self._dock_titles = ['Transmissions w/history', 'matplotlib Controls',
+                             'matplotlib Controls', 'Box Plot Controls']
+        self.tabWidget.currentChanged.connect(self._set_stack_index)
 
         ns = {'np': np,
               'pickle': pickle,
               'scipy': scipy,
               'pd': pd,
               'DataTypes': DataTypes,
-              'pyplot': pyplot,
               'main': self,
               'curr_tab': self.tabWidget.currentWidget
               }
@@ -65,6 +74,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.dockConsole.hide()
 
     def input_transmissions(self, transmissions_list):
+        self.listwGroups.hide()
         if hasattr(self, 'lineEdGroupList'):
             if not QtGui.QMessageBox.question(self, 'Discard current data?',
                                               'You have data open in this window, would you '
@@ -72,15 +82,46 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 return
 
         self.transmissions_list = transmissions_list
-        self.dockWidget.show()
 
         srcs_list = []
         for transmission in self.transmissions_list:
             srcs_list.append(transmission.src)
 
         self._set_history_widget(srcs_list)
-
         self._setup_group_entries(len(transmissions_list))
+
+    def _save_raw_trans(self):
+        if not hasattr(self, 'transmissions_list'):
+            QtGui.QMessageBox.warning(self, 'Nothing to save', 'There are no raw transmissions to save')
+
+        for i in range(len(self.transmissions_list)):
+            path = QtGui.QFileDialog.getSaveFileName(None, 'Save Transmission ' + str(i), '', '(*.trn)')
+            if path == '':
+                return
+            if path[0].endswith('.trn'):
+                path = path[0]
+            else:
+                path = path[0] + '.trn'
+
+            try:
+                self.transmissions_list[i].to_pickle(path)
+            except Exception as e:
+                QtGui.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
+
+    def _set_history_widget(self, srcs):
+        if len(self.stack_page_transmission_history.children()) > 0:
+            for item in self.stack_page_transmission_history.children():
+                if isinstance(item, HistoryTreeWidget):
+                    item.fill_widget(srcs)
+        else:
+            layout = QtWidgets.QVBoxLayout(self.stack_page_transmission_history)
+            history_widget = HistoryTreeWidget()
+            layout.addWidget(history_widget)
+            history_widget.fill_widget(srcs)
+            history_widget.show()
+
+        self.stackedWidget.setCurrentIndex(0)
+        self.dockWidget.setWindowTitle(self._dock_titles[0])
 
     def _setup_group_entries(self, n):
         xpos = 10
@@ -116,10 +157,8 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         btnSetGroups.setGeometry(xpos, ypos + 10, 75, 26)
         btnSetGroups.setText('Set Groups')
         btnSetGroups.clicked.connect(self._set_groups)
-
-    def _auto_slot(self, i):
-        QtGui.QMessageBox.information(self, 'Not implemented', 'Not implemented')
-        pass
+        btnSetGroups.clicked.connect(self._del_group_entries)
+        btnSetGroups.clicked.connect(btnSetGroups.deleteLater)
 
     def _set_groups(self):
         i = 0
@@ -135,20 +174,80 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.gts.append(gt)
             i += 1
 
+        self.listwGroups.show()
         self.StatsData = DataTypes.StatsTransmission.from_group_trans(self.gts)
-
-    def _set_history_widget(self, srcs):
-        history_widget = HistoryTreeWidget()
-        history_widget.fill_widget(srcs)
-        self.dockWidget.setWidget(history_widget)
-
-    def _reset_group_entries(self):
+        self.listwGroups.addItems(self.StatsData.all_groups)
+        self._init_curve_tab()
+        self._init_violin_tab()
+        self.set_data()
+        # self.set_data()
+    def _del_group_entries(self):
         for item in self.btnAutoList:
-            item.deletelater()
+            item.deleteLater()
         for item in self.labelTransmissionList:
-            item.deletelater()
+            item.deleteLater()
         for item in self.lineEdGroupList:
-            item.deletelater()
+            item.deleteLater()
+
+    def set_data(self):
+        if not hasattr(self, 'StatsData') and not hasattr(self, 'gts'):
+            return
+        if not hasattr(self, 'curve_plots'):
+            self._init_curve_tab()
+        if not hasattr(self, 'violin_plots'):
+            self._init_violin_tab()
+
+        self.plots = matplotlib_widget.Plots(self.curve_plots, self.violin_plots)
+        self.plots.setData(self.gts)
+
+        self.listwGroups.clear()
+        self.listwGroups.addItems(self.StatsData.all_groups)
+
+    def _init_curve_tab(self):
+        self.curve_plots = matplotlib_widget.Curves()
+        self.curve_tab.layout().addWidget(self.curve_plots)
+
+    def _init_violin_tab(self):
+        self.violin_plots = matplotlib_widget.Violins()
+        self.violin_tab.layout().addWidget(self.violin_plots)
+
+    def _auto_slot(self, i):
+        QtGui.QMessageBox.information(self, 'Error', 'Not implemented')
+        pass
+
+    def _set_stack_index(self, i):
+        self.dockWidget.setWindowTitle(self._dock_titles[i])
+        if i == 0:
+            self.stackedWidget.setCurrentIndex(0)
+            return
+        elif i == 1 or i == 2:
+            self.stackedWidget.setCurrentIndex(1)
+            return
+        elif i == 3:
+            self.stackedWidget.setCurrentIndex(2)
+            return
+
+    def _set_matplotlib_controls(self):
+        xpos = 10
+        ypos = 10
+        labelGroupList = []
+        btnColorList = []
+
+        parent = self.stack_page_matplotlib
+
+        for group in self.StatsData.all_groups:
+            labelGroup = QtWidgets.QLabel(parent)
+            labelGroup.setGeometry(xpos, ypos, 100, 26)
+            labelGroup.setText(group)
+
+            labelGroupList.append(labelGroup)
+
+            btnColor = ColorButton(parent)
+            btnColor.setGeometry(xpos + 120, ypos, 50, 26)
+
+            btnColorList.append(btnColor)
+
+            ypos += 35
 
     def _save_stats_transmission(self):
         path = QtGui.QFileDialog.getSaveFileName(None, 'Save Stats Transmission as', '', '(*.strn)')
@@ -165,7 +264,6 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as e:
             QtGui.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
 
-
     def _open_stats_transmission(self):
         if hasattr(self, 'StatsData'):
             if not QtGui.QMessageBox.question(self, 'Discard current data?',
@@ -181,6 +279,28 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as e:
             QtGui.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
+
+    def _open_groups(self):
+        groups = []
+        paths = QtGui.QFileDialog.getOpenFileNames(None, 'Import Group object', '', '(*.gtrn)')
+        print(paths)
+        if paths == '':
+            return
+        if paths[0] == []:
+            return
+        try:
+            for path in paths[0]:
+                groups.append(DataTypes.GroupTransmission.from_pickle(path))
+        except Exception as e:
+            QtGui.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+            return
+
+        if hasattr(self, 'StatsData'):
+            l = [self.StatsData] + groups
+            self.StatsData = DataTypes.StatsTransmission.merge([l])
+        else:
+            self.StatsData = DataTypes.StatsTransmission.from_group_trans(groups)
+            self.gts += groups
 
     def _save_groups(self):
         if not hasattr(self, 'gts'):
@@ -202,13 +322,20 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
 
 
-
-
 if __name__ == '__main__':
+    t1 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t1.trn')
+    t2 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t2.trn')
+    t3 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t3.trn')
+    
     app = QtWidgets.QApplication([])
     sw = StatsWindow()
-    sw._setup_group_entries(3)
+    sw.input_transmissions([t1, t2, t3])
+    sw.lineEdGroupList[0].setText('A')
+    sw.lineEdGroupList[1].setText('B')
+    sw.lineEdGroupList[2].setText('C')
     sw.show()
-
+    
+    
+    
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
         QtGui.QApplication.instance().exec_()

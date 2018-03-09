@@ -35,51 +35,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.history_widget.fill_widget(sources)
         self.dockWidgetTransmissions.show()
 
-    # def _fill_item(self, item, value):
-    #     tn = 0
-    #     item.setExpanded(True)
-    #     if type(value) is dict:
-    #         for key, val in sorted(value.items()):
-    #             child = QtWidgets.QTreeWidgetItem()
-    #             child.setText(0, key)
-    #             item.addChild(child)
-    #             self._fill_item(child, val)
-    #
-    #     elif type(value) is list:
-    #         for val in value:
-    #             child = QtWidgets.QTreeWidgetItem()
-    #
-    #             item.addChild(child)
-    #             if type(val) is dict:
-    #                 child.setText(0, self._get_key(val))
-    #                 for v in val.values():
-    #                     self._fill_item(child, v)
-    #             elif type(val) is list:
-    #                 child.setText(0, 'Transmission ' + str(tn))
-    #                 self._fill_item(child, val)
-    #                 tn +=1
-    #             else:
-    #                 child.setText(0, str(val))
-    #             child.setExpanded(False)
-    #     else:
-    #         child = QtWidgets.QTreeWidgetItem()
-    #         child.setText(0, str(value))
-    #         item.addChild(child)
-    #
-    # def _get_key(self, d):
-    #     k = ''
-    #     for key in d.keys():
-    #         k = key + k
-    #     return k
-    #
-    # def fill_widget(self, value):
-    #     widget = QtWidgets.QTreeWidget()
-    #     widget.clear()
-    #     self._fill_item(widget.invisibleRootItem(), value)
-    #     self.dockWidgetTransmissions.setWidget(widget)
-    #     self.dockWidgetTransmissions.show()
-
-
+    def _set_curve_color(self):
+        pass
 
 if __name__ == '__main__':
     r, t = Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/peaks_new_with_bool.trn')

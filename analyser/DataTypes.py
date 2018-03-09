@@ -42,7 +42,7 @@ class _TRANSMISSION:
 
         self.kwargs_keys = list(kwargs.keys())
 
-        for key in kwargs.keys():
+        for key in self.kwargs_keys:
             setattr(self, key, kwargs[key])
 
     @classmethod
@@ -150,7 +150,7 @@ class GroupTransmission(_TRANSMISSION):
     def _append_group_bools(df, groups_list):
         new_gl = []
         for group in groups_list:
-            group = '_' + group
+            group = '_G_' + group
             new_gl.append(group)
             df[group] = True
 
@@ -169,7 +169,9 @@ class StatsTransmission(_TRANSMISSION):
             assert isinstance(tran, GroupTransmission)
             all_groups += tran.groups_list
 
-        all_df = []
+        all_groups = list(set(all_groups))
+
+        all_dfs = []
         all_srcs = []
         for tran in transmissions:
             tran = tran.copy()
@@ -180,7 +182,36 @@ class StatsTransmission(_TRANSMISSION):
                 else:
                     tran.df[group] = False
             all_srcs.append(tran.src)
-            all_df.append(tran.df)
+            all_dfs.append(tran.df)
 
-        df = pd.concat(all_df)
-        return cls(df, all_srcs)
+        all_groups = list(set(all_groups))
+
+        df = pd.concat(all_dfs)
+        return cls(df, all_srcs, all_groups=all_groups)
+
+    @classmethod
+    def merge(cls, transmissions):
+        groups = []
+        stats = []
+        all_srcs = []
+        all_groups = []
+
+        for t in transmissions:
+            if isinstance(t, GroupTransmission):
+                groups.append(t)
+
+            elif isinstance(t, StatsTransmission):
+                stats.append(t)
+                all_srcs.append(t.src)
+                all_groups.append(t.all_groups)
+
+        g_merge = StatsTransmission.from_group_trans(groups)
+
+        all_groups = list(set(all_groups + g_merge.all_groups))
+
+        all_srcs = all_srcs + g_merge.all_srcs
+
+        all_dfs = [g_merge] + stats
+
+        df = pd.concat(all_dfs)
+        return cls(df, all_srcs, all_groups=all_groups)

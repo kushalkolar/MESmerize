@@ -200,6 +200,15 @@ class RunScript(CtrlNode):
 
         return l['output']
 
+class Bypass(CtrlNode):
+    """Just a bypass node that doesn't do anything. Useful for quickly swapping Project DataFrames with an existing
+    analysis flowchart whilst keeping the connections after the DataFrame."""
+    uiTemplate = [()]
+
+    def processData(self, In):
+        return In
+
+
 # class ColumnSelectNode(Node):
 #     """Select named columns from a record array or MetaArray."""
 #     nodeName = "ColumnSelect"

@@ -48,10 +48,12 @@
     <addaction name="separator"/>
     <addaction name="actionNewAnalyzerInstance"/>
     <addaction name="actionShow_all_Analyzer_windows"/>
+    <addaction name="separator"/>
     <addaction name="actionNew_Stats_Plots_instance"/>
     <addaction name="actionShow_all_Stats_Plots_windows"/>
     <addaction name="separator"/>
     <addaction name="actionConsole"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuDataFrame">
     <property name="enabled">
