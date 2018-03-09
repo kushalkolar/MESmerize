@@ -23,17 +23,34 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="groups_tab">
        <attribute name="title">
         <string>Groups</string>
        </attribute>
+       <widget class="QListWidget" name="listwGroups">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>411</width>
+          <height>391</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
-      <widget class="QWidget" name="violinPlots">
+      <widget class="QWidget" name="curve_tab">
+       <attribute name="title">
+        <string>Curves</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2"/>
+      </widget>
+      <widget class="QWidget" name="violin_tab">
        <attribute name="title">
         <string>Violin Plots</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_3"/>
       </widget>
-      <widget class="QWidget" name="boxPlots">
+      <widget class="QWidget" name="box_plot_tab">
        <attribute name="title">
         <string>Box Plots</string>
        </attribute>
@@ -68,6 +85,7 @@
      <string>View</string>
     </property>
     <addaction name="actionConsole"/>
+    <addaction name="actionControls_Dock"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -76,20 +94,33 @@
   <widget class="QDockWidget" name="dockWidget">
    <property name="minimumSize">
     <size>
-     <width>225</width>
-     <height>36</height>
+     <width>250</width>
+     <height>66</height>
     </size>
    </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>Transmissions w/history</string>
+    <string/>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents"/>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout_5">
+     <item row="0" column="0">
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="stack_page_transmission_history"/>
+       <widget class="QWidget" name="stack_page_matplotlib"/>
+       <widget class="QWidget" name="stack_page_box_plots"/>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QDockWidget" name="dockConsole">
    <property name="minimumSize">
@@ -142,6 +173,17 @@
     <string>Open Statistics DataFrame</string>
    </property>
   </action>
+  <action name="actionControls_Dock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Controls Dock</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -158,6 +200,22 @@
     <hint type="destinationlabel">
      <x>520</x>
      <y>585</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionControls_Dock</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>dockWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>112</x>
+     <y>253</y>
     </hint>
    </hints>
   </connection>

@@ -288,18 +288,6 @@ class PeakFeaturesExtract(CtrlNode):
         self.stats_gui.show()
 
 
-class Universal_Statistics_Of_Type_ANOVA_For_Example(CtrlNode):
-    """Takes in a transmission that comes from certain types of nodes that output data
-    which can be used by this node to do the final stats and draw plots."""
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
-
-    def processData(self, **kwargs):
-        pass
-
-
-# class StatsPlots(CtrlNode):
-#     """Perform statistics and draw plots"""
-
 # TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
