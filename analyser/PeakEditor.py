@@ -18,10 +18,10 @@ import pandas as pd
 from MesmerizeCore import misc_funcs
 
 if __name__ == '__main__':
-    from peak_base_editor_pytemplate import *
+    from PeakEditor_pytemplate import *
     from DataTypes import Transmission
 else:
-    from .peak_base_editor_pytemplate import *
+    from .PeakEditor_pytemplate import *
     from .DataTypes import Transmission
     from .HistoryWidget import HistoryTreeWidget
 
@@ -64,7 +64,6 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self._set_row()
         self.history_tree.fill_widget([trans_peaks_bases.src])
 
-
     def _reset_listw(self):
         self.listwIndices.clear()
         self.listwIndices.addItems(list(map(str, [*range(self.tc.df.index.size)])))
@@ -84,37 +83,40 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             curve = self.tc.df['curve'].iloc[ix]
             # if curve is None:
             #     QtGui.QMessageBox.warning(None, 'Empty Curve')
-            curve_plot.setData(curve/min(curve))
+            curve_plot.setData(curve / min(curve))
 
             self.graphicsView.addItem(curve_plot)
 
             # peak_ixs = self.tpb.df[self.tpb.data_column].iloc[ix].index[self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'peak'].tolist()
-
-            peaks = self.tpb.df['peaks_bases'].iloc[ix]['event'][
+            try:
+                peaks = self.tpb.df['peaks_bases'].iloc[ix]['event'][
                     self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'peak'].tolist()
 
-            peaks_plot = pg.ScatterPlotItem(name='peaks', pen=None, symbol='o', size=self.brush_size, brush=(255, 0, 0, 150))
+                peaks_plot = pg.ScatterPlotItem(name='peaks', pen=None, symbol='o', size=self.brush_size,
+                                                brush=(255, 0, 0, 150))
 
-            try:
-                peaks_plot.setData(peaks, np.take(curve, peaks)/min(curve))
-            except IndexError as e:
-                QtGui.QMessageBox.warning(None, 'IndexError!', str(e))
-                return
+                peaks_plot.setData(peaks, np.take(curve, peaks) / min(curve))
 
-            bases = self.tpb.df['peaks_bases'].iloc[ix]['event'][
+                bases = self.tpb.df['peaks_bases'].iloc[ix]['event'][
                     self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'base'].tolist()
 
-            bases_plot = pg.ScatterPlotItem(name='bases', pen=None, symbol='o', size=self.brush_size, brush=(0, 255, 0, 150))
-            try:
-                bases_plot.setData(bases, np.take(curve, bases)/min(curve))
-            except IndexError as e:
-                QtGui.QMessageBox.warning(None, 'IndexError!', str(e))
-                return
+                bases_plot = pg.ScatterPlotItem(name='bases', pen=None, symbol='o', size=self.brush_size,
+                                                brush=(0, 255, 0, 150))
 
-            self.graphicsView.addItem(peaks_plot)
-            self.s_plots.append(peaks_plot)
-            self.graphicsView.addItem(bases_plot)
-            self.s_plots.append(bases_plot)
+                bases_plot.setData(bases, np.take(curve, bases) / min(curve))
+
+                self.graphicsView.addItem(peaks_plot)
+                self.s_plots.append(peaks_plot)
+                self.graphicsView.addItem(bases_plot)
+                self.s_plots.append(bases_plot)
+
+            except Exception as e:
+                if QtGui.QMessageBox.question(None, 'Error!', 'The curve probably contains no peaks.'
+                                                                   'Exception:\n' + \
+                        str(e) + '\n\nWould you like to view the DataFrame?',
+                                              QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+                    pass
+                return
 
         if len(ixs) == 1:
             self.lastClicked = []

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from ..Node import Node
 import weakref
-from ...Qt import QtCore, QtGui
+from ...Qt import QtCore, QtGui, QtWidgets
 from ...graphicsItems.ScatterPlotItem import ScatterPlotItem
 from ...graphicsItems.PlotCurveItem import PlotCurveItem
 from ... import PlotDataItem, ComboBox

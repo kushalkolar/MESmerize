@@ -35,8 +35,6 @@ class Ui_Form(object):
         self.titleLabelChannel.setText(channel+' : ')
         self.titleLabelChannel.setObjectName(channel)
 
-
-
         self.lineEdChannelName = QtWidgets.QLineEdit(Form)
         self.lineEdChannelName.setGeometry(QtCore.QRect(130, 16, 200, 30))
         self.lineEdChannelName.setToolTip("Enter a name for the this Auxiliary channel")

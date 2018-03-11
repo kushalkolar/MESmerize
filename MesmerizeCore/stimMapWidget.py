@@ -24,7 +24,6 @@ else:
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
 
-
 class Window(QtWidgets.QWidget):
     def __init__(self, voltagesDict):
         super().__init__()

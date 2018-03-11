@@ -11,12 +11,11 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import sys
-# sys.path.append('..')
+sys.path.append('..')
 import pandas as pd
 import numpy as np
 import pickle
 from copy import deepcopy
-from collections import OrderedDict
 from MesmerizeCore.misc_funcs import empty_df
 from uuid import uuid4
 
@@ -122,8 +121,8 @@ class Transmission(_TRANSMISSION):
 
 
 class GroupTransmission(_TRANSMISSION):
-    """Transmission class for setting groups to individual transmissions and mergeing them into a
-    uniform stats format"""
+    """Transmission class for setting groups to individual transmissions that can later be merged into a single
+    StatsTransmission"""
     @classmethod
     def from_ca_data(cls, transmission, groups_list):
         if not (any('Peak_Features' in d for d in transmission.src) or
@@ -161,8 +160,8 @@ class StatsTransmission(_TRANSMISSION):
     @classmethod
     def from_group_trans(cls, transmissions):
         """
-        :param group_trans_list list of GroupTransmission objects
-        :type group_trans_list: list
+        :param transmissions list of GroupTransmission objects
+        :type transmissions: list
         """
         all_groups = []
         for tran in transmissions:

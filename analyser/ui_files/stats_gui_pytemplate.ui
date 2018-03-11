@@ -21,7 +21,7 @@
        <bool>true</bool>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="groups_tab">
        <attribute name="title">
@@ -38,11 +38,17 @@
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="curve_tab">
+      <widget class="QWidget" name="peak_plot_tab">
        <attribute name="title">
-        <string>Curves</string>
+        <string>Peak Plots</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2"/>
+      </widget>
+      <widget class="QWidget" name="stim_plots_tab">
+       <attribute name="title">
+        <string>Stim Plots</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_6"/>
       </widget>
       <widget class="QWidget" name="violin_tab">
        <attribute name="title">
@@ -53,6 +59,11 @@
       <widget class="QWidget" name="box_plot_tab">
        <attribute name="title">
         <string>Box Plots</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="paracor_tab">
+       <attribute name="title">
+        <string>Parallel Coordinates</string>
        </attribute>
       </widget>
      </widget>
@@ -74,9 +85,11 @@
     </property>
     <addaction name="actionSave_Statistics_DataFrame"/>
     <addaction name="actionOpen_Statistics_DataFrame"/>
+    <addaction name="actionExport_Statistics_DataFrame"/>
     <addaction name="separator"/>
     <addaction name="actionSave_Group_Transmissions"/>
     <addaction name="actionLoad_Groups"/>
+    <addaction name="actionExport_Groups"/>
     <addaction name="separator"/>
     <addaction name="actionSave_Incoming_Transmissions"/>
    </widget>
@@ -115,8 +128,11 @@
         <number>0</number>
        </property>
        <widget class="QWidget" name="stack_page_transmission_history"/>
-       <widget class="QWidget" name="stack_page_matplotlib"/>
+       <widget class="QWidget" name="stack_page_curve_plots"/>
+       <widget class="QWidget" name="stack_page_stim_plots"/>
+       <widget class="QWidget" name="stack_page_violin_plots"/>
        <widget class="QWidget" name="stack_page_box_plots"/>
+       <widget class="QWidget" name="stack_page_pc_plots"/>
       </widget>
      </item>
     </layout>
@@ -184,6 +200,16 @@
     <string>Controls Dock</string>
    </property>
   </action>
+  <action name="actionExport_Statistics_DataFrame">
+   <property name="text">
+    <string>Export Statistics DataFrame</string>
+   </property>
+  </action>
+  <action name="actionExport_Groups">
+   <property name="text">
+    <string>Export Groups</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -216,6 +242,22 @@
     <hint type="destinationlabel">
      <x>112</x>
      <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>122</x>
+     <y>124</y>
     </hint>
    </hints>
   </connection>

@@ -39,6 +39,9 @@ class LoadProjDF(CtrlNode):
         # print(configuration.df_refs)
 
     def process(self):
+        if self.ctrls['Apply'].isChecked() is False:
+            return self.t
+
         print('#######Weak Refs Dict########')
         print(configuration.df_refs)
 
@@ -76,13 +79,13 @@ class LoadFile(CtrlNode):
         self._loadNode = True
 
     def _fileDialog(self):
-        path = QtGui.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
+        path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
         if path == '':
             return
         try:
             self.transmission = Transmission.from_pickle(path[0])
         except Exception as e:
-            QtGui.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+            QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
 
         self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
@@ -133,7 +136,7 @@ class Save(CtrlNode):
             raise Exception('No incoming transmission to save!')
 
     def _fileDialog(self):
-        path = QtGui.QFileDialog.getSaveFileName(None, 'Save Transmission as', '', '(*.trn)')
+        path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save Transmission as', '', '(*.trn)')
         if path == '':
             return
         if path[0].endswith('.trn'):
@@ -152,7 +155,7 @@ class Save(CtrlNode):
             try:
                 transmission.to_pickle(self.ctrls['path'].text())
             except Exception as e:
-                QtGui.QMessageBox.warning(None, 'File save error', 'Could not save the tranmission to file.\n'
+                QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the tranmission to file.\n'
                                           + str(e))
 
 class RunScript(CtrlNode):
@@ -176,7 +179,7 @@ class RunScript(CtrlNode):
         self.ctrls['Run'].clicked.connect(self._execute)
 
     def _fileDialog(self):
-        self.path = QtGui.QFileDialog.getOpenFileName(None, 'Select script', '', '(*.py)')
+        self.path = QtWidgets.QFileDialog.getOpenFileName(None, 'Select script', '', '(*.py)')
         if self.path == '':
             return
         self.ctrls['fname'].setText(self.path[0].split('/')[-1][:-3])
@@ -203,7 +206,7 @@ class RunScript(CtrlNode):
 class Bypass(CtrlNode):
     """Just a bypass node that doesn't do anything. Useful for quickly swapping Project DataFrames with an existing
     analysis flowchart whilst keeping the connections after the DataFrame."""
-    uiTemplate = [()]
+    uiTemplate = [('Bypass Node', 'label', {'text': ''})]
 
     def processData(self, In):
         return In

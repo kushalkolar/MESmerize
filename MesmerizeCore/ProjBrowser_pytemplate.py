@@ -75,7 +75,7 @@ class Ui_Form(object):
         colContainerWidth = 241 * (len(df.columns) - len(exclude))
         
         self.widgetMasterColumnsContainer = QtWidgets.QWidget(Form)
-        self.widgetMasterColumnsContainer.setGeometry(QtCore.QRect(0, 30, colContainerWidth, 331))
+        self.widgetMasterColumnsContainer.setGeometry(QtCore.QRect(0, 30, colContainerWidth, 355))
         self.widgetMasterColumnsContainer.setObjectName("widgetMasterColumnsContainer")
         
         
@@ -86,6 +86,7 @@ class Ui_Form(object):
         self.listw_ =[]
         self.lineEdFilter_ =[]
         self.BtnApply_ =[]
+        self.BtnTextEdit = []
         self.BtnReset_ =[]
         
         
@@ -104,7 +105,7 @@ class Ui_Form(object):
                     ypos = ((ypos + 340) * row) /2
                     if row == 1:
                         ypos = 30
-                    masterWidgetHeight += 331 * row
+                    masterWidgetHeight += 355 * row
                     self.widgetMasterColumnsContainer.setGeometry(QtCore.QRect(0, 30, colContainerWidth, masterWidgetHeight))
 
                 self.widget.append(QtWidgets.QWidget(self.widgetMasterColumnsContainer))

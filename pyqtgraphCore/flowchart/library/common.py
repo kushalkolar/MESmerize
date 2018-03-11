@@ -17,8 +17,8 @@ except:
 
 def generateUi(opts):
     """Convenience function for generating common UI types"""
-    widget = QtGui.QWidget()
-    l = QtGui.QFormLayout()
+    widget = QtWidgets.QWidget(parent=None)
+    l = QtWidgets.QFormLayout()
     l.setSpacing(0)
     widget.setLayout(l)
     ctrls = {}
@@ -45,7 +45,7 @@ def generateUi(opts):
 
 
         elif t == 'doubleSpin':
-            w = QtGui.QDoubleSpinBox()
+            w = QtWidgets.QDoubleSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
             if 'min' in o:
@@ -55,9 +55,9 @@ def generateUi(opts):
             if 'step' in o:
                 w.setSingleStep(o['step'])
 
-        elif t == 'spin':
-            w = SpinBox()
-            w.setOpts(**o)
+        # elif t == 'spin':
+        #     w = SpinBox()
+        #     w.setOpts(**o)
 
         elif t == 'check':
             w = QtWidgets.QCheckBox()
@@ -182,6 +182,7 @@ class CtrlNode(Node):
         return {'Out': out}
     
     def saveState(self):
+        # self.changed()
         state = Node.saveState(self)
         state['ctrl'] = self.stateGroup.state()
         return state
@@ -190,6 +191,7 @@ class CtrlNode(Node):
         Node.restoreState(self, state)
         if self.stateGroup is not None:
             self.stateGroup.setState(state.get('ctrl', {}))
+        # self.changed()
             
     def hideRow(self, name):
         w = self.ctrls[name]

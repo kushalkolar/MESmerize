@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from ...Qt import QtCore, QtGui
+from ...Qt import QtCore, QtGui, QtWidgets
 from ..Node import Node
 from . import functions
 from ... import functions as pgfn
@@ -18,8 +18,6 @@ from analyser import Extraction
 from analyser.stats_gui import StatsWindow
 from analyser.HistoryWidget import HistoryTreeWidget
 import pickle
-configuration.configpath = '/home/kushal/Sars_stuff/github-repos/testprojects/feb6-test-10/config.cfg'
-configuration.openConfig()
 
 
 class AlignStims(CtrlNode):
@@ -42,12 +40,12 @@ class AlignStims(CtrlNode):
         try:
             stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
         except (KeyError, IndexError) as e:
-            QtGui.QMessageBox.warning(None, 'Stimulus type not found',
+            QtWidgets.QMessageBox.warning(None, 'Stimulus type not found',
                                       'The stimulus type which you have entered'
                                       ' does not exist in the incoming dataframe\n'
                                       + str(e))
             return
-        autocompleter = QtGui.QCompleter(stims, self.ctrls['Stimulus'])
+        autocompleter = QtWidgets.QCompleter(stims, self.ctrls['Stimulus'])
         self.ctrls['Stimulus'].setCompleter(autocompleter)
         self.ctrls['Stimulus'].setToolTip('\n'.join(stims))
 
@@ -57,7 +55,7 @@ class AlignStims(CtrlNode):
     def processData(self, transmission):
         assert isinstance(transmission, Transmission)
         self.transmission = transmission
-        ac = QtGui.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
+        ac = QtWidgets.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
         self.ctrls['Stim_Type'].setCompleter(ac)
         self.ctrls['Stim_Type'].setToolTip('\n'.join(self.transmission.STIM_DEFS))
 
@@ -161,7 +159,7 @@ class ROI_Selection(CtrlNode):
         try:
             tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
         except (KeyError, IndexError) as e:
-            QtGui.QMessageBox.warning(None, 'ROI type not found',
+            QtWidgets.QMessageBox.warning(None, 'ROI type not found',
                                       'The ROI type which you have entered'
                                       ' does not exist in the incoming dataframe\n' + str(e))
             return
@@ -170,13 +168,13 @@ class ROI_Selection(CtrlNode):
         self._setROITagAutoCompleter(tags)
 
     def _setROITagAutoCompleter(self, tags):
-        ac = QtGui.QCompleter(tags, self.ctrls['ROI_Tags'])
+        ac = QtWidgets.QCompleter(tags, self.ctrls['ROI_Tags'])
         self.ctrls['ROI_Tags'].setCompleter(ac)
 
     def processData(self, transmission):
         assert isinstance(transmission, Transmission)
         self.transmission = transmission
-        ac = QtGui.QCompleter(self.transmission.ROI_DEFS, self.ctrls['ROI_Type'])
+        ac = QtWidgets.QCompleter(self.transmission.ROI_DEFS, self.ctrls['ROI_Type'])
         self.ctrls['ROI_Type'].setCompleter(ac)
         self.ctrls['ROI_Type'].setToolTip('\n'.join(self.transmission.ROI_DEFS))
 
@@ -259,7 +257,7 @@ class PeakFeaturesExtract(CtrlNode):
         for t in transmissions.items():
             t = t[1]
             if t is None:
-                QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
                 continue
             elif not any('Peak_Detect' in d for d in t.src):
                 raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
@@ -272,7 +270,7 @@ class PeakFeaturesExtract(CtrlNode):
                 self.peak_results.append(tran_with_features)
 
             except Exception as e:
-                QtGui.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak extraction:\n'
+                QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak extraction:\n'
                                                                    + str(e))
 
         self.changed()
@@ -293,6 +291,7 @@ class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
     nodeName = 'Peak_Detect'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('Fictional_Bases', 'check', {'checked': False}),
                   ('Edit', 'button', {'text': 'Open Editor'}),
                   ('SlopeThr', 'label', {'text': ''}),
                   ('AmpThr', 'label', {'text': ''})
@@ -308,7 +307,7 @@ class PeakDetect(CtrlNode):
         self.t = None
 
     @staticmethod
-    def _get_zero_crossings(dsig):
+    def _get_zero_crossings(dsig, fictional_bases=False):
         """
         Determine the peaks and bases of the signal by finding zero crossing in the first derivative of the signal
         :param dsig: The first derivative of the signal
@@ -317,9 +316,26 @@ class PeakDetect(CtrlNode):
         :rtype: pd.DataFrame
         """
         sc = np.diff(np.sign(dsig))
+        print(sc)
 
         peaks = np.where(sc < 0)[0]
         bases = np.where(sc > 0)[0]
+
+        ## TODO; DEBATE ABOUT HOW TO PROPERLY DEAL WITH TRACES THAT HAVE NO PEAKS !!!!
+        if peaks.size == 0:
+            peaks = np.array([0])
+            bases = np.array([0, 1])
+
+        if fictional_bases:
+            if bases.size == 0:
+                bases = np.array([0, sc.size])
+            else:
+                if bases[0] > peaks[0]:
+                    bases = np.insert(bases, 0, 0)
+
+                if bases[-1] < peaks[-1]:
+                    bases = np.insert(bases, -1, sc.size)
+
 
         peaks_df = pd.DataFrame()
         peaks_df['event'] = peaks
@@ -337,7 +353,7 @@ class PeakDetect(CtrlNode):
         peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
         peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
 
-        # print(peaks_bases_df)
+        print(peaks_bases_df)
 
         return peaks_bases_df
 
@@ -350,12 +366,12 @@ class PeakDetect(CtrlNode):
             return self.t
 
         if self.data_modified is True:
-            if QtGui.QMessageBox.question(None, 'Discard peak edits?',
+            if QtWidgets.QMessageBox.question(None, 'Discard peak edits?',
                                           'You have made modifications to peak data passing '
                                           'through this node! Would you like to discard all '
                                           'changes and load the newly transmitted data?',
-                                          QtGui.QMessageBox.Yes,
-                                          QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+                                              QtWidgets.QMessageBox.Yes,
+                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return self.t
         self.data_modified = False
 
@@ -368,7 +384,7 @@ class PeakDetect(CtrlNode):
 
         if inputs['Curve'] is not None:
             if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
-                QtGui.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
+                QtWidgets.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
                                                                ' MUST match!')
                 raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
 
@@ -382,7 +398,8 @@ class PeakDetect(CtrlNode):
         assert isinstance(self.t, Transmission)
 
         # self.t.data_column['peaks_bases'] = 'peaks_bases'
-        self.t.df['peaks_bases'] = self.t.df['curve'].apply(lambda s: PeakDetect._get_zero_crossings(s))
+        fb = self.ctrls['Fictional_Bases'].isChecked()
+        self.t.df['peaks_bases'] = self.t.df['curve'].apply(lambda s: PeakDetect._get_zero_crossings(s, fb))
 
         self.t.df['curve'] = self.t.df['raw_curve']
         self.t.df.drop(columns=['raw_curve'])
