@@ -9,26 +9,8 @@ Chatzigeorgiou Group
 Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-
-class MES:
-	Does the back-end handling of opening .mes files and organizing the images and 
-	meta data. The load_img() method returns a 3D array (2D + time) of the image 
-	sequence and meta data as a ImgData class object.
-
-	Usage:
-        Create a mesfile object by passing the path of your mes file
-		    
-        Example:
-            mesfile = MES.('/home/kushal/olfactory/experiment_Dec_25.mes')
-		    
-            To get images from the mesfile object:
-
-                Pass a dictionary key (extracted by the __init__ method) as a string
-                which refers to the desired image to load.
-		    
-                imdata = mesfile.load_img('IF0001_0001')
-
 """
+
 import scipy.io as spio
 import numpy as np
 from .misc_funcs import fix_fp_errors
@@ -38,6 +20,24 @@ from PyQt5 import QtGui
 # The load_img() method can be used to return an ImgData class object for any particular image
 # of interest from the created MES instance.
 class MES():
+    """
+    Does the back-end handling of opening .mes files and organizing the images and
+	meta data. The load_img() method returns a 3D array (2D + time) of the image
+	sequence and meta data as a ImgData class object.
+
+	Usage:
+        Create a mesfile object by passing the path of your mes file
+
+        Example:
+            mesfile = MES.('/home/kushal/olfactory/experiment_Dec_25.mes')
+
+            To get images from the mesfile object:
+
+                Pass a dictionary key (extracted by the __init__ method) as a string
+                which refers to the desired image to load.
+
+                imdata = mesfile.load_img('IF0001_0001')
+    """
     def __init__(self, filename):
         # Open the weird matlab type objects and organize the images & meta data
         """
@@ -61,9 +61,14 @@ class MES():
 #        self.ao3VoltList = []
         self.voltDict = {}
         for image in self.images:
-            meta = self.main_dict["D"+image[1:6]].tolist()
-            meta = self._todict(meta[int(image[-1])-1])
-            
+            try:
+                meta = self.main_dict["D"+image[1:6]].tolist()
+                meta = self._todict(meta[int(image[-1])-1])
+            except Exception as e:
+                QtGui.QMessageBox.warning(None, 'Error opening an image',
+                                          'There as an error when opening the following image: ' + str("D"+image[1:6]) + \
+                                          '\n' + str(e))
+
             # If auxiliary voltage information (which for example contains information
             # about stimulus timings & can be mapped to stimulus definitions).
             for prefix in ['AUXi', 'AUXo', 'Sh', 'Stim']:

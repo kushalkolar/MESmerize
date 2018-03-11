@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from ...Qt import QtCore, QtGui
+from ...Qt import QtCore, QtGui, QtWidgets
 from ..Node import Node
 from . import functions
 from ... import functions as pgfn
@@ -88,12 +88,12 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
         p = self.ctrls['polyorder'].value()
 
         if p > w:
-            QtGui.QMessageBox.warning(None, 'Invalid value!',
+            QtWidgets.QMessageBox.warning(None, 'Invalid value!',
                                             ' polyorder MUST be less than window_length')
             raise ValueError('Invalid value! polyorder MUST be less than window_length')
 
         if w % 2 == 0:
-            QtGui.QMessageBox.warning(None, 'Invalid value!',
+            QtWidgets.QMessageBox.warning(None, 'Invalid value!',
                                             ' window_length MUST be an odd number!')
             raise ValueError('Invalid value! window_length MUST be an odd number!')
 

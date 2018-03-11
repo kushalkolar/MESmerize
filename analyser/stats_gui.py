@@ -11,21 +11,26 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import sys
-sys.path.append('..')
+# sys.path.append('..')
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
 from pyqtgraphCore import ColorButton
-
+from pyqtgraphCore import PlotItem, PlotDataItem, PlotCurveItem
+from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 if __name__ == '__main__':
-    from stats_window import *
+    from stats_gui_pytemplate import *
     import DataTypes
     from HistoryWidget import HistoryTreeWidget
-    import matplotlib_widget
+    from stats_plots import *
+    from stim_plots_pytemplate import *
+    from stats_peak_plots_pytemplate import *
 else:
-    from .stats_window import *
+    from .stats_gui_pytemplate import *
     from . import DataTypes
     from .HistoryWidget import HistoryTreeWidget
-    from . import matplotlib_widget
+    from .stats_plots import *
+    from .stim_plots_pytemplate import *
+    from .stats_peak_plots_pytemplate import *
 import sys
 import numpy as np
 import scipy as scipy
@@ -44,9 +49,10 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionSave_Group_Transmissions.triggered.connect(self._save_groups)
         self.actionLoad_Groups.triggered.connect(self._open_groups)
         self.actionSave_Incoming_Transmissions.triggered.connect(self._save_raw_trans)
-        self._dock_titles = ['Transmissions w/history', 'matplotlib Controls',
-                             'matplotlib Controls', 'Box Plot Controls']
-        self.tabWidget.currentChanged.connect(self._set_stack_index)
+        self._dock_titles = ['Transmissions w/history', 'Peak Plot Controls',
+                             'Stim Plot Controls', 'Violin Plot Controls', 'Box Plot Controls',
+                             'Parallel Coor Plot Controls']
+        self._init_plot_interface()
 
         ns = {'np': np,
               'pickle': pickle,
@@ -73,6 +79,11 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.dockConsole.hide()
 
+    """#########################################################################################
+                                    Input Transmissions stuff
+    ############################################################################################"""
+
+    # Call by Peak_Features node in flowchart, constructs StatsTransmission from normal Transmissions
     def input_transmissions(self, transmissions_list):
         self.listwGroups.hide()
         if hasattr(self, 'lineEdGroupList'):
@@ -177,10 +188,8 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.listwGroups.show()
         self.StatsData = DataTypes.StatsTransmission.from_group_trans(self.gts)
         self.listwGroups.addItems(self.StatsData.all_groups)
-        self._init_curve_tab()
-        self._init_violin_tab()
         self.set_data()
-        # self.set_data()
+
     def _del_group_entries(self):
         for item in self.btnAutoList:
             item.deleteLater()
@@ -192,24 +201,24 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def set_data(self):
         if not hasattr(self, 'StatsData') and not hasattr(self, 'gts'):
             return
-        if not hasattr(self, 'curve_plots'):
-            self._init_curve_tab()
-        if not hasattr(self, 'violin_plots'):
-            self._init_violin_tab()
-
-        self.plots = matplotlib_widget.Plots(self.curve_plots, self.violin_plots)
-        self.plots.setData(self.gts)
-
         self.listwGroups.clear()
         self.listwGroups.addItems(self.StatsData.all_groups)
+        self.plot_all()
 
-    def _init_curve_tab(self):
-        self.curve_plots = matplotlib_widget.Curves()
-        self.curve_tab.layout().addWidget(self.curve_plots)
+    def plot_all(self):
+        group_colors = {}
+        c = ['b', 'g', 'r', 'c', 'm', 'y']
+        i = 0
+        for group in self.StatsData.all_groups:
+            group_colors.update({group: c[i%6]})
+            i +=1
 
-    def _init_violin_tab(self):
-        self.violin_plots = matplotlib_widget.Violins()
-        self.violin_tab.layout().addWidget(self.violin_plots)
+        self.plots_interface.set_data(df=self.StatsData.df, group_dict=group_colors)
+        self.plots_interface.plot()
+
+    def _init_plot_interface(self):
+        self.plots_interface = PlotInterface(self)
+
 
     def _auto_slot(self, i):
         QtGui.QMessageBox.information(self, 'Error', 'Not implemented')
@@ -217,15 +226,6 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def _set_stack_index(self, i):
         self.dockWidget.setWindowTitle(self._dock_titles[i])
-        if i == 0:
-            self.stackedWidget.setCurrentIndex(0)
-            return
-        elif i == 1 or i == 2:
-            self.stackedWidget.setCurrentIndex(1)
-            return
-        elif i == 3:
-            self.stackedWidget.setCurrentIndex(2)
-            return
 
     def _set_matplotlib_controls(self):
         xpos = 10
@@ -248,6 +248,10 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             btnColorList.append(btnColor)
 
             ypos += 35
+
+    """#########################################################################################
+                                    Saving & Loading files
+    ############################################################################################"""
 
     def _save_stats_transmission(self):
         path = QtGui.QFileDialog.getSaveFileName(None, 'Save Stats Transmission as', '', '(*.strn)')
@@ -279,6 +283,8 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as e:
             QtGui.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
+
+        self.set_data()
 
     def _open_groups(self):
         groups = []
@@ -322,6 +328,193 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
 
 
+
+class MPLW(MatplotlibWidget):
+    def __init__(self):
+        MatplotlibWidget.__init__(self)
+
+class Plots:
+    def __init__(self, curve_plot, violin_plot):
+        self.curve_plot = curve_plot
+        self.violin_plot = violin_plot
+
+    def setData(self, groups):
+        print(groups)
+        colors = ['b', 'g', 'r', 'c', 'm', 'y']
+        ci = 0
+        ax = self.curve_plot.fig.add_subplot(111)
+
+        for group in groups:
+            c = colors[ci]
+            for ix, r in group.df.iterrows():
+                if (r['peak_curve'] is not None) and (len(r['peak_curve']) > 0):
+                    ax.plot(r['peak_curve']/min(r['peak_curve']), color=c)
+            ci +=1
+
+        self.curve_plot.canvas.draw()
+        # self.violin_plot.draw()
+
+    def setColor(self):
+        pass
+
+    def addGroup(self):
+        pass
+
+    def removeGroup(self):
+        pass
+
+
+class PlotInterface:
+    def __init__(self, parent):
+        assert isinstance(parent, StatsWindow)
+        self.stims = StimPlots()
+        parent.stim_plots_tab.layout().addWidget(self.stims)
+        self.peaks = PeakPlots()
+        parent.peak_plot_tab.layout().addWidget(self.peaks)
+
+        self.plots = [self.stims, self.peaks]
+
+    def set_data(self, df, group_dict):
+        self.stims.set_data(df, group_dict)
+        self.peaks.set_data(df, group_dict)
+
+    def set_colors(self):
+        pass
+
+    def plot(self):
+        self.stims.plot_all()
+        self.peaks.plot_all()
+
+
+class PeakPlots(QtWidgets.QWidget):
+    def __init__(self):
+        QtWidgets.QWidget.__init__(self)
+        self.ui = Ui_stats_peak_plots_template()
+        self.ui.__init__()
+        self.ui.setupUi(self)
+        self.gplots = []
+
+    def set_data(self, df, groups_dict):
+        self.df = df
+        self.groups_dict = groups_dict
+
+    def plot_all(self):
+        self.plot_overlaps()
+        self.plot_group_subplots()
+
+    def plot_overlaps(self):
+        self.ui.curve_plot_all_group_peaks.clear()
+        self.ymax = 0.0
+        for key in self.groups_dict.keys():
+            for ix, r in self.df.loc[self.df[key] == True].iterrows():
+                a = r['peak_curve']
+                if a.size == 0:
+                    continue
+                ma = np.max(a)
+                self.ymax = np.maximum(ma, self.ymax)
+
+                if not hasattr(self, 'ymin'):
+                    self.ymin = self.ymax
+
+                mi = np.min(a)
+                self.ymin = np.minimum(mi, self.ymin)
+
+                xs = np.linspace(0 - (a.size / 2), a.size / 2, num=a.size)
+                self.ui.curve_plot_all_group_peaks.plot(x=xs, y=a, pen=self.groups_dict[key])
+
+
+
+    def plot_group_subplots(self):
+        for item in self.gplots:
+            self.ui.curve_plot_group_peaks.removeItem(item)
+        self.ui.curve_plot_group_peaks.clear()
+        self.gplots = []
+
+        for key in self.groups_dict.keys():
+            self.gplots.append(self.ui.curve_plot_group_peaks.addPlot(title=key))
+            for ix, r in self.df.loc[self.df[key] == True].iterrows():
+                # try:
+                a = r['peak_curve']
+                xs = np.linspace(0 - (a.size / 2), a.size / 2, num=a.size)
+
+                self.gplots[-1].plot(x=xs, y=a, pen=self.groups_dict[key])
+
+                # except:
+                #     pass
+
+            self.gplots[-1].setYRange(self.ymin, self.ymax)
+
+
+    def plot_headmaps(self):
+        pass
+
+
+class StimPlots(QtWidgets.QWidget):#, Ui_stim_plots_template):
+    def __init__(self): #, flags, parent=None, *args, **kwargs):
+        #super().__init__()#flags, parent, *args, **kwargs)
+        QtWidgets.QWidget.__init__(self)
+        self.ui = Ui_stim_plots_template()
+        self.ui.__init__()
+        self.ui.setupUi(self)
+        self.gplots = []
+
+    def set_data(self, df, groups_dict):
+        self.df = df
+        self.groups_dict = groups_dict
+
+    def plot_all(self):
+        self.plot_overlaps()
+        self.plot_group_subplots()
+        self.plot_heatmaps()
+
+    def plot_overlaps(self, update_subplots=True):
+        self.ui.stim_plots_overlays.clear()
+        self.ymax = 0.0
+        for key in self.groups_dict.keys():
+            for ix, r in self.df.loc[self.df[key] == True].iterrows():
+                a = r['raw_curve']
+                ma = np.max(a)
+                self.ymax = np.maximum(ma, self.ymax)
+
+                if not hasattr(self, 'ymin'):
+                    self.ymin = self.ymax
+
+                mi = np.min(a)
+                self.ymin = np.minimum(mi, self.ymin)
+
+                self.ui.stim_plots_overlays.plot(a, pen=self.groups_dict[key])
+
+
+    def plot_group_subplots(self):
+        for item in self.gplots:
+            self.ui.stim_plots_groups.removeItem(item)
+
+        self.ui.stim_plots_groups.clear()
+        self.gplots = []
+
+        for key in self.groups_dict.keys():
+            self.gplots.append(self.ui.stim_plots_groups.addPlot(title=key))
+
+            for ix, r in self.df.loc[self.df[key] == True].iterrows():
+                self.gplots[-1].plot(r['raw_curve'], pen=self.groups_dict[key])
+
+            self.gplots[-1].setYRange(self.ymin, self.ymax)
+
+    def plot_heatmaps(self):
+        pass
+
+
+class ViolinPlots():
+    pass
+
+
+class BoxPlots():
+    pass
+
+
+class ParaCorPlots():
+    pass
+
 if __name__ == '__main__':
     t1 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t1.trn')
     t2 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t2.trn')
@@ -334,8 +527,6 @@ if __name__ == '__main__':
     sw.lineEdGroupList[1].setText('B')
     sw.lineEdGroupList[2].setText('C')
     sw.show()
-    
-    
-    
+
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+        QtWidgets.QApplication.instance().exec_()
