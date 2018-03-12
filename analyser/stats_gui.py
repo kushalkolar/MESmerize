@@ -15,7 +15,8 @@ import sys
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
 from pyqtgraphCore import ColorButton
-from pyqtgraphCore import PlotItem, PlotDataItem, PlotCurveItem
+from pyqtgraphCore import PlotItem, PlotDataItem, PlotCurveItem, ScatterPlotItem, InfiniteLine
+from pyqtgraphCore.functions import pseudoScatter
 from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 if __name__ == '__main__':
     from stats_gui_pytemplate import *
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     from stats_plots import *
     from stim_plots_pytemplate import *
     from stats_peak_plots_pytemplate import *
+    from beeswarm_plots_pytemplate import *
 else:
     from .stats_gui_pytemplate import *
     from . import DataTypes
@@ -31,6 +33,7 @@ else:
     from .stats_plots import *
     from .stim_plots_pytemplate import *
     from .stats_peak_plots_pytemplate import *
+    from .beeswarm_plots_pytemplate import *
 import sys
 import numpy as np
 import scipy as scipy
@@ -50,8 +53,10 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionLoad_Groups.triggered.connect(self._open_groups)
         self.actionSave_Incoming_Transmissions.triggered.connect(self._save_raw_trans)
         self._dock_titles = ['Transmissions w/history', 'Peak Plot Controls',
-                             'Stim Plot Controls', 'Violin Plot Controls', 'Box Plot Controls',
+                             'Stim Plot Controls', 'Violin Plot Controls', 'Beeswarm Plot Controls',
                              'Parallel Coor Plot Controls']
+        self.tabWidget.currentChanged.connect(self._set_stack_index)
+        self.tabWidget.setCurrentIndex(0)
         self._init_plot_interface()
 
         ns = {'np': np,
@@ -86,10 +91,11 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # Call by Peak_Features node in flowchart, constructs StatsTransmission from normal Transmissions
     def input_transmissions(self, transmissions_list):
         self.listwGroups.hide()
+        self.listwStats.hide()
         if hasattr(self, 'lineEdGroupList'):
-            if not QtGui.QMessageBox.question(self, 'Discard current data?',
+            if not QtWidgets.QMessageBox.question(self, 'Discard current data?',
                                               'You have data open in this window, would you '
-                                              'like to discard them and load the new data?') == QtGui.QMessageBox.Yes:
+                                              'like to discard them and load the new data?') == QtWidgets.QMessageBox.Yes:
                 return
 
         self.transmissions_list = transmissions_list
@@ -103,10 +109,10 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def _save_raw_trans(self):
         if not hasattr(self, 'transmissions_list'):
-            QtGui.QMessageBox.warning(self, 'Nothing to save', 'There are no raw transmissions to save')
+            QtWidgets.QMessageBox.warning(self, 'Nothing to save', 'There are no raw transmissions to save')
 
         for i in range(len(self.transmissions_list)):
-            path = QtGui.QFileDialog.getSaveFileName(None, 'Save Transmission ' + str(i), '', '(*.trn)')
+            path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save Transmission ' + str(i), '', '(*.trn)')
             if path == '':
                 return
             if path[0].endswith('.trn'):
@@ -117,7 +123,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.transmissions_list[i].to_pickle(path)
             except Exception as e:
-                QtGui.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
+                QtWidgets.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
 
     def _set_history_widget(self, srcs):
         if len(self.stack_page_transmission_history.children()) > 0:
@@ -176,9 +182,9 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.gts = []
         for entry in self.lineEdGroupList:
             if entry.text() == '':
-                if QtGui.QMessageBox.question(self, 'Empty entry', 'The entry for Transmission ' + str(i) + ' is empty '
+                if QtWidgets.QMessageBox.question(self, 'Empty entry', 'The entry for Transmission ' + str(i) + ' is empty '
                                             'would you like to skip this transmission and not annotate groups to it?',
-                                              QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+                                                  QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                     return
             group_list = [e.strip() for e in entry.text().split(',')]
             gt = DataTypes.GroupTransmission.from_ca_data(self.transmissions_list[i], group_list)
@@ -186,6 +192,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             i += 1
 
         self.listwGroups.show()
+        self.listwStats.show()
         self.StatsData = DataTypes.StatsTransmission.from_group_trans(self.gts)
         self.listwGroups.addItems(self.StatsData.all_groups)
         self.set_data()
@@ -197,6 +204,17 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             item.deleteLater()
         for item in self.lineEdGroupList:
             item.deleteLater()
+
+    def _auto_slot(self, i):
+        QtGui.QMessageBox.information(self, 'Error', 'Not implemented')
+        pass
+
+    """#########################################################################################
+                                            Plotting
+    ############################################################################################"""
+
+    def _init_plot_interface(self):
+        self.plots_interface = PlotInterface(self)
 
     def set_data(self):
         if not hasattr(self, 'StatsData') and not hasattr(self, 'gts'):
@@ -215,14 +233,6 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.plots_interface.set_data(df=self.StatsData.df, group_dict=group_colors)
         self.plots_interface.plot()
-
-    def _init_plot_interface(self):
-        self.plots_interface = PlotInterface(self)
-
-
-    def _auto_slot(self, i):
-        QtGui.QMessageBox.information(self, 'Error', 'Not implemented')
-        pass
 
     def _set_stack_index(self, i):
         self.dockWidget.setWindowTitle(self._dock_titles[i])
@@ -254,7 +264,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     ############################################################################################"""
 
     def _save_stats_transmission(self):
-        path = QtGui.QFileDialog.getSaveFileName(None, 'Save Stats Transmission as', '', '(*.strn)')
+        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Stats Transmission as', '', '(*.strn)')
         if path == '':
             return
 
@@ -266,29 +276,33 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             self.StatsData.to_pickle(path)
         except Exception as e:
-            QtGui.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
+            QtWidgets.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
 
     def _open_stats_transmission(self):
         if hasattr(self, 'StatsData'):
-            if not QtGui.QMessageBox.question(self, 'Discard current data?',
+            if not QtWidgets.QMessageBox.question(self, 'Discard current data?',
                                               'You have data open in this window, would you '
-                                              'like to discard them and load the new data?') == QtGui.QMessageBox.Yes:
+                                              'like to discard them and load the new data?',
+                                                  QtWidgets.QMessageBox.Yes,
+                                                  QtWidgets.QMessageBox.No) \
+                                                == QtWidgets.QMessageBox.Yes:
                 return
 
-        path = QtGui.QFileDialog.getOpenFileName(None, 'Import Statistics object', '', '(*.strn)')
+        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Import Statistics object', '', '(*.strn)')
         if path == '':
             return
         try:
             self.StatsData = DataTypes.StatsTransmission.from_pickle(path[0])
         except Exception as e:
-            QtGui.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
 
         self.set_data()
+        self._set_history_widget(self.StatsData.src)
 
     def _open_groups(self):
         groups = []
-        paths = QtGui.QFileDialog.getOpenFileNames(None, 'Import Group object', '', '(*.gtrn)')
+        paths = QtWidgets.QFileDialog.getOpenFileNames(self, 'Import Group object', '', '(*.gtrn)')
         print(paths)
         if paths == '':
             return
@@ -298,7 +312,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             for path in paths[0]:
                 groups.append(DataTypes.GroupTransmission.from_pickle(path))
         except Exception as e:
-            QtGui.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
 
         if hasattr(self, 'StatsData'):
@@ -310,11 +324,11 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def _save_groups(self):
         if not hasattr(self, 'gts'):
-            QtGui.QMessageBox.warning(self, 'Save Error', 'No open Groups to save!')
+            QtWidgets.QMessageBox.warning(self, 'Save Error', 'No open Groups to save!')
             return
 
         for i in range(len(self.gts)):
-            path = QtGui.QFileDialog.getSaveFileName(None, 'Save Group Transmission ' + str(i), '', '(*.gtrn)')
+            path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Group Transmission ' + str(i), '', '(*.gtrn)')
             if path == '':
                 return
             if path[0].endswith('.gtrn'):
@@ -325,7 +339,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             try:
                 self.gts[i].to_pickle(path)
             except Exception as e:
-                QtGui.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
+                QtWidgets.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
 
 
 
@@ -367,24 +381,34 @@ class Plots:
 class PlotInterface:
     def __init__(self, parent):
         assert isinstance(parent, StatsWindow)
+        self.plots = []
+
         self.stims = StimPlots()
+        self.plots.append(self.stims)
         parent.stim_plots_tab.layout().addWidget(self.stims)
+
         self.peaks = PeakPlots()
+        self.plots.append(self.peaks)
         parent.peak_plot_tab.layout().addWidget(self.peaks)
 
-        self.plots = [self.stims, self.peaks]
+        self.paracor = ParaCorPlots()
+        self.plots.append(self.paracor)
+        parent.paracor_tab.layout().addWidget(self.paracor)
+
+        self.beeswarm = BeesswarmPlots()
+        self.plots.append(self.beeswarm)
+        parent.beeswarm_tab.layout().addWidget(self.beeswarm)
 
     def set_data(self, df, group_dict):
-        self.stims.set_data(df, group_dict)
-        self.peaks.set_data(df, group_dict)
+        for plot in self.plots:
+            plot.set_data(df, group_dict)
 
     def set_colors(self):
         pass
 
     def plot(self):
-        self.stims.plot_all()
-        self.peaks.plot_all()
-
+        for plot in self.plots:
+            plot.plot_all()
 
 class PeakPlots(QtWidgets.QWidget):
     def __init__(self):
@@ -407,22 +431,25 @@ class PeakPlots(QtWidgets.QWidget):
         self.ymax = 0.0
         for key in self.groups_dict.keys():
             for ix, r in self.df.loc[self.df[key] == True].iterrows():
-                a = r['peak_curve']
-                if a.size == 0:
-                    continue
-                ma = np.max(a)
-                self.ymax = np.maximum(ma, self.ymax)
+                try:
+                    a = r['_pfeature_peak_curve']
+                    if a.size == 0:
+                        continue
+                    ma = np.max(a)
+                    self.ymax = np.maximum(ma, self.ymax)
 
-                if not hasattr(self, 'ymin'):
-                    self.ymin = self.ymax
+                    if not hasattr(self, 'ymin'):
+                        self.ymin = self.ymax
 
-                mi = np.min(a)
-                self.ymin = np.minimum(mi, self.ymin)
+                    mi = np.min(a)
+                    self.ymin = np.minimum(mi, self.ymin)
 
-                xs = np.linspace(0 - (a.size / 2), a.size / 2, num=a.size)
-                self.ui.curve_plot_all_group_peaks.plot(x=xs, y=a, pen=self.groups_dict[key])
+                    center = r['_pfeature_ix_peak_rel']
 
-
+                    xs = np.arange((0-center), a.size - center)
+                    self.ui.curve_plot_all_group_peaks.plot(x=xs, y=a, pen=self.groups_dict[key])
+                except Exception as e:
+                    print(e)
 
     def plot_group_subplots(self):
         for item in self.gplots:
@@ -433,16 +460,20 @@ class PeakPlots(QtWidgets.QWidget):
         for key in self.groups_dict.keys():
             self.gplots.append(self.ui.curve_plot_group_peaks.addPlot(title=key))
             for ix, r in self.df.loc[self.df[key] == True].iterrows():
-                # try:
-                a = r['peak_curve']
-                xs = np.linspace(0 - (a.size / 2), a.size / 2, num=a.size)
+                try:
+                    a = r['_pfeature_peak_curve']
 
-                self.gplots[-1].plot(x=xs, y=a, pen=self.groups_dict[key])
+                    center = r['_pfeature_ix_peak_rel']
 
-                # except:
-                #     pass
+                    xs = np.arange((0-center), a.size - center)
 
-            self.gplots[-1].setYRange(self.ymin, self.ymax)
+                    self.gplots[-1].plot(x=xs, y=a, pen=self.groups_dict[key])
+
+                except Exception as e:
+                    print(e)
+
+        for plot in self.gplots:
+            plot.setYRange(self.ymin, self.ymax)
 
 
     def plot_headmaps(self):
@@ -484,7 +515,6 @@ class StimPlots(QtWidgets.QWidget):#, Ui_stim_plots_template):
 
                 self.ui.stim_plots_overlays.plot(a, pen=self.groups_dict[key])
 
-
     def plot_group_subplots(self):
         for item in self.gplots:
             self.ui.stim_plots_groups.removeItem(item)
@@ -504,22 +534,114 @@ class StimPlots(QtWidgets.QWidget):#, Ui_stim_plots_template):
         pass
 
 
-class ViolinPlots():
+class ViolinPlots:
     pass
 
 
-class BoxPlots():
-    pass
+class BeesswarmPlots(QtWidgets.QWidget):
+    def __init__(self):
+        QtWidgets.QWidget.__init__(self)
+        self.ui = Ui_beeswarm_plots_template()
+        self.ui.__init__()
+        self.ui.setupUi(self)
+        self.fplots = []
+        self.inflines = []
+        self.inflplots = []
+
+    def set_data(self, df, groups_dict):
+        self.df = df
+        self.groups_dict = groups_dict
+        self.fcols = [col for col in self.df if str(col).startswith('_pfeature')]
+        self.fcols.remove('_pfeature_peak_curve')
+        self.fcols.remove('_pfeature_uuid')
+        self.fcols.remove('_pfeature_ix_peak_rel')
+
+    def plot_all(self):
+        n = 0
+        self.lastClicked = []
+        self.lastClickedColors = []
+        self.plots = {}
+        for f in self.fcols:
+            i = 0
+            sp = ScatterPlotItem()
+
+            plot = self.ui.graphicsView.addPlot(title=f[10:])
+
+            ebars = []
+            for group in self.groups_dict.keys():
+                ys = self.df.loc[self.df[group] == True][f].dropna().values
+                yvals = ys.astype(np.float64)
+                xs = pseudoScatter(yvals, spacing=0.2, bidir=True) * 0.2
+                sp.addPoints(x=xs + i, y=yvals, pen=None, symbol='o', brush=self.groups_dict[group],
+                             name=f, size=10)
+                i += 1
+                #            sp.sigClicked.connect(lambda p: self._clicked(p[0], p[1], f))
+            sp.sigClicked.connect(self._clicked)
+            plot.addItem(sp)
+
+            self.plots.update({f: plot})
+            #            for eb in ebars:
+            #                p.addItem(eb)
+            n += 1
+            if n == 5:
+                self.ui.graphicsView.nextRow()
+
+    def _clicked(self, plot, points):
+        i = 0
+        for item in self.inflines:
+            self.inflplots[i].removeItem(item)
+            i += 1
+
+        self.inflplots = []
+        self.inflines = []
+        i = 0
+        for p in self.lastClicked:
+            p.resetPen()
+            p.setBrush(self.lastClickedColors[i])
+            i += 1
+        self.lastClickedColors = []
+        for p in points:
+            self.lastClickedColors.append(p.brush())
+            p.setPen('w', width=4)
+        self.lastClicked = points
+        if len(self.lastClicked) == 1:
+            yval = self.lastClicked[0].pos()[1]
+
+            fcolvals = self.df[plot.name()].values
+
+            ix = np.where(fcolvals == yval)[0][0]
+
+            #            ix = self.df[self.df[plot.name()] == yval].index[0]
+
+            #            print(self.df.iloc[ix])
+            for f in self.fcols:
+                try:
+                    val = self.df.iloc[ix][f]
+                    il = InfiniteLine(pos=val, angle=0, pen='w')
+
+                    print(self.df.iloc[ix])
+                    self.plots[f].addItem(il)
+                    self.inflines.append(il)
+                    self.inflplots.append(self.plots[f])
+                except ValueError as e:
+                    continue
 
 
-class ParaCorPlots():
-    pass
+class ParaCorPlots(MPLW):
+    def __init__(self):
+        MPLW.__init__(self)
+
+    def set_data(self, df, groups_dict):
+        pass
+
+    def plot_all(self):
+        pass
 
 if __name__ == '__main__':
     t1 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t1.trn')
     t2 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t2.trn')
     t3 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t3.trn')
-    
+
     app = QtWidgets.QApplication([])
     sw = StatsWindow()
     sw.input_transmissions([t1, t2, t3])

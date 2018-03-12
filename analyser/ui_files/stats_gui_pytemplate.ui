@@ -21,22 +21,52 @@
        <bool>true</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>true</bool>
       </property>
       <widget class="QWidget" name="groups_tab">
        <attribute name="title">
         <string>Groups</string>
        </attribute>
-       <widget class="QListWidget" name="listwGroups">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>411</width>
-          <height>391</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Open Groups</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Groups for Stats &amp; Plots</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QListWidget" name="listwGroups">
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::DragDrop</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QListWidget" name="listwStats">
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::DragDrop</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>Set</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="peak_plot_tab">
        <attribute name="title">
@@ -56,15 +86,17 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3"/>
       </widget>
-      <widget class="QWidget" name="box_plot_tab">
+      <widget class="QWidget" name="beeswarm_tab">
        <attribute name="title">
-        <string>Box Plots</string>
+        <string>Beeswarm Plots</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_8"/>
       </widget>
       <widget class="QWidget" name="paracor_tab">
        <attribute name="title">
         <string>Parallel Coordinates</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_7"/>
       </widget>
      </widget>
     </item>

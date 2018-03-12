@@ -133,11 +133,11 @@ class GroupTransmission(_TRANSMISSION):
 
         t.df, groups_list = GroupTransmission._append_group_bools(t.df, groups_list)
 
-        gid = uuid4()
+        # gid = uuid4()
+        #
+        # t.df['uuid'] = gid
 
-        t.df['uuid'] = gid
-
-        t.src.append({'Group uuid': gid, 'Grouped': ', '.join(groups_list)})
+        t.src.append({'Grouped': ', '.join(groups_list)})
 
         return cls(t.df, t.src, groups_list=groups_list)
 

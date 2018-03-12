@@ -262,7 +262,7 @@ class PeakFeaturesExtract(CtrlNode):
             elif not any('Peak_Detect' in d for d in t.src):
                 raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
                                  'a Peak_Detect node before this one.')
-            t = t.copy()
+            # t = t.copy()
             try:
                 pf = Extraction.PeakFeaturesIter(t)
                 tran_with_features = pf.get_all()
@@ -306,8 +306,7 @@ class PeakDetect(CtrlNode):
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
         self.t = None
 
-    @staticmethod
-    def _get_zero_crossings(dsig, fictional_bases=False):
+    def _get_zero_crossings(self, dsig, fictional_bases=False):
         """
         Determine the peaks and bases of the signal by finding zero crossing in the first derivative of the signal
         :param dsig: The first derivative of the signal
@@ -316,7 +315,6 @@ class PeakDetect(CtrlNode):
         :rtype: pd.DataFrame
         """
         sc = np.diff(np.sign(dsig))
-        print(sc)
 
         peaks = np.where(sc < 0)[0]
         bases = np.where(sc > 0)[0]
@@ -353,8 +351,15 @@ class PeakDetect(CtrlNode):
         peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
         peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
 
-        print(peaks_bases_df)
+        for ix, r in peaks_bases_df.iterrows():
+            if r['peak'] and ix > 0:
+                if peaks_bases_df.iloc[ix-1]['base'] and peaks_bases_df.iloc[ix+1]['base']:
+                    ix_left_base = peaks_bases_df.iloc[ix-1]['event']
+                    ix_right_base = peaks_bases_df.iloc[ix+1]['event']
 
+                    peak_revised = np.where(self.t.df.iloc[self.row_ix]['raw_curve'] == np.max(np.take(self.t.df.iloc[self.row_ix]['raw_curve'], np.arange(ix_left_base, ix_right_base))))[0][0]
+                    peaks_bases_df.set_value(ix, 'event', peak_revised)
+        self.row_ix +=1
         return peaks_bases_df
 
     def process(self, display=True, **kwargs):
@@ -399,7 +404,8 @@ class PeakDetect(CtrlNode):
 
         # self.t.data_column['peaks_bases'] = 'peaks_bases'
         fb = self.ctrls['Fictional_Bases'].isChecked()
-        self.t.df['peaks_bases'] = self.t.df['curve'].apply(lambda s: PeakDetect._get_zero_crossings(s, fb))
+        self.row_ix = 0
+        self.t.df['peaks_bases'] = self.t.df['curve'].apply(lambda s: self._get_zero_crossings(s, fb))
 
         self.t.df['curve'] = self.t.df['raw_curve']
         self.t.df.drop(columns=['raw_curve'])
