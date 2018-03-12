@@ -25,12 +25,13 @@ else:
     from . import ComputeInterfaces
     from . import Compute
 from pyqtgraphCore.Qt import QtCore, QtGui
+from uuid import uuid4
 
 
 class PeakFeatures:
     def __init__(self, transmission):
         assert isinstance(transmission, Transmission)
-        self.t = transmission
+        self.t = transmission.copy()
 
     def get_all(self):
         self.row = 0
@@ -123,7 +124,8 @@ class PeakFeatures:
         compute_interface = ComputeInterfaces.StaticMT(to_compute, args_d)
         # Spawn and run the processes, and get results
         peak_features = compute_interface.compute()
-        peak_features.update({'ix_peak_abs': ix_peak_abs, 'ix_peak_rel': ix_peak_rel, 'peak_curve': peak_curve})
+        peak_features.update({'_pfeature_ix_peak_abs': ix_peak_abs, '_pfeature_ix_peak_rel': ix_peak_rel,
+                              '_pfeature_peak_curve': peak_curve, '_pfeature_uuid': uuid4()})
         return peak_features
 
         # With this I can get a list of all the static methods in

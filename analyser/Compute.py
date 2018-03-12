@@ -23,24 +23,24 @@ class PeakFeatures:
         try:
             result = abs(min(peak_curve) - peak_curve[ix_peak_rel])
         except:
-            result = 'Error'
-        q.put({'pfeature_amplitude_relative': result})
+            result = np.NaN
+        q.put({'_pfeature_amplitude_relative': result})
 
     @staticmethod
     def amplitude_abs(q, pre_peak_baseline, ix_peak_abs):
         try:
             result = ix_peak_abs - pre_peak_baseline
         except:
-            result = 'Error'
-        q.put({'pfeature_amplitude_abs': result})
+            result = np.NaN
+        q.put({'_pfeature_amplitude_abs': result})
 
     @staticmethod
     def area(q, peak_curve):
         try:
             result = integrate.simps(peak_curve)
         except:
-            result = 'Error'
-        q.put({'pfeature_area': result})
+            result = np.NaN
+        q.put({'_pfeature_area': result})
 
     @staticmethod
     def rising_slope_at_mid(q, peak_curve, ix_peak_rel):
@@ -52,8 +52,8 @@ class PeakFeatures:
             dy = abs(peak_curve[0] - peak_curve[ix_peak_rel])
             result = dy / ix_peak_rel
         except:
-            result = 'Error'
-        q.put({'pfeature_rising_slope_avg': result})
+            result = np.NaN
+        q.put({'_pfeature_rising_slope_avg': result})
 
     @staticmethod
     def falling_slope_at_mid(q, peak_curve, ix_peak_rel):
@@ -65,16 +65,16 @@ class PeakFeatures:
             dy = abs(peak_curve[-1] - peak_curve[ix_peak_rel])
             result = dy / abs(len(peak_curve) - ix_peak_rel)
         except:
-            result = 'Error'
-        q.put({'pfeature_falling_slope_avg': result})
+            result = np.NaN
+        q.put({'_pfeature_falling_slope_avg': result})
 
     @staticmethod
     def duration_base(q, peak_curve):
         try:
             result = np.size(peak_curve)
         except:
-            result = 'Error'
-        q.put({'pfeature_duration_base': result})
+            result = np.NaN
+        q.put({'_pfeature_duration_base': result})
 
     @staticmethod
     def duration_mid(q, curve):
@@ -84,9 +84,9 @@ class PeakFeatures:
     def inter_peak_interval(q, ix_peak_abs, ix_pre_peak, ix_nex_peak):
         try:
             if (ix_pre_peak is None) or (ix_nex_peak is None):
-                result = 'BAAAAAAAAAH'
+                result = np.NaN
             else:
                 result = {'pre': ix_peak_abs - ix_pre_peak, 'post': ix_nex_peak - ix_peak_abs}
         except:
             result = 'Error'
-        q.put({'pfeature_inter_peak_interval': result})
+        q.put({'_pfeature_inter_peak_interval': result})

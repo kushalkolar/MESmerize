@@ -42,8 +42,8 @@ class LoadProjDF(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return self.t
 
-        print('#######Weak Refs Dict########')
-        print(configuration.df_refs)
+        # print('#######Weak Refs Dict########')
+        # print(configuration.df_refs)
 
         if self.ctrls['PinDF'].isEnabled():
             if self.ctrls['PinDF'].isChecked():
@@ -56,12 +56,12 @@ class LoadProjDF(CtrlNode):
                 return
             df_ref = configuration.df_refs[self.ctrls['DF_Name'].currentText()]
             df = df_ref()
-            print('*****************config df ref hex ID:*****************')
-            print(hex(id(df)))
+            # print('*****************config df ref hex ID:*****************')
+            # print(hex(id(df)))
             self.t = Transmission.from_proj(df, self.ctrls['DF_Name'].currentText())
 
-            print('Tranmission dataframe hexID:')
-            print(hex(id(self.t.df)))
+            # print('Tranmission dataframe hexID:')
+            # print(hex(id(self.t.df)))
 
         return {'Out': self.t}
 
