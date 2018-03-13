@@ -65,8 +65,9 @@ class Flowchart(Node):
         
         self.inputNode = Node('Input', allowRemove=False, allowAddOutput=True)
         self.outputNode = Node('Output', allowRemove=False, allowAddInput=True)
-        self.addNode(self.inputNode, 'Input', [-150, 0])
-        self.addNode(self.outputNode, 'Output', [300, 0])
+        # self.addNode(self.inputNode, 'Input', [-150, -150])
+        # self.addNode(self.outputNode, 'Output', [300, 150])
+
         
         self.outputNode.sigOutputChanged.connect(self.outputChanged)
         self.outputNode.sigTerminalRenamed.connect(self.internalTerminalRenamed)
@@ -77,7 +78,7 @@ class Flowchart(Node):
         self.inputNode.sigTerminalAdded.connect(self.internalTerminalAdded)
         
         self.viewBox.autoRange(padding = 0.04)
-            
+
         for name, opts in terminals.items():
             self.addTerminal(name, **opts)
       
@@ -94,6 +95,7 @@ class Flowchart(Node):
         #print "  ....."
         self.inputWasSet = True
         self.inputNode.setOutput(**args)
+        print(self._inputs)
         
     def outputChanged(self):
         ## called when output of internal node has changed
@@ -514,7 +516,7 @@ class Flowchart(Node):
             return
             ## NOTE: was previously using a real widget for the file dialog's parent, but this caused weird mouse event bugs..
             #fileName = QtGui.QFileDialog.getOpenFileName(None, "Load Flowchart..", startDir, "Flowchart (*.fc)")
-        fileName = unicode(fileName)
+        # fileName = unicode(fileName)
         state = configfile.readConfigFile(fileName)
         self.restoreState(state, clear=True)
         self.viewBox.autoRange()
@@ -535,7 +537,7 @@ class Flowchart(Node):
             self.fileDialog.fileSelected.connect(self.saveFile)
             return
             #fileName = QtGui.QFileDialog.getSaveFileName(None, "Save Flowchart..", startDir, "Flowchart (*.fc)")
-        fileName = unicode(fileName)
+        # fileName = unicode(fileName)
         configfile.writeConfigFile(self.saveState(), fileName)
         self.sigFileSaved.emit(fileName)
 
@@ -613,11 +615,12 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         self.ui.ctrlList.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         
         self.chartWidget = FlowchartWidget(chart, self)
+        self.ui.BtnResetView.clicked.connect(self.chartWidget.resetView)
         #self.chartWidget.viewBox().autoRange()
-        self.cwWin = QtGui.QMainWindow()
-        self.cwWin.setWindowTitle('Flowchart')
-        self.cwWin.setCentralWidget(self.chartWidget)
-        self.cwWin.resize(1000,800)
+        # self.cwWin = QtGui.QMainWindow()
+        # self.cwWin.setWindowTitle('Flowchart')
+        # self.cwWin.setCentralWidget(self.chartWidget)
+        # self.cwWin.resize(1000,800)
         
         h = self.ui.ctrlList.header()
         if not USE_PYQT5:
@@ -660,7 +663,7 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         #self.setCurrentFile(newFile)
         
     def fileSaved(self, fileName):
-        self.setCurrentFile(unicode(fileName))
+        self.setCurrentFile(fileName)
         self.ui.saveBtn.success("Saved.")
         
     def saveClicked(self):
@@ -689,7 +692,7 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         #self.setCurrentFile(newFile)
             
     def setCurrentFile(self, fileName):
-        self.currentFileName = unicode(fileName)
+        self.currentFileName = fileName
         if fileName is None:
             self.ui.fileNameLabel.setText("<b>[ new ]</b>")
         else:
@@ -717,6 +720,7 @@ class FlowchartCtrlWidget(QtGui.QWidget):
         byp = QtGui.QPushButton('X')
         byp.setCheckable(True)
         byp.setFixedWidth(20)
+        byp.setStyleSheet("QPushButton:checked { background-color: red; }")
         item.bypassBtn = byp
         self.ui.ctrlList.setItemWidget(item, 1, byp)
         byp.node = node
@@ -816,7 +820,10 @@ class FlowchartWidget(dockarea.DockArea):
         #self.view.sigClicked.connect(self.showViewMenu)
         #self._scene.sigSceneContextMenu.connect(self.showViewMenu)
         #self._viewBox.sigActionPositionChanged.connect(self.menuPosChanged)
-        
+        self.resetView()
+
+    def resetView(self):
+        self._viewBox.setRange(xRange=(-300, 300), yRange=(-200, 200), disableAutoRange=False)
         
     def reloadLibrary(self):
         #QtCore.QObject.disconnect(self.nodeMenu, QtCore.SIGNAL('triggered(QAction*)'), self.nodeMenuTriggered)
@@ -884,6 +891,7 @@ class FlowchartWidget(dockarea.DockArea):
         else:
             item = items[0]
             if hasattr(item, 'node') and isinstance(item.node, Node):
+
                 n = item.node
                 self.ctrl.select(n)
                 data = {'outputs': n.outputValues(), 'inputs': n.inputValues()}
@@ -915,6 +923,7 @@ class FlowchartWidget(dockarea.DockArea):
             if isinstance(val, ndarray):
                 val = "%s %s %s" % (type(val).__name__, str(val.shape), str(val.dtype))
             else:
+                # print(val)
                 val = str(val)
                 if len(val) > 400:
                     val = val[:400] + "..."
@@ -933,4 +942,3 @@ class FlowchartWidget(dockarea.DockArea):
         
 class FlowchartNode(Node):
     pass
-

@@ -2,9 +2,12 @@
 
 """
 Motion correction script adapted from the CaImAn library. Peforms all motion correction
-in a separate instance that is a separate process from the main desktop application. I
-intend to also use this as part of the headless version of Mesmerize so that motion correction
-(which is computationally intensive) can be done on a supercomputer/cluster
+in a separate processes from the main desktop application. I intend to also use this as
+part of the headless version of Mesmerize so that motion correction
+(which is computationally intensive) can be done on a cluster
+
+Original documentation below:
+
 Complete demo pipeline for motion correction, source extraction, and
 deconvolution of two-photon calcium imaging data using the CaImAn package.
 
@@ -129,17 +132,17 @@ class caimanPipeline(multiprocessing.Process):
         #offset_mov = -np.min(m_orig[:100])
         #m_orig.resize(1, 1, downsample_ratio).play(
         #    gain=10, offset=offset_mov, fr=30, magnification=2)
-        
+
         #%% start a cluster for parallel processing
         c, dview, n_processes = cm.cluster.setup_cluster(
             backend='local', n_processes=None, single_thread=False)
-        
-        
+
+
         #%%% MOTION CORRECTION
         # first we create a motion correction object with the parameters specified
         min_mov = cm.load(self.fname[0], subindices=range(200)).min()
         # this will be subtracted from the movie to make it non-negative
-        
+
         mc = MotionCorrect(self.fname[0], min_mov,
                            dview=dview, max_shifts=self.max_shifts, niter_rig=self.niter_rig,
                            splits_rig=self.splits_rig,
@@ -148,21 +151,21 @@ class caimanPipeline(multiprocessing.Process):
                            max_deviation_rigid=self.max_deviation_rigid,
                            shifts_opencv=True, nonneg_movie=True)
         # note that the file is not loaded in memory
-        
+
         #%% Run piecewise-rigid motion correction using NoRMCorre
         mc.motion_correct_pwrigid(save_movie=True)
         m_els = cm.load(mc.fname_tot_els)
         bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
                                          np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
         np.savez(self.fileName+'_mc.npz', imgseq=m_els.T)
-        
+
 
     # maximum shift to be used for trimming against NaNs
     ##%% compare with original movie
     #cm.concatenate([m_orig.resize(1, 1, downsample_ratio) + offset_mov,
     #                m_els.resize(1, 1, downsample_ratio)],
     #               axis=2).play(fr=60, gain=15, magnification=2, offset=0)  # press q to exit
-    
+
     ##%% MEMORY MAPPING
     ## memory map the file in order 'C'
     #fnames = mc.fname_tot_els   # name of the pw-rigidly corrected file.
@@ -175,7 +178,7 @@ class caimanPipeline(multiprocessing.Process):
     #d1, d2 = dims
     #images = np.reshape(Yr.T, [T] + list(dims), order='F')
     # load frames in python format (T x X x Y)
-    
+
         #%% restart cluster to clean up memory
         dview.terminate()
 #        c, dview, n_processes = cm.cluster.setup_cluster(

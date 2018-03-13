@@ -18,10 +18,16 @@ import configparser
 import numpy as np
 cfg = configparser.RawConfigParser(allow_no_value=True)
 cfg.optionxform = str
-
 configpath = None
 projPath = None
 special = {}
+
+df_refs = {}
+viewer_ref = None
+
+def add_df_ref(ref):
+    global df_refs
+    df_refs.update(ref)
 
 num_types = [int, float, np.int64, np.float64]
 
@@ -31,10 +37,10 @@ def saveConfig():
         cfg.write(configfile)
 
 def newConfig():
-    defaultInclude = ['SampleID', 'Genotype', 'Date']
+    defaultInclude = ['SampleID', 'Genotype', 'Date', 'comments']
     cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
-    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath']
+    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'uuid_curve']
     cfg['EXCLUDE'] = dict.fromkeys(defaultExclude)
 
     cfg['ROI_DEFS'] = {}
@@ -42,6 +48,8 @@ def newConfig():
     cfg['STIM_DEFS'] = {}
 
     cfg['ALL_STIMS'] = {}
+
+    cfg['CHILD_DFS'] = {}
 
     setSpecial()
 

@@ -16,14 +16,12 @@ import pickle
 import sys
 sys.path.append('..')
 if __name__ == '__main__':
-    #from stimMap_template import *
     from stimMap_one_row_pytemplate import *
     import configuration
 else:
     from .stimMap_one_row_pytemplate import *
     from . import configuration
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-
 
 
 class Window(QtWidgets.QWidget):
@@ -114,13 +112,6 @@ class TabPage(QtGui.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self, voltList, channel, configuration.cfg.options('STIM_DEFS'),
                         configuration.cfg.options('ALL_STIMS'))
-    # Returns the stimulus definitions as a dictionary where the keys are the voltages.
-
-        #bah = ['1', '2', '3']
-        #func = getattr(self, 'ui.aux_1_substimBox_5.addItems(["1"])')
-        #func()
-        #method_to_call = getattr(self, 'ui.aux_1_stimBox_1')
-        #method_to_call.addItems(bah)
         
 # For testing
 if __name__ == '__main__':

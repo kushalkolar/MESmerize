@@ -21,16 +21,13 @@ occured for the animal that was exposed to in this particular image sequence
 """
 import numpy as np
 from PyQt5 import QtGui
-from pyqtgraphCore import fn
+import pyqtgraphCore.functions as fn
 import csv
 from . import configuration
-
-def fix_fp_errors(n):
-    fix = np.round(n, decimals=1) + 0.0
-    return fix
+from . misc_funcs import fix_fp_errors
 
 class ImgData():
-    def __init__(self, seq, meta={}, SampleID=None, Genotype='Untagged', stimMaps=None,
+    def __init__(self, seq, meta={}, SampleID=None, Genotype='untagged', stimMaps=None,
                  isSubArray=False, isMotCor=False, isDenoised=False):
         self.seq = seq
         self.meta = meta.copy()
@@ -65,6 +62,11 @@ class ImgData():
         
     @stimMaps.setter
     def stimMaps(self, maps):
+        """
+
+        :param maps: tuple in the format: (<dict of stimulus maps>, <str, originating source of the map>)
+        :return: None
+        """
         dm, origin = maps
 
         if dm is None:
@@ -74,14 +76,21 @@ class ImgData():
 
         if origin == 'mesfile':
             # Organize stimulus maps from mesfile objects
+            try:
+                mes_meta = self.meta['original_meta']
+            except (KeyError, IndexError) as e:
+                QtGui.QMessageBox.warning(None, 'Stimulus Data not found!', 'Could not find the stimulus data in the '
+                                                                           'meta-data for this image.')
+                self._stimMaps = {}
+                return
             for machine_channel in dm.keys():
                 ch_dict = dm[machine_channel]
                 try:
-                    y = self.meta[machine_channel]['y']
-                    x = self.meta[machine_channel]['x'][1]
+                    y = mes_meta[machine_channel]['y']
+                    x = mes_meta[machine_channel]['x'][1]
 
-                    firstFrameStartTime = self.meta['FoldedFrameInfo']['firstFrameStartTime']
-                    frameTimeLength = self.meta['FoldedFrameInfo']['frameTimeLength']
+                    firstFrameStartTime = mes_meta['FoldedFrameInfo']['firstFrameStartTime']
+                    frameTimeLength = mes_meta['FoldedFrameInfo']['frameTimeLength']
 
                     current_map = []
 

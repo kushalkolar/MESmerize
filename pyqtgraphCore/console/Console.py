@@ -11,7 +11,7 @@ elif USE_PYQT5:
     from . import template_pyqt5 as template
 else:
     from . import template_pyqt as template
-
+from os.path import isfile
 
 class ConsoleWidget(QtGui.QWidget):
     """
@@ -89,12 +89,14 @@ class ConsoleWidget(QtGui.QWidget):
     def loadHistory(self):
         """Return the list of previously-invoked command strings (or None)."""
         if self.historyFile is not None:
+            if isfile(self.historyFile) is False:
+                pickle.dump([""], open(self.historyFile, 'wb'))
             return pickle.load(open(self.historyFile, 'rb'))
         
     def saveHistory(self, history):
         """Store the list of previously-invoked command strings."""
         if self.historyFile is not None:
-            pickle.dump(open(self.historyFile, 'wb'), history)
+            pickle.dump(history, open(self.historyFile, 'wb'))
         
     def runCmd(self, cmd):
         #cmd = str(self.input.lastCmd)

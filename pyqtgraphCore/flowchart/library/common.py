@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ...Qt import QtCore, QtGui
+from ...Qt import QtCore, QtGui, QtWidgets
 from ...widgets.SpinBox import SpinBox
 #from ...SignalProxy import SignalProxy
 from ...WidgetGroup import WidgetGroup
@@ -7,6 +7,7 @@ from ...WidgetGroup import WidgetGroup
 from ..Node import Node
 import numpy as np
 from ...widgets.ColorButton import ColorButton
+from analyser.DataTypes import Transmission
 try:
     import metaarray
     HAVE_METAARRAY = True
@@ -16,8 +17,8 @@ except:
 
 def generateUi(opts):
     """Convenience function for generating common UI types"""
-    widget = QtGui.QWidget()
-    l = QtGui.QFormLayout()
+    widget = QtWidgets.QWidget(parent=None)
+    l = QtWidgets.QFormLayout()
     l.setSpacing(0)
     widget.setLayout(l)
     ctrls = {}
@@ -31,32 +32,84 @@ def generateUi(opts):
         else:
             raise Exception("Widget specification must be (name, type) or (name, type, {opts})")
         if t == 'intSpin':
-            w = QtGui.QSpinBox()
+            # w = QtGui.QSpinBox()
+            w = QtWidgets.QSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
             if 'min' in o:
                 w.setMinimum(o['min'])
             if 'value' in o:
                 w.setValue(o['value'])
+            if 'step' in o:
+                w.setSingleStep(o['step'])
+
+
         elif t == 'doubleSpin':
-            w = QtGui.QDoubleSpinBox()
+            w = QtWidgets.QDoubleSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
             if 'min' in o:
                 w.setMinimum(o['min'])                
             if 'value' in o:
                 w.setValue(o['value'])
-        elif t == 'spin':
-            w = SpinBox()
-            w.setOpts(**o)
+            if 'step' in o:
+                w.setSingleStep(o['step'])
+
+        # elif t == 'spin':
+        #     w = SpinBox()
+        #     w.setOpts(**o)
+
         elif t == 'check':
-            w = QtGui.QCheckBox()
+            w = QtWidgets.QCheckBox()
             if 'checked' in o:
                 w.setChecked(o['checked'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
+            if 'applyBox' in o:
+                if o['applyBox'] is True:
+                    w.setToolTip('When checked this node will process all incoming data.\n'
+                                 'Therefore note that this will cause the program to behave\n'
+                                 'slowly if you are constantly changing things around\n'
+                                 'while keeping this checked.')
+
+        elif t == 'radioBtn':
+            w = QtWidgets.QRadioButton()
+            if 'checked' in o:
+                w.setChecked(o['checked'])
+
         elif t == 'combo':
-            w = QtGui.QComboBox()
-            for i in o['values']:
-                w.addItem(i)
+            w = QtWidgets.QComboBox()
+            if 'values' in o.keys():
+                for i in o['values']:
+                    if i != '':
+                        w.addItem(i)
+
+        elif t == 'lineEdit':
+            w = QtWidgets.QLineEdit()
+            if 'placeHolder' in o:
+                w.setPlaceholderText(o['placeHolder'])
+            if 'text' in o:
+                w.setText(o['text'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
+
+
+        elif t == 'label':
+            w = QtWidgets.QLabel()
+            if 'text' in o:
+                w.setText(o['text'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
+
+        elif t == 'button':
+            w = QtWidgets.QPushButton()
+            if 'text' in o:
+                w.setText(o['text'])
+            if 'checkable' in o:
+                w.setChecked(o['checkable'])
+            if 'toolTip' in o:
+                w.setToolTip(o['toolTip'])
+
         #elif t == 'colormap':
             #w = ColorMapper()
         elif t == 'color':
@@ -84,7 +137,7 @@ class CtrlNode(Node):
     
     sigStateChanged = QtCore.Signal(object)
     
-    def __init__(self, name, ui=None, terminals=None):
+    def __init__(self, name, ui=None, terminals=None, **kwargs):
         if ui is None:
             if hasattr(self, 'uiTemplate'):
                 ui = self.uiTemplate
@@ -96,7 +149,8 @@ class CtrlNode(Node):
         
         self.ui, self.stateGroup, self.ctrls = generateUi(ui)
         self.stateGroup.sigChanged.connect(self.changed)
-       
+        self.count = 0
+
     def ctrlWidget(self):
         return self.ui
        
@@ -104,11 +158,31 @@ class CtrlNode(Node):
         self.update()
         self.sigStateChanged.emit(self)
 
-    def process(self, In, display=True):
+    def process(self, **kwargs):#In, display=True):
+        In = kwargs['In']
+
+        if In is None:
+            return
+
+        if 'Out' in kwargs.items():
+            print(' !!!!!!!!! >>>>>>>>>> OUT PASSED INTO process() <<<<<<<<<<<<<<< !!!!!!!!!!!!')
+            print(kwargs['Out'])
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+
+        if type(In) is None:
+            raise TypeError('Incoming tranmission is None')
+
+        if isinstance(In, Transmission):
+            if In.df.empty:
+                # QtGui.QMessageBox.warning(None, 'IndexError!',
+                #                                 'The DataFrame of the incoming transmission is empty!')
+                raise IndexError('The DataFrame of the incoming transmission is empty!')
+
         out = self.processData(In)
         return {'Out': out}
     
     def saveState(self):
+        # self.changed()
         state = Node.saveState(self)
         state['ctrl'] = self.stateGroup.state()
         return state
@@ -117,6 +191,7 @@ class CtrlNode(Node):
         Node.restoreState(self, state)
         if self.stateGroup is not None:
             self.stateGroup.setState(state.get('ctrl', {}))
+        # self.changed()
             
     def hideRow(self, name):
         w = self.ctrls[name]
@@ -138,7 +213,7 @@ class PlottingCtrlNode(CtrlNode):
         #print "PlottingCtrlNode.__init__ called."
         CtrlNode.__init__(self, name, ui=ui, terminals=terminals)
         self.plotTerminal = self.addOutput('plot', optional=True)
-        
+
     def connected(self, term, remote):
         CtrlNode.connected(self, term, remote)
         if term is not self.plotTerminal:
