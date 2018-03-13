@@ -13,7 +13,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
-
 sys.path.append('..')
 if __name__ == '__main__':
     from DataTypes import ImgData
@@ -23,13 +22,12 @@ else:
     from .DataTypes import ImgData
 import numpy as np
 import pickle
-import pandas as pd
 import time
 import tifffile
-from PyQt5 import QtGui
 import os
 from . import configuration
 from uuid import uuid4
+
 
 class viewerWorkEnv():
     def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments=''):
@@ -61,7 +59,7 @@ class viewerWorkEnv():
 
     @classmethod
     def from_pickle(cls, pikPath, npzPath=None, tiffPath=None):
-        '''
+        """
         Get pickled image data from a pickle file & image sequence from a npz or tiff. Used after motion correction
         & to view a sample from a project DataFrame. Create ImgData class object (See MesmerizeCore.DataTypes) and
         return instance of the work environment.
@@ -72,7 +70,7 @@ class viewerWorkEnv():
         :type: npzPath:     str
         :param: tiffPath:   str of the full path to a tiff file containing the image sequence
         :type: tiffPath:    str
-        '''
+        """
 
         pick = pickle.load(open(pikPath, 'rb'))
         if npzPath is not None:
@@ -107,7 +105,7 @@ class viewerWorkEnv():
 
     @staticmethod
     def load_mesfile(path):
-        '''
+        """
         Just passes the path of a .mes file to the constructor of class MES in MesmerizeCore.FileInput.
         Loads .mes file & constructs MES obj from which individual images & their respective metadata can be loaded
         to construct viewer work environments using the classmethod viewerWorkEnv.from_mesfile.
@@ -116,12 +114,27 @@ class viewerWorkEnv():
         :type path:  str
         :return:     MesmerizeCore.FileInput.MES type object
         :rtype:      MES
-        '''
+        """
         return MES(path)
+
+    @staticmethod
+    def _organize_meta(meta, origin):
+        if origin == 'mes':
+            fps = 1/meta['FoldedFrameInfo']['frameTimeLength']
+
+            date_meta = meta['MeasurementDate'].split('.')
+            ymd = date_meta[0] + date_meta[1] + date_meta[2]
+            hms_ = date_meta[3].split(':')
+            hms = hms_[0].split(' ')[1] + hms_[1] + hms_[2][:2]
+            date = ymd + '_' + hms
+
+            meta_d = {'origin': origin, 'fps': fps, 'date': date, 'original_meta': meta}
+
+            return meta_d
 
     @classmethod
     def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
-        '''
+        """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.
 
@@ -132,11 +145,12 @@ class viewerWorkEnv():
         :param      mesfileMaps:    if there's a stimulus map that has been set by the user to load upon creation of the
                                     work environment.
         :type       mesfileMaps:    dict
-        '''
+        """
 
-        rval, seq, meta = mesfile.load_img(ref)
+        rval, seq, raw_meta = mesfile.load_img(ref)
 
         if rval:
+            meta = viewerWorkEnv._organize_meta(raw_meta, 'mes')
             imdata = ImgData(seq, meta)
             imdata.stimMaps = (mesfileMaps, 'mesfile')
 
@@ -147,7 +161,7 @@ class viewerWorkEnv():
 
     @classmethod
     def from_tiff(cls, path, csvMapPaths=None):
-        '''
+        """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         tifffile.imread and any csv stimulus map that the user may want to apply.
 
@@ -155,7 +169,7 @@ class viewerWorkEnv():
         :type path:         str
         :param csvMapPaths: full paths to csv files to load with the ImgData object into the work environment
         :type csvMapPaths:  list
-        '''
+        """
 
         seq = tifffile.imread(path)
         imdata = ImgData(seq.T)
@@ -190,7 +204,7 @@ class viewerWorkEnv():
         return d
 
     def to_pickle(self, dirPath, mc_params=None, filename=None):
-        '''
+        """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
         for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
         for saving current sample to the project. Image sequence is saved as a tiff and other information about the
@@ -202,7 +216,7 @@ class viewerWorkEnv():
         :type       mc_params: dict
         :return:    (True if no exceptions else False, str of filename)
         :rtype:     tuple
-        '''
+        """
         if mc_params is not None:
             rigid_params, elas_params = mc_params
         try:
@@ -229,19 +243,19 @@ class viewerWorkEnv():
             return False, None
 
     def to_pandas(self, projPath):
-        '''
+        """
         :param      projPath: Root path of the current project
         :type       projPath: str
         :return:    (True if no exceptions, list of dicts that each correspond to a single curve that can be appended
                     as rows to the project dataframe)
         :rtype:     tuple
-        '''
+        """
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = projPath + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
         rval, imgPath = self.to_pickle(imgdir)
 
         # Check if the img saving and pickling worked
-        if rval == False:
+        if rval is False:
             return False, None
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
@@ -280,9 +294,16 @@ class viewerWorkEnv():
 
         if self.imgdata.meta is not None:
             try:
-                date = str(self.imgdata.meta['MeasurementDate'])
+                date = str(self.imgdata.meta['date'])
             except KeyError:
                 date = 'Unknown'
+        else:
+            date = 'Unknown'
+
+        if self.comments is None or self.comments == '':
+            comments = 'untagged'
+        else:
+            comments = self.comments
 
         curvesDir = projPath + '/curves/' + self.imgdata.SampleID
 
@@ -308,7 +329,7 @@ class viewerWorkEnv():
                           'Date': date,
                           **self.ROIList[ix].tags,
                           'uuid_curve': uuid4(),
-                          'comments': self.comments})
+                          'comments': comments})
 
             # df = df.append({**d, **roitags})  # , ignore_index=True)
 

@@ -44,7 +44,7 @@ class ButterWorth(CtrlNode):
     def _func(self, x, meta):
         N = self.ctrls['order'].value()
 
-        freq = 1/meta['FoldedFrameInfo']['frameTimeLength']
+        freq = meta['fps']
         divider = self.ctrls['freqDivider'].value()
 
         self.Wn = freq/divider
