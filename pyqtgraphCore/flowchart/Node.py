@@ -6,7 +6,7 @@ from .Terminal import *
 from ..pgcollections import OrderedDict
 from ..debug import *
 import numpy as np
-
+from MesmerizeCore import configuration
 
 def strDict(d):
     return dict([(str(k), v) for k, v in d.items()])
@@ -70,6 +70,9 @@ class Node(QtCore.QObject):
         self._allowAddInput = allowAddInput   ## flags to allow the user to add/remove terminals
         self._allowAddOutput = allowAddOutput
         self._allowRemove = allowRemove
+
+        self._saveNode = False
+        self._loadNode = False
         
         self.exception = None
         if terminals is None:
@@ -300,7 +303,11 @@ class Node(QtCore.QObject):
             if self.isBypassed():
                 out = self.processBypassed(vals)
             else:
-                out = self.process(**strDict(vals))
+                if self._loadNode:
+                    out = self.process()
+                else:
+                    out = self.process(**strDict(vals))
+
             #print "  output:", out
             if out is not None:
                 if signal:
@@ -373,7 +380,10 @@ class Node(QtCore.QObject):
         pos = self.graphicsItem().pos()
         state = {'pos': (pos.x(), pos.y()), 'bypass': self.isBypassed()}
         termsEditable = self._allowAddInput | self._allowAddOutput
-        for term in self._inputs.values() + self._outputs.values():
+        d = self._inputs
+        d.update(self._outputs)
+        # for term in self._inputs.values() + self._outputs.values():
+        for term in d.values():
             termsEditable |= term._renamable | term._removable | term._multiable
         if termsEditable:
             state['terminals'] = self.saveTerminals()

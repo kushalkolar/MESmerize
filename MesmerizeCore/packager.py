@@ -13,7 +13,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
-
 sys.path.append('..')
 if __name__ == '__main__':
     from DataTypes import ImgData
@@ -23,18 +22,28 @@ else:
     from .DataTypes import ImgData
 import numpy as np
 import pickle
-import pandas as pd
 import time
 import tifffile
-from PyQt5 import QtGui
 import os
 from . import configuration
+from uuid import uuid4
 
 
 class viewerWorkEnv():
-    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[]):
+    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments=''):
         """
-        :type imgdata: ImgData
+        A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
+        the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
+        a work environment to be easily saved in different ways regardless of the type of original data source.
+
+        :param ROIList:     list of ROIs in current work environment
+        :param CurvesList:  list of curves in current work environment
+        :param roi_states:  list of ROI states, from pyqtgraphCore.ROI.saveState()
+        :type imgdata:      ImgData
+        :type ROIList:      list
+        :type CurvesList:   list
+        :type roi_states:   list
+
         """
         self.ROIList = ROIList
         self.CurvesList = CurvesList
@@ -42,6 +51,7 @@ class viewerWorkEnv():
         self.imgdata = imgdata
         self._saved = True
         self.roi_states = roi_states
+        self.comments = comments
 
     #    def __repr__(self):
     #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
@@ -49,17 +59,18 @@ class viewerWorkEnv():
 
     @classmethod
     def from_pickle(cls, pikPath, npzPath=None, tiffPath=None):
-        '''
+        """
         Get pickled image data from a pickle file & image sequence from a npz or tiff. Used after motion correction
         & to view a sample from a project DataFrame. Create ImgData class object (See MesmerizeCore.DataTypes) and
         return instance of the work environment.
 
-        :param: pikPath:    str of the full path to the pickle containing image metadata, stim maps, and roi_states
-
-        :param: npzPath:    str of the full path to a npz containing the image sequence numpy array
-
+        :param: pikPath:    full path to the pickle containing image metadata, stim maps, and roi_states
+        :type pikPath:      str
+        :param: npzPath:    full path to a npz containing the image sequence numpy array
+        :type: npzPath:     str
         :param: tiffPath:   str of the full path to a tiff file containing the image sequence
-        '''
+        :type: tiffPath:    str
+        """
 
         pick = pickle.load(open(pikPath, 'rb'))
         if npzPath is not None:
@@ -74,12 +85,15 @@ class viewerWorkEnv():
                          Genotype=pick['imdata']['Genotype'],
                          stimMaps=pick['imdata']['stimMaps'],
                          isSubArray=pick['imdata']['isSubArray'])
+
+        comments = pick['imdata']['comments']
+
         roi_states = []
         if 'roi_states' in pick['imdata']:
             for ID in range(0, len(pick['imdata']['roi_states'])):
                 roi_states.append(pick['imdata']['roi_states'][ID])
 
-        return cls(imdata, roi_states=roi_states)
+        return cls(imdata, roi_states=roi_states, comments=comments)
 
     @property
     def saved(self):
@@ -91,33 +105,52 @@ class viewerWorkEnv():
 
     @staticmethod
     def load_mesfile(path):
-        '''
+        """
         Just passes the path of a .mes file to the constructor of class MES in MesmerizeCore.FileInput.
         Loads .mes file & constructs MES obj from which individual images & their respective metadata can be loaded
         to construct viewer work environments using the classmethod viewerWorkEnv.from_mesfile.
 
-        :param path: str of the full path to the .mes file.
-
-        :return: MES object
-        '''
+        :param path: full path to a single .mes file.
+        :type path:  str
+        :return:     MesmerizeCore.FileInput.MES type object
+        :rtype:      MES
+        """
         return MES(path)
+
+    @staticmethod
+    def _organize_meta(meta, origin):
+        if origin == 'mes':
+            fps = 1/meta['FoldedFrameInfo']['frameTimeLength']
+
+            date_meta = meta['MeasurementDate'].split('.')
+            ymd = date_meta[0] + date_meta[1] + date_meta[2]
+            hms_ = date_meta[3].split(':')
+            hms = hms_[0].split(' ')[1] + hms_[1] + hms_[2][:2]
+            date = ymd + '_' + hms
+
+            meta_d = {'origin': origin, 'fps': fps, 'date': date, 'original_meta': meta}
+
+            return meta_d
 
     @classmethod
     def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
-        '''
+        """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.
 
-        :param      mesfile:        MES obj, from MesmerizeCore.FileInput.
-
-        :param      ref:            str of the reference of the image to load
-
+        :param      mesfile:        MesmerizeCore.FileInput.MES object
+        :type       mesfile:        MES
+        :param      ref:            reference of the image to load
+        :type       ref:            str
         :param      mesfileMaps:    if there's a stimulus map that has been set by the user to load upon creation of the
                                     work environment.
-        '''
-        rval, seq, meta = mesfile.load_img(ref)
+        :type       mesfileMaps:    dict
+        """
+
+        rval, seq, raw_meta = mesfile.load_img(ref)
 
         if rval:
+            meta = viewerWorkEnv._organize_meta(raw_meta, 'mes')
             imdata = ImgData(seq, meta)
             imdata.stimMaps = (mesfileMaps, 'mesfile')
 
@@ -128,14 +161,15 @@ class viewerWorkEnv():
 
     @classmethod
     def from_tiff(cls, path, csvMapPaths=None):
-        '''
+        """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         tifffile.imread and any csv stimulus map that the user may want to apply.
 
-        :param path:        str of the full path to the tiff file
-
-        :param csvMapPaths: list of full paths to csv files to load with the ImgData object into the work environment
-        '''
+        :param path:        full path to a single tiff file
+        :type path:         str
+        :param csvMapPaths: full paths to csv files to load with the ImgData object into the work environment
+        :type csvMapPaths:  list
+        """
 
         seq = tifffile.imread(path)
         imdata = ImgData(seq.T)
@@ -151,7 +185,7 @@ class viewerWorkEnv():
         d = {'SampleID': self.imgdata.SampleID, 'Genotype': self.imgdata.Genotype,
              'meta': self.imgdata.meta, 'stimMaps': self.imgdata.stimMaps,
              'isSubArray': self.imgdata.isSubArray, 'isMotCor': self.imgdata.isMotCor,
-             'isDenoised': self.imgdata.isDenoised}
+             'isDenoised': self.imgdata.isDenoised, 'comments': self.comments}
 
         for ix in range(0, len(self.ROIList)):
             for roi_def in self.ROIList[ix].tags.keys():
@@ -170,17 +204,19 @@ class viewerWorkEnv():
         return d
 
     def to_pickle(self, dirPath, mc_params=None, filename=None):
-        '''
+        """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
-        for motion correction and package them into a pickle & image seq array. Use for batch motion correction and
+        for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
         for saving current sample to the project. Image sequence is saved as a tiff and other information about the
         image is saved in a pickle.
 
-        :rtype:     bool, str
-        :param      dirPath: str
-        :param      mc_params: dict
-        :return:    bool if no exceptions, str of filename
-        '''
+        :param      dirPath: directory in which to save tiff and pik file
+        :type       dirPath: str
+        :param      mc_params: motion correction parameters if any
+        :type       mc_params: dict
+        :return:    (True if no exceptions else False, str of filename)
+        :rtype:     tuple
+        """
         if mc_params is not None:
             rigid_params, elas_params = mc_params
         try:
@@ -207,18 +243,19 @@ class viewerWorkEnv():
             return False, None
 
     def to_pandas(self, projPath):
-        '''
+        """
         :param      projPath: Root path of the current project
-
-        :return:    True if no exceptions, list of dicts that each correspond to a single curve that can be appended
-                    as a row to the project dataframe
-        '''
+        :type       projPath: str
+        :return:    (True if no exceptions, list of dicts that each correspond to a single curve that can be appended
+                    as rows to the project dataframe)
+        :rtype:     tuple
+        """
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = projPath + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
         rval, imgPath = self.to_pickle(imgdir)
 
         # Check if the img saving and pickling worked
-        if rval == False:
+        if rval is False:
             return False, None
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
@@ -257,9 +294,16 @@ class viewerWorkEnv():
 
         if self.imgdata.meta is not None:
             try:
-                date = str(self.imgdata.meta['MeasurementDate'])
+                date = str(self.imgdata.meta['date'])
             except KeyError:
                 date = 'Unknown'
+        else:
+            date = 'Unknown'
+
+        if self.comments is None or self.comments == '':
+            comments = 'untagged'
+        else:
+            comments = self.comments
 
         curvesDir = projPath + '/curves/' + self.imgdata.SampleID
 
@@ -274,13 +318,18 @@ class viewerWorkEnv():
                      roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
 
             d = {'SampleID': self.imgdata.SampleID,
-                 'CurvePath': curvePath,
-                 'ImgPath': imgPath + '.tiff',
-                 'ImgInfoPath': imgPath + '.pik',
+                 'CurvePath': curvePath.split(projPath)[1],
+                 'ImgPath': imgPath.split(projPath)[1] + '.tiff',
+                 'ImgInfoPath': imgPath.split(projPath)[1] + '.pik',
                  'Genotype': self.imgdata.Genotype}
 
             # Final list of dicts that are each appended as rows to the project DataFrame
-            dicts.append({**d, **stimMapsSet, 'Date': date, **self.ROIList[ix].tags})
+            dicts.append({**d,
+                          **stimMapsSet,
+                          'Date': date,
+                          **self.ROIList[ix].tags,
+                          'uuid_curve': uuid4(),
+                          'comments': comments})
 
             # df = df.append({**d, **roitags})  # , ignore_index=True)
 
@@ -290,81 +339,6 @@ class viewerWorkEnv():
         print(dicts)
         self._saved = True
         return True, dicts
-
-def empty_df(cols):
-    """
-    Just returns an empty DataFrame based on columns in the project's config.cfg file. Only really used when a new
-    project is started.
-
-    :rtype: pd.DataFrame
-    """
-    if type(cols) is list:
-        cols = set(cols)
-    return pd.DataFrame(data=None, columns=cols)  # type: pd.DataFrame
-
-
-'''
-Package the work environment into the organization of a pandas dataframe.
-Used for example to add the current work environment (the image sequence, ROIs, and Calcium imaging
-traces (curves)) to the project index which is a pandas dataframe
-'''
-
-
-def workEnv2pandas(df, projPath):
-    if df is None:
-        df = empty_df()
-
-    # To save the image sequence array & metadata in the same folder as the project
-    imgpath = projPath + '/images' + imgdata.SampleID + '_' + str(time.time())
-
-    # Save image sequence
-    imgPath = path + '_IMG' + '.tiff'
-    tifffile.imsave(imgPath, self.imgdata.seq.T)
-
-    # Organize metadata of the image & save as a pickle
-    imgInfoPath = path + '_IMGINFO.pik'
-    imgInfo = {'SampleID': imgdata.SampleID, 'meta': imgdata.meta,
-               'Map': imgdata.Map, 'isSubArray': imgdata.isSubArray, 'isMotCor': imgdata.isMotCor,
-               'isDenoised': imgdata.isDenoised}
-    pickle.dump(imgInfo, open(imgInfoPath, 'wb'))
-
-    # Get a set of all stimuli in this particular experiment
-    stimList = []
-    for stim in imgdata.Map:
-        stimList.append(stim[0][0])
-    setOfStimMap = list(set(stimList))
-
-    # Add rows to pandas dataframe
-
-    for ix in range(0, len(ROIList)):
-        curvePath = path + '_CURVE_' + str(ix).zfill(3) + '.npy'
-        np.save(curvePath, Curveslist[ix].getData())
-
-        roitags = {}
-
-        for key in ROItags[ix]:
-            if ROItags[ix][key] == '':
-                ROItags[ix][key] = 'Untagged'
-            roitags['ROI_DEF:' + key] = ROItags[ix][key]
-
-        #        ROItagsDf = pd.DataFrame(d, index=[0])
-
-        d = {'CurvePath': curvePath,
-             'ImgPath': imgPath,
-             'ImgInfoPath': imgInfoPath,
-             'SampleID': imgdata.SampleID,
-             'Date': str(imgdata.meta['MeasurementDate']),
-             'ROIhandles': 'N/A',
-             'StimSet': setOfStimMap
-             }
-
-        df = df.append({**d, **roitags})  # , ignore_index=True)
-
-        # ------------------------------------------------------------------
-    ### TODO: CANNOT ALLOW NaN's in the dataframe!! Huge pain in the ass.
-    # ------------------------------------------------------------------
-    return df
-
 
 '''
 Does the reverse of workEnv2pandas

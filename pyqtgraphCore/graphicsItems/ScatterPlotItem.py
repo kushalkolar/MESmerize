@@ -243,7 +243,7 @@ class ScatterPlotItem(GraphicsObject):
         self.picture = None   # QPicture used for rendering when pxmode==False
         self.fragmentAtlas = SymbolAtlas()
 
-        self.data = np.empty(0, dtype=[('x', float), ('y', float), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
+        self.data = np.empty(0, dtype=[('x', np.float64), ('y', np.float64), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
         self.bounds = [None, None]  ## caches data bounds
         self._maxSpotWidth = 0      ## maximum size of the scale-variant portion of all spots
         self._maxSpotPxWidth = 0    ## maximum size of the scale-invariant portion of all spots
@@ -312,7 +312,8 @@ class ScatterPlotItem(GraphicsObject):
         Add new points to the scatter plot.
         Arguments are the same as setData()
         """
-
+        if 'name' in kargs:
+            self.opts['name'] = kargs['name']
         ## deal with non-keyword arguments
         if len(args) == 1:
             kargs['spots'] = args[0]

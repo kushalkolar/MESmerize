@@ -15,7 +15,7 @@ class FlowchartGraphicsView(GraphicsView):
         self._vb = FlowchartViewBox(widget, lockAspect=True, invertY=True)
         self.setCentralItem(self._vb)
         self.setRenderHint(QtGui.QPainter.Antialiasing, True)
-    
+
     def viewBox(self):
         return self._vb
     
@@ -25,7 +25,7 @@ class FlowchartViewBox(ViewBox):
     def __init__(self, widget, *args, **kwargs):
         ViewBox.__init__(self, *args, **kwargs)
         self.widget = widget
-        
+
     def getMenu(self, ev):
         ## called by ViewBox to create a new context menu
         self._fc_menu = QtGui.QMenu()
