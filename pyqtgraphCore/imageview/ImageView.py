@@ -39,9 +39,9 @@ from .. import debug as debug
 from ..SignalProxy import SignalProxy
 from .. import getConfigOption
 
-from pyqtgraph import plot
-
-
+from pyqtgraph import plot as pgplot
+from multiprocessing import Process, Queue
+import numpy as np
 from MesmerizeCore import stimMapWidget
 from MesmerizeCore.caimanMotionCorrect import caimanPipeline
 from MesmerizeCore.packager import viewerWorkEnv
@@ -59,31 +59,31 @@ class ImageView(QtGui.QWidget):
     """
     Widget used for display and analysis of image data.
     Implements many features:
-    
+
     * Displays 2D and 3D image data. For 3D data, a z-axis
       slider is displayed allowing the user to select which frame is displayed.
     * Displays histogram of image data with movable region defining the dark/light levels
-    * Editable gradient provides a color lookup table 
+    * Editable gradient provides a color lookup table
     * Frame slider may also be moved using left/right arrow keys as well as pgup, pgdn, home, and end.
     * Basic analysis features including:
-    
+
         * ROI and embedded plot for measuring image values across frames
-        * Image normalization / background subtraction 
-    
+        * Image normalization / background subtraction
+
     Basic Usage::
-    
+
         imv = pg.ImageView()
         imv.show()
         imv.setImage(data)
-        
+
     **Keyboard interaction**
-    
+
     * left/right arrows step forward/backward 1 frame when pressed,
       seek at 20fps when held.
     * up/down arrows seek at 100fps
     * pgup/pgdn seek at 1000fps
     * home/end seek immediately to the first/last frame
-    * space begins playing frames. If time values (in seconds) are given 
+    * space begins playing frames. If time values (in seconds) are given
       for each frame, then playback is in realtime.
     """
     sigTimeChanged = QtCore.Signal(object, object)
@@ -92,30 +92,30 @@ class ImageView(QtGui.QWidget):
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, *args):
         """
         By default, this class creates an :class:`ImageItem <pyqtgraph.ImageItem>` to display image data
-        and a :class:`ViewBox <pyqtgraph.ViewBox>` to contain the ImageItem. 
-        
+        and a :class:`ViewBox <pyqtgraph.ViewBox>` to contain the ImageItem.
+
         ============= =========================================================
-        **Arguments** 
+        **Arguments**
         parent        (QWidget) Specifies the parent widget to which
                       this ImageView will belong. If None, then the ImageView
                       is created with no parent.
         name          (str) The name used to register both the internal ViewBox
                       and the PlotItem used to display ROI data. See the *name*
-                      argument to :func:`ViewBox.__init__() 
+                      argument to :func:`ViewBox.__init__()
                       <pyqtgraph.ViewBox.__init__>`.
         view          (ViewBox or PlotItem) If specified, this will be used
-                      as the display area that contains the displayed image. 
-                      Any :class:`ViewBox <pyqtgraph.ViewBox>`, 
-                      :class:`PlotItem <pyqtgraph.PlotItem>`, or other 
+                      as the display area that contains the displayed image.
+                      Any :class:`ViewBox <pyqtgraph.ViewBox>`,
+                      :class:`PlotItem <pyqtgraph.PlotItem>`, or other
                       compatible object is acceptable.
         imageItem     (ImageItem) If specified, this object will be used to
                       display the image. Must be an instance of ImageItem
                       or other compatible object.
         ============= =========================================================
-        
-        Note: to display axis ticks inside the ImageView, instantiate it 
+
+        Note: to display axis ticks inside the ImageView, instantiate it
         with a PlotItem instance as its view::
-                
+
             pg.ImageView(view=pg.PlotItem())
         """
         # Just setup the pyqtgraph stuff
@@ -167,7 +167,7 @@ class ImageView(QtGui.QWidget):
         self.ui.btnImportSMap.clicked.connect(self.importCSVMap)
 
         self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
-        self.ui.btnPlotSplits.clicked.connect(self.splitsPlot)
+        self.ui.btnPlotSplits.clicked.connect(lambda: self.splits_hstack(plot=True))
         self.splitSeqMode = False
 
         self.mesfileMap = None
@@ -188,9 +188,16 @@ class ImageView(QtGui.QWidget):
         self.measureLine = None
         self.measureLine_A = None
         self.ui.btnStartBatch.clicked.connect(self.startBatch)
+        self.ui.btnRemoveFromBatch.clicked.connect(self.removeFromBatch)
+
+        self.ui.btnMotCorSearchDir.clicked.connect(self.searchMotCorFiles)
 
         self.ui.comboBoxStimMaps.setDisabled(True)
         self.ui.comboBoxStimMaps.currentIndexChanged[str].connect(self.displayStimMap)
+
+        self.ui.textBoxComments.textChanged.connect(self.comment_text_box_update)
+
+        self.ui.stackedWidget.setCurrentIndex(0)
 
         #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
 
@@ -244,6 +251,8 @@ class ImageView(QtGui.QWidget):
         self.ui.sliderStrides.valueChanged.connect(self.drawStrides)
         self.overlapsV = []
         self.overlapsH = []
+        self.ui.btnShowQuilt.clicked.connect(self.drawStrides)
+        self.ui.btnShowQuilt.clicked.connect(self.removeStrides)
 
     # Called from __main__ when btnSave in ConfigWindow is clicked.
     def update_from_config(self):
@@ -347,6 +356,9 @@ class ImageView(QtGui.QWidget):
             else:
                 self.workEnv = viewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection.text() + '.pik', tiffPath=self.splitsDir + '/' + selection.text() + '.tiff')
 
+        elif origin == 'pandas':
+            self.workEnv = viewerWorkEnv.from_pickle(pikPath=selection[0], tiffPath=selection[1])
+
         # Set the image
         self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
                       xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
@@ -379,12 +391,14 @@ class ImageView(QtGui.QWidget):
         self.ui.tabBatchParams.setEnabled(b)
         self.ui.tabROIs.setEnabled(b)
         self.ui.toolBox.setEnabled(b)
+        self.ui.btnAddCurrEnvToProj.setEnabled(b)
+
         self.ui.lineEdAnimalID.clear()
         self.ui.lineEdTrialID.clear()
         self.ui.lineEdGenotype.clear()
 
     def resetImgScale(self):
-        ''' 
+        '''
         Reset the current image to the center of the scene and reset the scale
         doesn't work as intended in some weird circumstances when you repeatedly right click on the scene
         and set the x & y axis to 'Auto' a bunch of times. But this bug is hard to recreate.'''
@@ -447,11 +461,29 @@ class ImageView(QtGui.QWidget):
         self.ui.listwTiffs.addItems(files)
         self.ui.listwTiffs.setEnabled(True)
 
+    '''##################################################################################################################
+                                            Split Seq Mode methods
+    ##################################################################################################################'''
+
+    def split_seq_ui_toggle(self, bool):
+        # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
+        self.ui.btnAddROI.setDisabled(bool)
+        self.ui.btnSubArray.setDisabled(bool)
+        self.ui.btnChangeSMap.setDisabled(bool)
+        self.ui.btnResetSMap.setDisabled(bool)
+        self.ui.btnImportSMap.setDisabled(bool)
+
+        self.ui.listwSplits.setEnabled(bool)
+        self.ui.btnPlotSplits.setEnabled(bool)
+        self.ui.btnDoneSplitSeqs.setEnabled(bool)
+
     def enterSplitSeqMode(self):
         if self.splitSeqMode is False:
             if QtGui.QMessageBox.question(self, 'Enter Split Seq Mode?', 'Are you sure you want to enter split-seq mode? ' +\
                                       'You CANNOT add any more ROIs in split-seq mode and many other functins are '
-                                      ' disabled.', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)\
+                                      ' disabled.\n\nAlso make sure you have tagged ALL your ROIs and applied any stimulus'
+                                      ' maps you may be interested in. You will loose everything if you tag ROIs after '
+                                      'exiting split-seq mode', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)\
                                         == QtGui.QMessageBox.No:
                 return
             self.splitSeqMode = True
@@ -459,14 +491,7 @@ class ImageView(QtGui.QWidget):
             self.splitsDir = configuration.projPath + '/tmp/splits/' + str(time.time())
             os.makedirs(self.splitsDir)
 
-            # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
-            self.ui.btnAddROI.setDisabled(True)
-            self.ui.btnSubArray.setDisabled(True)
-            self.ui.btnChangeSMap.setDisabled(True)
-            self.ui.btnResetSMap.setDisabled(True)
-            self.ui.btnImportSMap.setDisabled(True)
-            self.ui.listwSplits.setEnabled(True)
-            self.ui.btnPlotSplits.setEnabled(True)
+            self.split_seq_ui_toggle(True)
 
             # Each split is portrayed as an index item on the ui.listwSplits Qt widget
             currentSplit = 0
@@ -537,22 +562,42 @@ class ImageView(QtGui.QWidget):
         self.workEnv.to_pickle(self.splitsDir, filename=fn)  # Save the split
 
     # Just a function that ultimately stiches together ROI plotting under all the splits
-    def splitsPlot(self):
-        masterCurvesList = []
+    def splits_hstack(self, plot=False):
+        self.masterCurvesList = []
+        self.masterROIList = []
         for i in range(0, self.ui.listwSplits.count()):
             self.updateWorkEnv(str(i).zfill(3), origin='splits', iterate=True, qtsig=False)
 
             for ID in range(0, len(self.workEnv.ROIList)):
                 self.updatePlot(ID, force=True)
+                self.masterROIList.append([self.workEnv.ROIList])
+
             for ID in range(0, len(self.workEnv.CurvesList)):
                 if i == 0:
-                    masterCurvesList.append(self.workEnv.CurvesList[ID].getData())
+                    self.masterCurvesList.append(self.workEnv.CurvesList[ID].getData())
                 else:
-                    masterCurvesList[ID] = np.hstack((masterCurvesList[ID],
+                    self.masterCurvesList[ID] = np.hstack((self.masterCurvesList[ID],
                                                       self.workEnv.CurvesList[ID].getData()))
-        for curve in masterCurvesList:
-            plot(curve[1])
+        if plot:
+            for curve in self.masterCurvesList:
+                pgplot(curve[1])
 
+    def splits_seq_mode_done(self):
+        if QtGui.QMessageBox.question(self, 'Warning!', "Are you sure you're done?",
+                                     QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+            return
+
+        self.splits_hstack()
+        self.workEnv.CurvesList = self.masterCurvesList
+        # self.workEnv.ROIList = self.masterROIList
+        self.exit_split_seq_mode()
+        QtGui.QMessageBox.warning(self, 'WARNING!!', 'YOU MUST ADD THIS THIS TO YOUR PROJECT IMMEDIATELY WITHOUT '
+                                                     'CHANGING ANYTHING, OTHERWISE YOU WILL LOOSE THE INFORMATION FROM'
+                                                     ' SPLIT-SEQ MODE!!!')
+
+    def exit_split_seq_mode(self):
+        self.ui.listwSplits.clear()
+        self.split_seq_ui_toggle(False)
 
     '''##################################################################################################################
                                             Stimulus Maps methods
@@ -713,7 +758,7 @@ class ImageView(QtGui.QWidget):
     def setImage(self, img, autoRange=True, autoLevels=True, levels=None, axes=None, xvals=None, pos=None, scale=None, transform=None, autoHistogramRange=True):
         """
         Set the image to be displayed in the widget.
-        
+
         ================== ===========================================================================
         **Arguments:**
         img                (numpy array) the image to be displayed. See :func:`ImageItem.setImage` and
@@ -725,9 +770,9 @@ class ImageView(QtGui.QWidget):
         levels             (min, max); the white and black level values to use.
         axes               Dictionary indicating the interpretation for each axis.
                            This is only needed to override the default guess. Format is::
-                       
+
                                {'t':0, 'x':1, 'y':2, 'c':3};
-        
+
         pos                Change the position of the displayed image
         scale              Change the scale of the displayed image
         transform          Set the transform of the displayed image. This option overrides *pos*
@@ -736,17 +781,17 @@ class ImageView(QtGui.QWidget):
                            image data.
         ================== ===========================================================================
 
-        **Notes:**        
-        
+        **Notes:**
+
         For backward compatibility, image data is assumed to be in column-major order (column, row).
         However, most image data is stored in row-major order (row, column) and will need to be
         transposed before calling setImage()::
-        
+
             imageview.setImage(imagedata.T)
-            
+
         This requirement can be changed by the ``imageAxisOrder``
         :ref:`global configuration option <apiref_config>`.
-        
+
         """
 
         profiler = debug.Profiler()
@@ -894,7 +939,7 @@ class ImageView(QtGui.QWidget):
 
     def getProcessedImage(self):
         """Returns the image data after it has been processed by any normalization options in use.
-        This method also sets the attributes self.levelMin and self.levelMax 
+        This method also sets the attributes self.levelMin and self.levelMax
         to indicate the range of data in the image."""
         if self.imageDisp is None:
             self.imageDisp = self.image
@@ -1196,7 +1241,7 @@ class ImageView(QtGui.QWidget):
         else:
             return
 
-        # Get the ROI region        
+        # Get the ROI region
         data = self.workEnv.ROIList[ID].getArrayRegion((image.view(np.ndarray)), self.imageItem, axes)#, returnMappedCoords=True)
         #, returnMappedCoords=True)
         if data is not None:
@@ -1204,6 +1249,7 @@ class ImageView(QtGui.QWidget):
                 data = data.sum(axis=1)# Find the sum of pixel intensities
             if image.ndim == 3:
                 # Set the curve
+                data = np.subtract(data, np.min(data))
                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
                 self.workEnv.CurvesList[ID].setPen(color)
                 self.workEnv.CurvesList[ID].show()
@@ -1240,12 +1286,13 @@ class ImageView(QtGui.QWidget):
     ##################################################################################################################
     '''
 
-
     def openBatch(self):
         batchFolder = QtGui.QFileDialog.getExistingDirectory(self, 'Select batch Dir',
                                                       self.projPath + '/.batches/')
         if batchFolder == '':
             return
+        self.ui.listwBatch.clear()
+        self.ui.listwMotCor.clear()
         for f in os.listdir(batchFolder):
             if f.endswith('.pik'):
                 self.ui.listwBatch.addItem(batchFolder + '/' + f[:-4])
@@ -1253,6 +1300,17 @@ class ImageView(QtGui.QWidget):
                 self.ui.listwMotCor.addItem(batchFolder +'/' + f)
         if self.ui.listwBatch.count() > 0:
             self.ui.btnStartBatch.setEnabled(True)
+            self.ui.btnRemoveFromBatch.setEnabled(True)
+
+    def removeFromBatch(self):
+        file = self.ui.listwBatch.currentItem().text()
+        self.ui.listwBatch.takeItem(self.ui.listwBatch.currentRow())
+        try:
+            os.remove(file+'.pik')
+            os.remove(file+'.tiff')
+        except Exception as e:
+            QtGui.QMessageBox.information(self, 'Minor error', 'Unable to remove the file from the file system\n' + \
+                                                                str(e))
 
     def setSampleID(self):
         if self.ui.lineEdAnimalID.text() == '' or self.ui.lineEdTrialID.text() == '':
@@ -1296,35 +1354,64 @@ class ImageView(QtGui.QWidget):
             self.ui.listwBatch.addItem(fileName)
             self.ui.btnStartBatch.setEnabled(True)
             self.workEnv.saved = True
+            self.ui.btnRemoveFromBatch.setEnabled(True)
 
         else:
             QtGui.QMessageBox.warning(self, 'Error',
                                       'There was an error saving files for batch',
                                       QtGui.QMessageBox.Ok)
 
+    # def startBatch(self):
+    #     batchSize = self.ui.listwBatch.count()
+    #     self.ui.progressBar.setEnabled(True)
+    #     self.ui.progressBar.setValue(1)
+    #     for i in range(0, batchSize):
+    #         print('\n**********DOING BATCH ITEM# ' + str(i) + '**********************')
+    #         # cp = caimanPipeline(self.projPath + self.ui.listwBatch.item(i).text())
+    #         cp = caimanPipeline(self.ui.listwBatch.item(i).text())
+    #
+    #         p = Process(target=cp.start())
+    #         p.start()
+    #         p.join()
+    #         self.ui.progressBar.setValue(i+1/batchSize)
+    #         #            while cp.is_alive():
+    #         #                time.sleep(10)
+    #     print('*********** FINISHED ENTIRE BATCH **************')
+    #
+    #     for i in range(0, batchSize):
+    #         if os.path.isfile(self.ui.listwBatch.item(i).text() + '_mc.npz'):
+    #             self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text() + '_mc.npz')
+    #             # self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
+    #         else:
+    #             self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text() + '_mc.npz')
+    #             # self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
+    #             #            self.ui.progressBar.setValue(100/batchSize)
+    #     # self.ui.btnAbort.setEnabled(True)
+    #     # self.ui.progressBar.setDisabled(True)
+
     def startBatch(self):
         batchSize = self.ui.listwBatch.count()
+        self.ui.progressBar.setDisabled(False)
         self.ui.progressBar.setEnabled(True)
         self.ui.progressBar.setValue(1)
         for i in range(0, batchSize):
             cp = caimanPipeline(self.ui.listwBatch.item(i).text())
             self.ui.btnAbort.setEnabled(True)
-            ''' USE AN OBSERVER PATTERN TO SEE WHEN THE PROCESS IS DONE!!!'''
             cp.start()
-            # TODO: >>>>>>>>>>>>>>>>>>>>>>> **** USE A SEMAPHORE TO KEEP CONTROL OF PROCESSES!!! **** <<<<<<<<<<<<<<<<<<
-            print('>>>>>>>>>>>>>>>>>>>> Starting item: ' + str(i) + ' <<<<<<<<<<<<<<<<<<<<')
-#            while cp.is_alive():
-#                time.sleep(10)
-        if os.path.isfile(self.ui.listwBatch.item(i).text()+'_mc.npz'):
-            self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
-            # self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
-        else:
-            self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
-            # self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
-#            self.ui.progressBar.setValue(100/batchSize)
-        self.ui.btnAbort.setEnabled(True)
-        self.ui.progressBar.setValue(0)
-        self.ui.progressBar.setDisabled(True)
+            # while cp.is_alive():
+            #     time.sleep(3)
+            # self.ui.progressBar.setValue(i+1/batchSize)
+
+    def searchMotCorFiles(self):
+        batchSize = self.ui.listwBatch.count()
+        self.ui.listwMotCor.clear()
+        for i in range(0, batchSize):
+            if os.path.isfile(self.ui.listwBatch.item(i).text()+'_mc.npz'):
+                self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
+                self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
+            else:
+                self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
+                self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
 
     def clearBatchList(self):
         pass
@@ -1405,6 +1492,13 @@ class ImageView(QtGui.QWidget):
             self.overlapsH.append(linreg)
             self.view.addItem(linreg)
 
+    def removeStrides(self):
+        if self.ui.btnShowQuilt.isChecked() is True:
+            return
+        for o in self.overlapsV:
+            self.view.removeItem(o)
+        for o in self.overlapsH:
+            self.view.removeItem(o)
 
     '''###############################################################################################################
                                         Work Env methods
@@ -1426,7 +1520,7 @@ class ImageView(QtGui.QWidget):
             self.delROI(self.workEnv.ROIList[0])
             '''calls delROI method to remove the ROIs from the list.
             You cannot simply reset the list to ROI = [] because objects must be removed from the scene
-            and curves removed from the plot. This is what delROI() does. Removes the 0th once in each 
+            and curves removed from the plot. This is what delROI() does. Removes the 0th once in each
             iteration, number of iterations = len(ROIlist)'''
 
         self.priorlistwROIsSelection = None
@@ -1477,6 +1571,11 @@ class ImageView(QtGui.QWidget):
     def _workEnv_changed(self, element=None):
         if self.workEnv is not None:
             self.workEnv.saved = False
+
+    def comment_text_box_update(self):
+        if isinstance(self.workEnv, viewerWorkEnv):
+            self.workEnv.comments = self.ui.textBoxComments.toPlainText()
+
     '''
     ################################################################################################################
                                     Original pyqtgraph methods
@@ -1590,11 +1689,11 @@ class ImageView(QtGui.QWidget):
             self.imageItem.save(fileName)
 
     def setColorMap(self, colormap):
-        """Set the color map. 
+        """Set the color map.
 
         ============= =========================================================
         **Arguments**
-        colormap      (A ColorMap() instance) The ColorMap to use for coloring 
+        colormap      (A ColorMap() instance) The ColorMap to use for coloring
                       images.
         ============= =========================================================
         """
@@ -1603,6 +1702,6 @@ class ImageView(QtGui.QWidget):
     @addGradientListToDocstring()
     def setPredefinedGradient(self, name):
         """Set one of the gradients defined in :class:`GradientEditorItem <pyqtgraph.graphicsItems.GradientEditorItem>`.
-        Currently available gradients are:   
+        Currently available gradients are:
         """
         self.ui.histogram.gradient.loadPreset(name)

@@ -30,6 +30,8 @@ from functools import partial
 from MesmerizeCore import misc_funcs
 import analyser.gui
 from analyser.stats_gui import StatsWindow
+from copy import deepcopy
+import weakref
 
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
@@ -72,8 +74,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionShow_all_Analyzer_windows.triggered.connect(self.showAllAnalyzerWindows)
         self.actionNew_Stats_Plots_instance.triggered.connect(self.initStatsPlotsWin)
         self.actionShow_all_Stats_Plots_windows.triggered.connect(self.showAllStatWindows)
-
-
+        self.actionUpdate_children_from_Root.triggered.connect(self.update_children)
 
     def newProjFileDialog(self):
         # Opens a file dialog to selected a parent dir for a new project
@@ -191,7 +192,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.configwin.tabs.widget(0).ui.btnSave.clicked.disconnect(self.update_all_from_config)
 
         if self.projDf is not None and self.projDf.empty:
-            self.projDf = packager.empty_df(configuration.cfg.options('INCLUDE') + configuration.cfg.options('EXCLUDE'))
+            self.projDf = misc_funcs.empty_df(configuration.cfg.options('INCLUDE') + configuration.cfg.options('EXCLUDE'))
 
         if self.viewer is not None:
             self.viewer.update_from_config()
@@ -234,9 +235,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.projName = self.projPath.split('/')[-1][:-4]
         # Start the Project Browser loaded with the dataframe columns in the listwidget
         self.initProjBrowser()
+
+    def update_children(self):
+        for n in range(1, self.projBrowserWin.tabs.count()):
+            self.projBrowserWin.tabs.removeTab(n)
+
+        self.update_child_dfs()
+
+    def update_child_dfs(self):
+        for child in configuration.cfg.options('CHILD_DFS'):
+            if child == 'R' or child == 'Root':
+                continue
+            child_filter = configuration.cfg['CHILD_DFS'][child]
+            filters = child_filter.split('\n')
+            df = self.projDf.copy()
+            for filter in filters:
+                if filter == '':
+                    continue
+                df = eval(filter)
+            self.projBrowserWin.addNewTab(df, child, '', child_filter)
         
     def initProjBrowser(self):
         self.projBrowserWin = ProjBrowser.Window(self.projDf)
+        self.menuDataFrame.setEnabled(True)
+        self.update_child_dfs()
 
         self.setCentralWidget(self.projBrowserWin)
         # self.projScollArea.setWidget(self.projBrowserWin)
@@ -279,11 +301,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def initViewer(self):
         # Interpret image data as row-major instead of col-major
         pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
-    
         ## Create window with ImageView widget
         self.viewerWindow = QtWidgets.QMainWindow()
         self.viewerWindow.resize(1460, 950)
         self.viewer = pyqtgraphCore.ImageView()
+        configuration.viewer_ref = weakref.ref(self.viewer)
         self.viewerWindow.setCentralWidget(self.viewer)
 #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
         self.viewerWindow.setWindowTitle('Mesmerize - Viewer')

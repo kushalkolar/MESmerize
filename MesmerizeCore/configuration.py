@@ -23,6 +23,7 @@ projPath = None
 special = {}
 
 df_refs = {}
+viewer_ref = None
 
 def add_df_ref(ref):
     global df_refs
@@ -36,10 +37,10 @@ def saveConfig():
         cfg.write(configfile)
 
 def newConfig():
-    defaultInclude = ['SampleID', 'Genotype', 'Date']
+    defaultInclude = ['SampleID', 'Genotype', 'Date', 'comments']
     cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
-    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath']
+    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'uuid_curve']
     cfg['EXCLUDE'] = dict.fromkeys(defaultExclude)
 
     cfg['ROI_DEFS'] = {}
@@ -47,6 +48,8 @@ def newConfig():
     cfg['STIM_DEFS'] = {}
 
     cfg['ALL_STIMS'] = {}
+
+    cfg['CHILD_DFS'] = {}
 
     setSpecial()
 
