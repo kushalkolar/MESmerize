@@ -63,7 +63,7 @@ class Plot(CtrlNode):
 
                 plot = PlotDataItem()
                 try:
-                    plot.setData(data / np.min(data))
+                    plot.setData(data / np.maximum(np.min(data), 0.0000000001))
                 except:
                     srcs.append('Plotting error')
                     continue

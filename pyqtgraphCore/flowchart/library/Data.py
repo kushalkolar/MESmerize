@@ -11,7 +11,7 @@ import pickle
 from . import functions
 from collections import OrderedDict
 from functools import partial
-from analyser.DataTypes import Transmission
+from analyser.DataTypes import Transmission, StatsTransmission
 import MesmerizeCore.misc_funcs
 from MesmerizeCore import configuration
 import builtins
@@ -55,10 +55,11 @@ class LoadProjDF(CtrlNode):
             if self.ctrls['DF_Name'].currentText() == '':
                 return
             df_ref = configuration.df_refs[self.ctrls['DF_Name'].currentText()]
+            projPath = configuration.projPath
             df = df_ref()
             # print('*****************config df ref hex ID:*****************')
             # print(hex(id(df)))
-            self.t = Transmission.from_proj(df, self.ctrls['DF_Name'].currentText())
+            self.t = Transmission.from_proj(projPath, df, self.ctrls['DF_Name'].currentText())
 
             # print('Tranmission dataframe hexID:')
             # print(hex(id(self.t.df)))
@@ -113,21 +114,6 @@ class Save(CtrlNode):
         self.ctrls['saveBtn'].clicked.connect(self._fileDialog)
         self._saveNode = True
         self.saveValue = None
-        # self.ctrls['Apply'].clicked.connect(self.update)
-
-        # if ui is None:
-        #     if hasattr(self, 'uiTemplate'):
-        #         ui = self.uiTemplate
-        #     else:
-        #         ui = []
-        # if terminals is None:
-        #     terminals = {'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}}
-        # Node.__init__(self, name=name, terminals=terminals)
-        #
-        # self.ui, self.stateGroup, self.ctrls = generateUi(ui)
-        # self.stateGroup.sigChanged.connect(self.changed)
-        # self.count = 0
-        # self.ctrls['saveBtn'].clicked.connect(self._fileDialog)
 
     def process(self, In, display=True):
         if In is not None:
@@ -202,6 +188,38 @@ class RunScript(CtrlNode):
         exec(self.script, g, l)
 
         return l['output']
+
+
+class NewDataPass(CtrlNode):
+    """Check curve uuid against Stats DataFrame and only pass through new samples"""
+    nodeName = 'NewDataPass'
+    uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog', 'toolTip': 'Select the Stats DataFrame to compare against'}),
+                  ('fname', 'label', {'text': ': '}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, {'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+        self.ctrls['Open'].clicked.connect(self._fileDialog)
+        self.transmission = None
+
+    def _fileDialog(self):
+        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Import Statistics object', '', '(*.strn)')
+        if path == '':
+            return
+        try:
+            self.StatsData = StatsTransmission.from_pickle(path[0])
+        except Exception as e:
+            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+            return
+
+        self.ctrls['fname'].setText(path)
+
+        self.changed()
+
+    def processData(self, transmission):
+        t = transmission.copy()
+        t.df = t.df[t.df['uuid_curve']]
 
 class Bypass(CtrlNode):
     """Just a bypass node that doesn't do anything. Useful for quickly swapping Project DataFrames with an existing

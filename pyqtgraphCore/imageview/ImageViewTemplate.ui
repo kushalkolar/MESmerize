@@ -396,6 +396,16 @@
               </property>
              </widget>
             </item>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="btnRemoveFromBatch">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Remove</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="page_7">
@@ -451,13 +461,6 @@
               </property>
              </spacer>
             </item>
-            <item row="1" column="0" colspan="4">
-             <widget class="QListWidget" name="listwMotCor">
-              <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="2">
              <spacer name="horizontalSpacer_23">
               <property name="orientation">
@@ -470,6 +473,20 @@
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="btnMotCorSearchDir">
+              <property name="text">
+               <string>Search in dir</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" colspan="4">
+             <widget class="QListWidget" name="listwMotCor">
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -577,15 +594,15 @@
            <number>1</number>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page_9">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>98</width>
-             <height>28</height>
+             <width>329</width>
+             <height>101</height>
             </rect>
            </property>
            <attribute name="label">
@@ -854,107 +871,101 @@
            <attribute name="label">
             <string>Split-seq tools</string>
            </attribute>
-           <widget class="QPushButton" name="btnConcatSeqs">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
+           <widget class="QWidget" name="">
             <property name="geometry">
              <rect>
               <x>10</x>
               <y>0</y>
-              <width>100</width>
-              <height>25</height>
+              <width>206</width>
+              <height>58</height>
              </rect>
             </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>10</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>10</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Concat seqs</string>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="btnSplitSeq">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>34</y>
-              <width>100</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>10</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>10</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Split seq</string>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="btnPlotSplits">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="geometry">
-             <rect>
-              <x>120</x>
-              <y>30</y>
-              <width>100</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>10</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>10</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Plot from splits</string>
-            </property>
+            <layout class="QGridLayout" name="gridLayout_11">
+             <item row="0" column="0">
+              <widget class="QPushButton" name="btnSplitSeq">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>10</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Split seq</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="btnDoneSplitSeqs">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>10</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Done</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="btnPlotSplits">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>10</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>10</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>25</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Plot from splits</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </widget>
          </widget>
@@ -1756,7 +1767,6 @@ To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</
   <tabstop>listwTiffs</tabstop>
   <tabstop>listwSplits</tabstop>
   <tabstop>listwBatch</tabstop>
-  <tabstop>listwMotCor</tabstop>
   <tabstop>listwDenoised</tabstop>
   <tabstop>btnSubArray</tabstop>
   <tabstop>btnAddROI</tabstop>
@@ -1800,7 +1810,7 @@ To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</
      <y>533</y>
     </hint>
     <hint type="destinationlabel">
-     <x>698</x>
+     <x>706</x>
      <y>512</y>
     </hint>
    </hints>
@@ -1816,7 +1826,7 @@ To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</
      <y>615</y>
     </hint>
     <hint type="destinationlabel">
-     <x>709</x>
+     <x>717</x>
      <y>580</y>
     </hint>
    </hints>

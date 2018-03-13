@@ -29,10 +29,10 @@ import tifffile
 from PyQt5 import QtGui
 import os
 from . import configuration
-
+from uuid import uuid4
 
 class viewerWorkEnv():
-    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[]):
+    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments=''):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -53,6 +53,7 @@ class viewerWorkEnv():
         self.imgdata = imgdata
         self._saved = True
         self.roi_states = roi_states
+        self.comments = comments
 
     #    def __repr__(self):
     #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
@@ -86,12 +87,15 @@ class viewerWorkEnv():
                          Genotype=pick['imdata']['Genotype'],
                          stimMaps=pick['imdata']['stimMaps'],
                          isSubArray=pick['imdata']['isSubArray'])
+
+        comments = pick['imdata']['comments']
+
         roi_states = []
         if 'roi_states' in pick['imdata']:
             for ID in range(0, len(pick['imdata']['roi_states'])):
                 roi_states.append(pick['imdata']['roi_states'][ID])
 
-        return cls(imdata, roi_states=roi_states)
+        return cls(imdata, roi_states=roi_states, comments=comments)
 
     @property
     def saved(self):
@@ -167,7 +171,7 @@ class viewerWorkEnv():
         d = {'SampleID': self.imgdata.SampleID, 'Genotype': self.imgdata.Genotype,
              'meta': self.imgdata.meta, 'stimMaps': self.imgdata.stimMaps,
              'isSubArray': self.imgdata.isSubArray, 'isMotCor': self.imgdata.isMotCor,
-             'isDenoised': self.imgdata.isDenoised}
+             'isDenoised': self.imgdata.isDenoised, 'comments': self.comments}
 
         for ix in range(0, len(self.ROIList)):
             for roi_def in self.ROIList[ix].tags.keys():
@@ -293,13 +297,18 @@ class viewerWorkEnv():
                      roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
 
             d = {'SampleID': self.imgdata.SampleID,
-                 'CurvePath': curvePath,
-                 'ImgPath': imgPath + '.tiff',
-                 'ImgInfoPath': imgPath + '.pik',
+                 'CurvePath': curvePath.split(projPath)[1],
+                 'ImgPath': imgPath.split(projPath)[1] + '.tiff',
+                 'ImgInfoPath': imgPath.split(projPath)[1] + '.pik',
                  'Genotype': self.imgdata.Genotype}
 
             # Final list of dicts that are each appended as rows to the project DataFrame
-            dicts.append({**d, **stimMapsSet, 'Date': date, **self.ROIList[ix].tags})
+            dicts.append({**d,
+                          **stimMapsSet,
+                          'Date': date,
+                          **self.ROIList[ix].tags,
+                          'uuid_curve': uuid4(),
+                          'comments': self.comments})
 
             # df = df.append({**d, **roitags})  # , ignore_index=True)
 

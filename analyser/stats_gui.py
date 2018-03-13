@@ -243,7 +243,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         labelGroupList = []
         btnColorList = []
 
-        parent = self.stack_page_matplotlib
+        parent = self.stack_page_violin_plots
 
         for group in self.StatsData.all_groups:
             labelGroup = QtWidgets.QLabel(parent)

@@ -57,13 +57,13 @@
    </widget>
    <widget class="QMenu" name="menuDataFrame">
     <property name="enabled">
-     <bool>true</bool>
+     <bool>false</bool>
     </property>
     <property name="title">
      <string>DataFrame</string>
     </property>
     <addaction name="actionSave_child_as_root"/>
-    <addaction name="actionDelete_Child_from_Project"/>
+    <addaction name="actionUpdate_children_from_Root"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDataFrame"/>
@@ -181,6 +181,11 @@
   <action name="actionShow_all_Stats_Plots_windows">
    <property name="text">
     <string>Show all Stats/Plots windows</string>
+   </property>
+  </action>
+  <action name="actionUpdate_children_from_Root">
+   <property name="text">
+    <string>Update children from root</string>
    </property>
   </action>
  </widget>

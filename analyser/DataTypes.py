@@ -78,31 +78,32 @@ class _TRANSMISSION:
 class Transmission(_TRANSMISSION):
     """The regular transmission class"""
     @classmethod
-    def from_proj(cls, dataframe, df_name='', weakref=False):
+    def from_proj(cls, proj_path, dataframe, df_name=''):
         """
         :param df: Chosen Child DataFrame from the Mesmerize Project
         :return: Transmission class object
         """
         df = dataframe.copy()
         assert isinstance(df, pd.DataFrame)
-        df[['curve', 'meta', 'stimMaps']] = df.apply(Transmission._load_files, axis=1)
+        df[['curve', 'meta', 'stimMaps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
         df['raw_curve'] = df['curve']
 
         from MesmerizeCore import configuration
         stim_defs = configuration.cfg.options('STIM_DEFS')
         roi_defs = configuration.cfg.options('ROI_DEFS')
 
-        return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs, weakref=weakref)
+        return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
 
     @staticmethod
-    def _load_files(row):
+    def _load_files(proj_path, row):
         """Loads npz and pickle files of Curves & Img metadata according to the paths specified in each row of the
         chosen child DataFrame in the project"""
 
-        path = row['CurvePath']
+        path = proj_path + row['CurvePath']
         npz = np.load(path)
+        print(npz.f.curve[1])
 
-        pikPath = row['ImgInfoPath']
+        pikPath = proj_path + row['ImgInfoPath']
         pik = pickle.load(open(pikPath, 'rb'))
         meta = pik['imdata']['meta']
 
@@ -186,6 +187,9 @@ class StatsTransmission(_TRANSMISSION):
         all_groups = list(set(all_groups))
 
         df = pd.concat(all_dfs)
+        assert isinstance(df, pd.DataFrame)
+        df.reset_index()
+
         return cls(df, all_srcs, all_groups=all_groups)
 
     @classmethod

@@ -42,7 +42,7 @@ class TabPage(QtWidgets.QWidget):
     def __init__(self, parent=None, *args):
         QtWidgets.QWidget.__init__(self, parent, *args)
         self.filtLog = ''
-        self.filtLogPandas = ''
+        self._filtLogPandas = ''
         
     def setupGUI(self, df, tabTitle):
         self.tabTitle = tabTitle
@@ -58,6 +58,16 @@ class TabPage(QtWidgets.QWidget):
         self.ui.BtnCopyFilters.clicked.connect(self._copyFilterClipboard)
         
         self.ui.BtnResetFilters.clicked.connect(self._clearAllLineEdFilters)
+
+    @property
+    def filtLogPandas(self):
+        return self._filtLogPandas
+
+    @filtLogPandas.setter
+    def filtLogPandas(self, fl):
+        self._filtLogPandas = fl
+        configuration.cfg.set('CHILD_DFS', self.tabTitle, self._filtLogPandas)
+        configuration.saveConfig()
 
     @property
     def df(self):
@@ -148,43 +158,19 @@ class TabPage(QtWidgets.QWidget):
     def _copyFilterClipboard(self):
         cb = QtGui.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard )
-        cb.setText('\n'.join(self.filtLogPandas.split('!&&!')), mode=cb.Clipboard)
+        cb.setText(self.filtLogPandas, mode=cb.Clipboard)
         
     def __repr__(self, filepath):
         filtLog = '\n'.join(self.filtLogPandas.split('!&&!'))
         return 'TabPage()\nDataFrame: {}\nFilter Log: {}\n'.format(self._df, filtLog)
 
-    def _viewer(self):
-        pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
-
-        ## Create window with ImageView widget
-        self.viewerWindow = QtGui.QMainWindow()
-        self.viewerWindow.resize(1458, 931)
-        self.viewer = pyqtgraphCore.ImageView()
-        self.viewerWindow.setCentralWidget(self.viewer)
-        #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
-        self.viewerWindow.setWindowTitle('Mesmerize - Viewer - Project Browser Instance')
-
-        ## Set a custom color map
-        colors = [
-            (0, 0, 0),
-            (45, 5, 61),
-            (84, 42, 55),
-            (150, 87, 60),
-            (208, 171, 141),
-            (255, 255, 255)
-        ]
-        cmap = pyqtgraphCore.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
-        self.viewer.setColorMap(cmap)
-
-        # self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
-
-        self.viewerWindow.show()
-        '''***************************************************************************************************************
-        >>>>>>>>>>>>>>>>>>>>>>>> GET THE IMG PIK PATH AND TIFF PATH FROM THE SAME ROW AS THE SAMPLE ID!! <<<<<<<<<<<<<<<<
-        *****************************************************************************************************************'''
-        self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
-        self.viewer.ui.btnSaveChangesToProj.clicked.connect(self._saveSampleChanges)
+    def _viewer(self, ev):
+        row = self.df[self.df['SampleID'] == ev.text()].iloc[0]
+        pikPath = configuration.projPath + row['ImgInfoPath']
+        tiffPath = configuration.projPath + row['ImgPath']
+        viewer = configuration.viewer_ref
+        viewer().updateWorkEnv([pikPath, tiffPath], origin='pandas')
+        viewer().enableUI(False)
 
     def _saveSampleChanges(self):
         if QtGui.QMessageBox.warning(self, 'Overwrite Sample data in DataFrame?', 'Are you sure you want to overwrite the ' +\
@@ -213,19 +199,29 @@ class Window(QtWidgets.QWidget):
 #        button.setIcon(self.style().standardIcon(QtWidgets.QStyle.SP_DialogYesButton))
 #        self.tabs.setCornerWidget(button, QtCore.Qt.TopRightCorner)
         self.addNewTab(dfRoot, 'Root', '>>Root', '')
-        self.tabs.tabBar().tabCloseRequested.connect(lambda n: self.tabs.removeTab(n))
+        self.tabs.tabBar().tabCloseRequested.connect(lambda n: self.del_tab(n))
         builtins.tab_refs = {}
 
+    def del_tab(self, n):
+        if QtGui.QMessageBox.question(self, 'Remove Tab?', 'Are you sure you want to delete this tab? '
+                                                       'Only the filter operations to get this child DataFrame will be '
+                                                       'removed, your data is still in the Root DataFrame.',
+                                      QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
+            return
+
+        title = self.tabs.widget(n).tabTitle
+        configuration.cfg.remove_option('CHILD_DFS', title)
+        configuration.saveConfig()
+        self.tabs.removeTab(n)
+
     def addNewTab(self, df, tabTitle, filtLog, filtLogPandas):
-        if self.tabs.count() > 0:
+        if self.tabs.count() > 0 and tabTitle is None:
             tabTitle = QtWidgets.QInputDialog.getText(self, None, 'Enter tab name: ')
             if tabTitle[0] == '' or tabTitle[1] is False:
                 return
             elif tabTitle[0] in configuration.df_refs.keys():
                 self._name_exists(df, tabTitle, filtLog, filtLogPandas)
-        else:
-            tabTitle='Root'
-        tabTitle = tabTitle[0]
+            tabTitle = tabTitle[0]
 
         # elif tabTitle
         # Adds a new tab, places an instance of TabPage widget which is displayed in the whole tab.
@@ -241,6 +237,7 @@ class Window(QtWidgets.QWidget):
         
         # Append the filterlog to the new tab
         self.tabs.widget(self.tabs.count() - 1).filtLogPandas = filtLogPandas
+
         self.tabs.widget(self.tabs.count() - 1).filtLog = '>>' + filtLog
         # Connect all the apply buttons in that tab.
         for i in range(0, len(self.tabs.widget(self.tabs.count() - 1).ui.BtnApply_)):
@@ -303,7 +300,7 @@ class Window(QtWidgets.QWidget):
             print(newDf)
         
         filtLog = '&&' + prefix + '{' + colName + '[' + filt + ']}'
-        filtLogPandas = "df = df["+prefix+"df['"+colName+"'].str.contains('"+filt+"') !&&!"
+        filtLogPandas = "df["+prefix+"df['"+colName+"'].str.contains('"+filt+"')]\n"
         
         tabTitleAdd = prefix + colName + ','
         
@@ -333,7 +330,7 @@ class Window(QtWidgets.QWidget):
                 df, filtLog, filtLogPandas, title = self.applyPdFilter(colNum)
                 filtLog = self.tabs.currentWidget().filtLog + filtLog
                 filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
-            self.addNewTab(df, 'bah', filtLog, filtLogPandas)
+            self.addNewTab(df, None, filtLog, filtLogPandas)
             
             return
         
@@ -342,7 +339,7 @@ class Window(QtWidgets.QWidget):
             df, filtLog, filtLogPandas, title = self.applyPdFilter(colNum)
             filtLog = self.tabs.currentWidget().filtLog + filtLog
             filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
-            self.addNewTab(df, 'bah', filtLog, filtLogPandas)
+            self.addNewTab(df, None, filtLog, filtLogPandas)
             
         # Filter all columns in current tab
         elif key == QtCore.Qt.ShiftModifier:
@@ -358,7 +355,7 @@ class Window(QtWidgets.QWidget):
             
             filtLog = self.tabs.currentWidget().filtLog + filtLog
             filtLogPandas = self.tabs.currentWidget().filtLogPandas + filtLogPandas
-            self.addNewTab(df, 'bah', filtLog, filtLogPandas)   
+            self.addNewTab(df, None, filtLog, filtLogPandas)
         
         # Filter single selected column here
         else:
