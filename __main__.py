@@ -87,7 +87,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if start and projName != '':
             self.projPath = parentPath + '/' + projName
-            os.mkdir(self.projPath)
+            try:
+                os.mkdir(self.projPath)
+            except Exception as e:
+                QtGui.QMessageBox.warning(self, 'Error!', 'Could not create the new project.\n' + str(e))
+                return
 
             self.newProj()
             # self.projDf = packager.empty_df()
