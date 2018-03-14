@@ -1499,6 +1499,8 @@ class ImageView(QtGui.QWidget):
             self.view.removeItem(o)
         for o in self.overlapsH:
             self.view.removeItem(o)
+        self.overlapsH = []
+        self.overlapsV = []
 
     '''###############################################################################################################
                                         Work Env methods
