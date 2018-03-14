@@ -230,6 +230,25 @@ class Bypass(CtrlNode):
         return In
 
 
+class iloc(CtrlNode):
+    """Pass only one or multiple DataFrame Indices"""
+    nodeName = 'iloc'
+    uiTemplate = [('Index', 'intSpin', {'min': 0, 'step': 1, 'value': 0}),
+                  ('Indices', 'lineEdit', {'text': '0', 'toolTip': 'Index numbers separated by commas'})
+                  ]
+
+    def processData(self, transmission):
+        self.ctrls['Index'].setMaximum(len(transmission.df.index) - 1)
+        self.ctrls['Index'].valueChanged.connect(
+            partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
+
+        indices = [int(ix.strip()) for ix in self.ctrls['Indices'].text().split(',')]
+        t = transmission.copy()
+        t.df = t.df.iloc[indices, :]
+        t.src.append({'DF_IDX': {'indices': indices}})
+        return t
+
+
 # class ColumnSelectNode(Node):
 #     """Select named columns from a record array or MetaArray."""
 #     nodeName = "ColumnSelect"

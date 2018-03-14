@@ -43,7 +43,6 @@ def generateUi(opts):
             if 'step' in o:
                 w.setSingleStep(o['step'])
 
-
         elif t == 'doubleSpin':
             w = QtWidgets.QDoubleSpinBox()
             if 'max' in o:

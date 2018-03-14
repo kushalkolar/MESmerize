@@ -12,6 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import pandas as pd
 import numpy as np
+import pickle
 
 if __name__ == '__main__':
     from DataTypes import Transmission
@@ -50,7 +51,7 @@ class PeakFeatures:
         self.curve = curve
         self.pb_df = pb_df
         # self.peaks = pb_df['event'][pb_df['peak']]
-        self.all_peaks = np.where(self.pb_df['peak'])[0]
+        self.all_peaks = np.where(self.pb_df['peak'])[0][0]
         #        self.pb_df['features'] = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else {}, axis=1)
 
         features = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else {}, axis=1)
@@ -67,6 +68,15 @@ class PeakFeatures:
         return [self.pb_df]
 
     def _per_peak(self, df_ix, ix_peak_abs):
+        """
+        Calculate and return peak features for each peak
+        :param df_ix: DataFrame index of where this peak is located with respect to the peaks_bases DataFrame
+        :type df_ix: int
+        :param ix_peak_abs: Absolute index of this peak, relative to the entire trace
+        :type: ix_peak_abs: int
+        :return: dictionary with each peak feature as a key and corresponding value as the entry
+        :rtype: dict
+        """
         try:
             ix_base_left_abs = self.pb_df.iloc[df_ix - 1]['event']
         except IndexError:
@@ -86,14 +96,16 @@ class PeakFeatures:
         #            return None
 
         try:
+            print('self.all_peaks: ' + str(self.all_peaks))
+            print('ix_peak_abs: ' + str(ix_peak_abs))
             ixp = np.where(self.all_peaks == ix_peak_abs)[0][0]
-            #            print(ixp)
+            print(ixp)
             ix_pre_peak = self.all_peaks[ixp - 1]
             ix_nex_peak = self.all_peaks[ixp + 1]
         except IndexError:
             ix_pre_peak = None
             ix_nex_peak = None
-        #            print('Missing a neighboring peak')
+            print('Missing a neighboring peak, this must be the first or last peak of this trace')
 
         # peak_curve is the portion of the main curve (self.curve) that is between the 2 bases of the peak.
         # ix_base_left_abs is the index of the left base of the peak
@@ -155,11 +167,24 @@ class PeakFeaturesIter(PeakFeatures):
         return self.t
 
     def _per_curve(self, curve, pb_df):
+        """
+        Calculate and return peak features of all peaks for each curve
+        :param curve: raw trace of calcium signal
+        :type curve: np.array
+        :param pb_df: peaks & bases DataFrame, created by _get_zero_crossings
+        :type pb_df pd.DataFrame
+        :return: Series of dicts containing numerical peak features for each peak in this curve
+        :type: pd.Series
+        """
         assert isinstance(pb_df, pd.DataFrame)
         self.curve = curve
         self.pb_df = pb_df
         try:
-            self.all_peaks = np.where(self.pb_df['peak'])[0]
+            self.all_peaks = self.pb_df['event'][self.pb_df['peak']] #np.where(self.pb_df['peak'])[0]
+            # print(self.all_peaks)
+            self.all_peaks = self.all_peaks.values
+            # pickle.dump(self.all_peaks, open('/home/kushal/Sars_stuff/github-repos/MESmerize/test_all_peaks.pik', 'wb'))
+            # self.all_peaks = self.all_peaks.values()
         except Exception as e:
             if QtGui.QMessageBox.question(None, 'Error!', 'One of your curves probably contains no peaks.'
                                                           'Exception:\n' + \
