@@ -17,12 +17,8 @@ getNodeTree = LIBRARY.getNodeTree
 getNodeType = LIBRARY.getNodeType
 
 # Add all nodes to the default library
-from . import Data, Display, Filters, Definitions
-for mod in [Data, Display, Filters, Definitions]:
+from . import Data, Display, Filters, Definitions, Statistics
+for mod in [Data, Display, Filters, Definitions, Statistics]:
     nodes = [getattr(mod, name) for name in dir(mod) if isNodeClass(getattr(mod, name))]
     for node in nodes:
         LIBRARY.addNodeType(node, [(mod.__name__.split('.')[-1],)])
-    
-
-
-

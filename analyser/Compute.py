@@ -88,5 +88,5 @@ class PeakFeatures:
             else:
                 result = {'pre': ix_peak_abs - ix_pre_peak, 'post': ix_nex_peak - ix_peak_abs}
         except:
-            result = 'Error'
-        q.put({'_pfeature_inter_peak_interval': result})
+            result = np.NaN
+            q.put({'_pfeature_inter_peak_interval': result})

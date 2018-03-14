@@ -10,14 +10,8 @@ from ... import PolyLineROI
 from ... import Point
 from ... import metaarray as metaarray
 from analyser.DataTypes import *
-from MesmerizeCore.misc_funcs import empty_df
-from MesmerizeCore import configuration
 from functools import partial
 from analyser import PeakEditor
-from analyser import Extraction
-from analyser.stats_gui import StatsWindow
-from analyser.HistoryWidget import HistoryTreeWidget
-import pickle
 
 
 class AlignStims(CtrlNode):
@@ -31,6 +25,7 @@ class AlignStims(CtrlNode):
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
+
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
         self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
@@ -41,9 +36,9 @@ class AlignStims(CtrlNode):
             stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
         except (KeyError, IndexError) as e:
             QtWidgets.QMessageBox.warning(None, 'Stimulus type not found',
-                                      'The stimulus type which you have entered'
-                                      ' does not exist in the incoming dataframe\n'
-                                      + str(e))
+                                          'The stimulus type which you have entered'
+                                          ' does not exist in the incoming dataframe\n'
+                                          + str(e))
             return
         autocompleter = QtWidgets.QCompleter(stims, self.ctrls['Stimulus'])
         self.ctrls['Stimulus'].setCompleter(autocompleter)
@@ -77,7 +72,7 @@ class AlignStims(CtrlNode):
                   'zero_pos': zero_pos
                   }
 
-        t = Transmission.empty_df(self.transmission)#empty_df(), self.transmission.src)
+        t = Transmission.empty_df(self.transmission)  # empty_df(), self.transmission.src)
         for ix, r in self.transmission.df.iterrows():
             try:
                 smap = r['stimMaps'].flatten()[0][stim_def]
@@ -120,25 +115,6 @@ class AlignStims(CtrlNode):
         return t
 
 
-class DF_IDX(CtrlNode):
-    """Pass only one or multiple DataFrame Indices"""
-    nodeName = 'DF_IDX'
-    uiTemplate = [('Index', 'intSpin', {'min': 0, 'step': 1, 'value': 0}),
-                  ('Indices', 'lineEdit', {'text': '0', 'toolTip': 'Index numbers separated by commas'})
-                  ]
-
-    def processData(self, transmission):
-        self.ctrls['Index'].setMaximum(len(transmission.df.index) - 1)
-        self.ctrls['Index'].valueChanged.connect(
-            partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
-
-        indices = [int(ix.strip()) for ix in self.ctrls['Indices'].text().split(',')]
-        t = transmission.copy()
-        t.df = t.df.iloc[indices, :]
-        t.src.append({'DF_IDX': {'indices': indices}})
-        return t
-
-
 class ROI_Selection(CtrlNode):
     """Pass-through DataFrame rows if they have the chosen tags"""
     nodeName = 'ROI_Selection'
@@ -151,6 +127,7 @@ class ROI_Selection(CtrlNode):
                   ('Exclude', 'radioBtn', {'checked': False}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
+
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
         self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
@@ -160,8 +137,8 @@ class ROI_Selection(CtrlNode):
             tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
         except (KeyError, IndexError) as e:
             QtWidgets.QMessageBox.warning(None, 'ROI type not found',
-                                      'The ROI type which you have entered'
-                                      ' does not exist in the incoming dataframe\n' + str(e))
+                                          'The ROI type which you have entered'
+                                          ' does not exist in the incoming dataframe\n' + str(e))
             return
         self.ctrls['availTags'].setText(', '.join(tags))
         self.ctrls['availTags'].setToolTip('\n'.join(tags))
@@ -204,97 +181,15 @@ class ROI_Selection(CtrlNode):
         return t
 
 
-class CaPreStats(CtrlNode):
-    """Converge incoming transmissions and label what groups they belong to"""
-    nodeName = 'CaPreStats'
-    uiTemplate = [('SetGrps', 'button', {'text': 'Set Groups'}),
-                  ('Save', 'button', {'text': 'Save Groups'})]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'Out'}})
-
-    def process(self, **kwargs):
-        transmissions = kwargs['In']
-        if not len(transmissions) > 0:
-            raise Exception('No incoming transmissions')
-
-        for t in transmissions.items():
-            t = t[1]
-
-            if t is None:
-                raise IndexError('One of your incoming tranmissions is None')
-
-
-class PeakFeaturesExtract(CtrlNode):
-    """Extract peak features. Use this after the Peak_Detect node."""
-    nodeName = 'Peak_Features'
-    uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
-                  ('Stats', 'button', {'text': 'Statistics/Plotting'})
-                  ]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.ctrls['Extract'].clicked.connect(self._extract)
-        self.ctrls['Stats'].setEnabled(False)
-        self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
-        self.peak_results = None
-
-    def process(self, **kwargs):
-        self.kwargs = kwargs.copy()
-        # return {'Out': self.peak_results}
-
-    def _extract(self):
-        if self.kwargs is None:
-            self.peak_results = None
-            return
-
-        transmissions = self.kwargs['In']
-
-        if not len(transmissions) > 0:
-            raise Exception('No incoming transmissions')
-
-        self.peak_results = []
-        for t in transmissions.items():
-            t = t[1]
-            if t is None:
-                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-                continue
-            elif not any('Peak_Detect' in d for d in t.src):
-                raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
-                                 'a Peak_Detect node before this one.')
-            # t = t.copy()
-            try:
-                pf = Extraction.PeakFeaturesIter(t)
-                tran_with_features = pf.get_all()
-
-                self.peak_results.append(tran_with_features)
-
-            except Exception as e:
-                QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak extraction:\n'
-                                                                   + str(e))
-
-        self.changed()
-        self.ctrls['Stats'].setEnabled(True)
-
-    def _open_stats_gui(self):
-        if hasattr(self, 'stats_gui'):
-            self.stats_gui.show()
-            return
-        pickle.dump(self.peak_results, open('/home/kushal/Sars_stuff/github-repos/MESmerize/analyser/test_features_pik.pik', 'wb'))
-        self.stats_gui = StatsWindow()
-        self.stats_gui.input_transmissions(self.peak_results)
-        self.stats_gui.show()
-
-
-# TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
     nodeName = 'Peak_Detect'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
                   ('Fictional_Bases', 'check', {'checked': False}),
                   ('Edit', 'button', {'text': 'Open Editor'}),
-                  ('SlopeThr', 'label', {'text': ''}),
-                  ('AmpThr', 'label', {'text': ''})
+                  ('SlopeThr', 'doubleSpin', {'min': -100.00, 'max': 1.0, 'step': 0.010}),
+                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 100000.00, 'step': 100.00}),
+                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 100000.00, 'step': 100.00})
                   ]
 
     def __init__(self, name, **kwargs):
@@ -308,22 +203,39 @@ class PeakDetect(CtrlNode):
 
     def _get_zero_crossings(self, dsig, fictional_bases=False):
         """
-        Determine the peaks and bases of the signal by finding zero crossing in the first derivative of the signal
+        Find the peaks and bases of the signal by finding zero crossing in the first derivative of the filtered signal
         :param dsig: The first derivative of the signal
         :type dsig: np.array
         :return: DataFrame, all zero crossing events in one column, another column denotes it as a peak or base.
         :rtype: pd.DataFrame
         """
+        # Get array of all sign switches
         sc = np.diff(np.sign(dsig))
 
-        peaks = np.where(sc < 0)[0]
+        peaks_raw = np.where(sc < 0)[0]
         bases = np.where(sc > 0)[0]
+
+        # Remove all peaks where amplitude is below the specified threshold
+        peak_yvals = np.take(self.t.df.iloc[self.row_ix]['raw_curve'], peaks_raw)
+        # print('peak_yvals: ' + str(peak_yvals))
+        ix_below_ampl_thr = np.where(peak_yvals < self.ctrls['AmplThrAbs'].value())
+        # print('ix_below_ampl_thr: ' + str(ix_below_ampl_thr))
+        peaks_ampl_thr = np.delete(peaks_raw, ix_below_ampl_thr)
+
+        s2 = np.gradient(dsig)
+        # Remove all peaks where the 2nd derivative is below a certain threshold
+        peak_d2 = np.take(s2, peaks_ampl_thr)
+        ix_below_slope_thr = np.where(peak_d2 > self.ctrls['SlopeThr'].value())
+        # print('peak_d2: ' + str(peak_d2))
+        # print('ix_below_slope_thr: ' + str(ix_below_slope_thr))
+        peaks = np.delete(peaks_ampl_thr, ix_below_slope_thr)
 
         ## TODO; DEBATE ABOUT HOW TO PROPERLY DEAL WITH TRACES THAT HAVE NO PEAKS !!!!
         if peaks.size == 0:
             peaks = np.array([0])
             bases = np.array([0, 1])
 
+        # Add bases to beginning and end of sequence if first or last peak is lonely
         if fictional_bases:
             if bases.size == 0:
                 bases = np.array([0, sc.size])
@@ -334,7 +246,7 @@ class PeakDetect(CtrlNode):
                 if bases[-1] < peaks[-1]:
                     bases = np.insert(bases, -1, sc.size)
 
-
+        # Construct peak & base columns on dataframe
         peaks_df = pd.DataFrame()
         peaks_df['event'] = peaks
         peaks_df['label'] = 'peak'
@@ -351,15 +263,35 @@ class PeakDetect(CtrlNode):
         peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
         peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
 
+        # Set the peaks at the index of the local maxima of the raw curve instead of the approximate maxima inferred
+        # from the derivative after .
+        # Also remove peaks which are lower than the relative amplitude threshold
+        rows_drop = []
         for ix, r in peaks_bases_df.iterrows():
             if r['peak'] and ix > 0:
-                if peaks_bases_df.iloc[ix-1]['base'] and peaks_bases_df.iloc[ix+1]['base']:
-                    ix_left_base = peaks_bases_df.iloc[ix-1]['event']
-                    ix_right_base = peaks_bases_df.iloc[ix+1]['event']
+                if peaks_bases_df.iloc[ix - 1]['base'] and peaks_bases_df.iloc[ix + 1]['base']:
+                    ix_left_base = peaks_bases_df.iloc[ix - 1]['event']
+                    ix_right_base = peaks_bases_df.iloc[ix + 1]['event']
 
-                    peak_revised = np.where(self.t.df.iloc[self.row_ix]['raw_curve'] == np.max(np.take(self.t.df.iloc[self.row_ix]['raw_curve'], np.arange(ix_left_base, ix_right_base))))[0][0]
-                    peaks_bases_df.set_value(ix, 'event', peak_revised)
-        self.row_ix +=1
+                    #  Adjust the xval of the curve by finding the absolute maxima of this section of the raw curve,
+                    # flanked by the bases of the peak
+                    peak_revised = np.where(self.t.df.iloc[self.row_ix]['raw_curve'] == np.max(
+                        np.take(self.t.df.iloc[self.row_ix]['raw_curve'], np.arange(ix_left_base, ix_right_base))))[0][0]
+
+                    # Get rising and falling amplitudes
+                    rise_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - self.t.df.iloc[self.row_ix]['raw_curve'][ix_left_base]
+                    fall_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - self.t.df.iloc[self.row_ix]['raw_curve'][ix_right_base]
+
+                    # Check if above relative amplitude threshold
+                    if (rise_ampl + fall_ampl) > self.ctrls['AmplThrRel'].value():
+                        peaks_bases_df.set_value(ix, 'event', peak_revised)
+                    else:
+                        rows_drop.append(ix)
+
+        peaks_bases_df.drop(peaks_bases_df.index[rows_drop], inplace=True)
+        peaks_bases_df.reset_index()
+
+        self.row_ix += 1
         return peaks_bases_df
 
     def process(self, display=True, **kwargs):
@@ -372,33 +304,42 @@ class PeakDetect(CtrlNode):
 
         if self.data_modified is True:
             if QtWidgets.QMessageBox.question(None, 'Discard peak edits?',
-                                          'You have made modifications to peak data passing '
-                                          'through this node! Would you like to discard all '
-                                          'changes and load the newly transmitted data?',
+                                              'You have made modifications to peak data passing '
+                                              'through this node! Would you like to discard all '
+                                              'changes and load the newly transmitted data?',
                                               QtWidgets.QMessageBox.Yes,
                                               QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return self.t
         self.data_modified = False
 
-        if inputs['Derivative'] is None:
-            raise Exception('No incoming Derivative transmission. '
-                            'You must input at least a derivative')
+        # if inputs['Derivative'] is None:
+        #     raise Exception('No incoming Derivative transmission. '
+        #                     'You must input at least a derivative')
+        #
+        # self.t = inputs['Derivative'].copy()
+        #
+        # if inputs['Curve'] is not None:
+        #     if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
+        #         QtWidgets.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
+        #                                                        ' MUST match!')
+        #         raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
 
+        if inputs['Derivative'] is None:
+            raise KeyError('No incoming Derivative transmission. '
+                           'You must input both a curve and its derivative '
+                           'You must input at least a derivative')
+
+        if inputs['Curve'] is None:
+            raise KeyError('No incoming Curve transmission.'
+                           ' You must input both a curve and its derivative')
+
+        if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
+            raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
 
         self.t = inputs['Derivative'].copy()
 
-        if inputs['Curve'] is not None:
-            if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
-                QtWidgets.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
-                                                               ' MUST match!')
-                raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
-
-            selected = inputs['Curve'].copy()
-            self.t.df['raw_curve'] = selected.df['curve']
-            selected = None
-            on_raw = False
-        else:
-            on_raw = True
+        selected = inputs['Curve'].copy()
+        self.t.df['raw_curve'] = selected.df['curve']
 
         assert isinstance(self.t, Transmission)
 
@@ -413,7 +354,10 @@ class PeakDetect(CtrlNode):
         if hasattr(self, 'pbw'):
             self.pbw.update_transmission(self.t, self.t)
 
-        self.t.src.append({'Peak_Detect': {'SlopeThr': 'Not Implemented', 'AmpThr': 'Not Implemented', 'on_raw': on_raw}})
+        self.t.src.append({'Peak_Detect':
+                           {'SlopeThr': self.ctrls['SlopeThr'].value(),
+                            'AmplThrRel': self.ctrls['AmplThrRel'].value(),
+                            'AmplThrAbs': self.ctrls['AmplThrAbs'].value()}})
         return self.t
 
     def _set_editor_output(self):
