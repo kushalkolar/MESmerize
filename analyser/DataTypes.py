@@ -54,6 +54,10 @@ class _TRANSMISSION:
         return cls(**p)
 
     def _make_dict(self):
+        """
+        Package attributes as a dict, useful for pickling
+        :return: dict
+        """
         d = {'df': self.df, 'src': self.src}
         for key in self.kwargs_keys:
             d.update({key: getattr(self, key)})
@@ -62,6 +66,7 @@ class _TRANSMISSION:
     def to_pickle(self, path):
         """
         :param path: Path of where to store pickle
+        :type path: str
         """
         pickle.dump(self._make_dict(), open(path, 'wb'), protocol=4)
 
@@ -70,13 +75,19 @@ class _TRANSMISSION:
 
     @classmethod
     def empty_df(cls, transmission, addCols=[]):
+        """
+        :param transmission: Transmission object
+        :param addCols: list of columns to add
+        :return: empty DataFrame with the columns in this Transmission's dataframe along with any additional columns
+        that were specified.
+        """
         c = list(transmission.df.columns)
         e_df = empty_df(cols=c, addCols=addCols)
         return cls(e_df, transmission.src)
 
 
 class Transmission(_TRANSMISSION):
-    """The regular transmission class"""
+    """The regular transmission class used throughout the flowchart"""
     @classmethod
     def from_proj(cls, proj_path, dataframe, df_name=''):
         """
@@ -126,6 +137,13 @@ class GroupTransmission(_TRANSMISSION):
     StatsTransmission"""
     @classmethod
     def from_ca_data(cls, transmission, groups_list):
+        """
+        :param transmission: Raw Transmission object
+        :type transmission: Transmission
+        :param groups_list: List of groups to which the raw Transmission object belongs
+        :type groups_list: list
+        :return: GroupTransmission
+        """
         if not (any('Peak_Features' in d for d in transmission.src) or
                     any('AlignStims' in d for d in transmission.src)):
             raise IndexError('No Peak Features or Stimulus Alignment data to group the data.')
@@ -148,6 +166,11 @@ class GroupTransmission(_TRANSMISSION):
 
     @staticmethod
     def _append_group_bools(df, groups_list):
+        """
+        :param df:
+        :param groups_list:
+        :return:
+        """
         new_gl = []
         for group in groups_list:
             group = '_G_' + group
@@ -158,6 +181,8 @@ class GroupTransmission(_TRANSMISSION):
 
 
 class StatsTransmission(_TRANSMISSION):
+    """Transmission class that contains a DataFrame consisting of data from many groups. Columns with names that start
+    with '_G_' denote groups. Booleans indicate whether or not that row belong to that group."""
     @classmethod
     def from_group_trans(cls, transmissions):
         """
@@ -194,6 +219,11 @@ class StatsTransmission(_TRANSMISSION):
 
     @classmethod
     def merge(cls, transmissions):
+        """
+        :param transmissions: Transmission objects
+        :type transmissions: GroupTransmission, StatsTransmission
+        :return: StatsTransmission
+        """
         groups = []
         stats = []
         all_srcs = []
@@ -207,6 +237,10 @@ class StatsTransmission(_TRANSMISSION):
                 stats.append(t)
                 all_srcs.append(t.src)
                 all_groups.append(t.all_groups)
+            else:
+                e = type(t)
+                raise TypeError("Cannot merge type: '" + str(e) + "'\n"
+                                "You must only pass GroupTransmission or StatsTransmission objects.")
 
         g_merge = StatsTransmission.from_group_trans(groups)
 
