@@ -35,7 +35,6 @@ class HistoryTreeWidget(QtWidgets.QTreeWidget):
         elif type(value) is list:
             for val in value:
                 child = QtWidgets.QTreeWidgetItem()
-
                 item.addChild(child)
                 if type(val) is dict:
                     child.setText(0, self._get_key(val))
