@@ -16,6 +16,12 @@ A simple module that can be imported to apply the configuration in a module that
 '''
 import configparser
 import numpy as np
+import os
+
+if os.name == 'nt':
+    IS_WINDOWS = True
+else:
+    IS_WINDOWS = False
 cfg = configparser.RawConfigParser(allow_no_value=True)
 cfg.optionxform = str
 configpath = None
