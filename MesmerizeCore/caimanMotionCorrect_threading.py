@@ -56,12 +56,12 @@ from caiman.motion_correction import MotionCorrect
 # from caiman.source_extraction.cnmf.utilities import detrend_df_f
 # from caiman.components_evaluation import estimate_components_quality_auto
 
-import multiprocessing
+from threading import Thread
 
 
-class caimanPipeline(multiprocessing.Process):
+class caimanPipeline(Thread):
     def __init__(self, fileName):
-        multiprocessing.Process.__init__(self)
+        Thread.__init__(self)
 #%% First setup some parameters
         self.data = pickle.load(open(fileName+'.pik', 'rb'))
         self.fileName = fileName
@@ -168,7 +168,6 @@ class caimanPipeline(multiprocessing.Process):
         except Exception as e:
             with open(self.fileName + '_error_log.txt', 'w') as lf:
                 lf.write('%s' % e)
-            self.terminate()
 
 
     # maximum shift to be used for trimming against NaNs
