@@ -24,7 +24,7 @@ from __future__ import division
 from __future__ import print_function
 from builtins import range
 import sys
-sys.path.append('/home/kushal/Sars_stuff/github-repos/CaImAn/')
+sys.path.append('/home/kushal/Sars_stuff/github-repos/CaImAn/caiman')
 import cv2
 import glob
 
@@ -49,14 +49,15 @@ import time
 import pickle
 #import matplotlib.pyplot as plt
 
-from caiman.utils.utils import download_demo
+# from caiman.utils.utils import download_demo
 #from caiman.utils.visualization import plot_contours, view_patches_bar
-from caiman.source_extraction.cnmf import cnmf as cnmf
+# from caiman.source_extraction.cnmf import cnmf as cnmf
 from caiman.motion_correction import MotionCorrect
-from caiman.source_extraction.cnmf.utilities import detrend_df_f
-from caiman.components_evaluation import estimate_components_quality_auto
+# from caiman.source_extraction.cnmf.utilities import detrend_df_f
+# from caiman.components_evaluation import estimate_components_quality_auto
 
 import multiprocessing
+
 
 class caimanPipeline(multiprocessing.Process):
     def __init__(self, fileName):
@@ -143,21 +144,31 @@ class caimanPipeline(multiprocessing.Process):
         min_mov = cm.load(self.fname[0], subindices=range(200)).min()
         # this will be subtracted from the movie to make it non-negative
 
-        mc = MotionCorrect(self.fname[0], min_mov,
-                           dview=dview, max_shifts=self.max_shifts, niter_rig=self.niter_rig,
-                           splits_rig=self.splits_rig,
-                           strides=self.strides, overlaps=self.overlaps, splits_els=self.splits_els,
-                           upsample_factor_grid=self.upsample_factor_grid,
-                           max_deviation_rigid=self.max_deviation_rigid,
-                           shifts_opencv=True, nonneg_movie=True)
+        try:
+            mc = MotionCorrect(self.fname[0], min_mov,
+                               dview=dview, max_shifts=self.max_shifts, niter_rig=self.niter_rig,
+                               splits_rig=self.splits_rig,
+                               strides=self.strides, overlaps=self.overlaps, splits_els=self.splits_els,
+                               upsample_factor_grid=self.upsample_factor_grid,
+                               max_deviation_rigid=self.max_deviation_rigid,
+                               shifts_opencv=True, nonneg_movie=True)
+        except Exception as e:
+            with open(self.fileName + '_error_log.txt', 'w') as lf:
+                lf.write('%s' % e)
+            self.terminate()
         # note that the file is not loaded in memory
 
         #%% Run piecewise-rigid motion correction using NoRMCorre
         mc.motion_correct_pwrigid(save_movie=True)
-        m_els = cm.load(mc.fname_tot_els)
-        bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
-                                         np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
-        np.savez(self.fileName+'_mc.npz', imgseq=m_els.T)
+        try:
+            m_els = cm.load(mc.fname_tot_els)
+            bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
+                                             np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
+            np.savez(self.fileName+'_mc.npz', imgseq=m_els.T)
+        except Exception as e:
+            with open(self.fileName + '_error_log.txt', 'w') as lf:
+                lf.write('%s' % e)
+            self.terminate()
 
 
     # maximum shift to be used for trimming against NaNs
