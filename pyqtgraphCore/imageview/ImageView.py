@@ -43,7 +43,6 @@ from pyqtgraph import plot as pgplot
 from multiprocessing import Process, Queue
 import numpy as np
 from MesmerizeCore import stimMapWidget
-from MesmerizeCore.caimanMotionCorrect import caimanPipeline
 from MesmerizeCore.packager import viewerWorkEnv
 from MesmerizeCore import configuration
 import time
@@ -53,6 +52,11 @@ try:
     from bottleneck import nanmin, nanmax
 except ImportError:
     from numpy import nanmin, nanmax
+
+if configuration.IS_WINDOWS:
+    from MesmerizeCore.caimanMotionCorrect_threading import caimanPipeline
+else:
+    from MesmerizeCore.caimanMotionCorrect import caimanPipelineg
 
 
 class ImageView(QtGui.QWidget):
