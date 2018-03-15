@@ -410,6 +410,7 @@ class PlotInterface:
         for plot in self.plots:
             plot.plot_all()
 
+
 class PeakPlots(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)

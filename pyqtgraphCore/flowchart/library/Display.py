@@ -39,7 +39,8 @@ class Plot(CtrlNode):
 
         srcs = []
         plots = []
-
+        colors = ['m', 'r', 'y', 'g', 'c', 'b']
+        ci = 0
         for t in transmissions.items():
             t = t[1]
             if t is None:
@@ -60,16 +61,19 @@ class Plot(CtrlNode):
                     continue
                 if data is None:
                     srcs.append('No curve data found!')
+                    continue
 
                 plot = PlotDataItem()
                 try:
                     plot.setData(data / np.maximum(np.min(data), 0.0000000001))
-                except:
-                    srcs.append('Plotting error')
+                    plot.setPen(colors[ci])
+                except Exception as e:
+                    srcs.append('Plotting error: ' + str(e))
                     continue
 
                 self.pwin.graphicsView.addItem(plot)
 
+            ci += 1
             srcs.append(t.src)
 
         self.pwin.set_history_widget(srcs)

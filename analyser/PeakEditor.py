@@ -26,8 +26,6 @@ else:
     from .HistoryWidget import HistoryTreeWidget
 
 
-# TODO: BASED ON PARAMETERS DESCRIBED BY THAT UNI OF MARYLAND PROF. SUCH AS MINIMUM SLOPE AND AMPLITUDE ETC.
-
 class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, trans_curves, trans_peaks_bases):
         # super().__init__()
