@@ -58,7 +58,9 @@ class _TRANSMISSION:
         Package attributes as a dict, useful for pickling
         :return: dict
         """
-        d = {'df': self.df, 'src': self.src}
+        d = {'df':  self.df,
+             'src': self.src}
+
         for key in self.kwargs_keys:
             d.update({key: getattr(self, key)})
         return d

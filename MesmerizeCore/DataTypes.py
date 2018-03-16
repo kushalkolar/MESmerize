@@ -37,9 +37,7 @@ class ImgData():
         self.isSubArray = isSubArray
         self.isMotCor = isMotCor
         self.isDenoised = isDenoised
-        #self.stimMap = mapDict()
 
-    # Simple method to package the stimulus map into a list for each instance of a stimulus
     @property
     def stimMaps(self, map_name=None):
         ''' stimMaps property organization:
@@ -59,7 +57,8 @@ class ImgData():
                 return self._stimMaps[map_name]
             except KeyError:
                 print(str(KeyError))
-        
+
+    # Simple method to package the stimulus map into a list for each instance of a stimulus
     @stimMaps.setter
     def stimMaps(self, maps):
         """

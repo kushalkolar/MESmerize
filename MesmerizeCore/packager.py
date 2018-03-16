@@ -29,7 +29,7 @@ from . import configuration
 from uuid import uuid4
 
 
-class viewerWorkEnv():
+class viewerWorkEnv:
     def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments=''):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
@@ -72,26 +72,30 @@ class viewerWorkEnv():
         :type: tiffPath:    str
         """
 
-        pick = pickle.load(open(pikPath, 'rb'))
+        if (npzPath is None) and (tifffile is None):
+            raise ValueError('You must pass a path to either a npz or tiff image sequence.')
         if npzPath is not None:
             npz = np.load(npzPath)
             seq = npz['imgseq']
         elif tiffPath is not None:
             seq = tifffile.imread(tiffPath)
             seq = seq.T
-        imdata = ImgData(seq,
-                         pick['imdata']['meta'],
-                         SampleID=pick['imdata']['SampleID'],
-                         Genotype=pick['imdata']['Genotype'],
-                         stimMaps=pick['imdata']['stimMaps'],
-                         isSubArray=pick['imdata']['isSubArray'])
 
-        comments = pick['imdata']['comments']
+        p = pickle.load(open(pikPath, 'rb'))
+
+        imdata = ImgData(seq,
+                         p['imdata']['meta'],
+                         SampleID=p['imdata']['SampleID'],
+                         Genotype=p['imdata']['Genotype'],
+                         stimMaps=p['imdata']['stimMaps'],
+                         isSubArray=p['imdata']['isSubArray'])
+
+        comments = p['imdata']['comments']
 
         roi_states = []
-        if 'roi_states' in pick['imdata']:
-            for ID in range(0, len(pick['imdata']['roi_states'])):
-                roi_states.append(pick['imdata']['roi_states'][ID])
+        if 'roi_states' in p['imdata']:
+            for ID in range(0, len(p['imdata']['roi_states'])):
+                roi_states.append(p['imdata']['roi_states'][ID])
 
         return cls(imdata, roi_states=roi_states, comments=comments)
 
@@ -120,7 +124,7 @@ class viewerWorkEnv():
     @staticmethod
     def _organize_meta(meta, origin):
         if origin == 'mes':
-            fps = 1/meta['FoldedFrameInfo']['frameTimeLength']
+            fps = float(1000/meta['FoldedFrameInfo']['frameTimeLength'])
 
             date_meta = meta['MeasurementDate'].split('.')
             ymd = date_meta[0] + date_meta[1] + date_meta[2]
@@ -128,9 +132,20 @@ class viewerWorkEnv():
             hms = hms_[0].split(' ')[1] + hms_[1] + hms_[2][:2]
             date = ymd + '_' + hms
 
-            meta_d = {'origin': origin, 'fps': fps, 'date': date, 'original_meta': meta}
+            vmin = meta['LUTstruct']['lower']
+            vmax = meta['LUTstruct']['upper']
+
+            meta_d = {'origin':    origin,
+                      'fps':       fps,
+                      'date':      date,
+                      'vmin':      vmin,
+                      'vmax':      vmax,
+                      'orig_meta': meta}
 
             return meta_d
+
+        elif origin == 'tiff':
+            pass
 
     @classmethod
     def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
@@ -146,18 +161,14 @@ class viewerWorkEnv():
                                     work environment.
         :type       mesfileMaps:    dict
         """
+        assert isinstance(mesfile, MES)
+        imgseq, raw_meta = mesfile.load_img(ref)
 
-        rval, seq, raw_meta = mesfile.load_img(ref)
+        meta_data = viewerWorkEnv._organize_meta(raw_meta, 'mes')
+        imdata = ImgData(imgseq, meta_data)
+        imdata.stimMaps = (mesfileMaps, 'mesfile')
 
-        if rval:
-            meta = viewerWorkEnv._organize_meta(raw_meta, 'mes')
-            imdata = ImgData(seq, meta)
-            imdata.stimMaps = (mesfileMaps, 'mesfile')
-
-            return cls(imdata)
-
-        else:
-            return rval
+        return cls(imdata)
 
     @classmethod
     def from_tiff(cls, path, csvMapPaths=None):
@@ -182,10 +193,14 @@ class viewerWorkEnv():
 
     def _make_dict(self):
         # Dict that's later used for pickling
-        d = {'SampleID': self.imgdata.SampleID, 'Genotype': self.imgdata.Genotype,
-             'meta': self.imgdata.meta, 'stimMaps': self.imgdata.stimMaps,
-             'isSubArray': self.imgdata.isSubArray, 'isMotCor': self.imgdata.isMotCor,
-             'isDenoised': self.imgdata.isDenoised, 'comments': self.comments}
+        d = {'SampleID':    self.imgdata.SampleID,
+             'Genotype':    self.imgdata.Genotype,
+             'meta':        self.imgdata.meta,
+             'stimMaps':    self.imgdata.stimMaps,
+             'isSubArray':  self.imgdata.isSubArray,
+             'isMotCor':    self.imgdata.isMotCor,
+             'isDenoised':  self.imgdata.isDenoised,
+             'comments':    self.comments}
 
         for ix in range(0, len(self.ROIList)):
             for roi_def in self.ROIList[ix].tags.keys():
@@ -214,49 +229,43 @@ class viewerWorkEnv():
         :type       dirPath: str
         :param      mc_params: motion correction parameters if any
         :type       mc_params: dict
-        :return:    (True if no exceptions else False, str of filename)
-        :rtype:     tuple
+        :return:    str of filename
+        :rtype:     str
         """
         if mc_params is not None:
             rigid_params, elas_params = mc_params
-        try:
-            if filename is None:
-                fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
-            else:
-                fileName = dirPath + '/' + filename
 
-            imginfo = self._make_dict()
+        if filename is None:
+            fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
+        else:
+            fileName = dirPath + '/' + filename
 
-            if mc_params is not None:
-                data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
-            else:
-                data = {'imdata': imginfo}
+        imginfo = self._make_dict()
 
-            tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T)
-            pickle.dump(data, open(fileName + '.pik', 'wb'), protocol=4)
+        if mc_params is not None:
+            data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
+        else:
+            data = {'imdata': imginfo}
 
-            self._saved = True
+        tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T)
+        pickle.dump(data, open(fileName + '.pik', 'wb'), protocol=4)
 
-            return True, fileName
+        self.saved = True
 
-        except IOError:
-            return False, None
+        return fileName
 
     def to_pandas(self, projPath):
         """
         :param      projPath: Root path of the current project
         :type       projPath: str
-        :return:    (True if no exceptions, list of dicts that each correspond to a single curve that can be appended
-                    as rows to the project dataframe)
-        :rtype:     tuple
+        :return:    list of dicts that each correspond to a single curve that can be appended
+                    as rows to the project dataframe
+        :rtype:     list
         """
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = projPath + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
-        rval, imgPath = self.to_pickle(imgdir)
 
-        # Check if the img saving and pickling worked
-        if rval is False:
-            return False, None
+        imgPath = self.to_pickle(imgdir)
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False
@@ -287,7 +296,7 @@ class viewerWorkEnv():
                     if stim not in configuration.cfg['ALL_STIMS'].keys():
                         new_stims.append(stim)
 
-        print(stimMapsSet)
+        # print(stimMapsSet)
 
         configuration.cfg['ALL_STIMS'] = {**configuration.cfg['ALL_STIMS'], **dict.fromkeys(new_stims)}
         configuration.saveConfig()
@@ -317,39 +326,19 @@ class viewerWorkEnv():
             np.savez(curvePath, curve=self.CurvesList[ix].getData(),
                      roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
 
-            d = {'SampleID': self.imgdata.SampleID,
-                 'CurvePath': curvePath.split(projPath)[1],
-                 'ImgPath': imgPath.split(projPath)[1] + '.tiff',
+            d = {'SampleID':    self.imgdata.SampleID,
+                 'CurvePath':   curvePath.split(projPath)[1],
+                 'ImgPath':     imgPath.split(projPath)[1] + '.tiff',
                  'ImgInfoPath': imgPath.split(projPath)[1] + '.pik',
-                 'Genotype': self.imgdata.Genotype}
+                 'Genotype':    self.imgdata.Genotype}
 
             # Final list of dicts that are each appended as rows to the project DataFrame
             dicts.append({**d,
                           **stimMapsSet,
-                          'Date': date,
                           **self.ROIList[ix].tags,
+                          'Date': date,
                           'uuid_curve': uuid4(),
                           'comments': comments})
 
-            # df = df.append({**d, **roitags})  # , ignore_index=True)
-
-            # ------------------------------------------------------------------
-            ### TODO: CANNOT ALLOW NaN's in the dataframe!! Huge pain in the ass.
-        # ------------------------------------------------------------------
-        print(dicts)
-        self._saved = True
-        return True, dicts
-
-'''
-Does the reverse of workEnv2pandas
-'''
-
-
-def pandas2workEnv():
-    pass
-
-
-if __name__ == '__main__':
-    #    imD = pickle2workEnv('/home/kushal/Sars_stuff/github-repos/MESmerize/bahproj/.batches/1516565957.0505505/1516565957.050627.pik',
-    #                         '/home/kushal/Sars_stuff/github-repos/MESmerize/bahproj/.batches/1516565957.0505505/1516565957.050627_mc.npz')
-    pass
+        self.saved = True
+        return dicts

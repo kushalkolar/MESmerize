@@ -369,9 +369,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 return
             for ID in range(0, len(self.viewer.workEnv.ROIList)):
                 self.viewer.updatePlot(ID, force=True)
-            r, d = self.viewer.workEnv.to_pandas(self.projPath)
-            if r is False:
-                return
+            try:
+                d = self.viewer.workEnv.to_pandas(self.projPath)
+            except Exception as e:
+                QtGui.QMessageBox.warning(self, 'Error', 'The following error occured while trying to save the current '
+                                                         'work environment to your project:\n' + str(e))
             copyfile(self.projRootDfPath, self.projRootDfPath + '_BACKUP' + str(time.time()))
             self.projDf = self.projDf.append(pd.DataFrame(d), ignore_index=True)
             self.projDf.to_pickle(self.projRootDfPath, protocol=4)

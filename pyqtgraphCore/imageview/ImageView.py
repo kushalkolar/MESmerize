@@ -56,7 +56,7 @@ except ImportError:
 if configuration.IS_WINDOWS:
     from MesmerizeCore.caimanMotionCorrect_threading import caimanPipeline
 else:
-    from MesmerizeCore.caimanMotionCorrect import caimanPipelineg
+    from MesmerizeCore.caimanMotionCorrect import caimanPipeline
 
 
 class ImageView(QtGui.QWidget):
