@@ -18,13 +18,11 @@ import numpy as np
 import cv2
 import tifffile
 from functools import partial
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import imageio
-import cv2
 
 
 # vmin & vmax only has to be supplied for video outputs since videos cannot contain
-# the full range of 16 bit image depth (OpenCV & 16 bit grayscale is a nightmare to deal with)
+# the full range of 16astype(np.int32 bit image depth (OpenCV & 16 bit grayscale is a nightmare to deal with)
 class Exporter:
     def __init__(self, img_data, out_file, **kwargs):
         if out_file[-4:] != 'tiff' and 'levels' not in kwargs.keys():
@@ -37,11 +35,13 @@ class Exporter:
 
         self.img_data = img_data
         self.out_file = out_file
+        
         if 'levels' in kwargs.keys():
             vmin = kwargs['levels'][0]
             vmax = kwargs['levels'][1]
             self.vmin = vmin
             self.vmax = vmax
+            
         outFormat = self.out_file[-4:]
 
         formats = {'.tif': self.tiff,
@@ -56,8 +56,7 @@ class Exporter:
 
     def gif(self):
         scaled = self.scale_levels()
-        print(scaled)
-        with imageio.get_writer(self.out_file, mode='I') as writer:
+        with imageio.get_writer(self.out_file, mode='I', fps=self.fps) as writer:
             for frame in range(0, scaled.shape[2]):
                 writer.append_data(scaled[:, :, frame].T)
 
@@ -70,8 +69,8 @@ class Exporter:
     def scale_levels(self):
 
         scaled = ((self.img_data.seq - self.vmin) * (255/self.vmax)).clip(min=0, max=255).astype(np.uint8)
-        # np.nan_to_num(scaled, copy=False)
-        print(scaled)
+#        scaled = (((self.img_data.seq - self.vmin) * (self.vmax - self.vmin)) * (255.0/self.vmax)).clip(min=0, max=255).astype(np.uint8)#.clip(min=0, max=255).astype(np.uint8)
+#        self.min_substract = (self.img_data - self.vmin).astype(np.uint8)
         return scaled
 
     def vidWrite(self, codec):

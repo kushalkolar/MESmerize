@@ -45,6 +45,8 @@ import numpy as np
 from MesmerizeCore import stimMapWidget
 from MesmerizeCore.packager import viewerWorkEnv
 from MesmerizeCore import configuration
+from MesmerizeCore import misc_widgets
+import MesmerizeCore.Export
 import time
 from functools import partial
 
@@ -173,6 +175,9 @@ class ImageView(QtGui.QWidget):
         self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
         self.ui.btnPlotSplits.clicked.connect(lambda: self.splits_hstack(plot=True))
         self.splitSeqMode = False
+
+        self.ui.btnEditMetaData.clicked.connect(self.edit_meta_data)
+        self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
 
         self.mesfileMap = None
         self.ui.listwMesfile.itemDoubleClicked.connect(lambda selection:
@@ -321,10 +326,12 @@ class ImageView(QtGui.QWidget):
 
         # if mesfile listwidget item is clicked
         if origin == 'mesfile':
-            self.workEnv = viewerWorkEnv.from_mesfile(self.mesfile, selection.text().split('//')[0])
-            if self.workEnv is False:
-                QtGui.QMessageBox.information(self, 'KeyError', 'Could not find the selected'+\
-                                              'image in the currently open mes file', QtGui.QMessageBox.Ok)
+            try:
+                self.workEnv = viewerWorkEnv.from_mesfile(self.mesfile, selection.text().split('//')[0])
+            except Exception as e:
+                QtGui.QMessageBox.information(self, 'Error', 'Error opening the selected '+\
+                                              'image in the currently open mes file.\n' + str(e), QtGui.QMessageBox.Ok)
+                return
             if self.mesfileMap is not None:
                 self.workEnv.imgdata.stimMaps = (self.mesfileMap, 'mesfile')
 
@@ -444,10 +451,9 @@ class ImageView(QtGui.QWidget):
                 self.ui.btnResetSMap.setDisabled(True)
                 self.ui.btnChangeSMap.setDisabled(True)
 
-        except (IOError, IndexError) as exc:
-           QtGui.QMessageBox.warning(self,'IOError or IndexError', "There is an problem with the files you've selected:\n" + str(exc), QtGui.QMessageBox.Ok)
+        except (IOError, IndexError) as e:
+           QtGui.QMessageBox.warning(self,'IOError or IndexError', "There is an problem with the files you've selected:\n" + str(e), QtGui.QMessageBox.Ok)
         return
-
 
     def promTiffFileDialog(self):
         if self.workEnv is not None and self.DiscardWorkEnv() is False:
@@ -465,21 +471,84 @@ class ImageView(QtGui.QWidget):
         self.ui.listwTiffs.addItems(files)
         self.ui.listwTiffs.setEnabled(True)
 
+    def edit_meta_data(self):
+        if hasattr(self, '_meta_data_editor'):
+            self._meta_data_editor.close()
+            self._meta_data_editor = None
+
+        self._meta_data_editor = misc_widgets.MetaDataEditor(self)
+        self._meta_data_editor.fill_widget(self.workEnv.imgdata.meta)
+        self._meta_data_editor.btnSave.clicked.connect(self.set_meta_data)
+
+    def set_meta_data(self):
+        try:
+            d = self._meta_data_editor.get_data()
+            self.workEnv.imgdata.meta.update(d)
+        except Exception as e:
+            QtGui.QMessageBox.warning(self, 'Error', 'The following error occured while trying to save the meta-data:\n'
+                                                     + str(e))
+        self._meta_data_editor.close()
+
+    def init_export_gui(self):
+        if hasattr(self, 'export_gui'):
+            self.export_gui.close()
+            self.export_gui = None
+        self.export_gui = misc_widgets.Exporter()
+        self.export_gui.btnExport.clicked.connect(self.export_workEnv)
+
+    def export_workEnv(self):
+        path = self.export_gui.lineEdPath.text()
+
+        if self.export_gui.comboBoxFormat.currentText() != 'tiff':
+            if self.export_gui.radioAuto.isChecked():
+                mi = self.workEnv.imgdata.meta['vmin']
+                mx = self.workEnv.imgdata.meta['vmax']
+                histLevels = (mi, mx)
+            elif self.export_gui.radioFromViewer.isChecked():
+                histLevels = self.ui.histogram.item.getLevels()
+
+        if self.export_gui.comboBoxFormat.currentText() == 'tiff':
+            try:
+                MesmerizeCore.Export.Exporter(self.workEnv.imgdata, path + '.tiff')
+            except Exception as e:
+                QtGui.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
+                                                                'environment: \n' + str(e))
+            return
+
+        if self.export_gui.labelSlider != '1.0':
+            fscale = float(self.export_gui.labelSlider.text())
+            f = self.workEnv.imgdata.meta['fps'] * fscale
+        else:
+            f = self.workEnv.imgdata.meta['fps']
+
+        if self.export_gui.comboBoxFormat.currentText() == 'MJPG':
+            ex = '.avi'
+        elif self.export_gui.comboBoxFormat.currentText() == 'X264':
+            ex = '.mp4'
+        elif self.export_gui.comboBoxFormat.currentText() == 'gif':
+            ex = '.gif'
+
+        try:
+            MesmerizeCore.Export.Exporter(self.workEnv.imgdata, path + ex, levels=histLevels, fps=f)
+        except Exception as e:
+            QtGui.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
+                                                            'environment: \n' + str(e))
+
     '''##################################################################################################################
                                             Split Seq Mode methods
     ##################################################################################################################'''
 
-    def split_seq_ui_toggle(self, bool):
+    def split_seq_ui_toggle(self, b):
         # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
-        self.ui.btnAddROI.setDisabled(bool)
-        self.ui.btnSubArray.setDisabled(bool)
-        self.ui.btnChangeSMap.setDisabled(bool)
-        self.ui.btnResetSMap.setDisabled(bool)
-        self.ui.btnImportSMap.setDisabled(bool)
+        self.ui.btnAddROI.setDisabled(b)
+        self.ui.btnSubArray.setDisabled(b)
+        self.ui.btnChangeSMap.setDisabled(b)
+        self.ui.btnResetSMap.setDisabled(b)
+        self.ui.btnImportSMap.setDisabled(b)
 
-        self.ui.listwSplits.setEnabled(bool)
-        self.ui.btnPlotSplits.setEnabled(bool)
-        self.ui.btnDoneSplitSeqs.setEnabled(bool)
+        self.ui.listwSplits.setEnabled(b)
+        self.ui.btnPlotSplits.setEnabled(b)
+        self.ui.btnDoneSplitSeqs.setEnabled(b)
 
     def enterSplitSeqMode(self):
         if self.splitSeqMode is False:
@@ -581,7 +650,7 @@ class ImageView(QtGui.QWidget):
                     self.masterCurvesList.append(self.workEnv.CurvesList[ID].getData())
                 else:
                     self.masterCurvesList[ID] = np.hstack((self.masterCurvesList[ID],
-                                                      self.workEnv.CurvesList[ID].getData()))
+                                                           self.workEnv.CurvesList[ID].getData()))
         if plot:
             for curve in self.masterCurvesList:
                 pgplot(curve[1])
@@ -1352,18 +1421,18 @@ class ImageView(QtGui.QWidget):
         else:
             mc_params = None
 
-        rval, fileName = self.workEnv.to_pickle(self.currBatchDir, mc_params)
-
-        if rval:
-            self.ui.listwBatch.addItem(fileName)
-            self.ui.btnStartBatch.setEnabled(True)
-            self.workEnv.saved = True
-            self.ui.btnRemoveFromBatch.setEnabled(True)
-
-        else:
+        try:
+            filename = self.workEnv.to_pickle(self.currBatchDir, mc_params)
+        except Exception as e:
             QtGui.QMessageBox.warning(self, 'Error',
-                                      'There was an error saving files for batch',
-                                      QtGui.QMessageBox.Ok)
+                                      'The following error occured while trying to save files for batch:\n'
+                                      + str(e))
+            return
+        self.ui.listwBatch.addItem(filename)
+        self.ui.btnStartBatch.setEnabled(True)
+        self.workEnv.saved = True
+        self.ui.btnRemoveFromBatch.setEnabled(True)
+
 
     # def startBatch(self):
     #     batchSize = self.ui.listwBatch.count()
