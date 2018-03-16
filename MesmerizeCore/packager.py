@@ -144,6 +144,10 @@ class viewerWorkEnv:
 
             return meta_d
 
+        elif origin == 'wb-thunderscan':
+
+            return meta
+
         elif origin == 'tiff':
             pass
 
@@ -183,7 +187,8 @@ class viewerWorkEnv:
         """
 
         seq = tifffile.imread(path)
-        imdata = ImgData(seq.T)
+        meta = viewerWorkEnv._organize_meta(meta={}, origin='wb-thunderscan')
+        imdata = ImgData(seq.T, meta)
         imdata.stimMaps = (csvMapPaths, 'csv')
         return cls(imdata)
 
