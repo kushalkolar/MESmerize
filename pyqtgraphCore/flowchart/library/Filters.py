@@ -58,7 +58,10 @@ class ButterWorth(CtrlNode):
             return
         self.t = transmission.copy()
 
-        self.t.df['curve'] = self.t.df.apply(lambda x: self._func(x['curve'], x['meta']), axis=1)
+        try:
+            self.t.df['curve'] = self.t.df.apply(lambda x: self._func(x['curve'], x['meta']), axis=1)
+        except KeyError as e:
+            raise KeyError(str(e))
         # self.t.plot_this = self.t.data_column['curve']
 
         params = {'N - order': self.ctrls['order'].value(),
