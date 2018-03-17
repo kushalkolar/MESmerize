@@ -118,7 +118,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.viewerWindow.close()
                 self.viewer = None
             else:
-                return
+                return False
 
         if (self.projBrowserWin is not None):
             if QtGui.QMessageBox.warning(self, 'Close Current Project?', 'You currently have a project open, would you' +\
@@ -127,7 +127,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.projBrowserWin.close()
                 self.projBrowserWin = None
             else:
-                return
+                return False
+
+        return True
 
     def setupProjPaths(self, checkPaths=False):
         # Create important path attributes for the project
@@ -222,12 +224,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def openProjFileDialog(self):
         # File dialog to open an existing project
-        self.checkProjOpen()
-        self.projPath = QtGui.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
+        if self.checkProjOpen() is False:
+            return
+        projPath = QtGui.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
 
-        if self.projPath == '':
+        if projPath == '':
             return
 
+        self.projPath = projPath
         if self.setupProjPaths(checkPaths=True) is not False:
             self.openProj()
         
@@ -309,6 +313,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.viewerWindow = QtWidgets.QMainWindow()
         self.viewerWindow.resize(1460, 950)
         self.viewer = pyqtgraphCore.ImageView()
+        assert isinstance(self.viewer, pyqtgraphCore.ImageView)
         configuration.viewer_ref = weakref.ref(self.viewer)
         self.viewerWindow.setCentralWidget(self.viewer)
 #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
@@ -331,6 +336,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.viewerWindow.show()
 
         self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
+        self.viewer.ui.btnSplitSeq.clicked.connect(self.viewer_enter_split_seq)
+        self.viewer.ui.btnDoneSplitSeqs.clicked.connect(self.viewer_done_split_seq)
 
         self.actionShow_Viewer.setEnabled(True)
         self.actionShow_Viewer.triggered.connect(self.viewerWindow.show)
@@ -357,8 +364,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def viewerOpenBatch(self):
         if self.isProjLoaded():
             self.viewer.openBatch()
-    
-    def addWorkEnvToProj(self):
+
+    def viewer_enter_split_seq(self):
+        if self.viewer.splitSeqMode is False:
+            if self.viewer.setSampleID() is False:
+                return
+            if any(self.projDf['SampleID'].str.match(self.viewer.workEnv.imgdata.SampleID)):
+                QtGui.QMessageBox.warning(self, 'Sample ID already exists!', 'The following SampleID already exists' + \
+                                          ' in your DataFrame. Use a unique Sample ID for each sample.\n' + \
+                                          self.viewer.workEnv.imgdata.SampleID, QtGui.QMessageBox.Ok)
+        self.viewer.enterSplitSeqMode()
+
+    def viewer_done_split_seq(self):
+        self.viewer.splits_seq_mode_done()
+        self.addWorkEnvToProj(update_ROIPlots=False)
+
+    def addWorkEnvToProj(self, update_ROIPlots=True):
         if self.isProjLoaded():
             if self.viewer.setSampleID() is False:
                 return
@@ -367,24 +388,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                           ' in your DataFrame. Use a unique Sample ID for each sample.\n' +\
                           self.viewer.workEnv.imgdata.SampleID, QtGui.QMessageBox.Ok)
                 return
-            for ID in range(0, len(self.viewer.workEnv.ROIList)):
-                self.viewer.updatePlot(ID, force=True)
-            try:
-                d = self.viewer.workEnv.to_pandas(self.projPath)
-            except Exception as e:
-                QtGui.QMessageBox.warning(self, 'Error', 'The following error occured while trying to save the current '
-                                                         'work environment to your project:\n' + str(e))
+            if update_ROIPlots:
+                for ID in range(0, len(self.viewer.workEnv.ROIList)):
+                    self.viewer.updatePlot(ID, force=True)
+            # try:
+            d = self.viewer.workEnv.to_pandas(self.projPath)
+            # except Exception as e:
+            #     QtGui.QMessageBox.warning(self, 'Error', 'The following error occured while trying to save the current '
+            #                                              'work environment to your project:\n' + str(e))
+            #   return
             copyfile(self.projRootDfPath, self.projRootDfPath + '_BACKUP' + str(time.time()))
             self.projDf = self.projDf.append(pd.DataFrame(d), ignore_index=True)
             self.projDf.to_pickle(self.projRootDfPath, protocol=4)
             self.projBrowserWin.tabs.widget(0).df = self.projDf
             self.projBrowserWin.tabs.widget(0).updateDf()
-
-    # def loadCurveFiles(self, row):
-    #     path = row['CurvePath']
-    #     print(path)
-    #     npz = np.load(path)
-    #     return pd.Series({'curve': npz.f.curve, 'stimMaps': npz.f.stimMaps})
 
     def initAnalyzer(self):
         self.analysisWindows.append(analyser.gui.Window())
