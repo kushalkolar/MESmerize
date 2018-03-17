@@ -328,7 +328,12 @@ class viewerWorkEnv:
         for ix in range(0, len(self.CurvesList)):
             curvePath = curvesDir + '/CURVE_' + str(ix).zfill(3) + '.npz'
 
-            np.savez(curvePath, curve=self.CurvesList[ix].getData(),
+            if isinstance(self.CurvesList[ix], np.ndarray):
+                curve = self.CurvesList[ix]
+            else:
+                curve = self.CurvesList[ix].getData()
+
+            np.savez(curvePath, curve=curve,
                      roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
 
             d = {'SampleID':    self.imgdata.SampleID,
