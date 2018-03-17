@@ -172,9 +172,10 @@ class ImageView(QtGui.QWidget):
         self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
         self.ui.btnImportSMap.clicked.connect(self.importCSVMap)
 
-        self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
+        # self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
         self.ui.btnPlotSplits.clicked.connect(lambda: self.splits_hstack(plot=True))
         self.splitSeqMode = False
+        # self.ui.btnDoneSplitSeqs.clicked.connect(self.splits_seq_mode_done)
 
         self.ui.btnEditMetaData.clicked.connect(self.edit_meta_data)
         self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
@@ -321,7 +322,11 @@ class ImageView(QtGui.QWidget):
             =======================================================================================
         '''
         # Prevent losing unsaved workEnv
-        if self.workEnv is not None and self.DiscardWorkEnv() is False:
+        if origin == 'splits':
+            clear_sample_id = False
+        else:
+            clear_sample_id = True
+        if self.workEnv is not None and self.DiscardWorkEnv(clear_sample_id) is False:
             return
 
         # if mesfile listwidget item is clicked
@@ -385,8 +390,8 @@ class ImageView(QtGui.QWidget):
         # Get image dimensions to set limits on the sliders for motion correction parameters
         x = self.workEnv.imgdata.seq.shape[0]
         y = self.workEnv.imgdata.seq.shape[1]
-        self.ui.sliderStrides.setMaximum(int(max(x,y)/2))
-        self.ui.sliderOverlaps.setMaximum(int(max(x,y)/2))
+        self.ui.sliderStrides.setMaximum(int(max(x, y)/2))
+        self.ui.sliderOverlaps.setMaximum(int(max(x, y)/2))
 
         # Activate the stimulus illustration GUI stuff if the newly spawed work environment has a stimulus map.
         if self.workEnv.imgdata.stimMaps is not None:
@@ -395,18 +400,22 @@ class ImageView(QtGui.QWidget):
 
         self.workEnv.saved = True
         self._workEnv_checkSaved() # Connect signals of many Qt UI elements to a method that sets workEnv.save = False
-        self.enableUI(True)
+        if origin == 'splits':
+            self.enableUI(True, clear_sample_id=False)
+        else:
+            self.enableUI(True)
 
-    def enableUI(self, b):
+    def enableUI(self, b, clear_sample_id=True):
         self.ui.splitter.setEnabled(b)  # Enable stuff in the image & curve working area
         self.ui.tabBatchParams.setEnabled(b)
         self.ui.tabROIs.setEnabled(b)
         self.ui.toolBox.setEnabled(b)
         self.ui.btnAddCurrEnvToProj.setEnabled(b)
 
-        self.ui.lineEdAnimalID.clear()
-        self.ui.lineEdTrialID.clear()
-        self.ui.lineEdGenotype.clear()
+        if clear_sample_id:
+            self.ui.lineEdAnimalID.clear()
+            self.ui.lineEdTrialID.clear()
+            self.ui.lineEdGenotype.clear()
 
     def resetImgScale(self):
         '''
@@ -638,7 +647,9 @@ class ImageView(QtGui.QWidget):
     def splits_hstack(self, plot=False):
         self.masterCurvesList = []
         self.masterROIList = []
+
         for i in range(0, self.ui.listwSplits.count()):
+            self.workEnv.saved = True
             self.updateWorkEnv(str(i).zfill(3), origin='splits', iterate=True, qtsig=False)
 
             for ID in range(0, len(self.workEnv.ROIList)):
@@ -664,9 +675,6 @@ class ImageView(QtGui.QWidget):
         self.workEnv.CurvesList = self.masterCurvesList
         # self.workEnv.ROIList = self.masterROIList
         self.exit_split_seq_mode()
-        QtGui.QMessageBox.warning(self, 'WARNING!!', 'YOU MUST ADD THIS THIS TO YOUR PROJECT IMMEDIATELY WITHOUT '
-                                                     'CHANGING ANYTHING, OTHERWISE YOU WILL LOOSE THE INFORMATION FROM'
-                                                     ' SPLIT-SEQ MODE!!!')
 
     def exit_split_seq_mode(self):
         self.ui.listwSplits.clear()
@@ -1580,16 +1588,16 @@ class ImageView(QtGui.QWidget):
     ##################################################################################################################'''
 
 
-    def DiscardWorkEnv(self):
+    def DiscardWorkEnv(self, clear_sample_id=False):
         if (self.workEnv.saved == False) and (QtGui.QMessageBox.warning(self, 'Warning!',
                   'You have unsaved work in your environment. Would you like to discard them and continue?',
                        QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
                 return False
-        self.clearWorkEnv()
+        self.clearWorkEnv(clear_sample_id)
         return True
 
     # Clear the ROIs and plots
-    def clearWorkEnv(self):
+    def clearWorkEnv(self, clear_sample_id=False):
         # Remove any ROIs and associated curves on the plot
         for i in range(0,len(self.workEnv.ROIList)):
             self.delROI(self.workEnv.ROIList[0])
@@ -1618,7 +1626,7 @@ class ImageView(QtGui.QWidget):
             self.currStimMapBg = []
 
         # self.initROIPlot()
-        self.enableUI(False)
+        self.enableUI(False, clear_sample_id)
 
 
 

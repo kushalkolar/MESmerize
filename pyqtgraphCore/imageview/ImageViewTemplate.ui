@@ -630,7 +630,7 @@
            <number>1</number>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="page_9">
            <property name="geometry">
@@ -1003,7 +1003,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>Done</string>
+                <string>Add to Proj</string>
                </property>
               </widget>
              </item>
