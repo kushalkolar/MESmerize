@@ -79,21 +79,30 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for ix in ixs:
             curve_plot = pg.PlotDataItem()
             curve = self.tc.df['curve'].iloc[ix]
+            # print('curve: ')
+            # print(curve)
             # if curve is None:
             #     QtGui.QMessageBox.warning(None, 'Empty Curve')
-            curve_plot.setData(curve / min(curve))
+
+            if min(curve) != 0:
+                min_curve = min(curve)
+            else:
+                min_curve = 0.00000001
+
+            curve_plot.setData(curve / min_curve)
 
             self.graphicsView.addItem(curve_plot)
 
             # peak_ixs = self.tpb.df[self.tpb.data_column].iloc[ix].index[self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'peak'].tolist()
             try:
+                # print(self.tpb.df['peaks_bases'].iloc[ix])
                 peaks = self.tpb.df['peaks_bases'].iloc[ix]['event'][
                     self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'peak'].tolist()
 
                 peaks_plot = pg.ScatterPlotItem(name='peaks', pen=None, symbol='o', size=self.brush_size,
                                                 brush=(255, 0, 0, 150))
 
-                peaks_plot.setData(peaks, np.take(curve, peaks) / min(curve))
+                peaks_plot.setData(peaks, np.take(curve, peaks) / min_curve)
 
                 bases = self.tpb.df['peaks_bases'].iloc[ix]['event'][
                     self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'base'].tolist()
@@ -101,7 +110,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 bases_plot = pg.ScatterPlotItem(name='bases', pen=None, symbol='o', size=self.brush_size,
                                                 brush=(0, 255, 0, 150))
 
-                bases_plot.setData(bases, np.take(curve, bases) / min(curve))
+                bases_plot.setData(bases, np.take(curve, bases) / min_curve)
 
                 self.graphicsView.addItem(peaks_plot)
                 self.s_plots.append(peaks_plot)

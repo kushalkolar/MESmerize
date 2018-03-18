@@ -421,7 +421,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             
 if __name__ == '__main__':
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
     gui = MainWindow()
     gui.show()
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
