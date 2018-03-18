@@ -412,6 +412,7 @@ class ImageView(QtGui.QWidget):
         self.ui.toolBox.setEnabled(b)
         self.ui.btnAddCurrEnvToProj.setEnabled(b)
 
+
         if clear_sample_id:
             self.ui.lineEdAnimalID.clear()
             self.ui.lineEdTrialID.clear()
@@ -1285,7 +1286,8 @@ class ImageView(QtGui.QWidget):
         for i in range(0, len(self.ui.listwROIs)):
             self.ui.listwROIs.item(i).setText(str(i))
 
-        self.workEnv.CurvesList[ID].clear()
+        if isinstance(self.workEnv.CurvesList[ID], np.ndarray) is False:
+            self.workEnv.CurvesList[ID].clear()
         del self.workEnv.CurvesList[ID]
 
          # Resets the color in the order of a bright rainbow, kinda.

@@ -43,8 +43,8 @@ class ButterWorth(CtrlNode):
 
     def _func(self, x, meta):
         N = self.ctrls['order'].value()
-
-        freq = meta['fps']
+        # print('meta: ')
+        freq = 1 / meta['fps']
         divider = self.ctrls['freqDivider'].value()
 
         self.Wn = freq/divider
