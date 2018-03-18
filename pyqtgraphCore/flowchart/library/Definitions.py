@@ -292,6 +292,7 @@ class PeakDetect(CtrlNode):
         peaks_bases_df.reset_index()
 
         self.row_ix += 1
+        # print(peaks_bases_df)
         return peaks_bases_df
 
     def process(self, display=True, **kwargs):
