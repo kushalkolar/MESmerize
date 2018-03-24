@@ -172,7 +172,7 @@ class PeakFeaturesIter(PeakFeatures):
         :param curve: raw trace of calcium signal
         :type curve: np.array
         :param pb_df: peaks & bases DataFrame, created by _get_zero_crossings
-        :type pb_df pd.DataFrame
+        :type pb_df: pd.DataFrame
         :return: Series of dicts containing numerical peak features for each peak in this curve
         :type: pd.Series
         """

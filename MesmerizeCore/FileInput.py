@@ -13,46 +13,40 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import scipy.io as spio
 import numpy as np
-from .misc_funcs import fix_fp_errors
+#from .misc_funcs import fix_fp_errors
 from PyQt5 import QtGui
-
+def fix_fp_errors(n):
+    fix = np.round(n, decimals=1) + 0.0
+    return fix
 
 # Loads the entire .mes file as an instance.
 # The load_img() method can be used to return an ImgData class object for any particular image
 # of interest from the created MES instance.
-class MES():
+class MES:
     """
-    Does the back-end handling of opening .mes files and organizing the images and
-	meta data. The load_img() method returns a 3D array (2D + time) of the image
-	sequence and meta data as a ImgData class object.
+    Handles of opening .mes files and organizing the images and meta data.
+    The load_img() method returns a 3D array (2D + time) of the image sequence
+    and meta data as a ImgData class object.
 
-	Usage:
-        Create a mesfile object by passing the path of your mes file
+    Usage:
+    Create a mesfile object by passing the path of your mes file, example:
 
-        Example:
-            mesfile = MES.('/home/kushal/olfactory/experiment_Dec_25.mes')
+    mesfile = MES('/path/to/mesfile/experiment_Feb_31.mes')
 
-            To get images from the mesfile object:
+    To get images from the mesfile object:
 
-                Pass a dictionary key (extracted by the __init__ method) as a string
-                which refers to the desired image to load.
+        Pass a dictionary key (extracted by the class constructor) as a string
+        which refers to the desired image to load.
 
-                imdata = mesfile.load_img('IF0001_0001')
+        imdata = mesfile.load_img('IF0001_0001')
     """
-
     def __init__(self, filename):
         # Open the weird matlab type objects and organize the images & meta data
         """
-
         :param filename: full path of a single .mes file
         :type filename: str
         """
-        try:
-            self.main_dict = self._loadmat(filename)
-
-        except IOError:
-            QtGui.QMessageBox.warning(None, 'IOError', 'Unable to open the file you have selected',
-                                      QtGui.QMessageBox.Ok)
+        self.main_dict = self._loadmat(filename)
 
         self.main_dict_keys = [x for x in self.main_dict.keys()]
         self.main_dict_keys.sort()
@@ -105,31 +99,16 @@ class MES():
                 # print('bah')
 
     def _loadmat(self, filename):
-        '''
-        this function should be called instead of direct spio.loadmat
-        as it cures the problem of not properly recovering python dictionaries
-        from mat files. It calls the function check keys to cure all entries
-        which are still mat-objects
-
-        from: `StackOverflow <http://stackoverflow.com/questions/7008608/scipy-io-loadmat-nested-structures-i-e-dictionaries>`_
-        '''
         data = spio.loadmat(filename, struct_as_record=False, squeeze_me=True)
         return self._check_keys(data)
 
     def _check_keys(self, dict):
-        '''
-        checks if entries in dictionary are mat-objects. If yes
-        todict is called to change them to nested dictionaries
-        '''
         for key in dict:
             if isinstance(dict[key], spio.matlab.mio5_params.mat_struct):
                 dict[key] = self._todict(dict[key])
         return dict
 
     def _todict(self, matobj):
-        '''
-        A recursive function which constructs from matobjects nested dictionaries
-        '''
         dict = {}
         for strg in matobj._fieldnames:
             elem = matobj.__dict__[strg]
@@ -145,38 +124,35 @@ class MES():
         :param d: The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx
         :type d: str
         :return: Boolean, numpy array of the image sequence, dict of metadata
-        :rtype: (bool, np.array, dict)
+        :rtype: (np.array, dict)
 
         """
-        try:
-            meta = self.main_dict["D" + d[1:6]].tolist()
-            meta = self._todict(meta[0])
-            #        except KeyError:
-            #            return False, KeyError
+        meta = self.main_dict["D" + d[1:6]].tolist()
+        meta = self._todict(meta[0])
+        #        except KeyError:
+        #            return False, KeyError
 
-            if len(meta["FoldedFrameInfo"]) > 0:
-                start = meta["FoldedFrameInfo"]["firstFramePos"]
-                stop = meta["TransversePixNum"]
-                # print("Images starting at: ",start)
-                # print("Frame width = ",stop)
-                im = self.main_dict[d]
-                # Trim the 2D array to start at where img acquisition actually begins
-                im = im[:, start:]
-                # Figure out where the 2D array stops at end of acquisition
-                im = im[:, :(im.shape[1] - (im.shape[1] % stop))]
-                # Divide the single large 2D array into individual arrays which each
-                # represent a single frame
-                image_sequence = np.hsplit(im, im.shape[1] / stop)
-                # Combine all the frames into one 3D array, 2D + time
-                seq = np.dstack(image_sequence)
+        if len(meta["FoldedFrameInfo"]) > 0:
+            start = meta["FoldedFrameInfo"]["firstFramePos"]
+            stop = meta["TransversePixNum"]
+            # print("Images starting at: ",start)
+            # print("Frame width = ",stop)
+            im = self.main_dict[d]
+            # Trim the 2D array to start at where img acquisition actually begins
+            im = im[:, start:]
+            # Figure out where the 2D array stops at end of acquisition
+            im = im[:, :(im.shape[1] - (im.shape[1] % stop))]
+            # Divide the single large 2D array into individual arrays which each
+            # represent a single frame
+            image_sequence = np.hsplit(im, im.shape[1] / stop)
+            # Combine all the frames into one 3D array, 2D + time
+            seq = np.dstack(image_sequence)
 
-                return True, seq, meta
-        except KeyError:
-            return False, None, None
-
-
+            return seq, meta
+        else:
+            raise IndexError("'" + str(d) + "' does not have the required 'FoldedFrameInfo' meta-data which is"
+                                            "required for the construction of an image sequence from mesfile data")
 # For testing
 if __name__ == '__main__':
-    mesfile = MES('/home/kushal/Sars_stuff/github-repos/all_aux_mesfile_sample.mes')
-    rval, seq, meta = mesfile.load_img('If0001_0002')
+    mesfile = MES('/home/kushal/Sars_stuff/github-repos/MESmerize/Amazing animal.mes')
 # y = imdata.meta['AUXo3']['y']
