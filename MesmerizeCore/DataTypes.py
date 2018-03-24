@@ -76,7 +76,7 @@ class ImgData():
         if origin == 'mesfile':
             # Organize stimulus maps from mesfile objects
             try:
-                mes_meta = self.meta['original_meta']
+                mes_meta = self.meta['orig_meta']
             except (KeyError, IndexError) as e:
                 QtGui.QMessageBox.warning(None, 'Stimulus Data not found!', 'Could not find the stimulus data in the '
                                                                            'meta-data for this image.')
