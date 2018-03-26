@@ -33,15 +33,15 @@ try:
 except:
     print('Open CV is naturally single threaded')
 
-try:
-    if __IPYTHON__:
-        print("Running under iPython")
-        # this is used for debugging purposes only. allows to reload classes
-        # when changed
-        get_ipython().magic('load_ext autoreload')
-        get_ipython().magic('autoreload 2')
-except NameError:
-    pass
+# try:
+#     # if __IPYTHON__:
+#     #     print("Running under iPython")
+#         # this is used for debugging purposes only. allows to reload classes
+#         # when changed
+#         # get_ipython().magic('load_ext autoreload')
+#         # get_ipython().magic('autoreload 2')
+# except NameError:
+#     pass
 import caiman as cm
 import numpy as np
 import os
@@ -135,8 +135,8 @@ class caimanPipeline(multiprocessing.Process):
         #    gain=10, offset=offset_mov, fr=30, magnification=2)
 
         #%% start a cluster for parallel processing
-        c, dview, n_processes = cm.cluster.setup_cluster(
-            backend='local', n_processes=None, single_thread=False)
+        # c, dview, n_processes = cm.cluster.setup_cluster(
+        #     backend='local', n_processes=None, single_thread=False)
 
 
         #%%% MOTION CORRECTION
@@ -146,7 +146,7 @@ class caimanPipeline(multiprocessing.Process):
 
         try:
             mc = MotionCorrect(self.fname[0], min_mov,
-                               dview=dview, max_shifts=self.max_shifts, niter_rig=self.niter_rig,
+                               dview=None, max_shifts=self.max_shifts, niter_rig=self.niter_rig,
                                splits_rig=self.splits_rig,
                                strides=self.strides, overlaps=self.overlaps, splits_els=self.splits_els,
                                upsample_factor_grid=self.upsample_factor_grid,
@@ -191,7 +191,7 @@ class caimanPipeline(multiprocessing.Process):
     # load frames in python format (T x X x Y)
 
         #%% restart cluster to clean up memory
-        dview.terminate()
+        # dview.terminate()
 #        c, dview, n_processes = cm.cluster.setup_cluster(
 #            backend='local', n_processes=None, single_thread=False)
         
