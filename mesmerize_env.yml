@@ -109,7 +109,7 @@ dependencies:
   - tensorflow
   - tensorflow-base
   - tensorflow-tensorboard
-  - testpath=0.3.1
+  - testpath
   - toolz
   - tqdm
   - traitlets
