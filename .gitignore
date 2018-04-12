@@ -41,7 +41,6 @@ examples/
 .pydevproject
 
 # images
-*.png
 
 pandas_analysis.py
 
