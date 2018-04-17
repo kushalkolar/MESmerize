@@ -33,9 +33,20 @@ class MetaDataEditor(QtWidgets.QWidget, Ui_meta_editor_template):
             self.lineEdHHMMSS.setText(str(hms))
 
     def get_data(self):
-        ymd = int(self.lineEdYYYYMMDDD.text())
-        hms = int(self.lineEdHHMMSS.text())
+        if self.lineEdYYYYMMDDD.text() == '':
+            ymd = 'Unknown'
+        else:
+            ymd = int(self.lineEdYYYYMMDDD.text())
+
+        if self.lineEdHHMMSS.text() == '':
+            hms = 'Unknown'
+        else:
+            hms = int(self.lineEdHHMMSS.text())
+
         date = str(ymd) + '_' + str(hms)
+
+        if date == 'Unknown_Unknown':
+            date = 'Unknown'
 
         fps = self.doubleSpinFPS.value()
 
