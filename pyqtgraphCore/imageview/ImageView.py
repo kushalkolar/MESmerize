@@ -1329,8 +1329,8 @@ class ImageView(QtGui.QWidget):
                 data = data.mean(axis=1)
             if image.ndim == 3:
                 # Set the curve
-                Fo = np.mean(np.take(data, np.arange(0, 300)))
-                data = np.divide(np.subtract(data, Fo), Fo)
+                # Fo = np.mean(np.take(data, np.arange(0, 300)))
+                # data = np.divide(np.subtract(data, Fo), Fo)
                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
                 self.workEnv.CurvesList[ID].setPen(color)
                 self.workEnv.CurvesList[ID].show()
