@@ -19,6 +19,7 @@ from MesmerizeCore import ConfigWindow
 from MesmerizeCore import configuration
 import pyqtgraphCore
 import numpy as np
+import tifffile
 import pickle
 import sys
 from MesmerizeCore import packager
@@ -63,7 +64,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.resize(700, 400)
         self.analysisWindows = []
         self.statsWindows = []
-
+        
     def connect_sigs_MenuBar(self):
         self.actionNew.triggered.connect(self.newProjFileDialog)
 
@@ -275,7 +276,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.setCentralWidget(self.projBrowserWin)
 
         ns = {'pd': pd,
+              'np': np,
               'pickle': pickle,
+              'tifffile': tifffile,
               'curr_tab': self.projBrowserWin.tabs.currentWidget,
               'pbwin': self.projBrowserWin,
               'addTab': self.projBrowserWin.addNewTab,
@@ -284,8 +287,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
               }
 
         txt = "Namespaces:\n" \
+              "numpy as np\n" \
               "pandas as pd\n" \
               "pickle as 'pickle\n" \
+              "tifffile as tifffile\n" \
               "viewer as viewer\n" \
               "self as main\n" \
               "call curr_tab() to return current tab widget\n" \
@@ -425,4 +430,5 @@ if __name__ == '__main__':
     gui = MainWindow()
     gui.show()
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+        app.exec_()
+#        QtWidgets.QApplication.instance().exec_()

@@ -28,7 +28,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setWindowTitle('Mesmerize - Plot')
         self.show()
-        self.history_widget = HistoryTreeWidget()
+        self.history_widget = HistoryTreeWidget(self)
 
     def set_history_widget(self, sources):
         self.dockWidgetTransmissions.setWidget(self.history_widget)

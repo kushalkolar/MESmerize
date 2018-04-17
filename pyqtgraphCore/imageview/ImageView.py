@@ -136,8 +136,6 @@ class ImageView(QtGui.QWidget):
         self.ui.setupUi(self)
         self.scene = self.ui.graphicsView.scene()
 
-
-
         self.ui.btnResetScale.clicked.connect(self.resetImgScale)
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
@@ -189,9 +187,13 @@ class ImageView(QtGui.QWidget):
                                                         self.updateWorkEnv(selection, origin='splits'))
         self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
                                                       self.updateWorkEnv(selection, origin='MotCor'))
+
+        self.ui.btnCrop.clicked.connect(self.crop_img_seq)
+
         self.ui.btnAddROI.clicked.connect(self.addROI)
+        self.ui.btnAddROI.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.btnAddROI.customContextMenuRequested.connect(self.addROI_options)
         self.ui.listwBatch.itemSelectionChanged.connect(self.setSelectedROI)
-        self.ui.rigMotCheckBox.clicked.connect(self.checkSubArray)
 
         self.ui.btnSetID.clicked.connect(self.setSampleID)
         self.ui.btnMeasureDistance.clicked.connect(self.drawMeasureLine)
@@ -551,7 +553,7 @@ class ImageView(QtGui.QWidget):
     def split_seq_ui_toggle(self, b):
         # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
         self.ui.btnAddROI.setDisabled(b)
-        self.ui.btnSubArray.setDisabled(b)
+        self.ui.btnCrop.setDisabled(b)
         self.ui.btnChangeSMap.setDisabled(b)
         self.ui.btnResetSMap.setDisabled(b)
         self.ui.btnImportSMap.setDisabled(b)
@@ -1135,15 +1137,6 @@ class ImageView(QtGui.QWidget):
     def getMouseClickPos(self):
         pass
 
-    def checkSubArray(self):
-        if self.workEnv.imgdata.isSubArray is False and self.ui.rigMotCheckBox.isChecked() and\
-                    QtGui.QMessageBox.question(self, 'Current ImgObj is not a sub-array',
-                   'You haven''t created a sub-array! This might create issues with motion correction. ' + \
-                   'Continue anyways?',
-                   QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
-            self.ui.rigMotCheckBox.setCheckState(False)
-        return
-
     '''################################################################################################################
                                             ROI Methods
        ################################################################################################################
@@ -1193,6 +1186,9 @@ class ImageView(QtGui.QWidget):
         self.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList)-1)
         # So that ROI.tags is never = {}, which would result in NaN's
         self.setSelectedROI(len(self.workEnv.ROIList)-1)
+
+    def addROI_options(self):
+        pass
 
     def setSelectedROI(self, roi=None):
         if type(roi) == PolyLineROI:
@@ -1296,7 +1292,8 @@ class ImageView(QtGui.QWidget):
         for ix in range(0,len(self.workEnv.ROIList)):
             self.updatePlot(ix)
 
-    '''############################################################################################################
+    '''
+    ###############################################################################################################
                                             Plot methods
     ###############################################################################################################
     '''
@@ -1326,13 +1323,14 @@ class ImageView(QtGui.QWidget):
 
         # Get the ROI region
         data = self.workEnv.ROIList[ID].getArrayRegion((image.view(np.ndarray)), self.imageItem, axes)#, returnMappedCoords=True)
-        #, returnMappedCoords=True)
+        #,returnMappedCoords=True)
         if data is not None:
             while data.ndim > 1:
-                data = data.sum(axis=1)# Find the sum of pixel intensities
+                data = data.mean(axis=1)
             if image.ndim == 3:
                 # Set the curve
-                data = np.subtract(data, np.min(data))
+                Fo = np.mean(np.take(data, np.arange(0, 300)))
+                data = np.divide(np.subtract(data, Fo), Fo)
                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
                 self.workEnv.CurvesList[ID].setPen(color)
                 self.workEnv.CurvesList[ID].show()
@@ -1364,7 +1362,30 @@ class ImageView(QtGui.QWidget):
         for ID in range(0, len(self.workEnv.ROIList)):
             self.updatePlot(ID)
 
-    '''################################################################################################################
+    '''
+    ################################################################################################################
+                                            Crop methods
+    ################################################################################################################
+    '''
+
+    def crop_img_seq(self, ev):
+        if ev:
+            self.crop_roi = ROI(pos=[0,0], size=(0.2 * np.mean([self.image.shape[1], self.image.shape[2]])))
+            self.crop_roi.addScaleHandle([1, 1], [0, 0])
+            self.view.addItem(self.crop_roi)
+        else:
+            self.view.removeItem(self.crop_roi)
+            # x1 = point_upper_left[0]
+            # y1 = point_upper_left[1]
+            #
+            # x2 = point_lower_right[0]
+            # y2 = point_lower_right[1]
+
+            # indices = [y1:y2, x1:x2]
+
+
+    '''
+    ##################################################################################################################
                                     Motion Correction Batch methods
     ##################################################################################################################
     '''

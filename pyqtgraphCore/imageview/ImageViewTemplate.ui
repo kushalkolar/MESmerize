@@ -630,7 +630,7 @@
            <number>1</number>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page_9">
            <property name="geometry">
@@ -638,7 +638,7 @@
              <x>0</x>
              <y>0</y>
              <width>329</width>
-             <height>96</height>
+             <height>95</height>
             </rect>
            </property>
            <attribute name="label">
@@ -782,7 +782,7 @@
               </widget>
              </item>
              <item row="0" column="0">
-              <widget class="QPushButton" name="btnSubArray">
+              <widget class="QPushButton" name="btnCrop">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -935,7 +935,7 @@
              <x>0</x>
              <y>0</y>
              <width>329</width>
-             <height>96</height>
+             <height>95</height>
             </rect>
            </property>
            <attribute name="label">
@@ -1844,7 +1844,7 @@ To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</
   <tabstop>listwSplits</tabstop>
   <tabstop>listwBatch</tabstop>
   <tabstop>listwDenoised</tabstop>
-  <tabstop>btnSubArray</tabstop>
+  <tabstop>btnCrop</tabstop>
   <tabstop>btnAddROI</tabstop>
   <tabstop>btnResetScale</tabstop>
   <tabstop>lineEdAnimalID</tabstop>
