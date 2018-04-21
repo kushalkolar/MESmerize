@@ -173,7 +173,7 @@ class TabPage(QtWidgets.QWidget):
         viewer().enableUI(False)
         viewer().ui.splitter.setEnabled(True)
         viewer().ui.tabROIs.setEnabled(True)
-        viewer().ui.BtnSetROIDefs.setEnabled(False)
+        # viewer().ui.BtnSetROIDefs.setEnabled(False)
 
     def _saveSampleChanges(self):
         if QtGui.QMessageBox.warning(self, 'Overwrite Sample data in DataFrame?', 'Are you sure you want to overwrite the ' +\
