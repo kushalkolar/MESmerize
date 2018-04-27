@@ -10,14 +10,16 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
+
 import sys
 sys.path.append('..')
+from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 if __name__ == '__main__':
-    from plot_window_pytemplate import *
+    from pytemplates.plot_window_pytemplate import *
     from DataTypes import Transmission
     from HistoryWidget import HistoryTreeWidget
 else:
-    from .plot_window_pytemplate import *
+    from .pytemplates.plot_window_pytemplate import *
     from .DataTypes import Transmission
     from .HistoryWidget import HistoryTreeWidget
 

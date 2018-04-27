@@ -11,35 +11,28 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import sys
-# sys.path.append('..')
+sys.path.append('..')
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
 from pyqtgraphCore import ColorButton
 from pyqtgraphCore import PlotItem, PlotDataItem, PlotCurveItem, ScatterPlotItem, InfiniteLine
 from pyqtgraphCore.functions import pseudoScatter
 from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
-if __name__ == '__main__':
-    from stats_gui_pytemplate import *
-    import DataTypes
-    from HistoryWidget import HistoryTreeWidget
-    from stats_plots import *
-    from stim_plots_pytemplate import *
-    from stats_peak_plots_pytemplate import *
-    from beeswarm_plots_pytemplate import *
-else:
-    from .stats_gui_pytemplate import *
-    from . import DataTypes
-    from .HistoryWidget import HistoryTreeWidget
-    from .stats_plots import *
-    from .stim_plots_pytemplate import *
-    from .stats_peak_plots_pytemplate import *
-    from .beeswarm_plots_pytemplate import *
+from .pytemplates.stats_gui_pytemplate import *
+from . import DataTypes
+from .HistoryWidget import HistoryTreeWidget
+from .stats_plots import *
+from .pytemplates.stim_plots_pytemplate import *
+from .pytemplates.stats_peak_plots_pytemplate import *
+from .pytemplates.beeswarm_plots_pytemplate import *
 import sys
 import numpy as np
 import scipy as scipy
 import pandas as pd
 from functools import partial
 import pickle
+import os
+from MesmerizeCore import configuration
 
 
 class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -79,14 +72,21 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
               "Example:\n" \
               "tab0 = curr_tab()\ntab0.p1.plot(x, np.sin(x))"
 
+        if not os.path.exists(configuration.install_config_path + '/console_history/'):
+            os.makedirs(configuration.install_config_path + '/console_history')
+
+        cmd_history_file = configuration.install_config_path + '/console_history/stats_gui.pik'
+
         self.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile='./test_history.pik'))
+                                                 historyFile=cmd_history_file))
 
         self.dockConsole.hide()
 
-    """#########################################################################################
+    """
+    #########################################################################################
                                     Input Transmissions stuff
-    ############################################################################################"""
+    #########################################################################################
+    """
 
     # Call by Peak_Features node in flowchart, constructs StatsTransmission from normal Transmissions
     def input_transmissions(self, transmissions_list):
@@ -259,9 +259,11 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             ypos += 35
 
-    """#########################################################################################
+    """
+    #########################################################################################
                                     Saving & Loading files
-    ############################################################################################"""
+    #########################################################################################
+    """
 
     def _save_stats_transmission(self):
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Stats Transmission as', '', '(*.strn)')
@@ -639,16 +641,16 @@ class ParaCorPlots(MPLW):
         pass
 
 if __name__ == '__main__':
-    t1 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t1.trn')
-    t2 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t2.trn')
-    t3 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t3.trn')
+    # t1 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t1.trn')
+    # t2 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t2.trn')
+    # t3 = DataTypes.Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/test_raw_trans_stats_plots_gui/t3.trn')
 
     app = QtWidgets.QApplication([])
     sw = StatsWindow()
-    sw.input_transmissions([t1, t2, t3])
-    sw.lineEdGroupList[0].setText('A')
-    sw.lineEdGroupList[1].setText('B')
-    sw.lineEdGroupList[2].setText('C')
+    # sw.input_transmissions([t1, t2, t3])
+    # sw.lineEdGroupList[0].setText('A')
+    # sw.lineEdGroupList[1].setText('B')
+    # sw.lineEdGroupList[2].setText('C')
     sw.show()
 
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):

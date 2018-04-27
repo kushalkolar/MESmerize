@@ -18,10 +18,10 @@ import pandas as pd
 from MesmerizeCore import misc_funcs
 
 if __name__ == '__main__':
-    from PeakEditor_pytemplate import *
+    from pytemplates.PeakEditor_pytemplate import *
     from DataTypes import Transmission
 else:
-    from .PeakEditor_pytemplate import *
+    from .pytemplates.PeakEditor_pytemplate import *
     from .DataTypes import Transmission
     from .HistoryWidget import HistoryTreeWidget
 

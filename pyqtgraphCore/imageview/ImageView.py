@@ -19,7 +19,7 @@ Widget used for displaying 2D or 3D data. Features:
 import os
 import numpy as np
 
-from ..Qt import QtCore, QtGui
+from ..Qt import QtCore, QtGui, QtWidgets
 
 # if USE_PYSIDE:
 #     from .ImageViewTemplate_pyside import *
@@ -47,6 +47,7 @@ from MesmerizeCore.packager import viewerWorkEnv
 from MesmerizeCore import configuration
 from MesmerizeCore import misc_widgets
 import MesmerizeCore.Export
+from viewer_modules.modules.batch_manager import ModuleGUI as BatchModuleGUI
 import time
 from functools import partial
 
@@ -125,7 +126,7 @@ class ImageView(QtGui.QWidget):
             pg.ImageView(view=pg.PlotItem())
         """
         # Just setup the pyqtgraph stuff
-        QtGui.QWidget.__init__(self, parent, *args)
+        QtWidgets.QWidget.__init__(self, parent, *args)
         self.levelMax = 4096
         self.levelMin = 0
         self.name = name
@@ -135,6 +136,9 @@ class ImageView(QtGui.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.scene = self.ui.graphicsView.scene()
+
+        self.batch_manager = BatchModuleGUI(parent, self)
+        self.batch_manager.hide()
 
         self.ui.btnResetScale.clicked.connect(self.resetImgScale)
 

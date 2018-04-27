@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_work_environment"/>
+    <addaction name="actionSave_work_environment"/>
+   </widget>
+   <widget class="QMenu" name="menuModules">
+    <property name="title">
+     <string>Modules</string>
+    </property>
+    <widget class="QMenu" name="menuLoad_images">
+     <property name="title">
+      <string>Load images</string>
+     </property>
+     <addaction name="actionMesfile"/>
+     <addaction name="actionTiff_file"/>
+    </widget>
+    <widget class="QMenu" name="menuCaImAn_toolbox">
+     <property name="title">
+      <string>CaImAn toolbox</string>
+     </property>
+     <addaction name="actionMotion_Correction"/>
+     <addaction name="actionCNMF"/>
+     <addaction name="actionCNMF_E"/>
+    </widget>
+    <addaction name="menuLoad_images"/>
+    <addaction name="menuCaImAn_toolbox"/>
+    <addaction name="actionROI_Manager"/>
+    <addaction name="actionStandard_tools"/>
+    <addaction name="actionManual_motion_correction"/>
+    <addaction name="actionBatch_Manager"/>
+    <addaction name="separator"/>
+    <addaction name="actionRun_script"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+   </widget>
+   <widget class="QMenu" name="menuCustom_Modules">
+    <property name="title">
+     <string>Custom Modules</string>
+    </property>
+    <addaction name="actionReload_list"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuModules"/>
+   <addaction name="menuCustom_Modules"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen_work_environment">
+   <property name="text">
+    <string>Open work environment</string>
+   </property>
+  </action>
+  <action name="actionSave_work_environment">
+   <property name="text">
+    <string>Save work environment</string>
+   </property>
+  </action>
+  <action name="actionLoad_images">
+   <property name="text">
+    <string>Load images</string>
+   </property>
+  </action>
+  <action name="actionMesfile">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Mesfile</string>
+   </property>
+  </action>
+  <action name="actionTiff_file">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Tiff file</string>
+   </property>
+  </action>
+  <action name="actionMotion_Correction">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Motion Correction</string>
+   </property>
+  </action>
+  <action name="actionCNMF">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>CNMF</string>
+   </property>
+  </action>
+  <action name="actionROI_Manager">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>ROI Manager</string>
+   </property>
+  </action>
+  <action name="actionStandard_tools">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Standard tools</string>
+   </property>
+  </action>
+  <action name="actionManual_motion_correction">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Manual motion correction</string>
+   </property>
+  </action>
+  <action name="actionReset_list">
+   <property name="text">
+    <string>Reset list</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="actionRun_script">
+   <property name="text">
+    <string>Run script</string>
+   </property>
+  </action>
+  <action name="actionReload_list">
+   <property name="text">
+    <string>Reload list</string>
+   </property>
+  </action>
+  <action name="actionCNMF_E">
+   <property name="text">
+    <string>CNMF-E</string>
+   </property>
+  </action>
+  <action name="actionBatch_Manager">
+   <property name="text">
+    <string>Batch Manager</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

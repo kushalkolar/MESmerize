@@ -24,16 +24,18 @@ class _TRANSMISSION:
     def __init__(self, df, src, **kwargs):
         """
         Base class for common Transmission functions
-        :param df: DataFrame
-        :type df: pd.DataFrame
-        :param src: History of the nodes & node parameters the transmission has been processed through
-        :type src: dict
+        :param  df:     DataFrame
+        :type   df:     pd.DataFrame
+
+        :param  src:    History of the nodes & node parameters the transmission has been processed through
+        :type   src:    dict
 
         optional kwargs:
-        :param STIM_DEFS: STIM_DEF columns, used by the AlignStims control node for example
-        :type STIM_DEFS: list
-        :param ROI_DEFS: ROI_DEF columns, used by the ROI selection control node for example
-        :type ROI_DEFS: list
+        :param  STIM_DEFS:  STIM_DEF columns, used by the AlignStims control node for example
+        :type   STIM_DEFS:  list
+
+        :param  ROI_DEFS:   ROI_DEF columns, used by the ROI selection control node for example
+        :type   ROI_DEFS:   list
         """
         self.df = df
         assert isinstance(self.df, pd.DataFrame)
@@ -94,6 +96,7 @@ class Transmission(_TRANSMISSION):
     def from_proj(cls, proj_path, dataframe, df_name=''):
         """
         :param df: Chosen Child DataFrame from the Mesmerize Project
+
         :return: Transmission class object
         """
         df = dataframe.copy()
@@ -140,10 +143,12 @@ class GroupTransmission(_TRANSMISSION):
     @classmethod
     def from_ca_data(cls, transmission, groups_list):
         """
-        :param transmission: Raw Transmission object
-        :type transmission: Transmission
-        :param groups_list: List of groups to which the raw Transmission object belongs
-        :type groups_list: list
+        :param  transmission: Raw Transmission object
+        :type   transmission: Transmission
+
+        :param  groups_list: List of groups to which the raw Transmission object belongs
+        :type   groups_list: list
+
         :return: GroupTransmission
         """
         if not (any('Peak_Features' in d for d in transmission.src) or
@@ -222,8 +227,9 @@ class StatsTransmission(_TRANSMISSION):
     @classmethod
     def merge(cls, transmissions):
         """
-        :param transmissions: Transmission objects
-        :type transmissions: GroupTransmission, StatsTransmission
+        :param  transmissions: Transmission objects
+        :type   transmissions: GroupTransmission, StatsTransmission
+
         :return: StatsTransmission
         """
         groups = []
