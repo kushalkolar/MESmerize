@@ -30,7 +30,7 @@ from uuid import uuid4
 
 
 class viewerWorkEnv:
-    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments=''):
+    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file=''):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -39,6 +39,7 @@ class viewerWorkEnv:
         :param ROIList:     list of ROIs in current work environment
         :param CurvesList:  list of curves in current work environment
         :param roi_states:  list of ROI states, from pyqtgraphCore.ROI.saveState()
+
         :type imgdata:      ImgData
         :type ROIList:      list
         :type CurvesList:   list
@@ -52,6 +53,7 @@ class viewerWorkEnv:
         self._saved = True
         self.roi_states = roi_states
         self.comments = comments
+        self.origin_file = origin_file
 
     #    def __repr__(self):
     #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
@@ -65,11 +67,13 @@ class viewerWorkEnv:
         return instance of the work environment.
 
         :param: pikPath:    full path to the pickle containing image metadata, stim maps, and roi_states
-        :type pikPath:      str
+        :type   pikPath:    str
+
         :param: npzPath:    full path to a npz containing the image sequence numpy array
-        :type: npzPath:     str
+        :type:  npzPath:    str
+
         :param: tiffPath:   str of the full path to a tiff file containing the image sequence
-        :type: tiffPath:    str
+        :type:  tiffPath:   str
         """
 
         if (npzPath is None) and (tifffile is None):
@@ -116,6 +120,7 @@ class viewerWorkEnv:
 
         :param path: full path to a single .mes file.
         :type path:  str
+
         :return:     MesmerizeCore.FileInput.MES type object
         :rtype:      MES
         """
@@ -232,8 +237,10 @@ class viewerWorkEnv:
 
         :param      dirPath: directory in which to save tiff and pik file
         :type       dirPath: str
+
         :param      mc_params: motion correction parameters if any
         :type       mc_params: dict
+
         :return:    str of filename
         :rtype:     str
         """
@@ -340,15 +347,17 @@ class viewerWorkEnv:
                  'CurvePath':   curvePath.split(projPath)[1],
                  'ImgPath':     imgPath.split(projPath)[1] + '.tiff',
                  'ImgInfoPath': imgPath.split(projPath)[1] + '.pik',
-                 'Genotype':    self.imgdata.Genotype}
+                 'Genotype':    self.imgdata.Genotype
+                 }
 
             # Final list of dicts that are each appended as rows to the project DataFrame
             dicts.append({**d,
                           **stimMapsSet,
                           **self.ROIList[ix].tags,
-                          'Date': date,
+                          'Date':       date,
                           'uuid_curve': uuid4(),
-                          'comments': comments})
+                          'comments':   comments
+                          })
 
         self.saved = True
         return dicts

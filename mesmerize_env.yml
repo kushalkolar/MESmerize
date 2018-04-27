@@ -1,135 +1,24 @@
-name: mesmerize
 channels:
-  - defaults
-  - menpo
+- defaults
+- menpo
 dependencies:
-  - asn1crypto
-  - astroid
-  - babel
-  - backports
-  - backports.weakref
-  - bokeh
-  - certifi
-  - cffi
-  - chardet
-  - click
-  - cloudpickle
-  - cycler
-  - cython
-  - dask
-  - dask-core
-  - dbus
-  - decorator
-  - distributed
-  - entrypoints
-  - expat
-  - fontconfig
-  - freetype
-  - future
-  - gmp
-  - heapdict
-  - icu
-  - imageio]
-  - imagesize
-  - intel-openmp
-  - ipykernel
-  - ipyparallel
-  - ipython
-  - ipywidgets
-  - isort
-  - jedi
-  - jpeg
-  - jsonschema
-  - jupyter_client
-  - jupyter_console
-  - jupyter_core
-  - keras=2.0.8
-  - lazy-object-proxy
-  - libedit
-  - libffi
-  - libgcc-ng
-  - libgfortran-ng
-  - libpng
-  - libprotobuf
-  - libsodium
-  - libstdcxx-ng
-  - libtiff
-  - libxcb
-  - libxml2
-  - locket
-  - mccabe
-  - mkl
-  - nbconvert
-  - nbformat
-  - ncurses
-  - nose
-  - notebook
-  - numpy
-  - numpydoc
-  - olefile
-  - openssl
-  - pandas
-  - pandoc
-  - pandocfilters
-  - parso
-  - partd
-  - pcre
-  - pexpect
-  - pickleshare
-  - pillow
-  - pip
-  - psutil
-  - ptyprocess
-  - pycodestyle
-  - pycparser
-  - pyflakes
-  - pygments
-  - pylint
-  - pyopenssl
-  - pyparsing
-  - pyqt
-  - python
-  - python-dateutil
-  - pytz
-  - pywavelets
-  - pyyaml
-  - pyzmq
-  - qt
-  - qtawesome
-  - qtpy
-  - readline
-  - rope
-  - scikit-learn
-  - scipy
-  - sip
-  - six
-  - sortedcontainers
-  - spyder
-  - tblib
-  - tensorflow
-  - tensorflow-base
-  - tensorflow-tensorboard
-  - testpath
-  - toolz
-  - tqdm
-  - traitlets
-  - typing
-  - wheel
-  - widgetsnbextension
-  - xz
-  - zict
-  - zlib
-  - opencv3
-  - pip:
-    - bottleneck
-    - dill
-    - linecache2
-    - lmfit
-    - matplotlib==2.1.1
-    - pyqtgraph==0.10.0
-    - scikit-image
-    - sqlalchemy
-    - tifffile==0.12.1
-    - traceback2
-    - unittest2
-
+- future
+- numpy
+- scipy
+- ipython
+- ipyparallel
+- jupyter
+- matplotlib
+- scikit-image
+- scikit-learn
+- h5py
+- cython
+- spyder
+- nose
+- bokeh
+- tqdm
+- opencv3 
+- pip:
+  - tifffile
+  - peakutils
+  - pyqtgraph==0.10.0

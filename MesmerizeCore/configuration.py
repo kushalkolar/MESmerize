@@ -10,10 +10,9 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-"""
-'''
 A simple module that can be imported to apply the configuration in a module that imports it.
-'''
+"""
+
 import configparser
 import numpy as np
 import os
@@ -29,7 +28,10 @@ projPath = None
 special = {}
 
 df_refs = {}
-viewer_ref = None
+
+install_config_path = ''
+n_processes = 1
+
 
 def add_df_ref(ref):
     global df_refs

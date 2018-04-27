@@ -23,7 +23,7 @@ if __name__ == '__main__':
     import mainwindow_pytemplate as uiWin
     from DataTypes import Transmission
 else:
-    from . import mainwindow_pytemplate as uiWin
+    from .pytemplates import mainwindow_pytemplate as uiWin
     from .DataTypes import Transmission
 from pyqtgraphCore.console import ConsoleWidget
 import pickle
@@ -65,4 +65,4 @@ if __name__ == '__main__':
     analyzer_gui = Window()
     analyzer_gui.show()
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+        app.exec_()

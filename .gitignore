@@ -32,6 +32,12 @@ examples/
 # Test projects
 ./testprojects/*
 
+# Mesmerize config files
+./.config/
+
+# Old mesmerize stuff
+./analyser/old_junk/
+
 # Pycharm
 .idea
 .settings
