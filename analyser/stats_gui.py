@@ -72,10 +72,10 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
               "Example:\n" \
               "tab0 = curr_tab()\ntab0.p1.plot(x, np.sin(x))"
 
-        if not os.path.exists(configuration.install_config_path + '/console_history/'):
-            os.makedirs(configuration.install_config_path + '/console_history')
+        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
+            os.makedirs(configuration.sys_cfg_path + '/console_history')
 
-        cmd_history_file = configuration.install_config_path + '/console_history/stats_gui.pik'
+        cmd_history_file = configuration.sys_cfg_path + '/console_history/stats_gui.pik'
 
         self.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                  historyFile=cmd_history_file))

@@ -16,6 +16,7 @@ A simple module that can be imported to apply the configuration in a module that
 import configparser
 import numpy as np
 import os
+from psutil import cpu_count
 
 if os.name == 'nt':
     IS_WINDOWS = True
@@ -23,6 +24,10 @@ else:
     IS_WINDOWS = False
 cfg = configparser.RawConfigParser(allow_no_value=True)
 cfg.optionxform = str
+
+sys_cfg = configparser.RawConfigParser(allow_no_value=True)
+# sys_cfg.optionxform = str
+
 configpath = None
 projPath = None
 special = {}
@@ -30,7 +35,25 @@ special = {}
 df_refs = {}
 
 install_config_path = ''
-n_processes = 1
+# n_processes = sys_cfg['HARDWARE']['n_processes']#int(cpu_count() / 2) - 1
+
+
+def write_new_sys_config():
+    if not os.path.isdir(sys_cfg_path):
+        os.makedirs(sys_cfg_path)
+    sys_cfg['HARDWARE'] = {'n_processes': str(int(cpu_count() / 2) - 1)}
+    sys_cfg['PATHS'] = {'caiman': '', 'anaconda3': ''}
+    sys_cfg['BATCH'] = {'anaconda_env': ''}
+    write_sys_config()
+
+
+def write_sys_config():
+    with open(sys_cfg_file, 'w') as cf:
+        sys_cfg.write(cf)
+
+
+def open_sys_config():
+    sys_cfg.read(sys_cfg_file)
 
 
 def add_df_ref(ref):
@@ -39,10 +62,12 @@ def add_df_ref(ref):
 
 num_types = [int, float, np.int64, np.float64]
 
+
 def saveConfig():
     setSpecial()
     with open(configpath, 'w') as configfile:
         cfg.write(configfile)
+
 
 def newConfig():
     defaultInclude = ['SampleID', 'Genotype', 'Date', 'comments']
@@ -63,9 +88,20 @@ def newConfig():
 
     saveConfig()
 
+
 def openConfig():
     cfg.read(configpath)
     setSpecial()
 
+
 def setSpecial():
         special['Timings'] = cfg.options('STIM_DEFS')
+
+
+if not IS_WINDOWS:
+    sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
+    sys_cfg_file = sys_cfg_path + '/config'
+    if os.path.isfile(sys_cfg_file):
+        open_sys_config()
+    else:
+        write_new_sys_config()

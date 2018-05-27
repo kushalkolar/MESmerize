@@ -43,12 +43,12 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QPushButton" name="btnSetStimMap">
+     <widget class="QPushButton" name="btnStimMapGUI">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="text">
-       <string>Set Stim Map</string>
+       <string>Stim Map GUI</string>
       </property>
      </widget>
     </item>

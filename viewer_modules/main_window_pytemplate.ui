@@ -29,6 +29,8 @@
     </property>
     <addaction name="actionOpen_work_environment"/>
     <addaction name="actionSave_work_environment"/>
+    <addaction name="separator"/>
+    <addaction name="actionDump_Work_Environment"/>
    </widget>
    <widget class="QMenu" name="menuModules">
     <property name="title">
@@ -182,6 +184,11 @@
   <action name="actionBatch_Manager">
    <property name="text">
     <string>Batch Manager</string>
+   </property>
+  </action>
+  <action name="actionDump_Work_Environment">
+   <property name="text">
+    <string>Dump Work Environment</string>
    </property>
   </action>
  </widget>

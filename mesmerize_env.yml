@@ -1,6 +1,5 @@
 channels:
 - defaults
-- menpo
 dependencies:
 - future
 - numpy
@@ -17,7 +16,6 @@ dependencies:
 - nose
 - bokeh
 - tqdm
-- opencv3 
 - pip:
   - tifffile
   - peakutils

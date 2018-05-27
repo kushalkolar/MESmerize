@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jan  7 21:14:51 2018
+Created on Sun Jan 7 21:14:51 2018
 
 @author: kushal
 
@@ -17,6 +17,7 @@ from mainwindow import Ui_MainWindow
 from MesmerizeCore import ProjBrowser
 from MesmerizeCore import ConfigWindow
 from MesmerizeCore import configuration
+from MesmerizeCore import preferences
 import pyqtgraphCore
 import numpy as np
 import tifffile
@@ -33,6 +34,7 @@ import analyser.gui
 from analyser.stats_gui import StatsWindow
 from copy import deepcopy
 import weakref
+import viewer_modules.main_window
 
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.
@@ -60,15 +62,19 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.projName = None
         self.projDf = None
         self.setWindowTitle('Mesmerize')
-        self.connect_sigs_MenuBar()
         self.resize(700, 400)
         self.analysisWindows = []
         self.statsWindows = []
+        self.preferences_gui = preferences.PreferencesGUI()
+        if not os.path.exists('./.config/'):
+            os.makedirs('./.config/')
+
+        configuration.install_config_path = os.path.abspath('./.config/')
+
+        self.connect_sigs_MenuBar()
         
     def connect_sigs_MenuBar(self):
         self.actionNew.triggered.connect(self.newProjFileDialog)
-
-
         self.actionOpen.triggered.connect(self.openProjFileDialog)
         self.actionProject_Configuration.triggered.connect(self.openConfigWindow)
         self.actionNewAnalyzerInstance.triggered.connect(self.initAnalyzer)
@@ -76,6 +82,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionNew_Stats_Plots_instance.triggered.connect(self.initStatsPlotsWin)
         self.actionShow_all_Stats_Plots_windows.triggered.connect(self.showAllStatWindows)
         self.actionUpdate_children_from_Root.triggered.connect(self.update_children)
+        self.actionPreferences.triggered.connect(self.preferences_gui.show)
 
     def newProjFileDialog(self):
         # Opens a file dialog to selected a parent dir for a new project
@@ -222,7 +229,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # QtGui.QMessageBox.information(self, 'Config saved, restart.', 'You must restart Mesmerize and re-open your '
         #                                     'project for changes to take effect.')
 
-
     def openProjFileDialog(self):
         # File dialog to open an existing project
         if self.checkProjOpen() is False:
@@ -275,29 +281,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.scrollArea.setWidgetResizable(True)
         # self.setCentralWidget(self.projBrowserWin)
 
-        ns = {'pd': pd,
-              'np': np,
-              'pickle': pickle,
-              'tifffile': tifffile,
-              'curr_tab': self.projBrowserWin.tabs.currentWidget,
-              'pbwin': self.projBrowserWin,
-              'addTab': self.projBrowserWin.addNewTab,
-              'viewer': self.viewer,
-              'main': self
+        ns = {'pd':         pd,
+              'np':         np,
+              'pickle':     pickle,
+              'tifffile':   tifffile,
+              'curr_tab':   self.projBrowserWin.tabs.currentWidget,
+              'pbwin':      self.projBrowserWin,
+              'addTab':     self.projBrowserWin.addNewTab,
+              'viewer':     self.viewer,
+              'main':       self
               }
 
-        txt = "Namespaces:\n" \
-              "numpy as np\n" \
-              "pandas as pd\n" \
-              "pickle as 'pickle\n" \
-              "tifffile as tifffile\n" \
-              "viewer as viewer\n" \
-              "self as main\n" \
+        txt = "Namespaces:          \n" \
+              "numpy as np          \n" \
+              "pandas as pd         \n" \
+              "pickle as 'pickle    \n" \
+              "tifffile as tifffile \n" \
+              "viewer as viewer     \n" \
+              "self as main         \n" \
               "call curr_tab() to return current tab widget\n" \
               "call addTab(<dataframe>, <title>, <filtLog>, <filtLogPandas>) to add a new tab\n"
 
+        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
+            os.makedirs(configuration.sys_cfg_path + '/console_history/')
+
+        cmd_history_file = configuration.sys_cfg_path + '/console_history/main.pik'
+
         self.dockWidget.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile='./test_history.pik'))
+                                                 historyFile=cmd_history_file))
 
         self.dockWidget.hide()
 
@@ -315,11 +326,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Interpret image data as row-major instead of col-major
         pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
         ## Create window with ImageView widget
-        self.viewerWindow = QtWidgets.QMainWindow()
+        self.viewerWindow = viewer_modules.main_window.MainWindow() #QtWidgets.QMainWindow()
         self.viewerWindow.resize(1460, 950)
-        self.viewer = pyqtgraphCore.ImageView()
+        self.viewer = pyqtgraphCore.ImageView(parent=self.viewerWindow)
+        self.viewerWindow.viewer_reference = self.viewer
         assert isinstance(self.viewer, pyqtgraphCore.ImageView)
-        configuration.viewer_ref = weakref.ref(self.viewer)
         self.viewerWindow.setCentralWidget(self.viewer)
 #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
         self.viewerWindow.setWindowTitle('Mesmerize - Viewer')
@@ -335,9 +346,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ]
         cmap = pyqtgraphCore.ColorMap(pos=np.linspace(0.0, 1.0, 6), color=colors)
         self.viewer.setColorMap(cmap)
-        
-        self.viewer.ui.btnAddToBatch.clicked.connect(self.viewerAddToBatch)
-        self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
+
+        # self.viewer.ui.btnAddToBatch.clicked.connect(self.viewerAddToBatch)
+        # self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
         # self.viewerWindow.show()
 
         self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
@@ -362,13 +373,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             return True
     
-    def viewerAddToBatch(self):
-        if self.isProjLoaded():
-            self.viewer.addToBatch()
-    
-    def viewerOpenBatch(self):
-        if self.isProjLoaded():
-            self.viewer.openBatch()
+    # def viewerAddToBatch(self):
+    #     if self.isProjLoaded():
+    #         self.viewer.addToBatch()
+    #
+    # def viewerOpenBatch(self):
+    #     if self.isProjLoaded():
+    #         self.viewer.openBatch()
 
     def viewer_enter_split_seq(self):
         if self.viewer.splitSeqMode is False:
