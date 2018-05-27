@@ -16,6 +16,7 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.tiff_io_pytemplate import *
 from MesmerizeCore.packager import viewerWorkEnv
 import os
+import traceback
 
 class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_ref):
@@ -67,7 +68,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             self.VIEWER_enable_ui(True)
 
         except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
 
 
