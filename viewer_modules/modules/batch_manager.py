@@ -98,9 +98,13 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                 return
             pikpath = self.batch_path + '/' + str(UUID) + '_workEnv.pik'
             tiffpath = self.batch_path + '/' + str(UUID) + '.tiff'
-            self.viewer_ref.workEnv = viewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
-            self.VIEWER_update_workEnv()
-            self.VIEWER_enable_ui(True)
+            if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
+                self.viewer_ref.workEnv = viewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
+                self.VIEWER_update_workEnv()
+                self.VIEWER_enable_ui(True)
+            else:
+                QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
+                                              'The input files do not exist for this item.')
 
     def show_item_output(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
@@ -144,6 +148,12 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         elif output['status'] == 1:
             self.ui.labelOutputInfo.setText(output['output_info'])
 
+    def disable_ui_buttons(self, b):
+        self.ui.btnStart.setDisabled(b)
+        self.ui.btnStartAtSelection.setDisabled(b)
+        self.ui.btnDelete.setDisabled(b)
+        self.ui.btnAbort.setEnabled(b)
+
     def process_batch(self, start_ix=0):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
 
@@ -170,12 +180,9 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                                               QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
 
-        self.ui.btnStart.setDisabled(True)
-        self.ui.btnDelete.setDisabled(True)
-        self.ui.btnAbort.setEnabled(True)
         self.VIEWER_discard_workEnv()
         self.current_batch_item_index = start_ix -1
-
+        self.disable_ui_buttons(True)
         # self.run_next_item()
         self.ui.scrollAreaStdOut.show()
         self.ui.scrollAreaOutputInfo.show()
@@ -203,9 +210,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.progressBar.setValue(int(self.current_batch_item_index / len(self.df.index) * 100))
         if self.current_batch_item_index == len(self.df.index):
             self.ui.progressBar.setValue(100)
-            self.ui.btnStart.setEnabled(True)
-            self.ui.btnDelete.setEnabled(True)
-            self.ui.btnAbort.setDisabled(True)
+            self.disable_ui_buttons(False)
             QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
             return
 

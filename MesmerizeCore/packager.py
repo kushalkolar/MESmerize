@@ -220,7 +220,7 @@ class viewerWorkEnv:
             seq = tifffile.imread(path)
         elif method == 'asarray':
             tif = tifffile.TiffFile(path, is_nih=True)
-            seq = tif.asarray(key=range(0, len(tif.series)), maxworkers=configuration.sys_cfg['HARDWARE']['n_processes'])
+            seq = tif.asarray(key=range(0, len(tif.series)), maxworkers=int(configuration.sys_cfg['HARDWARE']['n_processes']))
         else:
             raise ValueError("Must specify 'imread' or 'asarray' in method argument")
 
