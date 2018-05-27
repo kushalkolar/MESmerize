@@ -33,6 +33,8 @@ from functools import partial
 from collections import deque
 import psutil
 from signal import SIGKILL
+import traceback
+
 
 class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     """GUI for the Batch Manager"""
@@ -46,9 +48,10 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.setupUi(self)
 
         self.ui.listwBatch.itemDoubleClicked.connect(self.show_item_output)
-        self.ui.listwBatch.itemClicked.connect(self.show_item_meta)
+        # self.ui.listwBatch.itemClicked.connect(self.show_item_meta)
 
         self.ui.btnStart.clicked.connect(self.process_batch)
+        self.ui.btnStartAtSelection.clicked.connect(lambda: self.process_batch(start_ix=self.ui.listwBatch.indexFromItem(self.ui.listwBatch.currentItem()).row()))
         self.ui.btnAbort.clicked.connect(self._terminate_qprocess)
         self.ui.btnAbort.setDisabled(True)
         self.ui.btnOpen.clicked.connect(self.open_batch)
@@ -73,6 +76,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.labelStdOut.setStyleSheet('color: #FFFFFF')
 
         self.ui.scrollAreaStdOut.hide()
+        self.ui.listwBatch.currentItemChanged.connect(self.show_item_meta)
 
     @staticmethod
     def get_class(kls):
@@ -137,10 +141,10 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             return
         elif output['status'] == 0:
             self.ui.labelOutputInfo.setText(output['error_msg'])
-        elif output['stutus'] == 1:
+        elif output['status'] == 1:
             self.ui.labelOutputInfo.setText(output['output_info'])
 
-    def process_batch(self):
+    def process_batch(self, start_ix=0):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
 
         if len(self.df.index) == 0:
@@ -170,7 +174,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.btnDelete.setDisabled(True)
         self.ui.btnAbort.setEnabled(True)
         self.VIEWER_discard_workEnv()
-        self.current_batch_item_index = -1
+        self.current_batch_item_index = start_ix -1
 
         # self.run_next_item()
         self.ui.scrollAreaStdOut.show()
@@ -237,7 +241,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def get_batch_item_output(self, UUID):
         out_file = self.batch_path + '/' + str(UUID) + '.out'
         if os.path.isfile(out_file):
-            output = json.load(open(out_file, 'rb'))
+            output = json.load(open(out_file, 'r'))
             return output
         else:
             return None
@@ -472,6 +476,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                         QtGui.QBrush(QtGui.QColor('red')))
 
         except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the dataframe file.\n' + str(e))
+            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the dataframe file.\n' + traceback.format_exc())
             return
 

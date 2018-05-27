@@ -34,48 +34,6 @@
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="1" column="5">
-           <widget class="QPushButton" name="btnDelete">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Delete selection</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="8">
-           <widget class="QListWidget" name="listwBatch">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="btnNew">
-            <property name="maximumSize">
-             <size>
-              <width>65</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="baseSize">
-             <size>
-              <width>60</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>New</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
            <widget class="QPushButton" name="btnOpen">
             <property name="maximumSize">
              <size>
@@ -91,6 +49,76 @@
             </property>
             <property name="text">
              <string>Open</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="6">
+           <widget class="QPushButton" name="btnDelete">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Delete selection</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="7">
+           <widget class="QPushButton" name="btnViewInput">
+            <property name="maximumSize">
+             <size>
+              <width>65</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>View Input</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="btnAbort">
+            <property name="maximumSize">
+             <size>
+              <width>65</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Abort</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="btnNew">
+            <property name="maximumSize">
+             <size>
+              <width>65</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>60</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>New</string>
             </property>
            </widget>
           </item>
@@ -113,22 +141,13 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="btnAbort">
-            <property name="maximumSize">
-             <size>
-              <width>65</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="baseSize">
-             <size>
-              <width>60</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Abort</string>
+          <item row="0" column="0" colspan="9">
+           <widget class="QListWidget" name="listwBatch">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
            </widget>
           </item>
@@ -145,7 +164,7 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="7">
+          <item row="1" column="8">
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -158,11 +177,11 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="6">
-           <widget class="QPushButton" name="btnViewInput">
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btnStartAtSelection">
             <property name="maximumSize">
              <size>
-              <width>65</width>
+              <width>100</width>
               <height>16777215</height>
              </size>
             </property>
@@ -173,7 +192,7 @@
              </size>
             </property>
             <property name="text">
-             <string>View Input</string>
+             <string>Start at selection</string>
             </property>
            </widget>
           </item>
@@ -219,7 +238,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>547</width>
+          <width>653</width>
           <height>343</height>
          </rect>
         </property>
@@ -258,7 +277,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>631</width>
+         <width>525</width>
          <height>303</height>
         </rect>
        </property>
@@ -296,7 +315,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>631</width>
+         <width>525</width>
          <height>303</height>
         </rect>
        </property>

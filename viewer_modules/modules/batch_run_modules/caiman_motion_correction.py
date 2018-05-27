@@ -80,7 +80,7 @@ def run(batch_dir, UUID, n_processes):
         m_els = m_els.astype(np.uint8, copy=False)
 
         tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els)
-        output.update({'status': 1, 'bord_px_els': bord_px_els})
+        output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
     except Exception:
         output.update({'status': 0, 'error_msg': traceback.format_exc()})
@@ -97,11 +97,12 @@ def output(batch_path, UUID, viewer_ref):
 
     pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
     workEnv = ViewerWorkEnv.from_pickle(pik_path)
-    tiff_path = batch_path + '/' + str(UUID) + '_.mc.tiff'
+    tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
     workEnv.imgdata.seq = tifffile.imread(tiff_path).T
     viewer_ref.workEnv = workEnv
 
     vi.VIEWER_update_workEnv()
+    vi.VIEWER_enable_ui(True)
 
 if len(sys.argv) > 1:
     run(sys.argv[1], sys.argv[2], sys.argv[3])
