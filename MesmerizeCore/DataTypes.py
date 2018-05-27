@@ -26,6 +26,7 @@ import csv
 from . import configuration
 from . misc_funcs import fix_fp_errors
 
+
 class ImgData():
     def __init__(self, seq, meta={}, SampleID=None, Genotype='untagged', stimMaps=None,
                  isSubArray=False, isMotCor=False, isDenoised=False):

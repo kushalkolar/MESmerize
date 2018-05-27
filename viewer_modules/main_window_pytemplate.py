@@ -75,8 +75,12 @@ class Ui_MainWindow(object):
         self.actionCNMF_E.setObjectName("actionCNMF_E")
         self.actionBatch_Manager = QtWidgets.QAction(MainWindow)
         self.actionBatch_Manager.setObjectName("actionBatch_Manager")
+        self.actionDump_Work_Environment = QtWidgets.QAction(MainWindow)
+        self.actionDump_Work_Environment.setObjectName("actionDump_Work_Environment")
         self.menuFile.addAction(self.actionOpen_work_environment)
         self.menuFile.addAction(self.actionSave_work_environment)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionDump_Work_Environment)
         self.menuLoad_images.addAction(self.actionMesfile)
         self.menuLoad_images.addAction(self.actionTiff_file)
         self.menuCaImAn_toolbox.addAction(self.actionMotion_Correction)
@@ -128,4 +132,5 @@ class Ui_MainWindow(object):
         self.actionReload_list.setText(_translate("MainWindow", "Reload list"))
         self.actionCNMF_E.setText(_translate("MainWindow", "CNMF-E"))
         self.actionBatch_Manager.setText(_translate("MainWindow", "Batch Manager"))
+        self.actionDump_Work_Environment.setText(_translate("MainWindow", "Dump Work Environment"))
 

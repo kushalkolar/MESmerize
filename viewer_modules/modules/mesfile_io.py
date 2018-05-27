@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on April 19 2017
+Created on April 19 2018
 
 @author: kushal
 
@@ -27,7 +27,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
         self.ui.btnOpenMesFile.clicked.connect(self.load_mesfile)
         self.ui.listwMesfile.itemDoubleClicked.connect(lambda sel: self.load_mesfile_selection(sel))
-        self.ui.btnSetStimMap.clicked.connect(self.set_stim_map)
+        self.ui.btnStimMapGUI.clicked.connect(self.open_stim_map_gui)
 
     def load_mesfile(self):
         if not self.VIEWER_discard_workEnv():
@@ -74,7 +74,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                                           'image in the currently open mes file.\n' + str(e), QtWidgets.QMessageBox.Ok)
             return
         self.VIEWER_update_workEnv()
-        self.viewer_ref.enableUI(True)
+        self.VIEWER_enable_ui(True)
 
-    def set_stim_map(self):
+    def open_stim_map_gui(self):
         pass

@@ -27,7 +27,7 @@ import tifffile
 import os
 from . import configuration
 from uuid import uuid4
-
+import json
 
 class viewerWorkEnv:
     def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file=''):
@@ -46,6 +46,11 @@ class viewerWorkEnv:
         :type roi_states:   list
 
         """
+        if imgdata is not None:
+            self.isEmpty = False
+        else:
+            self.isEmpty = True
+
         self.ROIList = ROIList
         self.CurvesList = CurvesList
         #        self.ROItags = []
@@ -58,6 +63,18 @@ class viewerWorkEnv:
     #    def __repr__(self):
     #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
     #            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
+
+    def dump(self):
+        self.isEmpty = True
+        del self.imgdata.seq
+        self.imgdata = None
+        self.ROIList = []
+        self.CurvesList = []
+        self.roi_states = []
+        self.comments = ''
+        self.origin_file = ''
+        self._saved = True
+        print('Work environment dumped!')
 
     @classmethod
     def from_pickle(cls, pikPath, npzPath=None, tiffPath=None):
@@ -76,14 +93,16 @@ class viewerWorkEnv:
         :type:  tiffPath:   str
         """
 
-        if (npzPath is None) and (tifffile is None):
-            raise ValueError('You must pass a path to either a npz or tiff image sequence.')
+        # if (npzPath is None) and (tifffile is None):
+        #     raise ValueError('You must pass a path to either a npz or tiff image sequence.')
         if npzPath is not None:
             npz = np.load(npzPath)
             seq = npz['imgseq']
         elif tiffPath is not None:
             seq = tifffile.imread(tiffPath)
             seq = seq.T
+        else:
+            seq = None
 
         p = pickle.load(open(pikPath, 'rb'))
 
@@ -149,12 +168,18 @@ class viewerWorkEnv:
 
             return meta_d
 
-        elif origin == 'wb-thunderscan':
+        elif origin == 'AwesomeImager' or origin == 'DeepEyes':
+            meta_d = {'origin':     origin,
+                      'version':    meta['version'],
+                      'fps':        meta['framerate'],
+                      'date':       meta['date'] + '_' + meta['time'],
+                      'vmin':       meta['level_min'],
+                      'vmax':       meta['level_max'],
+                      'orig_meta':  meta}
+            return meta_d
 
-            return meta
-
-        elif origin == 'tiff':
-            pass
+        else:
+            raise ValueError('Unrecognized meta data source.')
 
     @classmethod
     def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
@@ -180,7 +205,7 @@ class viewerWorkEnv:
         return cls(imdata)
 
     @classmethod
-    def from_tiff(cls, path, csvMapPaths=None):
+    def from_tiff(cls, path, method, meta_path='', csvMapPaths=None):
         """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         tifffile.imread and any csv stimulus map that the user may want to apply.
@@ -191,8 +216,23 @@ class viewerWorkEnv:
         :type csvMapPaths:  list
         """
 
-        seq = tifffile.imread(path)
-        meta = viewerWorkEnv._organize_meta(meta={}, origin='wb-thunderscan')
+        if method == 'imread':
+            seq = tifffile.imread(path)
+        elif method == 'asarray':
+            tif = tifffile.TiffFile(path, is_nih=True)
+            seq = tif.asarray(key=range(0, len(tif.series)), maxworkers=configuration.sys_cfg['HARDWARE']['n_processes'])
+        else:
+            raise ValueError("Must specify 'imread' or 'asarray' in method argument")
+
+        if meta_path == '':
+            meta = {}
+        elif meta_path.endswith('.json'):
+            jmd = json.load(open(meta_path, 'r'))
+            if 'source' not in jmd.keys():
+                raise KeyError('Invalid meta data file. Json meta data file must have a "source" entry.')
+            else:
+                meta = viewerWorkEnv._organize_meta(meta=jmd, origin=jmd['source'])
+
         imdata = ImgData(seq.T, meta)
         imdata.stimMaps = (csvMapPaths, 'csv')
         return cls(imdata)
@@ -210,7 +250,8 @@ class viewerWorkEnv:
              'isSubArray':  self.imgdata.isSubArray,
              'isMotCor':    self.imgdata.isMotCor,
              'isDenoised':  self.imgdata.isDenoised,
-             'comments':    self.comments}
+             'comments':    self.comments
+             }
 
         for ix in range(0, len(self.ROIList)):
             for roi_def in self.ROIList[ix].tags.keys():
@@ -228,7 +269,7 @@ class viewerWorkEnv:
 
         return d
 
-    def to_pickle(self, dirPath, mc_params=None, filename=None):
+    def to_pickle(self, dirPath, mc_params=None, filename=None, save_img_seq=True):
         """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
         for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
@@ -244,6 +285,9 @@ class viewerWorkEnv:
         :return:    str of filename
         :rtype:     str
         """
+        if self.isEmpty:
+            print('Work environment is empty!')
+            return
         if mc_params is not None:
             rigid_params, elas_params = mc_params
 
@@ -258,8 +302,8 @@ class viewerWorkEnv:
             data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
         else:
             data = {'imdata': imginfo}
-
-        tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T)
+        if save_img_seq:
+            tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T)
         pickle.dump(data, open(fileName + '.pik', 'wb'), protocol=4)
 
         self.saved = True
@@ -274,6 +318,10 @@ class viewerWorkEnv:
                     as rows to the project dataframe
         :rtype:     list
         """
+        if self.isEmpty:
+            print('Work environment is empty!')
+            return
+
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = projPath + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
 

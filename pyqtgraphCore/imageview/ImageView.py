@@ -62,7 +62,7 @@ else:
     from MesmerizeCore.caimanMotionCorrect import caimanPipeline
 
 
-class ImageView(QtGui.QWidget):
+class ImageView(QtWidgets.QWidget):
     """
     Widget used for display and analysis of image data.
     Implements many features:
@@ -140,11 +140,11 @@ class ImageView(QtGui.QWidget):
         self.batch_manager = BatchModuleGUI(parent, self)
         self.batch_manager.hide()
 
-        self.ui.btnResetScale.clicked.connect(self.resetImgScale)
+        # self.ui.btnResetScale.clicked.connect(self.resetImgScale)
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
         # don't exist for certain cases.
-        self.workEnv = None
+        self.workEnv = viewerWorkEnv()
         self.currBatch = None
 
         # Initialize list of bands that indicate stimulus times
@@ -164,14 +164,14 @@ class ImageView(QtGui.QWidget):
         self.ui.btnSplitsPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
         self.ui.btnMesPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
 
-        self.ui.btnMCPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(1))
-        self.ui.btnDenPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(2))
-        self.ui.btnBatchPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(0))
+        # self.ui.btnMCPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(1))
+        # self.ui.btnDenPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(2))
+        # self.ui.btnBatchPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(0))
 
         self.ui.btnPlot.clicked.connect(self.plotAll)
 
         self.ui.btnOpenMesFiles.clicked.connect(self.promptFileDialog)
-        self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
+        # self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
         self.ui.btnImportSMap.clicked.connect(self.importCSVMap)
 
         # self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
@@ -185,28 +185,28 @@ class ImageView(QtGui.QWidget):
         self.mesfileMap = None
         self.ui.listwMesfile.itemDoubleClicked.connect(lambda selection:
                                                         self.updateWorkEnv(selection, origin='mesfile'))
-        self.ui.listwTiffs.itemDoubleClicked.connect(lambda selection:
-                                                        self.updateWorkEnv(selection, origin='tiff'))
+        # self.ui.listwTiffs.itemDoubleClicked.connect(lambda selection:
+        #                                                 self.updateWorkEnv(selection, origin='tiff'))
         self.ui.listwSplits.itemDoubleClicked.connect(lambda selection:
                                                         self.updateWorkEnv(selection, origin='splits'))
-        self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
-                                                      self.updateWorkEnv(selection, origin='MotCor'))
+        # self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
+        #                                               self.updateWorkEnv(selection, origin='MotCor'))
 
         self.ui.btnCrop.clicked.connect(self.crop_img_seq)
 
         self.ui.btnAddROI.clicked.connect(self.addROI)
         self.ui.btnAddROI.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.btnAddROI.customContextMenuRequested.connect(self.addROI_options)
-        self.ui.listwBatch.itemSelectionChanged.connect(self.setSelectedROI)
+        # self.ui.listwBatch.itemSelectionChanged.connect(self.setSelectedROI)
 
         self.ui.btnSetID.clicked.connect(self.setSampleID)
-        self.ui.btnMeasureDistance.clicked.connect(self.drawMeasureLine)
-        self.measureLine = None
-        self.measureLine_A = None
-        self.ui.btnStartBatch.clicked.connect(self.startBatch)
-        self.ui.btnRemoveFromBatch.clicked.connect(self.removeFromBatch)
-
-        self.ui.btnMotCorSearchDir.clicked.connect(self.searchMotCorFiles)
+        # self.ui.btnMeasureDistance.clicked.connect(self.drawMeasureLine)
+        # self.measureLine = None
+        # self.measureLine_A = None
+        # self.ui.btnStartBatch.clicked.connect(self.startBatch)
+        # self.ui.btnRemoveFromBatch.clicked.connect(self.removeFromBatch)
+        #
+        # self.ui.btnMotCorSearchDir.clicked.connect(self.searchMotCorFiles)
 
         self.ui.comboBoxStimMaps.setDisabled(True)
         self.ui.comboBoxStimMaps.currentIndexChanged[str].connect(self.displayStimMap)
@@ -263,12 +263,12 @@ class ImageView(QtGui.QWidget):
         self.update_from_config()
 
         # For illustrating the quilt on the image to assist with setting motion correction parameters
-        self.ui.sliderOverlaps.valueChanged.connect(self.drawStrides)
-        self.ui.sliderStrides.valueChanged.connect(self.drawStrides)
-        self.overlapsV = []
-        self.overlapsH = []
-        self.ui.btnShowQuilt.clicked.connect(self.drawStrides)
-        self.ui.btnShowQuilt.clicked.connect(self.removeStrides)
+        # self.ui.sliderOverlaps.valueChanged.connect(self.drawStrides)
+        # self.ui.sliderStrides.valueChanged.connect(self.drawStrides)
+        # self.overlapsV = []
+        # self.overlapsH = []
+        # self.ui.btnShowQuilt.clicked.connect(self.drawStrides)
+        # self.ui.btnShowQuilt.clicked.connect(self.removeStrides)
 
     # Called from __main__ when btnSave in ConfigWindow is clicked.
     def update_from_config(self):
@@ -332,7 +332,7 @@ class ImageView(QtGui.QWidget):
             clear_sample_id = False
         else:
             clear_sample_id = True
-        if self.workEnv is not None and self.DiscardWorkEnv(clear_sample_id) is False:
+        if not self.workEnv.isEmpty and self.DiscardWorkEnv(clear_sample_id) is False:
             return
 
         # if mesfile listwidget item is clicked
@@ -356,18 +356,18 @@ class ImageView(QtGui.QWidget):
                 self.displayStimMap()
             self.ui.tabWidget.setCurrentWidget(self.ui.tabROIs)
 
-        # For loading from tiff files
-        elif origin == 'tiff':
-            if iterate is False:
-                self.workEnv = viewerWorkEnv.from_tiff(selection.text())
-                if QtGui.QMessageBox.question(self, 'Open Stimulus Maps?',
-                                           'Would you like to open stimulus maps for this file?',
-                                           QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
-                    self.importCSVMap()
-            else:
-                # Just here if someone wants to process many tiff files in the same way they can iterate over them
-                # without having the QMessageBox show up every time.
-                self.workEnv = viewerWorkEnv.from_tiff(selection)
+        # # For loading from tiff files
+        # elif origin == 'tiff':
+        #     if iterate is False:
+        #         self.workEnv = viewerWorkEnv.from_tiff(selection.text())
+        #         if QtGui.QMessageBox.question(self, 'Open Stimulus Maps?',
+        #                                    'Would you like to open stimulus maps for this file?',
+        #                                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+        #             self.importCSVMap()
+        #     else:
+        #         # Just here if someone wants to process many tiff files in the same way they can iterate over them
+        #         # without having the QMessageBox show up every time.
+        #         self.workEnv = viewerWorkEnv.from_tiff(selection)
 
         # For loading splits of a sequence in splitseq mode
         elif origin == 'splits':
@@ -405,7 +405,7 @@ class ImageView(QtGui.QWidget):
             self.displayStimMap()
 
         self.workEnv.saved = True
-        self._workEnv_checkSaved() # Connect signals of many Qt UI elements to a method that sets workEnv.save = False
+        # self._workEnv_checkSaved() # Connect signals of many Qt UI elements to a method that sets workEnv.save = False
         if origin == 'splits':
             self.enableUI(True, clear_sample_id=False)
         else:
@@ -423,15 +423,15 @@ class ImageView(QtGui.QWidget):
             self.ui.lineEdAnimalID.clear()
             self.ui.lineEdTrialID.clear()
             self.ui.lineEdGenotype.clear()
-
-    def resetImgScale(self):
-        '''
-        Reset the current image to the center of the scene and reset the scale
-        doesn't work as intended in some weird circumstances when you repeatedly right click on the scene
-        and set the x & y axis to 'Auto' a bunch of times. But this bug is hard to recreate.'''
-        self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
-                          xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
-                                            self.workEnv.imgdata.seq.T.shape[0]))
+    #
+    # def resetImgScale(self):
+    #     '''
+    #     Reset the current image to the center of the scene and reset the scale
+    #     doesn't work as intended in some weird circumstances when you repeatedly right click on the scene
+    #     and set the x & y axis to 'Auto' a bunch of times. But this bug is hard to recreate.'''
+    #     self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
+    #                       xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
+    #                                         self.workEnv.imgdata.seq.T.shape[0]))
 
     def promptFileDialog(self):
         if self.workEnv is not None and self.DiscardWorkEnv() is False:  # If workEnv is not saved, warn the user.
@@ -471,21 +471,21 @@ class ImageView(QtGui.QWidget):
            QtGui.QMessageBox.warning(self,'IOError or IndexError', "There is an problem with the files you've selected:\n" + str(e), QtGui.QMessageBox.Ok)
         return
 
-    def promTiffFileDialog(self):
-        if self.workEnv is not None and self.DiscardWorkEnv() is False:
-            return
-        self.ui.listwMesfile.clear()
-        # self.ui.listwSplits.clear()
-        # self.ui.listwTiffs.clear()
-        filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
-                                                      '.', '(*.tif *tiff)')
-        if len(filelist[0]) == 0:
-            return
-
-        files = filelist[0]
-
-        self.ui.listwTiffs.addItems(files)
-        self.ui.listwTiffs.setEnabled(True)
+    # def promTiffFileDialog(self):
+    #     if self.workEnv is not None and self.DiscardWorkEnv() is False:
+    #         return
+    #     self.ui.listwMesfile.clear()
+    #     # self.ui.listwSplits.clear()
+    #     # self.ui.listwTiffs.clear()
+    #     filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
+    #                                                   '.', '(*.tif *tiff)')
+    #     if len(filelist[0]) == 0:
+    #         return
+    #
+    #     files = filelist[0]
+    #
+    #     self.ui.listwTiffs.addItems(files)
+    #     self.ui.listwTiffs.setEnabled(True)
 
     def edit_meta_data(self):
         if hasattr(self, '_meta_data_editor'):
@@ -1394,31 +1394,31 @@ class ImageView(QtGui.QWidget):
     ##################################################################################################################
     '''
 
-    def openBatch(self):
-        batchFolder = QtGui.QFileDialog.getExistingDirectory(self, 'Select batch Dir',
-                                                      self.projPath + '/.batches/')
-        if batchFolder == '':
-            return
-        self.ui.listwBatch.clear()
-        self.ui.listwMotCor.clear()
-        for f in os.listdir(batchFolder):
-            if f.endswith('.pik'):
-                self.ui.listwBatch.addItem(batchFolder + '/' + f[:-4])
-            elif f.endswith('_mc.npz'):
-                self.ui.listwMotCor.addItem(batchFolder +'/' + f)
-        if self.ui.listwBatch.count() > 0:
-            self.ui.btnStartBatch.setEnabled(True)
-            self.ui.btnRemoveFromBatch.setEnabled(True)
-
-    def removeFromBatch(self):
-        file = self.ui.listwBatch.currentItem().text()
-        self.ui.listwBatch.takeItem(self.ui.listwBatch.currentRow())
-        try:
-            os.remove(file+'.pik')
-            os.remove(file+'.tiff')
-        except Exception as e:
-            QtGui.QMessageBox.information(self, 'Minor error', 'Unable to remove the file from the file system\n' + \
-                                                                str(e))
+    # def openBatch(self):
+    #     batchFolder = QtGui.QFileDialog.getExistingDirectory(self, 'Select batch Dir',
+    #                                                   self.projPath + '/.batches/')
+    #     if batchFolder == '':
+    #         return
+    #     self.ui.listwBatch.clear()
+    #     self.ui.listwMotCor.clear()
+    #     for f in os.listdir(batchFolder):
+    #         if f.endswith('.pik'):
+    #             self.ui.listwBatch.addItem(batchFolder + '/' + f[:-4])
+    #         elif f.endswith('_mc.npz'):
+    #             self.ui.listwMotCor.addItem(batchFolder +'/' + f)
+    #     if self.ui.listwBatch.count() > 0:
+    #         self.ui.btnStartBatch.setEnabled(True)
+    #         self.ui.btnRemoveFromBatch.setEnabled(True)
+    #
+    # def removeFromBatch(self):
+    #     file = self.ui.listwBatch.currentItem().text()
+    #     self.ui.listwBatch.takeItem(self.ui.listwBatch.currentRow())
+    #     try:
+    #         os.remove(file+'.pik')
+    #         os.remove(file+'.tiff')
+    #     except Exception as e:
+    #         QtGui.QMessageBox.information(self, 'Minor error', 'Unable to remove the file from the file system\n' + \
+    #                                                             str(e))
 
     def setSampleID(self):
         if self.ui.lineEdAnimalID.text() == '' or self.ui.lineEdTrialID.text() == '':
@@ -1440,33 +1440,33 @@ class ImageView(QtGui.QWidget):
 
         return True
 
-    def addToBatch(self):
-        if self.setSampleID() is False:
-            return
-
-        if os.path.isdir(self.projPath + '/.batches/') is False:
-            os.mkdir(self.projPath + '/.batches/')
-        if self.currBatch is None:
-            self.currBatch = str(time.time())
-            self.currBatchDir = self.projPath + '/.batches/' + self.currBatch
-            os.mkdir(self.currBatchDir)
-
-        if self.workEnv.imgdata.isMotCor is False and self.ui.rigMotCheckBox.isChecked():
-            mc_params = self.getMotCorParams()
-        else:
-            mc_params = None
-
-        try:
-            filename = self.workEnv.to_pickle(self.currBatchDir, mc_params)
-        except Exception as e:
-            QtGui.QMessageBox.warning(self, 'Error',
-                                      'The following error occured while trying to save files for batch:\n'
-                                      + str(e))
-            return
-        self.ui.listwBatch.addItem(filename)
-        self.ui.btnStartBatch.setEnabled(True)
-        self.workEnv.saved = True
-        self.ui.btnRemoveFromBatch.setEnabled(True)
+    # def addToBatch(self):
+    #     if self.setSampleID() is False:
+    #         return
+    #
+    #     if os.path.isdir(self.projPath + '/.batches/') is False:
+    #         os.mkdir(self.projPath + '/.batches/')
+    #     if self.currBatch is None:
+    #         self.currBatch = str(time.time())
+    #         self.currBatchDir = self.projPath + '/.batches/' + self.currBatch
+    #         os.mkdir(self.currBatchDir)
+    #
+    #     if self.workEnv.imgdata.isMotCor is False and self.ui.rigMotCheckBox.isChecked():
+    #         mc_params = self.getMotCorParams()
+    #     else:
+    #         mc_params = None
+    #
+    #     try:
+    #         filename = self.workEnv.to_pickle(self.currBatchDir, mc_params)
+    #     except Exception as e:
+    #         QtGui.QMessageBox.warning(self, 'Error',
+    #                                   'The following error occured while trying to save files for batch:\n'
+    #                                   + str(e))
+    #         return
+    #     self.ui.listwBatch.addItem(filename)
+    #     self.ui.btnStartBatch.setEnabled(True)
+    #     self.workEnv.saved = True
+    #     self.ui.btnRemoveFromBatch.setEnabled(True)
 
 
     # def startBatch(self):
@@ -1496,191 +1496,192 @@ class ImageView(QtGui.QWidget):
     #             #            self.ui.progressBar.setValue(100/batchSize)
     #     # self.ui.btnAbort.setEnabled(True)
     #     # self.ui.progressBar.setDisabled(True)
-
-    def startBatch(self):
-        batchSize = self.ui.listwBatch.count()
-        self.ui.progressBar.setDisabled(False)
-        self.ui.progressBar.setEnabled(True)
-        self.ui.progressBar.setValue(1)
-        for i in range(0, batchSize):
-            cp = caimanPipeline(self.ui.listwBatch.item(i).text())
-            self.ui.btnAbort.setEnabled(True)
-            cp.start()
-            # while cp.is_alive():
-            #     time.sleep(3)
-            # self.ui.progressBar.setValue(i+1/batchSize)
-
-    def searchMotCorFiles(self):
-        batchSize = self.ui.listwBatch.count()
-        self.ui.listwMotCor.clear()
-        for i in range(0, batchSize):
-            if os.path.isfile(self.ui.listwBatch.item(i).text()+'_mc.npz'):
-                self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
-                self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
-            else:
-                self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
-                self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
-
-    def clearBatchList(self):
-        pass
-
-    # Get Motion Correction Parameters from the GUI
-    def getMotCorParams(self):
-        num_iters_rigid = int(self.ui.spinboxIter.text())
-        rig_shifts_x = int(self.ui.spinboxX.text())
-        rig_shifts_y = int(self.ui.spinboxY.text())
-        num_threads = int(self.ui.spinboxThreads.text())
-
-        rigid_params = {'decay_time': None, 'num_iters_rigid': num_iters_rigid,
-             'rig_shifts_x': rig_shifts_x, 'rig_shifts_y': rig_shifts_y,
-             'num_threads': num_threads}
-
-        strides = int(self.ui.sliderStrides.value())
-        overlaps = int(self.ui.sliderOverlaps.value())
-        upsample = int(self.ui.spinboxUpsample.text())
-        max_dev = int(self.ui.spinboxMaxDev.text())
-
-        elas_params = {'strides': strides, 'overlaps': overlaps,
-                       'upsample': upsample, 'max_dev': max_dev}
-
-        return rigid_params, elas_params
-
-    def drawLine(self, ev):
-        if self.measureLine_A is None:
-            self.measureLine_A = self.view.mapSceneToView(ev.pos())
-            print(self.measureLine_A)
-        else:
-            self.measureLine = LineSegmentROI(positions=(self.measureLine_A,
-                                                         self.view.mapSceneToView(ev.pos())))
-            self.view.addItem(self.measureLine)
-            self.scene.sigMouseClicked.disconnect(self.drawLine)
-
-    def drawMeasureLine(self, ev):
-        if ev and self.measureLine is None:
-            self.scene.sigMouseClicked.connect(self.drawLine)
-        elif ev is False and self.measureLine is not None:
-            dx = abs(self.measureLine.listPoints()[0][0] - self.measureLine.listPoints()[1][0])
-            dy = abs(self.measureLine.listPoints()[0][1] - self.measureLine.listPoints()[1][1])
-            self.ui.spinboxX.setValue(int(dx))
-            self.ui.spinboxY.setValue(int(dy))
-            self.scene.removeItem(self.measureLine)
-            self.measureLine = None
-            self.measureLine_A = None
-
-    def drawStrides(self):
-        if self.ui.btnShowQuilt.isChecked() is False:
-            return
-        if len(self.overlapsV) > 0:
-            for overlap in self.overlapsV:
-                self.view.removeItem(overlap)
-            for overlap in self.overlapsH:
-                self.view.removeItem(overlap)
-            self.overlapsV = []
-            self.overlapsH = []
-
-        w = int(self.view.addedItems[0].width())
-        k = self.ui.sliderStrides.value()
-
-
-        h = int(self.view.addedItems[0].height())
-        j = self.ui.sliderStrides.value()
-
-        val = int(self.ui.sliderOverlaps.value())
-
-        for i in range(1, int(w/k) + 1):
-            linreg = LinearRegionItem(values=[i*k, i*k + val], brush=(255,255,255,80),
-                                      movable=False, bounds=[i*k, i*k + val])
-            self.overlapsV.append(linreg)
-            self.view.addItem(linreg)
-
-        for i in range(1, int(h/j) + 1):
-            linreg = LinearRegionItem(values=[i*j, i*j + val], brush=(255, 255, 255, 80),
-                                      movable=False, bounds=[i*j, i*j + val],
-                                      orientation=LinearRegionItem.Horizontal)
-            self.overlapsH.append(linreg)
-            self.view.addItem(linreg)
-
-    def removeStrides(self):
-        if self.ui.btnShowQuilt.isChecked() is True:
-            return
-        for o in self.overlapsV:
-            self.view.removeItem(o)
-        for o in self.overlapsH:
-            self.view.removeItem(o)
-        self.overlapsH = []
-        self.overlapsV = []
+    #
+    # def startBatch(self):
+    #     batchSize = self.ui.listwBatch.count()
+    #     self.ui.progressBar.setDisabled(False)
+    #     self.ui.progressBar.setEnabled(True)
+    #     self.ui.progressBar.setValue(1)
+    #     for i in range(0, batchSize):
+    #         cp = caimanPipeline(self.ui.listwBatch.item(i).text())
+    #         self.ui.btnAbort.setEnabled(True)
+    #         cp.start()
+    #         # while cp.is_alive():
+    #         #     time.sleep(3)
+    #         # self.ui.progressBar.setValue(i+1/batchSize)
+    #
+    # def searchMotCorFiles(self):
+    #     batchSize = self.ui.listwBatch.count()
+    #     self.ui.listwMotCor.clear()
+    #     for i in range(0, batchSize):
+    #         if os.path.isfile(self.ui.listwBatch.item(i).text()+'_mc.npz'):
+    #             self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
+    #             self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('green')))
+    #         else:
+    #             self.ui.listwMotCor.addItem(self.ui.listwBatch.item(i).text()+'_mc.npz')
+    #             self.ui.listwMotCor.item(i).setBackground(QtGui.QBrush(QtGui.QColor('red')))
+    #
+    # def clearBatchList(self):
+    #     pass
+    #
+    # # Get Motion Correction Parameters from the GUI
+    # def getMotCorParams(self):
+    #     num_iters_rigid = int(self.ui.spinboxIter.text())
+    #     rig_shifts_x = int(self.ui.spinboxX.text())
+    #     rig_shifts_y = int(self.ui.spinboxY.text())
+    #     num_threads = int(self.ui.spinboxThreads.text())
+    #
+    #     rigid_params = {'decay_time': None, 'num_iters_rigid': num_iters_rigid,
+    #          'rig_shifts_x': rig_shifts_x, 'rig_shifts_y': rig_shifts_y,
+    #          'num_threads': num_threads}
+    #
+    #     strides = int(self.ui.sliderStrides.value())
+    #     overlaps = int(self.ui.sliderOverlaps.value())
+    #     upsample = int(self.ui.spinboxUpsample.text())
+    #     max_dev = int(self.ui.spinboxMaxDev.text())
+    #
+    #     elas_params = {'strides': strides, 'overlaps': overlaps,
+    #                    'upsample': upsample, 'max_dev': max_dev}
+    #
+    #     return rigid_params, elas_params
+    #
+    # def drawLine(self, ev):
+    #     if self.measureLine_A is None:
+    #         self.measureLine_A = self.view.mapSceneToView(ev.pos())
+    #         print(self.measureLine_A)
+    #     else:
+    #         self.measureLine = LineSegmentROI(positions=(self.measureLine_A,
+    #                                                      self.view.mapSceneToView(ev.pos())))
+    #         self.view.addItem(self.measureLine)
+    #
+    #         self.scene.sigMouseClicked.disconnect(self.drawLine)
+    #
+    # def drawMeasureLine(self, ev):
+    #     if ev and self.measureLine is None:
+    #         self.scene.sigMouseClicked.connect(self.drawLine)
+    #     elif ev is False and self.measureLine is not None:
+    #         dx = abs(self.measureLine.listPoints()[0][0] - self.measureLine.listPoints()[1][0])
+    #         dy = abs(self.measureLine.listPoints()[0][1] - self.measureLine.listPoints()[1][1])
+    #         self.ui.spinboxX.setValue(int(dx))
+    #         self.ui.spinboxY.setValue(int(dy))
+    #         self.scene.removeItem(self.measureLine)
+    #         self.measureLine = None
+    #         self.measureLine_A = None
+    #
+    # def drawStrides(self):
+    #     if self.ui.btnShowQuilt.isChecked() is False:
+    #         return
+    #     if len(self.overlapsV) > 0:
+    #         for overlap in self.overlapsV:
+    #             self.view.removeItem(overlap)
+    #         for overlap in self.overlapsH:
+    #             self.view.removeItem(overlap)
+    #         self.overlapsV = []
+    #         self.overlapsH = []
+    #
+    #     w = int(self.view.addedItems[0].width())
+    #     k = self.ui.sliderStrides.value()
+    #
+    #
+    #     h = int(self.view.addedItems[0].height())
+    #     j = self.ui.sliderStrides.value()
+    #
+    #     val = int(self.ui.sliderOverlaps.value())
+    #
+    #     for i in range(1, int(w/k) + 1):
+    #         linreg = LinearRegionItem(values=[i*k, i*k + val], brush=(255,255,255,80),
+    #                                   movable=False, bounds=[i*k, i*k + val])
+    #         self.overlapsV.append(linreg)
+    #         self.view.addItem(linreg)
+    #
+    #     for i in range(1, int(h/j) + 1):
+    #         linreg = LinearRegionItem(values=[i*j, i*j + val], brush=(255, 255, 255, 80),
+    #                                   movable=False, bounds=[i*j, i*j + val],
+    #                                   orientation=LinearRegionItem.Horizontal)
+    #         self.overlapsH.append(linreg)
+    #         self.view.addItem(linreg)
+    #
+    # def removeStrides(self):
+    #     if self.ui.btnShowQuilt.isChecked() is True:
+    #         return
+    #     for o in self.overlapsV:
+    #         self.view.removeItem(o)
+    #     for o in self.overlapsH:
+    #         self.view.removeItem(o)
+    #     self.overlapsH = []
+    #     self.overlapsV = []
 
     '''###############################################################################################################
                                         Work Env methods
     ##################################################################################################################'''
 
-
-    def DiscardWorkEnv(self, clear_sample_id=False):
-        if (self.workEnv.saved == False) and (QtGui.QMessageBox.warning(self, 'Warning!',
-                  'You have unsaved work in your environment. Would you like to discard them and continue?',
-                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
-                return False
-        self.clearWorkEnv(clear_sample_id)
-        return True
-
-    # Clear the ROIs and plots
-    def clearWorkEnv(self, clear_sample_id=False):
-        # Remove any ROIs and associated curves on the plot
-        for i in range(0,len(self.workEnv.ROIList)):
-            self.delROI(self.workEnv.ROIList[0])
-            '''calls delROI method to remove the ROIs from the list.
-            You cannot simply reset the list to ROI = [] because objects must be removed from the scene
-            and curves removed from the plot. This is what delROI() does. Removes the 0th once in each
-            iteration, number of iterations = len(ROIlist)'''
-
-        self.priorlistwROIsSelection = None
-
-        # In case the user decided to add some of their own curves that don't correspond to the ROIs
-        if len(self.workEnv.CurvesList) != 0:
-            for i in range(0,len(self.workEnv.CurvesList)):
-                self.workEnv.CurvesList[i].clear()
-
-        # re-initialize ROI and curve lists
-        self.workEnv = None
-#        self._remove_workEnv_observer()
-        self.ui.comboBoxStimMaps.setDisabled(True)
-
-        # Remove the background bands showing stimulus times.
-        if len(self.currStimMapBg) > 0:
-            for item in self.currStimMapBg:
-                self.ui.roiPlot.removeItem(item)
-
-            self.currStimMapBg = []
-
-        # self.initROIPlot()
-        self.enableUI(False, clear_sample_id)
-
-
-
-    def _workEnv_checkSaved(self):
-        if self.watcherStarted:
-            return
-
-        for ui_element in self.ui.tabBatchParams.children():
-            if type(ui_element) != QtWidgets.QLabel:
-                if type(
-                        ui_element) == QtWidgets.QSpinBox:  # or QtWidgets.QPushButton or QtWidgets.QCheckBox or QtWidgets.QSpinBox or QtWidgets.QSlider):
-                    ui_element.valueChanged['int'].connect(self._workEnv_changed)
-                    print(self.workEnv.saved)
-                elif type(ui_element) == QtWidgets.QLineEdit:
-                    ui_element.textChanged.connect(self._workEnv_changed)
-                elif type(ui_element) == QtWidgets.QSlider:
-                    ui_element.valueChanged['int'].connect(self._workEnv_changed)
-        for ui_element in self.ui.tabROIs.children():
-            if type(ui_element) == QtWidgets.QLineEdit:
-                ui_element.textChanged.connect(self._workEnv_changed)
-            elif type(ui_element) == QtWidgets.QPlainTextEdit:
-                ui_element.textChanged.connect(self._workEnv_changed)
-        self.watcherStarted = True
-
-    def _workEnv_changed(self, element=None):
-        if self.workEnv is not None:
-            self.workEnv.saved = False
+#
+#     def DiscardWorkEnv(self, clear_sample_id=False):
+#         if (self.workEnv.saved == False) and (QtGui.QMessageBox.warning(self, 'Warning!',
+#                   'You have unsaved work in your environment. Would you like to discard them and continue?',
+#                        QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
+#                 return False
+#         self.clearWorkEnv(clear_sample_id)
+#         return True
+#
+#     # Clear the ROIs and plots
+#     def clearWorkEnv(self, clear_sample_id=False):
+#         # Remove any ROIs and associated curves on the plot
+#         for i in range(0,len(self.workEnv.ROIList)):
+#             self.delROI(self.workEnv.ROIList[0])
+#             '''calls delROI method to remove the ROIs from the list.
+#             You cannot simply reset the list to ROI = [] because objects must be removed from the scene
+#             and curves removed from the plot. This is what delROI() does. Removes the 0th once in each
+#             iteration, number of iterations = len(ROIlist)'''
+#
+#         self.priorlistwROIsSelection = None
+#
+#         # In case the user decided to add some of their own curves that don't correspond to the ROIs
+#         if len(self.workEnv.CurvesList) != 0:
+#             for i in range(0,len(self.workEnv.CurvesList)):
+#                 self.workEnv.CurvesList[i].clear()
+#
+#         # re-initialize ROI and curve lists
+#         self.workEnv.dump()
+# #        self._remove_workEnv_observer()
+#         self.ui.comboBoxStimMaps.setDisabled(True)
+#
+#         # Remove the background bands showing stimulus times.
+#         if len(self.currStimMapBg) > 0:
+#             for item in self.currStimMapBg:
+#                 self.ui.roiPlot.removeItem(item)
+#
+#             self.currStimMapBg = []
+#
+#         # self.initROIPlot()
+#         self.enableUI(False, clear_sample_id)
+#
+#
+#
+#     def _workEnv_checkSaved(self):
+#         if self.watcherStarted:
+#             return
+#
+#         for ui_element in self.ui.tabBatchParams.children():
+#             if type(ui_element) != QtWidgets.QLabel:
+#                 if type(
+#                         ui_element) == QtWidgets.QSpinBox:  # or QtWidgets.QPushButton or QtWidgets.QCheckBox or QtWidgets.QSpinBox or QtWidgets.QSlider):
+#                     ui_element.valueChanged['int'].connect(self._workEnv_changed)
+#                     print(self.workEnv.saved)
+#                 elif type(ui_element) == QtWidgets.QLineEdit:
+#                     ui_element.textChanged.connect(self._workEnv_changed)
+#                 elif type(ui_element) == QtWidgets.QSlider:
+#                     ui_element.valueChanged['int'].connect(self._workEnv_changed)
+#         for ui_element in self.ui.tabROIs.children():
+#             if type(ui_element) == QtWidgets.QLineEdit:
+#                 ui_element.textChanged.connect(self._workEnv_changed)
+#             elif type(ui_element) == QtWidgets.QPlainTextEdit:
+#                 ui_element.textChanged.connect(self._workEnv_changed)
+#         self.watcherStarted = True
+#
+#     def _workEnv_changed(self, element=None):
+#         if self.workEnv is not None:
+#             self.workEnv.saved = False
 
     def comment_text_box_update(self):
         if isinstance(self.workEnv, viewerWorkEnv):

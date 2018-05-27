@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on April 23 2017
+Created on April 23 2018
 
 @author: kushal
 
@@ -19,7 +19,7 @@ import json
 import numpy as np
 from .batch_manager import ModuleGUI as BatchModuleGui
 from MesmerizeCore import configuration
-import caiman as cm
+from MesmerizeCore.packager import viewerWorkEnv
 
 
 class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
@@ -36,21 +36,32 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.btnExport.clicked.connect(self.export_params)
         self.ui.btnImport.clicked.connect(self.import_params)
 
-        self.ui.comboBoxInputCorrPNR.currentIndexChanged.connect(self.combobox_input_corr_pnr_changed)
-        self.ui.comboBoxCNMFE.currentIndexChanged.connect(self.combobox_input_cnmfe_changed)
-
+        # self.ui.comboBoxInputCorrPNR.currentIndexChanged.connect(self.combobox_input_corr_pnr_changed)
+        # self.ui.comboBoxCNMFE.currentIndexChanged.connect(self.combobox_input_cnmfe_changed)
+        assert isinstance(self.viewer_ref.batch_manager, BatchModuleGui)
         self.viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
 
     def _make_params_dict(self):
+        if 'fps' not in self.viewer_ref.workEnv.imgdata.meta.keys():
+            QtWidgets.QMessageBox.warning(self, 'No framerate for current image sequence!',
+                                          'You must set a framerate for the current image sequence before you can '
+                                          'continue!', QtWidgets.QMessageBox.Ok)
+            return None
+
         d = {'Input_Corr_PNR':  self.ui.comboBoxInputCorrPNR.currentText(),
+             'frate':           self.viewer_ref.workEnv.imgdata.meta['fps'],
              'gSig':            self.ui.spinBoxGSig.value(),
-             'gSize':           self.ui.spinBoxGSize.value(),
              'Input_CNMFE':     self.ui.comboBoxCNMFE.currentText(),
              'min_corr':        self.ui.doubleSpinBoxMinCorr.value(),
              'min_pnr':         self.ui.spinBoxMinPNR.value(),
              'min_SNR':         self.ui.spinBoxMinSNR.value(),
              'r_values_min':    self.ui.doubleSpinBoxRValuesMin.value(),
-             'decay_time':      self.ui.spinBoxDecayTime.value()
+             'decay_time':      self.ui.spinBoxDecayTime.value(),
+             'rf':              self.ui.spinBoxRf.value(),
+             'stride':          self.ui.spinBoxOverlap.value(),
+             'gnb':             self.ui.spinBoxGnb.value(),
+             'nb_patch':        self.ui.spinBoxNb_patch.value(),
+             'k':               self.ui.spinBoxK.value()
              }
 
         return d
@@ -77,7 +88,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             with open(path, 'r') as f:
                 d = json.load(f)
                 self.ui.spinBoxGSig.setValue(d['gSig'])
-                self.ui.spinBoxGSize.setValue(d['gSize'])
                 self.ui.doubleSpinBoxMinCorr.setValue(d['min_corr'])
                 self.ui.spinBoxMinPNR.setValue(d['min_pnr'])
                 self.ui.doubleSpinBoxRValuesMin.setValue(d['r_values_min'])
@@ -91,45 +101,65 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
     def add_to_batch_corr_pnr(self):
         if self.ui.comboBoxInputCorrPNR.currentText() == 'Current Work Environment':
-            pass
+            if self.viewer_ref.workEnv.isEmpty:
+                QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty.')
+                return
+            input_workEnv = self.viewer_ref.workEnv
         else:
-            pass
+            input_workEnv = self.ui.comboBoxInputCorrPNR.currentText()
 
-        d = np.array(self._make_params_dict(), dtype=object)
-        name = self.ui.lineEdName.text()
-        assert isinstance(self.viewer_ref.batch_manager, BatchModuleGui)
+        d = self._make_params_dict()
 
+        if d is None:
+            return
 
+        d['do_corr_pnr'] = True
+        d['do_cnmfe'] = False
 
-        self.viewer_ref.batch_manager.add_item(module='CNMFE', name=name, input_imgseq=
+        # d = np.array(self._make_params_dict(), dtype=object)
+
+        self.viewer_ref.batch_manager.add_item(module='CNMFE',
+                                               name=self.ui.lineEdName.text(),
+                                               input_workEnv=input_workEnv,
+                                               input_params=d,
+                                               meta=d
+                                               )
 
     def add_to_batch_cnmfe(self):
-        if self.ui.comboBoxInputCorrPNR.currentText() == 'Continue from above':
-            pass
+        if self.ui.comboBoxCNMFE.currentText() == 'Continue from above':
+            if self.ui.comboBoxInputCorrPNR.currentText() == 'Current Work Environment':
+                if self.viewer_ref.workEnv.isEmpty:
+                    QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty.')
+                    return
+                input_workEnv = self.viewer_ref.workEnv
+            else:
+                input_workEnv = self.ui.comboBoxInputCorrPNR.currentText()
         else:
-            pass
+            input_workEnv = self.ui.comboBoxCNMFE.currentText()
 
-        if self.viewer_ref.workEnv.
+        d = self._make_params_dict()
+
+        if d is None:
+            return
+
+        d['do_corr_pnr'] = False
+        d['do_cnmfe'] = True
+
+        # d = np.array(self._make_params_dict(), dtype=object)
+
+        self.viewer_ref.batch_manager.add_item(module='CNMFE',
+                                               name=self.ui.lineEdName.text(),
+                                               input_workEnv=input_workEnv,
+                                               input_params=d,
+                                               meta=d
+                                               )
 
     def save_memmap(self):
-        fname_new = cm.save_memmap_each(
-            filename_reorder,
-            base_name='memmap_',
-            order='C',
-            border_to_0=bord_px,
-            dview=self.dview)
-        fname_new = cm.save_memmap_join(fname_new, base_name='memmap_', dview=self.dview)
-
-    def reset_dview(self):
-        try:
-            self.dview.terminate()
-        except:
-            c, self.dview, self.n_processes = cm.cluster.setup_cluster(backend='multiprocessing', n_processes=4,
-                                                     # number of process to use, if you go out of memory try to reduce this one
-                                                     single_thread=False)
-
-    def update_available_inputs(self):
         pass
+
+    @QtCore.pyqtSlot()
+    def update_available_inputs(self):
+        print('Input changes received in cnmfe module!')
 
     # def combobox_input_corr_pnr_changed(self):
     #     if self.ui.comboBoxInputCorrPNR.currentText() == 'Current Work Environment':

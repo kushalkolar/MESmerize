@@ -103,10 +103,13 @@ class Transmission(_TRANSMISSION):
         assert isinstance(df, pd.DataFrame)
         df[['curve', 'meta', 'stimMaps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
         df['raw_curve'] = df['curve']
-
-        from MesmerizeCore import configuration
-        stim_defs = configuration.cfg.options('STIM_DEFS')
-        roi_defs = configuration.cfg.options('ROI_DEFS')
+        
+        try:
+            from MesmerizeCore import configuration
+            stim_defs = configuration.cfg.options('STIM_DEFS')
+            roi_defs = configuration.cfg.options('ROI_DEFS')
+        except:
+            return cls(df, src=[{'raw': df_name}])
 
         return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
 

@@ -154,5 +154,5 @@ class MES:
                                             "required for the construction of an image sequence from mesfile data")
 # For testing
 if __name__ == '__main__':
-    mesfile = MES('/home/kushal/Sars_stuff/github-repos/MESmerize/Amazing animal.mes')
+    mesfile = MES('/home/kushal/Sars_stuff/For_Methods_Paper/ETR1/April_02_2018_ETR1.mes')
 # y = imdata.meta['AUXo3']['y']

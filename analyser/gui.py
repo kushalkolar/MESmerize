@@ -27,6 +27,8 @@ else:
     from .DataTypes import Transmission
 from pyqtgraphCore.console import ConsoleWidget
 import pickle
+from MesmerizeCore import configuration
+import os
 
 
 class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
@@ -47,8 +49,13 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
               "tabbed area as 'tabsW'\n\nTo access plots in current tab call curr_tab()\nExample:\n" \
               "tab0 = curr_tab()\ntab0.p1.plot(x, np.sin(x))"
 
+        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
+            os.makedirs(configuration.sys_cfg_path + '/console_history')
+
+        cmd_history_file = configuration.sys_cfg_path + '/console_history/flowchart.pik'
+
         self.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile='./test_history.pik'))
+                                                 historyFile=cmd_history_file))
 
         self.dockConsole.hide()
 

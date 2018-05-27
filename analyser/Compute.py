@@ -86,7 +86,8 @@ class PeakFeatures:
             if (ix_pre_peak is None) or (ix_nex_peak is None):
                 result = np.NaN
             else:
-                result = {'pre': ix_peak_abs - ix_pre_peak, 'post': ix_nex_peak - ix_peak_abs}
+                result = np.mean([ix_peak_abs - ix_pre_peak, ix_nex_peak - ix_peak_abs])
         except:
             result = np.NaN
-            q.put({'_pfeature_inter_peak_interval': result})
+
+        q.put({'_pfeature_inter_peak_interval': result})
