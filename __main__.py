@@ -351,7 +351,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.viewer.ui.btnOpenBatch.clicked.connect(self.viewerOpenBatch)
         # self.viewerWindow.show()
 
-        self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
+        # self.viewer.ui.btnAddCurrEnvToProj.clicked.connect(self.addWorkEnvToProj)
         self.viewer.ui.btnSplitSeq.clicked.connect(self.viewer_enter_split_seq)
         self.viewer.ui.btnDoneSplitSeqs.clicked.connect(self.viewer_done_split_seq)
 

@@ -112,6 +112,23 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
         return self.t
 
 
+class PowerSpectralDensity(CtrlNode):
+    """Return the Power Spectral Density of a curve."""
+    nodeName = 'PowSpectDens'
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+
+    def processData(self, transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+        t = transmission.copy()
+        t.df['power_spectral_density'] = t.df['curve'].apply(self._func)
+        t.src.append({'Power Spectral Density': ''})
+        return t
+
+    def _func(self, curve):
+        f, p = signal.periodogram(curve)
+        return p
+
         # def _func(self, x):
     #     b, a = signal.butter(2, (1 / 25) / 10)
     #     sig = signal.filtfilt(b, a, x)

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main_window_pytemplate.ui'
+# Form implementation generated from reading ui file './main_window_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -16,7 +16,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -77,6 +77,10 @@ class Ui_MainWindow(object):
         self.actionBatch_Manager.setObjectName("actionBatch_Manager")
         self.actionDump_Work_Environment = QtWidgets.QAction(MainWindow)
         self.actionDump_Work_Environment.setObjectName("actionDump_Work_Environment")
+        self.actionAdd_to_project = QtWidgets.QAction(MainWindow)
+        self.actionAdd_to_project.setObjectName("actionAdd_to_project")
+        self.menuFile.addAction(self.actionAdd_to_project)
+        self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_work_environment)
         self.menuFile.addAction(self.actionSave_work_environment)
         self.menuFile.addSeparator()
@@ -133,4 +137,5 @@ class Ui_MainWindow(object):
         self.actionCNMF_E.setText(_translate("MainWindow", "CNMF-E"))
         self.actionBatch_Manager.setText(_translate("MainWindow", "Batch Manager"))
         self.actionDump_Work_Environment.setText(_translate("MainWindow", "Dump Work Environment"))
+        self.actionAdd_to_project.setText(_translate("MainWindow", "Add to project"))
 

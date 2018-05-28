@@ -344,7 +344,6 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 QtWidgets.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
 
 
-
 class MPLW(MatplotlibWidget):
     def __init__(self):
         MatplotlibWidget.__init__(self)
