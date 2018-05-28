@@ -120,7 +120,7 @@ class Transmission(_TRANSMISSION):
 
         path = proj_path + row['CurvePath']
         npz = np.load(path)
-        print(npz.f.curve[1])
+#        print(npz.f.curve[1])
 
         pikPath = proj_path + row['ImgInfoPath']
         pik = pickle.load(open(pikPath, 'rb'))

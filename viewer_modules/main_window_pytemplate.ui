@@ -20,13 +20,15 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionAdd_to_project"/>
+    <addaction name="separator"/>
     <addaction name="actionOpen_work_environment"/>
     <addaction name="actionSave_work_environment"/>
     <addaction name="separator"/>
@@ -189,6 +191,11 @@
   <action name="actionDump_Work_Environment">
    <property name="text">
     <string>Dump Work Environment</string>
+   </property>
+  </action>
+  <action name="actionAdd_to_project">
+   <property name="text">
+    <string>Add to project</string>
    </property>
   </action>
  </widget>

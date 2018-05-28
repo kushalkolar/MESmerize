@@ -18,6 +18,7 @@ import numpy as np
 # import abc
 # import multiprocessing
 
+
 class ViewerInterface:
     def __init__(self, viewer_ref):
         assert isinstance(viewer_ref, imageview.ImageView)
@@ -59,6 +60,7 @@ class ViewerInterface:
 
         # re-initialize ROI and curve lists
         self.viewer_ref.workEnv.dump()
+        self.viewer_ref.setImage(np.array([0]))
         #        self.viewer_ref._remove_workEnv_observer()
         self.viewer_ref.ui.comboBoxStimMaps.setDisabled(True)
 

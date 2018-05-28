@@ -48,7 +48,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.setupUi(self)
 
         self.ui.listwBatch.itemDoubleClicked.connect(self.show_item_output)
-        # self.ui.listwBatch.itemClicked.connect(self.show_item_meta)
 
         self.ui.btnStart.clicked.connect(self.process_batch)
         self.ui.btnStartAtSelection.clicked.connect(lambda: self.process_batch(start_ix=self.ui.listwBatch.indexFromItem(self.ui.listwBatch.currentItem()).row()))
@@ -76,6 +75,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.labelStdOut.setStyleSheet('color: #FFFFFF')
 
         self.ui.scrollAreaStdOut.hide()
+        self.resize(1200, 650)
         self.ui.listwBatch.currentItemChanged.connect(self.show_item_meta)
 
     @staticmethod
@@ -109,7 +109,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def show_item_output(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
         self.ui.scrollAreaOutputInfo.show()
-        self.resize(1200, 650)
         item_txt = s.text()
         UUID = s.data(3)
 
@@ -186,7 +185,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         # self.run_next_item()
         self.ui.scrollAreaStdOut.show()
         self.ui.scrollAreaOutputInfo.show()
-        self.resize(1200, 650)
         self.current_std_out = deque(maxlen=100)
         self.run_batch_item()
 

@@ -14,7 +14,9 @@ from functools import partial
 from analyser import PeakEditor
 from analyser import Extraction
 from analyser.stats_gui import StatsWindow
+from analyser import pca_gui
 import pickle
+import traceback
 
 class CurveAnalysis(CtrlNode):
     """Simple analysis of curves"""
@@ -85,7 +87,7 @@ class PeakFeaturesExtract(CtrlNode):
 
             except Exception as e:
                 QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak extraction:\n'
-                                                                   + str(e))
+                                                                   + traceback.format_exc())
 
         self.changed()
         self.ctrls['Stats'].setEnabled(True)
@@ -97,3 +99,50 @@ class PeakFeaturesExtract(CtrlNode):
         self.stats_gui = StatsWindow()
         self.stats_gui.input_transmissions(self.peak_results)
         self.stats_gui.show()
+
+
+class PCA(CtrlNode):
+    """PCA (Principal component analysis)"""
+    nodeName = 'PCA'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.ctrls['ShowGUI'].clicked.connect(self._open_pca_gui)
+
+    def process(self, **kwargs):
+        if (self.ctrls['Apply'].isChecked() is False) or not hasattr(self, 'pca_gui'):
+            return
+
+        transmissions = kwargs['In']
+
+        if not len(transmissions) > 0:
+            raise Exception('No incoming transmissions')
+
+        transmissions_list = []
+
+        for t in transmissions.items():
+            t = t[1]
+            print(t)
+            if t is None:
+                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                continue
+
+            if not any('Power Spectral Density' in d for d in t.src):
+                raise KeyError('Cannot perform PCA with incoming transmissions. '
+                               'You must pass through one of the following nodes before performing a PCA:\n'
+                               'Power Spectral Density')
+
+            transmissions_list.append(t.copy())
+
+        self.pca_gui.update_input(transmissions_list)
+
+    def _open_pca_gui(self):
+        if hasattr(self, 'pca_gui'):
+            self.pca_gui.show()
+            return
+
+        self.pca_gui = pca_gui.PCA_GUI()
+        self.pca_gui.show()
+        self.changed()
