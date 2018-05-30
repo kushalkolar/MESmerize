@@ -101,6 +101,8 @@ class PCA_GUI(QtWidgets.QMainWindow):
             self.ui.comboBoxTarget.clear()
             self.ui.comboBoxTarget.addItems(self.df.columns)
 
+        self.set_targets()
+
     def set_targets(self):
         target_column = self.ui.comboBoxTarget.currentText()
         targets_str_list = list(self.df[target_column])
@@ -170,6 +172,8 @@ class PCA_GUI(QtWidgets.QMainWindow):
 
         self.setStatusTip('Preparing figure, please wait')
         try:
+            self.plot_widget.fig.clear()
+            self.plot_widget.canvas.draw()
             result = pd.DataFrame(pca.transform(data), columns=['PCA%i' % i
                                                                 for i in range(end_freq - start_trim)])
 
