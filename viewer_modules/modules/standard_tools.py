@@ -94,6 +94,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
     def measure_tool(self, ev):
         if ev and self.measure_line is None:
+            self.viewer_ref.statusTip()
             self.viewer_ref.scene.sigMouseClicked.connect(self.draw_measure_line)
 
         elif ev is False and self.measure_line is not None:
