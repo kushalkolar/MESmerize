@@ -286,7 +286,7 @@
              <x>0</x>
              <y>0</y>
              <width>329</width>
-             <height>97</height>
+             <height>101</height>
             </rect>
            </property>
            <attribute name="label">
@@ -395,71 +395,6 @@
                </property>
                <property name="text">
                 <string>Reset sMap</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QPushButton" name="btnResetScale">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>10</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>10</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>Reset scale of the image and timeline</string>
-               </property>
-               <property name="text">
-                <string>Reset scale</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QPushButton" name="btnCrop">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>10</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>10</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>100</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Crop</string>
-               </property>
-               <property name="iconSize">
-                <size>
-                 <width>16</width>
-                 <height>16</height>
-                </size>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -583,7 +518,7 @@
              <x>0</x>
              <y>0</y>
              <width>329</width>
-             <height>97</height>
+             <height>101</height>
             </rect>
            </property>
            <attribute name="label">
@@ -826,50 +761,8 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="tabBatchParams">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <attribute name="title">
-        <string>Batch Params</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_10">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLineEdit" name="lineEdAnimalID">
-              <property name="placeholderText">
-               <string>Animal ID</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdTrialID">
-              <property name="placeholderText">
-               <string>Trial ID</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdGenotype">
-              <property name="placeholderText">
-               <string>Genotype</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
       <widget class="QWidget" name="tabROIs">
        <property name="enabled">
         <bool>false</bool>
@@ -1163,12 +1056,7 @@ To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</
   <tabstop>comboBoxStimMaps</tabstop>
   <tabstop>listwMesfile</tabstop>
   <tabstop>listwSplits</tabstop>
-  <tabstop>btnCrop</tabstop>
   <tabstop>btnAddROI</tabstop>
-  <tabstop>btnResetScale</tabstop>
-  <tabstop>lineEdAnimalID</tabstop>
-  <tabstop>lineEdTrialID</tabstop>
-  <tabstop>lineEdGenotype</tabstop>
   <tabstop>lineEdROIDef</tabstop>
   <tabstop>BtnSetROIDefs</tabstop>
   <tabstop>textBoxComments</tabstop>

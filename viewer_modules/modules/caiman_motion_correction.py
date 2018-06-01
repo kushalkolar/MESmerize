@@ -22,6 +22,7 @@ from MesmerizeCore.packager import viewerWorkEnv
 import caiman as cm
 from pyqtgraphCore import LinearRegionItem
 
+
 class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_ref):
         ViewerInterface.__init__(self,  viewer_ref)
@@ -106,4 +107,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                                                name=self.ui.lineEditNameElastic.text(),
                                                input_workEnv=self.viewer_ref.workEnv,
                                                input_params=d,
-                                               meta=d)
+                                               info=d)
+
+        self.ui.lineEditNameElastic.clear()

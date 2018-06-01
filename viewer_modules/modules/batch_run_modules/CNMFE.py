@@ -16,7 +16,7 @@ import sys
 # from ..common import ViewerInterface, BatchRunInterface
 # from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
 # from MesmerizeCore import configuration
-# from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import json
 import caiman as cm
 
@@ -93,18 +93,21 @@ def run(batch_dir, UUID, n_processes):
             border_to_0=bord_px,
             dview=dview)
         fname_new = cm.save_memmap_join(fname_new, base_name='memmap_' + UUID, dview=dview)
-        print("**** REACHED LINE 84 ****")
         # load memory mappable file
         Yr, dims, T = cm.load_memmap(fname_new)
         Y = Yr.T.reshape((T,) + dims, order='F')
-        print("**** REACHED LINE 88 ****")
         # compute some summary images (correlation and peak to noise)
         # change swap dim if output looks weird, it is a problem with tiffile
         cn_filter, pnr = cm.summary_images.correlation_pnr(
             Y, gSig=gSig, swap_dim=False)
-        print("**** REACHED LINE 93 ****")
+        if not input_params['do_cnmfe'] and input_params['do_corr_pnr']:
+            pickle.dump(cn_filter, open(filename[0][:-5] + '_cn_filter.pikl', 'wb'), protocol=4)
+            pickle.dump(pnr, open(filename[0][:-5] + 'pnr.pikl', 'wb'), protocol=4)
+            output.update({'output': filename[0][:-5], 'status': 1, 'output_info': 'inspect correlation & pnr'})
+            dview.terminate()
+            return
         # inspect the summary images and set the parameters
-        #    inspect_correlation_pnr(cn_filter, pnr)
+        # inspect_correlation_pnr(cn_filter, pnr)
         #
         #
         # reduced from .8
@@ -146,9 +149,7 @@ def run(batch_dir, UUID, n_processes):
                         center_psf=True,  # leave as is for 1 photon
                         del_duplicates=True,  # whether to remove duplicates from initialization
                         border_pix=bord_px)  # number of pixels to not consider in the borders
-        print("**** REACHED LINE 131 ****")
         cnm.fit(Y)
-        print("**** REACHED LINE 133 ****")
 
         #  DISCARD LOW QUALITY COMPONENTS
         idx_components, idx_components_bad, comp_SNR, r_values, pred_CNN = estimate_components_quality_auto(
@@ -156,7 +157,6 @@ def run(batch_dir, UUID, n_processes):
             decay_time, gSig, dims, dview=dview,
             min_SNR=min_SNR, r_values_min=r_values_min, use_cnn=False)
 
-        print(' ******** REACHED LINE 141 ********* ')
         print((len(cnm.C)))
         print((len(idx_components)))
         # np.save(filename[:-5] + '_curves.npy', cnm.C)
@@ -184,20 +184,38 @@ def run(batch_dir, UUID, n_processes):
 
 
 def output(batch_dir, UUID, viewer_ref):
-    print('OUTPUT CALLED')
     filename = batch_dir + '/' + str(UUID)
-    Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
-    cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
-    cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-    cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
-    cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-    idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
-    cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-    cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-    dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
-    print('OPENED ALL THE FILES')
-    cm.utils.visualization.view_patches_bar(Yr, cnmA[:, idx_components], cnmC[idx_components], cnmb, cnm_f,
-                                            dims[0], dims[1], YrA=cnmYrA[idx_components], img=cn_filter)
+
+    if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
+        cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+        pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+        inspect_correlation_pnr(cn_filter, pnr)
+    else:
+        mb = QtWidgets.QMessageBox()
+        mb.setWindowTitle('Show Correlation & PNR image or CNMFE')
+        mb.setText('Would you like to look at the correlation & PNR image or view the CNMFE output?')
+        btnCorrPNR = mb.addButton(QtWidgets.QPushButton().setText('Corr PNR Img'))
+        btnCNMFE = mb.addButton(QtWidgets.QPushButton().setText('CNMFE Output'))
+
+        mb.exec()
+
+        if mb.clickedButton() == btnCorrPNR:
+            cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+            pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+            inspect_correlation_pnr(cn_filter, pnr)
+
+        elif mb.clickedButton() == btnCNMFE:
+            Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
+            cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
+            cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
+            cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
+            cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+            idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
+            cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+            cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+            dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
+            cm.utils.visualization.view_patches_bar(Yr, cnmA[:, idx_components], cnmC[idx_components], cnmb, cnm_f,
+                                                    dims[0], dims[1], YrA=cnmYrA[idx_components], img=cn_filter)
 
 
 if len(sys.argv) > 1:
