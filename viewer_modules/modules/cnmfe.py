@@ -36,8 +36,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.btnExport.clicked.connect(self.export_params)
         self.ui.btnImport.clicked.connect(self.import_params)
 
-        # self.ui.comboBoxInputCorrPNR.currentIndexChanged.connect(self.combobox_input_corr_pnr_changed)
-        # self.ui.comboBoxCNMFE.currentIndexChanged.connect(self.combobox_input_cnmfe_changed)
         assert isinstance(self.viewer_ref.batch_manager, BatchModuleGui)
         self.viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
 
@@ -51,7 +49,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         d = {'Input_Corr_PNR':  self.ui.comboBoxInputCorrPNR.currentText(),
              'frate':           self.viewer_ref.workEnv.imgdata.meta['fps'],
              'gSig':            self.ui.spinBoxGSig.value(),
-             'Input_CNMFE':     self.ui.comboBoxCNMFE.currentText(),
+             'Input_CNMFE':     self.ui.comboBoxInput.currentText(),
              'min_corr':        self.ui.doubleSpinBoxMinCorr.value(),
              'min_pnr':         self.ui.spinBoxMinPNR.value(),
              'min_SNR':         self.ui.spinBoxMinSNR.value(),
@@ -100,13 +98,14 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                                           'The chosen file is not a valid CNMF-E params file.\n' + str(e))
 
     def add_to_batch_corr_pnr(self):
-        if self.ui.comboBoxInputCorrPNR.currentText() == 'Current Work Environment':
+        if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
             if self.viewer_ref.workEnv.isEmpty:
-                QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty.')
+                QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
+                                                                              'nothing to add to batch')
                 return
             input_workEnv = self.viewer_ref.workEnv
         else:
-            input_workEnv = self.ui.comboBoxInputCorrPNR.currentText()
+            input_workEnv = self.ui.comboBoxInput.currentText()
 
         d = self._make_params_dict()
 
@@ -116,26 +115,22 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         d['do_corr_pnr'] = True
         d['do_cnmfe'] = False
 
-        # d = np.array(self._make_params_dict(), dtype=object)
-
         self.viewer_ref.batch_manager.add_item(module='CNMFE',
-                                               name=self.ui.lineEdName.text(),
+                                               name=self.ui.lineEdCorrPNRName.text(),
                                                input_workEnv=input_workEnv,
                                                input_params=d,
                                                meta=d
                                                )
 
     def add_to_batch_cnmfe(self):
-        if self.ui.comboBoxCNMFE.currentText() == 'Continue from above':
-            if self.ui.comboBoxInputCorrPNR.currentText() == 'Current Work Environment':
-                if self.viewer_ref.workEnv.isEmpty:
-                    QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty.')
-                    return
-                input_workEnv = self.viewer_ref.workEnv
-            else:
-                input_workEnv = self.ui.comboBoxInputCorrPNR.currentText()
+        if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
+            if self.viewer_ref.workEnv.isEmpty:
+                QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
+                                                                              'nothing to add to batch')
+                return
+            input_workEnv = self.viewer_ref.workEnv
         else:
-            input_workEnv = self.ui.comboBoxCNMFE.currentText()
+            input_workEnv = self.ui.comboBoxInput.currentText()
 
         d = self._make_params_dict()
 
@@ -160,23 +155,3 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     @QtCore.pyqtSlot()
     def update_available_inputs(self):
         print('Input changes received in cnmfe module!')
-
-    # def combobox_input_corr_pnr_changed(self):
-    #     if self.ui.comboBoxInputCorrPNR.currentText() == 'Current Work Environment':
-    #         self.enable_radio_buttons_corr_pnr(True)
-    #     else:
-    #         self.enable_radio_buttons_corr_pnr(False)
-    #
-    # def combobox_input_cnmfe_changed(self):
-    #     if self.ui.comboBoxCNMFE.currentText() == 'Current Work Environment':
-    #         self.enable_radio_buttons_cnmfe(True)
-    #     else:
-    #         self.enable_radio_buttons_cnmfe(False)
-    #
-    # def enable_radio_buttons_corr_pnr(self, b):
-    #     self.ui.radioButtonInputWriteCorrPNRNow.setEnabled(b)
-    #     self.ui.radioButtonInputWriteCorrPNRRuntime.setEnabled(b)
-    #
-    # def enable_radio_buttons_cnmfe(self, b):
-    #     self.ui.radioButtonCNMFEInputWriteNow.setEnabled(b)
-    #     self.ui.radioButtonCNMFEInputWriteRuntime.setEnabled(b)

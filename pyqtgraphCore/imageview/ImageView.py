@@ -1148,7 +1148,7 @@ class ImageView(QtWidgets.QWidget):
 
     def addROI(self, ev=None, load=None):
         ''' Method for adding PolyROI's to the plot '''
-        self._workEnv_changed()
+        # self._workEnv_changed()
         #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
         #self.ROICurve = self.ui.roiPlot.plot()
 
@@ -1168,9 +1168,9 @@ class ImageView(QtWidgets.QWidget):
 
         # Connect signals to the newly created ROI
         self.workEnv.ROIList[-1].sigRemoveRequested.connect(self.delROI)
-        self.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
+        # self.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
         self.workEnv.ROIList[-1].sigRegionChanged.connect(self.updatePlot)# This is how the curve is plotted to correspond to this ROI
-        self.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
+        # self.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
         self.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
         self.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
         self.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)

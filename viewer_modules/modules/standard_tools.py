@@ -52,10 +52,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             self.viewer_ref.workEnv.imgdata.seq = self.viewer_ref.workEnv.imgdata[point_l[1]:point_r[1], point_l[0]:point_r[0], :]
             self.VIEWER_update_workEnv()
 
-    def resize_imgseq(self):
-        self.resize_gui = ResizeDialogBox()
-        self.resize_gui.btn.clicked.connect(self._resize_fast(lambda: self._resize_fast(self.resize_gui.spinBox.value())))
-
     def _resize_fast(self, factor):
         self.resize_gui.deleteLater()
         try:
@@ -110,21 +106,4 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                                               '\ndistance = ' + str(dist))
 
 
-class ResizeDialogBox(QtWidgets.QWidget):
-    def __init__(self):
-        QtWidgets.QWidget.__init__(self, parent=None)
-        layout = QtWidgets.QVBoxLayout()
 
-        label = QtWidgets.QLabel()
-        label.setText('Set scaling factor in %')
-        layout.addWidget(label)
-
-        self.spinBox = QtWidgets.QSpinBox()
-        self.spinBox.setMaximum(100)
-        self.spinBox.setMinimum(1)
-        self.spinBox.setValue(50)
-        layout.addWidget(self.spinBox)
-
-        self.btn = QtWidgets.QPushButton()
-        self.btn.setText('Apply')
-        layout.addWidget(self.btn)

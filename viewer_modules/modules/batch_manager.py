@@ -76,16 +76,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
         self.ui.scrollAreaStdOut.hide()
         self.resize(1200, 650)
-        self.ui.listwBatch.currentItemChanged.connect(self.show_item_meta)
-
-    @staticmethod
-    def get_class(kls):
-        parts = kls.split('.')
-        module = ".".join(parts[:-1])
-        m = __import__(module)
-        for comp in parts[1:]:
-            m = getattr(m, comp)
-        return m
+        self.ui.listwBatch.currentItemChanged.connect(self.show_item_info)
 
     def show_input(self):
         s = self.ui.listwBatch.currentItem()
@@ -124,16 +115,14 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         if output['status'] == 1:
             m.output(self.batch_path, UUID, self.viewer_ref)
 
-
-    def show_item_meta(self, s: QtWidgets.QListWidgetItem):
-        """Shows any meta-info (such as the batch module's params) in the meta-info label
-        Also shows output info"""
+    def show_item_info(self, s: QtWidgets.QListWidgetItem):
+        """Shows any info (such as the batch module's params) in the meta-info label"""
         UUID = s.data(3)
         row = self.df.loc[self.df['uuid'] == UUID]
-        meta = row['meta'].item().item()
+        meta = row['info'].item().item()
         info = "\n".join([": ".join([key, str(val)]) for key, val in meta.items()])
 
-        self.ui.labelMeta_info.setText(str(UUID) + '\n' + info)
+        self.ui.labelMeta_info.setText(str(UUID) + '\n\n' + info)
 
         output = self.get_batch_item_output(UUID)
 
@@ -256,91 +245,11 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         for child in children:
             os.kill(child.pid, SIGKILL)
 
-    # @QtCore.pyqtSlot()
-    # def run_next_item(self):
-    #     print('Current item index is: ' + str(self.current_item_index))
-    #     if self.current_item_index > -1:
-    #         pass
-    #         # print(self.current_running_item.get_output())
-    #         # try:
-    #         #     self.df.iloc[self.current_item_index]['output'] = self.current_running_item.get_output()['output']
-    #         # #     self.df.iloc[self.current_item_index]['output_params'] = q['output_params']
-    #         # #
-    #         #     if self.df.iloc[self.current_item_index]['output']['status'] == 'success':
-    #         #         self.ui.listwBatch.item(self.current_item_index).setBackground(QtGui.QBrush(QtGui.QColor('green')))
-    #         #     else:
-    #         #         self.ui.listwBatch.item(self.current_item_index).setBackground(QtGui.QBrush(QtGui.QColor('red')))
-    #         # except:
-    #         #     self.df.iloc[self.current_item_index]['output'] = None
-    #         # #     self.df.iloc[self.current_item_index]['output_params'] = None
-    #         #     self.ui.listwBatch.item(self.current_item_index).setBackground(QtGui.QBrush(QtGui.QColor('red')))
-    #         #
-    #         # self.current_running_item.signals.finished.disconnect(self.run_next_item)
-    #         # del self.current_running_item
-    #         # # self.run_thread.terminate()
-    #
-    #     self.current_item_index += 1
-    #     self.ui.progressBar.setValue(self.current_item_index / len(self.df.index))
-    #     if self.current_item_index == len(self.df.index):
-    #         self.ui.progressBar.setValue(100)
-    #         self.ui.btnStart.setEnabled(True)
-    #         self.ui.btnDelete.setEnabled(True)
-    #         QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
-    #         return
-    #
-    #     r = self.df.iloc[self.current_item_index]
-    #     m = globals()[r['module']]
-    #
-    #     module_path = os.path.abspath(m.__file__)
-    #
-    #     # batch_class = m.Batch
-    #     # # assert issubclass(batch_class, BatchRunInterface)
-    #     # if not hasattr(self, 'thread_pool'):
-    #     #     self.thread_pool = QtCore.QThreadPool()
-    #     #     # self.thread_pool.setMaxThreadCount(30)
-    #     # self.current_running_item = batch_class()
-    #     # # assert isinstance(self.current_running_item, QtCore.QObject)
-    #     #
-    #     # # self.run_thread = QtCore.QThread()
-    #     # # self.current_running_item.moveToThread(self.run_thread)
-    #     #
-    #     # self.current_running_item.signals.finished.connect(self.run_next_item)
-    #
-    #     input_params = r['input_params'].item()
-    #     if type(r['input_workEnv']) is uuid.UUID:
-    #         input_workEnv = self.df.loc[self.df['uuid'] == r['input_workEnv']]['output_workEnv']
-    #     else:
-    #         input_workEnv = r['input_workEnv']
-    #
-    #     # self.q = Queue()
-    #     # self.current_running_item.set_inputs(input_workEnv, input_params=r['input_params'].item())
-    #     process = QtCore.QProcess()
-    #     process.readyReadStandardOutput.connect(partial(self.print_qprocess_std_out, process))
-    #     process.finished.connect(self.run_next_item)
-    #
-    #     self.ui.listwBatch.item(self.current_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
-    #     sh_file = self.batch_path + '/' + 'run.sh'
-    #     with open(sh_file, 'w') as sf:
-    #         sf.write('export PATH="/share/software/anaconda3/bin:$PATH";'
-    #                   'source activate compiled_opencv_with_cuda;'
-    #                   'export PYTHONPATH=/home/kushal/CaImAn-master/;'
-    #                   'which python')
-    #     process.start(sh_file)
-    #                   # 'python ' + module_path + ' ' + str(r['uuid']))
-    #     # process.start('python ' + module_path + ' ' + str(r['uuid']))
-    #     # process.start('which python')
-    #     # process.start('#!/bin/bash;printenv;python ' + module_path + ' ' + str(r['uuid']))
-    #
-    #     # print(module_path)
-    #     # self.current_running_item.start()
-    #     # self.thread_pool.start(self.current_running_item)
-    #     # self.current_running_item.process(input_workEnv=input_workEnv, input_params=r['input_params'].item())
-
     def print_qprocess_std_out(self, std_out):
         self.current_std_out.append((str(std_out.readAllStandardOutput())))
         self.ui.labelStdOut.setText('\n'.join(self.current_std_out))
 
-    def add_item(self, module, input_workEnv, input_params, name='', meta=''):
+    def add_item(self, module, input_workEnv, input_params, name='', info=''):
         """
         :param  module:         The module to run, based on common.BatchRunInterface.
         :type   module:         str
@@ -373,13 +282,13 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         pickle.dump(input_params, open(self.batch_path + '/' + str(UUID) + '.params', 'wb'), protocol=4)
 
         input_params = np.array(input_params, dtype=object)
-        meta = np.array(meta, dtype=object)
+        meta = np.array(info, dtype=object)
 
         self.df = self.df.append({'module': module,
                                   'name': name,
                                   'input_item': None,
                                   'input_params': input_params,
-                                  'meta': meta,
+                                  'info': info,
                                   'uuid': UUID,
                                   'output': None,
                                   }, ignore_index=True)
