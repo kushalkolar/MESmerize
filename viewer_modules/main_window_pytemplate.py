@@ -149,6 +149,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuView.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.actionConsole.toggled['bool'].connect(self.dockConsole.setVisible)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -162,6 +163,7 @@ class Ui_MainWindow(object):
         self.menuCustom_Modules.setTitle(_translate("MainWindow", "Custom Modules"))
         self.menuImage.setTitle(_translate("MainWindow", "Image"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
+        self.dockConsole.setWindowTitle(_translate("MainWindow", "Console: viewer"))
         self.actionOpen_work_environment.setText(_translate("MainWindow", "Open work environment"))
         self.actionSave_work_environment.setText(_translate("MainWindow", "Save work environment"))
         self.actionLoad_images.setText(_translate("MainWindow", "Load images"))

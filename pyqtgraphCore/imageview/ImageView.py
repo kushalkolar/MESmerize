@@ -270,6 +270,14 @@ class ImageView(QtWidgets.QWidget):
         # self.ui.btnShowQuilt.clicked.connect(self.drawStrides)
         # self.ui.btnShowQuilt.clicked.connect(self.removeStrides)
 
+    @property
+    def status_bar(self):
+        return self._status_bar
+
+    @status_bar.setter
+    def status_bar(self, statusBar: QtWidgets.QStatusBar):
+        self._status_bar = statusBar
+
     # Called from __main__ when btnSave in ConfigWindow is clicked.
     def update_from_config(self):
         self.ui.listwROIDefs.clear()

@@ -99,7 +99,6 @@ class ViewerInterface:
         if self.viewer_ref.workEnv is not None:
             self.viewer_ref.workEnv.saved = False
 
-
 # class BatchRunSignals(QtCore.QObject):
 #     sigFinished = QtCore.pyqtSignal()
 #

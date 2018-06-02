@@ -18,6 +18,7 @@ from MesmerizeCore.packager import viewerWorkEnv
 import os
 import traceback
 
+
 class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_ref):
         ViewerInterface.__init__(self,  viewer_ref)
@@ -61,15 +62,14 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             return
 
         try:
+            self.viewer_ref.status_bar.showMessage('Please wait, this may take a few minutes...')
             self.viewer_ref.workEnv = viewerWorkEnv.from_tiff(path=tiff_path,
                                                               method=method,
                                                               meta_path=self.ui.labelFileMeta.text())
             self.VIEWER_update_workEnv()
             self.VIEWER_enable_ui(True)
-
+            self.viewer_ref.status_bar.showMessage('File loaded into work environment!')
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
+            self.viewer_ref.status_bar.clearMessage()
             return
-
-
-

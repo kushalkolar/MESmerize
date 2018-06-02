@@ -92,7 +92,7 @@ def run(batch_dir, UUID, n_processes):
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
     except Exception:
-        output.update({'status': 0, 'error_msg': traceback.format_exc()})
+        output.update({'status': 0, 'output_info': traceback.format_exc()})
 
     dview.terminate()
     json.dump(output, open(file_path + '.out', 'w'))

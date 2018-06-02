@@ -173,7 +173,7 @@ def run(batch_dir, UUID, n_processes):
         output.update({'output': filename[:-5], 'status': 1})
 
     except Exception as e:
-        output.update({'status': 0, 'error_msg': str(e)})
+        output.update({'status': 0, 'output_info': str(e)})
 
     dview.terminate()
 

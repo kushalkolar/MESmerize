@@ -57,8 +57,8 @@
     <addaction name="menuCaImAn_toolbox"/>
     <addaction name="actionROI_Manager"/>
     <addaction name="actionStimulus_Mapping"/>
-    <addaction name="actionStandard_tools"/>
     <addaction name="actionManual_motion_correction"/>
+    <addaction name="separator"/>
     <addaction name="actionBatch_Manager"/>
     <addaction name="separator"/>
     <addaction name="actionRun_script"/>
