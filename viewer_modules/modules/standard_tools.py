@@ -52,24 +52,27 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             self.viewer_ref.workEnv.imgdata.seq = self.viewer_ref.workEnv.imgdata[point_l[1]:point_r[1], point_l[0]:point_r[0], :]
             self.VIEWER_update_workEnv()
 
-    def _resize_fast(self, factor):
-        self.resize_gui.deleteLater()
-        try:
-            self.resize_gui = None
-        except Exception as e:
-            print(e)
+    # def _resize_fast(self, factor):
+    #     self.resize_gui.deleteLater()
+    #     try:
+    #         self.resize_gui = None
+    #     except Exception as e:
+    #         print(e)
+    #
+    #     template = transform.rescale(self.viewer_ref.workEnv.imgdata.seq[:, :, :2], factor)
+    #     r = np.zeros((template.shape[0],
+    #                   template.shape[1],
+    #                   self.viewer_ref.workEnv.imgdata.seq.shape[2]),
+    #                  dtype=self.viewer_ref.workEnv.imgdata.seq.dtype)
+    #
+    #     for i in range(0, self.viewer_ref.workEnv.imgdata.seq[2]):
+    #         r[:, :, i] = transform.rescale(self.viewer_ref.workEnv.imgdata.seq[:, :, i], factor, preserve_range=True)
+    #
+    #     self.viewer_ref.workEnv.imgdata.seq = r
+    #     self.VIEWER_update_workEnv()
 
-        template = transform.rescale(self.viewer_ref.workEnv.imgdata.seq[:, :, :2], factor)
-        r = np.zeros((template.shape[0], template.shape[1], self.viewer_ref.workEnv.imgdata.seq.shape[2]), dtype=self.viewer_ref.workEnv.imgdata.seq.dtype)
-
-        for i in range(0, self.viewer_ref.workEnv.imgdata.seq[2]):
-            r[:, :, i] = transform.rescale(self.viewer_ref.workEnv.imgdata.seq[:, :, i], factor, preserve_range=True)
-
-        self.viewer_ref.workEnv.imgdata.seq = r
-        self.VIEWER_update_workEnv()
-
-    def reset_scale(self):
-        self.VIEWER_update_workEnv()
+    # def reset_scale(self):
+    #     self.VIEWER_update_workEnv()
 
     def live_plot(self):
         pass
@@ -90,7 +93,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
     def measure_tool(self, ev):
         if ev and self.measure_line is None:
-            self.viewer_ref.statusTip()
             self.viewer_ref.scene.sigMouseClicked.connect(self.draw_measure_line)
 
         elif ev is False and self.measure_line is not None:

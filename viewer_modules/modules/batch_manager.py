@@ -72,7 +72,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
         self.ui.scrollAreaStdOut.setStyleSheet('background-color: #000000')
-        self.ui.labelStdOut.setStyleSheet('color: #FFFFFF')
+        self.ui.textBrowserStdOut.setTextBackgroundColor(QtGui.QColor(131926))
 
         self.ui.scrollAreaStdOut.hide()
         self.resize(1200, 650)
@@ -110,8 +110,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
         output = self.get_batch_item_output(UUID)
 
-        self.ui.labelOutputInfo.setText('')
-
         if output['status'] == 1:
             m.output(self.batch_path, UUID, self.viewer_ref)
 
@@ -122,19 +120,17 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         meta = row['info'].item().item()
         info = "\n".join([": ".join([key, str(val)]) for key, val in meta.items()])
 
-        self.ui.labelMeta_info.setText(str(UUID) + '\n\n' + info)
+        self.ui.textBrowserItemInfo.setText(str(UUID) + '\n\n' + info)
 
         output = self.get_batch_item_output(UUID)
 
-        self.ui.labelOutputInfo.setText('')
+        self.ui.textBrowserOutputInfo.setText('')
 
         if output is None:
-            self.ui.labelOutputInfo.setText('Output file does not exist for selected item')
+            self.ui.textBrowserOutputInfo.setText('Output file does not exist for selected item')
             return
-        elif output['status'] == 0:
-            self.ui.labelOutputInfo.setText(output['error_msg'])
-        elif output['status'] == 1:
-            self.ui.labelOutputInfo.setText(output['output_info'])
+        else:
+            self.ui.textBrowserOutputInfo.setText(output['output_info'])
 
     def disable_ui_buttons(self, b):
         self.ui.btnStart.setDisabled(b)
@@ -247,7 +243,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
     def print_qprocess_std_out(self, std_out):
         self.current_std_out.append((str(std_out.readAllStandardOutput())))
-        self.ui.labelStdOut.setText('\n'.join(self.current_std_out))
+        self.ui.textBrowserStdOut.append('\n'.join(self.current_std_out))
 
     def add_item(self, module, input_workEnv, input_params, name='', info=''):
         """

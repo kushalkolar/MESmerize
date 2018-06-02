@@ -14,6 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from .main_window_pytemplate import *
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
+from pyqtgraphCore.imageview import ImageView
 from .modules import *
 from .modules.batch_manager import ModuleGUI as BatchModuleGUI
 from .modules.common import ViewerInterface
@@ -31,6 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.running_modules = []
 
+
         self.ui.actionMesfile.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
@@ -45,14 +47,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @viewer_reference.setter
     def viewer_reference(self, viewer_ref):
+        assert isinstance(viewer_ref, ImageView)
         self._viewer_ref = viewer_ref
 
-        self.ui.actionBatch_Manager.triggered.connect(self._viewer_ref.batch_manager.show)
-        self._viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
+        self._viewer_ref.status_bar = self.statusBar()
 
-        self.vi = ViewerInterface(viewer_ref)
-
-        self.ui.actionDump_Work_Environment.triggered.connect(self.vi.VIEWER_discard_workEnv)
+        self.initialize_menubar_triggers()
 
         ns = {'pd':         pd,
               'np':         np,
@@ -68,10 +68,10 @@ class MainWindow(QtWidgets.QMainWindow):
               "pandas as pd         \n" \
               "pickle as 'pickle    \n" \
               "tifffile as tifffile \n" \
-              "MesmerizeCore.packager as packager" \
-              "MesmerizeCore.DataTypes as DataTypes" \
-              "viewer as main.viewer     \n" \
-              "ViewerInterface as main.vi" \
+              "MesmerizeCore.packager as packager \n" \
+              "MesmerizeCore.DataTypes as DataTypes \n" \
+              "viewer as main.viewer_reference     \n" \
+              "ViewerInterface as main.vi \n" \
               "self as main         \n" \
               "call curr_tab() to return current tab widget\n" \
               "call addTab(<dataframe>, <title>, <filtLog>, <filtLogPandas>) to add a new tab\n"
@@ -81,7 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         cmd_history_file = configuration.sys_cfg_path + '/console_history/viewer.pik'
 
-        self.dockWidget.setWidget(ConsoleWidget(namespace=ns, text=txt,
+        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                  historyFile=cmd_history_file))
 
     def run_module(self, module_class):
@@ -101,3 +101,17 @@ class MainWindow(QtWidgets.QMainWindow):
             if hasattr(m, 'update_available_inputs'):
                 m.update_available_inputs()
 
+    def initialize_menubar_triggers(self):
+        self.ui.actionBatch_Manager.triggered.connect(self._viewer_ref.batch_manager.show)
+        self._viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
+
+        self.vi = ViewerInterface(self._viewer_ref)
+
+        self.ui.actionDump_Work_Environment.triggered.connect(self.vi.VIEWER_discard_workEnv)
+
+        self.image_menu = ImageMenu(self.vi)
+
+        self.ui.actionReset_list.triggered.connect(self.image_menu.reset_scale)
+        self.ui.actionMeasure.triggered.connect(self.image_menu.measure_tool)
+        self.ui.actionResize.triggered.connect(self.image_menu.resize)
+        self.ui.actionCrop.triggered.connect(self.image_menu.crop)
