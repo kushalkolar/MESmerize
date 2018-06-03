@@ -108,6 +108,10 @@ def run(batch_dir, UUID, n_processes):
             output.update({'output': filename[0][:-5], 'status': 1, 'output_info': 'inspect correlation & pnr'})
             json.dump(output, open(file_path + '.out', 'w'))
             dview.terminate()
+
+            for mf in glob(batch_dir + '/memmap_*'):
+                os.remove(mf)
+
             return
         # inspect the summary images and set the parameters
         # inspect_correlation_pnr(cn_filter, pnr)
@@ -194,6 +198,7 @@ def output(batch_dir, UUID, viewer_ref):
         question = QuestionBox()
         question.btnCP.clicked.connect(partial(output_corr_pnr, batch_dir, UUID, viewer_ref))
         question.btnCP.clicked.connect(partial(output_cnmfe, batch_dir, UUID, viewer_ref))
+
 
 def output_corr_pnr(batch_dir, UUID, viewer_ref):
     filename = batch_dir + '/' + str(UUID)

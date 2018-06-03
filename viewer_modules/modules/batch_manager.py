@@ -220,10 +220,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
                      'export PATH="' + configuration.sys_cfg['PATHS']['anaconda3'] + ':$PATH"\n'
                      'source activate ' + configuration.sys_cfg['BATCH']['anaconda_env'] + '\n'
                      'export PYTHONPATH="' + configuration.sys_cfg['PATHS']['caiman'] + '"\n'
-                     'python ' +
-                     module_path + ' ' +
-                     self.batch_path + ' ' +
-                     str(r['uuid']) + ' ' +
+                     'export MKL_NUM_THREADS=1\n' +
+                     'export OPENBLAS_NUM_THREADS=1\n'
+                     'python "' +
+                     module_path + '" "' +
+                     self.batch_path + '" "' +
+                     str(r['uuid']) + '" ' +
                      configuration.sys_cfg['HARDWARE']['n_processes'] +
                      '\n')
         st = os.stat(sh_file)

@@ -35,6 +35,7 @@ from analyser.stats_gui import StatsWindow
 from copy import deepcopy
 import weakref
 import viewer_modules.main_window
+from spyder.widgets.variableexplorer import objecteditor
 
 '''
 Main file to be called. The intent is that if no arguments are passed the standard desktop application loads.

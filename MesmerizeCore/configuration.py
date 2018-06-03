@@ -26,6 +26,7 @@ cfg = configparser.RawConfigParser(allow_no_value=True)
 cfg.optionxform = str
 
 sys_cfg = configparser.RawConfigParser(allow_no_value=True)
+sys_cfg.optionxform = str
 # sys_cfg.optionxform = str
 
 configpath = None
@@ -41,9 +42,10 @@ install_config_path = ''
 def write_new_sys_config():
     if not os.path.isdir(sys_cfg_path):
         os.makedirs(sys_cfg_path)
-    sys_cfg['HARDWARE'] = {'n_processes': str(int(cpu_count() / 2) - 1)}
+    sys_cfg['HARDWARE'] = {'n_processes': str(int(cpu_count() / 2) - 2)}
     sys_cfg['PATHS'] = {'caiman': '', 'anaconda3': ''}
     sys_cfg['BATCH'] = {'anaconda_env': ''}
+    sys_cfg['ENV'] = dict.fromkeys(['MKL_NUM_THREADS=1', 'OPENBLAS_NUM_THREADS=1'])
     write_sys_config()
 
 

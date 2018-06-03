@@ -40,6 +40,7 @@ class PreferencesGUI(QtWidgets.QWidget):
     def apply(self):
         configuration.sys_cfg['HARDWARE']['n_processes'] = str(self.ui.spinBoxCores.value())
         self.set_anaconda_env()
+        self.set_env_variables()
         configuration.write_sys_config()
 
     def choose_caiman_path(self):
@@ -74,6 +75,9 @@ class PreferencesGUI(QtWidgets.QWidget):
     def set_anaconda_env(self):
         configuration.sys_cfg['BATCH']['anaconda_env'] = self.ui.lineEditAnacondaEnvName.text()
 
+    def set_env_variables(self):
+        configuration.sys_cfg['ENV'] = dict.fromkeys(list(filter(None, self.ui.plainTextEditEnvironmentVariables.toPlainText().split('\n'))))
+
     def reload_config_file(self):
         configuration.open_sys_config()
         self.load_ui_from_config_file()
@@ -83,6 +87,7 @@ class PreferencesGUI(QtWidgets.QWidget):
         self.ui.lineEditAnacondaPath.setText(configuration.sys_cfg['PATHS']['anaconda3'])
         self.ui.lineEditAnacondaEnvName.setText(configuration.sys_cfg['BATCH']['anaconda_env'])
         self.ui.spinBoxCores.setValue(int(configuration.sys_cfg['HARDWARE']['n_processes']))
+        self.ui.plainTextEditEnvironmentVariables.setPlainText('\n'.join(configuration.sys_cfg.options('ENV')))
 
     def show(self):
         self.load_ui_from_config_file()

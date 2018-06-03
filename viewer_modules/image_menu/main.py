@@ -55,7 +55,8 @@ class ImageMenu:
             pr = (int(point_r.x()), int(point_r.y()))
             self.remove_crop_roi()
 
-            self.vi.viewer_ref.workEnv.imgdata.seq = self.vi.viewer_ref.workEnv.imgdata.seq[pl[1]:pr[1], pl[0]:pr[0], :]
+            seq = self.vi.viewer_ref.image[:, pl[1]:pr[1], pl[0]:pr[0]]
+            self.vi.viewer_ref.workEnv.imgdata.seq = seq.T
             self.vi.update_workEnv()
             self.vi.viewer_ref.status_bar_label.setText('Cropping completed!')
 
