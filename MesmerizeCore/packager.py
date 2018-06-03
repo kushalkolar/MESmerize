@@ -109,9 +109,8 @@ class viewerWorkEnv:
         imdata = ImgData(seq,
                          p['imdata']['meta'],
                          SampleID=p['imdata']['SampleID'],
-                         Genotype=p['imdata']['Genotype'],
                          stimMaps=p['imdata']['stimMaps'],
-                         isSubArray=p['imdata']['isSubArray'])
+                         )
 
         comments = p['imdata']['comments']
 
@@ -224,14 +223,14 @@ class viewerWorkEnv:
         else:
             raise ValueError("Must specify 'imread' or 'asarray' in method argument")
 
-        if meta_path == '':
-            meta = {}
-        elif meta_path.endswith('.json'):
+        if meta_path.endswith('.json'):
             jmd = json.load(open(meta_path, 'r'))
             if 'source' not in jmd.keys():
                 raise KeyError('Invalid meta data file. Json meta data file must have a "source" entry.')
             else:
                 meta = viewerWorkEnv._organize_meta(meta=jmd, origin=jmd['source'])
+        else:
+            meta = None
 
         imdata = ImgData(seq.T, meta)
         imdata.stimMaps = (csvMapPaths, 'csv')
@@ -244,12 +243,8 @@ class viewerWorkEnv:
     def _make_dict(self):
         # Dict that's later used for pickling
         d = {'SampleID':    self.imgdata.SampleID,
-             'Genotype':    self.imgdata.Genotype,
              'meta':        self.imgdata.meta,
              'stimMaps':    self.imgdata.stimMaps,
-             'isSubArray':  self.imgdata.isSubArray,
-             'isMotCor':    self.imgdata.isMotCor,
-             'isDenoised':  self.imgdata.isDenoised,
              'comments':    self.comments
              }
 
@@ -269,7 +264,7 @@ class viewerWorkEnv:
 
         return d
 
-    def to_pickle(self, dirPath, mc_params=None, filename=None, save_img_seq=True):
+    def to_pickle(self, dirPath, filename=None, save_img_seq=True):
         """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
         for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
@@ -288,8 +283,6 @@ class viewerWorkEnv:
         if self.isEmpty:
             print('Work environment is empty!')
             return
-        if mc_params is not None:
-            rigid_params, elas_params = mc_params
 
         if filename is None:
             fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
@@ -298,10 +291,7 @@ class viewerWorkEnv:
 
         imginfo = self._make_dict()
 
-        if mc_params is not None:
-            data = {'imdata': imginfo, 'rigid_params': rigid_params, 'elas_params': elas_params}
-        else:
-            data = {'imdata': imginfo}
+        data = {'imdata': imginfo}
         if save_img_seq:
             tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T)
         pickle.dump(data, open(fileName + '.pik', 'wb'), protocol=4)

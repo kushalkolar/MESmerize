@@ -19,7 +19,7 @@ from .pytemplates.mesfile_io_pytemplate import *
 
 class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_ref):
-        ViewerInterface.__init__(self,  viewer_ref)
+        vi = ViewerInterface(viewer_ref)
 
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
@@ -30,7 +30,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.btnStimMapGUI.clicked.connect(self.open_stim_map_gui)
 
     def load_mesfile(self):
-        if not self.VIEWER_discard_workEnv():
+        if not self.vi.discard_workEnv():
             return
 
         filelist = QtWidgets.QFileDialog.getOpenFileNames(self, 'Choose ONE mes file', '.', '(*.mes)')
@@ -65,16 +65,16 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         return
 
     def load_mesfile_selection(self, s):
-        if not self.VIEWER_discard_workEnv():
+        if not self.vi.discard_workEnv():
             return
         try:
-            self.viewer_ref.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split('//')[0])
+            self.vi.viewer_ref.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split('//')[0])
         except Exception as e:
             QtWidgets.QMessageBox.information(self, 'Error', 'Error opening the selected ' + \
                                           'image in the currently open mes file.\n' + str(e), QtWidgets.QMessageBox.Ok)
             return
-        self.VIEWER_update_workEnv()
-        self.VIEWER_enable_ui(True)
+        self.vi.update_workEnv()
+        self.vi.enable_ui(True)
 
     def open_stim_map_gui(self):
         pass

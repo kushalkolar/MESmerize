@@ -101,7 +101,7 @@ def run(batch_dir, UUID, n_processes):
 def output(batch_path, UUID, viewer_ref):
     vi = ViewerInterface(viewer_ref)
 
-    if not vi.VIEWER_discard_workEnv():
+    if not vi.discard_workEnv():
         return
 
     pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
@@ -110,8 +110,8 @@ def output(batch_path, UUID, viewer_ref):
     workEnv.imgdata.seq = tifffile.imread(tiff_path).T
     viewer_ref.workEnv = workEnv
 
-    vi.VIEWER_update_workEnv()
-    vi.VIEWER_enable_ui(True)
+    vi.update_workEnv()
+    vi.enable_ui(True)
 
 class BitDepthConverter:
     """

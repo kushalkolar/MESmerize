@@ -29,47 +29,47 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.ui.setupUi(self)
 
     def add_roi(self, load=None):
-        self.VIEWER_workEnv_changed()
+        self.workEnv_changed()
 
-        self.viewer_ref.workEnv.ROIList.append(ROI.PolyLineROI([[0,0], [10,10], [30,10]],
+        self.vi.viewer_ref.workEnv.ROIList.append(ROI.PolyLineROI([[0,0], [10,10], [30,10]],
                                                 closed=True, pos=[0,0], removable=True))
 
-        self.viewer_ref.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.cfg.options('ROI_DEFS'), '')
+        self.vi.viewer_ref.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.cfg.options('ROI_DEFS'), '')
 
-        curve = self.viewer_ref.ui.roiPlot.plot()
-        self.viewer_ref.workEnv.CurvesList.append(curve)
+        curve = self.vi.viewer_ref.ui.roiPlot.plot()
+        self.vi.viewer_ref.workEnv.CurvesList.append(curve)
 
-        self.viewer_ref.workEnv.CurvesList[-1].setZValue(len(self.workEnv.CurvesList))
+        self.vi.viewer_ref.workEnv.CurvesList[-1].setZValue(len(self.workEnv.CurvesList))
         # Just some plot initializations, these are these from the original pyqtgraph ImageView class
-        self.viewer_ref.ui.roiPlot.setMouseEnabled(True, True)
-        self.viewer_ref.ui.splitter.setSizes([self.height() * 0.6, self.height() * 0.4])
-        self.viewer_ref.ui.roiPlot.show()
+        self.vi.viewer_ref.ui.roiPlot.setMouseEnabled(True, True)
+        self.vi.viewer_ref.ui.splitter.setSizes([self.height() * 0.6, self.height() * 0.4])
+        self.vi.viewer_ref.ui.roiPlot.show()
 
         # Connect signals to the newly created ROI
-        self.viewer_ref.workEnv.ROIList[-1].sigRemoveRequested.connect(self.delROI)
-        self.viewer_ref.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
-        self.viewer_ref.workEnv.ROIList[-1].sigRegionChanged.connect(
+        self.vi.viewer_ref.workEnv.ROIList[-1].sigRemoveRequested.connect(self.delROI)
+        self.vi.viewer_ref.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
+        self.vi.viewer_ref.workEnv.ROIList[-1].sigRegionChanged.connect(
             self.updatePlot)  # This is how the curve is plotted to correspond to this ROI
-        self.viewer_ref.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
-        self.viewer_ref.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
-        self.viewer_ref.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
-        self.viewer_ref.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)
+        self.vi.viewer_ref.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
+        self.vi.viewer_ref.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
+        self.vi.viewer_ref.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
+        self.vi.viewer_ref.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)
 
         # Add the ROI to the scene so it can be seen
-        self.viewer_ref.view.addItem(self.workEnv.ROIList[-1])
+        self.vi.viewer_ref.view.addItem(self.workEnv.ROIList[-1])
 
         if load is not None:
-            self.viewer_ref.workEnv.ROIList[-1].setState(load)
+            self.vi.viewer_ref.workEnv.ROIList[-1].setState(load)
 
-        self.viewer_ref.ui.listwROIs.addItem(str(len(self.workEnv.ROIList) - 1))
+        self.vi.viewer_ref.ui.listwROIs.addItem(str(len(self.workEnv.ROIList) - 1))
         #        self.ROIlist.append(self.polyROI)
         #        d = self.ROItagDict.copy()
         #        self.ROItags.append(d)
         # Update the plot to include this ROI which was just added
-        self.viewer_ref.updatePlot(len(self.workEnv.ROIList) - 1)
-        self.viewer_ref.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList) - 1)
+        self.vi.viewer_ref.updatePlot(len(self.workEnv.ROIList) - 1)
+        self.vi.viewer_ref.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList) - 1)
         # So that ROI.tags is never = {}, which would result in NaN's
-        self.viewer_ref.setSelectedROI(len(self.workEnv.ROIList) - 1)
+        self.vi.viewer_ref.setSelectedROI(len(self.workEnv.ROIList) - 1)
 
     def add_roi_tag(self):
         pass

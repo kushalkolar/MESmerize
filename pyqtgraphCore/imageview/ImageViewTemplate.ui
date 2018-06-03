@@ -37,7 +37,7 @@
            <number>0</number>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="page_3">
            <layout class="QGridLayout" name="gridLayout_7">
@@ -286,7 +286,7 @@
              <x>0</x>
              <y>0</y>
              <width>329</width>
-             <height>101</height>
+             <height>97</height>
             </rect>
            </property>
            <attribute name="label">
@@ -517,8 +517,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>329</width>
-             <height>101</height>
+             <width>98</width>
+             <height>28</height>
             </rect>
            </property>
            <attribute name="label">
