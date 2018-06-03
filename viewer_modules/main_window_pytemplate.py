@@ -120,7 +120,6 @@ class Ui_MainWindow(object):
         self.menuModules.addSeparator()
         self.menuModules.addAction(self.actionBatch_Manager)
         self.menuModules.addSeparator()
-        self.menuModules.addAction(self.actionWork_Environment_Info)
         self.menuEdit.addAction(self.actionMeta_data)
         self.menuCustom_Modules.addAction(self.actionReload_list)
         self.menuCustom_Modules.addSeparator()
@@ -131,6 +130,8 @@ class Ui_MainWindow(object):
         self.menuImage.addAction(self.actionMeasure)
         self.menuImage.addSeparator()
         self.menuImage.addAction(self.actionChange_dtype)
+        self.menuView.addAction(self.actionWork_Environment_Info)
+        self.menuView.addSeparator()
         self.menuView.addAction(self.actionConsole)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
@@ -178,5 +179,5 @@ class Ui_MainWindow(object):
         self.actionMeasure.setText(_translate("MainWindow", "Measure"))
         self.actionStimulus_Mapping.setText(_translate("MainWindow", "Stimulus Mapping"))
         self.actionConsole.setText(_translate("MainWindow", "Console"))
-        self.actionWork_Environment_Info.setText(_translate("MainWindow", "Work Environment Info"))
+        self.actionWork_Environment_Info.setText(_translate("MainWindow", "Work Environment Editor"))
 

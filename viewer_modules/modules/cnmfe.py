@@ -40,7 +40,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         self.vi.viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
 
     def _make_params_dict(self):
-        if 'fps' not in self.vi.viewer_ref.workEnv.imgdata.meta.keys():
+        if self.vi.viewer_ref.workEnv.imgdata.meta['fps'] == 0:
             QtWidgets.QMessageBox.warning(self, 'No framerate for current image sequence!',
                                           'You must set a framerate for the current image sequence before you can '
                                           'continue!', QtWidgets.QMessageBox.Ok)

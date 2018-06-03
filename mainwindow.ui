@@ -39,6 +39,8 @@
     </property>
     <addaction name="actionProject_Configuration"/>
     <addaction name="actionPreferences"/>
+    <addaction name="separator"/>
+    <addaction name="actionConfig_editor"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -196,12 +198,17 @@
   </action>
   <action name="actionPreferences">
    <property name="text">
-    <string>Preferences</string>
+    <string>System Configuration</string>
    </property>
   </action>
   <action name="actionDataframe_Editor">
    <property name="text">
     <string>Dataframe Editor</string>
+   </property>
+  </action>
+  <action name="actionConfig_editor">
+   <property name="text">
+    <string>Config editor</string>
    </property>
   </action>
  </widget>

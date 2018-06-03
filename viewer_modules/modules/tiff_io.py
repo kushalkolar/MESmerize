@@ -61,7 +61,6 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             QtWidgets.QMessageBox.warning(self, 'No method selected!', 'You must select a method.')
             return
         self.vi.viewer_ref.status_bar_label.setText('Please wait, this may take a few minutes...')
-
         try:
             self.vi.viewer_ref.workEnv = viewerWorkEnv.from_tiff(path=tiff_path,
                                                               method=method,
