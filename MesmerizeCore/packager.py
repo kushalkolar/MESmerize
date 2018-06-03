@@ -293,7 +293,7 @@ class viewerWorkEnv:
 
         data = {'imdata': imginfo}
         if save_img_seq:
-            tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T)
+            tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T, bigtiff=True)
         pickle.dump(data, open(fileName + '.pik', 'wb'), protocol=4)
 
         self.saved = True
