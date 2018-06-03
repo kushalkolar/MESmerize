@@ -25,7 +25,7 @@ from pyqtgraphCore import LinearRegionItem
 
 class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_ref):
-        ViewerInterface.__init__(self,  viewer_ref)
+        self.vi = ViewerInterface(viewer_ref)
 
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
@@ -48,17 +48,17 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             return
         if len(self.overlapsV) > 0:
             for overlap in self.overlapsV:
-                self.viewer_ref.view.removeItem(overlap)
+                self.vi.viewer_ref.view.removeItem(overlap)
             for overlap in self.overlapsH:
-                self.viewer_ref.view.removeItem(overlap)
+                self.vi.viewer_ref.view.removeItem(overlap)
             self.overlapsV = []
             self.overlapsH = []
 
-        w = int(self.viewer_ref.view.addedItems[0].width())
+        w = int(self.vi.viewer_ref.view.addedItems[0].width())
         k = self.ui.sliderStrides.value()
 
 
-        h = int(self.viewer_ref.view.addedItems[0].height())
+        h = int(self.vi.viewer_ref.view.addedItems[0].height())
         j = self.ui.sliderStrides.value()
 
         val = int(self.ui.sliderOverlaps.value())
@@ -67,20 +67,20 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             linreg = LinearRegionItem(values=[i*k, i*k + val], brush=(255,255,255,80),
                                       movable=False, bounds=[i*k, i*k + val])
             self.overlapsV.append(linreg)
-            self.viewer_ref.view.addItem(linreg)
+            self.vi.viewer_ref.view.addItem(linreg)
 
         for i in range(1, int(h/j) + 1):
             linreg = LinearRegionItem(values=[i*j, i*j + val], brush=(255, 255, 255, 80),
                                       movable=False, bounds=[i*j, i*j + val],
                                       orientation=LinearRegionItem.Horizontal)
             self.overlapsH.append(linreg)
-            self.viewer_ref.view.addItem(linreg)
+            self.vi.viewer_ref.view.addItem(linreg)
 
     def remove_quilt(self):
         for o in self.overlapsV:
-            self.viewer_ref.view.removeItem(o)
+            self.vi.viewer_ref.view.removeItem(o)
         for o in self.overlapsH:
-            self.viewer_ref.view.removeItem(o)
+            self.vi.viewer_ref.view.removeItem(o)
         self.overlapsH = []
         self.overlapsV = []
 
@@ -103,9 +103,9 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
     def add_elas_corr_to_batch(self):
         d = self._make_params_dict()
 
-        self.viewer_ref.batch_manager.add_item(module='caiman_motion_correction',
+        self.vi.viewer_ref.batch_manager.add_item(module='caiman_motion_correction',
                                                name=self.ui.lineEditNameElastic.text(),
-                                               input_workEnv=self.viewer_ref.workEnv,
+                                               input_workEnv=self.vi.viewer_ref.workEnv,
                                                input_params=d,
                                                info=d)
 

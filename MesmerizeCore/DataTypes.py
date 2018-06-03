@@ -24,20 +24,21 @@ from PyQt5 import QtGui
 import pyqtgraphCore.functions as fn
 import csv
 from . import configuration
-from . misc_funcs import fix_fp_errors
+from .misc_funcs import fix_fp_errors
 
 
-class ImgData():
-    def __init__(self, seq, meta={}, SampleID=None, Genotype='untagged', stimMaps=None,
-                 isSubArray=False, isMotCor=False, isDenoised=False):
+class ImgData:
+    def __init__(self, seq, meta=None, SampleID=None, stimMaps=None):
         self.seq = seq
+        if meta is None:
+            meta = {'origin': 'unknown',
+                    'fps': 0,
+                    'date': 'unknown',
+                    'orig_meta': None}
+
         self.meta = meta.copy()
         self.SampleID = SampleID
-        self.Genotype = Genotype
         self._stimMaps = stimMaps
-        self.isSubArray = isSubArray
-        self.isMotCor = isMotCor
-        self.isDenoised = isDenoised
 
     @property
     def stimMaps(self, map_name=None):
@@ -80,7 +81,7 @@ class ImgData():
                 mes_meta = self.meta['orig_meta']
             except (KeyError, IndexError) as e:
                 QtGui.QMessageBox.warning(None, 'Stimulus Data not found!', 'Could not find the stimulus data in the '
-                                                                           'meta-data for this image.')
+                                                                            'meta-data for this image.')
                 self._stimMaps = {}
                 return
             for machine_channel in dm.keys():
@@ -94,7 +95,7 @@ class ImgData():
 
                     current_map = []
 
-                    for i in range(0, y.shape[1]-1):
+                    for i in range(0, y.shape[1] - 1):
                         # To convert negative zero to positive zero, and correct for floating point errors
                         voltage = str(fix_fp_errors(y[1][i]))
 
@@ -103,7 +104,7 @@ class ImgData():
                         if tstart_frame < 0:
                             tstart_frame = 0
 
-                        tend_frame = int(((y[0][i+1] * x) - firstFrameStartTime) / frameTimeLength)
+                        tend_frame = int(((y[0][i + 1] * x) - firstFrameStartTime) / frameTimeLength)
 
                         current_map.append([ch_dict['values'][voltage], (tstart_frame, tend_frame)])
 
@@ -111,11 +112,12 @@ class ImgData():
 
                 except (KeyError, IndexError) as e:
                     QtGui.QMessageBox.information(None, 'FYI: Missing channels in current image',
-                          'Voltage values not found for: "' + str(ch_dict['channel_name']) +\
-                          '" in <' + str(machine_channel) + '>.\n' + str(e), QtGui.QMessageBox.Ok)
+                                                  'Voltage values not found for: "' + str(ch_dict['channel_name']) + \
+                                                  '" in <' + str(machine_channel) + '>.\n' + str(e),
+                                                  QtGui.QMessageBox.Ok)
 
             return
-        
+
         elif origin == 'csv':
             # Oraganize stimulus maps from CSV files
             files = dm
@@ -132,15 +134,15 @@ class ImgData():
                             currentMap.append(row)
                 except IOError as e:
                     QtGui.QMessageBox.warning(None, 'Invalid Map file!',
-                          'IOError while reading the file.\n' + str(e))
+                                              'IOError while reading the file.\n' + str(e))
                     return
 
                 try:
                     rmap = currentMap[1:]
                 except IndexError as e:
                     QtGui.QMessageBox.warning(None, 'Invalid Map file!',
-                          'This does not appear to be a stimulus map file! ' +\
-                          'It is not formatted correctly..\n' + str(e))
+                                              'This does not appear to be a stimulus map file! ' + \
+                                              'It is not formatted correctly..\n' + str(e))
                     return
 
                 colors = {}
@@ -151,8 +153,8 @@ class ImgData():
                         i += 1
                 except (IndexError, UnboundLocalError) as e:
                     QtGui.QMessageBox.warning(None, 'Invalid Map file!',
-                          'This does not appear to be a stimulus map file! ' +\
-                          'It is not formatted correctly.\n' + str(e))
+                                              'This does not appear to be a stimulus map file! ' + \
+                                              'It is not formatted correctly.\n' + str(e))
                     return
 
                 try:
@@ -162,15 +164,15 @@ class ImgData():
                             rmap[r][2] = int(0)
                             continue
 
-                        if int(rmap[r][1]) == int(rmap[r-1][2]):
+                        if int(rmap[r][1]) == int(rmap[r - 1][2]):
                             rmap[r][1] = int(rmap[r][1]) + 1
 
-                        current_map.append([ [rmap[r][0], colors[rmap[r][0]] ],
-                                             (int(rmap[r][1]) * 24, int(rmap[r][2]) * 24)])
+                        current_map.append([[rmap[r][0], colors[rmap[r][0]]],
+                                            (int(rmap[r][1]) * 24, int(rmap[r][2]) * 24)])
                 except (IndexError, ValueError) as e:
                     QtGui.QMessageBox.warning(None, 'Invalid Map file!',
-                          'This does not appear to be a stimulus map file! ' + \
-                          'It is not formatted correctly..\n' + str(e))
+                                              'This does not appear to be a stimulus map file! ' + \
+                                              'It is not formatted correctly..\n' + str(e))
 
                 self._stimMaps[file.split('/')[-1].split('.csv')[0]] = current_map
 

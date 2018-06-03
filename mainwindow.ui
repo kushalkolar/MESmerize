@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>870</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -58,13 +58,15 @@
    </widget>
    <widget class="QMenu" name="menuDataFrame">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>DataFrame</string>
     </property>
     <addaction name="actionSave_child_as_root"/>
     <addaction name="actionUpdate_children_from_Root"/>
+    <addaction name="separator"/>
+    <addaction name="actionDataframe_Editor"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDataFrame"/>
@@ -109,6 +111,9 @@
    </property>
   </action>
   <action name="actionSave_child_as_root">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>New project from Child</string>
    </property>
@@ -192,6 +197,11 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionDataframe_Editor">
+   <property name="text">
+    <string>Dataframe Editor</string>
    </property>
   </action>
  </widget>

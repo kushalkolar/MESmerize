@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-from skimage import transform
+from skimage.transform import rescale
 import numpy as np
 from ..modules.common import ViewerInterface
 from functools import partial
@@ -51,36 +51,29 @@ class ResizeDialogBox(QtWidgets.QWidget):
         self.status_label = QtWidgets.QLabel()
         self.status_label.setText('')
         layout.addWidget(self.status_label)
-        self.btn.clicked.connect(partial(self.resize, self.spinBox.value() / 100))
+        self.btn.clicked.connect(partial(self.resize_img_seq, self.spinBox.value() / 100))
         self.setLayout(layout)
         self.setWindowTitle('Resize')
         self.frames_processed = 0
 
-    def resize(self, factor):
-        self.factor = factor
+    def resize_img_seq(self, factor):
         if self.vi.viewer_ref.workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Cannot resize', 'Your work environment is empty, nothing to resize!')
             self.hide()
             return
-        self.vi.viewer_ref.status_bar.showMessage('Resizing, please wait!')
+        self.vi.viewer_ref.status_bar_label.setText('Resizing, please wait...')
         n_processes = int(sys_cfg['HARDWARE']['n_processes'])
-
-        # pool = Pool(processes=n_processes)
-        # pool = QtCore.QThreadPool()
-        # pool.setMaxThreadCount(n_processes)
 
         seq = self.vi.viewer_ref.workEnv.imgdata.seq
         self.num_frames_to_process = seq.shape[2]
         self.frames_processed = 0
-
-        factor = 0.6
 
         resizer = ResizeObject(seq, factor, n_processes)
 
         resizer.signals.frame_processed.connect(self.increase_progress_bar)
         resizer.signals.result.connect(self.set_resized_array)
         resizer.signals.error.connect(self.show_error_message)
-        resizer.signals.finished.connect(lambda: self.vi.viewer_ref.status_bar.showMessage('Resize completed!'))
+        resizer.signals.finished.connect(lambda: self.vi.viewer_ref.status_bar_label.setText('Resize completed!'))
         resizer.signals.finished.connect(lambda: self.status_label.setText('Done!'))
         resizer.signals.finished.connect(lambda: self.progressBar.setValue(0))
 
@@ -92,17 +85,16 @@ class ResizeDialogBox(QtWidgets.QWidget):
     def increase_progress_bar(self):
         self.frames_processed += 1
         self.progressBar.setValue(int(self.frames_processed * 100 / self.num_frames_to_process))
-        print(self.frames_processed)
 
     @QtCore.pyqtSlot(np.ndarray)
     def set_resized_array(self, array):
         self.vi.viewer_ref.workEnv.imgdata.seq = array
-        self.vi.VIEWER_update_workEnv()
+        self.vi.update_workEnv()
 
     @QtCore.pyqtSlot(str)
     def show_error_message(self, error_msg):
         QtWidgets.QMessageBox.warning(self, 'Error', 'The following error occured while resizing:\n' + str(error_msg))
-        self.vi.viewer_ref.status_bar.clearMessage()
+        self.vi.viewer_ref.status_bar_label.clear()
 
 
 class Signals(QtCore.QObject):
@@ -126,16 +118,14 @@ class ResizeObject(QtCore.QRunnable):
         r = np.zeros((tmpl.shape[0], tmpl.shape[1], img.shape[2]), dtype=img.dtype)
 
         for i in range(0, img.shape[2]):
-            r[:, :, i] = transform.rescale(img[:, :, i], factor, preserve_range=True)
+            r[:, :, i] = rescale(img[:, :, i], factor, preserve_range=True)
             self.signals.frame_processed.emit()
-            print(i)
 
         return r
 
     def run(self):
         try:
-            tmpl = transform.rescale(self.seq[:, :, :2], self.factor)
-            print(self.seq.shape)
+            tmpl = rescale(self.seq[:, :, :2], self.factor)
 
             template_factor = [tmpl, self.factor]
 

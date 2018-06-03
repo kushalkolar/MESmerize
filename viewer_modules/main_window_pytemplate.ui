@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -58,10 +58,11 @@
     <addaction name="actionROI_Manager"/>
     <addaction name="actionStimulus_Mapping"/>
     <addaction name="actionManual_motion_correction"/>
+    <addaction name="actionRun_script"/>
     <addaction name="separator"/>
     <addaction name="actionBatch_Manager"/>
     <addaction name="separator"/>
-    <addaction name="actionRun_script"/>
+    <addaction name="actionWork_Environment_Info"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -86,7 +87,6 @@
     <addaction name="separator"/>
     <addaction name="actionMeasure"/>
     <addaction name="separator"/>
-    <addaction name="actionView_info"/>
     <addaction name="actionChange_dtype"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -123,11 +123,6 @@
   <action name="actionSave_work_environment">
    <property name="text">
     <string>Save work environment</string>
-   </property>
-  </action>
-  <action name="actionLoad_images">
-   <property name="text">
-    <string>Load images</string>
    </property>
   </action>
   <action name="actionMesfile">
@@ -170,35 +165,12 @@
     <string>ROI Manager</string>
    </property>
   </action>
-  <action name="actionStandard_tools">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Standard tools</string>
-   </property>
-  </action>
   <action name="actionManual_motion_correction">
    <property name="checkable">
     <bool>false</bool>
    </property>
    <property name="text">
     <string>Manual motion correction</string>
-   </property>
-  </action>
-  <action name="actionReset_list">
-   <property name="text">
-    <string>Reset list</string>
-   </property>
-  </action>
-  <action name="actionUndo">
-   <property name="text">
-    <string>Undo</string>
-   </property>
-  </action>
-  <action name="actionRedo">
-   <property name="text">
-    <string>Redo</string>
    </property>
   </action>
   <action name="actionRun_script">
@@ -279,6 +251,11 @@
     <string>Console</string>
    </property>
   </action>
+  <action name="actionWork_Environment_Info">
+   <property name="text">
+    <string>Work Environment Info</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -289,8 +266,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>399</x>
-     <y>560</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>399</x>

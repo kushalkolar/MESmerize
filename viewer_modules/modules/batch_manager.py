@@ -36,12 +36,12 @@ from signal import SIGKILL
 import traceback
 
 
-class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
+class ModuleGUI(QtWidgets.QDockWidget):
     """GUI for the Batch Manager"""
     listwchanged = QtCore.pyqtSignal()
 
     def __init__(self, parent, viewer_ref):
-        ViewerInterface.__init__(self, viewer_ref)
+        self.vi = ViewerInterface(viewer_ref)
 
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
@@ -61,7 +61,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         listwmodel.rowsInserted.connect(self.listwchanged.emit)
         listwmodel.rowsRemoved.connect(self.listwchanged.emit)
 
-        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'meta', 'uuid'])
+        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid'])
 
         self.batch_path = configuration.projPath + '/batches' + '/' + \
                           datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
@@ -71,8 +71,9 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
-        self.ui.scrollAreaStdOut.setStyleSheet('background-color: #000000')
-        self.ui.textBrowserStdOut.setTextBackgroundColor(QtGui.QColor(131926))
+        self.ui.scrollAreaStdOut.setStyleSheet('background-color: #131926')
+        # self.ui.textBrowserStdOut.setTextBackgroundColor(QtGui.QColor(131926))
+        self.ui.textBrowserStdOut.setTextColor(QtGui.QColor('#b7b7b7'))
 
         self.ui.scrollAreaStdOut.hide()
         self.resize(1200, 650)
@@ -85,17 +86,19 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         r = self.df.loc[self.df['uuid'] == UUID]
 
         if r['input_item'].item() is None:
-            if not self.VIEWER_discard_workEnv():
+            if not self.vi.discard_workEnv():
                 return
             pikpath = self.batch_path + '/' + str(UUID) + '_workEnv.pik'
             tiffpath = self.batch_path + '/' + str(UUID) + '.tiff'
+            self.vi.viewer_ref.status_bar_label.setText('Please wait, loading input into work environment...')
             if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
-                self.viewer_ref.workEnv = viewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
-                self.VIEWER_update_workEnv()
-                self.VIEWER_enable_ui(True)
+                self.vi.viewer_ref.workEnv = viewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
+                self.vi.update_workEnv()
+                self.vi.enable_ui(True)
             else:
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
                                               'The input files do not exist for this item.')
+                self.vi.viewer_ref.status_bar_label.clear()
 
     def show_item_output(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
@@ -110,14 +113,17 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
 
         output = self.get_batch_item_output(UUID)
 
+        if output is None:
+            return
+
         if output['status'] == 1:
-            m.output(self.batch_path, UUID, self.viewer_ref)
+            m.output(self.batch_path, UUID, self.vi.viewer_ref)
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""
         UUID = s.data(3)
         row = self.df.loc[self.df['uuid'] == UUID]
-        meta = row['info'].item().item()
+        meta = row['info'].item()
         info = "\n".join([": ".join([key, str(val)]) for key, val in meta.items()])
 
         self.ui.textBrowserItemInfo.setText(str(UUID) + '\n\n' + info)
@@ -164,7 +170,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
                                               QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
 
-        self.VIEWER_discard_workEnv()
+        self.vi.discard_workEnv()
         self.current_batch_item_index = start_ix -1
         self.disable_ui_buttons(True)
         # self.run_next_item()
@@ -267,7 +273,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
                                                                               ' nothing to add to the batch!')
             return
-
+        self.vi.viewer_ref.status_bar_label.setText('Adding to batch, please wait...')
         UUID = uuid.uuid4()
 
         if module == 'CNMFE' or module == 'caiman_motion_correction':
@@ -296,6 +302,8 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         item.setData(3, UUID)
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
+
+        self.vi.viewer_ref.status_bar_label.setText('Added item to batch!')
 
     def del_item(self):
         """Delete an item from the batch and any corresponding dependents of hte item's output"""
