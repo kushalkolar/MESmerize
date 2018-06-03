@@ -117,7 +117,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
 
         if output['status'] == 1:
-            m.output(self.batch_path, UUID, self.vi.viewer_ref)
+            m.Output(self.batch_path, UUID, self.vi.viewer_ref)
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""
@@ -268,8 +268,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                 Depends on your subclass of BatchRunInterface.process() method
         :type   input_params:   dict
 
-        :param  meta:           A dictionary with any metadata information to display in the scroll area label.
-        :type   meta:           dict
+        :param  info:           A dictionary with any metadata information to display in the scroll area label.
+        :type   info:           dict
         """
         if input_workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
@@ -363,7 +363,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if path == '':
             return
         elif not os.path.isfile(dfpath):
-            QtWidgets.QMessageBox.Warning(self, 'Invalid batch dir',
+            QtWidgets.QMessageBox.warning(self, 'Invalid batch dir',
                                           'The selected directory does not appear to be a valid  batch directory '
                                           'since it does not contain a "dataframe.batch" file')
             return

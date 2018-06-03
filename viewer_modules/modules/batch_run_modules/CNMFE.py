@@ -175,6 +175,7 @@ def run(batch_dir, UUID, n_processes):
         pickle.dump(cnm.f, open(filename[:-5] + '_cnm-f.pikl', 'wb'), protocol=4)
         pickle.dump(idx_components, open(filename[:-5] + '_idx_components.pikl', 'wb'), protocol=4)
         pickle.dump(cnm.YrA, open(filename[:-5] + '_cnm-YrA.pikl', 'wb'), protocol=4)
+        pickle.dump(pnr, open(filename[0][:-5] + 'pnr.pikl', 'wb'), protocol=4)
         pickle.dump(cn_filter, open(filename[:-5] + '_cn_filter.pikl', 'wb'), protocol=4)
         pickle.dump(dims, open(filename[:-5] + '_dims.pikl', 'wb'), protocol=4)
         output.update({'output': filename[:-5], 'status': 1})
@@ -190,63 +191,65 @@ def run(batch_dir, UUID, n_processes):
     json.dump(output, open(file_path + '.out', 'w'))
 
 
-def output(batch_dir, UUID, viewer_ref):
-    filename = batch_dir + '/' + str(UUID)
-    if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
-        output_corr_pnr(batch_dir, UUID, viewer_ref)
-    else:
-        question = QuestionBox()
-        question.btnCP.clicked.connect(partial(output_corr_pnr, batch_dir, UUID, viewer_ref))
-        question.btnCP.clicked.connect(partial(output_cnmfe, batch_dir, UUID, viewer_ref))
+class Output(QtWidgets.QWidget):
+    def __init__(self, batch_dir, UUID, viewer_ref):
+        filename = batch_dir + '/' + str(UUID)
+        if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
+            self.output_corr_pnr(batch_dir, UUID, viewer_ref)
+        else:
+            QtWidgets.QWidget.__init__(self)
+            self.setWindowTitle('Show Correlation & PNR image or CNMFE')
+            layout = QtWidgets.QVBoxLayout()
+
+            label = QtWidgets.QLabel()
+            label.setText('Would you like to look at the correlation & PNR image or view the CNMFE output?')
+            layout.addWidget(label)
+
+            self.btnCP = QtWidgets.QPushButton()
+            self.btnCP.setText('Corr PNR Img')
+            self.btnCP.clicked.connect(self.deleteLater)
+            layout.addWidget(self.btnCP)
+
+            self.btnCNMFE = QtWidgets.QPushButton()
+            self.btnCNMFE.setText('CNMFE')
+            self.btnCNMFE.clicked.connect(self.deleteLater)
+
+            layout.addWidget(self.btnCNMFE)
+
+            self.setLayout(layout)
+
+            self.btnCP.clicked.connect(partial(self.output_corr_pnr, batch_dir, UUID, viewer_ref))
+            self.btnCP.clicked.connect(partial(self.output_cnmfe, batch_dir, UUID, viewer_ref))
+            self.show()
+
+    def output_corr_pnr(self, batch_dir, UUID, viewer_ref):
+        filename = batch_dir + '/' + str(UUID)
+
+        cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+        pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+        inspect_correlation_pnr(cn_filter, pnr)
+
+    def output_cnmfe(self, batch_dir, UUID, viewer_ref):
+        filename = batch_dir + '/' + str(UUID)
+
+        Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
+        cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
+        cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
+        cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
+        cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+        idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
+        cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+        cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+        dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
+        cm.utils.visualization.view_patches_bar(Yr, cnmA[:, idx_components], cnmC[idx_components], cnmb, cnm_f,
+                                                dims[0], dims[1], YrA=cnmYrA[idx_components], img=cn_filter)
 
 
-def output_corr_pnr(batch_dir, UUID, viewer_ref):
-    filename = batch_dir + '/' + str(UUID)
-
-    cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-    pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
-    inspect_correlation_pnr(cn_filter, pnr)
+# class QuestionBox(QtWidgets.QWidget):
+#     def __init__(self):
+#         super(QuestionBox, self).__init__()
 
 
-def output_cnmfe(batch_dir, UUID, viewer_ref):
-    filename = batch_dir + '/' + str(UUID)
-
-    Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
-    cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
-    cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-    cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
-    cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-    idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
-    cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-    cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-    dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
-    cm.utils.visualization.view_patches_bar(Yr, cnmA[:, idx_components], cnmC[idx_components], cnmb, cnm_f,
-                                            dims[0], dims[1], YrA=cnmYrA[idx_components], img=cn_filter)
-
-
-class QuestionBox(QtWidgets.QWidget):
-    def __init__(self):
-        super(QuestionBox, self).__init__()
-
-        self.setWindowTitle('Show Correlation & PNR image or CNMFE')
-        layout = QtWidgets.QVBoxLayout()
-
-        label = QtWidgets.QLabel()
-        label.setText('Would you like to look at the correlation & PNR image or view the CNMFE output?')
-        layout.addWidget(label)
-
-        self.btnCP = QtWidgets.QPushButton()
-        self.btnCP.setText('Corr PNR Img')
-        self.btnCP.clicked.connect(self.deleteLater)
-        layout.addWidget(self.btnCP)
-
-        self.btnCNMFE = QtWidgets.QPushButton()
-        self.btnCNMFE.setText('CNMFE')
-        self.btnCNMFE.clicked.connect(self.deleteLater)
-
-        layout.addWidget(self.btnCNMFE)
-
-        self.setLayout(layout)
 
 if len(sys.argv) > 1:
     run(sys.argv[1], sys.argv[2], sys.argv[3])

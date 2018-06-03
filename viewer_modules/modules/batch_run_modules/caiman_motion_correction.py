@@ -22,7 +22,6 @@ try:
     cv2.setNumThreads(1)
 except:
     print('Open CV is naturally single threaded')
-
 import caiman as cm
 import numpy as np
 import os
@@ -32,6 +31,7 @@ from caiman.motion_correction import MotionCorrect
 import tifffile
 import traceback
 import numba
+from glob import glob
 
 if not len(sys.argv) > 1:
     from ..common import ViewerInterface
@@ -88,30 +88,34 @@ def run(batch_dir, UUID, n_processes):
             m_els -= np.nanmin(m_els)
             m_els = m_els.astype(np.uint8, copy=False)
 
-        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els)
+        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True)
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
+    for mf in glob(batch_dir + UUID +'*.mmap'):
+        os.remove(mf)
+
     dview.terminate()
     json.dump(output, open(file_path + '.out', 'w'))
 
 
-def output(batch_path, UUID, viewer_ref):
-    vi = ViewerInterface(viewer_ref)
+class Output:
+    def __init__(self, batch_path, UUID, viewer_ref):
+        vi = ViewerInterface(viewer_ref)
 
-    if not vi.discard_workEnv():
-        return
+        if not vi.discard_workEnv():
+            return
 
-    pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
-    workEnv = ViewerWorkEnv.from_pickle(pik_path)
-    tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
-    workEnv.imgdata.seq = tifffile.imread(tiff_path).T
-    viewer_ref.workEnv = workEnv
+        pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
+        workEnv = ViewerWorkEnv.from_pickle(pik_path)
+        tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
+        workEnv.imgdata.seq = tifffile.imread(tiff_path).T
+        viewer_ref.workEnv = workEnv
 
-    vi.update_workEnv()
-    vi.enable_ui(True)
+        vi.update_workEnv()
+        vi.enable_ui(True)
 
 class BitDepthConverter:
     """
