@@ -27,7 +27,7 @@ class PreferencesGUI(QtWidgets.QWidget):
         self.ui.setupUi(self)
 
         self.ui.spinBoxCores.setValue(int(configuration.sys_cfg['HARDWARE']['n_processes']))
-        self.ui.spinBoxCores.setMaximum(int(cpu_count() / 2 - 1))
+        self.ui.spinBoxCores.setMaximum((cpu_count() - 4))
 
         self.ui.btnCaimanPath.clicked.connect(self.choose_caiman_path)
         self.ui.btnAnacondaPath.clicked.connect(self.choose_anaconda_dir_path)
