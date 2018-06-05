@@ -111,8 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 m.update_available_inputs()
 
     def initialize_menubar_triggers(self):
-        self.ui.actionBatch_Manager.triggered.connect(self._viewer_ref.batch_manager.show)
-        self._viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
+        # self.ui.actionBatch_Manager.triggered.connect(self._viewer_ref.batch_manager.show)
+        # self._viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
 
         self.vi = ViewerInterface(self._viewer_ref)
 

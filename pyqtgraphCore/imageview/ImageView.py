@@ -281,7 +281,7 @@ class ImageView(QtWidgets.QWidget):
     # Called from __main__ when btnSave in ConfigWindow is clicked.
     def update_from_config(self):
         self.ui.listwROIDefs.clear()
-        self.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in configuration.cfg.options('ROI_DEFS')])
+        # self.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in configuration.cfg.options('ROI_DEFS')])
         self.setSelectedROI()
 
     #Initialize ROI Plot
