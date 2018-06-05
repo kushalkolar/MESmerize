@@ -1525,7 +1525,8 @@ class ImageView(QtWidgets.QWidget):
                       images.
         ============= =========================================================
         """
-        self.ui.histogram.gradient.setColorMap(colormap)
+        # self.ui.histogram.gradient.setColorMap(colormap)
+        self.setPredefinedGradient('flame')
 
     @addGradientListToDocstring()
     def setPredefinedGradient(self, name):

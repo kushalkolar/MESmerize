@@ -79,6 +79,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.resize(1200, 650)
         self.ui.listwBatch.currentItemChanged.connect(self.show_item_info)
 
+        self.output_widgets = []
+
     def show_input(self):
         s = self.ui.listwBatch.currentItem()
         UUID = s.data(3)
@@ -117,7 +119,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
 
         if output['status'] == 1:
-            m.Output(self.batch_path, UUID, self.vi.viewer_ref)
+            self.output_widgets.append(m.Output(self.batch_path, UUID, self.vi.viewer_ref))
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""
