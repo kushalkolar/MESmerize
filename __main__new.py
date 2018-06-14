@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import sys
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-from MesmerizeCore import welcome_window
+import welcome_window
 
 
 if __name__ == '__main__':

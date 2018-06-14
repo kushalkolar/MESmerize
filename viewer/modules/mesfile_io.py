@@ -12,14 +12,14 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .common import ViewerInterface
-from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
+from ..core.viewer_work_environment import ViewerWorkEnv
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.mesfile_io_pytemplate import *
 
 
-class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
-    def __init__(self, parent, viewer_ref):
-        vi = ViewerInterface(viewer_ref)
+class ModuleGUI(QtWidgets.QDockWidget):
+    def __init__(self, parent, viewer_reference):
+        self.vi = ViewerInterface(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
@@ -68,7 +68,7 @@ class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
         if not self.vi.discard_workEnv():
             return
         try:
-            self.vi.viewer_ref.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split('//')[0])
+            self.vi.viewer.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split('//')[0])
         except Exception as e:
             QtWidgets.QMessageBox.information(self, 'Error', 'Error opening the selected ' + \
                                           'image in the currently open mes file.\n' + str(e), QtWidgets.QMessageBox.Ok)

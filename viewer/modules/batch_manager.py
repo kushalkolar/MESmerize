@@ -12,8 +12,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .common import ViewerInterface
-from MesmerizeCore.packager import viewerWorkEnv
-from MesmerizeCore import configuration
+from ..core.viewer_work_environment import ViewerWorkEnv
+from settings import configuration
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.batch_manager_pytemplate import *
 import json
@@ -40,8 +40,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
     """GUI for the Batch Manager"""
     listwchanged = QtCore.pyqtSignal()
 
-    def __init__(self, parent, viewer_ref):
-        self.vi = ViewerInterface(viewer_ref)
+    def __init__(self, parent, viewer_reference):
+        self.vi = ViewerInterface(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
@@ -51,6 +51,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.btnStart.clicked.connect(self.process_batch)
         self.ui.btnStartAtSelection.clicked.connect(lambda: self.process_batch(start_ix=self.ui.listwBatch.indexFromItem(self.ui.listwBatch.currentItem()).row()))
+
         self.ui.btnAbort.clicked.connect(self._terminate_qprocess)
         self.ui.btnAbort.setDisabled(True)
         self.ui.btnOpen.clicked.connect(self.open_batch)
@@ -63,7 +64,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid'])
 
-        self.batch_path = configuration.projPath + '/batches' + '/' + \
+        self.batch_path = configuration.proj_path + '/batches' + '/' + \
                           datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         os.makedirs(self.batch_path)
 
@@ -81,7 +82,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.output_widgets = []
 
-    def show_input(self):
+    def show_input(self, viewer_reference):
+        # TODO: This should ask which viewer to display output in if more than 2 are open
         s = self.ui.listwBatch.currentItem()
         UUID = s.data(3)
 
@@ -92,15 +94,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 return
             pikpath = self.batch_path + '/' + str(UUID) + '_workEnv.pik'
             tiffpath = self.batch_path + '/' + str(UUID) + '.tiff'
-            self.vi.viewer_ref.status_bar_label.setText('Please wait, loading input into work environment...')
+            self.vi.viewer.status_bar_label.setText('Please wait, loading input into work environment...')
             if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
-                self.vi.viewer_ref.workEnv = viewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
+                self.vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
                 self.vi.update_workEnv()
                 self.vi.enable_ui(True)
             else:
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
                                               'The input files do not exist for this item.')
-                self.vi.viewer_ref.status_bar_label.clear()
+                self.vi.viewer.status_bar_label.clear()
 
     def show_item_output(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
@@ -119,7 +121,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
 
         if output['status'] == 1:
-            self.output_widgets.append(m.Output(self.batch_path, UUID, self.vi.viewer_ref))
+            self.output_widgets.append(m.Output(self.batch_path, UUID, self.vi.viewer))
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""
@@ -147,6 +149,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnAbort.setEnabled(b)
 
     def process_batch(self, start_ix=0):
+        # TODO: This should ask if user wants to clear all viewer work environments before running the batch
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
 
         if len(self.df.index) == 0:
@@ -255,10 +258,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.current_std_out.append((str(std_out.readAllStandardOutput())))
         self.ui.textBrowserStdOut.append('\n'.join(self.current_std_out))
 
-    def add_item(self, module, input_workEnv, input_params, name='', info=''):
+    def add_item(self, module, viewer_reference, input_workEnv, input_params, name='', info=''):
+        # TODO: This should utilize the work environment from the viewer_reference that is passed
+
         """
         :param  module:         The module to run, based on common.BatchRunInterface.
         :type   module:         str
+
+        :param viewer_reference:ViewerWorkEnv to communicate with
+        :type  viewer_reference:
 
         :param  name:           A name for the batch item
         :type   name:           str
@@ -277,7 +285,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
                                                                               ' nothing to add to the batch!')
             return
-        self.vi.viewer_ref.status_bar_label.setText('Adding to batch, please wait...')
+        self.vi.viewer.status_bar_label.setText('Adding to batch, please wait...')
         UUID = uuid.uuid4()
 
         if module == 'CNMFE' or module == 'caiman_motion_correction':
@@ -307,7 +315,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
-        self.vi.viewer_ref.status_bar_label.setText('Added item to batch!')
+        self.vi.viewer.status_bar_label.setText('Added item to batch!')
 
     def del_item(self):
         """Delete an item from the batch and any corresponding dependents of hte item's output"""

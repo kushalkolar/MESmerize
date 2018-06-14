@@ -19,7 +19,7 @@ sys.path.append('..')
 if __name__ == '__main__':
     from ProjBrowser_pytemplate import *
 else:
-    from .ProjBrowser_pytemplate import *
+    from .project_browser_pytemplate import *
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.graphicsItems.InfiniteLine import *
 import pyqtgraphCore
@@ -32,7 +32,7 @@ import pandas as pd
 from itertools import chain
 import ast
 from functools import partial
-from . import configuration
+from settings import configuration
 import builtins
 from pyqtgraphCore import ImageView
 import weakref
@@ -52,7 +52,7 @@ class TabPage(QtWidgets.QWidget):
         #                 configuration.cfg.options('EXCLUDE'),
         #                 configuration.special)
         self.ui.setupUi(self, self._df,
-                        configuration.cfg.options('EXCLUDE'),
+                        configuration.proj_cfg.options('EXCLUDE'),
                         configuration.special)
         
         self.ui.BtnCopyFilters.clicked.connect(self._copyFilterClipboard)
@@ -66,8 +66,8 @@ class TabPage(QtWidgets.QWidget):
     @filtLogPandas.setter
     def filtLogPandas(self, fl):
         self._filtLogPandas = fl
-        configuration.cfg.set('CHILD_DFS', self.tabTitle, self._filtLogPandas)
-        configuration.saveConfig()
+        configuration.proj_cfg.set('CHILD_DFS', self.tabTitle, self._filtLogPandas)
+        configuration.save_proj_config()
 
     @property
     def df(self):
@@ -105,9 +105,9 @@ class TabPage(QtWidgets.QWidget):
             col.setEnabled(True)
             if col.objectName() == 'SampleID':
                 col.itemDoubleClicked.connect(self._viewer)
-            if col.objectName() in configuration.cfg.options('STIM_DEFS'):
+            if col.objectName() in configuration.proj_cfg.options('STIM_DEFS'):
                 self._listExtract(col)
-            elif col.objectName() in configuration.cfg.options('ROI_DEFS'):
+            elif col.objectName() in configuration.proj_cfg.options('ROI_DEFS'):
                 self._strExtract(col)
             elif type(el) == str:
                 self._strExtract(col)
@@ -156,7 +156,7 @@ class TabPage(QtWidgets.QWidget):
         pass
 
     def _copyFilterClipboard(self):
-        cb = QtGui.QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard )
         cb.setText(self.filtLogPandas, mode=cb.Clipboard)
         
@@ -166,17 +166,17 @@ class TabPage(QtWidgets.QWidget):
 
     def _viewer(self, ev):
         row = self.df[self.df['SampleID'] == ev.text()].iloc[0]
-        pikPath = configuration.projPath + row['ImgInfoPath']
-        tiffPath = configuration.projPath + row['ImgPath']
-        viewer = configuration.viewer_ref
-        viewer().updateWorkEnv([pikPath, tiffPath], origin='pandas')
-        viewer().enableUI(False)
-        viewer().ui.splitter.setEnabled(True)
-        viewer().ui.tabROIs.setEnabled(True)
+        pikPath = configuration.proj_path + row['ImgInfoPath']
+        tiffPath = configuration.proj_path + row['ImgPath']
+        # viewer = configuration.viewer_ref
+        # viewer().updateWorkEnv([pikPath, tiffPath], origin='pandas')
+        # viewer().enableUI(False)
+        # viewer().ui.splitter.setEnabled(True)
+        # viewer().ui.tabROIs.setEnabled(True)
         # viewer().ui.BtnSetROIDefs.setEnabled(False)
 
     def _saveSampleChanges(self):
-        if QtGui.QMessageBox.warning(self, 'Overwrite Sample data in DataFrame?', 'Are you sure you want to overwrite the ' +\
+        if QtWidgets.QMessageBox.warning(self, 'Overwrite Sample data in DataFrame?', 'Are you sure you want to overwrite the ' +\
                   'data for this SampleID in the root DataFrame?', QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
             return
         pass
@@ -206,15 +206,15 @@ class Window(QtWidgets.QWidget):
         builtins.tab_refs = {}
 
     def del_tab(self, n):
-        if QtGui.QMessageBox.question(self, 'Remove Tab?', 'Are you sure you want to delete this tab? '
+        if QtWidgets.QMessageBox.question(self, 'Remove Tab?', 'Are you sure you want to delete this tab? '
                                                        'Only the filter operations to get this child DataFrame will be '
                                                        'removed, your data is still in the Root DataFrame.',
                                       QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
             return
 
         title = self.tabs.widget(n).tabTitle
-        configuration.cfg.remove_option('CHILD_DFS', title)
-        configuration.saveConfig()
+        configuration.proj_cfg.remove_option('CHILD_DFS', title)
+        configuration.save_proj_config()
         self.tabs.removeTab(n)
 
     def addNewTab(self, df, tabTitle, filtLog, filtLogPandas):
@@ -252,7 +252,7 @@ class Window(QtWidgets.QWidget):
         # print(configuration.tab_refs.keys())
 
     def _name_exists(self, df, tabTitle, filtLog, filtLogPandas):
-        QtGui.QMessageBox.warning(self, 'DataFrame title already exists!',
+        QtWidgets.QMessageBox.warning(self, 'DataFrame title already exists!',
                                       'That name already exists in your project, choose a different name!')
         self.addNewTab(df, tabTitle, filtLog, filtLogPandas)
 
@@ -396,4 +396,4 @@ if __name__ == '__main__':
     
     import sys
     if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+        QtWidgets.QApplication.instance().exec_()

@@ -308,10 +308,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         cmd_history_file = configuration.sys_cfg_path + '/console_history/main.pik'
 
-        self.dockWidget.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile=cmd_history_file))
-
-        self.dockWidget.hide()
 
         if len(configuration.cfg.options('INCLUDE')) > 8:
             self.resize(1900,900)

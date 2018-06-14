@@ -14,12 +14,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from psutil import cpu_count
 from . import configuration
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-from .preferences_pytemplate import *
+from .pytemplates.system_config_pytemplate import *
 import os
 # configuration.n_processes = cpu_count() - 1
 
 
-class PreferencesGUI(QtWidgets.QWidget):
+class SystemConfigGUI(QtWidgets.QWidget):
     def __init__(self, parent=None, *args):
         QtWidgets.QWidget.__init__(self, parent, *args)
 
@@ -91,4 +91,4 @@ class PreferencesGUI(QtWidgets.QWidget):
 
     def show(self):
         self.load_ui_from_config_file()
-        super(PreferencesGUI, self).show()
+        super(SystemConfigGUI, self).show()
