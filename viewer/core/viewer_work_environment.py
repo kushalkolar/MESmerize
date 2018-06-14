@@ -16,20 +16,21 @@ import sys
 sys.path.append('..')
 if __name__ == '__main__':
     from DataTypes import ImgData
-    from FileInput import *
+    from mesfile import *
 else:
-    from .FileInput import *
+    from .mesfile import *
     from .DataTypes import ImgData
 import numpy as np
 import pickle
 import time
 import tifffile
 import os
-from . import configuration
+from settings import configuration
 from uuid import uuid4
 import json
 
-class viewerWorkEnv:
+
+class ViewerWorkEnv:
     def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file=''):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of

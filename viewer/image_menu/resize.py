@@ -17,7 +17,7 @@ import numpy as np
 from ..modules.common import ViewerInterface
 from functools import partial
 from multiprocessing.pool import ThreadPool as Pool
-from MesmerizeCore.configuration import sys_cfg
+from settings.configuration import sys_cfg
 import traceback
 
 

@@ -12,17 +12,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .common import ViewerInterface
-from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
+from ..core.viewer_work_environment import ViewerWorkEnv
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.cnmfe_pytemplate import *
 import json
 import numpy as np
 from .batch_manager import ModuleGUI as BatchModuleGui
-from MesmerizeCore import configuration
-from MesmerizeCore.packager import viewerWorkEnv
+from settings import configuration
 
 
-class ModuleGUI(ViewerInterface, QtWidgets.QDockWidget):
+class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_ref):
         self.vi = ViewerInterface(viewer_ref)
 

@@ -16,9 +16,8 @@ Widget used for displaying 2D or 3D data. Features:
   - ROI plotting
   - Image normalization through a variety of methods
 '''
-import os
-import numpy as np
 
+import os
 from ..Qt import QtCore, QtGui, QtWidgets
 
 # if USE_PYSIDE:
@@ -38,16 +37,15 @@ from .. import ptime as ptime
 from .. import debug as debug
 from ..SignalProxy import SignalProxy
 from .. import getConfigOption
-
 from pyqtgraph import plot as pgplot
 from multiprocessing import Process, Queue
 import numpy as np
 from MesmerizeCore import stimMapWidget
-from MesmerizeCore.packager import viewerWorkEnv
-from MesmerizeCore import configuration
+from viewer.core.viewer_work_environment import ViewerWorkEnv
+from settings import configuration
 from MesmerizeCore import misc_widgets
 import MesmerizeCore.Export
-from viewer_modules.modules.batch_manager import ModuleGUI as BatchModuleGUI
+from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 import time
 from functools import partial
 
@@ -136,15 +134,11 @@ class ImageView(QtWidgets.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.scene = self.ui.graphicsView.scene()
-
-        self.batch_manager = BatchModuleGUI(parent, self)
-        self.batch_manager.hide()
-
         # self.ui.btnResetScale.clicked.connect(self.resetImgScale)
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
         # don't exist for certain cases.
-        self.workEnv = viewerWorkEnv()
+        self.workEnv = ViewerWorkEnv()
         self.currBatch = None
 
         # Initialize list of bands that indicate stimulus times

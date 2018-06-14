@@ -17,8 +17,9 @@ import sys
 # from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
 # from MesmerizeCore import configuration
 # from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
-if not len(sys.argv) > 1:
-    from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+# if not len(sys.argv) > 1:
+#     from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
     # from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import json
 import caiman as cm

@@ -22,10 +22,10 @@ import pickle;
 import tifffile;
 import numpy as np;
 import pandas as pd;
-from MesmerizeCore import DataTypes
-from MesmerizeCore import packager
+from .core import DataTypes
+from .core.viewer_work_environment import ViewerWorkEnv
 import os
-from MesmerizeCore import configuration
+from settings import configuration
 from .image_menu.main import ImageMenu
 from spyder.widgets.variableexplorer import objecteditor
 import traceback
@@ -48,18 +48,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     @property
     def viewer_reference(self):
-        return self._viewer_ref
+        return self._viewer
 
     @viewer_reference.setter
-    def viewer_reference(self, viewer_ref):
-        assert isinstance(viewer_ref, ImageView)
-        self._viewer_ref = viewer_ref
+    def viewer_reference(self, viewer: ImageView):
+        self._viewer = viewer
 
         status_label = QtWidgets.QLabel()
         status_bar = self.statusBar()
         status_bar.addWidget(status_label)
 
-        self._viewer_ref.status_bar_label = status_label
+        self._viewer.status_bar_label = status_label
 
         self.initialize_menubar_triggers()
 
@@ -67,7 +66,7 @@ class MainWindow(QtWidgets.QMainWindow):
               'np':             np,
               'pickle':         pickle,
               'tifffile':       tifffile,
-              'packager':       packager,
+              'ViewerWorkEnv':       ViewerWorkEnv,
               'DataTypes':      DataTypes,
               'objecteditor':   objecteditor,
               'main':           self
@@ -101,7 +100,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 return
 
         # Else create instance and start running it
-        self.running_modules.append(module_class(self, self._viewer_ref))
+        self.running_modules.append(module_class(self, self._viewer))
 
         self.running_modules[-1].show()
 
@@ -111,10 +110,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 m.update_available_inputs()
 
     def initialize_menubar_triggers(self):
-        # self.ui.actionBatch_Manager.triggered.connect(self._viewer_ref.batch_manager.show)
-        # self._viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
+        if configuration.proj_path is None:
+            self.ui.actionBatch_Manager.setDisabled(True)
+        else:
+            self.ui.actionBatch_Manager.triggered.connect(self._viewer.batch_manager.show)
+            self._viewer.batch_manager.listwchanged.connect(self.update_available_inputs)
 
-        self.vi = ViewerInterface(self._viewer_ref)
+        self.vi = ViewerInterface(self._viewer)
 
         self.ui.actionDump_Work_Environment.triggered.connect(self.vi.discard_workEnv)
 
@@ -126,9 +128,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionCrop.triggered.connect(self.image_menu.crop)
 
     def open_workEnv_editor(self):
-        self.vi.viewer_ref.status_bar_label.setText('Please wait, loading editor interface...')
+        self.vi.viewer.status_bar_label.setText('Please wait, loading editor interface...')
         try:
-            changes = objecteditor.oedit(self.vi.viewer_ref.workEnv)
+            changes = objecteditor.oedit(self.vi.viewer.workEnv)
         except:
             QtWidgets.QMessageBox.warning(self, 'Unable to open work environment editor',
                                           'The following error occured while trying to open the work environment editor:'
@@ -137,7 +139,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if changes is not None:
             try:
-                self.vi.viewer_ref.workEnv = changes
+                self.vi.viewer.workEnv = changes
             except:
                 QtWidgets.QMessageBox.warning(self, 'Unable to apply changes',
                                               'The following error occured while trying to save changes to the work '
@@ -146,9 +148,9 @@ class MainWindow(QtWidgets.QMainWindow):
                                               '\n' + str(traceback.format_exc()))
                 return
         elif changes is None:
-            self.vi.viewer_ref.status_bar_label.setText('Work environment unchanged')
+            self.vi.viewer.status_bar_label.setText('Work environment unchanged')
             return
 
-        self.vi.viewer_ref.status_bar_label.setText('Your edits were successfully applied to the work environment!')
+        self.vi.viewer.status_bar_label.setText('Your edits were successfully applied to the work environment!')
 
         # You can even let the user save changes if they click "OK", and the function returns None if they cancel

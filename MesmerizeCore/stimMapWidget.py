@@ -20,7 +20,7 @@ if __name__ == '__main__':
     import configuration
 else:
     from .stimMap_one_row_pytemplate import *
-    from . import configuration
+    from settings import configuration
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
 
