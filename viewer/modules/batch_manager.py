@@ -34,6 +34,7 @@ from collections import deque
 import psutil
 from signal import SIGKILL
 import traceback
+from misc_widgets.list_widget_dialog import ListWidgetDialog
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -88,6 +89,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
         UUID = s.data(3)
 
         r = self.df.loc[self.df['uuid'] == UUID]
+
+        if len(configuration.window_manager.viewers) > 1:
+            lwd = ListWidgetDialog()
+            lwd.listWidget.addItems
 
         if r['input_item'].item() is None:
             if not self.vi.discard_workEnv():

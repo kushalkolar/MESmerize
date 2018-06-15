@@ -35,7 +35,7 @@ from glob import glob
 
 if not len(sys.argv) > 1:
     from ..common import ViewerInterface
-    from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
+    from ...core.viewer_work_environment import ViewerWorkEnv
 
 
 def run(batch_dir, UUID, n_processes):

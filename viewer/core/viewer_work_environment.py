@@ -198,7 +198,7 @@ class ViewerWorkEnv:
         assert isinstance(mesfile, MES)
         imgseq, raw_meta = mesfile.load_img(ref)
 
-        meta_data = viewerWorkEnv._organize_meta(raw_meta, 'mes')
+        meta_data = ViewerWorkEnv._organize_meta(raw_meta, 'mes')
         imdata = ImgData(imgseq, meta_data)
         imdata.stimMaps = (mesfileMaps, 'mesfile')
 
@@ -229,7 +229,7 @@ class ViewerWorkEnv:
             if 'source' not in jmd.keys():
                 raise KeyError('Invalid meta data file. Json meta data file must have a "source" entry.')
             else:
-                meta = viewerWorkEnv._organize_meta(meta=jmd, origin=jmd['source'])
+                meta = ViewerWorkEnv._organize_meta(meta=jmd, origin=jmd['source'])
         else:
             meta = None
 
@@ -254,7 +254,7 @@ class ViewerWorkEnv:
                 if self.ROIList[ix].tags[roi_def] == '':
                     self.ROIList[ix].tags[roi_def] = 'untagged'
 
-            for roi_def in configuration.cfg.options('ROI_DEFS'):
+            for roi_def in configuration.proj_cfg.options('ROI_DEFS'):
                 if roi_def not in self.ROIList[ix].tags.keys():
                     self.ROIList[ix].tags[roi_def] = 'untagged'
 
@@ -328,7 +328,7 @@ class ViewerWorkEnv:
         # for this simple task.
         new_stims = []
         if self.imgdata.stimMaps is None:
-            for stim_def in configuration.cfg.options('STIM_DEFS'):
+            for stim_def in configuration.proj_cfg.options('STIM_DEFS'):
                 stimMapsSet[stim_def] = ['untagged']
         else:
             for stimMap in self.imgdata.stimMaps:
@@ -339,18 +339,18 @@ class ViewerWorkEnv:
                     stimList.append(stim[0][0])
                 stimMapsSet[stimMap] = list(set(stimList))
 
-                for key in configuration.cfg.options('STIM_DEFS'):
+                for key in configuration.proj_cfg.options('STIM_DEFS'):
                     if key not in self.imgdata.stimMaps.keys():
                         stimMapsSet[key] = ['untagged']
 
                 for stim in stimMapsSet[stimMap]:
-                    if stim not in configuration.cfg['ALL_STIMS'].keys():
+                    if stim not in configuration.proj_cfg['ALL_STIMS'].keys():
                         new_stims.append(stim)
 
         # print(stimMapsSet)
 
-        configuration.cfg['ALL_STIMS'] = {**configuration.cfg['ALL_STIMS'], **dict.fromkeys(new_stims)}
-        configuration.saveConfig()
+        configuration.proj_cfg['ALL_STIMS'] = {**configuration.proj_cfg['ALL_STIMS'], **dict.fromkeys(new_stims)}
+        configuration.save_proj_config()
 
         if self.imgdata.meta is not None:
             try:

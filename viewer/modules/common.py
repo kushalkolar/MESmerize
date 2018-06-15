@@ -24,7 +24,7 @@ class ViewerInterface:
         """
         :type viewer_reference: ImageView
         """
-        assert isinstance(viewer_reference, ImageView)
+        # assert isinstance(viewer_reference, ImageView)
         self.viewer = viewer_reference
 
     def update_workEnv(self):

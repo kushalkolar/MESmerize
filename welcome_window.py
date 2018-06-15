@@ -12,19 +12,20 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
-# from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
 import pyqtgraphCore
 from welcome_window_pytemplate import *
-from viewer_modules import main_window as viewer_main_window
+from viewer import main_window as viewer_main_window
 from settings import configuration, system_config_window
-from viewer_modules.modules import batch_manager
+# from viewer.modules import batch_manager
 from window_manager import WindowManager
 import traceback
 from project_manager.project_manager import ProjectManager
 from project_manager import project_browser
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -35,6 +36,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle('Mesmerize - Main Window')
 
         self.window_manager = WindowManager()
+        configuration.window_manager = self.window_manager
 
         self.ui.btnProjectBrowser.setVisible(False)
         self.ui.labelProjectBrowser.setVisible(False)
@@ -54,7 +56,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btnViewer.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnViewer.clicked.connect(self.spawn_new_viewer)
 
-        self.ui.listWidgetViewers.itemDoubleClicked.connect(self.show_selected_viewer)
+        self.ui.verticalLayoutViewersRunning.addWidget(self.window_manager.viewers.list_widget)
 
         self.ui.btnFlowchart.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_907242_cc.png'))
         self.ui.btnFlowchart.setIconSize(QtCore.QSize(100, 100))
@@ -185,21 +187,18 @@ class MainWindow(QtWidgets.QMainWindow):
             viewer.batch_manager = self.project_manager.batch_manager
         viewerWindow.viewer_reference = viewer
         assert isinstance(viewer, pyqtgraphCore.ImageView)
+
+
+
+
+
         viewerWindow.setCentralWidget(viewer)
         #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
         viewerWindow.setWindowTitle('Mesmerize - Viewer - ' + str(len(self.window_manager.viewers)))
-        self.ui.listWidgetViewers.addItem(str(len(self.window_manager.viewers)))
+        # self.ui.listWidgetViewers.addItem(str(len(self.window_manager.viewers)))
 
         self.window_manager.viewers.append(viewerWindow)
         self.window_manager.viewers[-1].show()
-
-    def show_selected_viewer(self, s: QtWidgets.QListWidgetItem):
-        # i = self.ui.listWidgetViewers.indexFromItem(s)
-        # assert isinstance(i, QtCore.QModelIndex)
-        # i = i.column(0)
-        # i = self.ui.listWidgetViewers.currentIndex()
-        i = int(s.data(0))
-        self.window_manager.viewers[i].show()
 
     def spawn_new_flowchart(self):
         pass

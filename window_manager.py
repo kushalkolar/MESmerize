@@ -11,17 +11,44 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class WindowManager:
     def __init__(self):
-        self.project_browsers = []
-        self.viewers = []
-        self.flowcharts = []
-        self.plots = []
-        self.clustering_windows = []
+        self.project_browsers = WindowClass()
+        self.viewers = WindowClass()
+        self.flowcharts = WindowClass()
+        self.plots = WindowClass()
+        self.clustering_windows = WindowClass()
 
     def garbage_collect(self):
         pass
 
     def garbage_collect_all_closed_windows(self):
         pass
+
+
+class WindowClass(list):
+    def __init__(self):
+        super(WindowClass, self).__init__()
+
+        self.list_widget = QtWidgets.QListWidget()
+        self.list_widget.itemDoubleClicked.connect(self._show_window)
+
+    def append(self, QMainWindow: QtWidgets.QMainWindow):
+        self.list_widget.addItem(str(self.__len__()))
+        super(WindowClass, self).append(QMainWindow)
+
+    def __delitem__(self, key):
+        window = self.__getitem__(key)
+        window.deleteLater()
+        super(WindowClass, self).__delitem__(key)
+
+    def _show_window(self, item: QtWidgets.QListWidgetItem):
+        i = int(item.data(0))
+        window = self.__getitem__(i)
+        window.show()
+
+    def __getitem__(self, item) -> QtWidgets.QMainWindow:
+        return super(WindowClass, self).__getitem__(item)
