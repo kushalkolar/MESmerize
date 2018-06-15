@@ -18,6 +18,7 @@ import numpy as np
 import os
 from psutil import cpu_count
 
+window_manager = None
 
 #################################################################
 

@@ -111,7 +111,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def initialize_menubar_triggers(self):
         if configuration.proj_path is None:
-            self.ui.actionBatch_Manager.setDisabled(True)
+            self.ui.actionBatch_Manager.triggered.connect(self.ask_create_standalone_batch)
         else:
             self.ui.actionBatch_Manager.triggered.connect(self._viewer.batch_manager.show)
             self._viewer.batch_manager.listwchanged.connect(self.update_available_inputs)
@@ -126,6 +126,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionMeasure.triggered.connect(self.image_menu.measure_tool)
         self.ui.actionResize.triggered.connect(self.image_menu.resize)
         self.ui.actionCrop.triggered.connect(self.image_menu.crop)
+
+    def ask_create_standalone_batch(self):
+        if QtWidgets.QMessageBox.question(self, 'No project open',
+                                          'Would you like to create a standalone batch?',
+                                          QtWidgets.QMessageBox.No,
+                                          QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
+            return
+
 
     def open_workEnv_editor(self):
         self.vi.viewer.status_bar_label.setText('Please wait, loading editor interface...')

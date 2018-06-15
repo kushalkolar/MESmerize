@@ -67,7 +67,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_15">
+      <layout class="QVBoxLayout" name="verticalLayoutProjectBrowser">
        <item>
         <widget class="QLabel" name="labelProjectBrowser">
          <property name="text">
@@ -251,7 +251,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayoutViewersRunning">
        <item>
         <widget class="QLabel" name="label_9">
          <property name="sizePolicy">
@@ -262,28 +262,6 @@
          </property>
          <property name="text">
           <string>Running</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="listWidgetViewers">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
          </property>
         </widget>
        </item>
@@ -345,7 +323,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
+      <layout class="QVBoxLayout" name="verticalLayoutFlowchartRunning">
        <item>
         <widget class="QLabel" name="label_10">
          <property name="sizePolicy">
@@ -356,28 +334,6 @@
          </property>
          <property name="text">
           <string>Running</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="listWidgetFlowcharts">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
          </property>
         </widget>
        </item>
@@ -474,33 +430,11 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
+      <layout class="QVBoxLayout" name="verticalLayoutPlotsRunning">
        <item>
         <widget class="QLabel" name="label_11">
          <property name="text">
           <string>Running</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="listWidgetPlots">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
          </property>
         </widget>
        </item>
@@ -592,33 +526,11 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_11">
+      <layout class="QVBoxLayout" name="verticalLayoutClusteringRunning">
        <item>
         <widget class="QLabel" name="label_7">
          <property name="text">
           <string>Running</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="listWidgetClustering">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>61</width>
-           <height>118</height>
-          </size>
          </property>
         </widget>
        </item>

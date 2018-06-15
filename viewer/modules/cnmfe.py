@@ -22,8 +22,8 @@ from settings import configuration
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
-    def __init__(self, parent, viewer_ref):
-        self.vi = ViewerInterface(viewer_ref)
+    def __init__(self, parent, viewer_reference):
+        self.vi = ViewerInterface(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
@@ -36,17 +36,17 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnImport.clicked.connect(self.import_params)
 
         # assert isinstance(self.vi.viewer_ref.batch_manager, BatchModuleGui)
-        self.vi.viewer_ref.batch_manager.listwchanged.connect(self.update_available_inputs)
+        self.vi.viewer.batch_manager.listwchanged.connect(self.update_available_inputs)
 
     def _make_params_dict(self):
-        if self.vi.viewer_ref.workEnv.imgdata.meta['fps'] == 0:
+        if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
             QtWidgets.QMessageBox.warning(self, 'No framerate for current image sequence!',
                                           'You must set a framerate for the current image sequence before you can '
                                           'continue!', QtWidgets.QMessageBox.Ok)
             return None
 
         d = {'Input': self.ui.comboBoxInput.currentText(),
-             'frate': self.vi.viewer_ref.workEnv.imgdata.meta['fps'],
+             'frate': self.vi.viewer.workEnv.imgdata.meta['fps'],
              'gSig': self.ui.spinBoxGSig.value(),
              'min_corr': self.ui.doubleSpinBoxMinCorr.value(),
              'min_pnr': self.ui.spinBoxMinPNR.value(),
@@ -97,11 +97,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     def add_to_batch_corr_pnr(self):
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
-            if self.vi.viewer_ref.workEnv.isEmpty:
+            if self.vi.viewer.workEnv.isEmpty:
                 QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
                                                                               'nothing to add to batch')
                 return
-            input_workEnv = self.vi.viewer_ref.workEnv
+            input_workEnv = self.vi.viewer.workEnv
         else:
             input_workEnv = self.ui.comboBoxInput.currentText()
 
@@ -113,7 +113,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         d['do_corr_pnr'] = True
         d['do_cnmfe'] = False
 
-        self.vi.viewer_ref.batch_manager.add_item(module='CNMFE',
+        self.vi.viewer.batch_manager.add_item(module='CNMFE',
                                                   name=self.ui.lineEdCorrPNRName.text(),
                                                   input_workEnv=input_workEnv,
                                                   input_params=d,
@@ -122,11 +122,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     def add_to_batch_cnmfe(self):
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
-            if self.vi.viewer_ref.workEnv.isEmpty:
+            if self.vi.viewer.workEnv.isEmpty:
                 QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
                                                                               'nothing to add to batch')
                 return
-            input_workEnv = self.vi.viewer_ref.workEnv
+            input_workEnv = self.vi.viewer.workEnv
         else:
             input_workEnv = self.ui.comboBoxInput.currentText()
 
@@ -140,7 +140,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # d = np.array(self._make_params_dict(), dtype=object)
 
-        self.vi.viewer_ref.batch_manager.add_item(module='CNMFE',
+        self.vi.viewer.batch_manager.add_item(module='CNMFE',
                                                   name=self.ui.lineEdName.text(),
                                                   input_workEnv=input_workEnv,
                                                   input_params=d,
