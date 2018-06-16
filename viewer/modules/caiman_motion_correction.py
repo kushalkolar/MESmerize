@@ -11,13 +11,13 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from .common import ViewerInterface
+from ..core.common import ViewerInterface
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.caiman_motion_correction_pytemplate import *
 import json
 import numpy as np
 from .batch_manager import ModuleGUI as BatchModuleGui
-from settings import configuration
+from common import configuration
 from ..core.viewer_work_environment import ViewerWorkEnv
 import caiman as cm
 from pyqtgraphCore import LinearRegionItem

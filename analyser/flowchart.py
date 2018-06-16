@@ -27,7 +27,7 @@ else:
     from .DataTypes import Transmission
 from pyqtgraphCore.console import ConsoleWidget
 import pickle
-from MesmerizeCore import configuration
+from common import configuration
 import os
 
 

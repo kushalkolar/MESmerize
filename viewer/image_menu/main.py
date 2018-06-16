@@ -15,7 +15,7 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore import LineSegmentROI, ROI
 import numpy as np
 from .resize import ResizeDialogBox
-from ..modules.common import ViewerInterface
+from ..core.common import ViewerInterface
 from math import sqrt
 
 

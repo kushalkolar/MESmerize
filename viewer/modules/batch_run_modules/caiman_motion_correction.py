@@ -34,7 +34,7 @@ import numba
 from glob import glob
 
 if not len(sys.argv) > 1:
-    from ..common import ViewerInterface
+    from ...core.common import ViewerInterface
     from ...core.viewer_work_environment import ViewerWorkEnv
 
 

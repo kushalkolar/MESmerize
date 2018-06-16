@@ -23,7 +23,7 @@ import numpy as np
 from PyQt5 import QtGui
 import pyqtgraphCore.functions as fn
 import csv
-from settings import configuration
+from common import configuration
 from .misc_funcs import fix_fp_errors
 
 

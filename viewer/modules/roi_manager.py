@@ -11,11 +11,11 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from .common import ViewerInterface
+from ..core.common import ViewerInterface
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.roi_manager_pytemplate import *
 import numpy as np
-from settings import configuration
+from common import configuration
 from ..core.viewer_work_environment import ViewerWorkEnv
 from pyqtgraphCore.graphicsItems import ROI
 

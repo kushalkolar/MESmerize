@@ -16,11 +16,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class WindowManager:
     def __init__(self):
-        self.project_browsers = WindowClass()
-        self.viewers = WindowClass()
-        self.flowcharts = WindowClass()
-        self.plots = WindowClass()
-        self.clustering_windows = WindowClass()
+        self.project_browsers = WindowClass('Project Browser')
+        self.viewers = WindowClass('Viewer')
+        self.flowcharts = WindowClass('Flowchart')
+        self.plots = WindowClass('Plots')
+        self.clustering_windows = WindowClass('Clustering')
 
     def garbage_collect(self):
         pass
@@ -30,14 +30,15 @@ class WindowManager:
 
 
 class WindowClass(list):
-    def __init__(self):
+    def __init__(self, window_name: str):
         super(WindowClass, self).__init__()
-
+        self.window_name = window_name
         self.list_widget = QtWidgets.QListWidget()
         self.list_widget.itemDoubleClicked.connect(self._show_window)
 
     def append(self, QMainWindow: QtWidgets.QMainWindow):
         self.list_widget.addItem(str(self.__len__()))
+        QMainWindow.setWindowTitle('Mesmerize - ' + self.window_name + ' - ' + str(self.__len__()))
         super(WindowClass, self).append(QMainWindow)
 
     def __delitem__(self, key):

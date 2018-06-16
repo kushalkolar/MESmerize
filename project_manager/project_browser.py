@@ -32,7 +32,7 @@ import pandas as pd
 from itertools import chain
 import ast
 from functools import partial
-from settings import configuration
+from common import configuration
 import builtins
 from pyqtgraphCore import ImageView
 import weakref

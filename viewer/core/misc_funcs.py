@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import pandas as pd
 import numpy as np
-from settings import configuration
+from common import configuration
 
 
 def empty_df(cols=None, addCols=[]):
@@ -26,8 +26,8 @@ def empty_df(cols=None, addCols=[]):
     :rtype:      pd.DataFrame
     """
     if cols is None:
-        include = configuration.cfg.options('INCLUDE')
-        exclude = configuration.cfg.options('EXCLUDE')
+        include = configuration.proj_cfg.options('INCLUDE')
+        exclude = configuration.proj_cfg.options('EXCLUDE')
 
         cols = include + exclude
 

@@ -15,16 +15,17 @@ import sys
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
 import pyqtgraphCore
-from welcome_window_pytemplate import *
+from .welcome_window_pytemplate import *
 from viewer import main_window as viewer_main_window
-from settings import configuration, system_config_window
+from common import configuration, system_config_window
 # from viewer.modules import batch_manager
-from window_manager import WindowManager
+from .window_manager import WindowManager
 import traceback
 from project_manager.project_manager import ProjectManager
 from project_manager import project_browser
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
+from analyser import flowchart
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -41,30 +42,35 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btnProjectBrowser.setVisible(False)
         self.ui.labelProjectBrowser.setVisible(False)
 
-        self.ui.btnProjectBrowser.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_917603_cc.png'))
+        self.ui.btnProjectBrowser.setIcon(QtGui.QIcon('./common/icons/noun_917603_cc.png'))
         self.ui.btnProjectBrowser.setIconSize(QtCore.QSize(100, 100))
 
-        self.ui.btnNewProject.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_1327089_cc.png'))
+        self.ui.btnNewProject.setIcon(QtGui.QIcon('./common/icons/noun_1327089_cc.png'))
         self.ui.btnNewProject.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnNewProject.clicked.connect(self.create_new_project)
 
-        self.ui.btnOpenProject.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_1327109_cc.png'))
+        self.ui.btnOpenProject.setIcon(QtGui.QIcon('./common/icons/noun_1327109_cc.png'))
         self.ui.btnOpenProject.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnOpenProject.clicked.connect(self.open_project)
 
-        self.ui.btnViewer.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_38902_cc.png'))
+        self.ui.btnViewer.setIcon(QtGui.QIcon('./common/icons/noun_38902_cc.png'))
         self.ui.btnViewer.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnViewer.clicked.connect(self.spawn_new_viewer)
 
         self.ui.verticalLayoutViewersRunning.addWidget(self.window_manager.viewers.list_widget)
 
-        self.ui.btnFlowchart.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_907242_cc.png'))
+        self.ui.btnFlowchart.setIcon(QtGui.QIcon('./common/icons/noun_907242_cc.png'))
         self.ui.btnFlowchart.setIconSize(QtCore.QSize(100, 100))
+        self.ui.btnFlowchart.clicked.connect(self.spawn_new_flowchart)
 
-        self.ui.btnPlot.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_635936_cc.png'))
+        self.ui.verticalLayoutFlowchartRunning.addWidget(self.window_manager.flowcharts.list_widget)
+
+        self.ui.btnPlot.setIcon(QtGui.QIcon('./common/icons/noun_635936_cc.png'))
         self.ui.btnPlot.setIconSize(QtCore.QSize(100, 100))
 
-        self.ui.btnClustering.setIcon(QtGui.QIcon('./MesmerizeCore/icons/noun_195949_cc.png'))
+        self.ui.verticalLayoutPlotsRunning.addWidget(self.window_manager.plots.list_widget)
+
+        self.ui.btnClustering.setIcon(QtGui.QIcon('./common/icons/noun_195949_cc.png'))
         self.ui.btnClustering.setIconSize(QtCore.QSize(100, 100))
 
         self.sys_config_gui = system_config_window.SystemConfigGUI()
@@ -183,25 +189,19 @@ class MainWindow(QtWidgets.QMainWindow):
         viewerWindow = viewer_main_window.MainWindow()  # QtWidgets.QMainWindow()
         viewerWindow.resize(1460, 950)
         viewer = pyqtgraphCore.ImageView(parent=viewerWindow)
+        viewer.setPredefinedGradient('flame')
         if configuration.proj_path is not None:
             viewer.batch_manager = self.project_manager.batch_manager
         viewerWindow.viewer_reference = viewer
-        assert isinstance(viewer, pyqtgraphCore.ImageView)
-
-
-
-
-
         viewerWindow.setCentralWidget(viewer)
-        #        self.projBrowser.ui.openViewerBtn.clicked.connect(self.showViewer)
         viewerWindow.setWindowTitle('Mesmerize - Viewer - ' + str(len(self.window_manager.viewers)))
-        # self.ui.listWidgetViewers.addItem(str(len(self.window_manager.viewers)))
 
         self.window_manager.viewers.append(viewerWindow)
         self.window_manager.viewers[-1].show()
 
     def spawn_new_flowchart(self):
-        pass
+        self.window_manager.flowcharts.append(flowchart.Window())
+        self.window_manager.flowcharts[-1].show()
 
     def spawn_new_plot_gui(self):
         pass
