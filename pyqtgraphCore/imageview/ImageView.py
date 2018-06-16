@@ -42,7 +42,7 @@ from multiprocessing import Process, Queue
 import numpy as np
 from MesmerizeCore import stimMapWidget
 from viewer.core.viewer_work_environment import ViewerWorkEnv
-from settings import configuration
+from common import configuration
 from MesmerizeCore import misc_widgets
 import MesmerizeCore.Export
 from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI

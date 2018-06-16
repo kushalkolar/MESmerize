@@ -17,7 +17,7 @@ from pyqtgraphCore.console import ConsoleWidget
 from pyqtgraphCore.imageview import ImageView
 from .modules import *
 from .modules.batch_manager import ModuleGUI as BatchModuleGUI
-from .modules.common import ViewerInterface
+from .core.common import ViewerInterface
 import pickle;
 import tifffile;
 import numpy as np;
@@ -25,7 +25,7 @@ import pandas as pd;
 from .core import DataTypes
 from .core.viewer_work_environment import ViewerWorkEnv
 import os
-from settings import configuration
+from common import configuration
 from .image_menu.main import ImageMenu
 from spyder.widgets.variableexplorer import objecteditor
 import traceback

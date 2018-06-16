@@ -25,7 +25,7 @@ import pickle
 import time
 import tifffile
 import os
-from settings import configuration
+from common import configuration
 from uuid import uuid4
 import json
 

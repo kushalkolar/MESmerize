@@ -13,7 +13,7 @@ from collections import OrderedDict
 from functools import partial
 from analyser.DataTypes import Transmission, StatsTransmission
 import MesmerizeCore.misc_funcs
-from MesmerizeCore import configuration
+from common import configuration
 import builtins
 
 ## TODO: THIS IS NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -11,7 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from settings import configuration, project_config_window
+from common import configuration, project_config_window
 import os
 import pandas as pd
 from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI

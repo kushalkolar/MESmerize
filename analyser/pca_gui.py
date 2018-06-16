@@ -17,7 +17,7 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 if __name__ != '__main__':
     from .pytemplates.pca_window_pytemplate import *
     from . import DataTypes
-    from MesmerizeCore import configuration
+    from common import configuration
 else:
     from pytemplates.pca_window_pytemplate import *
     import DataTypes

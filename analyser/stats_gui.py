@@ -32,7 +32,7 @@ import pandas as pd
 from functools import partial
 import pickle
 import os
-from MesmerizeCore import configuration
+from common import configuration
 
 
 class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
