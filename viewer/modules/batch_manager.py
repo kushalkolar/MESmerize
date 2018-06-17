@@ -91,20 +91,25 @@ class ModuleGUI(QtWidgets.QWidget):
         viewers = configuration.window_manager.viewers
 
         if len(configuration.window_manager.viewers) > 1:
-            lwd = ListWidgetDialog()
-            lwd.listWidget = viewers.list_widget
-            lwd.label.setText('Viewer to show input in:')
-            lwd.btnOK.clicked.connect(partial(self.show_input_in_viewer, viewers.get_selected_window(), r, UUID))
+            self.lwd = ListWidgetDialog()
+            self.lwd.listWidget.addItems([str(i) for i in range(len(viewers))])
+            self.lwd.label.setText('Viewer to show input in:')
+            self.lwd.btnOK.clicked.connect(partial(self.show_input_in_viewer, viewers, r, UUID))
         else:
             self.show_input_in_viewer(viewers[0], r, UUID)
 
-    def show_input_in_viewer(self, viewer_window, r, UUID):
+    def show_input_in_viewer(self, viewers, r, UUID):
         """
         :param  r:  Row of batch DataFrame corresponding to the selected item
         :type   r:  pandas.Series
         """
+        if self.lwd.listWidget.currentItem() is None:
+            QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
+            return
+        i = int(self.lwd.listWidget.currentItem().data(0))
+        viewer = viewers[i].viewer_reference
 
-        vi = ViewerInterface(viewer_reference=viewer_window.viewer_reference)
+        vi = ViewerInterface(viewer_reference=viewer)
 
         if r['input_item'].item() is None:
             if not vi.discard_workEnv():
@@ -120,6 +125,7 @@ class ModuleGUI(QtWidgets.QWidget):
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
                                               'The input files do not exist for this item.')
                 vi.viewer.status_bar_label.clear()
+        self.lwd.deleteLater()
 
     def list_widget_item_double_clicked_slot(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
@@ -141,17 +147,23 @@ class ModuleGUI(QtWidgets.QWidget):
             if len(configuration.window_manager.viewers) > 1:
                 viewers = configuration.window_manager.viewers
 
-                lwd = ListWidgetDialog()
-                lwd.listWidget = viewers.list_widget
-                lwd.label.setText('Viewer use for output:')
-                lwd.btnOK.clicked.connect(partial(self.show_item_output(m, viewers.get_selected_window(), UUID)))
+                self.lwd = ListWidgetDialog()
+                self.lwd.listWidget.addItems([str(i) for i in range(len(viewers))])
+                self.lwd.label.setText('Viewer use for output:')
+                self.lwd.btnOK.clicked.connect(partial(self.show_item_output, m, viewers, UUID))
             else:
-                self.show_item_output(m, configuration.window_manager.viewers[0], UUID)
+                self.show_item_output(m, configuration.window_manager.viewers, UUID)
 
-    def show_item_output(self, m, viewer_window, UUID):
+    def show_item_output(self, m, viewers, UUID):
         """
         """
-        self.output_widgets.append(m.Output(self.batch_path, UUID, viewer_window.viewer_reference))
+        if self.lwd.listWidget.currentItem() is None:
+            QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
+            return
+        i = int(self.lwd.listWidget.currentItem().data(0))
+        viewer = viewers[i].viewer_reference
+        self.output_widgets.append(m.Output(self.batch_path, UUID, viewer))
+        self.lwd.deleteLater()
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""

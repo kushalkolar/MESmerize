@@ -13,24 +13,35 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from copy import deepcopy
 
 class ListWidgetDialog(QtWidgets.QWidget):
     def __init__(self):
-        super(ListWidgetDialog, self).__init__()
-
-        layout = QtWidgets.QVBoxLayout()
+        QtWidgets.QWidget.__init__(self)
+        self.vertical_layout = QtWidgets.QVBoxLayout(self)
 
         self.label = QtWidgets.QLabel()
-        layout.addWidget(self.label)
+        self.vertical_layout.addWidget(self.label)
 
         self.listWidget = QtWidgets.QListWidget()
-        layout.addWidget(self.label)
+        self.vertical_layout.addWidget(self.listWidget)
 
         self.btnCancel = QtWidgets.QPushButton()
         self.btnCancel.setText('Cancel')
-        layout.addWidget(self.btnCancel)
+        self.vertical_layout.addWidget(self.btnCancel)
 
         self.btnOK = QtWidgets.QPushButton()
         self.btnOK.setText('OK')
-        layout.addWidget(self.btnOK)
+        self.vertical_layout.addWidget(self.btnOK)
+        self.show()
+        self.resize(400, 300)
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication([])
+    lwd = ListWidgetDialog()
+    lw = QtWidgets.QListWidget()
+    lwd.insert_list_widget(lw)
+
+
+    app.exec_()
