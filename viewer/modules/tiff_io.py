@@ -35,10 +35,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if path == '':
             return
         self.ui.labelFileTiff.setText(path[0])
+        self.check_meta_path()
 
-        meta_path = path[0][:-5] + '.json'
+    def check_meta_path(self):
+        meta_path = self.ui.labelFileTiff.text()[0][:-5] + '.json'
         if os.path.isfile(meta_path):
             self.ui.labelFileMeta.setText(meta_path)
+            return True
+        return False
 
     def select_meta_file(self):
         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose meta data file', '', '(*.json)')

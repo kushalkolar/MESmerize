@@ -1,35 +1,31 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './batch_manager.ui'
+# Form implementation generated from reading ui file './batch_manager_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_DockWidget(object):
-    def setupUi(self, DockWidget):
-        DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(1110, 645)
-        DockWidget.setFloating(True)
-        self.dockWidgetContents = QtWidgets.QWidget()
-        self.dockWidgetContents.setObjectName("dockWidgetContents")
-        self.gridLayout_4 = QtWidgets.QGridLayout(self.dockWidgetContents)
-        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_4.setObjectName("gridLayout_4")
-        self.splitter_3 = QtWidgets.QSplitter(self.dockWidgetContents)
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(1010, 604)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.splitter_3 = QtWidgets.QSplitter(Form)
         self.splitter_3.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_3.setObjectName("splitter_3")
         self.splitter = QtWidgets.QSplitter(self.splitter_3)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.splitter.setObjectName("splitter")
-        self.widget = QtWidgets.QWidget(self.splitter)
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
+        self.layoutWidget = QtWidgets.QWidget(self.splitter)
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.listwBatch = QtWidgets.QListWidget(self.widget)
+        self.listwBatch = QtWidgets.QListWidget(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -41,7 +37,7 @@ class Ui_DockWidget(object):
         self.gridLayout_2.setObjectName("gridLayout_2")
         spacerItem = QtWidgets.QSpacerItem(48, 38, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem, 0, 0, 2, 1)
-        self.btnStart = QtWidgets.QPushButton(self.widget)
+        self.btnStart = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -52,7 +48,7 @@ class Ui_DockWidget(object):
         self.btnStart.setBaseSize(QtCore.QSize(60, 0))
         self.btnStart.setObjectName("btnStart")
         self.gridLayout_2.addWidget(self.btnStart, 0, 1, 1, 1)
-        self.btnStartAtSelection = QtWidgets.QPushButton(self.widget)
+        self.btnStartAtSelection = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -63,7 +59,7 @@ class Ui_DockWidget(object):
         self.btnStartAtSelection.setBaseSize(QtCore.QSize(60, 0))
         self.btnStartAtSelection.setObjectName("btnStartAtSelection")
         self.gridLayout_2.addWidget(self.btnStartAtSelection, 0, 2, 1, 2)
-        self.btnDelete = QtWidgets.QPushButton(self.widget)
+        self.btnDelete = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -75,7 +71,7 @@ class Ui_DockWidget(object):
         self.gridLayout_2.addWidget(self.btnDelete, 0, 4, 1, 2)
         spacerItem1 = QtWidgets.QSpacerItem(48, 38, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem1, 0, 6, 2, 1)
-        self.btnAbort = QtWidgets.QPushButton(self.widget)
+        self.btnAbort = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -86,7 +82,7 @@ class Ui_DockWidget(object):
         self.btnAbort.setBaseSize(QtCore.QSize(60, 0))
         self.btnAbort.setObjectName("btnAbort")
         self.gridLayout_2.addWidget(self.btnAbort, 1, 1, 1, 1)
-        self.btnNew = QtWidgets.QPushButton(self.widget)
+        self.btnNew = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -97,7 +93,7 @@ class Ui_DockWidget(object):
         self.btnNew.setBaseSize(QtCore.QSize(60, 0))
         self.btnNew.setObjectName("btnNew")
         self.gridLayout_2.addWidget(self.btnNew, 1, 2, 1, 1)
-        self.btnOpen = QtWidgets.QPushButton(self.widget)
+        self.btnOpen = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -108,7 +104,7 @@ class Ui_DockWidget(object):
         self.btnOpen.setBaseSize(QtCore.QSize(60, 0))
         self.btnOpen.setObjectName("btnOpen")
         self.gridLayout_2.addWidget(self.btnOpen, 1, 3, 1, 2)
-        self.btnViewInput = QtWidgets.QPushButton(self.widget)
+        self.btnViewInput = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -120,7 +116,7 @@ class Ui_DockWidget(object):
         self.btnViewInput.setObjectName("btnViewInput")
         self.gridLayout_2.addWidget(self.btnViewInput, 1, 5, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout_2)
-        self.progressBar = QtWidgets.QProgressBar(self.widget)
+        self.progressBar = QtWidgets.QProgressBar(self.layoutWidget)
         self.progressBar.setMinimum(0)
         self.progressBar.setProperty("value", 0)
         self.progressBar.setTextVisible(True)
@@ -136,10 +132,9 @@ class Ui_DockWidget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 407, 319))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 407, 288))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.gridLayout = QtWidgets.QGridLayout(self.scrollAreaWidgetContents)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.textBrowserItemInfo = QtWidgets.QTextBrowser(self.scrollAreaWidgetContents)
         self.textBrowserItemInfo.setObjectName("textBrowserItemInfo")
@@ -163,10 +158,9 @@ class Ui_DockWidget(object):
         self.scrollAreaStdOut.setWidgetResizable(True)
         self.scrollAreaStdOut.setObjectName("scrollAreaStdOut")
         self.scrollAreaWidgetContents_4 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 677, 300))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 577, 289))
         self.scrollAreaWidgetContents_4.setObjectName("scrollAreaWidgetContents_4")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_4)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.textBrowserStdOut = QtWidgets.QTextBrowser(self.scrollAreaWidgetContents_4)
         self.textBrowserStdOut.setObjectName("textBrowserStdOut")
@@ -181,38 +175,32 @@ class Ui_DockWidget(object):
         self.scrollAreaOutputInfo.setWidgetResizable(True)
         self.scrollAreaOutputInfo.setObjectName("scrollAreaOutputInfo")
         self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 677, 300))
+        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 577, 289))
         self.scrollAreaWidgetContents_6.setObjectName("scrollAreaWidgetContents_6")
         self.gridLayout_8 = QtWidgets.QGridLayout(self.scrollAreaWidgetContents_6)
-        self.gridLayout_8.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_8.setObjectName("gridLayout_8")
         self.textBrowserOutputInfo = QtWidgets.QTextBrowser(self.scrollAreaWidgetContents_6)
         self.textBrowserOutputInfo.setObjectName("textBrowserOutputInfo")
         self.gridLayout_8.addWidget(self.textBrowserOutputInfo, 0, 0, 1, 1)
         self.scrollAreaOutputInfo.setWidget(self.scrollAreaWidgetContents_6)
-        self.gridLayout_4.addWidget(self.splitter_3, 0, 0, 1, 1)
-        DockWidget.setWidget(self.dockWidgetContents)
+        self.verticalLayout_2.addWidget(self.splitter_3)
 
-        self.retranslateUi(DockWidget)
-        QtCore.QMetaObject.connectSlotsByName(DockWidget)
-        DockWidget.setTabOrder(self.listwBatch, self.btnStart)
-        DockWidget.setTabOrder(self.btnStart, self.scrollArea)
-        DockWidget.setTabOrder(self.scrollArea, self.scrollAreaStdOut)
-        DockWidget.setTabOrder(self.scrollAreaStdOut, self.scrollAreaOutputInfo)
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
 
-    def retranslateUi(self, DockWidget):
+    def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        DockWidget.setWindowTitle(_translate("DockWidget", "Batch Manager"))
-        self.btnStart.setText(_translate("DockWidget", "Start"))
-        self.btnStartAtSelection.setText(_translate("DockWidget", "Start at selection"))
-        self.btnDelete.setText(_translate("DockWidget", "Delete selection"))
-        self.btnAbort.setText(_translate("DockWidget", "Abort"))
-        self.btnNew.setText(_translate("DockWidget", "New Batch"))
-        self.btnOpen.setText(_translate("DockWidget", "Open Batch"))
-        self.btnViewInput.setText(_translate("DockWidget", "View Input"))
-        self.textBrowserItemInfo.setHtml(_translate("DockWidget", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.btnStart.setText(_translate("Form", "Start"))
+        self.btnStartAtSelection.setText(_translate("Form", "Start at selection"))
+        self.btnDelete.setText(_translate("Form", "Delete selection"))
+        self.btnAbort.setText(_translate("Form", "Abort"))
+        self.btnNew.setText(_translate("Form", "New Batch"))
+        self.btnOpen.setText(_translate("Form", "Open Batch"))
+        self.btnViewInput.setText(_translate("Form", "View Input"))
+        self.textBrowserItemInfo.setHtml(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Sans Serif\'; font-size:9pt;\"><br /></p></body></html>"))
 

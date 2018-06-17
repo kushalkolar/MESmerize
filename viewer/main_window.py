@@ -37,12 +37,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.running_modules = []
-
+        # TODO: Integrate viewer initiation here instead of outside
         self.ui.actionMesfile.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
         self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
         self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
+
+        self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)
 
         self.ui.dockConsole.hide()
 
@@ -113,8 +115,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if configuration.proj_path is None:
             self.ui.actionBatch_Manager.triggered.connect(self.ask_create_standalone_batch)
         else:
-            self.ui.actionBatch_Manager.triggered.connect(self._viewer.batch_manager.show)
-            self._viewer.batch_manager.listwchanged.connect(self.update_available_inputs)
+            self.ui.actionBatch_Manager.triggered.connect(configuration.window_manager.batch_manager.show)
+            configuration.window_manager.batch_manager.listwchanged.connect(self.update_available_inputs)
 
         self.vi = ViewerInterface(self._viewer)
 
@@ -134,6 +136,16 @@ class MainWindow(QtWidgets.QMainWindow):
                                           QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
             return
 
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose location for a batch')
+        if path == '':
+            return
+
+        name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
+
+        if start and name != '':
+            batch_path = path + '/' + name
+            os.makedirs(batch_path)
+            configuration.window_manager.initialize_batch_manager(batch_path)
 
     def open_workEnv_editor(self):
         self.vi.viewer.status_bar_label.setText('Please wait, loading editor interface...')
@@ -162,3 +174,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.vi.viewer.status_bar_label.setText('Your edits were successfully applied to the work environment!')
 
         # You can even let the user save changes if they click "OK", and the function returns None if they cancel
+
+    def add_work_env_to_project(self):
+        if configuration.proj_path is None:
+            if QtWidgets.QMessageBox.question(self, 'No project open',
+                                              'Would you like to switch to project mode?',
+                                              QtWidgets.QMessageBox.No,
+                                              QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
+                return
+            else:
+                import common.start
+                common.start.main()

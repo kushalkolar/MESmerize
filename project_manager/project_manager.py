@@ -15,6 +15,8 @@ from common import configuration, project_config_window
 import os
 import pandas as pd
 from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
+from datetime import datetime
+from time import time
 
 
 class ProjectManager:
@@ -67,8 +69,10 @@ class ProjectManager:
         self.config_window.resize(560, 620)
 
     def _initialize_batch_manager(self):
-        self.batch_manager = BatchModuleGUI()
-        self.batch_manager.hide()
+        if not hasattr(configuration.window_manager, 'batch_manager'):
+            batch_path = self.root_dir + '/batches' + '/' + \
+                         datetime.fromtimestamp(time()).strftime('%Y%m%d_%H%M%S')
+            configuration.window_manager.initialize_batch_manager(batch_path)
 
     def show_config_window(self):
         self.config_window.show()

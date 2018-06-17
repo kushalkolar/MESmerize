@@ -174,5 +174,5 @@ class BitDepthConverter:
         """
         return np.take(lut, image).astype(lut.dtype)
 
-if len(sys.argv) > 1:
+if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2], sys.argv[3])
