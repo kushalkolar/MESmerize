@@ -206,7 +206,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             item.deleteLater()
 
     def _auto_slot(self, i):
-        QtGui.QMessageBox.information(self, 'Error', 'Not implemented')
+        QtWidgets.QMessageBox.information(self, 'Error', 'Not implemented')
         pass
 
     """#########################################################################################
