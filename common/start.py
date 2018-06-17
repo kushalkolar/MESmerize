@@ -19,6 +19,7 @@ from viewer import main_window as viewer_main_window
 from viewer.core.viewer_work_environment import ViewerWorkEnv
 from viewer.modules import tiff_io
 from analyser.flowchart import Window as FlowchartWindow
+from analyser.stats_gui import StatsWindow
 import json
 
 
@@ -80,3 +81,16 @@ def flowchart(file=None):
     elif file.endswith('.fcd.'):
         pass
 
+
+def plots(file=None):
+    configuration.window_manager.plots.append(StatsWindow())
+    configuration.window_manager.plots[-1].show()
+
+    if file is None:
+        return
+
+    elif file.endswith('.strn'):
+        pass
+
+    elif file.endswith('.gtrn'):
+        pass

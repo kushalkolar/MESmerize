@@ -47,6 +47,7 @@ class WindowClass(list):
         self.list_widget = QtWidgets.QListWidget()
         self.list_widget.itemDoubleClicked.connect(self._show_window)
         self.list_widget.currentItemChanged.connect(self.set_selected_window)
+        self.list_widget.setToolTip('Double click to show window')
 
     def append(self, window: QtWidgets.QMainWindow):
         self.list_widget.addItem(str(self.__len__()))
@@ -60,7 +61,7 @@ class WindowClass(list):
         i = int(item.data(0))
         self._selected_window = self.__getitem__(i)
 
-    def _show_window(self, item: QtWidgets.QListWidgetItem):
+    def _show_window(self):
         self._selected_window.show()
 
     def __delitem__(self, key):

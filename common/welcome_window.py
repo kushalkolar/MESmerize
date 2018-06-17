@@ -62,6 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.btnPlot.setIcon(QtGui.QIcon('./common/icons/noun_635936_cc.png'))
         self.ui.btnPlot.setIconSize(QtCore.QSize(100, 100))
+        self.ui.btnPlot.clicked.connect(self.spawn_new_plot_gui)
 
         self.ui.verticalLayoutPlotsRunning.addWidget(self.window_manager.plots.list_widget)
 
@@ -186,7 +187,7 @@ class MainWindow(QtWidgets.QMainWindow):
         start.flowchart()
 
     def spawn_new_plot_gui(self):
-        pass
+        start.plots()
 
     def spawn_new_clustering_gui(self):
         pass

@@ -371,7 +371,7 @@ class Window(QtWidgets.QWidget):
 if __name__ == '__main__':
     
     #df = pickle.load(open('/home/kushal/Sars_stuff/github-repos/20180118_alldata.pickle', 'rb'))
-    df = pd.read_csv('/home/kushal/Sars_stuff/github-repos/testprojects/testnew/testnew_index.mzp')
+    df = pd.read_csv('/home/kushal/Sars_stQtWidgets.QAction('')uff/github-repos/testprojects/testnew/testnew_index.mzp')
     special = {'Timings': 'StimSet'}
     
     app = QtWidgets.QApplication(sys.argv)
