@@ -10,10 +10,10 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
-import sys
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-from common import start
 
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets
+from common import start
 
 # def check_argument():
 #     if len(sys.argv) != 3:

@@ -230,7 +230,7 @@ class Output(QtWidgets.QWidget):
     def output_corr_pnr(self): #, batch_dir, UUID, viewer_ref):
         filename = self.batch_dir + '/' + str(self.UUID)
 
-        cn_filter = pickle.load(open(finomlename + '_cn_filter.pikl', 'rb'))
+        cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
         pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
         inspect_correlation_pnr(cn_filter, pnr)
 
