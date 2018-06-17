@@ -17,9 +17,12 @@ import configparser
 import numpy as np
 import os
 from psutil import cpu_count
+from common.window_manager import WindowManager
+from project_manager.project_manager import ProjectManager
 
-window_manager = None
 
+window_manager = WindowManager()
+project_manager = ProjectManager(None)
 #################################################################
 
 # System Configuration

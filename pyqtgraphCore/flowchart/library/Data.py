@@ -55,11 +55,11 @@ class LoadProjDF(CtrlNode):
             if self.ctrls['DF_Name'].currentText() == '':
                 return
             df_ref = configuration.df_refs[self.ctrls['DF_Name'].currentText()]
-            projPath = configuration.projPath
+            proj_path = configuration.proj_path
             df = df_ref()
             # print('*****************config df ref hex ID:*****************')
             # print(hex(id(df)))
-            self.t = Transmission.from_proj(projPath, df, self.ctrls['DF_Name'].currentText())
+            self.t = Transmission.from_proj(proj_path, df, self.ctrls['DF_Name'].currentText())
 
             # print('Tranmission dataframe hexID:')
             # print(hex(id(self.t.df)))

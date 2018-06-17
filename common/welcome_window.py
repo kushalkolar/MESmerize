@@ -12,20 +12,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from pyqtgraphCore.console import ConsoleWidget
-import pyqtgraphCore
 from .welcome_window_pytemplate import *
-from viewer import main_window as viewer_main_window
 from common import configuration, system_config_window
 # from viewer.modules import batch_manager
-from .window_manager import WindowManager
 import traceback
 from project_manager.project_manager import ProjectManager
 from project_manager import project_browser
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
-from analyser import flowchart
+from common import start
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -36,8 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setWindowTitle('Mesmerize - Main Window')
 
-        self.window_manager = WindowManager()
-        configuration.window_manager = self.window_manager
+        self.window_manager = configuration.window_manager
 
         self.ui.btnProjectBrowser.setVisible(False)
         self.ui.labelProjectBrowser.setVisible(False)
@@ -117,7 +112,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if start and name != '':
             try:
-                self.project_manager = ProjectManager(path + '/name')
+                self.project_manager = ProjectManager(path + '/' + name)
+                configuration.project_manager = self.project_manager
                 self.project_manager.setup_new_project()
             except Exception as e:
                 QtWidgets.QMessageBox.warning(self, 'Error!',
@@ -138,6 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         self.project_manager = ProjectManager(path)
+        configuration.project_manager = self.project_manager
 
         try:
             self.project_manager.open_project()
@@ -183,25 +180,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btnProjectBrowser.clicked.connect(self.project_browser_window.show)
 
     def spawn_new_viewer(self):
-        # Interpret image data as row-major instead of col-major
-        pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
-        ## Create window with ImageView widget
-        viewerWindow = viewer_main_window.MainWindow()  # QtWidgets.QMainWindow()
-        viewerWindow.resize(1460, 950)
-        viewer = pyqtgraphCore.ImageView(parent=viewerWindow)
-        viewer.setPredefinedGradient('flame')
-        if configuration.proj_path is not None:
-            viewer.batch_manager = self.project_manager.batch_manager
-        viewerWindow.viewer_reference = viewer
-        viewerWindow.setCentralWidget(viewer)
-        viewerWindow.setWindowTitle('Mesmerize - Viewer - ' + str(len(self.window_manager.viewers)))
-
-        self.window_manager.viewers.append(viewerWindow)
-        self.window_manager.viewers[-1].show()
+        start.viewer()
 
     def spawn_new_flowchart(self):
-        self.window_manager.flowcharts.append(flowchart.Window())
-        self.window_manager.flowcharts[-1].show()
+        start.flowchart()
 
     def spawn_new_plot_gui(self):
         pass
