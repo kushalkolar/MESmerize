@@ -10,6 +10,7 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .pytemplates.column_pytemplate import Ui_column_template
 from functools import partial
@@ -20,6 +21,7 @@ from numpy import int64, float64
 
 class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     signal_apply_clicked = QtCore.pyqtSignal(dict)
+    signal_sample_id = QtCore.pyqtSignal(str)
 
     def __init__(self, parent, tab_name, column_name, is_root=False):
         # super(ColumnWidget, self).__init__(parent)
@@ -30,8 +32,14 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.tab_name = tab_name
         self.column_name = column_name
 
-        self.btnApply.clicked.connect(partial(self.btn_apply_clicked_emit_dict))
+        self.btnApply.clicked.connect(partial(self.btn_apply_clicked_emit_dict, option=None))
         self.btnReset.clicked.connect(self.lineEdit.clear)
+
+        self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.listWidget.itemSelectionChanged.connect(self.set_lineEdit)
+
+        if self.column_name == 'SampleID':
+            self.listWidget.itemDoubleClicked.connect(self.emit_sample_id)
 
         if not is_root:
             self.btnApply.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -157,8 +165,18 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         lineEdit_exact_match.setText('Exact match')
 
     def set_as_unknown(self):
-        self.listWidget.addItems(['Unsupported type: ' + str(type(self.column_type))])
+        self.listWidget.addItems(['Unsupported type'])
         self.setDisabled(True)
+
+    def set_lineEdit(self):
+        txt = ''
+        for item in self.listWidget.selectedItems():
+            txt = txt + '|' + item.text()
+        txt = txt[1:]
+        self.lineEdit.setText(txt)
+
+    def emit_sample_id(self, item: QtWidgets.QListWidgetItem):
+        self.signal_sample_id.emit(item.text())
 
     # def clear(self):
     #     self.listWidget.clear()
