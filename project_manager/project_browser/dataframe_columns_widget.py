@@ -45,7 +45,6 @@ class DataFrameColumnsWidget(QtWidgets.QWidget):
     @QtCore.pyqtSlot(dict)
     def filter_requested(self, d):
         self.signal_filter_requested.emit(d)
-        print(d)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])

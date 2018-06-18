@@ -12,13 +12,15 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from .dataframe_columns_widget import DataFrameColumnsWidget
+from .tab_area_widget import TabAreaWidget
 import pandas as pd
 
 
 class Main(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(parent)
+
+        self.tabs = {}
 
     @property
     def dataframe(self):

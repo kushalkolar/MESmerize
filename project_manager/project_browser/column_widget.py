@@ -30,7 +30,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.tab_name = tab_name
         self.column_name = column_name
 
-        self.btnApply.clicked.connect(partial(self.btn_apply_clicked_emit_dict, option=None))
+        self.btnApply.clicked.connect(partial(self.btn_apply_clicked_emit_dict))
         self.btnReset.clicked.connect(self.lineEdit.clear)
 
         if not is_root:
