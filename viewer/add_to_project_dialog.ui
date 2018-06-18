@@ -36,13 +36,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="lineEdStage">
-     <property name="placeholderText">
-      <string>Stage</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QPlainTextEdit" name="textBoxComments">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">

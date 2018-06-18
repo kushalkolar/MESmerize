@@ -21,6 +21,8 @@ else:
     from . import configuration
     from .pytemplates.project_config_pytemplate import *
 
+from numpy import int64, float64
+
 '''
 Just a simple GUI for modifying the project config.cfg file.
 '''
@@ -41,6 +43,8 @@ class ColumnsPage(QtWidgets.QWidget):
         
         self.ui.btnAddNewROICol.clicked.connect(self._addROIDef)
         self.ui.btnAddNewStimCol.clicked.connect(self._addStimDef)
+
+        self.ui.btnAddCustomColumn.clicked.connect(self.add_custom_column)
 
         self.ui.btnSave.clicked.connect(self._saveConfig)
 
@@ -88,6 +92,36 @@ class ColumnsPage(QtWidgets.QWidget):
 
         configuration.save_proj_config()
         self.ui.btnClose.click()
+
+    def set_custom_column_line_edit_validator(self):
+        if self.ui.radioButtonInt64.isChecked():
+            self.ui.lineEditCustomColumnName.setValidator(QtGui.QIntValidator)
+        elif self.ui.radioButtonFloat64.isChecked():
+            self.ui.lineEditCustomColumnName.setValidator(QtGui.QDoubleValidator)
+
+    def add_custom_column(self):
+        if self.ui.radioButtonStr.isChecked():
+            column_type = str
+        elif self.ui.radioButtonInt64.isChecked():
+            column_type = int64
+            self.ui.lineEditCustomColumnName.setValidator(QtGui.QIntValidator)
+        elif self.ui.radioButtonFloat64.isChecked():
+            column_type = float64
+            self.ui.lineEditCustomColumnName.setValidator(QtGui.QDoubleValidator)
+        elif self.ui.radioButtonBoolean.isChecked():
+            column_type = bool
+            val = self.ui.lineEditCustomColumnReplacementValue.text()
+            if val not in ['True', 'False']:
+                QtWidgets.QMessageBox.warning(self, 'Invalid replacement value',
+                                              'You can enter only True or False for boolean data types')
+
+        else:
+            QtWidgets.QMessageBox.warning(self, 'No data type selected',
+                                          'You must select a data type')
+            return
+
+        name = self.ui.lineEditCustomColumnName.text()
+
 
 
 class Window(QtWidgets.QWidget):

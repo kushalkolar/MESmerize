@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from copy import deepcopy
+
 
 class ListWidgetDialog(QtWidgets.QWidget):
     def __init__(self):

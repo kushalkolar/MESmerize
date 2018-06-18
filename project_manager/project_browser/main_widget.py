@@ -23,7 +23,7 @@ from common.window_manager import WindowClass
 from common import start
 
 
-class ProjectBrowserGUI(QtWidgets.QWidget):
+class ProjectBrowserWidget(QtWidgets.QWidget):
     def __init__(self, parent, dataframe: pd.DataFrame):
         QtWidgets.QWidget.__init__(self)
 
@@ -83,14 +83,15 @@ class ProjectBrowserGUI(QtWidgets.QWidget):
     def slot_open_sample_id_in_viewer(self, sample_id):
         viewers = configuration.window_manager.viewers
 
-        if len(configuration.window_manager.viewers) == 0:
+        if len(viewers) == 0:
             start.viewer()
 
         elif len(configuration.window_manager.viewers) > 1:
             self.lwd = ListWidgetDialog()
             self.lwd.listWidget.addItems([str(i) for i in range(len(viewers))])
-            self.lwd.label.setText('Viewer to show input in:')
+            self.lwd.label.setText('Viewer to show sample in:')
             self.lwd.btnOK.clicked.connect(partial(self.open_sample_id_in_viewer, viewers, sample_id))
+
         else:
             self.open_sample_id_in_viewer(viewers[0], sample_id)
 

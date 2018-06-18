@@ -33,7 +33,7 @@ import traceback
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        QtWidgets.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self, parent=None)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.running_modules = []

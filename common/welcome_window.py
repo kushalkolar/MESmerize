@@ -18,7 +18,6 @@ from common import configuration, system_config_window
 # from viewer.modules import batch_manager
 import traceback
 from project_manager.project_manager import ProjectManager
-from project_manager.project_browser.main_gui import ProjectBrowserGUI
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
 from common import start
@@ -174,15 +173,8 @@ class MainWindow(QtWidgets.QMainWindow):
     #     self.batch_manager.hide()
 
     def initialize_project_browser(self):
-        self.project_browser_window = QtWidgets.QMainWindow(parent=self)
-        self.window_manager.project_browsers.append(self.project_browser_window)
-        self.project_browser = ProjectBrowserGUI(self, self.project_manager.dataframe)
-        self.project_browser_window.setCentralWidget(self.project_browser)
-
-        num_columns = len(self.project_browser.tabs['root'].columns)
-        self.project_browser_window.resize(min(1920, num_columns * 215), 600)
-
-        self.ui.btnProjectBrowser.clicked.connect(self.project_browser_window.show)
+        start.project_browser()
+        self.ui.btnProjectBrowser.clicked.connect(configuration.window_manager.project_browsers[-1].show)
 
     def spawn_new_viewer(self):
         start.viewer()
