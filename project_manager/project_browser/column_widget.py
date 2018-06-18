@@ -10,16 +10,18 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-from pytemplates.column_pytemplate import Ui_column_template
+from .pytemplates.column_pytemplate import Ui_column_template
 from functools import partial
+import pandas as pd
+from numpy import int64, float64
+# from common import configuration
 
 
 class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     signal_apply_clicked = QtCore.pyqtSignal(dict)
 
-    def __init__(self, parent, tab_name, column_name, column_type, root=False):
+    def __init__(self, parent, tab_name, column_name, is_root=False):
         # super(ColumnWidget, self).__init__(parent)
         QtWidgets.QWidget.__init__(self, parent)
         # Ui_column_template.__init__(self)
@@ -27,11 +29,11 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
 
         self.tab_name = tab_name
         self.column_name = column_name
-        self.labelColumnName = column_name
 
         self.btnApply.clicked.connect(partial(self.btn_apply_clicked_emit_dict, option=None))
+        self.btnReset.clicked.connect(self.lineEdit.clear)
 
-        if not root:
+        if not is_root:
             self.btnApply.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
             self.btnApply.customContextMenuRequested.connect(self.btnApply_context_menu_requested)
 
@@ -69,15 +71,37 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.lineEditMenu.addAction(lineEdit_view_all)
         self.lineEditMenu.addAction(lineEditNegation)
 
-        if column_type is str:
-            self.set_as_str()
-        elif column_type is int or column_type is float:# or column_type is numpy.int64 or column_type is numpy.float64:
-            self.set_as_num(column_type)
-        elif column_type is list:
-            self.set_as_list()
-        elif column_type is bool:
-            self.set_as_bool()
+    @property
+    def series(self) -> pd.Series:
+        return self._series
 
+    @series.setter
+    def series(self, series: pd.Series):
+        if len(series) < 1:
+            self.set_empty()
+            return
+
+        self.listWidget.clear()
+        self.setEnabled(True)
+
+        self.column_type = type(self.series[self.series.index.values.min()])
+        self.labelColumnName.setText(self.column_name + '\n' + str(self.column_type))
+
+        if self.column_type is str:
+            self.set_as_str()
+        elif self.column_type in [int, float, int64, float64]:
+            self.set_as_num()
+        elif self.column_type is list:
+            self.set_as_list()
+        elif self.column_type is bool:
+            self.set_as_bool()
+        else:
+            self.set_as_unknown()
+
+    def set_empty(self):
+        self.listWidget.clear()
+        self.listWidget.addItems(['Empty'])
+        self.setDisabled(True)
 
     def btn_apply_clicked_emit_dict(self, option=None):
         d = {'column_widget': self, 'option': option}
@@ -99,14 +123,13 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.lineEdit.setText('$NOT:' + text)
 
     def set_as_str(self):
+        self.listWidget.addItems(list(set(self.series)))
+
         lineEdit_exact_match = QtWidgets.QWidgetAction(self)
         lineEdit_exact_match.setText('Exact match')
 
-    def set_as_num(self, column_type):
-        # if column_type is int:
-        #     self.lineEdit.setValidator(QtGui.QIntValidator())
-        # elif column_type is float:
-        #     self.lineEdit.setValidator(QtGui.QDoubleValidator())
+    def set_as_num(self):
+        self.listWidget.addItems([str(x) for x in set(self.series)])
 
         lineEdit_greater_than = QtWidgets.QWidgetAction(self)
         lineEdit_greater_than.setText('Greater than')
@@ -127,12 +150,25 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         pass
 
     def set_as_list(self):
-        pass
+        self.listWidget.addItems(list(set([a for b in self.series.tolist() for a in b])))
 
+        lineEdit_exact_match = QtWidgets.QWidgetAction(self)
+        lineEdit_exact_match.setText('Exact match')
+
+    def set_as_unknown(self):
+        self.listWidget.addItems(['Unsupported type: ' + str(type(self.column_type))])
+        self.setDisabled(True)
+
+    # def clear(self):
+    #     self.listWidget.clear()
+    #     self.listWidget.setEnabled(True)
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    c = ColumnWidget(parent=None, tab_name='bah_tab', column_name='bah_col', column_type=float)
+    df = pd.read_pickle('/home/kushal/Sars_stuff/github-repos/testprojects/March 9/dataframes/root.mzp')
+
+    c = ColumnWidget(parent=None, tab_name='bah_tab', column_name='Genotype', series=df['odor'])
+
     c.show()
     app.exec_()
