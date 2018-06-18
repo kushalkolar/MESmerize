@@ -16,7 +16,7 @@ from .column_widget import ColumnWidget
 
 
 class DataFrameColumnsWidget(QtWidgets.QWidget):
-    signal_filter_requested = QtCore.pyqtSignal(dict)
+    # signal_filter_requested = QtCore.pyqtSignal(dict)
 
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
@@ -35,16 +35,16 @@ class DataFrameColumnsWidget(QtWidgets.QWidget):
         self.verticalLayout.addWidget(self.scrollArea)
 
     def add_column(self, column_widget: ColumnWidget):
-        column_widget.signal_apply_clicked.connect(self.filter_requested)
+        # column_widget.signal_apply_clicked.connect(self.filter_requested)
         self.horizontalLayout.addWidget(column_widget)
 
     def add_horizontal_spacer(self):
         spacer = QtWidgets.QSpacerItem(1, 1, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacer)
 
-    @QtCore.pyqtSlot(dict)
-    def filter_requested(self, d):
-        self.signal_filter_requested.emit(d)
+    # @QtCore.pyqtSlot(dict)
+    # def filter_requested(self, d):
+    #     self.signal_filter_requested.emit(d)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])

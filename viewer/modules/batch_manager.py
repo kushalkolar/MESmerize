@@ -35,6 +35,7 @@ import psutil
 from signal import SIGKILL
 import traceback
 from misc_widgets.list_widget_dialog import ListWidgetDialog
+from common import window_manager
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -103,11 +104,14 @@ class ModuleGUI(QtWidgets.QWidget):
         :param  r:  Row of batch DataFrame corresponding to the selected item
         :type   r:  pandas.Series
         """
-        if self.lwd.listWidget.currentItem() is None:
-            QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
-            return
-        i = int(self.lwd.listWidget.currentItem().data(0))
-        viewer = viewers[i].viewer_reference
+        if not isinstance(viewers, window_manager.WindowClass):
+            viewer = viewers.viewer_reference
+        else:
+            if self.lwd.listWidget.currentItem() is None:
+                QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
+                return
+            i = int(self.lwd.listWidget.currentItem().data(0))
+            viewer = viewers[i].viewer_reference
 
         vi = ViewerInterface(viewer_reference=viewer)
 
@@ -152,16 +156,19 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.lwd.label.setText('Viewer use for output:')
                 self.lwd.btnOK.clicked.connect(partial(self.show_item_output, m, viewers, UUID))
             else:
-                self.show_item_output(m, configuration.window_manager.viewers, UUID)
+                self.show_item_output(m, configuration.window_manager.viewers[0], UUID)
 
     def show_item_output(self, m, viewers, UUID):
         """
         """
-        if self.lwd.listWidget.currentItem() is None:
-            QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
-            return
-        i = int(self.lwd.listWidget.currentItem().data(0))
-        viewer = viewers[i].viewer_reference
+        if not isinstance(viewers, window_manager.WindowClass):
+            viewer = viewers.viewer_reference
+        else:
+            if self.lwd.listWidget.currentItem() is None:
+                QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
+                return
+            i = int(self.lwd.listWidget.currentItem().data(0))
+            viewer = viewers[i].viewer_reference
         self.output_widgets.append(m.Output(self.batch_path, UUID, viewer))
         self.lwd.deleteLater()
 

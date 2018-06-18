@@ -17,10 +17,13 @@ from .column_widget import ColumnWidget
 import pandas as pd
 # from common import configurationt
 from numpy import int64, float64
+from copy import deepcopy
+from functools import partial
 
 
 class TabAreaWidget(QtWidgets.QWidget):
     signal_new_tab_requested = QtCore.pyqtSignal(pd.DataFrame, list)
+    signal_open_sample_in_viewer_requested = QtCore.pyqtSignal(str)
 
     def __init__(self, parent, tab_name, dataframe, filter_history, is_root=False):
         QtWidgets.QWidget.__init__(self)
@@ -47,11 +50,17 @@ class TabAreaWidget(QtWidgets.QWidget):
                              is_root=self.is_root)
 
             c.signal_apply_clicked.connect(self.slot_filter_requested)
+            if column == 'SampleID':
+                c.signal_sample_id.connect(self.emit_open_sample_in_viewer_requested)
             self.columns.append(c)
             self.columns_widget.add_column(c)
 
         self.populate_tab()
         # self.columns_widget.show()
+
+    @QtCore.pyqtSlot(str)
+    def emit_open_sample_in_viewer_requested(self, sample_id: str):
+        self.signal_open_sample_in_viewer_requested.emit(sample_id)
 
     @property
     def dataframe(self) -> pd.DataFrame:
@@ -71,7 +80,7 @@ class TabAreaWidget(QtWidgets.QWidget):
         column_widget = d['column_widget']
 
         dataframe = self.dataframe.copy()
-        filter_history = []
+        filter_history = deepcopy(self.filter_history)
 
         if (d['option'] is None) or (d['option'] == 'new'):
             dataframe, filter_history = self._filter(column_widget, dataframe)
@@ -89,7 +98,7 @@ class TabAreaWidget(QtWidgets.QWidget):
 
         else:
             self.dataframe = dataframe
-            self.filter_history = filter_history
+            self.filter_history += filter_history
             self.populate_tab()
 
     def _filter(self, column_widget: ColumnWidget, dataframe: pd.DataFrame) -> tuple:
@@ -104,6 +113,7 @@ class TabAreaWidget(QtWidgets.QWidget):
                 selection = dataframe[column_widget.column_name].str.contains(filt)
                 filtered_df = dataframe[selection]
                 filter_history = {'filter_type': 'str.contains', 'filter': filt}
+                print(selection)
 
         elif column_widget.column_type in [int, float, int64, float64]:
             filt = column_widget.lineEdit.text()
@@ -123,7 +133,7 @@ class TabAreaWidget(QtWidgets.QWidget):
                             'can only support str, list, int, float, '
                             'numpy.int64 and numpy.float64')
 
-        return filtered_df, filter_history
+        return filtered_df, [filter_history]
 
     def populate_tab(self):
         if self.dataframe.size < 1:

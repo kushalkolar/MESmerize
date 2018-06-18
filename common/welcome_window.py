@@ -175,8 +175,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def initialize_project_browser(self):
         self.project_browser_window = QtWidgets.QMainWindow(parent=self)
+        self.window_manager.project_browsers.append(self.project_browser_window)
         self.project_browser = ProjectBrowserGUI(self, self.project_manager.dataframe)
         self.project_browser_window.setCentralWidget(self.project_browser)
+
+        num_columns = len(self.project_browser.tabs['root'].columns)
+        self.project_browser_window.resize(min(1920, num_columns * 215), 600)
 
         self.ui.btnProjectBrowser.clicked.connect(self.project_browser_window.show)
 
