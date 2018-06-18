@@ -12,16 +12,15 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from column import ColumnWidget
+from .column_widget import ColumnWidget
 
 
 class DataFrameColumnsWidget(QtWidgets.QWidget):
     signal_filter_requested = QtCore.pyqtSignal(dict)
 
-    def __init__(self, parent, tab_name, filter_history, root=False):
+    def __init__(self, parent, tab_name, filter_history, is_root=False):
         QtWidgets.QWidget.__init__(self, parent)
         self.tab_name = tab_name
-        # self.grid_layout = QtWidgets.QGridLayout(self)
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self)
 
@@ -34,8 +33,6 @@ class DataFrameColumnsWidget(QtWidgets.QWidget):
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout.addWidget(self.scrollArea)
-
-        # self.resize(1, 350)
 
     def add_column(self, column_widget: ColumnWidget):
         column_widget.signal_apply_clicked.connect(self.filter_requested)

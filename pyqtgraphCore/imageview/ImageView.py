@@ -45,7 +45,7 @@ from viewer.core.viewer_work_environment import ViewerWorkEnv
 from common import configuration
 from MesmerizeCore import misc_widgets
 import MesmerizeCore.Export
-from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
+# from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 import time
 from functools import partial
 
