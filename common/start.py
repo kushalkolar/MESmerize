@@ -20,6 +20,7 @@ from viewer.core.viewer_work_environment import ViewerWorkEnv
 from viewer.modules import tiff_io
 from analyser.flowchart import Window as FlowchartWindow
 from analyser.stats_gui import StatsWindow
+from project_manager.project_browser.project_browser_window import ProjectBrowserWindow
 import json
 
 
@@ -29,27 +30,38 @@ def window_manager():
 
 def main():
     w = welcome_window.MainWindow()
+    configuration.window_manager.welcome_window = w
     w.show()
+
+
+def project_browser():
+    project_browser_window = ProjectBrowserWindow()
+    configuration.window_manager.project_browsers.append(project_browser_window)
+    num_columns = len(project_browser_window.project_browser.tabs['root'].columns)
+    project_browser_window.resize(min(1920, num_columns * 240), 600)
+    # project_browser_window.show()
 
 
 def viewer(file=None):
     # Interpret image data as row-major instead of col-major
     pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
     ## Create window with ImageView widget
-    viewerWindow = viewer_main_window.MainWindow()  # QtWidgets.QMainWindow()
+    viewerWindow = viewer_main_window.MainWindow()
+    configuration.window_manager.viewers.append(viewerWindow)
+
     viewerWindow.resize(1460, 950)
     # TODO: INTEGRATE VIEWER initiation INTO VIEWERWINDOW __init__
-    viewer = pyqtgraphCore.ImageView(parent=viewerWindow)
-    viewer.setPredefinedGradient('flame')
+    viewer_widget = pyqtgraphCore.ImageView(parent=viewerWindow)
+    viewer_widget.setPredefinedGradient('flame')
 
     if configuration.proj_path is not None:
-        viewer.batch_manager = configuration.window_manager.batch_manager
+        viewer_widget.batch_manager = configuration.window_manager.batch_manager
 
-    viewerWindow.viewer_reference = viewer
-    viewerWindow.setCentralWidget(viewer)
+    viewerWindow.viewer_reference = viewer_widget
+    viewerWindow.setCentralWidget(viewer_widget)
     viewerWindow.setWindowTitle('Mesmerize - Viewer - ' + str(len(configuration.window_manager.viewers)))
 
-    configuration.window_manager.viewers.append(viewerWindow)
+
     configuration.window_manager.viewers[-1].show()
 
     if file is None:
@@ -63,7 +75,7 @@ def viewer(file=None):
     elif file.endswith('.mes'):
         pass
     elif file.endswith('.vwe'):
-        viewer.workEnv = ViewerWorkEnv.from_pickle(pikPath=file)
+        viewer_widget.workEnv = ViewerWorkEnv.from_pickle(pikPath=file)
     else:
         raise ValueError('File extension not supported')
 

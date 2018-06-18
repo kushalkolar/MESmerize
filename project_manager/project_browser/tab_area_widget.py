@@ -19,6 +19,7 @@ import pandas as pd
 from numpy import int64, float64
 from copy import deepcopy
 from functools import partial
+from common import configuration
 
 
 class TabAreaWidget(QtWidgets.QWidget):
@@ -41,8 +42,8 @@ class TabAreaWidget(QtWidgets.QWidget):
 
     # def initialize_gui(self):
         for column in self.dataframe.columns:
-            # if column in configuration.proj_cfg['EXCLUDE']:
-            #     continue
+            if column in configuration.proj_cfg['EXCLUDE'].keys():
+                continue
 
             c = ColumnWidget(parent=self.columns_widget,
                              tab_name=self.tab_name,

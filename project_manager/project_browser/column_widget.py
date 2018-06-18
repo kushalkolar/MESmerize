@@ -22,6 +22,7 @@ from numpy import int64, float64
 class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     signal_apply_clicked = QtCore.pyqtSignal(dict)
     signal_sample_id = QtCore.pyqtSignal(str)
+    signal_items_selected = QtCore.pyqtSignal(list)
 
     def __init__(self, parent, tab_name, column_name, is_root=False):
         # super(ColumnWidget, self).__init__(parent)
@@ -37,6 +38,8 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
 
         self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.listWidget.itemSelectionChanged.connect(self.set_lineEdit)
+
+        # self.listWidget.itemSelectionChanged.connect(self.emit_highlighted_items)
 
         if self.column_name == 'SampleID':
             self.listWidget.itemDoubleClicked.connect(self.emit_sample_id)
@@ -94,7 +97,6 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.setEnabled(True)
 
         self.column_type = type(self.series[self.series.index.values.min()])
-        self.labelColumnName.setText(self.column_name + '\n' + str(self.column_type))
 
         if self.column_type is str:
             self.set_as_str()
@@ -106,6 +108,11 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
             self.set_as_bool()
         else:
             self.set_as_unknown()
+
+        if self.column_name == 'SampleID':
+            self.labelColumnName.setText('SampleID: n = ' + str(self.listWidget.count()) + '\n' + str(self.column_type))
+        else:
+            self.labelColumnName.setText(self.column_name + '\n' + str(self.column_type))
 
     def set_empty(self):
         self.listWidget.clear()
@@ -132,13 +139,17 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.lineEdit.setText('$NOT:' + text)
 
     def set_as_str(self):
-        self.listWidget.addItems(list(set(self.series)))
+        l = list(set(self.series))
+        l.sort()
+        self.listWidget.addItems(l)
 
         lineEdit_exact_match = QtWidgets.QWidgetAction(self)
         lineEdit_exact_match.setText('Exact match')
 
     def set_as_num(self):
-        self.listWidget.addItems([str(x) for x in set(self.series)])
+        l = [str(x) for x in set(self.series)]
+        l.sort()
+        self.listWidget.addItems()
 
         lineEdit_greater_than = QtWidgets.QWidgetAction(self)
         lineEdit_greater_than.setText('Greater than')
@@ -159,7 +170,9 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         pass
 
     def set_as_list(self):
-        self.listWidget.addItems(list(set([a for b in self.series.tolist() for a in b])))
+        l = list(set([a for b in self.series.tolist() for a in b]))
+        l.sort()
+        self.listWidget.addItems(l)
 
         lineEdit_exact_match = QtWidgets.QWidgetAction(self)
         lineEdit_exact_match.setText('Exact match')
@@ -174,6 +187,9 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
             txt = txt + '|' + item.text()
         txt = txt[1:]
         self.lineEdit.setText(txt)
+
+    def emit_highlighted_items(self):
+        self.signal_items_selected.emit(self.listWidget.selectedItems())
 
     def emit_sample_id(self, item: QtWidgets.QListWidgetItem):
         self.signal_sample_id.emit(item.text())

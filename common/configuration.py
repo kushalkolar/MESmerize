@@ -102,6 +102,8 @@ def new_proj_config():
 
     proj_cfg['ALL_STIMS'] = {}
 
+    proj_cfg['CUSTOM_COLUMNS'] = {}
+
     proj_cfg['CHILD_DFS'] = {}
 
     set_proj_special()
