@@ -18,7 +18,7 @@ from common import configuration, system_config_window
 # from viewer.modules import batch_manager
 import traceback
 from project_manager.project_manager import ProjectManager
-from project_manager import project_browser
+from project_manager.project_browser.main_gui import ProjectBrowserGUI
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
 from common import start
@@ -175,7 +175,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def initialize_project_browser(self):
         self.project_browser_window = QtWidgets.QMainWindow(parent=self)
-        self.project_browser = project_browser.Window(self.project_manager.dataframe)
+        self.project_browser = ProjectBrowserGUI(self, self.project_manager.dataframe)
         self.project_browser_window.setCentralWidget(self.project_browser)
 
         self.ui.btnProjectBrowser.clicked.connect(self.project_browser_window.show)

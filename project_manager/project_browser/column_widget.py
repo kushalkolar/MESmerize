@@ -77,6 +77,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
 
     @series.setter
     def series(self, series: pd.Series):
+        self._series = series
         if len(series) < 1:
             self.set_empty()
             return

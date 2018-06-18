@@ -22,16 +22,21 @@ from numpy import int64, float64
 class TabAreaWidget(QtWidgets.QWidget):
     signal_new_tab_requested = QtCore.pyqtSignal(pd.DataFrame, list)
 
-    def __init__(self, parent, tab_name, filter_history, is_root=False):
-        QtWidgets.QWidget.__init__(parent)
+    def __init__(self, parent, tab_name, dataframe, filter_history, is_root=False):
+        QtWidgets.QWidget.__init__(self)
+
+        self.vertical_layout = QtWidgets.QVBoxLayout(self)
         self.columns_widget = DataFrameColumnsWidget(self)
+        self.vertical_layout.addWidget(self.columns_widget)
+
         self.tab_name = tab_name
         self.is_root = is_root
         self.filter_history = filter_history
+        self.dataframe = dataframe
 
         self.columns = []
 
-    def initialize_gui(self):
+    # def initialize_gui(self):
         for column in self.dataframe.columns:
             # if column in configuration.proj_cfg['EXCLUDE']:
             #     continue
@@ -45,7 +50,8 @@ class TabAreaWidget(QtWidgets.QWidget):
             self.columns.append(c)
             self.columns_widget.add_column(c)
 
-        self.columns_widget.show()
+        self.populate_tab()
+        # self.columns_widget.show()
 
     @property
     def dataframe(self) -> pd.DataFrame:
@@ -125,7 +131,7 @@ class TabAreaWidget(QtWidgets.QWidget):
             return
 
         for column in self.columns:
-            self.populate_column(column, self.dataframe[column.column_name])
+            self._populate_column(column, self.dataframe[column.column_name])
 
-    def populate_column(self, column: ColumnWidget, series: pd.Series):
+    def _populate_column(self, column: ColumnWidget, series: pd.Series):
         column.series = series

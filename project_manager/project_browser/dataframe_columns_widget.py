@@ -18,9 +18,9 @@ from .column_widget import ColumnWidget
 class DataFrameColumnsWidget(QtWidgets.QWidget):
     signal_filter_requested = QtCore.pyqtSignal(dict)
 
-    def __init__(self, parent, tab_name, filter_history, is_root=False):
+    def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
-        self.tab_name = tab_name
+        # self.tab_name = tab_name
 
         self.verticalLayout = QtWidgets.QVBoxLayout(self)
 
