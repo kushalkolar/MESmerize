@@ -54,6 +54,8 @@ class ViewerWorkEnv:
 
         self.sample_id = sample_id
 
+        self.rois = {}
+
         self.ROIList = ROIList
         self.CurvesList = CurvesList
         #        self.ROItags = []
@@ -378,13 +380,17 @@ class ViewerWorkEnv:
         for ix in range(0, len(self.CurvesList)):
             curvePath = curvesDir + '/CURVE_' + str(ix).zfill(3) + '.npz'
 
-            if isinstance(self.CurvesList[ix], np.ndarray):
-                curve = self.CurvesList[ix]
-            else:
-                curve = self.CurvesList[ix].getData()
+            if self.rois['origin'] == 'manual':
+                if isinstance(self.CurvesList[ix], np.ndarray):
+                    curve = self.CurvesList[ix]
+                else:
+                    curve = self.CurvesList[ix].getData()
 
-            np.savez(curvePath, curve=curve,
-                     roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
+                np.savez(curvePath, curve=curve,
+                         roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
+
+            elif self.rois['origin'] == 'CNMFE':
+                pass
 
             d = {'SampleID':    self.sample_id,
                  'CurvePath':   curvePath.split(proj_path)[1],
