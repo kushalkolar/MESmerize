@@ -63,6 +63,7 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         self._tags = {}
 
         self.curve_plot_item = curve_plot_item
+        self.roi_graphics_object = QtWidgets.QGraphicsObject()
 
     @property
     def zValue(self):
@@ -70,7 +71,7 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
     @zValue.setter
     def zValue(self, val: int):
-        self._zValue = zValue
+        self._zValue = val
 
     @abc.abstractmethod
     def set_curve_data(self, data: np.ndarray):
@@ -86,14 +87,6 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def set_roi_graphics_object(self, *args, **kwargs):
-        pass
-
-    @abc.abstractmethod
-    def save_state(self):
-        pass
-
-    @abc.abstractmethod
-    def set_state(self):
         pass
 
     @abc.abstractmethod
@@ -114,11 +107,28 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def remove_from_viewer(self, view):
         pass
 
+    @abc.abstractmethod
+    def to_state(self):
+        pass
+
+    @abc.abstractmethod
+    @classmethod
+    def from_state(cls, curve_plot_item: pg.PlotItem, state: dict):
+        pass
+
 
 class ManualROI(AbstractBaseROI):
-    def __init__(self, roi_graphics_object: pg.ROI, curve_plot_item: pg.PlotItem):
+    def __init__(self, roi_graphics_object: pg.ROI, curve_plot_item: pg.PlotItem, **kwargs):
         super(ManualROI, self).__init__(curve_plot_item)
+
         self.set_roi_graphics_object(roi_graphics_object)
+
+        for key in kwargs.keys():
+            if key =='roi_graphics_object_state':
+                self.set_roi_graphics_object_state(kwargs['roi_graphics_object_state'])
+                continue
+
+            setattr(self, key, kwargs[key])
 
     def set_curve_data(self, data: np.ndarray):
         return self._curve_data
@@ -132,32 +142,67 @@ class ManualROI(AbstractBaseROI):
     def set_roi_graphics_object(self, graphics_object):
         self.roi_graphics_object = graphics_object
 
-    def save_state(self):
+    def set_roi_graphics_object_state(self, state):
+        self.roi_graphics_object.setState(state)
+
+    def set_tag(self, roi_def, tag):
         pass
 
-    def set_state(self):
+    def get_tag(self, roi_def):
         pass
+
+    def get_all_tags(self):
+        pass
+
+    def to_state(self):
+        pass
+
+    @classmethod
+    def from_state(cls, curve_plot_item, state):
+        roi_graphics_object = pg.ROI.PolyLineROI([[0,0], [10,10], [30,10]], closed=True, pos=[0,0], removable=True)
+        return cls(roi_graphics_object=roi_graphics_object, curve_plot_item=curve_plot_item, **state)
 
 
 class CNMFROI(AbstractBaseROI):
-    def __init__(self, curve_plot_item: pg.PlotItem):
+    def __init__(self, curve_plot_item: pg.PlotItem, **kwargs):
         super(CNMFROI, self).__init__(curve_plot_item)
     
     def set_curve_data(self, data: np.ndarray):
         return self._curve_data
 
-    def get_curve_data(self):
+    def get_curve_data(self) -> np.ndarray:
+        return self._curve_data
+
+    def get_roi_graphics_object(self) -> pg.ScatterPlotItem:
+        if self.roi_graphics_object is QtWidgets.QGraphicsObject():
+            raise AttributeError('Must call roi_graphics_object() first')
+
+        return self.roi_graphics_object
+
+    def set_roi_graphics_object(self, contour: dict):
+        cors = contour['coordinates']
+        cors = cors[~np.isnan(cors).any(axis=1)]
+
+        xs = cors[:, 0].flatten()
+        ys = cors[:, 1].flatten()
+
+        xs = xs.astype(int)
+        ys = ys.astype(int)
+
+        self.roi_graphics_object = pg.ScatterPlotItem(xs, ys)
+
+    def set_tag(self, roi_def, tag):
         pass
 
-    def get_roi_graphics_object(self):
+    def get_tag(self, roi_def):
         pass
 
-    def set_roi_graphics_object(self):
+    def get_all_tags(self):
         pass
 
-    def save_state(self):
+    def to_state(self):
         pass
 
-    def set_state(self):
-        pass
-
+    @classmethod
+    def from_state(cls, curve_plot_item, state):
+        return cls(curve_plot_item=curve_plot_item, **state)
