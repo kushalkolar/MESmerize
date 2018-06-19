@@ -42,6 +42,7 @@ import pickle
 from glob import glob
 # from multiprocessing import Pool
 from functools import partial
+import traceback
 
 
 def run(batch_dir, UUID, n_processes):
@@ -179,7 +180,7 @@ def run(batch_dir, UUID, n_processes):
         output.update({'output': filename[:-5], 'status': 1})
 
     except Exception as e:
-        output.update({'status': 0, 'output_info': str(e)})
+        output.update({'status': 0, 'output_info': traceback.format_exc()})
 
     dview.terminate()
 
@@ -195,6 +196,7 @@ class Output(QtWidgets.QWidget):
         self.batch_dir = batch_dir
         self.UUID = UUID
         self.viewer_ref = viewer_ref
+        self.cnmfe_results = {}
 
         filename = batch_dir + '/' + str(UUID)
         if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
@@ -216,7 +218,7 @@ class Output(QtWidgets.QWidget):
             layout.addWidget(self.btnCP)
 
             self.btnCNMFE = QtWidgets.QPushButton()
-            self.btnCNMFE.setText('CNMFE')
+            self.btnCNMFE.setText('CaImAn CNMFE visualization')
             # self.btnCNMFE.clicked.connect(self.deleteLater)
 
             layout.addWidget(self.btnCNMFE)
@@ -231,14 +233,21 @@ class Output(QtWidgets.QWidget):
         filename = self.batch_dir + '/' + str(self.UUID)
 
         cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+        pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
         inspect_correlation_pnr(cn_filter, pnr)
 
-    def output_cnmfe(self):# , batch_dir, UUID, viewer_ref):
-        print('showing CNMFE')
+    def get_cnmfe_results(self):
         filename = self.batch_dir + '/' + str(self.UUID)
 
-        Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
+        self.cnmfe_results['Yr'] = Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
+
+
+
+    def output_cnmfe(self):# , batch_dir, UUID, viewer_ref):
+        filename = self.batch_dir + '/' + str(self.UUID)
+
+        Yr = self.cnmfe_results['Yr']
+
         cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
         cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
         cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
@@ -249,6 +258,9 @@ class Output(QtWidgets.QWidget):
         dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
         self.visualization = cm.utils.visualization.view_patches_bar(Yr, cnmA[:, idx_components], cnmC[idx_components], cnmb, cnm_f,
                                                 dims[0], dims[1], YrA=cnmYrA[idx_components], img=cn_filter)
+
+    def import_cnmfe_into_viewer(self):
+        pass
 
 
 # class QuestionBox(QtWidgets.QWidget):
