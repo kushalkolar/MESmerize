@@ -162,7 +162,7 @@ class MainWindow(QtWidgets.QMainWindow):
              }
 
         try:
-            changes = objecteditor.oedit(self.vi.viewer.workEnv)
+            changes = objecteditor.oedit(d)
         except:
             QtWidgets.QMessageBox.warning(self, 'Unable to open work environment editor',
                                           'The following error occured while trying to open the work environment editor:'
@@ -171,7 +171,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if changes is not None:
             try:
-                self.vi.viewer.workEnv = changes
+                for key in d.keys():
+                    setattr(self.vi.viewer.workEnv, key, d[key])
             except:
                 QtWidgets.QMessageBox.warning(self, 'Unable to apply changes',
                                               'The following error occured while trying to save changes to the work '
