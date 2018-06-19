@@ -56,10 +56,12 @@ class ROIList(list):
     def highlight_curve(self):
         pass
 
+    def live_update_plot(self):
+        pass
+
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
-    def __init__(self, curve_plot_item: pg.PlotItem):
-        self._curve_data = np.empty(0)
+    def __init__(self, curve_plot_item: pg.PlotDataItem):
         self._tags = {}
 
         self.curve_plot_item = curve_plot_item
@@ -74,14 +76,6 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         self._zValue = val
 
     @abc.abstractmethod
-    def set_curve_data(self, data: np.ndarray):
-        pass
-
-    @abc.abstractmethod
-    def get_curve_data(self) -> np.ndarray:
-        pass
-
-    @abc.abstractmethod
     def get_roi_graphics_object(self) -> QtWidgets.QGraphicsObject:
         pass
 
@@ -89,17 +83,20 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def set_roi_graphics_object(self, *args, **kwargs):
         pass
 
-    @abc.abstractmethod
+    def get_curve_data_item(self) -> pg.PlotDataItem:
+        return self.curve_plot_item
+
+    def set_curve_data_item(self,  x: np.ndarray, y: np.ndarray):
+        self.curve_plot_item.setData(y=y, x=x)
+
     def set_tag(self, roi_def, tag):
-        pass
+        self._tags[roi_def] = tag
 
-    @abc.abstractmethod
     def get_tag(self, roi_def):
-        pass
+        return self._tags[roi_def]
 
-    @abc.abstractmethod
     def get_all_tags(self):
-        pass
+        return self._tags
 
     def add_to_viewer(self, view: pg.ViewBox):
         view.addItem(self.get_roi_graphics_object())
@@ -113,12 +110,12 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     @classmethod
-    def from_state(cls, curve_plot_item: pg.PlotItem, state: dict):
+    def from_state(cls, curve_plot_item: pg.PlotDataItem, state: dict):
         pass
 
 
 class ManualROI(AbstractBaseROI):
-    def __init__(self, roi_graphics_object: pg.ROI, curve_plot_item: pg.PlotItem, **kwargs):
+    def __init__(self, roi_graphics_object: pg.ROI, curve_plot_item: pg.PlotDataItem, **kwargs):
         super(ManualROI, self).__init__(curve_plot_item)
 
         self.set_roi_graphics_object(roi_graphics_object)
@@ -130,12 +127,6 @@ class ManualROI(AbstractBaseROI):
 
             setattr(self, key, kwargs[key])
 
-    def set_curve_data(self, data: np.ndarray):
-        return self._curve_data
-
-    def get_curve_data(self):
-        pass
-
     def get_roi_graphics_object(self):
         pass
 
@@ -145,33 +136,18 @@ class ManualROI(AbstractBaseROI):
     def set_roi_graphics_object_state(self, state):
         self.roi_graphics_object.setState(state)
 
-    def set_tag(self, roi_def, tag):
-        pass
-
-    def get_tag(self, roi_def):
-        pass
-
-    def get_all_tags(self):
-        pass
-
     def to_state(self):
         pass
 
     @classmethod
     def from_state(cls, curve_plot_item, state):
-        roi_graphics_object = pg.ROI.PolyLineROI([[0,0], [10,10], [30,10]], closed=True, pos=[0,0], removable=True)
+        roi_graphics_object = pg.ROI.PolyLineROI([[0, 0], [10, 10], [30, 10]], closed=True, pos=[0, 0], removable=True)
         return cls(roi_graphics_object=roi_graphics_object, curve_plot_item=curve_plot_item, **state)
 
 
 class CNMFROI(AbstractBaseROI):
-    def __init__(self, curve_plot_item: pg.PlotItem, **kwargs):
+    def __init__(self, curve_plot_item: pg.PlotDataItem, **kwargs):
         super(CNMFROI, self).__init__(curve_plot_item)
-    
-    def set_curve_data(self, data: np.ndarray):
-        return self._curve_data
-
-    def get_curve_data(self) -> np.ndarray:
-        return self._curve_data
 
     def get_roi_graphics_object(self) -> pg.ScatterPlotItem:
         if self.roi_graphics_object is QtWidgets.QGraphicsObject():
@@ -186,22 +162,15 @@ class CNMFROI(AbstractBaseROI):
         xs = cors[:, 0].flatten()
         ys = cors[:, 1].flatten()
 
-        xs = xs.astype(int)
-        ys = ys.astype(int)
+        self.xs = xs.astype(int)
+        self.ys = ys.astype(int)
 
         self.roi_graphics_object = pg.ScatterPlotItem(xs, ys)
 
-    def set_tag(self, roi_def, tag):
-        pass
-
-    def get_tag(self, roi_def):
-        pass
-
-    def get_all_tags(self):
-        pass
-
     def to_state(self):
-        pass
+        state = {'xs':          self.xs,
+                 'ys':          self.ys,
+                 '_curve_data': self.get_curve_data()}
 
     @classmethod
     def from_state(cls, curve_plot_item, state):
