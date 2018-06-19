@@ -19,10 +19,12 @@ import os
 from psutil import cpu_count
 from common.window_manager import WindowManager
 from project_manager.project_manager import ProjectManager
-
+from .project_config_window import ProjectConfigUpdater
 
 window_manager = WindowManager()
 project_manager = ProjectManager(None)
+proj_cfg_changed = ProjectConfigUpdater()
+
 #################################################################
 
 # System Configuration
@@ -90,7 +92,7 @@ if not IS_WINDOWS:
 
 
 def new_proj_config():
-    defaultInclude = ['SampleID', 'Genotype', 'Date', 'comments']
+    defaultInclude = ['SampleID', 'Date', 'comments']
     proj_cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
     defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'uuid_curve']

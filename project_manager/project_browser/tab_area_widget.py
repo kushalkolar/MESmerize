@@ -77,7 +77,6 @@ class TabAreaWidget(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(dict)
     def slot_filter_requested(self, d):
-        print(d)
         column_widget = d['column_widget']
 
         dataframe = self.dataframe.copy()

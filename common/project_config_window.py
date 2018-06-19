@@ -12,7 +12,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 import sys
-sys.path.append('..')
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 if __name__ == '__main__':
     import configuration
@@ -40,6 +39,11 @@ class ColumnsPage(QtWidgets.QWidget):
         self.ui.listwExclude.addItems(configuration.proj_cfg.options('EXCLUDE'))
         self.ui.listwROIDefs.addItems(configuration.proj_cfg.options('ROI_DEFS'))
         self.ui.listwStimDefs.addItems(configuration.proj_cfg.options('STIM_DEFS'))
+
+        self.ui.radioButtonBoolean.clicked.connect(self.disable_custom_column_line_edit_validator)
+        self.ui.radioButtonStr.clicked.connect(self.disable_custom_column_line_edit_validator)
+        self.ui.radioButtonInt64.clicked.connect(self.set_custom_column_line_edit_validator)
+        self.ui.radioButtonFloat64.clicked.connect(self.set_custom_column_line_edit_validator)
         
         self.ui.btnAddNewROICol.clicked.connect(self._addROIDef)
         self.ui.btnAddNewStimCol.clicked.connect(self._addStimDef)
@@ -47,6 +51,8 @@ class ColumnsPage(QtWidgets.QWidget):
         self.ui.btnAddCustomColumn.clicked.connect(self.add_custom_column)
 
         self.ui.btnSave.clicked.connect(self._saveConfig)
+
+        self.custom_to_add = {}
 
     def _addROIDef(self):
         if self.ui.lineEdNewROIDef.text() != '':
@@ -69,6 +75,16 @@ class ColumnsPage(QtWidgets.QWidget):
         pass
     
     def _saveConfig(self):
+        if len(configuration.window_manager.flowcharts) > 0:
+            if QtWidgets.QMessageBox.question(self,
+                                              'Flowcharts are open',
+                                              'Updating the project configuration while you are actively using a flowchart '
+                                              'will remove the inputs to any <Load_Proj_DF> that are open and you will '
+                                              'need to create these nodes again.\n'
+                                              'Do you still want to continue?',
+                                               QtWidgets.QMessageBox.Yes,
+                                               QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                return
 
         include = []
         for i in range(0, self.ui.listwInclude.count()):
@@ -90,28 +106,54 @@ class ColumnsPage(QtWidgets.QWidget):
             stim_defs.append(self.ui.listwStimDefs.item(i).text())
         configuration.proj_cfg['STIM_DEFS'] = dict.fromkeys(stim_defs)
 
+        for column in self.custom_to_add.keys():
+            configuration.proj_cfg.set('CUSTOM_COLUMNS', column, str(self.custom_to_add[column]['type']))
+
         configuration.save_proj_config()
+        configuration.project_manager.update_project_config_requested(self.custom_to_add)
         self.ui.btnClose.click()
 
     def set_custom_column_line_edit_validator(self):
         if self.ui.radioButtonInt64.isChecked():
-            self.ui.lineEditCustomColumnName.setValidator(QtGui.QIntValidator)
+            self.ui.lineEditCustomColumnReplacementValue.setValidator(QtGui.QIntValidator())
         elif self.ui.radioButtonFloat64.isChecked():
-            self.ui.lineEditCustomColumnName.setValidator(QtGui.QDoubleValidator)
+            self.ui.lineEditCustomColumnReplacementValue.setValidator(QtGui.QDoubleValidator())
+
+    def disable_custom_column_line_edit_validator(self):
+        self.ui.lineEditCustomColumnReplacementValue.setValidator(None)
 
     def add_custom_column(self):
+        name = self.ui.lineEditCustomColumnName.text()
+        if name == '':
+            return
+
+        if name in configuration.project_manager.dataframe.columns:
+            QtWidgets.QMessageBox.warning(self, 'Name already exists',
+                                          'The entered column name already exists in the dataframe. '
+                                          'Enter a different name.')
+            return
+
+        replacement_value = self.ui.lineEditCustomColumnReplacementValue.text()
+
         if self.ui.radioButtonStr.isChecked():
-            column_type = str
+            if replacement_value == '':
+                replacement_value = 'untagged'
+            column_type = 'str'
+
         elif self.ui.radioButtonInt64.isChecked():
-            column_type = int64
-            self.ui.lineEditCustomColumnName.setValidator(QtGui.QIntValidator)
+            if replacement_value == '':
+                replacement_value = 0
+            column_type = 'int64'
+
         elif self.ui.radioButtonFloat64.isChecked():
-            column_type = float64
-            self.ui.lineEditCustomColumnName.setValidator(QtGui.QDoubleValidator)
+            if replacement_value == '':
+                replacement_value = 0.0
+            column_type = 'float64'
+
         elif self.ui.radioButtonBoolean.isChecked():
-            column_type = bool
-            val = self.ui.lineEditCustomColumnReplacementValue.text()
-            if val not in ['True', 'False']:
+            column_type = 'bool'
+
+            if replacement_value not in ['True', 'False'] and not configuration.project_manager.dataframe.empty:
                 QtWidgets.QMessageBox.warning(self, 'Invalid replacement value',
                                               'You can enter only True or False for boolean data types')
 
@@ -120,8 +162,12 @@ class ColumnsPage(QtWidgets.QWidget):
                                           'You must select a data type')
             return
 
-        name = self.ui.lineEditCustomColumnName.text()
+        name = name.replace(' ', '_')
+        self.ui.listwCustomColumns.addItem(name)
+        self.ui.listwInclude.addItem(name)
+        self.ui.listwCustomColumns.clear()
 
+        self.custom_to_add.update({name: {'type': column_type, 'replacement_value': replacement_value}})
 
 
 class Window(QtWidgets.QWidget):
@@ -138,6 +184,19 @@ class Window(QtWidgets.QWidget):
         self.tabs.widget(self.tabs.count() - 1).setupGUI()
 
         self.tabs.widget(0).ui.btnClose.clicked.connect(self.close)
+
+
+class ProjectConfigUpdater:
+    def __init__(self):
+        self._funcs = []
+
+    def register(self, func: callable):
+        self._funcs.append(func)
+
+    def notify_all(self):
+        for func in self._funcs:
+            func()
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])

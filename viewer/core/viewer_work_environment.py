@@ -31,7 +31,7 @@ import json
 
 
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file=''):
+    def __init__(self, imgdata=None, sample_id='', ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file='', custom_columns_dict={}):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -52,6 +52,8 @@ class ViewerWorkEnv:
         else:
             self.isEmpty = True
 
+        self.sample_id = sample_id
+
         self.ROIList = ROIList
         self.CurvesList = CurvesList
         #        self.ROItags = []
@@ -60,7 +62,7 @@ class ViewerWorkEnv:
         self.roi_states = roi_states
         self.comments = comments
         self.origin_file = origin_file
-
+        self.custom_columns_dict = custom_columns_dict
     #    def __repr__(self):
     #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
     #            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
@@ -107,9 +109,10 @@ class ViewerWorkEnv:
 
         p = pickle.load(open(pikPath, 'rb'))
 
+        sample_id = p['imdata']['sample_id']
+
         imdata = ImgData(seq,
                          p['imdata']['meta'],
-                         SampleID=p['imdata']['SampleID'],
                          stimMaps=p['imdata']['stimMaps'],
                          )
 
@@ -120,7 +123,7 @@ class ViewerWorkEnv:
             for ID in range(0, len(p['imdata']['roi_states'])):
                 roi_states.append(p['imdata']['roi_states'][ID])
 
-        return cls(imdata, roi_states=roi_states, comments=comments)
+        return cls(imdata, roi_states=roi_states, comments=comments, sample_id=sample_id)
 
     @property
     def saved(self):
@@ -220,7 +223,8 @@ class ViewerWorkEnv:
             seq = tifffile.imread(path)
         elif method == 'asarray':
             tif = tifffile.TiffFile(path, is_nih=True)
-            seq = tif.asarray(key=range(0, len(tif.series)), maxworkers=int(configuration.sys_cfg['HARDWARE']['n_processes']))
+            seq = tif.asarray(key=range(0, len(tif.series)),
+                              maxworkers=int(configuration.sys_cfg['HARDWARE']['n_processes']))
         else:
             raise ValueError("Must specify 'imread' or 'asarray' in method argument")
 
@@ -243,7 +247,7 @@ class ViewerWorkEnv:
 
     def _make_dict(self):
         # Dict that's later used for pickling
-        d = {'SampleID':    self.imgdata.SampleID,
+        d = {'sample_id':    self.sample_id,
              'meta':        self.imgdata.meta,
              'stimMaps':    self.imgdata.stimMaps,
              'comments':    self.comments
@@ -286,7 +290,7 @@ class ViewerWorkEnv:
             return
 
         if filename is None:
-            fileName = dirPath + '/' + self.imgdata.SampleID + '_' + str(time.time())
+            fileName = dirPath + '/' + self.sample_id + '_' + str(time.time())
         else:
             fileName = dirPath + '/' + filename
 
@@ -301,10 +305,10 @@ class ViewerWorkEnv:
 
         return fileName
 
-    def to_pandas(self, projPath):
+    def to_pandas(self, proj_path):
         """
-        :param      projPath: Root path of the current project
-        :type       projPath: str
+        :param      proj_path: Root path of the current project
+        :type       proj_path: str
         :return:    list of dicts that each correspond to a single curve that can be appended
                     as rows to the project dataframe
         :rtype:     list
@@ -314,7 +318,7 @@ class ViewerWorkEnv:
             return
 
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
-        imgdir = projPath + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
+        imgdir = proj_path + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
 
         imgPath = self.to_pickle(imgdir)
 
@@ -365,7 +369,7 @@ class ViewerWorkEnv:
         else:
             comments = self.comments
 
-        curvesDir = projPath + '/curves/' + self.imgdata.SampleID
+        curvesDir = proj_path + '/curves/' + self.sample_id
 
         if os.path.isdir(curvesDir) is False:
             os.mkdir(curvesDir)
@@ -382,15 +386,15 @@ class ViewerWorkEnv:
             np.savez(curvePath, curve=curve,
                      roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
 
-            d = {'SampleID':    self.imgdata.SampleID,
-                 'CurvePath':   curvePath.split(projPath)[1],
-                 'ImgPath':     imgPath.split(projPath)[1] + '.tiff',
-                 'ImgInfoPath': imgPath.split(projPath)[1] + '.pik',
-                 'Genotype':    self.imgdata.Genotype
+            d = {'SampleID':    self.sample_id,
+                 'CurvePath':   curvePath.split(proj_path)[1],
+                 'ImgPath':     imgPath.split(proj_path)[1] + '.tiff',
+                 'ImgInfoPath': imgPath.split(proj_path)[1] + '.pik',
                  }
 
             # Final list of dicts that are each appended as rows to the project DataFrame
             dicts.append({**d,
+                          **self.custom_columns_dict,
                           **stimMapsSet,
                           **self.ROIList[ix].tags,
                           'Date':       date,

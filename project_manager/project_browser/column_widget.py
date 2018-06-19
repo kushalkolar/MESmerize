@@ -149,7 +149,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     def set_as_num(self):
         l = [str(x) for x in set(self.series)]
         l.sort()
-        self.listWidget.addItems()
+        self.listWidget.addItems(l)
 
         lineEdit_greater_than = QtWidgets.QWidgetAction(self)
         lineEdit_greater_than.setText('Greater than')
@@ -167,7 +167,9 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.lineEdit.setText(modifier + text)
 
     def set_as_bool(self):
-        pass
+        l = [str(x) for x in set(self.series)]
+        l.sort()
+        self.listWidget.addItems(l)
 
     def set_as_list(self):
         l = list(set([a for b in self.series.tolist() for a in b]))

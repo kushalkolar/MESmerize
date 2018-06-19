@@ -81,6 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
               'np': np,
               'pickle': pickle,
               'tifffile': tifffile,
+              'configuration': configuration,
               'window_manager': self.window_manager,
               'main': self
               }
@@ -89,6 +90,7 @@ class MainWindow(QtWidgets.QMainWindow):
               "numpy as np          \n" \
               "pandas as pd         \n" \
               "pickle as pickle    \n" \
+              "configuration as configuration\n" \
               "tifffile as tifffile \n" \
               "self.window_manager as window_manager     \n" \
               "self as main         \n" \
@@ -120,12 +122,14 @@ class MainWindow(QtWidgets.QMainWindow):
                                               'Could not create a new project.\n' +
                                               traceback.format_exc())
                 return
+        else:
+            return
         self.ui.actionProject_Configuration.setEnabled(True)
         self.ui.actionProject_Configuration.triggered.connect(self.project_manager.show_config_window)
 
         self.set_proj_buttons_visible(False)
 
-        self.initialize_project_browser()
+        # self.initialize_project_browser()
 
     def open_project(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
@@ -149,7 +153,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.set_proj_buttons_visible(False)
 
-        self.initialize_project_browser()
+        start.project_browser()
+        self.ui.btnProjectBrowser.clicked.connect(configuration.window_manager.project_browsers[-1].show)
 
     def set_proj_buttons_visible(self, b):
         self.ui.btnNewProject.setVisible(b)
@@ -171,10 +176,6 @@ class MainWindow(QtWidgets.QMainWindow):
     # def start_batch_manager(self):
     #     self.batch_manager = batch_manager.ModuleGUI(parent=self, self)
     #     self.batch_manager.hide()
-
-    def initialize_project_browser(self):
-        start.project_browser()
-        self.ui.btnProjectBrowser.clicked.connect(configuration.window_manager.project_browsers[-1].show)
 
     def spawn_new_viewer(self):
         start.viewer()

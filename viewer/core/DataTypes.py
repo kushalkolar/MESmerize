@@ -28,7 +28,7 @@ from .misc_funcs import fix_fp_errors
 
 
 class ImgData:
-    def __init__(self, seq, meta=None, SampleID=None, stimMaps=None):
+    def __init__(self, seq, meta=None, stimMaps=None):
         self.seq = seq
         if meta is None:
             meta = {'origin': 'unknown',
@@ -37,7 +37,6 @@ class ImgData:
                     'orig_meta': None}
 
         self.meta = meta.copy()
-        self.SampleID = SampleID
         self._stimMaps = stimMaps
 
     @property

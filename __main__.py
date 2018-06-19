@@ -28,6 +28,7 @@ if __name__ == '__main__':
     start.window_manager()
 
     if not len(sys.argv) > 1:
+
         start.main()
 
     elif sys.argv[1].endswith('.tiff') or sys.argv[1].endswith('.tif'):
