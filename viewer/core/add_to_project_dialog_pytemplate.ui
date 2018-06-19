@@ -15,23 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLineEdit" name="lineEdAnimalID">
+    <widget class="QLineEdit" name="lineEditAnimalID">
      <property name="placeholderText">
       <string>*Animal ID</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="lineEdTrialID">
+    <widget class="QLineEdit" name="lineEditTrialID">
      <property name="placeholderText">
       <string>*Trial ID</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="lineEdGenotype">
-     <property name="placeholderText">
-      <string>Genotype</string>
      </property>
     </widget>
    </item>
@@ -76,7 +69,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btnProceed">
      <property name="text">
       <string>Proceed</string>
      </property>

@@ -704,7 +704,7 @@ class ImageView(QtWidgets.QWidget):
 
         new_channels = []
         for file in csvfiles:
-            if file.split('/')[-1].split('.csv')[0] not in configuration.cfg.options('STIM_DEFS'):
+            if file.split('/')[-1].split('.csv')[0] not in configuration.proj_cfg.options('STIM_DEFS'):
                 new_channels.append(file.split('/')[-1].split('.csv')[0])
 
         if len(new_channels) > 0:
@@ -753,7 +753,7 @@ class ImageView(QtWidgets.QWidget):
             if self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text() == '':
                 empty_channels.append(self.stimMapWin.tabs.widget(i).ui.titleLabelChannel.objectName())
             # Check if the user has entered any stimulus definitions that aren't a part of the project.
-            elif self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text() not in configuration.cfg.options('STIM_DEFS'):
+            elif self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text() not in configuration.proj_cfg.options('STIM_DEFS'):
                 new_channels.append(self.stimMapWin.tabs.widget(i).ui.lineEdChannelName.text())
 
         if len(empty_channels) > 0:
@@ -1156,7 +1156,7 @@ class ImageView(QtWidgets.QWidget):
         self.workEnv.ROIList.append(PolyLineROI([[0,0], [10,10], [30,10]],
                                                 closed=True, pos=[0,0], removable=True))
 
-        self.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.cfg.options('ROI_DEFS'), '')
+        self.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'), '')
         # Create new plot instance for plotting the newly created ROI
         self.curve = self.ui.roiPlot.plot()
         self.workEnv.CurvesList.append(self.curve)

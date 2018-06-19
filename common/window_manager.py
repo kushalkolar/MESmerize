@@ -18,7 +18,7 @@ from functools import partial
 
 class WindowManager:
     def __init__(self):
-        pass
+        self._welcome_window = None
 
     def initalize(self):
         self.project_browsers = WindowClass('Project Browser')

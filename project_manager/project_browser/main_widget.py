@@ -39,6 +39,21 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
 
         self.tab_widget.tabCloseRequested.connect(self.close_tab)
 
+        configuration.project_manager.signal_dataframe_changed.connect(self.update_dataframe_data)
+
+    @QtCore.pyqtSlot(pd.DataFrame)
+    def update_dataframe_data(self, dataframe: pd.DataFrame):
+        self.dataframe = dataframe
+
+        tab_area = self.tabs['root']
+        assert isinstance(tab_area, TabAreaWidget)
+
+        tab_area.dataframe = self.dataframe
+        tab_area.populate_tab()
+
+        for tab_name in self.tabs.keys():
+            pass
+
     def add_tab(self, dataframe, filter_history, is_root=False):
         if not is_root:
             tab_name = QtWidgets.QInputDialog.getText(self, None, 'Enter name for new tab: ')

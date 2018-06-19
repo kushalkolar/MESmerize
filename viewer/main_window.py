@@ -29,6 +29,7 @@ from common import configuration
 from .image_menu.main import ImageMenu
 from spyder.widgets.variableexplorer import objecteditor
 import traceback
+from .core.add_to_project import AddToProjectDialog
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -64,14 +65,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.initialize_menubar_triggers()
 
-        ns = {'pd':             pd,
-              'np':             np,
-              'pickle':         pickle,
-              'tifffile':       tifffile,
-              'ViewerWorkEnv':       ViewerWorkEnv,
-              'DataTypes':      DataTypes,
-              'objecteditor':   objecteditor,
-              'main':           self
+        ns = {'pd': pd,
+              'np': np,
+              'pickle': pickle,
+              'tifffile': tifffile,
+              'ViewerWorkEnv': ViewerWorkEnv,
+              'DataTypes': DataTypes,
+              'objecteditor': objecteditor,
+              'main': self
               }
 
         txt = "Namespaces:          \n" \
@@ -149,6 +150,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_workEnv_editor(self):
         self.vi.viewer.status_bar_label.setText('Please wait, loading editor interface...')
+
+        d = {'custom_columns_dict': self.vi.viewer.workEnv.custom_columns_dict,
+             'isEmpty':             self.vi.viewer.workEnv.isEmpty,
+             'imgdata':             self.vi.viewer.workEnv.imgdata.seq,
+             'ROIList':             self.vi.viewer.workEnv.ROIList,
+             'CurvesList':          self.vi.viewer.workEnv.CurvesList,
+             'comments':            self.vi.viewer.workEnv.comments,
+             'origin_file':         self.vi.viewer.workEnv.origin_file,
+             '_saved':              self.vi.viewer.workEnv._saved
+             }
+
         try:
             changes = objecteditor.oedit(self.vi.viewer.workEnv)
         except:
@@ -185,3 +197,16 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 import common.start
                 common.start.main()
+
+        if len(self.viewer_reference.workEnv.CurvesList) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No curves',
+                                          'You do not have any curves in your work environment')
+            return
+
+        else:
+            self.add_to_project_dialog = AddToProjectDialog(self.viewer_reference.workEnv)
+            self.add_to_project_dialog.signal_finished.connect(self._delete_add_to_project_dialog)
+            self.add_to_project_dialog.show()
+
+    def _delete_add_to_project_dialog(self):
+        self.add_to_project_dialog.deleteLater()
