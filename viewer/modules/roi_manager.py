@@ -18,6 +18,7 @@ import numpy as np
 from common import configuration
 from ..core.viewer_work_environment import ViewerWorkEnv
 from pyqtgraphCore.graphicsItems import ROI
+from .roi_manager_modules import managers
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
