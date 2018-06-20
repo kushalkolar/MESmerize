@@ -39,7 +39,9 @@ class ViewerInterface:
         if self.viewer.workEnv.isEmpty:
             return True
         if (self.viewer.workEnv.saved is False) and (QtWidgets.QMessageBox.warning(self.viewer, 'Warning!',
-                         'You have unsaved work in your environment. Would you like to discard them and continue?',
+                         'You have the following unsaved changes in your work environment. '
+                         'Would you like to discard them and continue?\n\n' +
+                             ' > '.join(self.viewer.workEnv.changed_items),
                          QtWidgets.QMessageBox.Yes,QtWidgets.QMessageBox.No)) == QtWidgets.QMessageBox.No:
             return False
         self._clear_workEnv(clear_sample_id)
@@ -81,3 +83,5 @@ class ViewerInterface:
         if self.viewer.workEnv is not None:
             self.viewer.workEnv.saved = False
 
+        if element is not None:
+            self.viewer.workEnv.changed_items.append(element)

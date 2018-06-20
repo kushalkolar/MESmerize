@@ -43,6 +43,7 @@ from glob import glob
 # from multiprocessing import Pool
 from functools import partial
 import traceback
+from ..roi_manager import ModuleGUI as ROIModuleGUI
 
 
 def run(batch_dir, UUID, n_processes):
@@ -103,7 +104,7 @@ def run(batch_dir, UUID, n_processes):
             Y, gSig=gSig, swap_dim=False)
         if not input_params['do_cnmfe'] and input_params['do_corr_pnr']:
             pickle.dump(cn_filter, open(filename[0][:-5] + '_cn_filter.pikl', 'wb'), protocol=4)
-            pickle.dump(pnr, open(filename[0][:-5] + 'pnr.pikl', 'wb'), protocol=4)
+            pickle.dump(pnr, open(filename[0][:-5] + '_pnr.pikl', 'wb'), protocol=4)
             output.update({'output': filename[0][:-5], 'status': 1, 'output_info': 'inspect correlation & pnr'})
             json.dump(output, open(file_path + '.out', 'w'))
             dview.terminate()
@@ -174,7 +175,7 @@ def run(batch_dir, UUID, n_processes):
         pickle.dump(cnm.f, open(filename[:-5] + '_cnm-f.pikl', 'wb'), protocol=4)
         pickle.dump(idx_components, open(filename[:-5] + '_idx_components.pikl', 'wb'), protocol=4)
         pickle.dump(cnm.YrA, open(filename[:-5] + '_cnm-YrA.pikl', 'wb'), protocol=4)
-        pickle.dump(pnr, open(filename[0][:-5] + 'pnr.pikl', 'wb'), protocol=4)
+        pickle.dump(pnr, open(filename[0][:-5] + '_pnr.pikl', 'wb'), protocol=4)
         pickle.dump(cn_filter, open(filename[:-5] + '_cn_filter.pikl', 'wb'), protocol=4)
         pickle.dump(dims, open(filename[:-5] + '_dims.pikl', 'wb'), protocol=4)
         output.update({'output': filename[:-5], 'status': 1})
@@ -239,28 +240,37 @@ class Output(QtWidgets.QWidget):
     def get_cnmfe_results(self):
         filename = self.batch_dir + '/' + str(self.UUID)
 
-        self.cnmfe_results['Yr'] = Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
-
-
+        self.cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
+        self.cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
+        self.idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
+        self.dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
 
     def output_cnmfe(self):# , batch_dir, UUID, viewer_ref):
         filename = self.batch_dir + '/' + str(self.UUID)
 
-        Yr = self.cnmfe_results['Yr']
+        self.get_cnmfe_results()
 
-        cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
+        Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
+
         cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-        cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
         cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-        idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
         cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
         cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
-        self.visualization = cm.utils.visualization.view_patches_bar(Yr, cnmA[:, idx_components], cnmC[idx_components], cnmb, cnm_f,
-                                                dims[0], dims[1], YrA=cnmYrA[idx_components], img=cn_filter)
+        self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
+                                                                     self.cnmC[self.idx_components], cnmb, cnm_f,
+                                                                     self.dims[0], self.dims[1],
+                                                                     YrA=cnmYrA[self.idx_components], img=cn_filter)
 
     def import_cnmfe_into_viewer(self):
-        pass
+        self.get_cnmfe_results()
+
+        self.viewer_ref.parent.ui.actionROI_Manager.trigger()
+        for m in self.viewer_ref.parent.running_modules:
+            if isinstance(m, ROIModuleGUI):
+                m.start_cnmfe_mode(cnmA=self.cnmA,
+                                   cnmC=self.cnmC,
+                                   idx_components=self.idx_components,
+                                   dims=self.dims)
 
 
 # class QuestionBox(QtWidgets.QWidget):

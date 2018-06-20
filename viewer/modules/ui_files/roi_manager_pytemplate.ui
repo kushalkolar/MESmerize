@@ -32,33 +32,8 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QCheckBox" name="checkBoxShowAllROIs">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Show all ROIs or just the one selected from the list</string>
-          </property>
-          <property name="text">
-           <string>Show all on image</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item row="1" column="0">
+         <layout class="QVBoxLayout" name="verticalLayoutROIList">
           <item>
            <widget class="QLabel" name="label">
             <property name="text">
@@ -69,35 +44,10 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QListWidget" name="listwROIs">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>ARRAYS START AT ZERO!</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
-        <item row="2" column="1">
-         <layout class="QVBoxLayout" name="verticalLayout">
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayoutTags">
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -108,43 +58,17 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QListWidget" name="listwROIDefs">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>ROI Definitions pulled from your config file.
-To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
-        <item row="3" column="0" colspan="2">
-         <widget class="QLineEdit" name="lineEdROIDef">
+        <item row="2" column="0" colspan="2">
+         <widget class="QLineEdit" name="lineEditROITag">
           <property name="placeholderText">
            <string>Add Tag to ROI Definition</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="0" colspan="2">
-         <widget class="QPushButton" name="BtnSetROIDefs">
+        <item row="3" column="0" colspan="2">
+         <widget class="QPushButton" name="btnSetROITag">
           <property name="text">
            <string>Set ROI tag</string>
           </property>
@@ -163,5 +87,22 @@ To add more definitions go to Main Menu -&gt; Edit -&gt; Project Configuration</
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lineEditROITag</sender>
+   <signal>returnPressed()</signal>
+   <receiver>btnSetROITag</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>315</x>
+     <y>440</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>475</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

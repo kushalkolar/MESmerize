@@ -153,7 +153,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
                 self.lwd = ListWidgetDialog()
                 self.lwd.listWidget.addItems([str(i) for i in range(len(viewers))])
-                self.lwd.label.setText('Viewer use for output:')
+                self.lwd.label.setText('Viewer to use for output:')
                 self.lwd.btnOK.clicked.connect(partial(self.show_item_output, m, viewers, UUID))
             else:
                 self.show_item_output(m, configuration.window_manager.viewers[0], UUID)

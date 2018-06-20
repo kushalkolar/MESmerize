@@ -61,6 +61,7 @@ class ViewerWorkEnv:
         #        self.ROItags = []
         self.imgdata = imgdata
         self._saved = True
+        self.changed_items = []
         self.roi_states = roi_states
         self.comments = comments
         self.origin_file = origin_file
@@ -134,6 +135,8 @@ class ViewerWorkEnv:
     @saved.setter
     def saved(self, state):
         self._saved = state
+        if state is True:
+            self.changed_items = []
 
     @staticmethod
     def load_mesfile(path):
