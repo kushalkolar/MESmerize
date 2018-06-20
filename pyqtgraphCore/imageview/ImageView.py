@@ -1339,7 +1339,7 @@ class ImageView(QtWidgets.QWidget):
                 # data = np.divide(np.subtract(data, Fo), Fo)
                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
                 self.workEnv.CurvesList[ID].setPen(color)
-                self.workEnv.Curvespi.List[ID].show()
+                self.workEnv.CurvesList[ID].show()
             else:
                 while coords.ndim > 2:
                     coords = coords[:,:,0]
@@ -1368,35 +1368,6 @@ class ImageView(QtWidgets.QWidget):
         for ID in range(0, len(self.workEnv.ROIList)):
             self.updatePlot(ID)
 
-
-
-
-
-
-
-    # def setSampleID(self):
-    #     if self.ui.lineEdAnimalID.text() == '' or self.ui.lineEdTrialID.text() == '':
-    #         QtGui.QMessageBox.warning(self, 'No Sample ID set!', 'You must enter an Animal ID and/or Trial ID'
-    #                              ' before you can continue.', QtGui.QMessageBox.Ok)
-    #         return False
-    #
-    #     self.workEnv.imgdata.SampleID = self.ui.lineEdAnimalID.text() + '_-_' +  self.ui.lineEdTrialID.text()
-    #     self.workEnv.imgdata.Genotype = self.ui.lineEdGenotype.text()
-    #
-    #     if self.workEnv.imgdata.Genotype is None or self.workEnv.imgdata.Genotype == '':
-    #         if QtGui.QMessageBox.warning(None, 'No Genotype set!', 'You have not entered a genotype for this sample ' +\
-    #             'Would you like to continue anyways?',QtGui.QMessageBox.Yes,
-    #                                      QtGui.QMessageBox.No) == QtGui.QMessageBox.No:
-    #
-    #             return False
-    #         else:
-    #             self.workEnv.imgdata.Genotype = 'untagged'
-    #
-    #     return True
-
-    def comment_text_box_update(self):
-        if isinstance(self.workEnv, viewerWorkEnv):
-            self.workEnv.comments = self.ui.textBoxComments.toPlainText()
 
     '''
     ################################################################################################################
@@ -1476,7 +1447,7 @@ class ImageView(QtWidgets.QWidget):
             ind = inds[-1,0]
         return ind, t
 
-    def getView(self):
+    def getView(self) -> ViewBox:
         """Return the ViewBox (or other compatible object) which displays the ImageItem"""
         return self.view
 
