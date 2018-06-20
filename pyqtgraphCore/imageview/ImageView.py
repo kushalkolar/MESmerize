@@ -205,8 +205,6 @@ class ImageView(QtWidgets.QWidget):
         self.ui.comboBoxStimMaps.setDisabled(True)
         self.ui.comboBoxStimMaps.currentIndexChanged[str].connect(self.displayStimMap)
 
-        self.ui.textBoxComments.textChanged.connect(self.comment_text_box_update)
-
         self.ui.stackedWidget.setCurrentIndex(0)
 
         #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
@@ -376,12 +374,12 @@ class ImageView(QtWidgets.QWidget):
             # TODO: THERE HAS TO BE A BETTER WAY TO DO THIS!! CHECK IF TYPE IS QTSIGNAL OR SOMETHING, & IF SO INTERPRET
             # TODO: IT AS PLAIN STRING?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             if qtsig == False:
-                self.workEnv = viewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection + '.pik', tiffPath=self.splitsDir + '/' + selection + '.tiff')
+                self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection + '.pik', tiffPath=self.splitsDir + '/' + selection + '.tiff')
             else:
-                self.workEnv = viewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection.text() + '.pik', tiffPath=self.splitsDir + '/' + selection.text() + '.tiff')
+                self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection.text() + '.pik', tiffPath=self.splitsDir + '/' + selection.text() + '.tiff')
 
         elif origin == 'pandas':
-            self.workEnv = viewerWorkEnv.from_pickle(pikPath=selection[0], tiffPath=selection[1])
+            self.workEnv = ViewerWorkEnv.from_pickle(pikPath=selection[0], tiffPath=selection[1])
 
         # Set the image
         self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),

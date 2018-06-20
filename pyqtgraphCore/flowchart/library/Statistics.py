@@ -2,7 +2,7 @@
 import numpy as np
 from ...Qt import QtCore, QtGui, QtWidgets
 from ..Node import Node
-from . import functions
+# from . import functions
 from ... import functions as pgfn
 from .common import *
 from ...python2_3 import xrange

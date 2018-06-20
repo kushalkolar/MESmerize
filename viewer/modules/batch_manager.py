@@ -129,7 +129,9 @@ class ModuleGUI(QtWidgets.QWidget):
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
                                               'The input files do not exist for this item.')
                 vi.viewer.status_bar_label.clear()
-        self.lwd.deleteLater()
+        if hasattr(self, 'lwd'):
+            self.lwd.deleteLater()
+
 
     def list_widget_item_double_clicked_slot(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
@@ -170,7 +172,8 @@ class ModuleGUI(QtWidgets.QWidget):
             i = int(self.lwd.listWidget.currentItem().data(0))
             viewer = viewers[i].viewer_reference
         self.output_widgets.append(m.Output(self.batch_path, UUID, viewer))
-        self.lwd.deleteLater()
+        if hasattr(self, 'lwd'):
+            self.lwd.deleteLater()
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""
