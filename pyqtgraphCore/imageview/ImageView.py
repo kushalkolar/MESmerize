@@ -1339,7 +1339,7 @@ class ImageView(QtWidgets.QWidget):
                 # data = np.divide(np.subtract(data, Fo), Fo)
                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
                 self.workEnv.CurvesList[ID].setPen(color)
-                self.workEnv.CurvesList[ID].show()
+                self.workEnv.Curvespi.List[ID].show()
             else:
                 while coords.ndim > 2:
                     coords = coords[:,:,0]
