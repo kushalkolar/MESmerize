@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import abc
 import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
-import pyqtgraph as pg
+import pyqtgraphCore as pg
 from typing import Type, TypeVar
 from functools import partial
 
@@ -22,12 +22,13 @@ ROIClasses = TypeVar('T', bound='AbstractBaseROI')
 
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
-    def __init__(self, curve_plot_item: pg.PlotDataItem):
+    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox):
         assert isinstance(curve_plot_item, pg.PlotDataItem)
 
         self._tags = {}
 
         self.curve_plot_item = curve_plot_item
+        self.view_box = view_box
         self.roi_graphics_object = QtWidgets.QGraphicsObject()
 
     @property
@@ -63,11 +64,15 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def get_all_tags(self):
         return self._tags
 
-    def add_to_viewer(self, view: pg.ViewBox):
-        view.addItem(self.get_roi_graphics_object())
+    def add_to_viewer(self):
+        self.view_box.addItem(self.get_roi_graphics_object())
 
-    def remove_from_viewer(self, view):
-        pass
+    def remove_from_viewer(self):
+        self.view_box.removeItem(self.get_roi_graphics_object())
+        del self.curve_plot_item
+
+    def __del__(self):
+        self.remove_from_viewer()
 
     @abc.abstractmethod
     def to_state(self):
@@ -80,13 +85,14 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
 
 class ManualROI(AbstractBaseROI):
-    def __init__(self, roi_graphics_object: pg.ROI, curve_plot_item: pg.PlotDataItem, state=None):
+    def __init__(self, roi_graphics_object: pg.ROI, curve_plot_item: pg.PlotDataItem,
+                 view_box: pg.ViewBox, state=None):
         """
         :type state: dict
         """
         assert isinstance(roi_graphics_object, pg.ROI)
 
-        super(ManualROI, self).__init__(curve_plot_item)
+        super(ManualROI, self).__init__(curve_plot_item, view_box)
 
         self.set_roi_graphics_object(roi_graphics_object)
 
@@ -121,13 +127,14 @@ class ManualROI(AbstractBaseROI):
 
 
 class CNMFROI(AbstractBaseROI):
-    def __init__(self, curve_plot_item: pg.PlotDataItem, curve_data=None, contour=None, state=None):
+    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox,
+                 curve_data=None, contour=None, state=None):
         """
         :type: curve_data: np.ndarray
         :type: contour: np.ndarray
         :type  state: dict
         """
-        super(CNMFROI, self).__init__(curve_plot_item)
+        super(CNMFROI, self).__init__(curve_plot_item, view_box)
 
         self.roi_xs = np.empty(0)
         self.roi_ys = np.empty(0)
@@ -184,55 +191,102 @@ class CNMFROI(AbstractBaseROI):
 
 
 class ROIList(list):
-    def __init__(self, roi_types: AbstractBaseROI):
+    def __init__(self, roi_types: AbstractBaseROI, viewer: pg.ImageView):
         super(ROIList, self).__init__()
 
         self.list_widget = QtWidgets.QListWidget()
-        self.list_widget.itemClicked.connect(self.highlight_roi_and_curve)
+        self.list_widget.currentItemChanged.connect(self._get_list_widget_index)
         self.roi_types = roi_types
 
-    def set_parent_viewer(self, viewer: pg.ImageView):
+        if self.roi_types is ManualROI:
+            self.live_plot_checkbox = QtWidgets.QCheckBox()
+            self.live_plot_checkbox.setChecked(False)
+
         self.viewer = viewer
 
     def append(self, roi: AbstractBaseROI):
         assert issubclass(roi, AbstractBaseROI)
         self.list_widget.addItem(str(self.__len__()))
-        roi.add_to_viewer(self.viewer)
+        roi.add_to_viewer()
 
         roi_graphics_object = roi.get_roi_graphics_object()
 
         if isinstance(roi_graphics_object, pg.ROI):
             roi_graphics_object.sigHoverEvent.connect(partial(self.highlight_roi_and_curve, self.index(roi)))
-            roi_graphics_object.sigHoverEnd.connect(partial(self.reset_plot_colors, self.index(roi)))
+            roi_graphics_object.sigHoverEnd.connect(partial(self.unhighlight_curve, self.index(roi)))
             roi_graphics_object.sigRemoveRequested.connect(partial(self.__delitem__, self.index(roi)))
+            roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, self.index(roi)))
 
         super(ROIList, self).append(roi)
 
     def __delitem__(self, key):
-        roi = self.__getitem__(key)
+        self.list_widget.takeItem(key)
+        super(ROIList, self).__delitem__(key)
 
     def __getitem__(self, item) -> AbstractBaseROI:
         return super(ROIList, self).__getitem__(item)
 
-    def highlight_roi_and_curve(self, ix):
+    def _get_list_widget_index(self, item: QtWidgets.QListWidgetItem):
+        i = int(item.data(0))
+        self.highlight_roi_and_curve(i)
+
+    def highlight_roi_and_curve(self, ix: int):
         if self.roi_types is ManualROI:
-            self.highlight_roi()
-            self.highlight_curve()
+            # self.highlight_roi(ix)
+            self.highlight_curve(ix)
 
         elif self.roi_types is CNMFROI:
-            self.highlight_curve()
+            self.highlight_curve(ix)
 
-    def highlight_roi(self):
-        pass
+    def highlight_roi(self, ix: int):
+        self.list_widget.setCurrentRow(ix)
 
-    def highlight_curve(self):
-        pass
+    def highlight_curve(self, ix: int):
+        roi = self.__getitem__(ix)
+        roi.curve_plot_item.setPen(width=2)
 
-    def reset_plot_colors(self):
-        pass
+    def unhighlight_curve(self, ix):
+        roi = self.__getitem__(ix)
+        roi.curve_plot_item.setPen(width=1)
 
-    def live_update_plot(self):
-        pass
+    def _live_update_requested(self, ix: int):
+        if self.roi_types is CNMFROI:
+            raise TypeError
 
-    def del_roi(self):
-        pass
+        if not self.live_plot_checkbox.isChecked():
+            return
+
+        roi = self.__getitem__(ix)
+        pg_roi = roi.get_roi_graphics_object
+
+        self.get_roi_region(pg_roi, ix)
+
+    def get_roi_region(self, pg_roi: pg.ROI, ix: int):
+        image = self.viewer.getProcessedImage()
+
+        if image.ndim == 2:
+            axes = (0, 1)
+        elif image.ndim == 3:
+            axes = (1, 2)
+        else:
+            return
+
+        # Get the ROI region
+        data = pg_roi.getArrayRegion((image.view(np.ndarray)), self.viewer.imageItem, axes)
+
+        if data is not None:
+            while data.ndim > 1:
+                data = data.mean(axis=1)
+            if image.ndim == 3:
+                # Set the curve
+                roi = self.__getitem__(ix)
+
+                roi.curve_plot_item.setData(y=data, x=self.viewer.tVals)
+                roi.curve_plot_item.setPen('w')
+                roi.curve_plot_item.show()
+            # else:
+            #     while coords.ndim > 2:
+            #         coords = coords[:,:,0]
+            #     coords = coords - coords[:,0,np.newaxis]
+            #     xvals = (coords**2).sum(axis=0) ** 0.5
+            #     self.workEnv.CurvesList[ID].setData(y=data, x=xvals)

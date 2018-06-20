@@ -18,9 +18,6 @@ from ...core.common import ViewerInterface
 
 
 class AbstractBaseManager(metaclass=abc.ABCMeta):
-    def __init__(self):
-        pass
-
     @abc.abstractmethod
     def add_roi(self):
         pass
@@ -61,7 +58,9 @@ class ManagerCNMFE(AbstractBaseManager):
         self.contours = caiman_get_contours(cnmA[:, idx_components], dims)
         self.temporal_components = cnmC[idx_components]
 
-        self.roi_list = ROIList(CNMFROI)
+        self.roi_list = ROIList(CNMFROI, viewer)
+        self.list_widget = self.roi_list.list_widget
+
         self.vi = ViewerInterface(viewer_reference=viewer)
 
     def add_all_components(self):
@@ -70,8 +69,9 @@ class ManagerCNMFE(AbstractBaseManager):
             contour = self.contours[ix]
 
             plot_item = self.vi.viewer.ui.roiPlot.plot()
-            roi = CNMFROI(plot_item, curve_data, contour)
+            roi = CNMFROI(plot_item, self.vi.viewer.getView(), curve_data, contour)
 
+            self.roi_list.append(roi)
 
     def delete_component(self, reason: str):
         pass
