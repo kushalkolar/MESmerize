@@ -186,16 +186,17 @@ class Window(QtWidgets.QWidget):
         self.tabs.widget(0).ui.btnClose.clicked.connect(self.close)
 
 
-class ProjectConfigUpdater:
-    def __init__(self):
-        self._funcs = []
-
-    def register(self, func: callable):
-        self._funcs.append(func)
-
-    def notify_all(self):
-        for func in self._funcs:
-            func()
+# class ProjectConfigUpdater(QtCore.QObject):
+#     signal_project_config_
+#     def __init__(self):
+#         self._funcs = []
+#
+#     def register(self, func: callable):
+#         self._funcs.append(func)
+#
+#     def notify_all(self):
+#         for func in self._funcs:
+#             func()
 
 
 if __name__ == '__main__':

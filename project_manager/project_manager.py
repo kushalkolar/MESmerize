@@ -23,6 +23,7 @@ from shutil import copyfile
 
 class ProjectManager(QtCore.QObject):
     signal_dataframe_changed = QtCore.pyqtSignal(pd.DataFrame)
+    signal_project_config_changed = QtCore.pyqtSignal()
 
     def __init__(self, project_root_dir):
         QtCore.QObject.__init__(self)
@@ -110,7 +111,7 @@ class ProjectManager(QtCore.QObject):
 
         for column in configuration.proj_cfg.options('ROI_DEFS'):
             if column not in self.dataframe.columns:
-                self.projDf[column] = 'untagged'
+                self.dataframe[column] = 'untagged'
                 columns_changed = True
 
         for column in configuration.proj_cfg.options('STIM_DEFS'):
@@ -137,7 +138,8 @@ class ProjectManager(QtCore.QObject):
             self.emit_signal_dataframe_changed()
 
         del configuration.window_manager.project_browsers[0]
-        configuration.proj_cfg_changed.notify_all()
+        self.signal_project_config_changed.emit()
+        # configuration.proj_cfg_changed.notify_all()
 
     def backup_project_dataframe(self):
         copyfile(self.root_dir + '/dataframes/root.dfr', self.root_dir + '/dataframes/root_bak' + str(time()) + '.dfr')
@@ -145,7 +147,7 @@ class ProjectManager(QtCore.QObject):
     def append_to_dataframe(self, dicts_to_append: list):
         self.backup_project_dataframe()
         self.dataframe = self.dataframe.append(pd.DataFrame(dicts_to_append), ignore_index=True)
-        self.emit_signal_dataframe_changed()
+        self.signal_project_config_changed.emit()
 
     def emit_signal_dataframe_changed(self):
         self.signal_dataframe_changed.emit(self.dataframe)

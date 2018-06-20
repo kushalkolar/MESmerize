@@ -17,16 +17,21 @@ import pyqtgraphCore as pg
 from typing import Type, TypeVar
 from functools import partial
 from ...core.common import ViewerInterface
+from common import configuration
+from copy import deepcopy
 
 
 ROIClasses = TypeVar('T', bound='AbstractBaseROI')
 
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
-    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox):
+    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state=None):
         assert isinstance(curve_plot_item, pg.PlotDataItem)
 
-        self._tags = {}
+        if state is None:
+            self._tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'))
+        else:
+            self._tags = state['tags']
 
         self.curve_plot_item = curve_plot_item
         self.view_box = view_box
@@ -60,14 +65,24 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def set_roi_graphics_object(self, *args, **kwargs):
         pass
 
-    def set_tag(self, roi_def, tag):
+    def set_text(self, text: str):
+        text_item = pg.TextItem(text)
+        # self.view_box.addItem()
+
+    def set_tag(self, roi_def: str, tag: str):
         self._tags[roi_def] = tag
 
-    def get_tag(self, roi_def):
+    def get_tag(self, roi_def) -> str:
+        if self._tags[roi_def] is None:
+            return ''
         return self._tags[roi_def]
 
-    def get_all_tags(self):
-        return self._tags
+    def get_all_tags(self) -> dict:
+        d = deepcopy(self._tags)
+        for key in d.keys():
+            if d[key] is None:
+                d[key] = ''
+        return d
 
     def add_to_viewer(self):
         self.view_box.addItem(self.get_roi_graphics_object())
@@ -97,7 +112,7 @@ class ManualROI(AbstractBaseROI):
         """
         assert isinstance(roi_graphics_object, pg.ROI)
 
-        super(ManualROI, self).__init__(curve_plot_item, view_box)
+        super(ManualROI, self).__init__(curve_plot_item, view_box, state)
 
         self.set_roi_graphics_object(roi_graphics_object)
 
@@ -122,7 +137,8 @@ class ManualROI(AbstractBaseROI):
 
         state = {'curve_xs': curve_xs,
                  'curve_ys': curve_ys,
-                 'roi_state': roi_state
+                 'roi_state': roi_state,
+                 'tags': self.get_all_tags(),
                  }
 
     @classmethod
@@ -139,7 +155,7 @@ class CNMFROI(AbstractBaseROI):
         :type: contour: np.ndarray
         :type  state: dict
         """
-        super(CNMFROI, self).__init__(curve_plot_item, view_box)
+        super(CNMFROI, self).__init__(curve_plot_item, view_box, state)
 
         self.roi_xs = np.empty(0)
         self.roi_ys = np.empty(0)
@@ -180,7 +196,7 @@ class CNMFROI(AbstractBaseROI):
         self._create_scatter_plot()
 
     def _create_scatter_plot(self):
-        self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys)
+        self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s')
 
     def to_state(self) -> dict:
         curve_data = self.curve_data
@@ -190,7 +206,8 @@ class CNMFROI(AbstractBaseROI):
         state = {'roi_xs':   self.roi_xs,
                  'roi_ys':   self.roi_ys,
                  'curve_xs': curve_xs,
-                 'curve_ys': curve_ys
+                 'curve_ys': curve_ys,
+                 'tags':     self.get_all_tags()
                  }
         return state
 
@@ -203,32 +220,48 @@ class ROIList(list):
     def __init__(self, ui, roi_types: str, viewer_interface: ViewerInterface):
         super(ROIList, self).__init__()
 
+        assert isinstance(ui.listWidgetROIs, QtWidgets.QListWidget)
         self.list_widget = ui.listWidgetROIs
-        assert isinstance(self.list_widget, QtWidgets.QListWidget)
         self.list_widget.clear()
-        self.list_widget.currentItemChanged.connect(self.highlight_curve)
+        self.list_widget.currentRowChanged.connect(self.set_current_index)
 
+        assert isinstance(ui.listWidgetROITags, QtWidgets.QListWidget)
         self.list_widget_tags = ui.listWidgetROITags
-        assert isinstance(self.list_widget_tags, QtWidgets.QListWidget)
         self.list_widget_tags.clear()
 
         self.roi_types = roi_types
 
+        assert isinstance(ui.checkBoxLivePlot, QtWidgets.QCheckBox)
         self.live_plot_checkbox = ui.checkBoxLivePlot
         self.live_plot_checkbox.setChecked(False)
-        self.live_plot_checkbox.setEnabled(False)
-        # self.live_plot_checkbox.setText('Live plot')
+        if self.roi_types == 'ManualROI':
+            self.live_plot_checkbox.setEnabled(True)
+        else:
+            self.live_plot_checkbox.setEnabled(False)
 
+        assert isinstance(ui.checkBoxShowAll, QtWidgets.QCheckBox)
         self.show_all_checkbox = ui.checkBoxShowAll
         self.show_all_checkbox.setChecked(True)
-        # self.show_all_checkbox.setText('Show all')
+        self.show_all_checkbox.toggled.connect(self.slot_show_all_checkbox_clicked)
+
+        assert isinstance(ui.btnSetROITag, QtWidgets.QPushButton)
+        self.btn_set_tag = ui.btnSetROITag
+        self.btn_set_tag.clicked.connect(self.slot_btn_set_tag)
+
+        assert isinstance(ui.lineEditROITag, QtWidgets.QLineEdit)
+        self.line_edit_tag = ui.lineEditROITag
 
         self.vi = viewer_interface
 
-        self.highlighted_curve = -1
+        self.previous_index = -1
+
+        configuration.project_manager.signal_project_config_changed.connect(self.update_roi_defs_from_configuration)
+
+        # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
     def append(self, roi: AbstractBaseROI):
         self.list_widget.addItem(str(self.__len__()))
+        ix = self.__len__()
         roi.add_to_viewer()
 
         roi_graphics_object = roi.get_roi_graphics_object()
@@ -240,7 +273,6 @@ class ROIList(list):
             roi_graphics_object.sigRemoveRequested.connect(partial(self.__delitem__, self.index(roi)))
             roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, self.index(roi)))
 
-        # self.list_widget.setCurrentRow(self.__len__() - 1)
         self.vi.workEnv_changed('ROI Added')
         super(ROIList, self).append(roi)
 
@@ -252,20 +284,25 @@ class ROIList(list):
     def __getitem__(self, item) -> AbstractBaseROI:
         return super(ROIList, self).__getitem__(item)
 
-    def highlight_roi(self, ix: int):
+    def set_current_index(self, ix):
         if ix == -1:
             return
+        self.current_index = ix
+        self.highlight_curve(ix)
+        self.highlight_roi(ix)
+        if not self.show_all_checkbox.isChecked():
+            self._hide_all_graphics_objects()
+        self._show_graphics_object(ix)
+        self.set_list_widget_tags()
+
+    def highlight_roi(self, ix: int):
         self.list_widget.setCurrentRow(ix)
 
     def highlight_curve(self, ix: int):
-        if isinstance(ix, QtWidgets.QListWidgetItem):
-            ix = int(ix.data(0))
-        if ix == -1:
-            return
         roi = self.__getitem__(ix)
         roi.curve_plot_item.setPen(width=2)
-        self.unhighlight_curve(self.highlighted_curve)
-        self.highlighted_curve = ix
+        self.unhighlight_curve(self.previous_index)
+        self.previous_index = ix
 
     def unhighlight_curve(self, ix):
         if ix == -1:
@@ -273,8 +310,33 @@ class ROIList(list):
         roi = self.__getitem__(ix)
         roi.curve_plot_item.setPen(width=1)
 
-    def show_all_clicked(self):
-        pass
+    def slot_show_all_checkbox_clicked(self, b):
+        if b:
+            self._show_all_graphics_objects()
+        else:
+            self._hide_all_graphics_objects()
+            ix = self.list_widget.currentRow()
+            self._show_graphics_object(ix)
+
+    def _show_graphics_object(self, ix):
+        roi = self.__getitem__(ix)
+        roi_graphics_object = roi.get_roi_graphics_object()
+        roi_graphics_object.show()
+        roi.curve_plot_item.show()
+
+    def _hide_graphics_object(self, ix):
+        roi = self.__getitem__(ix)
+        roi_graphics_object = roi.get_roi_graphics_object()
+        roi_graphics_object.hide()
+        roi.curve_plot_item.hide()
+
+    def _show_all_graphics_objects(self):
+        for ix in range(self.__len__()):
+            self._show_graphics_object(ix)
+
+    def _hide_all_graphics_objects(self):
+        for ix in range(self.__len__()):
+            self._hide_graphics_object(ix)
 
     def _live_update_requested(self, ix: int):
         if self.roi_types == 'CNMFROI':
@@ -314,18 +376,51 @@ class ROIList(list):
                 roi.curve_plot_item.setPen('w')
                 roi.curve_plot_item.show()
 
-    def set_tag(self, tag):
-        ix = self.list_widget.currentRow()
-        roi_def = self.list_widget_tags.curentItem.text().split[0]
+    def slot_btn_set_tag(self):
+        ix = self.current_index
         roi = self.__getitem__(ix)
+
+        roi_def = self.list_widget_tags.currentItem().text().split(': ')[0]
+        tag = self.line_edit_tag.text()
+
         roi.set_tag(roi_def, tag)
 
-    def get_tag(self, roi_def):
-        ix = self.list_widget.currentRow()
-        roi_def = self.list_widget_tags.curentItem.text().split[0]
+        self.list_widget_tags.currentItem().setText(roi_def + ': ' + tag)
+        self.line_edit_tag.clear()
+
+        n = self.list_widget_tags.count() - 1
+        i = self.list_widget_tags.currentRow() + 1
+        self.list_widget_tags.setCurrentRow(min(i, n))
+
+    def get_tag(self, ix, roi_def):
+        roi_def = self.list_widget_tags.currentItem().text().split[0]
         roi = self.__getitem__(ix)
         return roi.get_tag(roi_def)
 
     def get_all_tags(self, ix):
         roi = self.__getitem__(ix)
         return roi.get_all_tags()
+
+    def set_list_widget_tags(self):
+        self.list_widget_tags.clear()
+        roi = self.__getitem__(self.current_index)
+        tags_dict = roi.get_all_tags()
+
+        roi_defs = sorted(tags_dict.keys())
+
+        for roi_def in roi_defs:
+            item = roi_def + ': ' + roi.get_tag(roi_def)
+            self.list_widget_tags.addItem(item)
+
+        if self.list_widget_tags.count() > 0:
+            self.list_widget_tags.setCurrentRow(0)
+
+    def update_roi_defs_from_configuration(self):
+        roi_defs = configuration.proj_cfg.options('ROI_DEFS')
+
+        for roi in self:
+            tags_dict = roi.get_all_tags()
+            for roi_def in roi_defs:
+                if roi_def not in tags_dict.keys():
+                    roi.set_tag(roi_def, tag='untagged')
+        self.set_list_widget_tags()
