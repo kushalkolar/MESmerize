@@ -43,9 +43,9 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
 
 
 class ManagerManual(AbstractBaseManager):
-    def __init__(self, viewer_interface):
+    def __init__(self, parent, viewer_interface):
         super(ManagerManual, self).__init__(viewer_interface)
-        self.roi_list = ROIList(ManualROI, self.vi.viewer)
+        self.roi_list = ROIList(parent, 'ManualROI', self.vi.viewer)
 
     def restore_from_states(self, states):
         pass
@@ -61,17 +61,20 @@ class ManagerManual(AbstractBaseManager):
 
 
 class ManagerCNMFE(AbstractBaseManager):
-    def __init__(self, viewer_interface, cnmA, cnmC, idx_components, dims):
+    def __init__(self, parent, viewer_interface, cnmA, cnmC, idx_components, dims):
         super(ManagerCNMFE, self).__init__(viewer_interface)
         self.contours = caiman_get_contours(cnmA[:, idx_components], dims)
         self.temporal_components = cnmC[idx_components]
 
-        self.roi_list = ROIList(CNMFROI, viewer_interface)
+        self.roi_list = ROIList(parent, 'CNMFROI', viewer_interface)
         self.list_widget = self.roi_list.list_widget
 
     def add_all_components(self):
         for ix in range(len(self.contours)):
-            self.add_roi(ix)
+            curve_data = self.temporal_components[ix]
+            contour = self.contours[ix]
+            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), curve_data, contour)
+            self.roi_list.append(roi)
 
     def delete_component(self, reason: str):
         pass

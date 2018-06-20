@@ -8,7 +8,7 @@ from ...Point import Point
 from ...widgets.TreeWidget import TreeWidget
 from ...graphicsItems.LinearRegionItem import LinearRegionItem
 import pickle
-from . import functions
+# from . import functions
 from collections import OrderedDict
 from functools import partial
 from analyser.DataTypes import Transmission, StatsTransmission

@@ -54,7 +54,7 @@ class ViewerWorkEnv:
 
         self.sample_id = sample_id
 
-        self.rois = {}
+        self.rois = None
 
         self.ROIList = ROIList
         self.CurvesList = CurvesList

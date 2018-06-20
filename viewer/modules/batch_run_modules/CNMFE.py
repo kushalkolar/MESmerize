@@ -43,7 +43,10 @@ from glob import glob
 # from multiprocessing import Pool
 from functools import partial
 import traceback
-from ..roi_manager import ModuleGUI as ROIModuleGUI
+
+if not sys.argv[0] == __file__:
+    from ..roi_manager import ModuleGUI
+    from ...core.common import ViewerInterface, ViewerWorkEnv
 
 
 def run(batch_dir, UUID, n_processes):
@@ -215,19 +218,22 @@ class Output(QtWidgets.QWidget):
 
             self.btnCP = QtWidgets.QPushButton()
             self.btnCP.setText('Corr PNR Img')
-            # self.btnCP.clicked.connect(self.deleteLater)
             layout.addWidget(self.btnCP)
 
             self.btnCNMFE = QtWidgets.QPushButton()
             self.btnCNMFE.setText('CaImAn CNMFE visualization')
-            # self.btnCNMFE.clicked.connect(self.deleteLater)
-
             layout.addWidget(self.btnCNMFE)
+
+
+            self.btnImportIntoViewer = QtWidgets.QPushButton()
+            self.btnImportIntoViewer.setText('Import CNMFE output into chosen Viewer')
+            layout.addWidget(self.btnImportIntoViewer)
 
             self.setLayout(layout)
 
             self.btnCP.clicked.connect(self.output_corr_pnr)
             self.btnCNMFE.clicked.connect(self.output_cnmfe)
+            self.btnImportIntoViewer.clicked.connect(self.import_cnmfe_into_viewer)
             self.show()
 
     def output_corr_pnr(self): #, batch_dir, UUID, viewer_ref):
@@ -264,14 +270,25 @@ class Output(QtWidgets.QWidget):
     def import_cnmfe_into_viewer(self):
         self.get_cnmfe_results()
 
-        self.viewer_ref.parent.ui.actionROI_Manager.trigger()
-        for m in self.viewer_ref.parent.running_modules:
-            if isinstance(m, ROIModuleGUI):
+        vi = ViewerInterface(self.viewer_ref)
+
+        if not vi.discard_workEnv():
+            return
+
+        pikpath = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
+        tiffpath = self.batch_dir + '/' + str(self.UUID) + '.tiff'
+
+        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
+        vi.update_workEnv()
+
+        self.viewer_ref.parent().ui.actionROI_Manager.trigger()
+
+        for m in self.viewer_ref.parent().running_modules:
+            if isinstance(m, ModuleGUI):
                 m.start_cnmfe_mode(cnmA=self.cnmA,
                                    cnmC=self.cnmC,
                                    idx_components=self.idx_components,
                                    dims=self.dims)
-
 
 # class QuestionBox(QtWidgets.QWidget):
 #     def __init__(self):

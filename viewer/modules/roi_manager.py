@@ -30,26 +30,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.manager = managers.ManagerManual(self.vi)
+        self.manager = managers.ManagerManual(self.ui, self.vi)
+        self.vi.viewer.workEnv.rois = self.manager.roi_list
+        self.vi.viewer.ui.splitter.setEnabled(True)
 
         self.ui.btnAddROI.clicked.connect(self.add_roi)
         self.ui.btnSetROITag.clicked.connect(self.set_roi_tag)
 
-    def _generate_roi_list_ui(self):
-        self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.show_all_checkbox)
-        self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.live_plot_checkbox)
-        self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.list_widget)
-        self.ui.verticalLayoutTags.addWidget(self.manager.roi_list.list_widget_tags)
-        if isinstance(self.manager, managers.ManagerManual):
-            self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.live_plot_checkbox.setEnabled(True))
-
-    def _delete_roi_list_ui(self):
-        self.manager.roi_list.show_all_checkbox.deleteLater()
-        self.manager.roi_list.list_widget.deleteLater()
-        self.manager.roi_list.live_plot_checkbox.deleteLater()
-        self.manager.roi_list.list_widget_tags.deleteLater()
-
     def start_cnmfe_mode(self, cnmA, cnmC, idx_components, dims):
+        print('staring cnmfe mode in roi manager')
         if len(self.manager.roi_list) > 0:
             if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
                                              'You have unsaved ROIs in your work environment.'
@@ -58,13 +47,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
             else:
-                self._delete_roi_list_ui()
                 del self.manager
 
-            self.ui.btnAddROI.setDisabled(True)
-            self.manager = managers.ManagerCNMFE(self.vi, cnmA, cnmC, idx_components, dims)
-            self._generate_roi_list_ui()
-            self.manager.add_all_components()
+        self.ui.btnAddROI.setDisabled(True)
+        self.manager = managers.ManagerCNMFE(self.ui, self.vi, cnmA, cnmC, idx_components, dims)
+        self.manager.add_all_components()
+        self.vi.viewer.workEnv.rois = self.manager.roi_list
 
     def start_manual_mode(self):
         if len(self.manager.roi_list) > 0:
@@ -75,13 +63,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
             elif not isinstance(self.manager, managers.ManagerManual):
-                self._delete_roi_list_ui()
                 del self.manager
 
-                self.manager = managers.ManagerManual(self.vi)
+                self.manager = managers.ManagerManual(self.ui, self.vi)
 
         self.ui.btnAddROI.setEnabled(True)
-        self._generate_roi_list_ui()
+        self.vi.viewer.workEnv.rois = self.manager.roi_list
 
     def add_roi(self):
         self.manager.add_roi()
