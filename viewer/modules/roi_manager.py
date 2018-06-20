@@ -35,7 +35,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.ui.splitter.setEnabled(True)
 
         self.ui.btnAddROI.clicked.connect(self.add_roi)
-        self.ui.btnSetROITag.clicked.connect(self.set_roi_tag)
+        # self.ui.btnSetROITag.clicked.connect(self.set_roi_tag)
 
     def start_cnmfe_mode(self, cnmA, cnmC, idx_components, dims):
         print('staring cnmfe mode in roi manager')
@@ -73,21 +73,21 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def add_roi(self):
         self.manager.add_roi()
 
-    def set_roi_tag(self):
-        if self.manager.roi_list.list_widget_tags.currentRow() == -1 or self.manager.roi_list.list_widget.currentRow() == -1:
-            QtWidgets.QMessageBox.question(self, 'Message',
-                                           'Select an ROI Definition from the list if you want to add tags ',
-                                           QtWidgets.QMessageBox.Ok)
-            return
-
-        tag = self.ui.lineEditROITag.text()
-        self.manager.roi_list.set_tag(tag)
-
-        self.ui.lineEditROITag.clear()
-
-        max_ix = self.manager.roi_list.list_widget_tags.count() - 1
-        next_ix = self.manager.roi_list.list_widget_tags.currentRow() + 1
-        self.manager.roi_list.list_widget_tags.setCurrentRow(max(max_ix, next_ix))
+    # def set_roi_tag(self):
+    #     if self.manager.roi_list.list_widget_tags.currentRow() == -1 or self.manager.roi_list.list_widget.currentRow() == -1:
+    #         QtWidgets.QMessageBox.question(self, 'Message',
+    #                                        'Select an ROI Definition from the list if you want to add tags ',
+    #                                        QtWidgets.QMessageBox.Ok)
+    #         return
+    #
+    #     tag = self.ui.lineEditROITag.text()
+    #     self.manager.roi_list.set_tag(tag)
+    #
+    #     self.ui.lineEditROITag.clear()
+    #
+    #     max_ix = self.manager.roi_list.list_widget_tags.count() - 1
+    #     next_ix = self.manager.roi_list.list_widget_tags.currentRow() + 1
+    #     self.manager.roi_list.list_widget_tags.setCurrentRow(max(max_ix, next_ix))
 
     def add_roi_tags_list_text(self):
         pass
