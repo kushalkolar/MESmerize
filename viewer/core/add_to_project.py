@@ -127,12 +127,14 @@ class AddToProjectDialog(QtWidgets.QWidget):
     def add_to_dataframe(self):
         dicts_to_append = self.work_environment.to_pandas(configuration.proj_path)
         configuration.project_manager.append_to_dataframe(dicts_to_append)
+        self.work_environment.saved = True
         self.label_wait.setText('FINISHED!')
         # self.signal_finished.emit()
 
     def save_changes_to_sample(self):
         dicts_to_append = self.work_environment.to_pandas(configuration.proj_path)
         configuration.project_manager.change_sample_rows(self.work_environment.sample_id, dicts_to_append)
+        self.work_environment.saved = True
         self.label_wait.setText('FINISHED!')
 
         # self.signal_finished.emit()

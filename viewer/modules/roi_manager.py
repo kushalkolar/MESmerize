@@ -26,75 +26,87 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi = ViewerInterface(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
+
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-    def add_roi(self, load=None):
-        self.workEnv_changed()
+        self.manager = managers.ManagerManual(self.vi)
 
-        self.vi.viewer.workEnv.ROIList.append(ROI.PolyLineROI([[0,0], [10,10], [30,10]],
-                                                closed=True, pos=[0,0], removable=True))
+        self.ui.btnAddROI.clicked.connect(self.add_roi)
+        self.ui.btnSetROITag.clicked.connect(self.set_roi_tag)
 
-        self.vi.viewer.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.cfg.options('ROI_DEFS'), '')
+    def _generate_roi_list_ui(self):
+        self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.show_all_checkbox)
+        self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.live_plot_checkbox)
+        self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.list_widget)
+        self.ui.verticalLayoutTags.addWidget(self.manager.roi_list.list_widget_tags)
+        if isinstance(self.manager, managers.ManagerManual):
+            self.ui.verticalLayoutROIList.addWidget(self.manager.roi_list.live_plot_checkbox.setEnabled(True))
 
-        curve = self.vi.viewer.ui.roiPlot.plot()
-        self.vi.viewer.workEnv.CurvesList.append(curve)
+    def _delete_roi_list_ui(self):
+        self.manager.roi_list.show_all_checkbox.deleteLater()
+        self.manager.roi_list.list_widget.deleteLater()
+        self.manager.roi_list.live_plot_checkbox.deleteLater()
+        self.manager.roi_list.list_widget_tags.deleteLater()
 
-        self.vi.viewer.workEnv.CurvesList[-1].setZValue(len(self.workEnv.CurvesList))
-        # Just some plot initializations, these are these from the original pyqtgraph ImageView class
-        self.vi.viewer.ui.roiPlot.setMouseEnabled(True, True)
-        self.vi.viewer.ui.splitter.setSizes([self.height() * 0.6, self.height() * 0.4])
-        self.vi.viewer.ui.roiPlot.show()
+    def start_cnmfe_mode(self, cnmA, cnmC, idx_components, dims):
+        if len(self.manager.roi_list) > 0:
+            if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
+                                             'You have unsaved ROIs in your work environment.'
+                                             'Would you like to discard them and continue?',
+                                             QtWidgets.QMessageBox.Yes,
+                                             QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                return
+            else:
+                self._delete_roi_list_ui()
+                del self.manager
 
-        # Connect signals to the newly created ROI
-        self.vi.viewer.workEnv.ROIList[-1].sigRemoveRequested.connect(self.delROI)
-        self.vi.viewer.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
-        self.vi.viewer.workEnv.ROIList[-1].sigRegionChanged.connect(
-            self.updatePlot)  # This is how the curve is plotted to correspond to this ROI
-        self.vi.viewer.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
-        self.vi.viewer.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
-        self.vi.viewer.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
-        self.vi.viewer.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)
+            self.ui.btnAddROI.setDisabled(True)
+            self.manager = managers.ManagerCNMFE(self.vi, cnmA, cnmC, idx_components, dims)
+            self._generate_roi_list_ui()
+            self.manager.add_all_components()
 
-        # Add the ROI to the scene so it can be seen
-        self.vi.viewer.view.addItem(self.workEnv.ROIList[-1])
+    def start_manual_mode(self):
+        if len(self.manager.roi_list) > 0:
+            if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
+                                             'You have unsaved ROIs in your work environment.'
+                                             'Would you like to discard them and continue?',
+                                             QtWidgets.QMessageBox.Yes,
+                                             QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                return
+            elif not isinstance(self.manager, managers.ManagerManual):
+                self._delete_roi_list_ui()
+                del self.manager
 
-        if load is not None:
-            self.vi.viewer.workEnv.ROIList[-1].setState(load)
+                self.manager = managers.ManagerManual(self.vi)
 
-        self.vi.viewer.ui.listwROIs.addItem(str(len(self.workEnv.ROIList) - 1))
-        #        self.ROIlist.append(self.polyROI)
-        #        d = self.ROItagDict.copy()
-        #        self.ROItags.append(d)
-        # Update the plot to include this ROI which was just added
-        self.vi.viewer.updatePlot(len(self.workEnv.ROIList) - 1)
-        self.vi.viewer.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList) - 1)
-        # So that ROI.tags is never = {}, which would result in NaN's
-        self.vi.viewer.setSelectedROI(len(self.workEnv.ROIList) - 1)
+        self.ui.btnAddROI.setEnabled(True)
+        self._generate_roi_list_ui()
 
-    def add_roi_tag(self):
-        pass
+    def add_roi(self):
+        self.manager.add_roi()
+
+    def set_roi_tag(self):
+        if self.manager.roi_list.list_widget_tags.currentRow() == -1 or self.manager.roi_list.list_widget.currentRow() == -1:
+            QtWidgets.QMessageBox.question(self, 'Message',
+                                           'Select an ROI Definition from the list if you want to add tags ',
+                                           QtWidgets.QMessageBox.Ok)
+            return
+
+        tag = self.ui.lineEditROITag.text()
+        self.manager.roi_list.set_tag(tag)
+
+        self.ui.lineEditROITag.clear()
+
+        max_ix = self.manager.roi_list.list_widget_tags.count() - 1
+        next_ix = self.manager.roi_list.list_widget_tags.currentRow() + 1
+        self.manager.roi_list.list_widget_tags.setCurrentRow(max(max_ix, next_ix))
 
     def add_roi_tags_list_text(self):
-        pass
-
-    def set_selected_roi(self):
         pass
 
     def show_all_rois(self):
         pass
 
-    def del_roi(self):
-        pass
-
-    def update_plot(self):
-        pass
-
-    def bold_plot(self):
-        pass
-
-    def reset_plot(self):
-        pass
-
-    def plot_all(self):
+    def package_for_project(self):
         pass

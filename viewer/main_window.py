@@ -43,8 +43,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
         self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
-        self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
+        self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
 
+        self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
         self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)
 
         self.ui.dockConsole.hide()
@@ -103,7 +104,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 return
 
         # Else create instance and start running it
-        self.running_modules.append(module_class(self, self._viewer))
+        m = module_class(self, self._viewer)
+        self.running_modules.append(m)
 
         self.running_modules[-1].show()
 
