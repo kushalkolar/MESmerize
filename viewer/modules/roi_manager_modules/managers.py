@@ -27,9 +27,6 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
     def add_roi(self, *args, **kwargs):
         pass
 
-    def del_roi(self, ix: int):
-        del self.roi_list[ix]
-
     @abc.abstractmethod
     def get_all_states(self) -> dict:
         pass
@@ -41,10 +38,19 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
     def get_plot_item(self) -> pg.PlotDataItem:
         return self.vi.viewer.ui.roiPlot.plot()
 
+    def clear(self):
+        if not hasattr(self, 'roi_list'):
+            return
+        self.roi_list.clear_()
+        del self.roi_list
+
     def __del__(self):
-        for i in range(len(self.roi_list)):
-            self.del_roi(i)
-        self.roi_list.disconnect_all()
+        self.clear()
+        # self.roi_list.list_widget.clear()
+        # self.roi_list.list_widget_tags.clear()
+        # self.roi_list.disconnect_all()
+        # for i in range(len(self.roi_list)):
+
 
 
 class ManagerManual(AbstractBaseManager):
@@ -55,31 +61,15 @@ class ManagerManual(AbstractBaseManager):
     def restore_from_states(self, states):
         pass
 
-    def del_roi(self, ix):
-        pass
-
     def add_roi(self, shape):
-        roi_graphics_object = self._get_new_roi_graphics_object(shape)
-        roi = ManualROI(roi_graphics_object, self.get_plot_item(), self.vi.viewer.getView())
+        dims = self.vi.viewer.workEnv.imgdata.seq.shape
+        roi_graphics_object = ManualROI.get_generic_roi_graphics_object(shape, dims)
+
+
+        roi = ManualROI(self.get_plot_item(), roi_graphics_object, self.vi.viewer.getView())
 
         self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
-
-    def _get_new_roi_graphics_object(self, shape='PolyLineROI'):
-        dims = self.vi.viewer.workEnv.imgdata.seq.shape
-        x = dims[0]
-        y = dims[1]
-
-        if shape == 'PolyLineROI':
-            roi_graphics_object = pg.PolyLineROI([[0, 0],
-                                                  [int(0.1 * x), 0],
-                                                  [int(0.1 * x), int(0.1 * y)],
-                                                  [0, int(0.1 * y)]],
-                                                 closed=True, pos=[0, 0], removable=True)
-            return roi_graphics_object
-        elif shape == 'EllipseROI':
-            roi_graphics_object = pg.EllipseROI(pos=[0, 0], size=[x, y])
-            return roi_graphics_object
 
     def get_all_states(self):
         pass
