@@ -126,7 +126,10 @@ class ViewerWorkEnv:
 
         # compatability for older pickle files
         if 'imdata' in p.keys():
-            sample_id = p['imdata']['sample_id']
+            try:
+                sample_id = p['imdata']['sample_id']
+            except KeyError:
+                sample_id = p['imdata']['SampleID']
 
             imdata = ImgData(seq,
                              p['imdata']['meta'],
