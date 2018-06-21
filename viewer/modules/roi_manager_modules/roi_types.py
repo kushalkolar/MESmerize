@@ -138,13 +138,16 @@ class ManualROI(AbstractBaseROI):
 
         self.set_roi_graphics_object(roi_graphics_object)
 
+        # if state is not None:
+        #     self.set_roi_graphics_object_state(state['roi_graphics_object_state'])
+
     def get_roi_graphics_object(self) -> pg.ROI:
         return self.roi_graphics_object
 
     def set_roi_graphics_object(self, graphics_object):
         self.roi_graphics_object = graphics_object
 
-    def _set_roi_graphics_object_state(self, state):
+    def set_roi_graphics_object_state(self, state):
         self.roi_graphics_object.setState(state)
 
     def to_state(self):
@@ -180,8 +183,7 @@ class ManualROI(AbstractBaseROI):
     @classmethod
     def from_state(cls, curve_plot_item, view_box, state):
         roi_graphics_object = ManualROI.get_generic_roi_graphics_object(state['shape'], [10, 10])
-        roi_graphics_object.setState(state['roi_graphics_object_state'])
-        return cls(curve_plot_item, roi_graphics_object, view_box, state=state)
+        return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box, state=state)
 
 
 class CNMFROI(AbstractBaseROI):
@@ -329,6 +331,15 @@ class ROIList(list):
     #     for ix in range(self.__len__()):
     #         roi = self.__getitem__(ix)
     #         roi.remove_from_viewer()
+
+    # def set_pg_roi_graphics_state(self, ix, state):
+    #     try:
+    #         roi = self.__getitem__(ix)
+    #     except IndexError:
+    #         return
+    #     pg_roi = roi.get_roi_graphics_object()
+    #     pg_roi.setState(state)
+
     def clear_(self):
         self.list_widget.clear()
         self.list_widget_tags.clear()
@@ -516,7 +527,10 @@ class ROIList(list):
 
     def slot_btn_set_tag(self):
         ix = self.current_index
-        roi = self.__getitem__(ix)
+        try:
+            roi = self.__getitem__(ix)
+        except IndexError:
+            return
 
         roi_def = self.list_widget_tags.currentItem().text().split(': ')[0]
         tag = self.line_edit_tag.text()
@@ -541,7 +555,12 @@ class ROIList(list):
 
     def set_list_widget_tags(self):
         self.list_widget_tags.clear()
-        roi = self.__getitem__(self.current_index)
+        ix = self.current_index
+        try:
+            roi = self.__getitem__(ix)
+        except IndexError:
+            return
+
         tags_dict = roi.get_all_tags()
 
         roi_defs = sorted(tags_dict.keys())

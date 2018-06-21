@@ -61,13 +61,20 @@ class ManagerManual(AbstractBaseManager):
         super(ManagerManual, self).__init__(parent, viewer_interface)
         self.roi_list = ROIList(ui, 'ManualROI', self.vi)
 
-    def restore_from_states(self, states):
-        pass
+    def restore_from_states(self, states: dict):
+        for state in states['states']:
+            roi = ManualROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
+            self.roi_list.append(roi)
+        ix = 0
+        for state in states['states']:
+            self.roi_list[ix].set_roi_graphics_object_state(state['roi_graphics_object_state'])
+            ix += 1
+        self.roi_list.reindex_colormap()
+
 
     def add_roi(self, shape):
         dims = self.vi.viewer.workEnv.imgdata.seq.shape
         roi_graphics_object = ManualROI.get_generic_roi_graphics_object(shape, dims)
-
 
         roi = ManualROI(self.get_plot_item(), roi_graphics_object, self.vi.viewer.getView())
 
@@ -99,7 +106,7 @@ class ManagerCNMFE(AbstractBaseManager):
     def add_roi(self, ix: int):
         raise NotImplementedError('Not implemented for CNMFE ROIs')
 
-    def restore_from_states(self, states: list):
+    def restore_from_states(self, states: dict):
         for state in states['states']:
             roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
