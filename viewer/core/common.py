@@ -26,11 +26,14 @@ class ViewerInterface:
         """
         # assert isinstance(viewer_reference, ImageView)
         self.viewer = viewer_reference
+        self.work_env = self.viewer.workEnv
+        self.roi_manager = None
 
     def update_workEnv(self):
         self.viewer.setImage(self.viewer.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
                                    xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
                                                      self.viewer.workEnv.imgdata.seq.T.shape[0]))
+        self.viewer.workEnv.roi_manager = self.viewer.parent().roi_manager.manager
 
     def enable_ui(self, b):
         self.viewer.ui.splitter.setEnabled(b)
@@ -48,21 +51,8 @@ class ViewerInterface:
         return True
 
     def _clear_workEnv(self, clear_sample_id=False):
-        # Remove any ROIs and associated curves on the plot
-        for i in range(0, len(self.viewer.workEnv.ROIList)):
-            self.viewer.delROI(self.viewer.workEnv.ROIList[0])
-            '''calls delROI method to remove the ROIs from the list.
-            You cannot simply reset the list to ROI = [] because objects must be removed from the scene
-            and curves removed from the plot. This is what delROI() does. Removes the 0th once in each
-            iteration, number of iterations = len(ROIlist)'''
-
-        self.viewer.priorlistwROIsSelection = None
-
-        # In case the user decided to add some of their own curves that don't correspond to the ROIs
-        if len(self.viewer.workEnv.CurvesList) != 0:
-            for i in range(0, len(self.viewer.workEnv.CurvesList)):
-                self.viewer.workEnv.CurvesList[i].clear()
-
+        if self.viewer.workEnv.roi_manager is not None:
+            self.viewer.workEnv.roi_manager.clear()
         # re-initialize ROI and curve lists
         self.viewer.workEnv.dump()
         # self.viewer.setImage(np.array([0]))

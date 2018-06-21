@@ -28,6 +28,7 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def __init__(self, curve_plot_item: pg.PlotDataItem,
                  view_box: pg.ViewBox, state=None):
         assert isinstance(curve_plot_item, pg.PlotDataItem)
+        self.curve_plot_item = curve_plot_item
 
         if state is None:
             self._tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'))
@@ -35,7 +36,6 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
             self._tags = state['tags']
             self.curve_data = state['curve_data']
 
-        self.curve_plot_item = curve_plot_item
         self.view_box = view_box
         self.roi_graphics_object = None
         self._color = None
@@ -157,6 +157,7 @@ class ManualROI(AbstractBaseROI):
                  'shape': shape,
                  'roi_graphics_object_state': self.roi_graphics_object.saveState(),
                  'tags': self.get_all_tags(),
+                 'roi_type': 'ManualROI'
                  }
         return state
 
@@ -180,7 +181,7 @@ class ManualROI(AbstractBaseROI):
     def from_state(cls, curve_plot_item, view_box, state):
         roi_graphics_object = ManualROI.get_generic_roi_graphics_object(state['shape'], [10, 10])
         roi_graphics_object.setState(state['roi_graphics_object_state'])
-        return cls(curve_plot_item, roi_graphics_object, view_box, state)
+        return cls(curve_plot_item, roi_graphics_object, view_box, state=state)
 
 
 class CNMFROI(AbstractBaseROI):
@@ -197,11 +198,11 @@ class CNMFROI(AbstractBaseROI):
         self.roi_xs = np.empty(0)
         self.roi_ys = np.empty(0)
 
-        if state is not None:
-            self._restore_state(state)
-        else:
+        if state is None:
             self.set_roi_graphics_object(contour)
             self.set_curve_data(curve_data)
+        else:
+            self._restore_state(state)
 
     def set_curve_data(self, y_vals):
         xs = np.arange(len(y_vals))
@@ -212,7 +213,7 @@ class CNMFROI(AbstractBaseROI):
         self.roi_ys = state['roi_ys']
 
         self._create_scatter_plot()
-        self.curve_data = [state['curve_xs'], state['curve_ys']]
+        self.curve_data = state['curve_data']
 
     def get_roi_graphics_object(self) -> pg.ScatterPlotItem:
         if self.roi_graphics_object is None:
@@ -239,13 +240,14 @@ class CNMFROI(AbstractBaseROI):
         state = {'roi_xs': self.roi_xs,
                  'roi_ys': self.roi_ys,
                  'curve_data': self.curve_data,
-                 'tags': self.get_all_tags()
+                 'tags': self.get_all_tags(),
+                 'roi_type': 'CNMFROI'
                  }
         return state
 
     @classmethod
     def from_state(cls, curve_plot_item, view_box, state):
-        return cls(curve_plot_item, state)
+        return cls(curve_plot_item=curve_plot_item, view_box=view_box, state=state)
 
 
 class ROIList(list):
@@ -307,8 +309,6 @@ class ROIList(list):
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
     def append(self, roi: AbstractBaseROI):
-        self.list_widget.addItem(str(self.__len__()))
-        ix = self.__len__()
         roi.add_to_viewer()
 
         roi_graphics_object = roi.get_roi_graphics_object()
@@ -320,6 +320,7 @@ class ROIList(list):
             roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, roi))
 
         self.vi.workEnv_changed('ROI Added')
+        self.list_widget.addItem(str(self.__len__()))
         super(ROIList, self).append(roi)
 
     # def clear_all(self):

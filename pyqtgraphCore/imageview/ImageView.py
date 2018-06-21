@@ -54,10 +54,10 @@ try:
 except ImportError:
     from numpy import nanmin, nanmax
 
-if configuration.IS_WINDOWS:
-    from MesmerizeCore.caimanMotionCorrect_threading import caimanPipeline
-else:
-    from MesmerizeCore.caimanMotionCorrect import caimanPipeline
+# if configuration.IS_WINDOWS:
+#     from MesmerizeCore.caimanMotionCorrect_threading import caimanPipeline
+# else:
+#     from MesmerizeCore.caimanMotionCorrect import caimanPipeline
 
 
 class ImageView(QtWidgets.QWidget):
@@ -145,52 +145,52 @@ class ImageView(QtWidgets.QWidget):
         self.currStimMapBg = []
         self.stimMapWin = None
 
-        self.ui.BtnSetROIDefs.clicked.connect(self.addROITag)
+        # self.ui.BtnSetROIDefs.clicked.connect(self.addROITag)
 
-        self.ui.listwROIs.itemClicked.connect(self.setSelectedROI)
-        self.ui.checkBoxShowAllROIs.clicked.connect(self.setSelectedROI)
+        # self.ui.listwROIs.itemClicked.connect(self.setSelectedROI)
+        # self.ui.checkBoxShowAllROIs.clicked.connect(self.setSelectedROI)
         self.priorlistwROIsSelection = None
 
         self.ROIcolors=['m','r','y','g','c']
 
         # Connect many UI signals
-        self.ui.btnTiffPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
-        self.ui.btnSplitsPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
-        self.ui.btnMesPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
+        # self.ui.btnTiffPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
+        # self.ui.btnSplitsPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
+        # self.ui.btnMesPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
 
         # self.ui.btnMCPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(1))
         # self.ui.btnDenPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(2))
         # self.ui.btnBatchPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(0))
 
-        self.ui.btnPlot.clicked.connect(self.plotAll)
-
-        # self.ui.btnOpenMesFiles.clicked.connect(self.promptFileDialog)
-        # self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
-        self.ui.btnImportSMap.clicked.connect(self.importCSVMap)
-
-        # self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
-        self.ui.btnPlotSplits.clicked.connect(lambda: self.splits_hstack(plot=True))
-        self.splitSeqMode = False
-        # self.ui.btnDoneSplitSeqs.clicked.connect(self.splits_seq_mode_done)
-
-        self.ui.btnEditMetaData.clicked.connect(self.edit_meta_data)
-        self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
+        # self.ui.btnPlot.clicked.connect(self.plotAll)
+        #
+        # # self.ui.btnOpenMesFiles.clicked.connect(self.promptFileDialog)
+        # # self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
+        # self.ui.btnImportSMap.clicked.connect(self.importCSVMap)
+        #
+        # # self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
+        # self.ui.btnPlotSplits.clicked.connect(lambda: self.splits_hstack(plot=True))
+        # self.splitSeqMode = False
+        # # self.ui.btnDoneSplitSeqs.clicked.connect(self.splits_seq_mode_done)
+        #
+        # self.ui.btnEditMetaData.clicked.connect(self.edit_meta_data)
+        # self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
 
         self.mesfileMap = None
-        self.ui.listwMesfile.itemDoubleClicked.connect(lambda selection:
-                                                        self.updateWorkEnv(selection, origin='mesfile'))
-        # self.ui.listwTiffs.itemDoubleClicked.connect(lambda selection:
-        #                                                 self.updateWorkEnv(selection, origin='tiff'))
-        self.ui.listwSplits.itemDoubleClicked.connect(lambda selection:
-                                                        self.updateWorkEnv(selection, origin='splits'))
-        # self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
+        # self.ui.listwMesfile.itemDoubleClicked.connect(lambda selection:
+        #                                                 self.updateWorkEnv(selection, origin='mesfile'))
+        # # self.ui.listwTiffs.itemDoubleClicked.connect(lambda selection:
+        # #                                                 self.updateWorkEnv(selection, origin='tiff'))
+        # self.ui.listwSplits.itemDoubleClicked.connect(lambda selection:
+        #                                                 self.updateWorkEnv(selection, origin='splits'))
+        # # self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
         #                                               self.updateWorkEnv(selection, origin='MotCor'))
 
         # self.ui.btnCrop.clicked.connect(self.crop_img_seq)
 
-        self.ui.btnAddROI.clicked.connect(self.addROI)
-        self.ui.btnAddROI.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.btnAddROI.customContextMenuRequested.connect(self.addROI_options)
+        # self.ui.btnAddROI.clicked.connect(self.addROI)
+        # self.ui.btnAddROI.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.ui.btnAddROI.customContextMenuRequested.connect(self.addROI_options)
         # self.ui.listwBatch.itemSelectionChanged.connect(self.setSelectedROI)
 
         # self.ui.btnSetID.clicked.connect(self.setSampleID)
@@ -205,7 +205,7 @@ class ImageView(QtWidgets.QWidget):
         self.ui.comboBoxStimMaps.setDisabled(True)
         self.ui.comboBoxStimMaps.currentIndexChanged[str].connect(self.displayStimMap)
 
-        self.ui.stackedWidget.setCurrentIndex(0)
+        # self.ui.stackedWidget.setCurrentIndex(0)
 
         #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
 
@@ -239,7 +239,7 @@ class ImageView(QtWidgets.QWidget):
         self.watcherStarted = False
 
         # This is the splitter separating the ImageView and ROI Plot
-        self.ui.splitter.setEnabled(False)
+        self.ui.splitter.setEnabled(True)
 
         # Set starting sizes of the other splitters
         self.ui.splitterHighest.setSizes([700, 160])
@@ -249,10 +249,10 @@ class ImageView(QtWidgets.QWidget):
         # of the timeline in the ROI plot
         self.currStimMapBg = []
 
-        self.initROIPlot()
-        self.enableUI(False)
+        # self.initROIPlot()
+        # self.enableUI(False)
 
-        self.update_from_config()
+        # self.update_from_config()
 
         # For illustrating the quilt on the image to assist with setting motion correction parameters
         # self.ui.sliderOverlaps.valueChanged.connect(self.drawStrides)
@@ -261,23 +261,6 @@ class ImageView(QtWidgets.QWidget):
         # self.overlapsH = []
         # self.ui.btnShowQuilt.clicked.connect(self.drawStrides)
         # self.ui.btnShowQuilt.clicked.connect(self.removeStrides)
-
-    @property
-    def status_bar_label(self):
-        return self._status_bar_label
-
-    @status_bar_label.setter
-    def status_bar_label(self, status_bar_label: QtWidgets.QLabel):
-        self._status_bar_label = status_bar_label
-
-    # Called from __main__ when btnSave in ConfigWindow is clicked.
-    def update_from_config(self):
-        self.ui.listwROIDefs.clear()
-        # self.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in configuration.cfg.options('ROI_DEFS')])
-        self.setSelectedROI()
-
-    #Initialize ROI Plot
-    def initROIPlot(self):
         self.timeLine = InfiniteLine(0, movable=True, hoverPen=None)
         self.timeLine.setPen((255, 255, 0, 200))
         self.timeLine.setZValue(100)
@@ -296,7 +279,6 @@ class ImageView(QtWidgets.QWidget):
         self.lastPlayTime = 0
         self.playTimer.timeout.connect(self.timeout)
 
-
         ## wrap functions from view box
         for fn in ['addItem', 'removeItem']:
             setattr(self, fn, getattr(self.view, fn))
@@ -307,116 +289,136 @@ class ImageView(QtWidgets.QWidget):
 
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
 
+    @property
+    def status_bar_label(self):
+        return self._status_bar_label
+
+    @status_bar_label.setter
+    def status_bar_label(self, status_bar_label: QtWidgets.QLabel):
+        self._status_bar_label = status_bar_label
+
+    # Called from __main__ when btnSave in ConfigWindow is clicked.
+    # def update_from_config(self):
+    #     self.ui.listwROIDefs.clear()
+    #     # self.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in configuration.cfg.options('ROI_DEFS')])
+    #     self.setSelectedROI()
+
+    #Initialize ROI Plot
+    # def initROIPlot(self):
+
+
+
+
     '''##############################################################################################################
                                 Work Environment Creation & open file dialogs
        ##############################################################################################################'''
 
-    def updateWorkEnv(self, selection, origin, iterate=False, qtsig=True):
-        ''' ======================================================================================
-            Set the ImgData object and pass the .seq of the ImgData object to setImage().
-            :param selection:   Item object that is send from the Qt listwidget's signal
-
-            :param origin:      Type of origin to determine the classmethod decorator that should be used to create an
-                                instance of workEnv
-
-            :param iterate:     Disable GUI popups, for performing iterations over many workEnv instances created in
-                                succession. For example useful for stitching ROI plots of all splits in splitseq mode
-
-            :param qtsig:       When false, it will interpret the selection as not coming from a Qt signal.
-
-            :return:            None
-            =======================================================================================
-        '''
-        # Prevent losing unsaved workEnv
-        if origin == 'splits':
-            clear_sample_id = False
-        else:
-            clear_sample_id = True
-        if not self.workEnv.isEmpty and self.DiscardWorkEnv(clear_sample_id) is False:
-            return
-
-        # if mesfile listwidget item is clicked
-        # if origin == 'mesfile':
-        #     try:
-        #         self.workEnv = viewerWorkEnv.from_mesfile(self.mesfile, selection.text().split('//')[0])
-        #     except Exception as e:
-        #         QtGui.QMessageBox.information(self, 'Error', 'Error opening the selected '+\
-        #                                       'image in the currently open mes file.\n' + str(e), QtGui.QMessageBox.Ok)
-        #         return
-        #     if self.mesfileMap is not None:
-        #         self.workEnv.imgdata.stimMaps = (self.mesfileMap, 'mesfile')
-        #
-        # # if motion correction listwidget item is clicked
-        # elif origin == 'MotCor':
-        #     print(selection.text())
-        #     self.workEnv = viewerWorkEnv.from_pickle(selection.text()[:-7]+'.pik', selection.text())
-        #     self.workEnv.imgdata.isMotCor = True
-        #     if self.workEnv.imgdata.stimMaps is not None:
-        #         self.populateStimMapComboBox()
-        #         self.displayStimMap()
-        #     self.ui.tabWidget.setCurrentWidget(self.ui.tabROIs)
-
-        # # For loading from tiff files
-        # elif origin == 'tiff':
-        #     if iterate is False:
-        #         self.workEnv = viewerWorkEnv.from_tiff(selection.text())
-        #         if QtGui.QMessageBox.question(self, 'Open Stimulus Maps?',
-        #                                    'Would you like to open stimulus maps for this file?',
-        #                                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
-        #             self.importCSVMap()
-        #     else:
-        #         # Just here if someone wants to process many tiff files in the same way they can iterate over them
-        #         # without having the QMessageBox show up every time.
-        #         self.workEnv = viewerWorkEnv.from_tiff(selection)
-
-        # For loading splits of a sequence in splitseq mode
-        elif origin == 'splits':
-            # TODO: THERE HAS TO BE A BETTER WAY TO DO THIS!! CHECK IF TYPE IS QTSIGNAL OR SOMETHING, & IF SO INTERPRET
-            # TODO: IT AS PLAIN STRING?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            if qtsig == False:
-                self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection + '.pik', tiffPath=self.splitsDir + '/' + selection + '.tiff')
-            else:
-                self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection.text() + '.pik', tiffPath=self.splitsDir + '/' + selection.text() + '.tiff')
-
-        elif origin == 'pandas':
-            self.workEnv = ViewerWorkEnv.from_pickle(pikPath=selection[0], tiffPath=selection[1])
-
-        # Set the image
-        self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
-                      xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
-                                        self.workEnv.imgdata.seq.T.shape[0]))
-
-        # If the newly spawned workEnv has any ROI states saved, then load them all.
-        # Use for example in splitseq mode
-        for ID in range(0, len(self.workEnv.roi_states)):
-            self.addROI(load=self.workEnv.roi_states[ID])
-            # self.view.addItem(self.workEnv.ROIList[-1])
-            # self.updatePlot(ID, force=True)
-
-        # Get image dimensions to set limits on the sliders for motion correction parameters
-        x = self.workEnv.imgdata.seq.shape[0]
-        # y = self.workEnv.imgdata.seq.shape[1]
-        # self.ui.sliderStrides.setMaximum(int(max(x, y)/2))
-        # self.ui.sliderOverlaps.setMaximum(int(max(x, y)/2))
-
-        # Activate the stimulus illustration GUI stuff if the newly spawed work environment has a stimulus map.
-        if self.workEnv.imgdata.stimMaps is not None:
-            self.populateStimMapComboBox()
-            self.displayStimMap()
-
-        self.workEnv.saved = True
-        # self._workEnv_checkSaved() # Connect signals of many Qt UI elements to a method that sets workEnv.save = False
-        if origin == 'splits':
-            self.enableUI(True, clear_sample_id=False)
-        else:
-            self.enableUI(True)
-
-    def enableUI(self, b, clear_sample_id=True):
-        self.ui.splitter.setEnabled(b)  # Enable stuff in the image & curve working area
-        # self.ui.tabBatchParams.setEnabled(b)
-        self.ui.tabROIs.setEnabled(b)
-        self.ui.toolBox.setEnabled(b)
-        self.ui.btnAddCurrEnvToProj.setEnabled(b)
+    # def updateWorkEnv(self, selection, origin, iterate=False, qtsig=True):
+    #     ''' ======================================================================================
+    #         Set the ImgData object and pass the .seq of the ImgData object to setImage().
+    #         :param selection:   Item object that is send from the Qt listwidget's signal
+    #
+    #         :param origin:      Type of origin to determine the classmethod decorator that should be used to create an
+    #                             instance of workEnv
+    #
+    #         :param iterate:     Disable GUI popups, for performing iterations over many workEnv instances created in
+    #                             succession. For example useful for stitching ROI plots of all splits in splitseq mode
+    #
+    #         :param qtsig:       When false, it will interpret the selection as not coming from a Qt signal.
+    #
+    #         :return:            None
+    #         =======================================================================================
+    #     '''
+    #     # Prevent losing unsaved workEnv
+    #     if origin == 'splits':
+    #         clear_sample_id = False
+    #     else:
+    #         clear_sample_id = True
+    #     if not self.workEnv.isEmpty and self.DiscardWorkEnv(clear_sample_id) is False:
+    #         return
+    #
+    #     # if mesfile listwidget item is clicked
+    #     # if origin == 'mesfile':
+    #     #     try:
+    #     #         self.workEnv = viewerWorkEnv.from_mesfile(self.mesfile, selection.text().split('//')[0])
+    #     #     except Exception as e:
+    #     #         QtGui.QMessageBox.information(self, 'Error', 'Error opening the selected '+\
+    #     #                                       'image in the currently open mes file.\n' + str(e), QtGui.QMessageBox.Ok)
+    #     #         return
+    #     #     if self.mesfileMap is not None:
+    #     #         self.workEnv.imgdata.stimMaps = (self.mesfileMap, 'mesfile')
+    #     #
+    #     # # if motion correction listwidget item is clicked
+    #     # elif origin == 'MotCor':
+    #     #     print(selection.text())
+    #     #     self.workEnv = viewerWorkEnv.from_pickle(selection.text()[:-7]+'.pik', selection.text())
+    #     #     self.workEnv.imgdata.isMotCor = True
+    #     #     if self.workEnv.imgdata.stimMaps is not None:
+    #     #         self.populateStimMapComboBox()
+    #     #         self.displayStimMap()
+    #     #     self.ui.tabWidget.setCurrentWidget(self.ui.tabROIs)
+    #
+    #     # # For loading from tiff files
+    #     # elif origin == 'tiff':
+    #     #     if iterate is False:
+    #     #         self.workEnv = viewerWorkEnv.from_tiff(selection.text())
+    #     #         if QtGui.QMessageBox.question(self, 'Open Stimulus Maps?',
+    #     #                                    'Would you like to open stimulus maps for this file?',
+    #     #                                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+    #     #             self.importCSVMap()
+    #     #     else:
+    #     #         # Just here if someone wants to process many tiff files in the same way they can iterate over them
+    #     #         # without having the QMessageBox show up every time.
+    #     #         self.workEnv = viewerWorkEnv.from_tiff(selection)
+    #
+    #     # For loading splits of a sequence in splitseq mode
+    #     elif origin == 'splits':
+    #         # TODO: THERE HAS TO BE A BETTER WAY TO DO THIS!! CHECK IF TYPE IS QTSIGNAL OR SOMETHING, & IF SO INTERPRET
+    #         # TODO: IT AS PLAIN STRING?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    #         if qtsig == False:
+    #             self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection + '.pik', tiffPath=self.splitsDir + '/' + selection + '.tiff')
+    #         else:
+    #             self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection.text() + '.pik', tiffPath=self.splitsDir + '/' + selection.text() + '.tiff')
+    #
+    #     elif origin == 'pandas':
+    #         self.workEnv = ViewerWorkEnv.from_pickle(pikPath=selection[0], tiffPath=selection[1])
+    #
+    #     # Set the image
+    #     self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
+    #                   xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
+    #                                     self.workEnv.imgdata.seq.T.shape[0]))
+    #
+    #     # If the newly spawned workEnv has any ROI states saved, then load them all.
+    #     # Use for example in splitseq mode
+    #     for ID in range(0, len(self.workEnv.roi_states)):
+    #         self.addROI(load=self.workEnv.roi_states[ID])
+    #         # self.view.addItem(self.workEnv.ROIList[-1])
+    #         # self.updatePlot(ID, force=True)
+    #
+    #     # Get image dimensions to set limits on the sliders for motion correction parameters
+    #     x = self.workEnv.imgdata.seq.shape[0]
+    #     # y = self.workEnv.imgdata.seq.shape[1]
+    #     # self.ui.sliderStrides.setMaximum(int(max(x, y)/2))
+    #     # self.ui.sliderOverlaps.setMaximum(int(max(x, y)/2))
+    #
+    #     # Activate the stimulus illustration GUI stuff if the newly spawed work environment has a stimulus map.
+    #     if self.workEnv.imgdata.stimMaps is not None:
+    #         self.populateStimMapComboBox()
+    #         self.displayStimMap()
+    #
+    #     self.workEnv.saved = True
+    #     # self._workEnv_checkSaved() # Connect signals of many Qt UI elements to a method that sets workEnv.save = False
+    #     if origin == 'splits':
+    #         self.enableUI(True, clear_sample_id=False)
+    #     else:
+    #         self.enableUI(True)
+    #
+    # def enableUI(self, b, clear_sample_id=True):
+    #     self.ui.splitter.setEnabled(b)  # Enable stuff in the image & curve working area
+    #     # self.ui.tabBatchParams.setEnabled(b)
+    #     self.ui.tabROIs.setEnabled(b)
+    #     self.ui.toolBox.setEnabled(b)
+    #     self.ui.btnAddCurrEnvToProj.setEnabled(b)
 
 
         # if clear_sample_id:
@@ -550,142 +552,142 @@ class ImageView(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
                                                             'environment: \n' + str(e))
 
-    '''##################################################################################################################
-                                            Split Seq Mode methods
-    ##################################################################################################################'''
-
-    def split_seq_ui_toggle(self, b):
-        # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
-        self.ui.btnAddROI.setDisabled(b)
-        # self.ui.btnCrop.setDisabled(b)
-        self.ui.btnChangeSMap.setDisabled(b)
-        self.ui.btnResetSMap.setDisabled(b)
-        self.ui.btnImportSMap.setDisabled(b)
-
-        self.ui.listwSplits.setEnabled(b)
-        self.ui.btnPlotSplits.setEnabled(b)
-        self.ui.btnDoneSplitSeqs.setEnabled(b)
-
-    def enterSplitSeqMode(self):
-        if self.splitSeqMode is False:
-            if QtWidgets.QMessageBox.question(self, 'Enter Split Seq Mode?', 'Are you sure you want to enter split-seq mode? ' +\
-                                      'You CANNOT add any more ROIs in split-seq mode and many other functins are '
-                                      ' disabled.\n\nAlso make sure you have tagged ALL your ROIs and applied any stimulus'
-                                      ' maps you may be interested in. You will loose everything if you tag ROIs after '
-                                      'exiting split-seq mode', QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)\
-                                        == QtWidgets.QMessageBox.No:
-                return
-            self.splitSeqMode = True
-            # Create temp dir to hold the splits
-            self.splitsDir = configuration.projPath + '/tmp/splits/' + str(time.time())
-            os.makedirs(self.splitsDir)
-
-            self.split_seq_ui_toggle(True)
-
-            # Each split is portrayed as an index item on the ui.listwSplits Qt widget
-            currentSplit = 0
-            self.ui.listwSplits.addItems([str(currentSplit).zfill(3)])
-            self.ui.listwSplits.setCurrentRow(0)
-            self.ui.stackedWidget.setCurrentIndex(2)
-
-        # Cannot split at zero because there is nothing before the 0th index of an image seq
-        if self.currentIndex == 0:
-            QtWidgets.QMessageBox.warning(self, 'Index = 0!', 'You cannot slice at the 0th index! '+\
-                                      'What\'s the point in that?!', QtWidgets.QMessageBox.Ok)
-            return
-
-        # Store the next sequence to spawn the next workEnv
-        nextseq = self.workEnv.imgdata.seq[:, :, self.currentIndex:]
-        print(self.workEnv.imgdata.seq.shape)
-        # Set current workEnv.seq up to the current index in the image sequence
-        self.workEnv.imgdata.seq = self.workEnv.imgdata.seq[:, :, :self.currentIndex]
-        print(self.workEnv.imgdata.seq.shape)
-
-        # Set index of this current split of the current WorkEnv.seq to the index of the listwidget
-        currentSplit = int(self.ui.listwSplits.currentItem().text())
-
-        print('currentSplit is: ' + str(currentSplit))
-
-        self.splitSeq(currentSplit)  # Save this split by basically using workEnv.to_pickle
-
-        # Spawn new workEnv from the just saved sequence which is the rest of the image sequence after the
-        # previous once was cut-off
-        self.workEnv.imgdata.seq = nextseq
-
-        # Get the number of splits that have currently been done
-        num_splits = int(self.ui.listwSplits.count())
-        print('Number of splits is: ' + str(num_splits))
-
-        # See if the split we had just saved to disk was a "middle split"
-        # I.e. if it was a split of a sequence that itself was already a split.
-        # In other terms, if it was not a terminal split, or basically it that split
-        # was not from the end of the image.
-        if int(self.ui.listwSplits.count()) > int(currentSplit) + 1:
-            print('middle split!!')
-            # If it was a middle split, rename all splits after that one so that we make space to not
-            # overwrite the new split, i.e. nextseq
-            for fname in reversed(range(currentSplit + 2, num_splits + 1)):
-                dst = self.splitsDir + '/' + str(fname).zfill(3)
-                src = self.splitsDir + '/' + str(fname - 1).zfill(3)
-                print('Renamed: ' + src + ' to :' + dst)
-                os.rename(src + '.pik', dst + '.pik')
-                os.rename(src + '.tiff', dst + '.tiff')
-
-        # Add references for all the splits to the list widget
-        l = list(range(num_splits + 1))
-        print('new list items are: ' + str(l))
-        self.ui.listwSplits.clear()
-        self.ui.listwSplits.addItems([str(i).zfill(3) for i in l])
-
-        # Save nextseq to disk
-        self.splitSeq(currentSplit + 1)
-        self.ui.listwSplits.setCurrentRow(currentSplit + 1)
-
-    def splitSeq(self, splitNum):
-        self.resetImgScale()  # New splits are a spawned instance of workEnv. Calling resetImgScale() will set the image
-                              # in the imageview so that plots can updated from the ROIs.
-        for ID in range(0, len(self.workEnv.ROIList)):
-            self.updatePlot(ID, force=True)  # Force update of the plot to get intensity values for each ROI.
-        fn = str(splitNum).zfill(3)
-        print('Saving to disk! ' + fn)
-        self.workEnv.to_pickle(self.splitsDir, filename=fn)  # Save the split
-
-    # Just a function that ultimately stiches together ROI plotting under all the splits
-    def splits_hstack(self, plot=False):
-        self.masterCurvesList = []
-        self.masterROIList = []
-
-        for i in range(0, self.ui.listwSplits.count()):
-            self.workEnv.saved = True
-            self.updateWorkEnv(str(i).zfill(3), origin='splits', iterate=True, qtsig=False)
-
-            for ID in range(0, len(self.workEnv.ROIList)):
-                self.updatePlot(ID, force=True)
-                self.masterROIList.append([self.workEnv.ROIList])
-
-            for ID in range(0, len(self.workEnv.CurvesList)):
-                if i == 0:
-                    self.masterCurvesList.append(self.workEnv.CurvesList[ID].getData())
-                else:
-                    self.masterCurvesList[ID] = np.hstack((self.masterCurvesList[ID],
-                                                           self.workEnv.CurvesList[ID].getData()))
-        if plot:
-            for curve in self.masterCurvesList:
-                pgplot(curve[1])
-
-    def splits_seq_mode_done(self):
-        if QtWidgets.QMessageBox.question(self, 'Warning!', "Are you sure you're done?",
-                                          QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-            return
-
-        self.splits_hstack()
-        self.workEnv.CurvesList = self.masterCurvesList
-        # self.workEnv.ROIList = self.masterROIList
-        self.exit_split_seq_mode()
-
-    def exit_split_seq_mode(self):
-        self.ui.listwSplits.clear()
-        self.split_seq_ui_toggle(False)
+    # '''##################################################################################################################
+    #                                         Split Seq Mode methods
+    # ##################################################################################################################'''
+    #
+    # def split_seq_ui_toggle(self, b):
+    #     # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
+    #     self.ui.btnAddROI.setDisabled(b)
+    #     # self.ui.btnCrop.setDisabled(b)
+    #     self.ui.btnChangeSMap.setDisabled(b)
+    #     self.ui.btnResetSMap.setDisabled(b)
+    #     self.ui.btnImportSMap.setDisabled(b)
+    #
+    #     self.ui.listwSplits.setEnabled(b)
+    #     self.ui.btnPlotSplits.setEnabled(b)
+    #     self.ui.btnDoneSplitSeqs.setEnabled(b)
+    #
+    # def enterSplitSeqMode(self):
+    #     if self.splitSeqMode is False:
+    #         if QtWidgets.QMessageBox.question(self, 'Enter Split Seq Mode?', 'Are you sure you want to enter split-seq mode? ' +\
+    #                                   'You CANNOT add any more ROIs in split-seq mode and many other functins are '
+    #                                   ' disabled.\n\nAlso make sure you have tagged ALL your ROIs and applied any stimulus'
+    #                                   ' maps you may be interested in. You will loose everything if you tag ROIs after '
+    #                                   'exiting split-seq mode', QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)\
+    #                                     == QtWidgets.QMessageBox.No:
+    #             return
+    #         self.splitSeqMode = True
+    #         # Create temp dir to hold the splits
+    #         self.splitsDir = configuration.projPath + '/tmp/splits/' + str(time.time())
+    #         os.makedirs(self.splitsDir)
+    #
+    #         self.split_seq_ui_toggle(True)
+    #
+    #         # Each split is portrayed as an index item on the ui.listwSplits Qt widget
+    #         currentSplit = 0
+    #         self.ui.listwSplits.addItems([str(currentSplit).zfill(3)])
+    #         self.ui.listwSplits.setCurrentRow(0)
+    #         self.ui.stackedWidget.setCurrentIndex(2)
+    #
+    #     # Cannot split at zero because there is nothing before the 0th index of an image seq
+    #     if self.currentIndex == 0:
+    #         QtWidgets.QMessageBox.warning(self, 'Index = 0!', 'You cannot slice at the 0th index! '+\
+    #                                   'What\'s the point in that?!', QtWidgets.QMessageBox.Ok)
+    #         return
+    #
+    #     # Store the next sequence to spawn the next workEnv
+    #     nextseq = self.workEnv.imgdata.seq[:, :, self.currentIndex:]
+    #     print(self.workEnv.imgdata.seq.shape)
+    #     # Set current workEnv.seq up to the current index in the image sequence
+    #     self.workEnv.imgdata.seq = self.workEnv.imgdata.seq[:, :, :self.currentIndex]
+    #     print(self.workEnv.imgdata.seq.shape)
+    #
+    #     # Set index of this current split of the current WorkEnv.seq to the index of the listwidget
+    #     currentSplit = int(self.ui.listwSplits.currentItem().text())
+    #
+    #     print('currentSplit is: ' + str(currentSplit))
+    #
+    #     self.splitSeq(currentSplit)  # Save this split by basically using workEnv.to_pickle
+    #
+    #     # Spawn new workEnv from the just saved sequence which is the rest of the image sequence after the
+    #     # previous once was cut-off
+    #     self.workEnv.imgdata.seq = nextseq
+    #
+    #     # Get the number of splits that have currently been done
+    #     num_splits = int(self.ui.listwSplits.count())
+    #     print('Number of splits is: ' + str(num_splits))
+    #
+    #     # See if the split we had just saved to disk was a "middle split"
+    #     # I.e. if it was a split of a sequence that itself was already a split.
+    #     # In other terms, if it was not a terminal split, or basically it that split
+    #     # was not from the end of the image.
+    #     if int(self.ui.listwSplits.count()) > int(currentSplit) + 1:
+    #         print('middle split!!')
+    #         # If it was a middle split, rename all splits after that one so that we make space to not
+    #         # overwrite the new split, i.e. nextseq
+    #         for fname in reversed(range(currentSplit + 2, num_splits + 1)):
+    #             dst = self.splitsDir + '/' + str(fname).zfill(3)
+    #             src = self.splitsDir + '/' + str(fname - 1).zfill(3)
+    #             print('Renamed: ' + src + ' to :' + dst)
+    #             os.rename(src + '.pik', dst + '.pik')
+    #             os.rename(src + '.tiff', dst + '.tiff')
+    #
+    #     # Add references for all the splits to the list widget
+    #     l = list(range(num_splits + 1))
+    #     print('new list items are: ' + str(l))
+    #     self.ui.listwSplits.clear()
+    #     self.ui.listwSplits.addItems([str(i).zfill(3) for i in l])
+    #
+    #     # Save nextseq to disk
+    #     self.splitSeq(currentSplit + 1)
+    #     self.ui.listwSplits.setCurrentRow(currentSplit + 1)
+    #
+    # def splitSeq(self, splitNum):
+    #     self.resetImgScale()  # New splits are a spawned instance of workEnv. Calling resetImgScale() will set the image
+    #                           # in the imageview so that plots can updated from the ROIs.
+    #     for ID in range(0, len(self.workEnv.ROIList)):
+    #         self.updatePlot(ID, force=True)  # Force update of the plot to get intensity values for each ROI.
+    #     fn = str(splitNum).zfill(3)
+    #     print('Saving to disk! ' + fn)
+    #     self.workEnv.to_pickle(self.splitsDir, filename=fn)  # Save the split
+    #
+    # # Just a function that ultimately stiches together ROI plotting under all the splits
+    # def splits_hstack(self, plot=False):
+    #     self.masterCurvesList = []
+    #     self.masterROIList = []
+    #
+    #     for i in range(0, self.ui.listwSplits.count()):
+    #         self.workEnv.saved = True
+    #         self.updateWorkEnv(str(i).zfill(3), origin='splits', iterate=True, qtsig=False)
+    #
+    #         for ID in range(0, len(self.workEnv.ROIList)):
+    #             self.updatePlot(ID, force=True)
+    #             self.masterROIList.append([self.workEnv.ROIList])
+    #
+    #         for ID in range(0, len(self.workEnv.CurvesList)):
+    #             if i == 0:
+    #                 self.masterCurvesList.append(self.workEnv.CurvesList[ID].getData())
+    #             else:
+    #                 self.masterCurvesList[ID] = np.hstack((self.masterCurvesList[ID],
+    #                                                        self.workEnv.CurvesList[ID].getData()))
+    #     if plot:
+    #         for curve in self.masterCurvesList:
+    #             pgplot(curve[1])
+    #
+    # def splits_seq_mode_done(self):
+    #     if QtWidgets.QMessageBox.question(self, 'Warning!', "Are you sure you're done?",
+    #                                       QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+    #         return
+    #
+    #     self.splits_hstack()
+    #     self.workEnv.CurvesList = self.masterCurvesList
+    #     # self.workEnv.ROIList = self.masterROIList
+    #     self.exit_split_seq_mode()
+    #
+    # def exit_split_seq_mode(self):
+    #     self.ui.listwSplits.clear()
+    #     self.split_seq_ui_toggle(False)
 
     '''##################################################################################################################
                                             Stimulus Maps methods
@@ -731,9 +733,9 @@ class ImageView(QtWidgets.QWidget):
             self.stimMapWin.tabs.widget(i).ui.setMapBtn.clicked.connect(self.storeMesStimMap)
             self.stimMapWin.tabs.widget(i).ui.btnRefresh.clicked.connect(self.initMesStimMapGUI)
         # If user wants to change the map for this particular ImgData object
-        self.ui.btnChangeSMap.clicked.connect(self.stimMapWin.show)
-        # If user wants to set the map back to the one for the entire mes file
-        self.ui.btnResetSMap.clicked.connect(self.resetStimMap)
+        # self.ui.btnChangeSMap.clicked.connect(self.stimMapWin.show)
+        # # If user wants to set the map back to the one for the entire mes file
+        # self.ui.btnResetSMap.clicked.connect(self.resetStimMap)
 
     # Reset stimulus maps to the one set for the entire mesfile, if the user has set a map for the entire mesfile.
     def resetStimMap(self):
@@ -1139,239 +1141,234 @@ class ImageView(QtWidgets.QWidget):
     def getMouseClickPos(self):
         pass
 
-    '''################################################################################################################
-                                            ROI Methods
-       ################################################################################################################
-    '''
+#     '''################################################################################################################
+#                                             ROI Methods
+#        ################################################################################################################
+#     '''
+#
+#     def addROI(self, ev=None, load=None):
+#         ''' Method for adding PolyROI's to the plot '''
+#         # self._workEnv_changed()
+#         #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
+#         #self.ROICurve = self.ui.roiPlot.plot()
+#
+#         # Create polyROI instance
+#         self.workEnv.ROIList.append(PolyLineROI([[0,0], [10,10], [30,10]],
+#                                                 closed=True, pos=[0,0], removable=True))
+#
+#         self.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'), '')
+#         # Create new plot instance for plotting the newly created ROI
+#         self.curve = self.ui.roiPlot.plot()
+#         self.workEnv.CurvesList.append(self.curve)
+#         self.workEnv.CurvesList[-1].setZValue(len(self.workEnv.CurvesList))
+#         # Just some plot initializations, these are these from the original pyqtgraph ImageView class
+#         self.ui.roiPlot.setMouseEnabled(True, True)
+#         self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])
+#         self.ui.roiPlot.show()
+#
+#         # Connect signals to the newly created ROI
+#         self.workEnv.ROIList[-1].sigRemoveRequested.connect(self.delROI)
+#         # self.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
+#         self.workEnv.ROIList[-1].sigRegionChanged.connect(self.updatePlot)# This is how the curve is plotted to correspond to this ROI
+#         # self.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
+#         self.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
+#         self.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
+#         self.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)
+#
+#         # Add the ROI to the scene so it can be seen
+#         self.view.addItem(self.workEnv.ROIList[-1])
+#
+#         if load is not None:
+#             self.workEnv.ROIList[-1].setState(load)
+#
+#         self.ui.listwROIs.addItem(str(len(self.workEnv.ROIList)-1))
+# #        self.ROIlist.append(self.polyROI)
+# #        d = self.ROItagDict.copy()
+# #        self.ROItags.append(d)
+#         # Update the plot to include this ROI which was just added
+#         self.updatePlot(len(self.workEnv.ROIList)-1)
+#         self.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList)-1)
+#         # So that ROI.tags is never = {}, which would result in NaN's
+#         self.setSelectedROI(len(self.workEnv.ROIList)-1)
+#
+#     def addROI_options(self):
+#         pass
+#
+#     def setSelectedROI(self, roi=None):
+#         if type(roi) == PolyLineROI:
+#             ID = self.workEnv.ROIList.index(roi)
+#             self.ui.listwROIs.setCurrentRow(ID)
+#         else:
+#             if self.ui.listwROIs.currentRow() != -1:
+#                 ID = self.ui.listwROIs.currentRow()
+#             else:
+#                 return
+#
+#         self.ui.lineEdROIDef.clear()
+#
+#         self.checkShowAllROIs()
+#
+#         self.workEnv.ROIList[ID].show()
+#
+#         if self.priorlistwROIsSelection is not None:
+#             try:
+#                 self.workEnv.ROIList[self.priorlistwROIsSelection].setMouseHover(False)
+#             except IndexError:
+#                 pass
+#
+#         self.priorlistwROIsSelection = ID
+#
+#         self.resetPlot()
+#         self.workEnv.ROIList[ID].setMouseHover(True)
+#         self.boldPlot(ID)
+#
+#         if self.ui.listwROIDefs.count() > 0:
+#             for def_id in range(0, self.ui.listwROIDefs.count()):
+#                 self.setROITagListText(ID, def_id)
+#             self.ui.listwROIDefs.setCurrentRow(0)
+#
+#     def checkShowAllROIs(self):
+#         if self.ui.checkBoxShowAllROIs.isChecked() == False:
+#             for roi in self.workEnv.ROIList:
+#                 roi.hide()
+#             return
+#
+#         elif self.ui.checkBoxShowAllROIs.isChecked() == True:
+#             for roi in self.workEnv.ROIList:
+#                 roi.show()
+#
+#     def addROITag(self):
+#         if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
+#             QtWidgets.QMessageBox.question(self, 'Message',
+#                                            'Select an ROI Definition from the list if you want to add tags ',
+#                                            QtWidgets.QMessageBox.Ok)
+#             return
+#
+#         ROI_ID = self.ui.listwROIs.currentRow()
+#         tag = self.ui.lineEdROIDef.text()
+#         definition = self.ui.listwROIDefs.currentItem().text().split(': ')[0]
+#
+#         self.workEnv.ROIList[ROI_ID].tags[definition] = tag
+#
+#         self.setROITagListText(ROI_ID, self.ui.listwROIDefs.currentRow())
+#
+#         self.ui.lineEdROIDef.clear()
+#         print(self.workEnv.ROIList[ROI_ID].tags)
+#
+#     def setROITagListText(self, ROI_ID, DEF_ID):
+#         if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
+#             return
+#         definition = self.ui.listwROIDefs.item(DEF_ID).text().split(': ')[0]
+#
+#         try:
+#             tag = self.workEnv.ROIList[ROI_ID].tags[definition]
+#         except KeyError:
+#             tag = ''
+#             self.workEnv.ROIList[ROI_ID].tags[definition] = tag
+#
+#         self.ui.listwROIDefs.item(DEF_ID).setText(definition + ': ' + tag)
+#         self.ui.listwROIDefs.setCurrentRow(min(DEF_ID + 1, self.ui.listwROIDefs.count() - 1))
+#
+#     def delROI(self,roiPicked):
+#         ''' Pass in the roi object from ROI.sigRemoveRequested()
+#         gets the index position of this particular ROI from the ROIlist
+#         removes that ROI from the scene and removes it from the list
+#         AND removes the corresponding curve.'''
+#
+#         ID = self.workEnv.ROIList.index(roiPicked)
+#
+#         self.view.removeItem(self.workEnv.ROIList[ID])
+#         del self.workEnv.ROIList[ID]
+#
+# #        del self.ROItags[ID]
+#
+#         self.ui.listwROIs.takeItem(ID)
+#
+#
+#         for i in range(0, len(self.ui.listwROIs)):
+#             self.ui.listwROIs.item(i).setText(str(i))
+#
+#         if isinstance(self.workEnv.CurvesList[ID], np.ndarray) is False:
+#             self.workEnv.CurvesList[ID].clear()
+#         del self.workEnv.CurvesList[ID]
+#
+#          # Resets the color in the order of a bright rainbow, kinda.
+#          # ***** SHOULD REPLACE BY USING COLORMAP METHOD FROM PYQTGRAPH
+#         self.resetPlot()
+#         for ix in range(0,len(self.workEnv.ROIList)):
+#             self.updatePlot(ix)
+#
+#     '''
+#     ###############################################################################################################
+#                                             Plot methods
+#     ###############################################################################################################
+#     '''
+#
+#     # Pass the index of the ROI OR the ROI object itself for which you want to update the plot
+#     def updatePlot(self, ID, force=False):
+#         ''' If the index of the ROI in the ROIlist isn't passed as an argument to this function
+#          it will find the index of the ROI object which was passed. This comes from the Qt signal
+#          from the ROI: PolyLineROI.sigRegionChanged.connect'''
+#         if force is False and self.ui.btnPlot.isChecked() is False:
+#             return
+#
+#         if type(ID) != int:
+#             ID = self.workEnv.ROIList.index(ID)
+#
+#         color = self.ROIcolors[ID%(len(self.ROIcolors))]
+#         self.workEnv.ROIList[ID].setPen(color)
+#
+#         # This stuff is from pyqtgraph's original class
+#         image = self.getProcessedImage()
+#         if image.ndim == 2:
+#             axes = (0, 1)
+#         elif image.ndim == 3:
+#             axes = (1, 2)
+#         else:
+#             return
+#
+#         # Get the ROI region
+#         data = self.workEnv.ROIList[ID].getArrayRegion((image.view(np.ndarray)), self.imageItem, axes)#, returnMappedCoords=True)
+#         #,returnMappedCoords=True)
+#         if data is not None:
+#             while data.ndim > 1:
+#                 data = data.mean(axis=1)
+#             if image.ndim == 3:
+#                 # Set the curve
+#                 # Fo = np.mean(np.take(data, np.arange(0, 300)))
+#                 # data = np.divide(np.subtract(data, Fo), Fo)
+#                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
+#                 self.workEnv.CurvesList[ID].setPen(color)
+#                 self.workEnv.CurvesList[ID].show()
+#             else:
+#                 while coords.ndim > 2:
+#                     coords = coords[:,:,0]
+#                 coords = coords - coords[:,0,np.newaxis]
+#                 xvals = (coords**2).sum(axis=0) ** 0.5
+#                 self.workEnv.CurvesList[ID].setData(y=data, x=xvals)
+#
+#     ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
+#     # Make the curve bold & white. Used here when mouse hovers over the ROI. called by PolyLineROI.sigHoverEvent
+#     def boldPlot(self, ID):
+#         if type(ID) is not int:
+#             ID = self.workEnv.ROIList.index(ID)
+#         self.workEnv.CurvesList[ID].setPen(width=2)
+#
+#     ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
+#     # Used to un-bold and un-white, called by PolyLineROI.sigHoverEnd
+#     def resetPlot(self): #Set plot color back to what it was before
+#         for ID in range(0,len(self.workEnv.ROIList)):
+#             color = self.ROIcolors[ID%(len(self.ROIcolors))]
+#             self.workEnv.ROIList[ID].setPen(color)
+#             self.workEnv.CurvesList[ID].setPen(color)
+#
+#     def plotAll(self):
+#         if self.ui.btnPlot.isChecked() == False:
+#             return
+#         for ID in range(0, len(self.workEnv.ROIList)):
+#             self.updatePlot(ID)
+#
 
-    def addROI(self, ev=None, load=None):
-        ''' Method for adding PolyROI's to the plot '''
-        # self._workEnv_changed()
-        #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
-        #self.ROICurve = self.ui.roiPlot.plot()
-
-        # Create polyROI instance
-        self.workEnv.ROIList.append(PolyLineROI([[0,0], [10,10], [30,10]],
-                                                closed=True, pos=[0,0], removable=True))
-
-        self.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'), '')
-        # Create new plot instance for plotting the newly created ROI
-        self.curve = self.ui.roiPlot.plot()
-        self.workEnv.CurvesList.append(self.curve)
-        self.workEnv.CurvesList[-1].setZValue(len(self.workEnv.CurvesList))
-        # Just some plot initializations, these are these from the original pyqtgraph ImageView class
-        self.ui.roiPlot.setMouseEnabled(True, True)
-        self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])
-        self.ui.roiPlot.show()
-
-        # Connect signals to the newly created ROI
-        self.workEnv.ROIList[-1].sigRemoveRequested.connect(self.delROI)
-        # self.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
-        self.workEnv.ROIList[-1].sigRegionChanged.connect(self.updatePlot)# This is how the curve is plotted to correspond to this ROI
-        # self.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
-        self.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
-        self.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
-        self.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)
-
-        # Add the ROI to the scene so it can be seen
-        self.view.addItem(self.workEnv.ROIList[-1])
-
-        if load is not None:
-            self.workEnv.ROIList[-1].setState(load)
-
-        self.ui.listwROIs.addItem(str(len(self.workEnv.ROIList)-1))
-#        self.ROIlist.append(self.polyROI)
-#        d = self.ROItagDict.copy()
-#        self.ROItags.append(d)
-        # Update the plot to include this ROI which was just added
-        self.updatePlot(len(self.workEnv.ROIList)-1)
-        self.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList)-1)
-        # So that ROI.tags is never = {}, which would result in NaN's
-        self.setSelectedROI(len(self.workEnv.ROIList)-1)
-
-    def addROI_options(self):
-        pass
-
-    def setSelectedROI(self, roi=None):
-        if type(roi) == PolyLineROI:
-            ID = self.workEnv.ROIList.index(roi)
-            self.ui.listwROIs.setCurrentRow(ID)
-        else:
-            if self.ui.listwROIs.currentRow() != -1:
-                ID = self.ui.listwROIs.currentRow()
-            else:
-                return
-
-        self.ui.lineEdROIDef.clear()
-
-        self.checkShowAllROIs()
-
-        self.workEnv.ROIList[ID].show()
-
-        if self.priorlistwROIsSelection is not None:
-            try:
-                self.workEnv.ROIList[self.priorlistwROIsSelection].setMouseHover(False)
-            except IndexError:
-                pass
-
-        self.priorlistwROIsSelection = ID
-
-        self.resetPlot()
-        self.workEnv.ROIList[ID].setMouseHover(True)
-        self.boldPlot(ID)
-
-        if self.ui.listwROIDefs.count() > 0:
-            for def_id in range(0, self.ui.listwROIDefs.count()):
-                self.setROITagListText(ID, def_id)
-            self.ui.listwROIDefs.setCurrentRow(0)
-
-    def checkShowAllROIs(self):
-        if self.ui.checkBoxShowAllROIs.isChecked() == False:
-            for roi in self.workEnv.ROIList:
-                roi.hide()
-            return
-
-        elif self.ui.checkBoxShowAllROIs.isChecked() == True:
-            for roi in self.workEnv.ROIList:
-                roi.show()
-
-    def addROITag(self):
-        if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
-            QtWidgets.QMessageBox.question(self, 'Message',
-                                           'Select an ROI Definition from the list if you want to add tags ',
-                                           QtWidgets.QMessageBox.Ok)
-            return
-
-        ROI_ID = self.ui.listwROIs.currentRow()
-        tag = self.ui.lineEdROIDef.text()
-        definition = self.ui.listwROIDefs.currentItem().text().split(': ')[0]
-
-        self.workEnv.ROIList[ROI_ID].tags[definition] = tag
-
-        self.setROITagListText(ROI_ID, self.ui.listwROIDefs.currentRow())
-
-        self.ui.lineEdROIDef.clear()
-        print(self.workEnv.ROIList[ROI_ID].tags)
-
-    def setROITagListText(self, ROI_ID, DEF_ID):
-        if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
-            return
-        definition = self.ui.listwROIDefs.item(DEF_ID).text().split(': ')[0]
-
-        try:
-            tag = self.workEnv.ROIList[ROI_ID].tags[definition]
-        except KeyError:
-            tag = ''
-            self.workEnv.ROIList[ROI_ID].tags[definition] = tag
-
-        self.ui.listwROIDefs.item(DEF_ID).setText(definition + ': ' + tag)
-        self.ui.listwROIDefs.setCurrentRow(min(DEF_ID + 1, self.ui.listwROIDefs.count() - 1))
-
-    def delROI(self,roiPicked):
-        ''' Pass in the roi object from ROI.sigRemoveRequested()
-        gets the index position of this particular ROI from the ROIlist
-        removes that ROI from the scene and removes it from the list
-        AND removes the corresponding curve.'''
-
-        ID = self.workEnv.ROIList.index(roiPicked)
-
-        self.view.removeItem(self.workEnv.ROIList[ID])
-        del self.workEnv.ROIList[ID]
-
-#        del self.ROItags[ID]
-
-        self.ui.listwROIs.takeItem(ID)
-
-
-        for i in range(0, len(self.ui.listwROIs)):
-            self.ui.listwROIs.item(i).setText(str(i))
-
-        if isinstance(self.workEnv.CurvesList[ID], np.ndarray) is False:
-            self.workEnv.CurvesList[ID].clear()
-        del self.workEnv.CurvesList[ID]
-
-         # Resets the color in the order of a bright rainbow, kinda.
-         # ***** SHOULD REPLACE BY USING COLORMAP METHOD FROM PYQTGRAPH
-        self.resetPlot()
-        for ix in range(0,len(self.workEnv.ROIList)):
-            self.updatePlot(ix)
-
-    '''
-    ###############################################################################################################
-                                            Plot methods
-    ###############################################################################################################
-    '''
-
-    # Pass the index of the ROI OR the ROI object itself for which you want to update the plot
-    def updatePlot(self, ID, force=False):
-        ''' If the index of the ROI in the ROIlist isn't passed as an argument to this function
-         it will find the index of the ROI object which was passed. This comes from the Qt signal
-         from the ROI: PolyLineROI.sigRegionChanged.connect'''
-        if force is False and self.ui.btnPlot.isChecked() is False:
-            return
-
-        if type(ID) != int:
-            ID = self.workEnv.ROIList.index(ID)
-
-        color = self.ROIcolors[ID%(len(self.ROIcolors))]
-        self.workEnv.ROIList[ID].setPen(color)
-
-        # This stuff is from pyqtgraph's original class
-        image = self.getProcessedImage()
-        if image.ndim == 2:
-            axes = (0, 1)
-        elif image.ndim == 3:
-            axes = (1, 2)
-        else:
-            return
-
-        # Get the ROI region
-        data = self.workEnv.ROIList[ID].getArrayRegion((image.view(np.ndarray)), self.imageItem, axes)#, returnMappedCoords=True)
-        #,returnMappedCoords=True)
-        if data is not None:
-            while data.ndim > 1:
-                data = data.mean(axis=1)
-            if image.ndim == 3:
-                # Set the curve
-                # Fo = np.mean(np.take(data, np.arange(0, 300)))
-                # data = np.divide(np.subtract(data, Fo), Fo)
-                self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
-                self.workEnv.CurvesList[ID].setPen(color)
-                self.workEnv.CurvesList[ID].show()
-            else:
-                while coords.ndim > 2:
-                    coords = coords[:,:,0]
-                coords = coords - coords[:,0,np.newaxis]
-                xvals = (coords**2).sum(axis=0) ** 0.5
-                self.workEnv.CurvesList[ID].setData(y=data, x=xvals)
-
-    ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
-    # Make the curve bold & white. Used here when mouse hovers over the ROI. called by PolyLineROI.sigHoverEvent
-    def boldPlot(self, ID):
-        if type(ID) is not int:
-            ID = self.workEnv.ROIList.index(ID)
-        self.workEnv.CurvesList[ID].setPen(width=2)
-
-    ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
-    # Used to un-bold and un-white, called by PolyLineROI.sigHoverEnd
-    def resetPlot(self): #Set plot color back to what it was before
-        for ID in range(0,len(self.workEnv.ROIList)):
-            color = self.ROIcolors[ID%(len(self.ROIcolors))]
-            self.workEnv.ROIList[ID].setPen(color)
-            self.workEnv.CurvesList[ID].setPen(color)
-
-    def plotAll(self):
-        if self.ui.btnPlot.isChecked() == False:
-            return
-        for ID in range(0, len(self.workEnv.ROIList)):
-            self.updatePlot(ID)
-
-
-    '''
-    ################################################################################################################
-                                    Original pyqtgraph methods
-    ################################################################################################################
-    '''
 
     def quickMinMax(self, data):
         """

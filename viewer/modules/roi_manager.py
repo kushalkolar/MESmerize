@@ -31,7 +31,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.manager = managers.ManagerManual(self.ui, self.vi)
+        self.manager = managers.ManagerManual(self, self.ui, self.vi)
+        self.vi.viewer.workEnv.roi_manager = self.manager
+
         self.vi.viewer.workEnv.rois = self.manager.roi_list
         self.vi.viewer.ui.splitter.setEnabled(True)
 
@@ -68,19 +70,24 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def btnAddROI_context_menu_requested(self, p):
         self.btnAddROIMenu.exec_(self.ui.btnAddROI.mapToGlobal(p))
 
-    def start_cnmfe_mode(self, cnmA, cnmC, idx_components, dims):
+    def start_cnmfe_mode(self):
         print('staring cnmfe mode in roi manager')
 
         if hasattr(self, 'manager'):
             del self.manager
 
         self.ui.btnAddROI.setDisabled(True)
-        self.manager = managers.ManagerCNMFE(self.ui, self.vi, cnmA, cnmC, idx_components, dims)
-        self.manager.add_all_components()
+        self.manager = managers.ManagerCNMFE(self, self.ui, self.vi)
         self.vi.viewer.workEnv.roi_manager = self.manager
         self.ui.btnSwitchToManualMode.setEnabled(True)
 
+    def add_all_cnmfe_components(self, cnmA, cnmC, idx_components, dims, input_params_dict):
+        assert isinstance(self.manager, managers.ManagerCNMFE)
+        self.manager.add_all_components(cnmA, cnmC, idx_components, dims, input_params_dict)
+
     def start_manual_mode(self):
+        print('staring manual mode')
+
         if hasattr(self, 'manager'):
             if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
                                              'You have unsaved ROIs in your work environment.'
@@ -89,7 +96,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
             del self.manager
-        self.manager = managers.ManagerManual(self.ui, self.vi)
+        self.manager = managers.ManagerManual(self, self.ui, self.vi)
 
         self.ui.btnAddROI.setEnabled(True)
         self.vi.viewer.workEnv.roi_manager = self.manager
@@ -103,22 +110,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
         self.manager.add_roi(shape)
 
-    # def set_roi_tag(self):
-    #     if self.manager.roi_list.list_widget_tags.currentRow() == -1 or self.manager.roi_list.list_widget.currentRow() == -1:
-    #         QtWidgets.QMessageBox.question(self, 'Message',
-    #                                        'Select an ROI Definition from the list if you want to add tags ',
-    #                                        QtWidgets.QMessageBox.Ok)
-    #         return
-    #
-    #     tag = self.ui.lineEditROITag.text()
-    #     self.manager.roi_list.set_tag(tag)
-    #
-    #     self.ui.lineEditROITag.clear()
-    #
-    #     max_ix = self.manager.roi_list.list_widget_tags.count() - 1
-    #     next_ix = self.manager.roi_list.list_widget_tags.currentRow() + 1
-    #     self.manager.roi_list.list_widget_tags.setCurrentRow(max(max_ix, next_ix))
-
     def add_roi_tags_list_text(self):
         pass
 
@@ -126,4 +117,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         pass
 
     def package_for_project(self):
-        pass
+        states = self.manager.get_all_states()
+        return states
+
+    def set_all_from_states(self, states):
+        if states['roi_type'] == 'CNMFROI':
+            self.start_cnmfe_mode()
+            self.manager.restore_from_states(states)
+
+        # elif states['roi_type'] == 'ManualROI':
+        #     print(states['roi_type'] == 'ManualROI')
+        #     self.start_manual_mode()

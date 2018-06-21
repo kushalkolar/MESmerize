@@ -20,7 +20,7 @@ import sys
 # if not len(sys.argv) > 1:
 #     from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from PyQt5 import QtCore, QtGui, QtWidgets
-    # from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+# from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import json
 import caiman as cm
 
@@ -36,7 +36,7 @@ from caiman.source_extraction import cnmf
 from caiman.utils.utils import download_demo
 from caiman.utils.visualization import inspect_correlation_pnr
 from caiman.components_evaluation import estimate_components_quality_auto
-from caiman.motion_correction import motion_correct_oneP_rigid,motion_correct_oneP_nonrigid
+from caiman.motion_correction import motion_correct_oneP_rigid, motion_correct_oneP_nonrigid
 import os
 import pickle
 from glob import glob
@@ -224,7 +224,6 @@ class Output(QtWidgets.QWidget):
             self.btnCNMFE.setText('CaImAn CNMFE visualization')
             layout.addWidget(self.btnCNMFE)
 
-
             self.btnImportIntoViewer = QtWidgets.QPushButton()
             self.btnImportIntoViewer.setText('Import CNMFE output into chosen Viewer')
             layout.addWidget(self.btnImportIntoViewer)
@@ -236,7 +235,7 @@ class Output(QtWidgets.QWidget):
             self.btnImportIntoViewer.clicked.connect(self.import_cnmfe_into_viewer)
             self.show()
 
-    def output_corr_pnr(self): #, batch_dir, UUID, viewer_ref):
+    def output_corr_pnr(self):  # , batch_dir, UUID, viewer_ref):
         filename = self.batch_dir + '/' + str(self.UUID)
 
         cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
@@ -251,7 +250,7 @@ class Output(QtWidgets.QWidget):
         self.idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
         self.dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
 
-    def output_cnmfe(self):# , batch_dir, UUID, viewer_ref):
+    def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
         filename = self.batch_dir + '/' + str(self.UUID)
 
         self.get_cnmfe_results()
@@ -275,20 +274,25 @@ class Output(QtWidgets.QWidget):
         if not vi.discard_workEnv():
             return
 
-        pikpath = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
-        tiffpath = self.batch_dir + '/' + str(self.UUID) + '.tiff'
+        pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
+        tiff_path = self.batch_dir + '/' + str(self.UUID) + '.tiff'
 
-        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
+        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path, tiff_path)
         vi.update_workEnv()
+
+        input_params = pickle.load(open(self.batch_dir + '/' + str(self.UUID) + '.params', 'rb'))
 
         self.viewer_ref.parent().ui.actionROI_Manager.trigger()
 
         for m in self.viewer_ref.parent().running_modules:
             if isinstance(m, ModuleGUI):
-                m.start_cnmfe_mode(cnmA=self.cnmA,
-                                   cnmC=self.cnmC,
-                                   idx_components=self.idx_components,
-                                   dims=self.dims)
+                m.start_cnmfe_mode()
+                m.add_all_cnmfe_components(cnmA=self.cnmA,
+                                           cnmC=self.cnmC,
+                                           idx_components=self.idx_components,
+                                           dims=self.dims,
+                                           input_params_dict=input_params)
+
 
 # class QuestionBox(QtWidgets.QWidget):
 #     def __init__(self):
