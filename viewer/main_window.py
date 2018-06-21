@@ -58,6 +58,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def viewer_reference(self, viewer: ImageView):
         self._viewer = viewer
 
+        self.run_module(roi_manager.ModuleGUI, hide=True)
+        self.roi_manager = self.running_modules[-1]
+
         status_label = QtWidgets.QLabel()
         status_bar = self.statusBar()
         status_bar.addWidget(status_label)
@@ -81,9 +84,6 @@ class MainWindow(QtWidgets.QMainWindow):
               "pandas as pd         \n" \
               "pickle as 'pickle    \n" \
               "tifffile as tifffile \n" \
-              "MesmerizeCore.packager as packager \n" \
-              "MesmerizeCore.DataTypes as DataTypes \n" \
-              "viewer as main.viewer_reference     \n" \
               "ViewerInterface as main.vi \n" \
               "self as main         \n" \
               "objecteditor as objecteditor\n"
@@ -96,7 +96,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                     historyFile=cmd_history_file))
 
-    def run_module(self, module_class):
+    def run_module(self, module_class, hide=False):
         # Show the QDockableWidget if it's already running
         for m in self.running_modules:
             if isinstance(m, module_class):
@@ -107,7 +107,10 @@ class MainWindow(QtWidgets.QMainWindow):
         m = module_class(self, self._viewer)
         self.running_modules.append(m)
 
-        self.running_modules[-1].show()
+        if not hide:
+            self.running_modules[-1].show()
+        else:
+            self.running_modules[-1].hide()
 
     def update_available_inputs(self):
         for m in self.running_modules:
@@ -201,7 +204,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 import common.start
                 common.start.main()
 
-        if len(self.viewer_reference.workEnv.CurvesList) == 0:
+        if len(self.viewer_reference.workEnv.roi_manager.roi_list) == 0:
             QtWidgets.QMessageBox.warning(self, 'No curves',
                                           'You do not have any curves in your work environment')
             return

@@ -129,8 +129,10 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         if not vi.discard_workEnv():
             return
 
-        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pikPath=pikPath, tiffPath=tiffPath)
+        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikPath, tiff_path=tiffPath)
         vi.update_workEnv()
+        vi.viewer.workEnv.restore_rois_from_states()
+
         try:
             self.lwd.deleteLater()
         except:

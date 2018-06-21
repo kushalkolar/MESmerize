@@ -31,7 +31,7 @@ import json
 
 
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, sample_id='', roi_manager=None, ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file='', custom_columns_dict={}):
+    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stimMaps=None, roi_manager=None, roi_states=None, comments='', origin_file='', custom_columns_dict=None):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -42,7 +42,6 @@ class ViewerWorkEnv:
         :param roi_states:  list of ROI states, from pyqtgraphCore.ROI.saveState()
 
         :type imgdata:      ImgData
-        :type rois:         AbstractBaseManager
         :type ROIList:      list
         :type CurvesList:   list
         :type roi_states:   list
@@ -50,6 +49,12 @@ class ViewerWorkEnv:
         """
         if imgdata is not None:
             self.isEmpty = False
+            self.imgdata = imgdata
+            if isinstance(self.imgdata, ImgData):
+                if meta is not None:
+                    self.imgdata.meta = meta
+                if stimMaps is not None:
+                    self.imgdata.stimMaps = stimMaps
         else:
             self.isEmpty = True
 
@@ -57,16 +62,16 @@ class ViewerWorkEnv:
 
         self.roi_manager = roi_manager
 
-        self.ROIList = ROIList
-        self.CurvesList = CurvesList
-        #        self.ROItags = []
-        self.imgdata = imgdata
         self._saved = True
         self.changed_items = []
         self.roi_states = roi_states
         self.comments = comments
         self.origin_file = origin_file
-        self.custom_columns_dict = custom_columns_dict
+        if custom_columns_dict is None:
+            self.custom_columns_dict = {}
+
+        self.UUID = UUID
+
     #    def __repr__(self):
     #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
     #            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
@@ -77,17 +82,20 @@ class ViewerWorkEnv:
         self.imgdata = None
         if self.roi_manager is not None:
             self.roi_manager.clear()
-        self.ROIList = []
-        self.CurvesList = []
-        self.roi_states = []
+            # self.roi_manager.parent.start_manual_mode()
+        self.roi_states = None
         self.comments = ''
         self.origin_file = ''
         self._saved = True
         self.changed_items = []
         print('Work environment dumped!')
 
+    def restore_rois_from_states(self):
+        if (self.roi_manager is not None) and (self.roi_states is not None):
+            self.roi_manager.parent.set_all_from_states(self.roi_states)
+
     @classmethod
-    def from_pickle(cls, pikPath, npzPath=None, tiffPath=None):
+    def from_pickle(cls, pickle_file_path=None, tiff_path=None):
         """
         Get pickled image data from a pickle file & image sequence from a npz or tiff. Used after motion correction
         & to view a sample from a project DataFrame. Create ImgData class object (See MesmerizeCore.DataTypes) and
@@ -105,32 +113,38 @@ class ViewerWorkEnv:
 
         # if (npzPath is None) and (tifffile is None):
         #     raise ValueError('You must pass a path to either a npz or tiff image sequence.')
-        if npzPath is not None:
-            npz = np.load(npzPath)
-            seq = npz['imgseq']
-        elif tiffPath is not None:
-            seq = tifffile.imread(tiffPath)
+        # if npzPath is not None:
+        #     npz = np.load(npzPath)
+        #     seq = npz['imgseq']
+        if tiff_path is not None:
+            seq = tifffile.imread(tiff_path)
             seq = seq.T
         else:
             seq = None
 
-        p = pickle.load(open(pikPath, 'rb'))
+        p = pickle.load(open(pickle_file_path, 'rb'))
 
-        sample_id = p['imdata']['sample_id']
+        # compatability for older pickle files
+        if 'imdata' in p.keys():
+            sample_id = p['imdata']['sample_id']
 
-        imdata = ImgData(seq,
-                         p['imdata']['meta'],
-                         stimMaps=p['imdata']['stimMaps'],
-                         )
+            imdata = ImgData(seq,
+                             p['imdata']['meta'],
+                             stimMaps=p['imdata']['stimMaps'],
+                             )
 
-        comments = p['imdata']['comments']
+            comments = p['imdata']['comments']
 
-        roi_states = []
-        if 'roi_states' in p['imdata']:
-            for ID in range(0, len(p['imdata']['roi_states'])):
-                roi_states.append(p['imdata']['roi_states'][ID])
+            roi_states = []
+            if 'roi_states' in p['imdata']:
+                for ID in range(0, len(p['imdata']['roi_states'])):
+                    roi_states.append(p['imdata']['roi_states'][ID])
 
-        return cls(imdata, roi_states=roi_states, comments=comments, sample_id=sample_id)
+            return cls(imdata, roi_states=roi_states, comments=comments, sample_id=sample_id)
+        else:
+            # Use with output of new to_pickle() method
+            img_data = ImgData(seq)
+            return cls(img_data, **p)
 
     @property
     def saved(self):
@@ -256,29 +270,39 @@ class ViewerWorkEnv:
 
     def _make_dict(self):
         # Dict that's later used for pickling
-        d = {'sample_id':    self.sample_id,
+        d = {'sample_id':   self.sample_id,
              'meta':        self.imgdata.meta,
              'stimMaps':    self.imgdata.stimMaps,
              'comments':    self.comments
              }
 
-        for ix in range(0, len(self.ROIList)):
-            for roi_def in self.ROIList[ix].tags.keys():
-                if self.ROIList[ix].tags[roi_def] == '':
-                    self.ROIList[ix].tags[roi_def] = 'untagged'
+        if self.roi_manager is not None:
+            rois = self.roi_manager.get_all_states()
 
-            for roi_def in configuration.proj_cfg.options('ROI_DEFS'):
-                if roi_def not in self.ROIList[ix].tags.keys():
-                    self.ROIList[ix].tags[roi_def] = 'untagged'
+            for ix in range(len(rois['states'])):
+                for roi_def in rois['states'][ix]['tags'].keys():
+                    if rois['states'][ix]['tags'][roi_def] == '':
+                        rois['states'][ix]['tags'][roi_def] = 'untagged'
 
-        roi_states = []
-        for ID in range(0, len(self.ROIList)):
-            roi_states.append(self.ROIList[ID].saveState())
-        d['roi_states'] = roi_states
+            d['roi_states'] = rois
+
+        # for ix in range(0, len(self.ROIList)):
+        #     for roi_def in self.ROIList[ix].tags.keys():
+        #         if self.ROIList[ix].tags[roi_def] == '':
+        #             self.ROIList[ix].tags[roi_def] = 'untagged'
+        #
+        #     for roi_def in configuration.proj_cfg.options('ROI_DEFS'):
+        #         if roi_def not in self.ROIList[ix].tags.keys():
+        #             self.ROIList[ix].tags[roi_def] = 'untagged'
+
+        # roi_states = []
+        # for ID in range(0, len(self.ROIList)):
+        #     roi_states.append(self.ROIList[ID].saveState())
+        # d['roi_states'] = roi_states
 
         return d
 
-    def to_pickle(self, dirPath, filename=None, save_img_seq=True):
+    def to_pickle(self, dir_path, filename=None, save_img_seq=True, UUID=None):
         """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
         for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
@@ -298,21 +322,25 @@ class ViewerWorkEnv:
             print('Work environment is empty!')
             return
 
+        if UUID is None:
+            UUID = uuid4()
+
         if filename is None:
-            fileName = dirPath + '/' + self.sample_id + '_' + str(time.time())
+            filename = dir_path + '/' + self.sample_id + '-_-' + str(UUID)
         else:
-            fileName = dirPath + '/' + filename
+            filename = dir_path + '/' + filename
 
-        imginfo = self._make_dict()
+        work_env = self._make_dict()
 
-        data = {'imdata': imginfo}
+        data = {**work_env, 'UUID': UUID}
+
         if save_img_seq:
-            tifffile.imsave(fileName + '.tiff', self.imgdata.seq.T, bigtiff=True)
-        pickle.dump(data, open(fileName + '.pik', 'wb'), protocol=4)
+            tifffile.imsave(filename + '.tiff', self.imgdata.seq.T, bigtiff=True)
+        pickle.dump(data, open(filename + '.pik', 'wb'), protocol=4)
 
         self.saved = True
 
-        return fileName
+        return filename
 
     def to_pandas(self, proj_path):
         """
@@ -329,7 +357,8 @@ class ViewerWorkEnv:
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = proj_path + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
 
-        imgPath = self.to_pickle(imgdir)
+        UUID = uuid4()
+        img_path = self.to_pickle(imgdir, UUID=UUID)
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False
@@ -378,42 +407,72 @@ class ViewerWorkEnv:
         else:
             comments = self.comments
 
-        curvesDir = proj_path + '/curves/' + self.sample_id
+        curves_dir = proj_path + '/curves/' + self.sample_id + '-_-' + str(UUID)
 
-        if os.path.isdir(curvesDir) is False:
-            os.mkdir(curvesDir)
+        if os.path.isdir(curves_dir) is False:
+            os.mkdir(curves_dir)
 
         dicts = []
-        for ix in range(0, len(self.CurvesList)):
-            curvePath = curvesDir + '/CURVE_' + str(ix).zfill(3) + '.npz'
 
-            if self.rois['origin'] == 'manual':
-                if isinstance(self.CurvesList[ix], np.ndarray):
-                    curve = self.CurvesList[ix]
-                else:
-                    curve = self.CurvesList[ix].getData()
+        rois = self.roi_manager.get_all_states()
 
-                np.savez(curvePath, curve=curve,
-                         roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
+        for ix in range(len(rois['states'])):
+            curve_data = rois['states'][ix]['curve_data']
 
-            elif self.rois['origin'] == 'CNMFE':
-                pass
+            for roi_def in rois['states'][ix]['tags'].keys():
+                if rois['states'][ix]['tags'][roi_def] == '':
+                    rois['states'][ix]['tags'][roi_def] = 'untagged'
 
-            d = {'SampleID':    self.sample_id,
-                 'CurvePath':   curvePath.split(proj_path)[1],
-                 'ImgPath':     imgPath.split(proj_path)[1] + '.tiff',
-                 'ImgInfoPath': imgPath.split(proj_path)[1] + '.pik',
+            roi_tags = rois['states'][ix]['tags']
+
+            curve_path = curves_dir + '/' + str(ix).zfill(5) + '.npz'
+
+            np.savez(curve_path, curve=curve_data, stimMaps=self.imgdata.stimMaps)
+
+            d = {'SampleID': self.sample_id,
+                 'CurvePath': curve_path.split(proj_path)[1],
+                 'ImgPath': img_path.split(proj_path)[1] + '.tiff',
+                 'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
+                 'date': date,
+                 'uuid_curve': UUID,
+                 'comments': comments
                  }
 
-            # Final list of dicts that are each appended as rows to the project DataFrame
             dicts.append({**d,
                           **self.custom_columns_dict,
                           **stimMapsSet,
-                          **self.ROIList[ix].tags,
-                          'Date':       date,
-                          'uuid_curve': uuid4(),
-                          'comments':   comments
-                          })
+                          **roi_tags})
+
+        # for ix in range(0, len(self.CurvesList)):
+        #     curvePath = curvesDir + '/CURVE_' + str(ix).zfill(3) + '.npz'
+        #
+        #     if self.rois['origin'] == 'manual':
+        #         if isinstance(self.CurvesList[ix], np.ndarray):
+        #             curve = self.CurvesList[ix]
+        #         else:
+        #             curve = self.CurvesList[ix].getData()
+        #
+        #         np.savez(curvePath, curve=curve,
+        #                  roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
+        #
+        #     elif self.rois['origin'] == 'CNMFE':
+        #         pass
+        #
+        #     d = {'SampleID':    self.sample_id,
+        #          'CurvePath':   curvePath.split(proj_path)[1],
+        #          'ImgPath':     img_path.split(proj_path)[1] + '.tiff',
+        #          'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
+        #          }
+        #
+        #     # Final list of dicts that are each appended as rows to the project DataFrame
+        #     dicts.append({**d,
+        #                   **self.custom_columns_dict,
+        #                   **stimMapsSet,
+        #                   **self.ROIList[ix].tags,
+        #                   'Date':       date,
+        #                   'uuid_curve': UUID,
+        #                   'comments':   comments
+        #                   })
 
         self.saved = True
         return dicts

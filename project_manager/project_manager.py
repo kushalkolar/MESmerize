@@ -147,7 +147,7 @@ class ProjectManager(QtCore.QObject):
     def append_to_dataframe(self, dicts_to_append: list):
         self.backup_project_dataframe()
         self.dataframe = self.dataframe.append(pd.DataFrame(dicts_to_append), ignore_index=True)
-        self.signal_project_config_changed.emit()
+        self.emit_signal_dataframe_changed()
 
     def emit_signal_dataframe_changed(self):
         self.signal_dataframe_changed.emit(self.dataframe)
