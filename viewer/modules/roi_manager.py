@@ -48,43 +48,51 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.btnSwitchToManualMode.clicked.connect(self.start_manual_mode)
 
-        # self.ui.btnSetROITag.clicked.connect(self.set_roi_tag)
+        action_delete_roi = QtWidgets.QWidgetAction(self)
+        action_delete_roi.setText('Delete')
+        action_delete_roi.triggered.connect(self.slot_delete_roi_menu)
+
+        self.list_widget_context_menu = QtWidgets.QMenu(self)
+        self.list_widget_context_menu.addAction(action_delete_roi)
+
+        self.ui.listWidgetROIs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.listWidgetROIs.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
+
+    def _list_widget_context_menu_requested(self, p):
+        self.list_widget_context_menu.exec_(self.ui.listWidgetROIs.mapToGlobal(p))
+
+    def slot_delete_roi_menu(self):
+        if hasattr(self, 'manager'):
+            del self.manager.roi_list[self.manager.roi_list.current_index]
+
     def btnAddROI_context_menu_requested(self, p):
         self.btnAddROIMenu.exec_(self.ui.btnAddROI.mapToGlobal(p))
 
     def start_cnmfe_mode(self, cnmA, cnmC, idx_components, dims):
         print('staring cnmfe mode in roi manager')
-        if len(self.manager.roi_list) > 0:
-            if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
-                                             'You have unsaved ROIs in your work environment.'
-                                             'Would you like to discard them and continue?',
-                                             QtWidgets.QMessageBox.Yes,
-                                             QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-                return
-            else:
-                del self.manager
+
+        if hasattr(self, 'manager'):
+            del self.manager
 
         self.ui.btnAddROI.setDisabled(True)
         self.manager = managers.ManagerCNMFE(self.ui, self.vi, cnmA, cnmC, idx_components, dims)
         self.manager.add_all_components()
-        self.vi.viewer.workEnv.rois = self.manager.roi_list
+        self.vi.viewer.workEnv.roi_manager = self.manager
         self.ui.btnSwitchToManualMode.setEnabled(True)
 
     def start_manual_mode(self):
-        if len(self.manager.roi_list) > 0:
+        if hasattr(self, 'manager'):
             if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
                                              'You have unsaved ROIs in your work environment.'
                                              'Would you like to discard them and continue?',
                                              QtWidgets.QMessageBox.Yes,
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
-            elif not isinstance(self.manager, managers.ManagerManual):
-                del self.manager
-
-                self.manager = managers.ManagerManual(self.ui, self.vi)
+            del self.manager
+        self.manager = managers.ManagerManual(self.ui, self.vi)
 
         self.ui.btnAddROI.setEnabled(True)
-        self.vi.viewer.workEnv.rois = self.manager.roi_list
+        self.vi.viewer.workEnv.roi_manager = self.manager
         self.ui.btnSwitchToManualMode.setDisabled(True)
 
     def add_manual_roi(self, shape):

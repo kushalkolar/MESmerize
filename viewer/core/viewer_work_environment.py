@@ -31,7 +31,7 @@ import json
 
 
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, sample_id='', ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file='', custom_columns_dict={}):
+    def __init__(self, imgdata=None, sample_id='', roi_manager=None, ROIList=[], CurvesList=[], roi_states=[], comments='', origin_file='', custom_columns_dict={}):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -42,6 +42,7 @@ class ViewerWorkEnv:
         :param roi_states:  list of ROI states, from pyqtgraphCore.ROI.saveState()
 
         :type imgdata:      ImgData
+        :type rois:         AbstractBaseManager
         :type ROIList:      list
         :type CurvesList:   list
         :type roi_states:   list
@@ -54,7 +55,7 @@ class ViewerWorkEnv:
 
         self.sample_id = sample_id
 
-        self.rois = None
+        self.roi_manager = roi_manager
 
         self.ROIList = ROIList
         self.CurvesList = CurvesList
@@ -74,12 +75,15 @@ class ViewerWorkEnv:
         self.isEmpty = True
         del self.imgdata.seq
         self.imgdata = None
+        if self.roi_manager is not None:
+            self.roi_manager.clear()
         self.ROIList = []
         self.CurvesList = []
         self.roi_states = []
         self.comments = ''
         self.origin_file = ''
         self._saved = True
+        self.changed_items = []
         print('Work environment dumped!')
 
     @classmethod

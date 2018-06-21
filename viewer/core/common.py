@@ -75,9 +75,10 @@ class ViewerInterface:
                 self.viewer.ui.roiPlot.removeItem(item)
 
             self.viewer.currStimMapBg = []
+        self.viewer.workEnv.saved = True
 
         # self.viewer.initROIPlot()
-        self.viewer.enableUI(False, clear_sample_id)
+        # self.viewer.enableUI(False, clear_sample_id)
 
     def workEnv_changed(self, element=None):
         if self.viewer.workEnv is not None:

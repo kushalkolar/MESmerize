@@ -25,13 +25,15 @@ ROIClasses = TypeVar('T', bound='AbstractBaseROI')
 
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
-    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state=None):
+    def __init__(self, curve_plot_item: pg.PlotDataItem,
+                 view_box: pg.ViewBox, state=None):
         assert isinstance(curve_plot_item, pg.PlotDataItem)
 
         if state is None:
             self._tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'))
         else:
             self._tags = state['tags']
+            self.curve_data = state['curve_data']
 
         self.curve_plot_item = curve_plot_item
         self.view_box = view_box
@@ -84,7 +86,6 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         if isinstance(self.roi_graphics_object, pg.ScatterPlotItem):
             self.roi_graphics_object.setBrush(pg.mkBrush(color, *args, **kwargs))
 
-
     def set_text(self, text: str):
         text_item = pg.TextItem(text)
         # self.view_box.addItem()
@@ -120,12 +121,13 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def from_state(cls, curve_plot_item: pg.PlotDataItem, state: dict):
+    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
         pass
 
 
 class ManualROI(AbstractBaseROI):
-    def __init__(self, roi_graphics_object: pg.ROI, curve_plot_item: pg.PlotDataItem,
+    def __init__(self, curve_plot_item: pg.PlotDataItem,
+                 roi_graphics_object: pg.ROI,
                  view_box: pg.ViewBox, state=None):
         """
         :type state: dict
@@ -135,9 +137,6 @@ class ManualROI(AbstractBaseROI):
         super(ManualROI, self).__init__(curve_plot_item, view_box, state)
 
         self.set_roi_graphics_object(roi_graphics_object)
-
-        if state is not None:
-            self._set_roi_graphics_object_state(state['roi_graphics_object_state'])
 
     def get_roi_graphics_object(self) -> pg.ROI:
         return self.roi_graphics_object
@@ -149,26 +148,44 @@ class ManualROI(AbstractBaseROI):
         self.roi_graphics_object.setState(state)
 
     def to_state(self):
-        curve_data = self.curve_data
-        curve_xs = curve_data[0]
-        curve_ys = curve_data[1]
+        if isinstance(self.roi_graphics_object, pg.PolyLineROI):
+            shape = 'PolyLineROI'
+        elif isinstance(self.roi_graphics_object, pg.EllipseROI):
+            shape = 'EllipseROI'
 
-        roi_state = self.roi_graphics_object.saveState()
-
-        state = {'curve_xs': curve_xs,
-                 'curve_ys': curve_ys,
-                 'roi_state': roi_state,
+        state = {'curve_data': self.curve_data,
+                 'shape': shape,
+                 'roi_graphics_object_state': self.roi_graphics_object.saveState(),
                  'tags': self.get_all_tags(),
                  }
+        return state
+
+    @staticmethod
+    def get_generic_roi_graphics_object(shape, dims):
+        x = dims[0]
+        y = dims[1]
+
+        if shape == 'PolyLineROI':
+            roi_graphics_object = pg.PolyLineROI([[0, 0],
+                                                  [int(0.1 * x), 0],
+                                                  [int(0.1 * x), int(0.1 * y)],
+                                                  [0, int(0.1 * y)]],
+                                                 closed=True, pos=[0, 0], removable=True)
+            return roi_graphics_object
+        elif shape == 'EllipseROI':
+            roi_graphics_object = pg.EllipseROI(pos=[0, 0], size=[x, y], removable=True)
+            return roi_graphics_object
 
     @classmethod
-    def from_state(cls, curve_plot_item, state):
-        roi_graphics_object = pg.PolyLineROI([[0, 0], [10, 10], [30, 10]], closed=True, pos=[0, 0], removable=True)
-        return cls(curve_plot_item, roi_graphics_object, state)
+    def from_state(cls, curve_plot_item, view_box, state):
+        roi_graphics_object = ManualROI.get_generic_roi_graphics_object(state['shape'], [10, 10])
+        roi_graphics_object.setState(state['roi_graphics_object_state'])
+        return cls(curve_plot_item, roi_graphics_object, view_box, state)
 
 
 class CNMFROI(AbstractBaseROI):
-    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox,
+    def __init__(self, curve_plot_item: pg.PlotDataItem,
+                 view_box: pg.ViewBox,
                  curve_data=None, contour=None, state=None):
         """
         :type: curve_data: np.ndarray
@@ -195,7 +212,7 @@ class CNMFROI(AbstractBaseROI):
         self.roi_ys = state['roi_ys']
 
         self._create_scatter_plot()
-        self.curve_data = (state['curve_xs'], state['curve_ys'])
+        self.curve_data = [state['curve_xs'], state['curve_ys']]
 
     def get_roi_graphics_object(self) -> pg.ScatterPlotItem:
         if self.roi_graphics_object is None:
@@ -219,20 +236,15 @@ class CNMFROI(AbstractBaseROI):
         self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s')
 
     def to_state(self) -> dict:
-        curve_data = self.curve_data
-        curve_xs = curve_data[0]
-        curve_ys = curve_data[1]
-
-        state = {'roi_xs':   self.roi_xs,
-                 'roi_ys':   self.roi_ys,
-                 'curve_xs': curve_xs,
-                 'curve_ys': curve_ys,
-                 'tags':     self.get_all_tags()
+        state = {'roi_xs': self.roi_xs,
+                 'roi_ys': self.roi_ys,
+                 'curve_data': self.curve_data,
+                 'tags': self.get_all_tags()
                  }
         return state
 
     @classmethod
-    def from_state(cls, curve_plot_item, state):
+    def from_state(cls, curve_plot_item, view_box, state):
         return cls(curve_plot_item, state)
 
 
@@ -245,15 +257,15 @@ class ROIList(list):
         self.list_widget.clear()
         self.list_widget.currentRowChanged.connect(self.set_current_index)
 
-        self.action_delete_roi = QtWidgets.QWidgetAction(ui.dockWidgetContents)
-        self.action_delete_roi.setText('Delete')
-        self.action_delete_roi.triggered.connect(self.__delitem__)
-
-        self._list_widget_context_menu = QtWidgets.QMenu(ui.dockWidgetContents)
-        self._list_widget_context_menu.addAction(self.action_delete_roi)
-
-        self.list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.list_widget.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
+        # self.action_delete_roi = QtWidgets.QWidgetAction(ui.dockWidgetContents)
+        # self.action_delete_roi.setText('Delete')
+        # self.action_delete_roi.triggered.connect(partial(self.__delitem__, None))
+        #
+        # self._list_widget_context_menu = QtWidgets.QMenu(ui.dockWidgetContents)
+        # self._list_widget_context_menu.addAction(self.action_delete_roi)
+        #
+        # self.list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.list_widget.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
 
         assert isinstance(ui.listWidgetROITags, QtWidgets.QListWidget)
         self.list_widget_tags = ui.listWidgetROITags
@@ -310,33 +322,60 @@ class ROIList(list):
         self.vi.workEnv_changed('ROI Added')
         super(ROIList, self).append(roi)
 
+    # def clear_all(self):
+    #     self.list_widget.clear()
+    #     self.list_widget_tags.clear()
+    #     for ix in range(self.__len__()):
+    #         roi = self.__getitem__(ix)
+    #         roi.remove_from_viewer()
+    def clear_(self):
+        self.list_widget.clear()
+        self.list_widget_tags.clear()
+        self.disconnect_all()
+        for i in range(self.__len__()):
+            self.__delitem__(0)
+
     def __delitem__(self, key):
         if isinstance(key, ManualROI):
             key = self.index(key)
-        else:
+        elif key is None:
             key = self.current_index
-        if key is -1:
+        if key == -1:
             return
         self.vi.workEnv_changed('ROI Removed')
         roi = self.__getitem__(key)
         roi.remove_from_viewer()
         super(ROIList, self).__delitem__(key)
+        if self.__len__() == 0:
+            self.list_widget.clear()
+            self.list_widget_tags.clear()
+            return
+
         self.list_widget.takeItem(key)
+        self._reindex_list_widget()
+        self.reindex_colormap()
 
         if self.list_widget.count() > 0:
-            self.list_widget.setCurrentRow(min(0, key - 1))
-            self._reindex_list_widget()
-            self.reindex_colormap()
-            self.set_list_widget_tags()
+            self.list_widget.setCurrentRow(0)
+
+
+        # self.list_widget.setCurrentRow(-1)
+
+            # self.list_widget.setCurrentRow(min(0, key - 1))
+            # self._reindex_list_widget()
+            # self.reindex_colormap()
+            # self.set_list_widget_tags()
+
+    # def __del__(self):
+    #     pass
 
     def disconnect_all(self):
-        self.list_widget.disconnect()
-        self.list_widget_tags.disconnect()
-        self.btn_plot.disconnect()
-        self.live_plot_checkbox.disconnect()
-        self.action_delete_roi.disconnect()
-        self.show_all_checkbox.disconnect()
-        self.btn_set_tag.disconnect()
+        self.list_widget.currentRowChanged.disconnect(self.set_current_index)
+        # self.list_widget.customContextMenuRequested.disconnect(self._list_widget_context_menu_requested)
+        # self.action_delete_roi.triggered.disconnect(self.__delitem__)
+        self.btn_plot.clicked.disconnect(self.plot_manual_roi_regions)
+        self.show_all_checkbox.toggled.disconnect(self.slot_show_all_checkbox_clicked)
+        self.btn_set_tag.clicked.disconnect(self.slot_btn_set_tag)
 
     def _reindex_list_widget(self):
         for i in range(self.list_widget.count()):
@@ -347,7 +386,7 @@ class ROIList(list):
         cm._init()
         lut = (cm._lut * 255).view(np.ndarray)
 
-        cm_ixs = np.linspace(0, 255, self.__len__(), dtype=int)
+        cm_ixs = np.linspace(0, 210, self.__len__(), dtype=int)
 
         for ix in range(self.__len__()):
             c = lut[cm_ixs[ix]]
@@ -358,14 +397,15 @@ class ROIList(list):
     def __getitem__(self, item) -> AbstractBaseROI:
         return super(ROIList, self).__getitem__(item)
 
-    def _list_widget_context_menu_requested(self, p):
-        self._list_widget_context_menu.exec_(self.list_widget.mapToGlobal(p))
-
     def set_current_index(self, ix):
-        if ix == -1:
+        if ix < 0:
             return
         if ix > self.__len__():
-            ix = self.__len__() - 1
+            return
+        try:
+            self.__getitem__(ix)
+        except IndexError:
+            return
         self.current_index = ix
         self.highlight_curve(ix)
         self.set_previous_index()
