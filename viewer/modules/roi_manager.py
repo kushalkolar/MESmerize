@@ -89,12 +89,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
         print('staring manual mode')
 
         if hasattr(self, 'manager'):
-            if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
-                                             'You have unsaved ROIs in your work environment.'
-                                             'Would you like to discard them and continue?',
-                                             QtWidgets.QMessageBox.Yes,
-                                             QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-                return
+            # if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
+            #                                  'You have unsaved ROIs in your work environment.'
+            #                                  'Would you like to discard them and continue?',
+            #                                  QtWidgets.QMessageBox.Yes,
+            #                                  QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+            #     return
             del self.manager
         self.manager = managers.ManagerManual(self, self.ui, self.vi)
 
@@ -125,6 +125,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.start_cnmfe_mode()
             self.manager.restore_from_states(states)
 
-        # elif states['roi_type'] == 'ManualROI':
-        #     print(states['roi_type'] == 'ManualROI')
-        #     self.start_manual_mode()
+        elif states['roi_type'] == 'ManualROI':
+            print(states['roi_type'] == 'ManualROI')
+            self.start_manual_mode()
+            self.manager.restore_from_states(states)
