@@ -19,7 +19,7 @@ from functools import partial
 from ...core.common import ViewerInterface
 from common import configuration
 from copy import deepcopy
-
+from matplotlib import cm as matplotlib_color_map
 
 ROIClasses = TypeVar('T', bound='AbstractBaseROI')
 
@@ -36,6 +36,8 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         self.curve_plot_item = curve_plot_item
         self.view_box = view_box
         self.roi_graphics_object = None
+        self._color = None
+        self._original_color = None
 
     @property
     def curve_data(self):
@@ -65,6 +67,24 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def set_roi_graphics_object(self, *args, **kwargs):
         pass
 
+    def reset_color(self):
+        self.set_color(self._original_color)
+
+    def set_original_color(self, color):
+        self._original_color = color
+        self.reset_color()
+
+    def get_color(self):
+        return self._color
+
+    def set_color(self, color: np.ndarray, *args, **kwargs):
+        pen = pg.mkPen(color, *args, **kwargs)
+        self.roi_graphics_object.setPen(pen)
+        self.curve_plot_item.setPen(pen)
+        if isinstance(self.roi_graphics_object, pg.ScatterPlotItem):
+            self.roi_graphics_object.setBrush(pg.mkBrush(color, *args, **kwargs))
+
+
     def set_text(self, text: str):
         text_item = pg.TextItem(text)
         # self.view_box.addItem()
@@ -88,11 +108,11 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         self.view_box.addItem(self.get_roi_graphics_object())
 
     def remove_from_viewer(self):
-        self.view_box.removeItem(self.get_roi_graphics_object())
+        roi = self.get_roi_graphics_object()
+        self.view_box.removeItem(roi)
+        self.curve_plot_item.clear()
         del self.curve_plot_item
-
-    def __del__(self):
-        self.remove_from_viewer()
+        del roi
 
     @abc.abstractmethod
     def to_state(self):
@@ -143,7 +163,7 @@ class ManualROI(AbstractBaseROI):
 
     @classmethod
     def from_state(cls, curve_plot_item, state):
-        roi_graphics_object = pg.ROI.PolyLineROI([[0, 0], [10, 10], [30, 10]], closed=True, pos=[0, 0], removable=True)
+        roi_graphics_object = pg.PolyLineROI([[0, 0], [10, 10], [30, 10]], closed=True, pos=[0, 0], removable=True)
         return cls(curve_plot_item, roi_graphics_object, state)
 
 
@@ -225,11 +245,25 @@ class ROIList(list):
         self.list_widget.clear()
         self.list_widget.currentRowChanged.connect(self.set_current_index)
 
+        self.action_delete_roi = QtWidgets.QWidgetAction(ui.dockWidgetContents)
+        self.action_delete_roi.setText('Delete')
+        self.action_delete_roi.triggered.connect(self.__delitem__)
+
+        self._list_widget_context_menu = QtWidgets.QMenu(ui.dockWidgetContents)
+        self._list_widget_context_menu.addAction(self.action_delete_roi)
+
+        self.list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.list_widget.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
+
         assert isinstance(ui.listWidgetROITags, QtWidgets.QListWidget)
         self.list_widget_tags = ui.listWidgetROITags
         self.list_widget_tags.clear()
 
         self.roi_types = roi_types
+
+        assert isinstance(ui.btnPlot, QtWidgets.QPushButton)
+        self.btn_plot = ui.btnPlot
+        self.btn_plot.clicked.connect(self.plot_manual_roi_regions)
 
         assert isinstance(ui.checkBoxLivePlot, QtWidgets.QCheckBox)
         self.live_plot_checkbox = ui.checkBoxLivePlot
@@ -253,6 +287,7 @@ class ROIList(list):
 
         self.vi = viewer_interface
 
+        self.current_index = -1
         self.previous_index = -1
 
         configuration.project_manager.signal_project_config_changed.connect(self.update_roi_defs_from_configuration)
@@ -266,49 +301,99 @@ class ROIList(list):
 
         roi_graphics_object = roi.get_roi_graphics_object()
 
-        if isinstance(roi_graphics_object, pg.ROI):
-            roi_graphics_object.sigHoverEvent.connect(partial(self.highlight_curve, self.index(roi)))
-            roi_graphics_object.sigHoverEnd.connect(partial(self.highlight_roi, self.index(roi)))
-            roi_graphics_object.sigHoverEnd.connect(partial(self.unhighlight_curve, self.index(roi)))
-            roi_graphics_object.sigRemoveRequested.connect(partial(self.__delitem__, self.index(roi)))
-            roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, self.index(roi)))
+        if isinstance(roi_graphics_object, tuple(pg.ROI.__subclasses__())):
+            roi_graphics_object.sigHoverEvent.connect(partial(self.highlight_roi, roi))
+            roi_graphics_object.sigHoverEnd.connect(roi.reset_color)
+            roi_graphics_object.sigRemoveRequested.connect(partial(self.__delitem__, roi))
+            roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, roi))
 
         self.vi.workEnv_changed('ROI Added')
         super(ROIList, self).append(roi)
 
     def __delitem__(self, key):
+        if isinstance(key, ManualROI):
+            key = self.index(key)
+        else:
+            key = self.current_index
+        if key is -1:
+            return
         self.vi.workEnv_changed('ROI Removed')
-        self.list_widget.takeItem(key)
+        roi = self.__getitem__(key)
+        roi.remove_from_viewer()
         super(ROIList, self).__delitem__(key)
+        self.list_widget.takeItem(key)
+
+        if self.list_widget.count() > 0:
+            self.list_widget.setCurrentRow(min(0, key - 1))
+            self._reindex_list_widget()
+            self.reindex_colormap()
+            self.set_list_widget_tags()
+
+    def disconnect_all(self):
+        self.list_widget.disconnect()
+        self.list_widget_tags.disconnect()
+        self.btn_plot.disconnect()
+        self.live_plot_checkbox.disconnect()
+        self.action_delete_roi.disconnect()
+        self.show_all_checkbox.disconnect()
+        self.btn_set_tag.disconnect()
+
+    def _reindex_list_widget(self):
+        for i in range(self.list_widget.count()):
+            self.list_widget.item(i).setText(str(i))
+
+    def reindex_colormap(self):
+        cm = matplotlib_color_map.get_cmap('hsv')
+        cm._init()
+        lut = (cm._lut * 255).view(np.ndarray)
+
+        cm_ixs = np.linspace(0, 255, self.__len__(), dtype=int)
+
+        for ix in range(self.__len__()):
+            c = lut[cm_ixs[ix]]
+            roi = self.__getitem__(ix)
+            roi.set_original_color(c)
+            roi.set_color(c)
 
     def __getitem__(self, item) -> AbstractBaseROI:
         return super(ROIList, self).__getitem__(item)
 
+    def _list_widget_context_menu_requested(self, p):
+        self._list_widget_context_menu.exec_(self.list_widget.mapToGlobal(p))
+
     def set_current_index(self, ix):
         if ix == -1:
             return
+        if ix > self.__len__():
+            ix = self.__len__() - 1
         self.current_index = ix
         self.highlight_curve(ix)
-        self.highlight_roi(ix)
+        self.set_previous_index()
         if not self.show_all_checkbox.isChecked():
             self._hide_all_graphics_objects()
         self._show_graphics_object(ix)
         self.set_list_widget_tags()
 
-    def highlight_roi(self, ix: int):
+    def highlight_roi(self, roi: tuple(pg.ROI.__subclasses__())):
+        ix = self.index(roi)
+        self.highlight_curve(ix)
         self.list_widget.setCurrentRow(ix)
 
     def highlight_curve(self, ix: int):
         roi = self.__getitem__(ix)
-        roi.curve_plot_item.setPen(width=2)
-        self.unhighlight_curve(self.previous_index)
-        self.previous_index = ix
+        roi.set_color('w', width=2)
 
-    def unhighlight_curve(self, ix):
-        if ix == -1:
+    def set_previous_index(self):
+        if self.previous_index == -1:
+            self.previous_index = self.current_index
             return
-        roi = self.__getitem__(ix)
-        roi.curve_plot_item.setPen(width=1)
+        if self.previous_index > self.__len__() - 1:
+            self.previous_index = self.current_index
+            return
+
+        roi = self.__getitem__(self.previous_index)
+        self.previous_index = self.current_index
+        roi.reset_color()
 
     def slot_show_all_checkbox_clicked(self, b):
         if b:
@@ -338,7 +423,8 @@ class ROIList(list):
         for ix in range(self.__len__()):
             self._hide_graphics_object(ix)
 
-    def _live_update_requested(self, ix: int):
+    def _live_update_requested(self, roi):
+        ix = self.index(roi)
         if self.roi_types == 'CNMFROI':
             raise TypeError
 
@@ -347,12 +433,19 @@ class ROIList(list):
         if not self.live_plot_checkbox.isChecked():
             return
 
-        roi = self.__getitem__(ix)
-        pg_roi = roi.get_roi_graphics_object
+        self.set_pg_roi_plot(ix)
 
-        self.set_pg_roi_plot(pg_roi, ix)
+    def plot_manual_roi_regions(self):
+        for ix in range(self.__len__()):
+            roi = self.__getitem__(ix)
+            pg_roi = roi.get_roi_graphics_object()
+            self.set_pg_roi_plot(ix)
+            roi.reset_color()
+        if not self.show_all_checkbox.isChecked():
+            self._hide_all_graphics_objects()
+            self._show_graphics_object(self.current_index)
 
-    def set_pg_roi_plot(self, pg_roi: pg.ROI, ix: int):
+    def set_pg_roi_plot(self, ix: int):
         image = self.vi.viewer.getProcessedImage()
 
         if image.ndim == 2:
@@ -363,6 +456,7 @@ class ROIList(list):
             return
 
         # Get the ROI region
+        pg_roi = self.__getitem__(ix).get_roi_graphics_object()
         data = pg_roi.getArrayRegion((image.view(np.ndarray)), self.vi.viewer.imageItem, axes)
 
         if data is not None:
@@ -373,7 +467,7 @@ class ROIList(list):
                 roi = self.__getitem__(ix)
 
                 roi.curve_plot_item.setData(y=data, x=self.vi.viewer.tVals)
-                roi.curve_plot_item.setPen('w')
+                roi.set_color('w', width=2)
                 roi.curve_plot_item.show()
 
     def slot_btn_set_tag(self):

@@ -19,6 +19,7 @@ from common import configuration
 from ..core.viewer_work_environment import ViewerWorkEnv
 from pyqtgraphCore.graphicsItems import ROI
 from .roi_manager_modules import managers
+from functools import partial
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -34,8 +35,22 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.workEnv.rois = self.manager.roi_list
         self.vi.viewer.ui.splitter.setEnabled(True)
 
-        self.ui.btnAddROI.clicked.connect(self.add_roi)
+        action_add_ellipse_roi = QtWidgets.QWidgetAction(self)
+        action_add_ellipse_roi.setText('Add Ellipse ROI')
+        action_add_ellipse_roi.triggered.connect(partial(self.add_manual_roi, 'EllipseROI'))
+
+        self.btnAddROIMenu = QtWidgets.QMenu(self)
+        self.btnAddROIMenu.addAction(action_add_ellipse_roi)
+
+        self.ui.btnAddROI.clicked.connect(partial(self.add_manual_roi, 'PolyLineROI'))
+        self.ui.btnAddROI.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.btnAddROI.customContextMenuRequested.connect(self.btnAddROI_context_menu_requested)
+
+        self.ui.btnSwitchToManualMode.clicked.connect(self.start_manual_mode)
+
         # self.ui.btnSetROITag.clicked.connect(self.set_roi_tag)
+    def btnAddROI_context_menu_requested(self, p):
+        self.btnAddROIMenu.exec_(self.ui.btnAddROI.mapToGlobal(p))
 
     def start_cnmfe_mode(self, cnmA, cnmC, idx_components, dims):
         print('staring cnmfe mode in roi manager')
@@ -53,6 +68,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.manager = managers.ManagerCNMFE(self.ui, self.vi, cnmA, cnmC, idx_components, dims)
         self.manager.add_all_components()
         self.vi.viewer.workEnv.rois = self.manager.roi_list
+        self.ui.btnSwitchToManualMode.setEnabled(True)
 
     def start_manual_mode(self):
         if len(self.manager.roi_list) > 0:
@@ -69,9 +85,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.btnAddROI.setEnabled(True)
         self.vi.viewer.workEnv.rois = self.manager.roi_list
+        self.ui.btnSwitchToManualMode.setDisabled(True)
 
-    def add_roi(self):
-        self.manager.add_roi()
+    def add_manual_roi(self, shape):
+        if self.vi.viewer.workEnv.isEmpty:
+            QtWidgets.QMessageBox.warning(self,
+                                          'Empty Work Environment',
+                                          'You cannot add ROIs to an empty work environment')
+            return
+        self.manager.add_roi(shape)
 
     # def set_roi_tag(self):
     #     if self.manager.roi_list.list_widget_tags.currentRow() == -1 or self.manager.roi_list.list_widget.currentRow() == -1:

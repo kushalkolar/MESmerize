@@ -28,39 +28,66 @@
         <string>Standard ROIs</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="btnAddROI">
-          <property name="text">
-           <string>Add ROI</string>
+        <item row="2" column="0" colspan="7">
+         <widget class="QLineEdit" name="lineEditROITag">
+          <property name="placeholderText">
+           <string>Add Tag to ROI Definition</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QCheckBox" name="checkBoxShowAll">
+        <item row="3" column="0">
+         <widget class="QPushButton" name="btnSetROITag">
           <property name="text">
-           <string>Show all</string>
+           <string>Set ROI tag</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="3">
-         <widget class="QCheckBox" name="checkBoxLivePlot">
+        <item row="1" column="2" colspan="5">
+         <layout class="QVBoxLayout" name="verticalLayoutTags" stretch="0,0">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Tags</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="listWidgetROITags"/>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="5">
+         <widget class="QPushButton" name="btnSwitchToManualMode">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
-           <string>Live plot</string>
+           <string>Switch to manual mode</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="4">
+        <item row="0" column="6">
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>414</width>
+            <width>175</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btnAddROI">
+          <property name="text">
+           <string>Add ROI</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0" colspan="2">
          <layout class="QVBoxLayout" name="verticalLayoutROIList">
@@ -86,34 +113,24 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="2" colspan="3">
-         <layout class="QVBoxLayout" name="verticalLayoutTags" stretch="0,0">
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Tags</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QListWidget" name="listWidgetROITags"/>
-          </item>
-         </layout>
-        </item>
-        <item row="2" column="0" colspan="5">
-         <widget class="QLineEdit" name="lineEditROITag">
-          <property name="placeholderText">
-           <string>Add Tag to ROI Definition</string>
+        <item row="0" column="1" colspan="2">
+         <widget class="QCheckBox" name="checkBoxShowAll">
+          <property name="text">
+           <string>Show all</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
-         <widget class="QPushButton" name="btnSetROITag">
+        <item row="0" column="3">
+         <widget class="QCheckBox" name="checkBoxLivePlot">
           <property name="text">
-           <string>Set ROI tag</string>
+           <string>Live plot</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="btnPlot">
+          <property name="text">
+           <string>Plot</string>
           </property>
          </widget>
         </item>

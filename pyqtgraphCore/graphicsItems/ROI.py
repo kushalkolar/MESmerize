@@ -655,10 +655,11 @@ class ROI(GraphicsObject):
         self.sigHoverEnd.emit(self)
         
     def _updateHoverColor(self):
-        pen = self._makePen()
-        if self.currentPen != pen:
-            self.currentPen = pen
-            self.update()
+        pass
+        # pen = self._makePen()
+        # if self.currentPen != pen:
+        #     self.currentPen = pen
+        #     self.update()
         
     def _makePen(self):
         # Generate the pen color for this ROI based on its current state.

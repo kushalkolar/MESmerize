@@ -21,6 +21,7 @@ import pyqtgraphCore as pg
 class AbstractBaseManager(metaclass=abc.ABCMeta):
     def __init__(self, viewer_interface: ViewerInterface):
         self.vi = viewer_interface
+        self.roi_list = None
 
     @abc.abstractmethod
     def add_roi(self, *args, **kwargs):
@@ -30,22 +31,26 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
         del self.roi_list[ix]
 
     @abc.abstractmethod
-    def save_all_states(self):
+    def get_all_states(self) -> dict:
         pass
 
     @abc.abstractmethod
-    def restore_from_states(self, states):
+    def restore_from_states(self, states: list):
         pass
+
+    def get_plot_item(self) -> pg.PlotDataItem:
+        return self.vi.viewer.ui.roiPlot.plot()
 
     def __del__(self):
         for i in range(len(self.roi_list)):
             self.del_roi(i)
+        self.roi_list.disconnect_all()
 
 
 class ManagerManual(AbstractBaseManager):
     def __init__(self, ui, viewer_interface):
         super(ManagerManual, self).__init__(viewer_interface)
-        self.roi_list = ROIList(ui, 'ManualROI', self.vi.viewer)
+        self.roi_list = ROIList(ui, 'ManualROI', self.vi)
 
     def restore_from_states(self, states):
         pass
@@ -53,10 +58,30 @@ class ManagerManual(AbstractBaseManager):
     def del_roi(self, ix):
         pass
 
-    def add_roi(self):
-        pass
+    def add_roi(self, shape):
+        roi_graphics_object = self._get_new_roi_graphics_object(shape)
+        roi = ManualROI(roi_graphics_object, self.get_plot_item(), self.vi.viewer.getView())
 
-    def save_all_states(self):
+        self.roi_list.append(roi)
+        self.roi_list.reindex_colormap()
+
+    def _get_new_roi_graphics_object(self, shape='PolyLineROI'):
+        dims = self.vi.viewer.workEnv.imgdata.seq.shape
+        x = dims[0]
+        y = dims[1]
+
+        if shape == 'PolyLineROI':
+            roi_graphics_object = pg.PolyLineROI([[0, 0],
+                                                  [int(0.1 * x), 0],
+                                                  [int(0.1 * x), int(0.1 * y)],
+                                                  [0, int(0.1 * y)]],
+                                                 closed=True, pos=[0, 0], removable=True)
+            return roi_graphics_object
+        elif shape == 'EllipseROI':
+            roi_graphics_object = pg.EllipseROI(pos=[0, 0], size=[x, y])
+            return roi_graphics_object
+
+    def get_all_states(self):
         pass
 
 
@@ -72,13 +97,11 @@ class ManagerCNMFE(AbstractBaseManager):
     def add_all_components(self):
         for ix in range(len(self.contours)):
             self.add_roi(ix)
+        self.roi_list.reindex_colormap()
             # curve_data = self.temporal_components[ix]
             # contour = self.contours[ix]
             # roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), curve_data, contour)
             # self.roi_list.append(roi)
-
-    def delete_component(self, reason: str):
-        pass
 
     def add_roi(self, ix: int):
         curve_data = self.temporal_components[ix]
@@ -88,10 +111,7 @@ class ManagerCNMFE(AbstractBaseManager):
 
         self.roi_list.append(roi)
 
-    def get_plot_item(self) -> pg.PlotDataItem:
-        return self.vi.viewer.ui.roiPlot.plot()
-
-    def save_all_states(self):
+    def get_all_states(self):
         states = []
         for roi in self.roi_list:
             assert isinstance(roi, CNMFROI)
