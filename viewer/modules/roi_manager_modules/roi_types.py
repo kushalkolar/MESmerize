@@ -445,7 +445,10 @@ class ROIList(list):
             self._show_graphics_object(ix)
 
     def _show_graphics_object(self, ix):
-        roi = self.__getitem__(ix)
+        try:
+            roi = self.__getitem__(ix)
+        except IndexError:
+            return
         roi_graphics_object = roi.get_roi_graphics_object()
         roi_graphics_object.show()
         roi.curve_plot_item.show()
