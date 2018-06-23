@@ -26,6 +26,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi = ViewerInterface(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
+        if configuration.window_manager.batch_manager is None:
+            QtWidgets.QMessageBox.question(self, 'No batch manager open',
+                                           'The batch manager has not been initialized, '
+                                           'you must choose a location for a new batch or create a new batch',
+                                           QtWidgets.QMessageBox.Ok)
+            configuration.window_manager.initialize_batch_manager()
+
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 

@@ -135,6 +135,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if configuration.window_manager.batch_manager is None:
             configuration.window_manager.initialize_batch_manager()
             configuration.window_manager.batch_manager.show()
+
         else:
             configuration.window_manager.batch_manager.show()
 
