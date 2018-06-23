@@ -57,14 +57,14 @@ class ResizeDialogBox(QtWidgets.QWidget):
         self.frames_processed = 0
 
     def resize_img_seq(self, factor):
-        if self.vi.viewer_ref.workEnv.isEmpty:
+        if self.vi.viewer.workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Cannot resize', 'Your work environment is empty, nothing to resize!')
             self.hide()
             return
-        self.vi.viewer_ref.status_bar_label.setText('Resizing, please wait...')
+        self.vi.viewer.status_bar_label.setText('Resizing, please wait...')
         n_processes = int(sys_cfg['HARDWARE']['n_processes'])
 
-        seq = self.vi.viewer_ref.workEnv.imgdata.seq
+        seq = self.vi.viewer.workEnv.imgdata.seq
         self.num_frames_to_process = seq.shape[2]
         self.frames_processed = 0
 
@@ -73,7 +73,7 @@ class ResizeDialogBox(QtWidgets.QWidget):
         resizer.signals.frame_processed.connect(self.increase_progress_bar)
         resizer.signals.result.connect(self.set_resized_array)
         resizer.signals.error.connect(self.show_error_message)
-        resizer.signals.finished.connect(lambda: self.vi.viewer_ref.status_bar_label.setText('Resize completed!'))
+        resizer.signals.finished.connect(lambda: self.vi.viewer.status_bar_label.setText('Resize completed!'))
         resizer.signals.finished.connect(lambda: self.status_label.setText('Done!'))
         resizer.signals.finished.connect(lambda: self.progressBar.setValue(0))
 
@@ -88,13 +88,13 @@ class ResizeDialogBox(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(np.ndarray)
     def set_resized_array(self, array):
-        self.vi.viewer_ref.workEnv.imgdata.seq = array
+        self.vi.viewer.workEnv.imgdata.seq = array
         self.vi.update_workEnv()
 
     @QtCore.pyqtSlot(str)
     def show_error_message(self, error_msg):
         QtWidgets.QMessageBox.warning(self, 'Error', 'The following error occured while resizing:\n' + str(error_msg))
-        self.vi.viewer_ref.status_bar_label.clear()
+        self.vi.viewer.status_bar_label.clear()
 
 
 class Signals(QtCore.QObject):
