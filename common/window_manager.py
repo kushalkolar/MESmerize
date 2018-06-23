@@ -19,6 +19,7 @@ from functools import partial
 class WindowManager:
     def __init__(self):
         self._welcome_window = None
+        self.batch_manager = None
 
     def initalize(self):
         self.project_browsers = WindowClass('Project Browser')
@@ -27,9 +28,8 @@ class WindowManager:
         self.plots = WindowClass('Plots')
         self.clustering_windows = WindowClass('Clustering')
 
-    def initialize_batch_manager(self, batch_path):
-        self.batch_manager = BatchModuleGUI(parent=None, batch_path=batch_path)
-        self.batch_manager.hide()
+    def initialize_batch_manager(self):
+        self.batch_manager = BatchModuleGUI(parent=None)
 
     def garbage_collect(self):
         pass

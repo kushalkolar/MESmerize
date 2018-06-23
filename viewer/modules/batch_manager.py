@@ -42,7 +42,7 @@ class ModuleGUI(QtWidgets.QWidget):
     """GUI for the Batch Manager"""
     listwchanged = QtCore.pyqtSignal()
 
-    def __init__(self, parent, batch_path):
+    def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
@@ -50,30 +50,22 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.listwBatch.itemDoubleClicked.connect(self.list_widget_item_double_clicked_slot)
 
         self.ui.btnStart.clicked.connect(self.process_batch)
+        self.ui.btnStart.setDisabled(True)
         self.ui.btnStartAtSelection.clicked.connect(lambda: self.process_batch(start_ix=self.ui.listwBatch.indexFromItem(self.ui.listwBatch.currentItem()).row()))
+        self.ui.btnStartAtSelection.setDisabled(True)
 
         self.ui.btnAbort.clicked.connect(self._terminate_qprocess)
         self.ui.btnAbort.setDisabled(True)
         self.ui.btnOpen.clicked.connect(self.open_batch)
         self.ui.btnDelete.clicked.connect(self.del_item)
         self.ui.btnViewInput.clicked.connect(self.btn_view_input_slot)
+        self.ui.btnNew.clicked.connect(self.create_new_batch)
 
         listwmodel = self.ui.listwBatch.model()
         listwmodel.rowsInserted.connect(self.listwchanged.emit)
         listwmodel.rowsRemoved.connect(self.listwchanged.emit)
 
-        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid'])
-
-        self.batch_path = batch_path
-
-        os.makedirs(self.batch_path)
-
-        self.setWindowTitle('Batch Manager: ' + self.batch_path.split('/')[-1])
-
-        self.df.to_pickle(self.batch_path + '/dataframe.batch')
-
         self.ui.scrollAreaStdOut.setStyleSheet('background-color: #131926')
-        # self.ui.textBrowserStdOut.setTextBackgroundColor(QtGui.QColor(131926))
         self.ui.textBrowserStdOut.setTextColor(QtGui.QColor('#b7b7b7'))
 
         self.ui.scrollAreaStdOut.hide()
@@ -81,6 +73,54 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.listwBatch.currentItemChanged.connect(self.show_item_info)
 
         self.output_widgets = []
+        self.df = pandas.DataFrame()
+        self.init_batch()
+
+    def init_batch(self):
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '
+                                                                'or a location for a new batch folder')
+        if path == '':
+            return
+
+        dfpath = path + '/dataframe.batch'
+        if os.path.isfile(dfpath):
+            self.open_batch_dir(path)
+
+        else:
+            self.create_new_batch_dir(path)
+
+        self.ui.btnStart.setEnabled(True)
+        self.ui.btnStartAtSelection.setEnabled(True)
+
+    def create_new_batch(self):
+        if self.ui.listwBatch.count() > 0:
+            if QtWidgets.QMessageBox.warning(self, 'Warning!', 'If you open a new batch, the current batch will be '
+                                                               'DISCARDED. Do you still want to continue?',
+                                             QtWidgets.QMessageBox.Yes,
+                                             QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                return
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose location for a batch')
+        if path == '':
+            return
+
+        self.create_new_batch_dir(path)
+
+    def create_new_batch_dir(self, path):
+        name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
+
+        if start and name != '':
+            batch_path = path + '/' + name
+            os.makedirs(batch_path)
+        else:
+            return
+        self.ui.listwBatch.clear()
+
+        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid'])
+        self.df.to_pickle(self.batch_path + '/dataframe.batch')
+
+        os.makedirs(self.batch_path)
+
+        self.setWindowTitle('Batch Manager: ' + self.batch_path.split('/')[-1])
 
     def btn_view_input_slot(self):
         # TODO: This should ask which viewer to display output in if more than 2 are open
@@ -131,7 +171,6 @@ class ModuleGUI(QtWidgets.QWidget):
                 vi.viewer.status_bar_label.clear()
         if hasattr(self, 'lwd'):
             self.lwd.deleteLater()
-
 
     def list_widget_item_double_clicked_slot(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
@@ -430,11 +469,15 @@ class ModuleGUI(QtWidgets.QWidget):
                                              QtWidgets.QMessageBox.Yes,
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
-        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Batch', directory=configuration.proj_path + '/batches')
-        dfpath = path + '/dataframe.batch'
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Open Batch', directory='/home/')
         if path == '':
             return
-        elif not os.path.isfile(dfpath):
+
+        self.open_batch_dir(path)
+
+    def open_batch_dir(self, path):
+        dfpath = path + '/dataframe.batch'
+        if not os.path.isfile(dfpath):
             QtWidgets.QMessageBox.warning(self, 'Invalid batch dir',
                                           'The selected directory does not appear to be a valid  batch directory '
                                           'since it does not contain a "dataframe.batch" file')

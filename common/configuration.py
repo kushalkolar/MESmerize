@@ -72,6 +72,9 @@ def open_sys_config():
 
 proj_path = None
 proj_cfg = configparser.RawConfigParser(allow_no_value=True)
+proj_cfg['ROI_DEFS'] = {}
+proj_cfg['STIM_DEFS'] = {}
+
 proj_cfg.optionxform = str
 special = {}
 df_refs = {}

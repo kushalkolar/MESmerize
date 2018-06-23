@@ -70,8 +70,6 @@ class ProjectManager(QtCore.QObject):
         self.config_window.tabs.widget(0).ui.btnSave.clicked.connect(self._create_new_project_dataframe)
         self.config_window.show()
 
-        self._initialize_batch_manager()
-
     def open_project(self):
         if not os.path.isdir(self.root_dir + '/dataframes'):
             raise NotADirectoryError('dataframes directory not found')
@@ -88,8 +86,6 @@ class ProjectManager(QtCore.QObject):
 
         configuration.open_proj_config()
 
-        self._initialize_batch_manager()
-
     def attach_open_windows(self, windows):
         pass
 
@@ -100,12 +96,6 @@ class ProjectManager(QtCore.QObject):
         self.config_window = project_config_window.Window()
         self.config_window.tabs.widget(0).ui.btnSave.clicked.connect(self.update_open_windows)
         # self.config_window.resize(560, 620)
-
-    def _initialize_batch_manager(self):
-        if not hasattr(configuration.window_manager, 'batch_manager'):
-            batch_path = self.root_dir + '/batches' + '/' + \
-                         datetime.fromtimestamp(time()).strftime('%Y%m%d_%H%M%S')
-            configuration.window_manager.initialize_batch_manager(batch_path)
 
     def show_config_window(self):
         self.config_window.show()

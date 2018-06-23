@@ -71,7 +71,6 @@ class ManagerManual(AbstractBaseManager):
             ix += 1
         self.roi_list.reindex_colormap()
 
-
     def add_roi(self, shape):
         dims = self.vi.viewer.workEnv.imgdata.seq.shape
         roi_graphics_object = ManualROI.get_generic_roi_graphics_object(shape, dims)
