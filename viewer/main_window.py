@@ -132,13 +132,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionCrop.triggered.connect(self.image_menu.crop)
 
     def start_batch_manager(self):
-        if configuration.window_manager.batch_manager is None:
-            configuration.window_manager.initialize_batch_manager()
-            configuration.window_manager.batch_manager.show()
-
-        else:
-            configuration.window_manager.batch_manager.show()
-
+        batch_manager = configuration.window_manager.get_batch_manager()
+        batch_manager.show()
     def open_workEnv_editor(self):
         self.vi.viewer.status_bar_label.setText('Please wait, loading editor interface...')
 

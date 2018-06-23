@@ -19,7 +19,19 @@ from functools import partial
 class WindowManager:
     def __init__(self):
         self._welcome_window = None
-        self.batch_manager = None
+        self._batch_manager = None
+
+    def get_batch_manager(self) -> BatchModuleGUI:
+        if self._batch_manager is None:
+            QtWidgets.QMessageBox.question(self, 'No batch manager open',
+                                           'The batch manager has not been initialized, '
+                                           'you must choose a location for a new batch or create a new batch',
+                                           QtWidgets.QMessageBox.Ok)
+
+            self._batch_manager = BatchModuleGUI(parent=None)
+            return self._batch_manager
+        else:
+            return self._batch_manager
 
     def initalize(self):
         self.project_browsers = WindowClass('Project Browser')
@@ -27,9 +39,6 @@ class WindowManager:
         self.flowcharts = WindowClass('Flowchart')
         self.plots = WindowClass('Plots')
         self.clustering_windows = WindowClass('Clustering')
-
-    def initialize_batch_manager(self):
-        self.batch_manager = BatchModuleGUI(parent=None)
 
     def garbage_collect(self):
         pass

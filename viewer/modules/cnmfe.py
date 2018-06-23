@@ -17,7 +17,6 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.cnmfe_pytemplate import *
 import json
 import numpy as np
-from .batch_manager import ModuleGUI as BatchModuleGui
 from common import configuration
 
 
@@ -26,12 +25,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi = ViewerInterface(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
-        if configuration.window_manager.batch_manager is None:
-            QtWidgets.QMessageBox.question(self, 'No batch manager open',
-                                           'The batch manager has not been initialized, '
-                                           'you must choose a location for a new batch or create a new batch',
-                                           QtWidgets.QMessageBox.Ok)
-            configuration.window_manager.initialize_batch_manager()
 
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
@@ -120,12 +113,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         d['do_corr_pnr'] = True
         d['do_cnmfe'] = False
 
-        self.vi.viewer.batch_manager.add_item(module='CNMFE',
-                                                  name=self.ui.lineEdCorrPNRName.text(),
-                                                  input_workEnv=input_workEnv,
-                                                  input_params=d,
-                                                  info=d
-                                                  )
+        batch_manager = configuration.window_manager.get_batch_manager()
+
+        batch_manager.add_item(module='CNMFE',
+                               name=self.ui.lineEdCorrPNRName.text(),
+                               input_workEnv=input_workEnv,
+                               input_params=d,
+                               info=d
+                               )
 
     def add_to_batch_cnmfe(self):
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
@@ -146,13 +141,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         d['do_cnmfe'] = True
 
         # d = np.array(self._make_params_dict(), dtype=object)
+        batch_manager = configuration.window_manager.get_batch_manager()
 
-        self.vi.viewer.batch_manager.add_item(module='CNMFE',
-                                                  name=self.ui.lineEdName.text(),
-                                                  input_workEnv=input_workEnv,
-                                                  input_params=d,
-                                                  info=d
-                                                  )
+        batch_manager.add_item(module='CNMFE',
+                               name=self.ui.lineEdName.text(),
+                               input_workEnv=input_workEnv,
+                               input_params=d,
+                               info=d
+                               )
 
     def save_memmap(self):
         pass

@@ -58,9 +58,6 @@ def viewer(file=None):
     viewer_widget = pyqtgraphCore.ImageView(parent=viewerWindow)
     viewer_widget.setPredefinedGradient('flame')
 
-    if configuration.proj_path is not None:
-        viewer_widget.batch_manager = configuration.window_manager.batch_manager
-
     viewerWindow.viewer_reference = viewer_widget
     viewerWindow.setCentralWidget(viewer_widget)
     viewerWindow.setWindowTitle('Mesmerize - Viewer - ' + str(len(configuration.window_manager.viewers)))
