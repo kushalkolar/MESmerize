@@ -31,6 +31,30 @@ class ProjectManager(QtCore.QObject):
         configuration.proj_path = self.root_dir
         self.dataframe = pd.DataFrame(data=None)
         self.signal_dataframe_changed.connect(self.save_dataframe)
+        self.child_dataframes = dict()
+
+    def create_child_dataframes(self):
+        for child_name in configuration.proj_cfg.options('CHILD_DFS'):
+            filt = configuration.proj_cfg['CHILD_DFS'][child_name]
+            df = self.dataframe.copy()
+            filt = filt.split('\n')
+            for f in filt:
+                df = eval(f)
+            self.child_dataframes.update({child_name: {'dataframe': df, 'filter_history': filt}})
+
+    def add_child_dataframe(self, child_name: str, filter_history: str, dataframe: pd.DataFrame):
+        self.child_dataframes.update({child_name: {'dataframe': dataframe, 'filter_history': filter_history}})
+        if child_name in configuration.proj_cfg.options('CHILD_DFS'):
+            configuration.proj_cfg['CHILD_DFS'][child_name] = configuration.proj_cfg['CHILD_DFS'][child_name] + '\n'.join(filter_history)
+        else:
+            configuration.proj_cfg.set('CHILD_DFS', child_name, '\n'.join(filter_history))
+
+        configuration.save_proj_config()
+
+    def remove_child_dataframe(self, name: str):
+        self.child_dataframes.pop(name)
+        configuration.proj_cfg.remove_option('CHILD_DFS', name)
+        configuration.save_proj_config()
 
     def setup_new_project(self):
         os.makedirs(self.root_dir + '/dataframes')

@@ -42,6 +42,10 @@ def project_browser():
     # project_browser_window.show()
 
 
+def load_child_dataframes_gui():
+    configuration.window_manager.project_browsers[0].reload_all_tabs()
+
+
 def viewer(file=None):
     # Interpret image data as row-major instead of col-major
     pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')

@@ -239,7 +239,11 @@ class Output(QtWidgets.QWidget):
         filename = self.batch_dir + '/' + str(self.UUID)
 
         cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
+        try:
+            pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
+        except:
+            pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+
         inspect_correlation_pnr(cn_filter, pnr)
 
     def get_cnmfe_results(self):

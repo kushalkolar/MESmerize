@@ -89,12 +89,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         print('staring manual mode')
 
         if hasattr(self, 'manager'):
-            # if QtWidgets.QMessageBox.warning(self, 'Discard ROIs?',
-            #                                  'You have unsaved ROIs in your work environment.'
-            #                                  'Would you like to discard them and continue?',
-            #                                  QtWidgets.QMessageBox.Yes,
-            #                                  QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-            #     return
             del self.manager
         self.manager = managers.ManagerManual(self, self.ui, self.vi)
 

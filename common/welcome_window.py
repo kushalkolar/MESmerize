@@ -155,6 +155,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         start.project_browser()
         self.ui.btnProjectBrowser.clicked.connect(configuration.window_manager.project_browsers[-1].show)
+        start.load_child_dataframes_gui()
 
     def set_proj_buttons_visible(self, b):
         self.ui.btnNewProject.setVisible(b)

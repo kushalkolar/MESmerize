@@ -33,7 +33,8 @@ class LoadProjDF(CtrlNode):
         CtrlNode.__init__(self, name, terminals={'Out': {'io': 'out'}})
         self._loadNode = True
         self.t = None
-        self.ctrls['DF_Name'].addItems([''] + list(configuration.df_refs.keys()))
+        child_df_names = ['root'] + list(configuration.project_manager.child_dataframes.keys())
+        self.ctrls['DF_Name'].addItems(child_df_names)
         self.ctrls['Update'].clicked.connect(self.changed)
         # print('Node Refs:')
         # print(configuration.df_refs)
@@ -54,12 +55,17 @@ class LoadProjDF(CtrlNode):
 
             if self.ctrls['DF_Name'].currentText() == '':
                 return
-            df_ref = configuration.df_refs[self.ctrls['DF_Name'].currentText()]
+            child_df_name = self.ctrls['DF_Name'].currentText()
+            if child_df_name == 'root':
+                df = configuration.project_manager.dataframe
+                filter_history = None
+            else:
+                df = configuration.project_manager.child_dataframes[child_df_name]['dataframe']
+                filter_history = configuration.project_manager.child_dataframes[child_df_name]['filter_history']
             proj_path = configuration.proj_path
-            df = df_ref()
             # print('*****************config df ref hex ID:*****************')
             # print(hex(id(df)))
-            self.t = Transmission.from_proj(proj_path, df, self.ctrls['DF_Name'].currentText())
+            self.t = Transmission.from_proj(proj_path, df, self.ctrls['DF_Name'].currentText(), misc_info={'dataframe_filter_history': filter_history})
 
             # print('Tranmission dataframe hexID:')
             # print(hex(id(self.t.df)))

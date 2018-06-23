@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>707</width>
-    <height>579</height>
+    <width>529</width>
+    <height>478</height>
    </rect>
   </property>
   <property name="floating">
@@ -17,8 +17,8 @@
    <string>ROI Manager</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
        <number>0</number>
@@ -28,21 +28,106 @@
         <string>Standard ROIs</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="2" column="0" colspan="7">
-         <widget class="QLineEdit" name="lineEditROITag">
-          <property name="placeholderText">
-           <string>Add Tag to ROI Definition</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QPushButton" name="btnSetROITag">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btnAddROI">
           <property name="text">
-           <string>Set ROI tag</string>
+           <string>Add ROI</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="2" colspan="5">
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="checkBoxShowAll">
+          <property name="text">
+           <string>Show all</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QCheckBox" name="checkBoxLivePlot">
+          <property name="text">
+           <string>Live plot</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="btnPlot">
+          <property name="text">
+           <string>Plot</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="btnSwitchToManualMode">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Switch to manual mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>25</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>75</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>ROIs</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="listWidgetROIs">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>80</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1" colspan="5">
          <layout class="QVBoxLayout" name="verticalLayoutTags" stretch="0,0">
           <item>
            <widget class="QLabel" name="label_2">
@@ -59,78 +144,17 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="5">
-         <widget class="QPushButton" name="btnSwitchToManualMode">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Switch to manual mode</string>
+        <item row="2" column="0" colspan="6">
+         <widget class="QLineEdit" name="lineEditROITag">
+          <property name="placeholderText">
+           <string>Add Tag to ROI Definition</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="6">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>175</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="0">
-         <widget class="QPushButton" name="btnAddROI">
+        <item row="3" column="0" colspan="6">
+         <widget class="QPushButton" name="btnSetROITag">
           <property name="text">
-           <string>Add ROI</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="2">
-         <layout class="QVBoxLayout" name="verticalLayoutROIList">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>ROIs</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QListWidget" name="listWidgetROIs">
-            <property name="maximumSize">
-             <size>
-              <width>120</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="1" colspan="2">
-         <widget class="QCheckBox" name="checkBoxShowAll">
-          <property name="text">
-           <string>Show all</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
-         <widget class="QCheckBox" name="checkBoxLivePlot">
-          <property name="text">
-           <string>Live plot</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="4">
-         <widget class="QPushButton" name="btnPlot">
-          <property name="text">
-           <string>Plot</string>
+           <string>Set ROI tag</string>
           </property>
          </widget>
         </item>
@@ -156,11 +180,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>315</x>
-     <y>440</y>
+     <y>508</y>
     </hint>
     <hint type="destinationlabel">
-     <x>317</x>
-     <y>475</y>
+     <x>99</x>
+     <y>543</y>
     </hint>
    </hints>
   </connection>
