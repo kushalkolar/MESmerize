@@ -118,11 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 m.update_available_inputs()
 
     def initialize_menubar_triggers(self):
-        if configuration.proj_path is None:
-            self.ui.actionBatch_Manager.triggered.connect(self.ask_create_standalone_batch)
-        else:
-            self.ui.actionBatch_Manager.triggered.connect(configuration.window_manager.batch_manager.show)
-            configuration.window_manager.batch_manager.listwchanged.connect(self.update_available_inputs)
+        self.ui.actionBatch_Manager.triggered.connect(self.start_batch_manager)
 
         self.vi = ViewerInterface(self._viewer)
 
@@ -135,32 +131,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionResize.triggered.connect(self.image_menu.resize)
         self.ui.actionCrop.triggered.connect(self.image_menu.crop)
 
-    def ask_create_standalone_batch(self):
-        if QtWidgets.QMessageBox.question(self, 'No project open',
-                                          'Would you like to create a standalone batch?',
-                                          QtWidgets.QMessageBox.No,
-                                          QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
-            return
-
-        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose location for a batch')
-        if path == '':
-            return
-
-        name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
-
-        if start and name != '':
-            batch_path = path + '/' + name
-            os.makedirs(batch_path)
-            configuration.window_manager.initialize_batch_manager(batch_path)
+    def start_batch_manager(self):
+        if configuration.window_manager.batch_manager is None:
+            configuration.window_manager.initialize_batch_manager()
+            configuration.window_manager.batch_manager.show()
+        else:
+            configuration.window_manager.batch_manager.show()
 
     def open_workEnv_editor(self):
         self.vi.viewer.status_bar_label.setText('Please wait, loading editor interface...')
 
+        if hasattr(self.vi.viewer.workEnv.roi_manager, 'roi_list'):
+            roi_list = self.vi.viewer.workEnv.roi_manager.roi_list
+        else:
+            roi_list = None
+
         d = {'custom_columns_dict': self.vi.viewer.workEnv.custom_columns_dict,
              'isEmpty':             self.vi.viewer.workEnv.isEmpty,
              'imgdata':             self.vi.viewer.workEnv.imgdata.seq,
-             'ROIList':             self.vi.viewer.workEnv.ROIList,
-             'CurvesList':          self.vi.viewer.workEnv.CurvesList,
+             'meta_data':           self.vi.viewer.workEnv.imgdata.meta,
+             'roi_list':            roi_list,
              'comments':            self.vi.viewer.workEnv.comments,
              'origin_file':         self.vi.viewer.workEnv.origin_file,
              '_saved':              self.vi.viewer.workEnv._saved

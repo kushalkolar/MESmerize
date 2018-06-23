@@ -256,6 +256,9 @@ class ROIList(list):
     def __init__(self, ui, roi_types: str, viewer_interface: ViewerInterface):
         super(ROIList, self).__init__()
 
+        if configuration.proj_path is None:
+            pass
+
         assert isinstance(ui.listWidgetROIs, QtWidgets.QListWidget)
         self.list_widget = ui.listWidgetROIs
         self.list_widget.clear()
