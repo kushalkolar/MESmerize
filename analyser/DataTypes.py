@@ -94,7 +94,7 @@ class _TRANSMISSION:
 class Transmission(_TRANSMISSION):
     """The regular transmission class used throughout the flowchart"""
     @classmethod
-    def from_proj(cls, proj_path, dataframe, df_name=''):
+    def from_proj(cls, proj_path, dataframe, df_name='', misc_info=None):
         """
         :param df: Chosen Child DataFrame from the Mesmerize Project
 
@@ -106,13 +106,13 @@ class Transmission(_TRANSMISSION):
         df['raw_curve'] = df['curve']
         
         try:
-            from MesmerizeCore import configuration
-            stim_defs = configuration.cfg.options('STIM_DEFS')
-            roi_defs = configuration.cfg.options('ROI_DEFS')
+            from common import configuration
+            stim_defs = configuration.proj_cfg.options('STIM_DEFS')
+            roi_defs = configuration.proj_cfg.options('ROI_DEFS')
         except:
             return cls(df, src=[{'raw': df_name}])
 
-        return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs)
+        return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs, misc_info=misc_info)
 
     @staticmethod
     def _load_files(proj_path, row):
@@ -125,7 +125,7 @@ class Transmission(_TRANSMISSION):
 
         pikPath = proj_path + row['ImgInfoPath']
         pik = pickle.load(open(pikPath, 'rb'))
-        meta = pik['imdata']['meta']
+        meta = pik['meta']
 
         return pd.Series({'curve': npz.f.curve[1], 'meta': meta, 'stimMaps': npz.f.stimMaps})
 

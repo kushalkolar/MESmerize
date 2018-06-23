@@ -75,12 +75,31 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         lineEdit_view_all.triggered.connect(self.line_edit_view_all_in_text_browser)
 
         lineEditNegation = QtWidgets.QWidgetAction(self)
-        lineEditNegation.setText('"Not" modifer')
-        lineEditNegation.triggered.connect(self.set_not_modifier)
+        lineEditNegation.setText('"Not" modifer $NOT:')
+        lineEditNegation.setToolTip('Perform negation of filter entries')
+        lineEditNegation.triggered.connect(partial(self.set_modifier, '$NOT:'))
+
+        lineEditSTR = QtWidgets.QWidgetAction(self)
+        lineEditSTR.setText('"String" modifer $STR:')
+        lineEditSTR.setToolTip('Treat filter entries as a string (as normal text)')
+        lineEditSTR.triggered.connect(partial(self.set_modifier, '$STR:'))
+
+        lineEditSTREQ = QtWidgets.QWidgetAction(self)
+        lineEditSTREQ.setText('"String equals" modifer (exact match of text) $STR=:')
+        lineEditSTREQ.setToolTip('Exact match of filter entries')
+        lineEditSTREQ.triggered.connect(partial(self.set_modifier, '$STR=:'))
+
+        lineEditSTRNOTEQ = QtWidgets.QWidgetAction(self)
+        lineEditSTRNOTEQ.setText('"String not equals" modifer $STR!=:')
+        lineEditSTRNOTEQ.setToolTip('Negation of exact match of filter entries')
+        lineEditSTRNOTEQ.triggered.connect(partial(self.set_modifier, '$STR!=:'))
 
         self.lineEditMenu = QtWidgets.QMenu(self)
         self.lineEditMenu.addAction(lineEdit_view_all)
         self.lineEditMenu.addAction(lineEditNegation)
+        self.lineEditMenu.addAction(lineEditSTR)
+        self.lineEditMenu.addAction(lineEditSTREQ)
+        self.lineEditMenu.addAction(lineEditSTRNOTEQ)
 
     @property
     def series(self) -> pd.Series:
@@ -134,9 +153,9 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     def line_edit_view_all_in_text_browser(self):
         pass
 
-    def set_not_modifier(self):
+    def set_modifier(self, modifier):
         text = self.lineEdit.text()
-        self.lineEdit.setText('$NOT:' + text)
+        self.lineEdit.setText(modifier + text)
 
     def set_as_str(self):
         l = list(set(self.series))
@@ -159,8 +178,18 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         lineEdit_less_than = QtWidgets.QWidgetAction(self)
         lineEdit_less_than.setText('Less than')
         lineEdit_less_than.triggered.connect(partial(self.set_num_modifier, '$<:'))
-
         self.lineEditMenu.addAction(lineEdit_less_than)
+
+        lineEdit_less_than_eq = QtWidgets.QWidgetAction(self)
+        lineEdit_less_than_eq.setText('Less than or equal to')
+        lineEdit_less_than_eq.triggered.connect(partial(self.set_num_modifier, '$<=:'))
+        self.lineEditMenu.addAction(lineEdit_less_than_eq)
+
+
+        lineEdit_greater_than_eq = QtWidgets.QWidgetAction(self)
+        lineEdit_greater_than_eq.setText('Greater than or equal to')
+        lineEdit_greater_than_eq.triggered.connect(partial(self.set_num_modifier, '$>=:'))
+        self.lineEditMenu.addAction(lineEdit_greater_than_eq)
 
     def set_num_modifier(self, modifier):
         text = self.lineEdit.text()

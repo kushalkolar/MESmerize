@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './roi_manager_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -16,12 +16,14 @@ class Ui_DockWidget(object):
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.dockWidgetContents)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.tabWidget = QtWidgets.QTabWidget(self.dockWidgetContents)
         self.tabWidget.setObjectName("tabWidget")
         self.tabStandard = QtWidgets.QWidget()
         self.tabStandard.setObjectName("tabStandard")
         self.gridLayout = QtWidgets.QGridLayout(self.tabStandard)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.lineEditROITag = QtWidgets.QLineEdit(self.tabStandard)
         self.lineEditROITag.setObjectName("lineEditROITag")
@@ -56,6 +58,10 @@ class Ui_DockWidget(object):
         self.verticalLayoutROIList.addWidget(self.label)
         self.listWidgetROIs = QtWidgets.QListWidget(self.tabStandard)
         self.listWidgetROIs.setMaximumSize(QtCore.QSize(120, 16777215))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.listWidgetROIs.setFont(font)
         self.listWidgetROIs.setObjectName("listWidgetROIs")
         self.verticalLayoutROIList.addWidget(self.listWidgetROIs)
         self.gridLayout.addLayout(self.verticalLayoutROIList, 1, 0, 1, 2)

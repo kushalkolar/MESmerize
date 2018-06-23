@@ -322,6 +322,8 @@ class ROIList(list):
             roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, roi))
 
         self.vi.workEnv_changed('ROI Added')
+        # item = QtWidgets.QListWidgetItem(self.list_widget)
+        # item.setData(QtCore.Qt.UserRole, "<b>{0}</b>".format((self.__len__())))
         self.list_widget.addItem(str(self.__len__()))
         super(ROIList, self).append(roi)
 
@@ -402,7 +404,14 @@ class ROIList(list):
 
         for ix in range(self.__len__()):
             c = lut[cm_ixs[ix]]
-            roi = self.__getitem__(ix)
+            try:
+                roi = self.__getitem__(ix)
+            except IndexError:
+                return
+            item = self.list_widget.item(ix)
+            if item is not None:
+                item.setBackground(QtGui.QBrush(pg.mkBrush(c)))
+
             roi.set_original_color(c)
             roi.set_color(c)
 

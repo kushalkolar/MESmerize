@@ -33,17 +33,20 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         self.vertical_layout = QtWidgets.QVBoxLayout(self)
 
         self.tab_widget = QtWidgets.QTabWidget()
+
+        # self.tabs_widget.tabBar().tabCloseRequested.connect(lambda ix: self.del_tab(ix))
+
         self.vertical_layout.addWidget(self.tab_widget)
 
         self.add_tab(dataframe, [], is_root=True)
 
-        self.tab_widget.tabCloseRequested.connect(self.close_tab)
+        self.tab_widget.tabCloseRequested.connect(lambda ix: self.del_tab(ix))
 
         configuration.project_manager.signal_dataframe_changed.connect(self.update_dataframe_data)
 
     @QtCore.pyqtSlot(pd.DataFrame)
     def update_dataframe_data(self, dataframe: pd.DataFrame):
-        self.dataframe = dataframe
+        self.dataframe = dataframe  # This is probably not necessary
 
         tab_area = self.tabs['root']
         assert isinstance(tab_area, TabAreaWidget)
@@ -54,18 +57,21 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         for tab_name in self.tabs.keys():
             pass
 
-    def add_tab(self, dataframe, filter_history, is_root=False):
-        if not is_root:
+    def add_tab(self, dataframe, filter_history, is_root=False, name=None):
+        if not is_root and name is None:
             tab_name = QtWidgets.QInputDialog.getText(self, None, 'Enter name for new tab: ')
             if tab_name[0] == '' or tab_name[1] is False:
                 return
-            elif tab_name[0] in configuration.df_refs.keys():
+            elif tab_name[0] in configuration.project_manager.child_dataframes.keys():
                 QtWidgets.QMessageBox.warning(self, 'DataFrame title already exists!',
                                               'That name already exists in your project, choose a different name!')
                 self.add_tab(dataframe, filter_history, is_root)
             tab_name = tab_name[0]
-        else:
+            configuration.project_manager.add_child_dataframe(tab_name, filter_history, dataframe)
+        elif is_root:
             tab_name = 'root'
+        else:
+            tab_name = name
 
         tab_area_widget = TabAreaWidget(self.tab_widget, tab_name, dataframe, filter_history, is_root)
         tab_area_widget.signal_new_tab_requested.connect(self.slot_new_tab_requested)
@@ -86,13 +92,20 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         self.tab_widget.setCurrentIndex(self.tab_widget.count() - 1)
 
     @QtCore.pyqtSlot(pd.DataFrame, list)
-    def slot_new_tab_requested(self, dataframe, filter_history):
-        print(dataframe)
-        print(filter_history)
+    def slot_new_tab_requested(self, dataframe: pd.DataFrame, filter_history: list):
         self.add_tab(dataframe, filter_history)
 
-    def close_tab(self, ix):
-        pass
+    def del_tab(self, ix: int):
+        print(ix)
+        if QtWidgets.QMessageBox.question(self, 'Remove Tab?', 'Are you sure you want to delete this tab? '
+                                                       'Only the filter operations to get this child DataFrame will be '
+                                                       'removed, your data is still in the Root DataFrame.',
+                                      QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+            return
+
+        tab_name = self.tab_widget.widget(ix).tab_name
+        self.tab_widget.removeTab(ix)
+        configuration.project_manager.remove_child_dataframe(tab_name)
 
     @QtCore.pyqtSlot(str)
     def slot_open_sample_id_in_viewer(self, sample_id):
