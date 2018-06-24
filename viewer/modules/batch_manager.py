@@ -111,6 +111,7 @@ class ModuleGUI(QtWidgets.QWidget):
         if start and name != '':
             batch_path = path + '/' + name
             os.makedirs(batch_path)
+            self.batch_path = batch_path
         else:
             return
         self.ui.listwBatch.clear()
@@ -118,9 +119,8 @@ class ModuleGUI(QtWidgets.QWidget):
         self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid'])
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
-        os.makedirs(self.batch_path)
-
         self.setWindowTitle('Batch Manager: ' + self.batch_path.split('/')[-1])
+        self.show()
 
     def btn_view_input_slot(self):
         # TODO: This should ask which viewer to display output in if more than 2 are open
@@ -160,15 +160,17 @@ class ModuleGUI(QtWidgets.QWidget):
                 return
             pikpath = self.batch_path + '/' + str(UUID) + '_workEnv.pik'
             tiffpath = self.batch_path + '/' + str(UUID) + '.tiff'
-            vi.viewer.status_bar_label.setText('Please wait, loading input into work environment...')
+            vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
             if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
-                vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pikPath=pikpath, tiffPath=tiffpath)
+                vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
                 vi.update_workEnv()
                 vi.enable_ui(True)
+                vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
+
             else:
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
                                               'The input files do not exist for this item.')
-                vi.viewer.status_bar_label.clear()
+                vi.viewer.status_bar_label.clear('Error, could not load input into work environment.')
         if hasattr(self, 'lwd'):
             self.lwd.deleteLater()
 
@@ -210,12 +212,19 @@ class ModuleGUI(QtWidgets.QWidget):
                 return
             i = int(self.lwd.listWidget.currentItem().data(0))
             viewer = viewers[i].viewer_reference
-        self.output_widgets.append(m.Output(self.batch_path, UUID, viewer))
+        try:
+            self.output_widgets.append(m.Output(self.batch_path, UUID, viewer))
+        except:
+            QtWidgets.QMessageBox.warning(self, 'Error showing item output',
+                                          'The following error occured while '
+                                          'trying to load the output of the chosen item\n' + traceback.format_exc())
         if hasattr(self, 'lwd'):
             self.lwd.deleteLater()
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""
+        if not isinstance(s, QtWidgets.QListWidgetItem):
+            return
         UUID = s.data(3)
         row = self.df.loc[self.df['uuid'] == UUID]
         meta = row['info'].item()
@@ -348,7 +357,10 @@ class ModuleGUI(QtWidgets.QWidget):
             return None
 
     def _terminate_qprocess(self):
-        py_proc = psutil.Process(self.process.pid()).children()[0].pid
+        try:
+            py_proc = psutil.Process(self.process.pid()).children()[0].pid
+        except psutil.NoSuchProcess:
+            return
         children = psutil.Process(py_proc).children()
         os.kill(py_proc, SIGKILL)
         for child in children:
@@ -359,7 +371,6 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.textBrowserStdOut.append('\n'.join(self.current_std_out))
 
     def add_item(self, module, viewer_reference, input_workEnv, input_params, name='', info=''):
-        # TODO: This should utilize the work environment from the viewer_reference that is passed
 
         """
         :param  module:         The module to run, based on common.BatchRunInterface.
@@ -386,7 +397,7 @@ class ModuleGUI(QtWidgets.QWidget):
                                                                               ' nothing to add to the batch!')
             return
         vi = ViewerInterface(viewer_reference)
-        vi.viewer.status_bar_label.setText('Adding to batch, please wait...')
+        # vi.viewer.status_bar_label.setText('Adding to batch, please wait...')
         UUID = uuid.uuid4()
 
         if module == 'CNMFE' or module == 'caiman_motion_correction':
@@ -415,8 +426,6 @@ class ModuleGUI(QtWidgets.QWidget):
         item.setData(3, UUID)
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
-
-        self.vi.viewer.status_bar_label.setText('Added item to batch!')
 
     def del_item(self):
         """Delete an item from the batch and any corresponding dependents of hte item's output"""

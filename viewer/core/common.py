@@ -30,10 +30,13 @@ class ViewerInterface:
         self.roi_manager = None
 
     def update_workEnv(self):
+        self.viewer.status_bar_label.showMessage('Updating work environment, please wait...')
+
         self.viewer.setImage(self.viewer.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
                                    xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
                                                      self.viewer.workEnv.imgdata.seq.T.shape[0]))
         self.viewer.workEnv.roi_manager = self.viewer.parent().roi_manager.manager
+        self.viewer.status_bar_label.showMessage('Finished updating work environment.')
 
     def enable_ui(self, b):
         self.viewer.ui.splitter.setEnabled(b)
@@ -46,6 +49,8 @@ class ViewerInterface:
                          'Would you like to discard them and continue?\n\n' +
                              ' > '.join(self.viewer.workEnv.changed_items),
                          QtWidgets.QMessageBox.Yes,QtWidgets.QMessageBox.No)) == QtWidgets.QMessageBox.No:
+            self.viewer.status_bar_label.showMessage('Work environment left unchanged.')
+
             return False
         self._clear_workEnv(clear_sample_id)
         return True
@@ -66,6 +71,8 @@ class ViewerInterface:
 
             self.viewer.currStimMapBg = []
         self.viewer.workEnv.saved = True
+
+        self.viewer.status_bar_label.showMessage('Work environment cleared.')
 
         # self.viewer.initROIPlot()
         # self.viewer.enableUI(False, clear_sample_id)

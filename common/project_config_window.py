@@ -39,6 +39,7 @@ class ColumnsPage(QtWidgets.QWidget):
         self.ui.listwExclude.addItems(configuration.proj_cfg.options('EXCLUDE'))
         self.ui.listwROIDefs.addItems(configuration.proj_cfg.options('ROI_DEFS'))
         self.ui.listwStimDefs.addItems(configuration.proj_cfg.options('STIM_DEFS'))
+        self.ui.listwCustomColumns.addItems(configuration.proj_cfg.options('CUSTOM_COLUMNS'))
 
         self.ui.radioButtonBoolean.clicked.connect(self.disable_custom_column_line_edit_validator)
         self.ui.radioButtonStr.clicked.connect(self.disable_custom_column_line_edit_validator)

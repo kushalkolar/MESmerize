@@ -290,11 +290,11 @@ class ImageView(QtWidgets.QWidget):
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
 
     @property
-    def status_bar_label(self):
+    def status_bar_label(self) -> QtWidgets.QStatusBar:
         return self._status_bar_label
 
     @status_bar_label.setter
-    def status_bar_label(self, status_bar_label: QtWidgets.QLabel):
+    def status_bar_label(self, status_bar_label: QtWidgets.QStatusBar):
         self._status_bar_label = status_bar_label
 
     # Called from __main__ when btnSave in ConfigWindow is clicked.

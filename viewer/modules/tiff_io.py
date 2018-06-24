@@ -34,6 +34,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose tiff file', '', '(*.tiff)')
         if path == '':
             return
+        if path[0] == '':
+            return
         self.ui.labelFileTiff.setText(path[0])
         self.check_meta_path()
 
@@ -63,7 +65,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         else:
             QtWidgets.QMessageBox.warning(self, 'No method selected!', 'You must select a method.')
             return
-        self.vi.viewer.status_bar_label.setText('Please wait, this may take a few minutes...')
+        self.vi.viewer.status_bar_label.showMessage('Please wait, this may take a few minutes...')
 
         if not self.vi.discard_workEnv():
             return
@@ -74,7 +76,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                                               meta_path=self.ui.labelFileMeta.text())
             self.vi.update_workEnv()
             self.vi.enable_ui(True)
-            self.vi.viewer.status_bar_label.setText('File loaded into work environment!')
+            self.vi.viewer.status_bar_label.showMessage('File loaded into work environment!')
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             self.vi.viewer.status_bar.clearMessage()
