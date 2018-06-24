@@ -31,6 +31,7 @@ class ViewerInterface:
 
     def update_workEnv(self):
         self.viewer.status_bar_label.showMessage('Updating work environment, please wait...')
+        self.viewer.parent().show()
 
         self.viewer.setImage(self.viewer.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
                                    xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
@@ -42,6 +43,8 @@ class ViewerInterface:
         self.viewer.ui.splitter.setEnabled(b)
 
     def discard_workEnv(self, clear_sample_id=False):
+        self.viewer.parent().show()
+
         if self.viewer.workEnv.isEmpty:
             return True
         if (self.viewer.workEnv.saved is False) and (QtWidgets.QMessageBox.warning(self.viewer, 'Warning!',
