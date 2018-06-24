@@ -242,7 +242,10 @@ class Output(QtWidgets.QWidget):
         try:
             pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
         except:
-            pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+            try:
+                pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+            except:
+                return
 
         inspect_correlation_pnr(cn_filter, pnr)
 
@@ -278,6 +281,7 @@ class Output(QtWidgets.QWidget):
         if not vi.discard_workEnv():
             return
 
+        vi.viewer.status_bar_label.showMessage('Loading CNMFE data, please wait...')
         pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
         tiff_path = self.batch_dir + '/' + str(self.UUID) + '.tiff'
 

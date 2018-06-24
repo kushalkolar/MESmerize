@@ -279,7 +279,7 @@ class ViewerWorkEnv:
              'comments':    self.comments
              }
 
-        if self.roi_manager is not None:
+        if self.roi_manager is not None and not self.roi_manager.is_empty:
             rois = self.roi_manager.get_all_states()
 
             for ix in range(len(rois['states'])):

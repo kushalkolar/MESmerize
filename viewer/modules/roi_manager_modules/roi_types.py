@@ -350,6 +350,7 @@ class ROIList(list):
         self.list_widget_tags.clear()
         self.disconnect_all()
         for i in range(self.__len__()):
+            self.vi.viewer.status_bar_label.showMessage('Removing ROIs #:' + str(i))
             self.__delitem__(0)
 
     def __delitem__(self, key):
@@ -521,6 +522,7 @@ class ROIList(list):
             axes = (1, 2)
         else:
             return
+        self.vi.viewer.status_bar_label.showMessage('Please wait, calculating intensity values for ROI: ' + str(ix))
 
         # Get the ROI region
         pg_roi = self.__getitem__(ix).get_roi_graphics_object()
@@ -536,6 +538,7 @@ class ROIList(list):
                 roi.curve_plot_item.setData(y=data, x=self.vi.viewer.tVals)
                 roi.set_color('w', width=2)
                 roi.curve_plot_item.show()
+        self.vi.viewer.status_bar_label.clearMessage()
 
     def slot_btn_set_tag(self):
         ix = self.current_index

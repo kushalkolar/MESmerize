@@ -23,10 +23,9 @@ class WindowManager:
 
     def get_batch_manager(self) -> BatchModuleGUI:
         if self._batch_manager is None:
-            QtWidgets.QMessageBox.question(self, 'No batch manager open',
+            QtWidgets.QMessageBox.information(None, 'No batch manager open',
                                            'The batch manager has not been initialized, '
-                                           'you must choose a location for a new batch or create a new batch',
-                                           QtWidgets.QMessageBox.Ok)
+                                           'you must choose a location for a new batch or create a new batch')
 
             self._batch_manager = BatchModuleGUI(parent=None)
             return self._batch_manager

@@ -61,9 +61,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.run_module(roi_manager.ModuleGUI, hide=True)
         self.roi_manager = self.running_modules[-1]
 
-        status_label = QtWidgets.QLabel()
+        status_label = self.statusBar()
         status_bar = self.statusBar()
-        status_bar.addWidget(status_label)
+        # status_bar.addWidget(status_label)
+
 
         self._viewer.status_bar_label = status_label
 
@@ -135,25 +136,25 @@ class MainWindow(QtWidgets.QMainWindow):
         batch_manager = configuration.window_manager.get_batch_manager()
         batch_manager.show()
     def open_workEnv_editor(self):
-        self.vi.viewer.status_bar_label.setText('Please wait, loading editor interface...')
+        self.vi.viewer.status_bar_label.showMessage('Please wait, loading editor interface...')
 
-        if hasattr(self.vi.viewer.workEnv.roi_manager, 'roi_list'):
-            roi_list = self.vi.viewer.workEnv.roi_manager.roi_list
-        else:
-            roi_list = None
+        # if hasattr(self.vi.viewer.workEnv.roi_manager, 'roi_list'):
+        #     roi_list = self.vi.viewer.workEnv.roi_manager.roi_list
+        # else:
+        #     roi_list = None
 
-        d = {'custom_columns_dict': self.vi.viewer.workEnv.custom_columns_dict,
-             'isEmpty':             self.vi.viewer.workEnv.isEmpty,
-             'imgdata':             self.vi.viewer.workEnv.imgdata.seq,
-             'meta_data':           self.vi.viewer.workEnv.imgdata.meta,
-             'roi_list':            roi_list,
-             'comments':            self.vi.viewer.workEnv.comments,
-             'origin_file':         self.vi.viewer.workEnv.origin_file,
-             '_saved':              self.vi.viewer.workEnv._saved
-             }
+        # d = {'custom_columns_dict': self.vi.viewer.workEnv.custom_columns_dict,
+        #      'isEmpty':             self.vi.viewer.workEnv.isEmpty,
+        #      'imgdata':             self.vi.viewer.workEnv.imgdata.seq,
+        #      'meta_data':           self.vi.viewer.workEnv.imgdata.meta,
+        #      'roi_list':            roi_list,
+        #      'comments':            self.vi.viewer.workEnv.comments,
+        #      'origin_file':         self.vi.viewer.workEnv.origin_file,
+        #      '_saved':              self.vi.viewer.workEnv._saved
+        #      }
 
         try:
-            changes = objecteditor.oedit(d)
+            changes = objecteditor.oedit(self.vi.viewer.workEnv)
         except:
             QtWidgets.QMessageBox.warning(self, 'Unable to open work environment editor',
                                           'The following error occured while trying to open the work environment editor:'
@@ -162,8 +163,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if changes is not None:
             try:
-                for key in d.keys():
-                    setattr(self.vi.viewer.workEnv, key, d[key])
+                    self.vi.viewer.workEnv = changes
+                    self.vi.update_workEnv()
             except:
                 QtWidgets.QMessageBox.warning(self, 'Unable to apply changes',
                                               'The following error occured while trying to save changes to the work '
@@ -172,10 +173,10 @@ class MainWindow(QtWidgets.QMainWindow):
                                               '\n' + str(traceback.format_exc()))
                 return
         elif changes is None:
-            self.vi.viewer.status_bar_label.setText('Work environment unchanged')
+            self.vi.viewer.status_bar_label.showMessage('Work environment unchanged')
             return
 
-        self.vi.viewer.status_bar_label.setText('Your edits were successfully applied to the work environment!')
+        self.vi.viewer.status_bar_label.showMessage('Your edits were successfully applied to the work environment!')
 
         # You can even let the user save changes if they click "OK", and the function returns None if they cancel
 

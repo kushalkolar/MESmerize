@@ -38,7 +38,7 @@ class ImageMenu:
 
     def crop(self):
         if self.crop_roi is None:
-            self.vi.viewer.status_bar_label.setText('Create your crop region and then click on "Crop" again in the '
+            self.vi.viewer.status_bar_label.showMessage('Create your crop region and then click on "Crop" again in the '
                                                       '"Image" menu to crop to the selected region')
             self.crop_roi = ROI(pos=[0, 0], size=(0.5 * np.mean([self.vi.viewer.image.shape[1],
                                                                  self.vi.viewer.image.shape[2]])), removable=True)
@@ -47,7 +47,7 @@ class ImageMenu:
             self.crop_roi.addScaleHandle([0, 0], [0, 0])
             self.vi.viewer.view.addItem(self.crop_roi)
         else:
-            self.vi.viewer.status_bar_label.setText('Cropping to your selection, please wait...')
+            self.vi.viewer.status_bar_label.showMessage('Cropping to your selection, please wait...')
             point_l = self.vi.viewer.getImageItem().mapFromScene(self.crop_roi.getSceneHandlePositions()[1][1])
             point_r = self.vi.viewer.getImageItem().mapFromScene(self.crop_roi.getSceneHandlePositions()[0][1])
 
@@ -58,7 +58,7 @@ class ImageMenu:
             seq = self.vi.viewer.image[:, pl[1]:pr[1], pl[0]:pr[0]]
             self.vi.viewer.workEnv.imgdata.seq = seq.T
             self.vi.update_workEnv()
-            self.vi.viewer.status_bar_label.setText('Cropping completed!')
+            self.vi.viewer.status_bar_label.showMessage('Cropping completed!')
 
     def remove_crop_roi(self):
         self.vi.viewer.view.removeItem(self.crop_roi)
@@ -68,11 +68,11 @@ class ImageMenu:
     def draw_measure_line(self, ev):
         if self.measure_line_ is None:
             self.measure_line_ = self.vi.viewer.view.mapSceneToView(ev.pos())
-            self.vi.viewer.status_bar_label.setText('Click on a second point in the image to '
+            self.vi.viewer.status_bar_label.showMessage('Click on a second point in the image to '
                                                       'finish drawing the line')
-            for item in self.vi.viewer.view:
-                if isinstance(item, LineSegmentROI):
-                    self.vi.viewer.view.removeItem(item)
+            # for item in self.vi.viewer.view.items:
+            #     if isinstance(item, LineSegmentROI):
+            #         self.vi.viewer.view.removeItem(item)
 
         else:
             self.measure_line = LineSegmentROI(positions=(self.measure_line_,
@@ -80,12 +80,12 @@ class ImageMenu:
             self.vi.viewer.view.addItem(self.measure_line)
 
             self.vi.viewer.scene.sigMouseClicked.disconnect(self.draw_measure_line)
-            self.vi.viewer.status_bar_label.setText('Now click "Measure" in the "Image" menu once again to get '
+            self.vi.viewer.status_bar_label.showMessage('Now click "Measure" in the "Image" menu once again to get '
                                                       'your measurements')
 
     def measure_tool(self, ev=False):
         if self.measure_line is None:
-            self.vi.viewer.status_bar_label.setText('Click on a point in the image to draw the first point of a line')
+            self.vi.viewer.status_bar_label.showMessage('Click on a point in the image to draw the first point of a line')
             self.vi.viewer.scene.sigMouseClicked.connect(self.draw_measure_line)
             return False
 

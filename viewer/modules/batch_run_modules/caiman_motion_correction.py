@@ -77,16 +77,16 @@ def run(batch_dir, UUID, n_processes):
         bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
                                          np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
 
-        p = pickle.load(open(UUID + '_workEnv.pik', 'rb'))
-        if p['imdata']['meta']['origin'] == 'mes':
-            if p['imdata']['meta']['orig_meta']['DataType'] == 'uint16':
-                pass
-                # lut = BitDepthConverter.create_lut([np.nanmin(m_els), np.nanmax(m_els)], source=16, out=8)
+        # p = pickle.load(open(UUID + '_workEnv.pik', 'rb'))
+        # if p['imdata']['meta']['origin'] == 'mes':
+        #     if p['imdata']['meta']['orig_meta']['DataType'] == 'uint16':
+        #         pass
+        #         # lut = BitDepthConverter.create_lut([np.nanmin(m_els), np.nanmax(m_els)], source=16, out=8)
 
-
-        else:
-            m_els -= np.nanmin(m_els)
-            m_els = m_els.astype(np.uint8, copy=False)
+        #
+        # else:
+        m_els -= np.nanmin(m_els)
+        m_els = m_els.astype(np.uint8, copy=False)
 
         tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True)
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
@@ -94,7 +94,7 @@ def run(batch_dir, UUID, n_processes):
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
-    for mf in glob(batch_dir + UUID +'*.mmap'):
+    for mf in glob(batch_dir +'/' + UUID +'*.mmap'):
         os.remove(mf)
 
     dview.terminate()

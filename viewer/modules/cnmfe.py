@@ -36,7 +36,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnImport.clicked.connect(self.import_params)
 
         # assert isinstance(self.vi.viewer_ref.batch_manager, BatchModuleGui)
-        self.vi.viewer.batch_manager.listwchanged.connect(self.update_available_inputs)
 
     def _make_params_dict(self):
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
@@ -114,13 +113,17 @@ class ModuleGUI(QtWidgets.QDockWidget):
         d['do_cnmfe'] = False
 
         batch_manager = configuration.window_manager.get_batch_manager()
+        name = self.ui.lineEdCorrPNRName.text()
 
         batch_manager.add_item(module='CNMFE',
-                               name=self.ui.lineEdCorrPNRName.text(),
+                               viewer_reference=self.vi.viewer,
+                               name=name,
                                input_workEnv=input_workEnv,
                                input_params=d,
                                info=d
                                )
+
+        self.vi.viewer.status_bar_label.showMessage('Done adding Corr PNR: ' + name + ' to batch!')
 
     def add_to_batch_cnmfe(self):
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
@@ -144,12 +147,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
         batch_manager = configuration.window_manager.get_batch_manager()
 
         batch_manager.add_item(module='CNMFE',
+                               viewer_reference=self.vi.viewer,
                                name=self.ui.lineEdName.text(),
                                input_workEnv=input_workEnv,
                                input_params=d,
                                info=d
                                )
-
+        self.vi.viewer.status_bar_label.showMessage('Done adding CNMFE: ' + name+ ' to batch!')
     def save_memmap(self):
         pass
 

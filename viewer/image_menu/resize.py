@@ -61,7 +61,7 @@ class ResizeDialogBox(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Cannot resize', 'Your work environment is empty, nothing to resize!')
             self.hide()
             return
-        self.vi.viewer.status_bar_label.setText('Resizing, please wait...')
+        self.vi.viewer.status_bar_label.showMessage('Resizing, please wait...')
         n_processes = int(sys_cfg['HARDWARE']['n_processes'])
 
         seq = self.vi.viewer.workEnv.imgdata.seq
@@ -73,7 +73,7 @@ class ResizeDialogBox(QtWidgets.QWidget):
         resizer.signals.frame_processed.connect(self.increase_progress_bar)
         resizer.signals.result.connect(self.set_resized_array)
         resizer.signals.error.connect(self.show_error_message)
-        resizer.signals.finished.connect(lambda: self.vi.viewer.status_bar_label.setText('Resize completed!'))
+        resizer.signals.finished.connect(lambda: self.vi.viewer.status_bar_label.showMessage('Resize completed!'))
         resizer.signals.finished.connect(lambda: self.status_label.setText('Done!'))
         resizer.signals.finished.connect(lambda: self.progressBar.setValue(0))
 
