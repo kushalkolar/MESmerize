@@ -56,7 +56,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'stride': self.ui.spinBoxOverlap.value(),
              'gnb': self.ui.spinBoxGnb.value(),
              'nb_patch': self.ui.spinBoxNb_patch.value(),
-             'k': self.ui.spinBoxK.value()
+             'k': self.ui.spinBoxK.value(),
+             'name_corr_pnr': self.ui.lineEdCorrPNRName.text(),
+             'name_cnmfe': self.ui.lineEdName.text()
              }
 
         return d
