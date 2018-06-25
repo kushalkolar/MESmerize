@@ -27,10 +27,10 @@ class TabAreaWidget(QtWidgets.QWidget):
     signal_open_sample_in_viewer_requested = QtCore.pyqtSignal(str)
 
     def __init__(self, parent, tab_name, dataframe, filter_history, is_root=False):
-        QtWidgets.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self, parent)
 
         self.vertical_layout = QtWidgets.QVBoxLayout(self)
-        self.columns_widget = DataFrameColumnsWidget(self)
+        self.columns_widget = DataFrameColumnsWidget(parent=self)
         self.vertical_layout.addWidget(self.columns_widget)
 
         self.tab_name = tab_name

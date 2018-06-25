@@ -279,29 +279,16 @@ class ViewerWorkEnv:
              'comments':    self.comments
              }
 
-        if self.roi_manager is not None and not self.roi_manager.is_empty:
-            rois = self.roi_manager.get_all_states()
+        if self.roi_manager is not None:
+            if not self.roi_manager.is_empty():
+                rois = self.roi_manager.get_all_states()
 
-            for ix in range(len(rois['states'])):
-                for roi_def in rois['states'][ix]['tags'].keys():
-                    if rois['states'][ix]['tags'][roi_def] == '':
-                        rois['states'][ix]['tags'][roi_def] = 'untagged'
+                for ix in range(len(rois['states'])):
+                    for roi_def in rois['states'][ix]['tags'].keys():
+                        if rois['states'][ix]['tags'][roi_def] == '':
+                            rois['states'][ix]['tags'][roi_def] = 'untagged'
 
-            d['roi_states'] = rois
-
-        # for ix in range(0, len(self.ROIList)):
-        #     for roi_def in self.ROIList[ix].tags.keys():
-        #         if self.ROIList[ix].tags[roi_def] == '':
-        #             self.ROIList[ix].tags[roi_def] = 'untagged'
-        #
-        #     for roi_def in configuration.proj_cfg.options('ROI_DEFS'):
-        #         if roi_def not in self.ROIList[ix].tags.keys():
-        #             self.ROIList[ix].tags[roi_def] = 'untagged'
-
-        # roi_states = []
-        # for ID in range(0, len(self.ROIList)):
-        #     roi_states.append(self.ROIList[ID].saveState())
-        # d['roi_states'] = roi_states
+                d['roi_states'] = rois
 
         return d
 
@@ -401,9 +388,9 @@ class ViewerWorkEnv:
             try:
                 date = str(self.imgdata.meta['date'])
             except KeyError:
-                date = 'Unknown'
+                date = 'unknown'
         else:
-            date = 'Unknown'
+            date = 'unknown'
 
         if self.comments is None or self.comments == '':
             comments = 'untagged'

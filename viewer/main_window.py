@@ -47,6 +47,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
         self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)
+        self.ui.actionSave_work_environment.triggered.connect(self.save_work_environment_dialog)
+
+        self.add_to_project_dialog = None
 
         self.ui.dockConsole.hide()
 
@@ -181,6 +184,13 @@ class MainWindow(QtWidgets.QMainWindow):
         # You can even let the user save changes if they click "OK", and the function returns None if they cancel
 
     def add_work_env_to_project(self):
+        if self.add_to_project_dialog is not None:
+            try:
+                self._delete_add_to_project_dialog()
+                self.add_to_project_dialog = None
+            except:
+                pass
+
         if configuration.proj_path is None:
             if QtWidgets.QMessageBox.question(self, 'No project open',
                                               'Would you like to switch to project mode?',
@@ -203,3 +213,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _delete_add_to_project_dialog(self):
         self.add_to_project_dialog.deleteLater()
+
+    def save_work_environment_dialog(self):
+        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Work environment file name')
+        if path == '':
+            return
+
+        try:
+            self.vi.viewer.workEnv.to_pickle(filename=path[0])
+        except Exception:
+            QtWidgets.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + traceback.format_exc())
+
+    def open_work_environment_dialog(self):
+        pass

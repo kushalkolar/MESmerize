@@ -26,13 +26,13 @@ from functools import partial
 
 class ProjectBrowserWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
-        QtWidgets.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self, parent)
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.project_browser = ProjectBrowserWidget(self, configuration.project_manager.dataframe)
-        self.current_tab = -1
+        self.current_tab = 0
         self.project_browser.tab_widget.currentChanged.connect(self.set_current_tab)
         self.setCentralWidget(self.project_browser)
 
@@ -74,6 +74,17 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
 
         self.ui.dockConsole.hide()
 
+        self._status_bar = None
+        self.status_bar = self.statusBar()
+
+    @property
+    def status_bar(self) -> QtWidgets.QStatusBar:
+        return self._status_bar
+
+    @status_bar.setter
+    def status_bar(self, status_bar: QtWidgets.QStatusBar):
+        self._status_bar = status_bar
+
     def set_current_tab(self, ix: int):
         self.current_tab = ix
 
@@ -111,6 +122,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.information(self, 'Filters for current tab', '\n'.join(filters))
 
     def reload_all_tabs(self):
+        self.status_bar.showMessage('Please wait, loading tabs...')
         for i in range(1, self.project_browser.tab_widget.count()):
             self.project_browser.tab_widget.removeTab(i)
 
@@ -123,6 +135,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
             dataframe = configuration.project_manager.child_dataframes[child]['dataframe']
             filter_history = configuration.project_manager.child_dataframes[child]['filter_history']
             self.project_browser.add_tab(dataframe, filter_history, name=child)
+        self.status_bar.showMessage('Finished loading tabs!')
 
     def update_tab_from_child_dataframe(self, tab_name=None):
         if tab_name is None:

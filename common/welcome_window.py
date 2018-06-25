@@ -21,6 +21,7 @@ from project_manager.project_manager import ProjectManager
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
 from common import start
+from functools import partial
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -154,7 +155,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_proj_buttons_visible(False)
 
         start.project_browser()
-        self.ui.btnProjectBrowser.clicked.connect(configuration.window_manager.project_browsers[-1].show)
+        self.ui.btnProjectBrowser.clicked.connect(partial(configuration.window_manager.show_project_browser, 0))
         start.load_child_dataframes_gui()
 
     def set_proj_buttons_visible(self, b):

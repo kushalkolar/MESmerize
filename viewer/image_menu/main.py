@@ -63,7 +63,7 @@ class ImageMenu:
     def remove_crop_roi(self):
         self.vi.viewer.view.removeItem(self.crop_roi)
         self.crop_roi = None
-        self.vi.viewer.status_bar_label.clear()
+        self.vi.viewer.status_bar_label.clearMessage()
 
     def draw_measure_line(self, ev):
         if self.measure_line_ is None:
