@@ -147,13 +147,30 @@ class ProjectManager(QtCore.QObject):
                 self.dataframe[column] = rep_val
                 columns_changed = True
 
+        all_columns = configuration.proj_cfg.options('INCLUDE') + configuration.proj_cfg.options('EXCLUDE')
+        columns_to_drop = list(set(self.dataframe.columns).difference(all_columns))
+        if len(columns_to_drop) > 0:
+            columns_changed = True
+
         if columns_changed:
             self.backup_project_dataframe()
+            self.dataframe.drop(columns=columns_to_drop, inplace=True)
+
+            configuration.project_manager.signal_dataframe_changed.disconnect(configuration.window_manager.project_browsers[0].project_browser.update_dataframe_data)
+            configuration.window_manager.project_browsers[0].deleteLater()
+            del configuration.window_manager.project_browsers[0]
+
+            self.signal_project_config_changed.emit()
             self.emit_signal_dataframe_changed()
 
-        del configuration.window_manager.project_browsers[0]
-        self.signal_project_config_changed.emit()
+            start.project_browser()
+            start.load_child_dataframes_gui()
+            configuration.window_manager.project_browsers[0].show()
+
         # configuration.proj_cfg_changed.notify_all()
+
+    def delete_gui_children(self, widget: QtCore.QObject):
+        widget.children()
 
     def backup_project_dataframe(self):
         copyfile(self.root_dir + '/dataframes/root.dfr', self.root_dir + '/dataframes/root_bak' + str(time()) + '.dfr')
@@ -166,8 +183,18 @@ class ProjectManager(QtCore.QObject):
     def emit_signal_dataframe_changed(self):
         self.signal_dataframe_changed.emit(self.dataframe)
 
-    def change_sample_rows(self, sample_id, dicts_to_append):
-        self.backup_project_dataframe()
-        self.dataframe = self.dataframe[self.dataframe['SampleID'] != sample_id]
+    def change_sample_rows(self, sample_id: str, dicts_to_append: list):
+        """
+        Remove the rows corresponding to the passed sample_id and replace them with the list of dicts provided
+        """
+        # self.backup_project_dataframe()
+        # self.dataframe = self.dataframe[self.dataframe['SampleID'] != sample_id]
+        self.delete_sample_id_rows(sample_id)
         self.dataframe = self.dataframe.append(pd.DataFrame(dicts_to_append), ignore_index=True)
         self.emit_signal_dataframe_changed()
+
+    def delete_sample_id_rows(self, sample_id: str):
+        self.backup_project_dataframe()
+        self.dataframe = self.dataframe[self.dataframe['SampleID'] != sample_id]
+        self.emit_signal_dataframe_changed()
+

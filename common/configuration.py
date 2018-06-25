@@ -95,7 +95,7 @@ if not IS_WINDOWS:
 
 
 def new_proj_config():
-    defaultInclude = ['SampleID', 'Date', 'comments']
+    defaultInclude = ['SampleID', 'date', 'comments']
     proj_cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
     defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'uuid_curve']

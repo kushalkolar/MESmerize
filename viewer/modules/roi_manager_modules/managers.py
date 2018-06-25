@@ -19,7 +19,8 @@ import pyqtgraphCore as pg
 
 
 class AbstractBaseManager(metaclass=abc.ABCMeta):
-    def __init__(self, parent, viewer_interface: ViewerInterface):
+    def __init__(self, parent, ui, viewer_interface: ViewerInterface):
+        self.ui = ui
         self.vi = viewer_interface
         self.roi_list = None
         self.parent = parent
@@ -31,7 +32,7 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
     def is_empty(self) -> bool:
         if self.roi_list is None:
             return True
-        if len(self.roi_list) > 0:
+        if len(self.roi_list) < 1:
             return True
         else:
             return False
@@ -42,6 +43,7 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
         for roi in self.roi_list:
             state = roi.to_state()
             states['states'].append(state)
+        self.vi.viewer.status_bar_label.showMessage('Finished saving ROIs!')
         return states
 
     @abc.abstractmethod
@@ -67,10 +69,16 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
 
 class ManagerManual(AbstractBaseManager):
     def __init__(self, parent, ui, viewer_interface):
-        super(ManagerManual, self).__init__(parent, viewer_interface)
-        self.roi_list = ROIList(ui, 'ManualROI', self.vi)
+        super(ManagerManual, self).__init__(parent, ui, viewer_interface)
+        self.create_roi_list()
+
+    def create_roi_list(self):
+        self.roi_list = ROIList(self.ui, 'ManualROI', self.vi)
 
     def restore_from_states(self, states: dict):
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
         for state in states['states']:
             roi = ManualROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
@@ -80,7 +88,20 @@ class ManagerManual(AbstractBaseManager):
             ix += 1
         self.roi_list.reindex_colormap()
 
+    def get_all_states(self) -> dict:
+        self.vi.viewer.status_bar_label.showMessage('Saving ROIs...')
+        states = {'roi_type': self.roi_list.roi_types, 'states': []}
+        for ix in range(len(self.roi_list)):
+            self.roi_list.set_pg_roi_plot(ix)
+            state = self.roi_list[ix].to_state()
+            states['states'].append(state)
+        self.vi.viewer.status_bar_label.showMessage('Finished saving ROIs!')
+        return states
+
     def add_roi(self, shape):
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
         dims = self.vi.viewer.workEnv.imgdata.seq.shape
         roi_graphics_object = ManualROI.get_generic_roi_graphics_object(shape, dims)
 
@@ -92,13 +113,18 @@ class ManagerManual(AbstractBaseManager):
 
 class ManagerCNMFE(AbstractBaseManager):
     def __init__(self, parent, ui, viewer_interface):
-        super(ManagerCNMFE, self).__init__(parent, viewer_interface)
+        super(ManagerCNMFE, self).__init__(parent, ui, viewer_interface)
 
-        self.roi_list = ROIList(ui, 'CNMFROI', viewer_interface)
+        self.create_roi_list()
         self.list_widget = self.roi_list.list_widget
         self.input_params_dict = None
 
+    def create_roi_list(self):
+        self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
+
     def add_all_components(self, cnmA, cnmC, idx_components, dims, input_params_dict):
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
         contours = caiman_get_contours(cnmA[:, idx_components], dims)
         temporal_components = cnmC[idx_components]
         self.input_params_dict = self.input_params_dict
@@ -119,12 +145,17 @@ class ManagerCNMFE(AbstractBaseManager):
         raise NotImplementedError('Not implemented for CNMFE ROIs')
 
     def restore_from_states(self, states: dict):
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
         for state in states['states']:
             roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
     def get_all_states(self) -> dict:
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
         states = super(ManagerCNMFE, self).get_all_states()
         input_dict = {'input_params_cnmfe': self.input_params_dict}
         states.update(input_dict)

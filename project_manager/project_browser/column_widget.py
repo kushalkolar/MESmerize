@@ -16,17 +16,18 @@ from .pytemplates.column_pytemplate import Ui_column_template
 from functools import partial
 import pandas as pd
 from numpy import int64, float64
-# from common import configuration
+from common import configuration
 
 
 class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     signal_apply_clicked = QtCore.pyqtSignal(dict)
     signal_sample_id = QtCore.pyqtSignal(str)
     signal_items_selected = QtCore.pyqtSignal(list)
+    signal_sample_id_delete_request = QtCore.pyqtSignal(str)
 
     def __init__(self, parent, tab_name, column_name, is_root=False):
         # super(ColumnWidget, self).__init__(parent)
-        QtWidgets.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent=parent)
         # Ui_column_template.__init__(self)
         self.setupUi(self)
 
@@ -43,6 +44,16 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
 
         if self.column_name == 'SampleID':
             self.listWidget.itemDoubleClicked.connect(self.emit_sample_id)
+            if is_root:
+                action_delete_sample = QtWidgets.QWidgetAction(self)
+                action_delete_sample.setText('Delete sample')
+                action_delete_sample.triggered.connect(self.delete_sample_id)
+
+                self.delete_menu = QtWidgets.QMenu(self)
+                self.delete_menu.addAction(action_delete_sample)
+
+                self.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+                self.listWidget.customContextMenuRequested.connect(self.delete_context_menu_requested)
 
         if not is_root:
             self.btnApply.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -55,7 +66,6 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
             apply_all_in_new_tab = QtWidgets.QWidgetAction(self)
             apply_all_in_new_tab.setText('Apply all in new tab')
             apply_all_in_new_tab.triggered.connect(partial(self.btn_apply_clicked_emit_dict, option='all_in_new'))
-
 
             apply_in_new_tab = QtWidgets.QWidgetAction(self)
             apply_in_new_tab.setText('Apply in new tab')
@@ -100,6 +110,19 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.lineEditMenu.addAction(lineEditSTR)
         self.lineEditMenu.addAction(lineEditSTREQ)
         self.lineEditMenu.addAction(lineEditSTRNOTEQ)
+
+    def delete_context_menu_requested(self, p):
+        self.delete_menu.exec_(self.listWidget.mapToGlobal(p))
+
+    def delete_sample_id(self):
+        sample_id = self.listWidget.currentItem().text()
+        if QtWidgets.QMessageBox.question(self,
+                                          'Delete sample',
+                                          'Are you sure you want to delete sample id: "' + sample_id + '" ?\n',
+                                          QtWidgets.QMessageBox.Yes,
+                                          QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+            return
+        configuration.project_manager.delete_sample_id_rows(sample_id)
 
     @property
     def series(self) -> pd.Series:
@@ -185,7 +208,6 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         lineEdit_less_than_eq.triggered.connect(partial(self.set_num_modifier, '$<=:'))
         self.lineEditMenu.addAction(lineEdit_less_than_eq)
 
-
         lineEdit_greater_than_eq = QtWidgets.QWidgetAction(self)
         lineEdit_greater_than_eq.setText('Greater than or equal to')
         lineEdit_greater_than_eq.triggered.connect(partial(self.set_num_modifier, '$>=:'))
@@ -225,9 +247,9 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     def emit_sample_id(self, item: QtWidgets.QListWidgetItem):
         self.signal_sample_id.emit(item.text())
 
-    # def clear(self):
-    #     self.listWidget.clear()
-    #     self.listWidget.setEnabled(True)
+        # def clear(self):
+        #     self.listWidget.clear()
+        #     self.listWidget.setEnabled(True)
 
 
 if __name__ == '__main__':

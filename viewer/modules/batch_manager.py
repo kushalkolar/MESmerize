@@ -14,7 +14,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core.common import ViewerInterface
 from ..core.viewer_work_environment import ViewerWorkEnv
 from common import configuration
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
@@ -24,8 +23,6 @@ import numpy as np
 # from .common import BatchRunInterface
 import pickle
 import tifffile
-import time
-from datetime import datetime
 import os
 from stat import S_IEXEC
 # from multiprocessing import Queue
@@ -36,6 +33,7 @@ from signal import SIGKILL
 import traceback
 from misc_widgets.list_widget_dialog import ListWidgetDialog
 from common import window_manager
+from glob import glob
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -51,7 +49,8 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.btnStart.clicked.connect(self.process_batch)
         self.ui.btnStart.setDisabled(True)
-        self.ui.btnStartAtSelection.clicked.connect(lambda: self.process_batch(start_ix=self.ui.listwBatch.indexFromItem(self.ui.listwBatch.currentItem()).row()))
+        self.ui.btnStartAtSelection.clicked.connect(lambda: self.process_batch(
+            start_ix=self.ui.listwBatch.indexFromItem(self.ui.listwBatch.currentItem()).row()))
         self.ui.btnStartAtSelection.setDisabled(True)
 
         self.ui.btnAbort.clicked.connect(self._terminate_qprocess)
@@ -170,7 +169,7 @@ class ModuleGUI(QtWidgets.QWidget):
             else:
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
                                               'The input files do not exist for this item.')
-                vi.viewer.status_bar_label.clear('Error, could not load input into work environment.')
+                vi.viewer.status_bar_label.showMessage('Error, could not load input into work environment.')
         if hasattr(self, 'lwd'):
             self.lwd.deleteLater()
 
@@ -272,12 +271,13 @@ class ModuleGUI(QtWidgets.QWidget):
             if QtWidgets.QMessageBox.question(self, 'CaImAn dir not set', 'You have not set the CaImAn directory. '
                                                                           'Without this CaImAn modules will not run. '
                                                                           'Do you wish to continue anyways?',
-                                              QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                                              QtWidgets.QMessageBox.Yes,
+                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
 
         if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
-                                       'Would you like to clear all viewer work '
-                                       'environments before starting the batch?',
+                                          'Would you like to clear all viewer work '
+                                          'environments before starting the batch?',
                                           QtWidgets.QMessageBox.No,
                                           QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
 
@@ -285,7 +285,7 @@ class ModuleGUI(QtWidgets.QWidget):
                 vi = ViewerInterface(viewer)
                 vi.discard_workEnv()
 
-        self.current_batch_item_index = start_ix -1
+        self.current_batch_item_index = start_ix - 1
         self.disable_ui_buttons(True)
         # self.run_next_item()
         self.ui.scrollAreaStdOut.show()
@@ -332,9 +332,11 @@ class ModuleGUI(QtWidgets.QWidget):
         with open(sh_file, 'w') as sf:
             sf.write('#!/bin/bash\n'
                      'export PATH="' + configuration.sys_cfg['PATHS']['anaconda3'] + ':$PATH"\n'
-                     'source activate ' + configuration.sys_cfg['BATCH']['anaconda_env'] + '\n'
-                     'export PYTHONPATH="' + configuration.sys_cfg['PATHS']['caiman'] + '"\n'
-                     'export MKL_NUM_THREADS=1\n' +
+                                                                                     'source activate ' +
+                     configuration.sys_cfg['BATCH']['anaconda_env'] + '\n'
+                                                                      'export PYTHONPATH="' +
+                     configuration.sys_cfg['PATHS']['caiman'] + '"\n'
+                                                                'export MKL_NUM_THREADS=1\n' +
                      'export OPENBLAS_NUM_THREADS=1\n'
                      'python "' +
                      module_path + '" "' +
@@ -397,7 +399,6 @@ class ModuleGUI(QtWidgets.QWidget):
                                                                               ' nothing to add to the batch!')
             return
         vi = ViewerInterface(viewer_reference)
-        # vi.viewer.status_bar_label.setText('Adding to batch, please wait...')
         UUID = uuid.uuid4()
 
         if module == 'CNMFE' or module == 'caiman_motion_correction':
@@ -428,7 +429,13 @@ class ModuleGUI(QtWidgets.QWidget):
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
     def del_item(self):
-        """Delete an item from the batch and any corresponding dependents of hte item's output"""
+        """Delete an item from the batch and any corresponding dependents of the item's output"""
+        if QtWidgets.QMessageBox.question(self, 'Confirm deletion',
+                                          'Are you sure you want to delete the selected item from the batch? '
+                                          'This will also remove ALL files associated to the item',
+                                          QtWidgets.QMessageBox.Yes,
+                                          QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+            return
         s = self.ui.listwBatch.currentItem()
         UUID = s.data(3)
 
@@ -454,6 +461,9 @@ class ModuleGUI(QtWidgets.QWidget):
         ix = self.ui.listwBatch.indexFromItem(s).row()
         self.ui.listwBatch.takeItem(ix)
 
+        for file in glob(self.batch_path + '/*' + str(UUID) + '*'):
+            os.remove(file)
+
     def save_batch(self):
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Batch as', '', '(*.batch)')
         if path == '':
@@ -465,8 +475,8 @@ class ModuleGUI(QtWidgets.QWidget):
             path = path[0] + '.batch'
 
         try:
-            d = {'batch_path':  self.batch_path,
-                 'df':          self.df}
+            d = {'batch_path': self.batch_path,
+                 'df': self.df}
             pickle.dump(d, open(path[0]))
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + str(e))
@@ -518,6 +528,6 @@ class ModuleGUI(QtWidgets.QWidget):
                         QtGui.QBrush(QtGui.QColor('red')))
 
         except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the dataframe file.\n' + traceback.format_exc())
+            QtWidgets.QMessageBox.warning(self, 'File open Error!',
+                                          'Could not open the dataframe file.\n' + traceback.format_exc())
             return
-

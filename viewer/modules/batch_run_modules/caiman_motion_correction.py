@@ -108,11 +108,13 @@ class Output:
         if not vi.discard_workEnv():
             return
 
+        vi.viewer.status_bar_label.showMessage('Please wait, loading motion corrected image sequence...')
         pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
         workEnv = ViewerWorkEnv.from_pickle(pik_path)
         tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
         workEnv.imgdata.seq = tifffile.imread(tiff_path).T
         viewer_ref.workEnv = workEnv
+        vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
 
         vi.update_workEnv()
         vi.enable_ui(True)

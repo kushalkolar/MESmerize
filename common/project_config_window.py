@@ -21,6 +21,7 @@ else:
     from .pytemplates.project_config_pytemplate import *
 
 from numpy import int64, float64
+from functools import partial
 
 '''
 Just a simple GUI for modifying the project config.cfg file.
@@ -30,6 +31,7 @@ Just a simple GUI for modifying the project config.cfg file.
 class ColumnsPage(QtWidgets.QWidget):
     def __init__(self, parent=None, *args):
         QtWidgets.QWidget.__init__(self, parent, *args)
+        self._context_menu_selected_list_widget = None
 
     def setupGUI(self):
         self.ui = Ui_Form()
@@ -55,9 +57,53 @@ class ColumnsPage(QtWidgets.QWidget):
 
         self.custom_to_add = {}
 
+        action_delete_column = QtWidgets.QWidgetAction(self)
+        action_delete_column.setText('Delete column')
+        action_delete_column.triggered.connect(self.delete_column_requested)
+
+        self.delete_column_menu = QtWidgets.QMenu(self)
+        self.delete_column_menu.addAction(action_delete_column)
+
+        self.ui.listwROIDefs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.listwROIDefs.customContextMenuRequested.connect(lambda p: self._list_widget_context_menu_requested(p, self.ui.listwROIDefs))
+
+        self.ui.listwStimDefs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.listwStimDefs.customContextMenuRequested.connect(lambda p: self._list_widget_context_menu_requested(p, self.ui.listwStimDefs))
+
+        self.ui.listwCustomColumns.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.listwCustomColumns.customContextMenuRequested.connect(lambda p: self._list_widget_context_menu_requested(p, self.ui.listwCustomColumns))
+
+        # TODO: Deletable columns for ROI, Stim, and Custom columns.
+
+    def _list_widget_context_menu_requested(self, p, list_widget):
+        self._context_menu_selected_list_widget = list_widget
+        self.delete_column_menu.exec_(list_widget.mapToGlobal(p))
+
+    def delete_column_requested(self):
+        if self._context_menu_selected_list_widget is None:
+            return
+        item = self._context_menu_selected_list_widget.takeItem(self._context_menu_selected_list_widget.currentRow())
+
+        includes = [self.ui.listwInclude.item(i).text() for i in range(self.ui.listwInclude.count())]
+
+        if item.text() in includes:
+            self.ui.listwInclude.takeItem(includes.index(item.text()))
+            return
+
+        excludes = [self.ui.listwExclude.item(i).text() for i in range(self.ui.listwExclude.count())]
+        if item.text() in excludes:
+            self.ui.listwExclude.takeItem(excludes.index(item.text()))
+
     def _addROIDef(self):
         if self.ui.lineEdNewROIDef.text() != '':
             text = self.ui.lineEdNewROIDef.text().replace(' ', '_')
+
+            if text in configuration.project_manager.dataframe.columns:
+                QtWidgets.QMessageBox.warning(self, 'Name already exists',
+                                              'The entered column name already exists in the dataframe. '
+                                              'Enter a different name.')
+                return
+
             self.ui.listwROIDefs.addItem(text)
             self.ui.listwInclude.addItem(text)
             self.ui.lineEdNewROIDef.clear()
@@ -65,6 +111,12 @@ class ColumnsPage(QtWidgets.QWidget):
     def _addStimDef(self):
         if self.ui.lineEdNewStimCol.text() != '':
             text = self.ui.lineEdNewStimCol.text().replace(' ', '_')
+
+            if text in configuration.project_manager.dataframe.columns:
+                QtWidgets.QMessageBox.warning(self, 'Name already exists',
+                                              'The entered column name already exists in the dataframe. '
+                                              'Enter a different name.')
+
             self.ui.listwStimDefs.addItem(text)
             self.ui.listwInclude.addItem(text)
             self.ui.lineEdNewStimCol.clear()
@@ -106,6 +158,11 @@ class ColumnsPage(QtWidgets.QWidget):
         for i in range(0, self.ui.listwStimDefs.count()):
             stim_defs.append(self.ui.listwStimDefs.item(i).text())
         configuration.proj_cfg['STIM_DEFS'] = dict.fromkeys(stim_defs)
+
+        custom_colums = [self.ui.listwCustomColumns.item(i).text() for i in range(self.ui.listwCustomColumns.count())]
+        for c in configuration.proj_cfg.options('CUSTOM_COLUMNS'):
+            if c not in custom_colums:
+                configuration.proj_cfg.remove_option('CUSTOM_COLUMNS', c)
 
         for column in self.custom_to_add.keys():
             configuration.proj_cfg.set('CUSTOM_COLUMNS', column, str(self.custom_to_add[column]['type']))
@@ -166,7 +223,8 @@ class ColumnsPage(QtWidgets.QWidget):
         name = name.replace(' ', '_')
         self.ui.listwCustomColumns.addItem(name)
         self.ui.listwInclude.addItem(name)
-        self.ui.listwCustomColumns.clear()
+        self.ui.lineEditCustomColumnReplacementValue.clear()
+        self.ui.lineEditCustomColumnName.clear()
 
         self.custom_to_add.update({name: {'type': column_type, 'replacement_value': replacement_value}})
 

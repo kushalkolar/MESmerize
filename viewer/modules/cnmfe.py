@@ -145,15 +145,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # d = np.array(self._make_params_dict(), dtype=object)
         batch_manager = configuration.window_manager.get_batch_manager()
-
+        name = self.ui.lineEdName.text()
         batch_manager.add_item(module='CNMFE',
                                viewer_reference=self.vi.viewer,
-                               name=self.ui.lineEdName.text(),
+                               name=name,
                                input_workEnv=input_workEnv,
                                input_params=d,
                                info=d
                                )
-        self.vi.viewer.status_bar_label.showMessage('Done adding CNMFE: ' + name+ ' to batch!')
+        self.vi.viewer.status_bar_label.showMessage('Done adding CNMFE: ' + name + ' to batch!')
     def save_memmap(self):
         pass
 

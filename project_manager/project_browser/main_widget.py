@@ -25,14 +25,14 @@ from common import start
 
 class ProjectBrowserWidget(QtWidgets.QWidget):
     def __init__(self, parent, dataframe: pd.DataFrame):
-        QtWidgets.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self, parent=parent)
 
         self.tabs = {}
         self.dataframe = dataframe
 
         self.vertical_layout = QtWidgets.QVBoxLayout(self)
 
-        self.tab_widget = QtWidgets.QTabWidget()
+        self.tab_widget = QtWidgets.QTabWidget(parent=self)
 
         # self.tabs_widget.tabBar().tabCloseRequested.connect(lambda ix: self.del_tab(ix))
 
@@ -57,6 +57,9 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         for tab_name in self.tabs.keys():
             pass
 
+    def _create_root_context_menu(self):
+        pass
+
     def add_tab(self, dataframe, filter_history, is_root=False, name=None):
         if not is_root and name is None:
             tab_name = QtWidgets.QInputDialog.getText(self, None, 'Enter name for new tab: ')
@@ -70,6 +73,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
             configuration.project_manager.add_child_dataframe(tab_name, filter_history, dataframe)
         elif is_root:
             tab_name = 'root'
+            # TODO: Allow SampleID column to be deletable in root dataframe
         else:
             tab_name = name
 
@@ -113,6 +117,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
 
         if len(viewers) == 0:
             start.viewer()
+            self.open_sample_id_in_viewer(viewers[0], sample_id)
 
         elif len(configuration.window_manager.viewers) > 1:
             self.lwd = ListWidgetDialog()

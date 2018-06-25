@@ -94,7 +94,7 @@ class ResizeDialogBox(QtWidgets.QWidget):
     @QtCore.pyqtSlot(str)
     def show_error_message(self, error_msg):
         QtWidgets.QMessageBox.warning(self, 'Error', 'The following error occured while resizing:\n' + str(error_msg))
-        self.vi.viewer.status_bar_label.clear()
+        self.vi.viewer.status_bar_label.clearMessage()
 
 
 class Signals(QtCore.QObject):

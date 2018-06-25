@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>712</width>
+    <width>795</width>
     <height>610</height>
    </rect>
   </property>
@@ -52,7 +52,7 @@
        <item>
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>ROI Definition Columns</string>
+          <string>ROI Type Columns</string>
          </property>
         </widget>
        </item>
@@ -269,7 +269,7 @@
       <item row="2" column="0">
        <widget class="QRadioButton" name="radioButtonStr">
         <property name="text">
-         <string>str (standard text)</string>
+         <string>standard text (str)</string>
         </property>
        </widget>
       </item>
@@ -283,14 +283,14 @@
       <item row="3" column="0">
        <widget class="QRadioButton" name="radioButtonInt64">
         <property name="text">
-         <string>int64 (whole numbers)</string>
+         <string>whole numbers (np.int64)</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
        <widget class="QRadioButton" name="radioButtonFloat64">
         <property name="text">
-         <string>float64 (decimal numbers)</string>
+         <string>decimal numbers (np.float64)</string>
         </property>
        </widget>
       </item>
@@ -319,6 +319,9 @@
       </item>
       <item row="5" column="0">
        <widget class="QRadioButton" name="radioButtonBoolean">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>boolean (True/False values)</string>
         </property>
@@ -388,7 +391,7 @@
        <item>
         <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>Stimulus Definition Columns</string>
+          <string>Stimulus Type Columns</string>
          </property>
         </widget>
        </item>

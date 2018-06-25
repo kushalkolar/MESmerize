@@ -31,7 +31,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
 
         self.work_environment = work_environment
 
-        if self.work_environment.sample_id != '':
+        if self.work_environment.sample_id != '' and self.work_environment.sample_id is not None:
             self.ui.lineEditAnimalID.setText(self.work_environment.sample_id.split('-_-')[0])
             self.ui.lineEditTrialID.setText(self.work_environment.sample_id.split('-_-')[1])
             self.ui.radioButtonSaveChanges.setVisible(True)
@@ -78,8 +78,9 @@ class AddToProjectDialog(QtWidgets.QWidget):
     def update_work_environment_dicts(self):
         animal_id = self.ui.lineEditAnimalID.text()
         trial_id = self.ui.lineEditTrialID.text()
+        sample_id = animal_id + '-_-' + trial_id
 
-        self.work_environment.sample_id = animal_id + '-_-' + trial_id
+        self.work_environment.sample_id = sample_id
 
         self.work_environment.comments = self.ui.textBoxComments.toPlainText()
 
@@ -111,18 +112,35 @@ class AddToProjectDialog(QtWidgets.QWidget):
             self.must_enter_sample_id_dialog()
             return
 
+        animal_id = self.ui.lineEditAnimalID.text()
+        trial_id = self.ui.lineEditTrialID.text()
+        sample_id = animal_id + '-_-' + trial_id
+
+        if (sample_id in configuration.project_manager.dataframe['SampleID'].values) and not self.check_save_changes():
+            QtWidgets.QMessageBox.warning(self, 'SampleID exists in project',
+                                          'The combination of animal ID and '
+                                          'trial ID already exists in the project dataframe. '
+                                          'You must choose a unique combination.')
+            return
+
+        self.setDisabled(True)
         self.label_wait = QtWidgets.QLabel(self)
         self.label_wait.setText('Please wait...')
         self.ui.verticalLayout.addWidget(self.label_wait)
-        self.setDisabled(True)
 
         self.update_work_environment_dicts()
 
         if self.ui.radioButtonAddToDataFrame.isChecked():
             self.add_to_dataframe()
 
-        elif self.ui.radioButtonSaveChanges.isChecked() and self.ui.checkBoxSaveChanges.isChecked():
+        elif self.check_save_changes():
             self.save_changes_to_sample()
+
+    def check_save_changes(self):
+        if self.ui.radioButtonSaveChanges.isChecked() and self.ui.checkBoxSaveChanges.isChecked():
+            return True
+        else:
+            return False
 
     def add_to_dataframe(self):
         dicts_to_append = self.work_environment.to_pandas(configuration.proj_path)

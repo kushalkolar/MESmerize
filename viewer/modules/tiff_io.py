@@ -40,7 +40,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.check_meta_path()
 
     def check_meta_path(self):
-        meta_path = self.ui.labelFileTiff.text()[0][:-5] + '.json'
+        meta_path = self.ui.labelFileTiff.text()[:-5] + '.json'
         if os.path.isfile(meta_path):
             self.ui.labelFileMeta.setText(meta_path)
             return True
@@ -65,7 +65,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         else:
             QtWidgets.QMessageBox.warning(self, 'No method selected!', 'You must select a method.')
             return
-        self.vi.viewer.status_bar_label.showMessage('Please wait, this may take a few minutes...')
+        self.vi.viewer.status_bar_label.showMessage('Please wait, loading tiff file, this may take a few minutes...')
 
         if not self.vi.discard_workEnv():
             return

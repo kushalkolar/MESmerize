@@ -32,6 +32,9 @@ class WindowManager:
         else:
             return self._batch_manager
 
+    def show_project_browser(self, i):
+        self.project_browsers[i].show()
+
     def initalize(self):
         self.project_browsers = WindowClass('Project Browser')
         self.viewers = WindowClass('Viewer')
