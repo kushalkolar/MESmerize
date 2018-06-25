@@ -30,6 +30,8 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
         pass
 
     def is_empty(self) -> bool:
+        if not hasattr(self, 'roi_list'):
+            return True
         if self.roi_list is None:
             return True
         if len(self.roi_list) < 1:
