@@ -16,7 +16,6 @@ import MesmerizeCore.misc_funcs
 from common import configuration
 import builtins
 
-## TODO: THIS IS NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 class LoadProjDF(CtrlNode):
     """Load raw project DataFrames as Transmission"""
@@ -150,6 +149,7 @@ class Save(CtrlNode):
                 QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the tranmission to file.\n'
                                           + str(e))
 
+
 class RunScript(CtrlNode):
     """Run a python script"""
     nodeName = 'RunScript'
@@ -227,6 +227,7 @@ class NewDataPass(CtrlNode):
         t = transmission.copy()
         t.df = t.df[t.df['uuid_curve']]
 
+
 class Bypass(CtrlNode):
     """Just a bypass node that doesn't do anything. Useful for quickly swapping Project DataFrames with an existing
     analysis flowchart whilst keeping the connections after the DataFrame."""
@@ -255,6 +256,20 @@ class iloc(CtrlNode):
         return t
 
 
+class SelectRows(CtrlNode):
+    pass
+
+
+class SelectColumns(CtrlNode):
+    pass
+
+
+class Filter(CtrlNode):
+    nodeName = 'Filter'
+    uiTemplate = [('Column', 'combo'),
+                  ('filter', 'lineEdit', {'toolTip': 'Filter selected column'})]
+
+
 # class ColumnSelectNode(Node):
 #     """Select named columns from a record array or MetaArray."""
 #     nodeName = "ColumnSelect"
@@ -274,7 +289,7 @@ class iloc(CtrlNode):
 #             for c in self.columns:
 #                 out[c] = In[self.axis:c]
 #         elif isinstance(In, np.ndarray) and In.dtype.fields is not None:
-#             for c in self.columns:
+#             for c in self.columns
 #                 out[c] = In[c]
 #         else:
 #             self.In.setValueAcceptable(False)

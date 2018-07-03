@@ -15,11 +15,16 @@ from ..core.common import ViewerInterface
 from ..core.viewer_work_environment import ViewerWorkEnv
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.mesfile_io_pytemplate import *
+from .stimulus_mapping_mesfile import *
+import traceback
+import pandas as pd
+from .stimulus_mapping import ModuleGUI as StimMapModuleGUI
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_reference):
         self.vi = ViewerInterface(viewer_reference)
+        self.parent = parent
 
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
@@ -28,6 +33,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnOpenMesFile.clicked.connect(self.load_mesfile)
         self.ui.listwMesfile.itemDoubleClicked.connect(lambda sel: self.load_mesfile_selection(sel))
         self.ui.btnStimMapGUI.clicked.connect(self.open_stim_map_gui)
+
+        self.stim_map_gui = None
+        self.mesfile = None
 
     def load_mesfile(self):
         if not self.vi.discard_workEnv():
@@ -46,35 +54,66 @@ class ModuleGUI(QtWidgets.QDockWidget):
             # Get the references of the images, their descriptions, and add them to the list
             for i in self.mesfile.images:
                 j = self.mesfile.image_descriptions[i]
-                self.ui.listwMesfile.addItem(i+'//'+j)
+                self.ui.listwMesfile.addItem(i + ': ' + j)
 
             # If Auxiliary voltage info is found in the mes file, ask the user if they want to map these to stimuli
-            if len(self.mesfile.voltDict) > 0:
-                #self.initMesStimMapGUI()
-                self.ui.btnSetStimMap.setEnabled(True)
-                if QtWidgets.QMessageBox.question(self, '', 'This .mes file contains auxilliary output voltage ' + \
-                              'information, would you like to apply a Stimulus Map now?',
-                              QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.Yes:
-
-                    self.stimMapWin.show()
+            if len(self.mesfile.voltages_lists_dict) > 0:
+                self.stim_map_gui = MesStimmapGUI(parent=None, viewer=self.vi.viewer)
+                self.set_stim_map_gui()
+                self.ui.btnStimMapGUI.setEnabled(True)
+                if QtWidgets.QMessageBox.question(self, '', 'This .mes file contains auxilliary output voltage '
+                                                            'information, would you like create Stimulus Maps now?',
+                                                  QtWidgets.QMessageBox.Yes,
+                                                  QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.Yes:
+                    self.open_stim_map_gui()
+            else:
+                self.ui.btnStimMapGUI.setDisabled(True)
 
         except (IOError, IndexError) as e:
             QtWidgets.QMessageBox.warning(self, 'IOError or IndexError',
-                                          "There is an problem with the files you've selected:\n" + str(e),
+                                          "There is an problem with the files you've selected:\n" + traceback.format_exc(),
                                           QtWidgets.QMessageBox.Ok)
         return
 
-    def load_mesfile_selection(self, s):
+    def load_mesfile_selection(self, s: QtWidgets.QListWidgetItem):
         if not self.vi.discard_workEnv():
             return
         try:
-            self.vi.viewer.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split('//')[0])
-        except Exception as e:
-            QtWidgets.QMessageBox.information(self, 'Error', 'Error opening the selected ' + \
-                                          'image in the currently open mes file.\n' + str(e), QtWidgets.QMessageBox.Ok)
+            self.vi.viewer.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split(': ')[0])
+        except KeyError as ke:
+            QtWidgets.QMessageBox.warning(self, 'Error', str(ke), QtWidgets.QMessageBox.Ok)
+
+        except Exception:
+            QtWidgets.QMessageBox.warning(self, 'Error', 'Error opening the selected ' + \
+                                          'image in the currently open mes file.\n' +
+                                          traceback.format_exc(), QtWidgets.QMessageBox.Ok)
             return
         self.vi.update_workEnv()
         self.vi.enable_ui(True)
 
     def open_stim_map_gui(self):
-        pass
+        self.stim_map_gui.show()
+
+    def set_stim_map_gui(self):
+        for channel in self.mesfile.voltages_lists_dict.keys():
+            self.stim_map_gui.add_stim_type(channel)
+            for voltage in self.mesfile.voltages_lists_dict[channel]:
+                pd_series = pd.Series(data={'voltage': str(voltage) + ' V: ',
+                                            'name': '',
+                                            'color': '#FFFFFF'
+                                            })
+                self.stim_map_gui.tabs[channel].add_row(pd_series)
+
+    def set_stimulus_map(self):
+        if self.stim_map_gui.voltage_mappings is None:
+            QtWidgets.QMessageBox.information(self, 'Voltage mappings not set',
+                                              'You have not set the mesfile voltage -> stimulus mappings')
+            return
+
+        smm = self.parent().run_module(StimMapModuleGUI)
+        assert isinstance(smm, StimMapModuleGUI)
+
+        # TODO: GO FROM VOLTAGE MAPPING --> TIMINGS
+
+        smm.set_all_data()
+        g

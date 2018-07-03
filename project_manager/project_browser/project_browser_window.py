@@ -126,8 +126,8 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         for i in range(1, self.project_browser.tab_widget.count()):
             self.project_browser.tab_widget.removeTab(i)
 
-        for child in configuration.project_manager.child_dataframes.keys():
-            configuration.project_manager.child_dataframes.pop(child)
+        # for child in configuration.project_manager.child_dataframes.keys():
+        #     configuration.project_manager.child_dataframes.pop(child)
 
         configuration.project_manager.create_child_dataframes()
 

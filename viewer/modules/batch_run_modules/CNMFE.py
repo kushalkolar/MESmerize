@@ -76,7 +76,7 @@ def run(batch_dir, UUID, n_processes):
     print('***** Starting CNMFE Pool *****')
     print('***** No live output beyond this point =O *****')
 
-    # dview = Pool(n_processes)
+    # dview = Pool(n_processes)pickle_pat
     c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
                                                      n_processes=n_processes,
                                                      # number of process to use, if you go out of memory try to reduce this one

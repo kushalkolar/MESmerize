@@ -105,7 +105,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for m in self.running_modules:
             if isinstance(m, module_class):
                 m.show()
-                return
+                return m
 
         # Else create instance and start running it
         m = module_class(self, self._viewer)
@@ -115,6 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.running_modules[-1].show()
         else:
             self.running_modules[-1].hide()
+        return self.running_modules[-1]
 
     def update_available_inputs(self):
         for m in self.running_modules:
@@ -159,9 +160,10 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             changes = objecteditor.oedit(self.vi.viewer.workEnv)
         except:
-            QtWidgets.QMessageBox.warning(self, 'Unable to open work environment editor',
-                                          'The following error occured while trying to open the work environment editor:'
-                                          '\n' + str(traceback.format_exc()))
+            print(traceback.format_exc())
+            # QtWidgets.QMessageBox.de(self, 'Unable to open work environment editor',
+            #                               'The following error occured while trying to open the work environment editor:'
+            #                               '\n', traceback.format_exc())
             return
 
         if changes is not None:

@@ -34,7 +34,8 @@ class ImgData:
             meta = {'origin': 'unknown',
                     'fps': 0,
                     'date': 'unknown',
-                    'orig_meta': None}
+                    'orig_meta': None
+                    }
 
         self.meta = meta.copy()
         self._stimMaps = stimMaps

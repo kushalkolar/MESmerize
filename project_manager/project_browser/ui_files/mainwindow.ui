@@ -60,8 +60,15 @@
     <addaction name="separator"/>
     <addaction name="actionConsole"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionLink_viewers"/>
+   </widget>
    <addaction name="menuDataframe"/>
    <addaction name="menuView"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockConsole">
@@ -141,6 +148,11 @@
   <action name="actionto_csv">
    <property name="text">
     <string>to csv</string>
+   </property>
+  </action>
+  <action name="actionLink_viewers">
+   <property name="text">
+    <string>Link viewers</string>
    </property>
   </action>
  </widget>

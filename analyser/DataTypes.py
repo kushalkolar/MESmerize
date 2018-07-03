@@ -21,7 +21,7 @@ from MesmerizeCore.misc_funcs import empty_df
 from uuid import uuid4
 
 
-class _TRANSMISSION:
+class BaseTransmission:
     def __init__(self, df, src, **kwargs):
         """
         Base class for common Transmission functions
@@ -91,7 +91,7 @@ class _TRANSMISSION:
         return cls(e_df, transmission.src)
 
 
-class Transmission(_TRANSMISSION):
+class Transmission(BaseTransmission):
     """The regular transmission class used throughout the flowchart"""
     @classmethod
     def from_proj(cls, proj_path, dataframe, df_name='', misc_info=None):
@@ -141,7 +141,7 @@ class Transmission(_TRANSMISSION):
                    ROI_DEFS=transmission.ROI_DEFS)
 
 
-class GroupTransmission(_TRANSMISSION):
+class GroupTransmission(BaseTransmission):
     """Transmission class for setting groups to individual transmissions that can later be merged into a single
     StatsTransmission"""
     @classmethod
@@ -191,7 +191,7 @@ class GroupTransmission(_TRANSMISSION):
         return df, new_gl
 
 
-class StatsTransmission(_TRANSMISSION):
+class StatsTransmission(BaseTransmission):
     """Transmission class that contains a DataFrame consisting of data from many groups. Columns with names that start
     with '_G_' denote groups. Booleans indicate whether or not that row belong to that group."""
     @classmethod

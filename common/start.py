@@ -39,7 +39,6 @@ def project_browser():
     configuration.window_manager.project_browsers.append(project_browser_window)
     num_columns = len(project_browser_window.project_browser.tabs['root'].columns)
     project_browser_window.resize(min(1920, num_columns * 240), 600)
-    # project_browser_window.show()
 
 
 def load_child_dataframes_gui():
@@ -76,7 +75,7 @@ def viewer(file=None):
     elif file.endswith('.mes'):
         pass
     elif file.endswith('.vwe'):
-        viewer_widget.workEnv = ViewerWorkEnv.from_pickle(pikPath=file)
+        viewer_widget.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=file)
     else:
         raise ValueError('File extension not supported')
 

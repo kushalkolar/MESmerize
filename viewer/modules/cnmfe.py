@@ -117,6 +117,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         batch_manager = configuration.window_manager.get_batch_manager()
         name = self.ui.lineEdCorrPNRName.text()
 
+        self.vi.viewer.status_bar_label.showMessage('Please wait, adding Corr PNR: ' + name + ' to batch...')
+
         batch_manager.add_item(module='CNMFE',
                                viewer_reference=self.vi.viewer,
                                name=name,
@@ -145,9 +147,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
         d['do_corr_pnr'] = False
         d['do_cnmfe'] = True
 
-        # d = np.array(self._make_params_dict(), dtype=object)
-        batch_manager = configuration.window_manager.get_batch_manager()
         name = self.ui.lineEdName.text()
+        self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMFE: ' + name + ' to batch...')
+
+        batch_manager = configuration.window_manager.get_batch_manager()
         batch_manager.add_item(module='CNMFE',
                                viewer_reference=self.vi.viewer,
                                name=name,

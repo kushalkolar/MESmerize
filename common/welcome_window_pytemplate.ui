@@ -625,8 +625,15 @@
     <addaction name="separator"/>
     <addaction name="actionConsole"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionViewer_linker"/>
+   </widget>
    <addaction name="menuConfiguration"/>
    <addaction name="menuView"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockConsole">
@@ -671,6 +678,11 @@
    </property>
    <property name="text">
     <string>Console</string>
+   </property>
+  </action>
+  <action name="actionViewer_linker">
+   <property name="text">
+    <string>Viewer linker</string>
    </property>
   </action>
  </widget>

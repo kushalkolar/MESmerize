@@ -3,7 +3,7 @@
 """
 Created on Tue Dec 22 13:58:20 2017
 
-@author: kushal
+@author: kushal, adapted from Daniel Dondorp
 
 Chatzigeorgiou Group
 Sars International Centre for Marine Molecular Biology
@@ -13,15 +13,11 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import scipy.io as spio
 import numpy as np
-#from .misc_funcs import fix_fp_errors
-from PyQt5 import QtGui
-def fix_fp_errors(n):
-    fix = np.round(n, decimals=1) + 0.0
-    return fix
+# from .misc_funcs import fix_fp_errors
+import traceback
+# from common.misc_functions import floating_point_equality
 
-# Loads the entire .mes file as an instance.
-# The load_img() method can be used to return an ImgData class object for any particular image
-# of interest from the created MES instance.
+
 class MES:
     """
     Handles of opening .mes files and organizing the images and meta data.
@@ -40,6 +36,7 @@ class MES:
 
         imdata = mesfile.load_img('IF0001_0001')
     """
+
     def __init__(self, filename):
         # Open the weird matlab type objects and organize the images & meta data
         """
@@ -54,18 +51,16 @@ class MES:
 
         self.image_descriptions = {}
 
-        #        self.ao2VoltList = []
-        #        self.ao3VoltList = []
-        self.voltDict = {}
+        self.voltages_lists_dict = {}
+        self.errors = []
+
         for image in self.images:
             try:
                 meta = self.main_dict["D" + image[1:6]].tolist()
                 meta = self._todict(meta[int(image[-1]) - 1])
-            except Exception as e:
-                QtGui.QMessageBox.warning(None, 'Error opening an image',
-                                          'There as an error when opening the following image: ' + str(
-                                              "D" + image[1:6]) + \
-                                          '\n' + str(e))
+            except Exception:
+                self.errors.append('Error opening an image, There as an error when opening the following image: ' + str(
+                    "D" + image[1:6]) + '\n' + traceback.format_exc())
 
             # If auxiliary voltage information (which for example contains information
             # about stimulus timings & can be mapped to stimulus definitions).
@@ -75,26 +70,25 @@ class MES:
                     if channel in meta.keys():
                         try:
                             if meta[channel]['y'].ndim == 2:
-                                self.voltDict[channel] = list(set(fix_fp_errors(meta[channel]['y'][1])))
-                                # self.ao3VoltList = self.ao3VoltList + list((np.round(np.unique(meta['AUXo3']['y'][1]), decimals=1)))
-                        except (KeyError, IndexError):
-                            print(meta['IMAGE'] + ' Does not have: ' + channel)
+                                self.voltages_lists_dict[channel] = list(set(meta[channel]['y'][1]))
+                        except (KeyError, IndexError) as e:
+                            self.errors.append(str(e) + ': ' + meta['IMAGE'] + ' Does not have: ' + channel)
 
             for channel in ['PMT_EN', 'Trig', 'PMTenUG', 'PMTenUR', 'PMTenUB']:
                 if channel in meta.keys():
                     try:
                         if meta[channel]['y'].ndim == 2:
-                            self.voltDict[channel] = list(set(fix_fp_errors(meta[channel]['y'][1])))
-                    except (KeyError, IndexError):
-                        print(meta['IMAGE'] + ' Does not have: ' + channel)
+                            self.voltages_lists_dict[channel] = list(set(meta[channel]['y'][1]))
+                    except (KeyError, IndexError) as e:
+                        self.errors.append(str(e) + ': ' + meta['IMAGE'] + ' Does not have: ' + channel)
             try:
                 comment = meta["Comment"]
 
                 if type(comment) != str:
                     comment = "No description"
                 self.image_descriptions[image] = comment
-            except KeyError:
-                print("error for", image)
+            except KeyError as e:
+                self.errors.append(str(e) + ': ' + '"error for: "' + image)
 
                 # print('bah')
 
@@ -119,15 +113,12 @@ class MES:
         return dict
 
     # Returns image as ImgData class object.
-    def load_img(self, d):
+    def load_img(self, img_reference: str) -> (np.ndarray, dict):
         """
-        :param d: The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx
-        :type d: str
-        :return: Boolean, numpy array of the image sequence, dict of metadata
-        :rtype: (np.array, dict)
-
+        :param img_reference: The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx
+        :return: numpy array of the image sequence, dict of metadata
         """
-        meta = self.main_dict["D" + d[1:6]].tolist()
+        meta = self.main_dict["D" + img_reference[1:6]].tolist()
         meta = self._todict(meta[0])
         #        except KeyError:
         #            return False, KeyError
@@ -137,7 +128,7 @@ class MES:
             stop = meta["TransversePixNum"]
             # print("Images starting at: ",start)
             # print("Frame width = ",stop)
-            im = self.main_dict[d]
+            im = self.main_dict[img_reference]
             # Trim the 2D array to start at where img acquisition actually begins
             im = im[:, start:]
             # Figure out where the 2D array stops at end of acquisition
@@ -150,9 +141,13 @@ class MES:
 
             return seq, meta
         else:
-            raise IndexError("'" + str(d) + "' does not have the required 'FoldedFrameInfo' meta-data which is"
-                                            "required for the construction of an image sequence from mesfile data")
+            raise KeyError("'" + str(img_reference) + "' does not have the required "
+                                                        "'FoldedFrameInfo' meta-data which is "
+                                                        "required for the construction of an image "
+                                                        "sequence from mesfile data")
+
+
 # For testing
 if __name__ == '__main__':
-    mesfile = MES('/home/kushal/Sars_stuff/For_Methods_Paper/ETR1/April_02_2018_ETR1.mes')
+    mesfile = MES('/home/kushal/Sars_stuff/Olfactory exps/NH4/Dec 3 a1.mes')
 # y = imdata.meta['AUXo3']['y']
