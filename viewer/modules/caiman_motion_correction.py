@@ -105,6 +105,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         batch_manager = configuration.window_manager.get_batch_manager()
         name = self.ui.lineEditNameElastic.text()
 
+        self.vi.viewer.status_bar_label.showMessage('Please wait, adding CaImAn motion correction: ' + name + ' to batch...')
+
         batch_manager.add_item(module='caiman_motion_correction',
                                viewer_reference=self.vi.viewer,
                                name=name,

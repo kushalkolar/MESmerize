@@ -15,8 +15,6 @@ from PyQt5 import QtCore
 from common import configuration, project_config_window, start
 import os
 import pandas as pd
-from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
-from datetime import datetime
 from time import time
 from shutil import copyfile
 

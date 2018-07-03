@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'welcome_window_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -295,6 +295,8 @@ class Ui_MainWindow(object):
         self.menuConfiguration.setObjectName("menuConfiguration")
         self.menuView = QtWidgets.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
+        self.menuTools = QtWidgets.QMenu(self.menubar)
+        self.menuTools.setObjectName("menuTools")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -317,13 +319,17 @@ class Ui_MainWindow(object):
         self.actionConsole = QtWidgets.QAction(MainWindow)
         self.actionConsole.setCheckable(True)
         self.actionConsole.setObjectName("actionConsole")
+        self.actionViewer_linker = QtWidgets.QAction(MainWindow)
+        self.actionViewer_linker.setObjectName("actionViewer_linker")
         self.menuConfiguration.addAction(self.actionProject_Configuration)
         self.menuConfiguration.addAction(self.actionSystem_Configuration)
         self.menuView.addAction(self.actionShow_all_windows)
         self.menuView.addSeparator()
         self.menuView.addAction(self.actionConsole)
+        self.menuTools.addAction(self.actionViewer_linker)
         self.menubar.addAction(self.menuConfiguration.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
+        self.menubar.addAction(self.menuTools.menuAction())
 
         self.retranslateUi(MainWindow)
         self.actionConsole.toggled['bool'].connect(self.dockConsole.setVisible)
@@ -349,9 +355,11 @@ class Ui_MainWindow(object):
         self.label_14.setText(_translate("MainWindow", "In current project"))
         self.menuConfiguration.setTitle(_translate("MainWindow", "Configuration"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
+        self.menuTools.setTitle(_translate("MainWindow", "Tools"))
         self.dockConsole.setWindowTitle(_translate("MainWindow", "Console: Welcome Window"))
         self.actionProject_Configuration.setText(_translate("MainWindow", "Project Configuration"))
         self.actionSystem_Configuration.setText(_translate("MainWindow", "System Configuration"))
         self.actionShow_all_windows.setText(_translate("MainWindow", "Show all windows"))
         self.actionConsole.setText(_translate("MainWindow", "Console"))
+        self.actionViewer_linker.setText(_translate("MainWindow", "Viewer linker"))
 

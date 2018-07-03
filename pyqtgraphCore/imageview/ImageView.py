@@ -40,11 +40,11 @@ from .. import getConfigOption
 from pyqtgraph import plot as pgplot
 from multiprocessing import Process, Queue
 import numpy as np
-from MesmerizeCore import stimMapWidget
+from common import configuration  # DO NOT REMOVE THIS LINE OR YOU WILL GET CIRCULAR IMPORTS AND BREAK EVERYTHING
 from viewer.core.viewer_work_environment import ViewerWorkEnv
-from common import configuration
-from MesmerizeCore import misc_widgets
-import MesmerizeCore.Export
+# from common import configuration
+# from MesmerizeCore import misc_widgets
+# import MesmerizeCore.Export
 # from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 import time
 from functools import partial
@@ -145,69 +145,11 @@ class ImageView(QtWidgets.QWidget):
         self.currStimMapBg = []
         self.stimMapWin = None
 
-        # self.ui.BtnSetROIDefs.clicked.connect(self.addROITag)
-
-        # self.ui.listwROIs.itemClicked.connect(self.setSelectedROI)
-        # self.ui.checkBoxShowAllROIs.clicked.connect(self.setSelectedROI)
-        self.priorlistwROIsSelection = None
-
-        self.ROIcolors=['m','r','y','g','c']
-
-        # Connect many UI signals
-        # self.ui.btnTiffPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(1))
-        # self.ui.btnSplitsPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(2))
-        # self.ui.btnMesPage.clicked.connect(lambda: self.ui.stackedWidget.setCurrentIndex(0))
-
-        # self.ui.btnMCPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(1))
-        # self.ui.btnDenPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(2))
-        # self.ui.btnBatchPage.clicked.connect(lambda: self.ui.stackedWidget_2.setCurrentIndex(0))
-
-        # self.ui.btnPlot.clicked.connect(self.plotAll)
-        #
-        # # self.ui.btnOpenMesFiles.clicked.connect(self.promptFileDialog)
-        # # self.ui.btnOpenTiff.clicked.connect(self.promTiffFileDialog)
-        # self.ui.btnImportSMap.clicked.connect(self.importCSVMap)
-        #
-        # # self.ui.btnSplitSeq.clicked.connect(self.enterSplitSeqMode)
-        # self.ui.btnPlotSplits.clicked.connect(lambda: self.splits_hstack(plot=True))
-        # self.splitSeqMode = False
-        # # self.ui.btnDoneSplitSeqs.clicked.connect(self.splits_seq_mode_done)
-        #
-        # self.ui.btnEditMetaData.clicked.connect(self.edit_meta_data)
-        # self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
-
         self.mesfileMap = None
-        # self.ui.listwMesfile.itemDoubleClicked.connect(lambda selection:
-        #                                                 self.updateWorkEnv(selection, origin='mesfile'))
-        # # self.ui.listwTiffs.itemDoubleClicked.connect(lambda selection:
-        # #                                                 self.updateWorkEnv(selection, origin='tiff'))
-        # self.ui.listwSplits.itemDoubleClicked.connect(lambda selection:
-        #                                                 self.updateWorkEnv(selection, origin='splits'))
-        # # self.ui.listwMotCor.itemDoubleClicked.connect(lambda selection:
-        #                                               self.updateWorkEnv(selection, origin='MotCor'))
-
-        # self.ui.btnCrop.clicked.connect(self.crop_img_seq)
-
-        # self.ui.btnAddROI.clicked.connect(self.addROI)
-        # self.ui.btnAddROI.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # self.ui.btnAddROI.customContextMenuRequested.connect(self.addROI_options)
-        # self.ui.listwBatch.itemSelectionChanged.connect(self.setSelectedROI)
-
-        # self.ui.btnSetID.clicked.connect(self.setSampleID)
-        # self.ui.btnMeasureDistance.clicked.connect(self.drawMeasureLine)
-        # self.measureLine = None
-        # self.measureLine_A = None
-        # self.ui.btnStartBatch.clicked.connect(self.startBatch)
-        # self.ui.btnRemoveFromBatch.clicked.connect(self.removeFromBatch)
-        #
-        # self.ui.btnMotCorSearchDir.clicked.connect(self.searchMotCorFiles)
 
         self.ui.comboBoxStimMaps.setDisabled(True)
         self.ui.comboBoxStimMaps.currentIndexChanged[str].connect(self.displayStimMap)
 
-        # self.ui.stackedWidget.setCurrentIndex(0)
-
-        #self.ui.resetscaleBtn.clicked.connect(self.autoRange())
 
         self.ignoreTimeLine = False
 
@@ -245,22 +187,9 @@ class ImageView(QtWidgets.QWidget):
         self.ui.splitterHighest.setSizes([700, 160])
         self.ui.splitterFilesImage.setSizes([200, 500])
 
-        # List for holding the linear regions that are used to illustrate the stimulus timings on the background
-        # of the timeline in the ROI plot
+
         self.currStimMapBg = []
 
-        # self.initROIPlot()
-        # self.enableUI(False)
-
-        # self.update_from_config()
-
-        # For illustrating the quilt on the image to assist with setting motion correction parameters
-        # self.ui.sliderOverlaps.valueChanged.connect(self.drawStrides)
-        # self.ui.sliderStrides.valueChanged.connect(self.drawStrides)
-        # self.overlapsV = []
-        # self.overlapsH = []
-        # self.ui.btnShowQuilt.clicked.connect(self.drawStrides)
-        # self.ui.btnShowQuilt.clicked.connect(self.removeStrides)
         self.timeLine = InfiniteLine(0, movable=True, hoverPen=None)
         self.timeLine.setPen((255, 255, 0, 200))
         self.timeLine.setZValue(100)
@@ -296,198 +225,6 @@ class ImageView(QtWidgets.QWidget):
     @status_bar_label.setter
     def status_bar_label(self, status_bar_label: QtWidgets.QStatusBar):
         self._status_bar_label = status_bar_label
-
-    # Called from __main__ when btnSave in ConfigWindow is clicked.
-    # def update_from_config(self):
-    #     self.ui.listwROIDefs.clear()
-    #     # self.ui.listwROIDefs.addItems([roi_def + ': ' for roi_def in configuration.cfg.options('ROI_DEFS')])
-    #     self.setSelectedROI()
-
-    #Initialize ROI Plot
-    # def initROIPlot(self):
-
-
-
-
-    '''##############################################################################################################
-                                Work Environment Creation & open file dialogs
-       ##############################################################################################################'''
-
-    # def updateWorkEnv(self, selection, origin, iterate=False, qtsig=True):
-    #     ''' ======================================================================================
-    #         Set the ImgData object and pass the .seq of the ImgData object to setImage().
-    #         :param selection:   Item object that is send from the Qt listwidget's signal
-    #
-    #         :param origin:      Type of origin to determine the classmethod decorator that should be used to create an
-    #                             instance of workEnv
-    #
-    #         :param iterate:     Disable GUI popups, for performing iterations over many workEnv instances created in
-    #                             succession. For example useful for stitching ROI plots of all splits in splitseq mode
-    #
-    #         :param qtsig:       When false, it will interpret the selection as not coming from a Qt signal.
-    #
-    #         :return:            None
-    #         =======================================================================================
-    #     '''
-    #     # Prevent losing unsaved workEnv
-    #     if origin == 'splits':
-    #         clear_sample_id = False
-    #     else:
-    #         clear_sample_id = True
-    #     if not self.workEnv.isEmpty and self.DiscardWorkEnv(clear_sample_id) is False:
-    #         return
-    #
-    #     # if mesfile listwidget item is clicked
-    #     # if origin == 'mesfile':
-    #     #     try:
-    #     #         self.workEnv = viewerWorkEnv.from_mesfile(self.mesfile, selection.text().split('//')[0])
-    #     #     except Exception as e:
-    #     #         QtGui.QMessageBox.information(self, 'Error', 'Error opening the selected '+\
-    #     #                                       'image in the currently open mes file.\n' + str(e), QtGui.QMessageBox.Ok)
-    #     #         return
-    #     #     if self.mesfileMap is not None:
-    #     #         self.workEnv.imgdata.stimMaps = (self.mesfileMap, 'mesfile')
-    #     #
-    #     # # if motion correction listwidget item is clicked
-    #     # elif origin == 'MotCor':
-    #     #     print(selection.text())
-    #     #     self.workEnv = viewerWorkEnv.from_pickle(selection.text()[:-7]+'.pik', selection.text())
-    #     #     self.workEnv.imgdata.isMotCor = True
-    #     #     if self.workEnv.imgdata.stimMaps is not None:
-    #     #         self.populateStimMapComboBox()
-    #     #         self.displayStimMap()
-    #     #     self.ui.tabWidget.setCurrentWidget(self.ui.tabROIs)
-    #
-    #     # # For loading from tiff files
-    #     # elif origin == 'tiff':
-    #     #     if iterate is False:
-    #     #         self.workEnv = viewerWorkEnv.from_tiff(selection.text())
-    #     #         if QtGui.QMessageBox.question(self, 'Open Stimulus Maps?',
-    #     #                                    'Would you like to open stimulus maps for this file?',
-    #     #                                    QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
-    #     #             self.importCSVMap()
-    #     #     else:
-    #     #         # Just here if someone wants to process many tiff files in the same way they can iterate over them
-    #     #         # without having the QMessageBox show up every time.
-    #     #         self.workEnv = viewerWorkEnv.from_tiff(selection)
-    #
-    #     # For loading splits of a sequence in splitseq mode
-    #     elif origin == 'splits':
-    #         # TODO: THERE HAS TO BE A BETTER WAY TO DO THIS!! CHECK IF TYPE IS QTSIGNAL OR SOMETHING, & IF SO INTERPRET
-    #         # TODO: IT AS PLAIN STRING?? <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    #         if qtsig == False:
-    #             self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection + '.pik', tiffPath=self.splitsDir + '/' + selection + '.tiff')
-    #         else:
-    #             self.workEnv = ViewerWorkEnv.from_pickle(pikPath=self.splitsDir + '/' + selection.text() + '.pik', tiffPath=self.splitsDir + '/' + selection.text() + '.tiff')
-    #
-    #     elif origin == 'pandas':
-    #         self.workEnv = ViewerWorkEnv.from_pickle(pikPath=selection[0], tiffPath=selection[1])
-    #
-    #     # Set the image
-    #     self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
-    #                   xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
-    #                                     self.workEnv.imgdata.seq.T.shape[0]))
-    #
-    #     # If the newly spawned workEnv has any ROI states saved, then load them all.
-    #     # Use for example in splitseq mode
-    #     for ID in range(0, len(self.workEnv.roi_states)):
-    #         self.addROI(load=self.workEnv.roi_states[ID])
-    #         # self.view.addItem(self.workEnv.ROIList[-1])
-    #         # self.updatePlot(ID, force=True)
-    #
-    #     # Get image dimensions to set limits on the sliders for motion correction parameters
-    #     x = self.workEnv.imgdata.seq.shape[0]
-    #     # y = self.workEnv.imgdata.seq.shape[1]
-    #     # self.ui.sliderStrides.setMaximum(int(max(x, y)/2))
-    #     # self.ui.sliderOverlaps.setMaximum(int(max(x, y)/2))
-    #
-    #     # Activate the stimulus illustration GUI stuff if the newly spawed work environment has a stimulus map.
-    #     if self.workEnv.imgdata.stimMaps is not None:
-    #         self.populateStimMapComboBox()
-    #         self.displayStimMap()
-    #
-    #     self.workEnv.saved = True
-    #     # self._workEnv_checkSaved() # Connect signals of many Qt UI elements to a method that sets workEnv.save = False
-    #     if origin == 'splits':
-    #         self.enableUI(True, clear_sample_id=False)
-    #     else:
-    #         self.enableUI(True)
-    #
-    # def enableUI(self, b, clear_sample_id=True):
-    #     self.ui.splitter.setEnabled(b)  # Enable stuff in the image & curve working area
-    #     # self.ui.tabBatchParams.setEnabled(b)
-    #     self.ui.tabROIs.setEnabled(b)
-    #     self.ui.toolBox.setEnabled(b)
-    #     self.ui.btnAddCurrEnvToProj.setEnabled(b)
-
-
-        # if clear_sample_id:
-            # self.ui.lineEdAnimalID.clear()
-            # self.ui.lineEdTrialID.clear()
-            # self.ui.lineEdGenotype.clear()
-    #
-    # def resetImgScale(self):
-    #     '''
-    #     Reset the current image to the center of the scene and reset the scale
-    #     doesn't work as intended in some weird circumstances when you repeatedly right click on the scene
-    #     and set the x & y axis to 'Auto' a bunch of times. But this bug is hard to recreate.'''
-    #     self.setImage(self.workEnv.imgdata.seq.T, pos=(0,0), scale=(1,1),
-    #                       xvals=np.linspace(1, self.workEnv.imgdata.seq.T.shape[0],
-    #                                         self.workEnv.imgdata.seq.T.shape[0]))
-
-    # def promptFileDialog(self):
-    #     if self.workEnv is not None and self.DiscardWorkEnv() is False:  # If workEnv is not saved, warn the user.
-    #         return
-    #     self.ui.listwMesfile.clear()
-    #     # self.ui.listwSplits.clear()
-    #     # self.ui.listwTiffs.clear()
-    #     filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose ONE mes file',
-    #                                                   '.', '(*.mes)')
-    #     if len(filelist) == 0:
-    #         return
-    #     try:
-    #         # Creates an instance of MES, see MesmerizeCore.FileInput
-    #         self.mesfile = viewerWorkEnv.load_mesfile(filelist[0][0])
-    #         self.ui.listwMesfile.setEnabled(True)
-    #
-    #         # Get the references of the images, their descriptions, and add them to the list
-    #         for i in self.mesfile.images:
-    #             j = self.mesfile.image_descriptions[i]
-    #             self.ui.listwMesfile.addItem(i+'//'+j)
-    #
-    #         # If Auxiliary voltage info is found in the mes file, ask the user if they want to map these to stimuli
-    #         if len(self.mesfile.voltDict) > 0:
-    #             self.initMesStimMapGUI()
-    #             self.ui.btnChangeSMap.setEnabled(True)
-    #             if QtGui.QMessageBox.question(self, '', 'This .mes file contains auxilliary output voltage ' + \
-    #                           'information, would you like to apply a Stimulus Map now?',
-    #                            QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
-    #
-    #                 self.ui.btnResetSMap.setEnabled(True)
-    #                 self.stimMapWin.show()
-    #         else:
-    #             self.ui.btnResetSMap.setDisabled(True)
-    #             self.ui.btnChangeSMap.setDisabled(True)
-    #
-    #     except (IOError, IndexError) as e:
-    #        QtGui.QMessageBox.warning(self,'IOError or IndexError', "There is an problem with the files you've selected:\n" + str(e), QtGui.QMessageBox.Ok)
-    #     return
-    #
-    # # def promTiffFileDialog(self):
-    # #     if self.workEnv is not None and self.DiscardWorkEnv() is False:
-    # #         return
-    # #     self.ui.listwMesfile.clear()
-    # #     # self.ui.listwSplits.clear()
-    # #     # self.ui.listwTiffs.clear()
-    # #     filelist = QtGui.QFileDialog.getOpenFileNames(self, 'Choose file(s)',
-    # #                                                   '.', '(*.tif *tiff)')
-    # #     if len(filelist[0]) == 0:
-    # #         return
-    # #
-    # #     files = filelist[0]
-    # #
-    # #     self.ui.listwTiffs.addItems(files)
-    # #     self.ui.listwTiffs.setEnabled(True)
 
     def edit_meta_data(self):
         if hasattr(self, '_meta_data_editor'):

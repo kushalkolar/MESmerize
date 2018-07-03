@@ -31,7 +31,7 @@ import json
 
 
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stimMaps=None, roi_manager=None, roi_states=None, comments='', origin_file='', custom_columns_dict=None):
+    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stimMaps=None, stim_maps=None, roi_manager=None, roi_states=None, comments='', origin_file='', custom_columns_dict=None):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -57,6 +57,8 @@ class ViewerWorkEnv:
                     self.imgdata.stimMaps = stimMaps
         else:
             self.isEmpty = True
+
+        self.stim_maps = stim_maps
 
         self.sample_id = sample_id
 
