@@ -31,18 +31,20 @@ import json
 
 
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stimMaps=None, stim_maps=None, roi_manager=None, roi_states=None, comments='', origin_file='', custom_columns_dict=None):
+    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None, roi_manager=None, roi_states=None, comments='', origin_file='', custom_columns_dict=None):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
         a work environment to be easily saved in different ways regardless of the type of original data source.
 
         :param roi_states:  roi states from ROI Manager module
+        :param stim_maps:   {'units': str, 'dataframe': pd.DataFrame}
 
         :type imgdata:      ImgData
         :type sample_id:    str
         :type UUID:         uuid.UUID
         :type meta:         dict
+        :type stim_maps:    dict
         :type comments:     str
         :type custom_columns_dict: dict
         :type roi_states:   dict
@@ -54,8 +56,6 @@ class ViewerWorkEnv:
             if isinstance(self.imgdata, ImgData):
                 if meta is not None:
                     self.imgdata.meta = meta
-                if stimMaps is not None:
-                    self.imgdata.stimMaps = stimMaps
         else:
             self.isEmpty = True
         self.meta = meta
@@ -329,21 +329,24 @@ class ViewerWorkEnv:
         # populating the comboBoxes in the stimMapWidget GUI so that the widget doesn't need to access the DataFrame
         # for this simple task.
         new_stims = []
-        if self.imgdata.stimMaps is None:
+        if self.stim_maps is None:
             for stim_def in configuration.proj_cfg.options('STIM_DEFS'):
                 stimMapsSet[stim_def] = ['untagged']
         else:
-            for stimMap in self.imgdata.stimMaps:
+            for stim_type in self.stim_maps.keys():
                 stimList = []
-                for stim in self.imgdata.stimMaps[stimMap]:
-                    if stim is None:
-                        stim = 'untagged'
-                    stimList.append(stim[0][0])
+                if self.stim_maps[stim_type] is None:
+                    stimMapsSet[stim_type] = ['untagged']
+                    continue
+
+                stimList.append(self.stim_maps[stim_type]['dataframe']['name'].values)
+
+
                 stimMapsSet[stimMap] = list(set(stimList))
 
-                for key in configuration.proj_cfg.options('STIM_DEFS'):
-                    if key not in self.imgdata.stimMaps.keys():
-                        stimMapsSet[key] = ['untagged']
+                # for key in configuration.proj_cfg.options('STIM_DEFS'):
+                #     if self.stim_maps[key] is None:
+                #         stimMapsSet[key] = ['untagged']
 
                 for stim in stimMapsSet[stimMap]:
                     if stim not in configuration.proj_cfg['ALL_STIMS'].keys():

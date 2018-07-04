@@ -56,6 +56,9 @@ class Page(QtWidgets.QWidget):
             self.delete_row(row)
 
     def get_dataframe(self) -> pd.DataFrame:
+        if len(self.rows) < 1:
+            raise IndexError('No stimuli input for this stimulus type: ' + self.stim_type)
+
         l = []
         for row in self.rows:
             l.append(row.get_dict())

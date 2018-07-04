@@ -155,13 +155,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                         'end': tend_frame,
                                         'color': color
                                         })
-                stimulus_dataframes[stim_type] = pd.DataFrame(current_map)
+                stimulus_dataframes[stim_type] = {'units': 'frames', 'dataframe': pd.DataFrame(current_map)}
 
             except (KeyError, IndexError):
                 QtWidgets.QMessageBox.information(None, 'FYI: Missing channels in current image',
                                                   'Voltage values not found for stimulus type: "' + stim_type + \
                                                   '" in channel <' + channel + '>.\n' + traceback.format_exc())
-
-        # TODO: GO FROM VOLTAGE MAPPING --> TIMINGS
 
         smm.set_all_data(stimulus_dataframes)
