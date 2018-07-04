@@ -19,10 +19,11 @@ if __name__ == '__main__':
     from pyqtgraph.imageview import ImageView
     # from common import configuration
 else:
+    from ..core.common import ViewerInterface
     from .stimmap_modules.page import Page
     from .stimmap_modules.main_widget_pytemplate import *
-    # from ..core.common import ViewerInterface
     from pyqtgraphCore.imageview import ImageView
+    from pyqtgraphCore import LinearRegionItem
     from common import configuration
 import pandas as pd
 
@@ -30,17 +31,23 @@ import pandas as pd
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer):
         QtWidgets.QDockWidget.__init__(self, parent)
-        # self.vi = ViewerInterface(viewer)
+        self.vi = ViewerInterface(viewer)
 
         self.ui = Ui_MainWidget()
         self.ui.setupUi(self)
         # self.stim_types = dict.fromkeys(configuration.proj_cfg['STIM_DEFS'])
         self.tabs = {}
 
-        self.setup_tabs()
-        configuration.project_manager.signal_project_config_changed.connect(self.reset)
+        if isinstance(self, ModuleGUI):
+            self.setup_tabs()
+            self.ui.comboBoxShowTimelineChoice.currentIndexChanged.connect(self.set_timeline)
+            self.timeline_stimulus_display = TimeLineStimulusMap(viewer)
+            configuration.project_manager.signal_project_config_changed.connect(self.reset)
+            self.ui.btnSetAllMaps.clicked.connect(self.export_to_work_env)
 
     def setup_tabs(self):
+        self.ui.comboBoxShowTimelineChoice.addItems([''])
+        self.ui.comboBoxShowTimelineChoice.addItems(configuration.proj_cfg.options('STIM_DEFS'))
         for stim_def in configuration.proj_cfg.options('STIM_DEFS'):
             self.add_stim_type(stim_def)
 
@@ -52,8 +59,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         d = {}
         for ix in range(self.ui.tabWidget.count()):
             stim_type = self.ui.tabWidget.widget(ix).stim_type
-            df = self.ui.tabWidget.widget(ix).get_dataframe()
-            d[stim_type] = df
+            try:
+                df = self.ui.tabWidget.widget(ix).get_dataframe()
+            except IndexError:
+                d[stim_type] = None
+            else:
+                d[stim_type] = {}
+                d[stim_type]['dataframe'] = df
+                d[stim_type]['units'] = self.ui.tabWidget.widget(ix).ui.comboBoxTimeUnits.currentText()
         return d
 
     def export_map(self):
@@ -79,6 +92,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             assert isinstance(tab, Page)
             tab.clear()
         self.ui.tabWidget.clear()
+        self.ui.comboBoxShowTimelineChoice.clear()
 
     def reset(self):
         self.clear_all_tabs()
@@ -89,24 +103,94 @@ class ModuleGUI(QtWidgets.QDockWidget):
         for stim_type in dataframes_dict.keys():
             tab = self.tabs[stim_type]
             assert isinstance(tab, Page)
-            tab.set_data(dataframes_dict[stim_type])
+            tab.set_data(dataframes_dict[stim_type]['dataframe'])
+            if dataframes_dict[stim_type]['units'] == 'seconds':
+                tab.ui.comboBoxTimeUnits.setCurrentIndex(0)
+            elif dataframes_dict[stim_type]['units'] == 'frames':
+                tab.ui.comboBoxTimeUnits.setCurrentIndex(1)
+
+    def export_to_work_env(self):
+        d = self.get_all_stims_dataframes()
+
+        for stim_type in d.keys():
+            if d[stim_type] is None:
+                continue
+
+            if d[stim_type]['units'] == 'seconds':
+                fps = self.vi.viewer.workEnv.meta['fps']
+                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'] * fps
+                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'].astype(int)
+
+                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
+                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
+
+        self.vi.viewer.workEnv.stim_maps = d
+
+    def set_timeline(self, ix: int):
+        if ix == 0:
+            self.timeline_stimulus_display.clear_all()
+            return
+
+        stim_type = self.ui.comboBoxShowTimelineChoice.itemText(ix)
+        if stim_type == '':
+            self.timeline_stimulus_display.clear_all()
+            return
+
+        tab_page = self.tabs[stim_type]
+        assert isinstance(tab_page, Page)
+
+        try:
+            df = tab_page.get_dataframe()
+        except IndexError as ie:
+            QtWidgets.QMessageBox.information(self, 'IndexError', str(ie))
+            return
+
+        units = tab_page.ui.comboBoxTimeUnits.currentText()
+
+        if units == 'seconds':
+            fps = self.vi.viewer.workEnv.meta['fps']
+            df['start'] = df['start'] * fps
+            df['start'] = df['start'].astype(int)
+            df['end'] = df['end'] * fps
+            df['end'] = df['end'].astype(int)
+
+        self.timeline_stimulus_display.set_from_stimulus_mapping(df)
 
 
 class TimeLineStimulusMap:
     def __init__(self, viewer: ImageView):
-        pass
+        self.viewer = viewer
+        self.linear_regions = []
 
-    def add_stimulus(self):
-        pass
+    def add_linear_region(self, frame_start: int, frame_end: int, color: QtGui.QColor):
+        linear_region = LinearRegionItem(values=[frame_start, frame_end],
+                                         brush=color, movable=False, bounds=[frame_start, frame_end])
+        linear_region.setZValue(0)
+        linear_region.lines[0].setPen(color)
+        linear_region.lines[1].setPen(color)
 
-    def del_stimulus(self):
-        pass
+        self.linear_regions.append(linear_region)
+        self.viewer.ui.roiPlot.addItem(linear_region)
 
-    def clear_map(self):
-        pass
+    def del_linear_region(self, linear_region: LinearRegionItem):
+        self.viewer.ui.roiPlot.removeItem(linear_region)
+        linear_region.deleteLater()
+        self.linear_regions.remove(linear_region)
 
-    def set_map(self):
-        pass
+    def clear_all(self):
+        for region in self.linear_regions:
+            self.viewer.ui.roiPlot.removeItem(region)
+            region.deleteLater()
+        self.linear_regions = []
+
+    def set_from_stimulus_mapping(self, dataframe: pd.DataFrame):
+        """
+        :param dataframe: dataframe of stimulus information with units as frames (not seconds)
+                           for start and end times of stimuli
+        """
+        self.clear_all()
+        for ix, row in dataframe.iterrows():
+            self.add_linear_region(row['start'], row['end'], row['color'])
 
 
 if __name__ == '__main__':

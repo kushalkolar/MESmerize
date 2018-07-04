@@ -32,6 +32,8 @@ else:
 class MesStimmapGUI(ModuleGUI):
     def __init__(self, parent, viewer):
         super(MesStimmapGUI, self).__init__(parent, viewer)
+        self.ui.comboBoxShowTimelineChoice.setVisible(False)
+        self.ui.label.setVisible(False)
         self.clear_all_tabs()
         self.ui.btnSetAllMaps.clicked.connect(self.set_all_voltage_mappings)
         self.voltage_mappings = None
@@ -56,11 +58,16 @@ class MesStimmapGUI(ModuleGUI):
     def set_all_voltage_mappings(self):
         self.voltage_mappings = self.get_all_stims_dataframes()
 
+    def export_to_work_env(self):
+        pass
+
 
 class PageMes(Page):
     def __init__(self, parent, stim_type: str):
         super(PageMes, self).__init__(parent, stim_type)
-        self.ui.btnAddRow.setDisabled(True)
+        self.ui.comboBoxTimeUnits.setVisible(False)
+        self.ui.btnAddRow.setVisible(False)
+        self.ui.label.setVisible(False)
 
         label_stim_def = QtWidgets.QLabel()
         label_stim_def.setText('Choose Stimulus Type (from project config):')
