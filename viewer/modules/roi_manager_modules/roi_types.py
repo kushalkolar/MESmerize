@@ -141,10 +141,10 @@ class ManualROI(AbstractBaseROI):
         # if state is not None:
         #     self.set_roi_graphics_object_state(state['roi_graphics_object_state'])
 
-    def get_roi_graphics_object(self) -> pg.ROI:
+    def get_roi_graphics_object(self) -> tuple(pg.ROI.__subclasses__()):
         return self.roi_graphics_object
 
-    def set_roi_graphics_object(self, graphics_object):
+    def set_roi_graphics_object(self, graphics_object: tuple(pg.ROI.__subclasses__())):
         self.roi_graphics_object = graphics_object
 
     def set_roi_graphics_object_state(self, state):
@@ -165,7 +165,7 @@ class ManualROI(AbstractBaseROI):
         return state
 
     @staticmethod
-    def get_generic_roi_graphics_object(shape, dims):
+    def get_generic_roi_graphics_object(shape: str, dims: tuple) -> tuple(pg.ROI.__subclasses__()):
         x = dims[0]
         y = dims[1]
 
@@ -182,7 +182,7 @@ class ManualROI(AbstractBaseROI):
 
     @classmethod
     def from_state(cls, curve_plot_item, view_box, state):
-        roi_graphics_object = ManualROI.get_generic_roi_graphics_object(state['shape'], [10, 10])
+        roi_graphics_object = ManualROI.get_generic_roi_graphics_object(state['shape'], (10, 10))
         return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box, state=state)
 
 

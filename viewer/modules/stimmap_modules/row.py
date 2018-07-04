@@ -56,21 +56,18 @@ class Row(QtWidgets.QWidget):
         self.hlayout.addWidget(self.btn_remove)
 
         if pd_series is not None:
-            self.name.setText(pd_series['name'])
-            self.start.setText(pd_series['start'])
-            self.end.setText(pd_series['end'])
-            self.color_btn.setColor(pd_series['color'])
+            self.set_series(pd_series)
 
     def set_series(self, pd_series: pd.Series):
-        self.name.setText(pd_series['name'])
-        self.start.setText(pd_series['start'])
-        self.end.setText(pd_series['end'])
-        self.color_btn.setColor(pd_series['color'])
+        self.name.setText(pd_series['name'].item())
+        self.start.setText(str(pd_series['start']))
+        self.end.setText(str(pd_series['end']))
+        self.color_btn.setColor(pd_series['color'].item())
 
     def get_dict(self) -> dict:
         d = {'name': self.name.text(),
-             'start': self.start.text(),
-             'end': self.end.text(),
+             'start': float(self.start.text()),
+             'end': float(self.end.text()),
              'color': self.color_btn.color()
              }
         return d

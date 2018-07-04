@@ -37,14 +37,15 @@ class ViewerWorkEnv:
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
         a work environment to be easily saved in different ways regardless of the type of original data source.
 
-        :param ROIList:     list of ROIs in current work environment
-        :param CurvesList:  list of curves in current work environment
-        :param roi_states:  list of ROI states, from pyqtgraphCore.ROI.saveState()
+        :param roi_states:  roi states from ROI Manager module
 
         :type imgdata:      ImgData
-        :type ROIList:      list
-        :type CurvesList:   list
-        :type roi_states:   list
+        :type sample_id:    str
+        :type UUID:         uuid.UUID
+        :type meta:         dict
+        :type comments:     str
+        :type custom_columns_dict: dict
+        :type roi_states:   dict
 
         """
         if imgdata is not None:
@@ -57,6 +58,7 @@ class ViewerWorkEnv:
                     self.imgdata.stimMaps = stimMaps
         else:
             self.isEmpty = True
+        self.meta = meta
 
         self.stim_maps = stim_maps
 
@@ -97,20 +99,14 @@ class ViewerWorkEnv:
             self.roi_manager.parent.set_all_from_states(self.roi_states)
 
     @classmethod
-    def from_pickle(cls, pickle_file_path=None, tiff_path=None):
+    def from_pickle(cls, pickle_file_path: str, tiff_path: str = None):
         """
         Get pickled image data from a pickle file & image sequence from a npz or tiff. Used after motion correction
         & to view a sample from a project DataFrame. Create ImgData class object (See MesmerizeCore.DataTypes) and
         return instance of the work environment.
 
-        :param: pikPath:    full path to the pickle containing image metadata, stim maps, and roi_states
-        :type   pikPath:    str
-
-        :param: npzPath:    full path to a npz containing the image sequence numpy array
-        :type:  npzPath:    str
-
-        :param: tiffPath:   str of the full path to a tiff file containing the image sequence
-        :type:  tiffPath:   str
+        :param: pickle_file_path:   full path to the pickle containing image metadata, stim maps, and roi_states
+        :param: tiff_path:          str of the full path to a tiff file containing the image sequence
         """
 
         # if (npzPath is None) and (tifffile is None):
@@ -126,7 +122,7 @@ class ViewerWorkEnv:
 
         p = pickle.load(open(pickle_file_path, 'rb'))
 
-        # compatability for older pickle files
+        # compatability for older pickle files from older mesmerize
         if 'imdata' in p.keys():
             try:
                 sample_id = p['imdata']['sample_id']
@@ -156,13 +152,13 @@ class ViewerWorkEnv:
         return bool(self._saved)
 
     @saved.setter
-    def saved(self, state):
+    def saved(self, state: bool):
         self._saved = state
         if state is True:
             self.changed_items = []
 
     @staticmethod
-    def load_mesfile(path):
+    def load_mesfile(path: str) -> MES:
         """
         Just passes the path of a .mes file to the constructor of class MES in MesmerizeCore.FileInput.
         Loads .mes file & constructs MES obj from which individual images & their respective metadata can be loaded
@@ -171,13 +167,12 @@ class ViewerWorkEnv:
         :param path: full path to a single .mes file.
         :type path:  str
 
-        :return:     MesmerizeCore.FileInput.MES type object
         :rtype:      MES
         """
         return MES(path)
 
     @staticmethod
-    def _organize_meta(meta, origin):
+    def _organize_meta(meta: dict, origin: str) -> dict:
         if origin == 'mes':
             fps = float(1000/meta['FoldedFrameInfo']['frameTimeLength'])
 
@@ -213,38 +208,24 @@ class ViewerWorkEnv:
             raise ValueError('Unrecognized meta data source.')
 
     @classmethod
-    def from_mesfile(cls, mesfile, ref, mesfileMaps=None):
+    def from_mesfile(cls, mesfile_object: MES, img_reference: str):
         """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.
-
-        :param      mesfile:        MesmerizeCore.FileInput.MES object
-        :type       mesfile:        MES
-        :param      ref:            reference of the image to load
-        :type       ref:            str
-        :param      mesfileMaps:    if there's a stimulus map that has been set by the user to load upon creation of the
-                                    work environment.
-        :type       mesfileMaps:    dict
         """
-        assert isinstance(mesfile, MES)
-        imgseq, raw_meta = mesfile.load_img(ref)
+        imgseq, raw_meta = mesfile_object.load_img(img_reference)
 
         meta_data = ViewerWorkEnv._organize_meta(raw_meta, 'mes')
         imdata = ImgData(imgseq, meta_data)
-        imdata.stimMaps = (mesfileMaps, 'mesfile')
+        # imdata.stimMaps = (mesfileMaps, 'mesfile')
 
-        return cls(imdata)
+        return cls(imdata, meta=meta_data)
 
     @classmethod
-    def from_tiff(cls, path, method, meta_path='', csvMapPaths=None):
+    def from_tiff(cls, path: str, method: str, meta_path: str = ''):
         """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         tifffile.imread and any csv stimulus map that the user may want to apply.
-
-        :param path:        full path to a single tiff file
-        :type path:         str
-        :param csvMapPaths: full paths to csv files to load with the ImgData object into the work environment
-        :type csvMapPaths:  list
         """
 
         if method == 'imread':
@@ -266,7 +247,6 @@ class ViewerWorkEnv:
             meta = None
 
         imdata = ImgData(seq.T, meta)
-        imdata.stimMaps = (csvMapPaths, 'csv')
         return cls(imdata)
 
     @classmethod
@@ -294,21 +274,12 @@ class ViewerWorkEnv:
 
         return d
 
-    def to_pickle(self, dir_path, filename=None, save_img_seq=True, UUID=None):
+    def to_pickle(self, dir_path: str, filename: str = None, save_img_seq=True, UUID=None):
         """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
         for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
         for saving current sample to the project. Image sequence is saved as a tiff and other information about the
         image is saved in a pickle.
-
-        :param      dirPath: directory in which to save tiff and pik file
-        :type       dirPath: str
-
-        :param      mc_params: motion correction parameters if any
-        :type       mc_params: dict
-
-        :return:    str of filename
-        :rtype:     str
         """
         if self.isEmpty:
             print('Work environment is empty!')
@@ -334,17 +305,14 @@ class ViewerWorkEnv:
 
         return filename
 
-    def to_pandas(self, proj_path):
+    def to_pandas(self, proj_path: str) -> list:
         """
         :param      proj_path: Root path of the current project
-        :type       proj_path: str
         :return:    list of dicts that each correspond to a single curve that can be appended
                     as rows to the project dataframe
-        :rtype:     list
         """
         if self.isEmpty:
-            print('Work environment is empty!')
-            return
+            raise AttributeError('Work environment is empty')
 
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = proj_path + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())

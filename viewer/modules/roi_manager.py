@@ -96,7 +96,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.workEnv.roi_manager = self.manager
         self.ui.btnSwitchToManualMode.setDisabled(True)
 
-    def add_manual_roi(self, shape):
+    def add_manual_roi(self, shape: str):
         if self.vi.viewer.workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self,
                                           'Empty Work Environment',
@@ -110,11 +110,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def show_all_rois(self):
         pass
 
-    def package_for_project(self):
+    def package_for_project(self) -> dict:
         states = self.manager.get_all_states()
         return states
 
-    def set_all_from_states(self, states):
+    def set_all_from_states(self, states: dict):
         if states['roi_type'] == 'CNMFROI':
             self.start_cnmfe_mode()
             self.manager.restore_from_states(states)

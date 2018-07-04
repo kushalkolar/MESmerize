@@ -88,6 +88,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           'image in the currently open mes file.\n' +
                                           traceback.format_exc(), QtWidgets.QMessageBox.Ok)
             return
+
+        self.set_stimulus_map()
         self.vi.update_workEnv()
         self.vi.enable_ui(True)
 
@@ -110,10 +112,56 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                               'You have not set the mesfile voltage -> stimulus mappings')
             return
 
-        smm = self.parent().run_module(StimMapModuleGUI)
+        smm = self.parent.run_module(StimMapModuleGUI)
         assert isinstance(smm, StimMapModuleGUI)
+
+        stimulus_dataframes = {}
+        meta = self.vi.viewer.workEnv.meta['orig_meta']
+
+        voltage_mappings = self.stim_map_gui.voltage_mappings
+
+        for stim_type in voltage_mappings.keys():
+            channel = voltage_mappings[stim_type]['channel']
+
+            try:
+                y = meta[channel]['y']
+                x = meta[channel]['x'][1]
+
+                firstFrameStartTime = meta['FoldedFrameInfo']['firstFrameStartTime']
+                frameTimeLength = meta['FoldedFrameInfo']['frameTimeLength']
+
+                current_map = []
+
+                for i in range(0, y.shape[1] - 1):
+                    voltage = str(y[1][i])
+
+                    tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
+
+                    if tstart_frame < 0:
+                        tstart_frame = 0
+
+                    tend_frame = int(((y[0][i + 1] * x) - firstFrameStartTime) / frameTimeLength)
+
+                    v = voltage + ' V: '
+
+                    mapping = voltage_mappings[stim_type]['dataframe'][
+                        voltage_mappings[stim_type]['dataframe']['voltage'] == v]
+
+                    name = mapping['name']
+                    color = mapping['color']
+
+                    current_map.append({'name': name,
+                                        'start': tstart_frame,
+                                        'end': tend_frame,
+                                        'color': color
+                                        })
+                stimulus_dataframes[stim_type] = pd.DataFrame(current_map)
+
+            except (KeyError, IndexError):
+                QtWidgets.QMessageBox.information(None, 'FYI: Missing channels in current image',
+                                                  'Voltage values not found for stimulus type: "' + stim_type + \
+                                                  '" in channel <' + channel + '>.\n' + traceback.format_exc())
 
         # TODO: GO FROM VOLTAGE MAPPING --> TIMINGS
 
-        smm.set_all_data()
-        g
+        smm.set_all_data(stimulus_dataframes)

@@ -13,5 +13,5 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 
-def floating_point_equality(m: float, n: float, epsilon: float) -> bool:
+def floating_point_equality(m: float, n: float, epsilon: float = 0.0001) -> bool:
     return abs((m + 0.0) - (n + 0.0)) < epsilon

@@ -22,16 +22,14 @@ from uuid import uuid4
 
 
 class BaseTransmission:
-    def __init__(self, df, src, **kwargs):
+    def __init__(self, df: pd.DataFrame, src: list, **kwargs):
         """
         Base class for common Transmission functions
-        :param  df:     DataFrame
-        :type   df:     pd.DataFrame
 
-        :param  src:    History of the nodes & node parameters the transmission has been processed through
-        :type   src:    dict
+        :param  src:    List of dicts with history of the nodes & node parameters
+                        the transmission has been processed through
 
-        optional kwargs:
+        Some optional kwargs:
         :param  STIM_DEFS:  STIM_DEF columns, used by the AlignStims control node for example
         :type   STIM_DEFS:  list
 
@@ -39,7 +37,6 @@ class BaseTransmission:
         :type   ROI_DEFS:   list
         """
         self.df = df
-        assert isinstance(self.df, pd.DataFrame)
         self.src = src
 
         self.kwargs_keys = list(kwargs.keys())
@@ -56,10 +53,9 @@ class BaseTransmission:
         p = pickle.load(open(path, 'rb'))
         return cls(**p)
 
-    def _make_dict(self):
+    def _make_dict(self) -> dict:
         """
         Package attributes as a dict, useful for pickling
-        :return: dict
         """
         d = {'df':  self.df,
              'src': self.src}
@@ -68,10 +64,9 @@ class BaseTransmission:
             d.update({key: getattr(self, key)})
         return d
 
-    def to_pickle(self, path):
+    def to_pickle(self, path: str):
         """
         :param path: Path of where to store pickle
-        :type path: str
         """
         pickle.dump(self._make_dict(), open(path, 'wb'), protocol=4)
 
@@ -94,14 +89,15 @@ class BaseTransmission:
 class Transmission(BaseTransmission):
     """The regular transmission class used throughout the flowchart"""
     @classmethod
-    def from_proj(cls, proj_path, dataframe, df_name='', misc_info=None):
+    def from_proj(cls, proj_path: str, dataframe: pd.DataFrame, df_name='', misc_info=None):
         """
-        :param df: Chosen Child DataFrame from the Mesmerize Project
+        :param proj_path: root directory of the project
+        :param dataframe: Chosen Child DataFrame from the Mesmerize Project
+        :param df_name:   name of dataframe, usually the project browswer tab indicating the child dataframe name
 
         :return: Transmission class object
         """
         df = dataframe.copy()
-        assert isinstance(df, pd.DataFrame)
         df[['curve', 'meta', 'stimMaps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
         df['raw_curve'] = df['curve']
         
@@ -115,7 +111,7 @@ class Transmission(BaseTransmission):
         return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs, misc_info=misc_info)
 
     @staticmethod
-    def _load_files(proj_path, row):
+    def _load_files(proj_path: str, row: pd.Series) -> pd.Series:
         """Loads npz and pickle files of Curves & Img metadata according to the paths specified in each row of the
         chosen child DataFrame in the project"""
 
@@ -132,7 +128,7 @@ class Transmission(BaseTransmission):
     @classmethod
     def empty_df(cls, transmission, addCols=[]):
         """
-        :rtype: pd.DataFrame
+        :return: Same transmission with dataframe containing empty rows (columns preserved)
         """
         c = list(transmission.df.columns)
         e_df = empty_df(cols=c, addCols=addCols)
@@ -145,13 +141,10 @@ class GroupTransmission(BaseTransmission):
     """Transmission class for setting groups to individual transmissions that can later be merged into a single
     StatsTransmission"""
     @classmethod
-    def from_ca_data(cls, transmission, groups_list):
+    def from_ca_data(cls, transmission: Transmission, groups_list: list):
         """
         :param  transmission: Raw Transmission object
-        :type   transmission: Transmission
-
         :param  groups_list: List of groups to which the raw Transmission object belongs
-        :type   groups_list: list
 
         :return: GroupTransmission
         """
@@ -172,11 +165,11 @@ class GroupTransmission(BaseTransmission):
         return cls(t.df, t.src, groups_list=groups_list)
 
     @classmethod
-    def from_behav_data(cls, transmission, groups_list):
-        pass
+    def from_behav_data(cls, transmission: Transmission, groups_list: list):
+        raise NotImplementedError
 
     @staticmethod
-    def _append_group_bools(df, groups_list):
+    def _append_group_bools(df: pd.DataFrame, groups_list: list) -> (pd.DataFrame, list):
         """
         :param df:
         :param groups_list:
@@ -195,10 +188,9 @@ class StatsTransmission(BaseTransmission):
     """Transmission class that contains a DataFrame consisting of data from many groups. Columns with names that start
     with '_G_' denote groups. Booleans indicate whether or not that row belong to that group."""
     @classmethod
-    def from_group_trans(cls, transmissions):
+    def from_group_trans(cls, transmissions: list):
         """
         :param transmissions list of GroupTransmission objects
-        :type transmissions: list
         """
         all_groups = []
         for tran in transmissions:

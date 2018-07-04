@@ -23,7 +23,7 @@ class ProjectManager(QtCore.QObject):
     signal_dataframe_changed = QtCore.pyqtSignal(pd.DataFrame)
     signal_project_config_changed = QtCore.pyqtSignal()
 
-    def __init__(self, project_root_dir):
+    def __init__(self, project_root_dir: str):
         QtCore.QObject.__init__(self)
         self.root_dir = project_root_dir
         configuration.proj_path = self.root_dir
@@ -115,7 +115,7 @@ class ProjectManager(QtCore.QObject):
     def save_dataframe(self):
         self.dataframe.to_pickle(self.root_dir + '/dataframes/root.dfr')
 
-    def update_project_config_requested(self, custom_to_add):
+    def update_project_config_requested(self, custom_to_add: dict):
         if self.dataframe.empty:
             return
 

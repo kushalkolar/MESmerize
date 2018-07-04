@@ -44,6 +44,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
         self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
+        self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
 
         self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
         self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)
@@ -186,6 +187,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # You can even let the user save changes if they click "OK", and the function returns None if they cancel
 
     def add_work_env_to_project(self):
+        if self.vi.viewer.workEnv.isEmpty:
+            QtWidgets.QMessageBox.information(self, 'Empty work environment',
+                                              'Nothing to save, work environment is empty')
+            return
         if self.add_to_project_dialog is not None:
             try:
                 self._delete_add_to_project_dialog()

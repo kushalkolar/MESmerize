@@ -100,7 +100,7 @@ class ManagerManual(AbstractBaseManager):
         self.vi.viewer.status_bar_label.showMessage('Finished saving ROIs!')
         return states
 
-    def add_roi(self, shape):
+    def add_roi(self, shape: str):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
@@ -143,7 +143,7 @@ class ManagerCNMFE(AbstractBaseManager):
         self.roi_list.reindex_colormap()
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
 
-    def add_roi(self, ix: int):
+    def add_roi(self):
         raise NotImplementedError('Not implemented for CNMFE ROIs')
 
     def restore_from_states(self, states: dict):

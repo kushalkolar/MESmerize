@@ -1,4 +1,4 @@
-__all__ = ['mesfile_io', 'cnmfe', 'roi_manager', 'tiff_io', 'caiman_motion_correction']
+__all__ = ['mesfile_io', 'cnmfe', 'roi_manager', 'tiff_io', 'caiman_motion_correction', 'stimulus_mapping']
 #from os.path import dirname, basename, isfile
 #import glob
 #modules = glob.glob(dirname(__file__)+"/*.py")

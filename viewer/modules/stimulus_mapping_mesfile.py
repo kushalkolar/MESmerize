@@ -32,7 +32,8 @@ else:
 class MesStimmapGUI(ModuleGUI):
     def __init__(self, parent, viewer):
         super(MesStimmapGUI, self).__init__(parent, viewer)
-        self.ui.btnSetAllMaps.clicked.connect(self.set_all_stim_maps)
+        self.clear_all_tabs()
+        self.ui.btnSetAllMaps.clicked.connect(self.set_all_voltage_mappings)
         self.voltage_mappings = None
 
     def add_stim_type(self, stim_type: str):
@@ -47,7 +48,8 @@ class MesStimmapGUI(ModuleGUI):
             assert isinstance(w, PageMes)
             stim_def = w.combobox_stim_defs.currentText()
             if stim_def != '':
-                d[stim_def] = w.get_dataframe()
+                d[stim_def] = {'channel': self.ui.tabWidget.tabText(ix),
+                               'dataframe': w.get_dataframe()}
 
         return d
 
@@ -108,9 +110,9 @@ class RowMes(QtWidgets.QWidget):
             self.voltage_label.setText(pd_series['voltage'])
 
     def set_series(self, pd_series: pd.Series):
-        self.name.setText(pd_series['name'])
-        self.color_btn.setColor(pd_series['color'])
-        self.voltage_label.setText(pd_series['voltage'])
+        self.name.setText(pd_series['name'].item())
+        self.color_btn.setColor(pd_series['color'].item())
+        self.voltage_label.setText(pd_series['voltage'].item())
 
     def get_dict(self) -> dict:
         d = {'voltage': self.voltage_label.text(),
