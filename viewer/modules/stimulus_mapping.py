@@ -27,9 +27,9 @@ else:
 import pandas as pd
 
 
-class ModuleGUI(QtWidgets.QWidget):
+class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer):
-        QtWidgets.QWidget.__init__(self, parent)
+        QtWidgets.QDockWidget.__init__(self, parent)
         # self.vi = ViewerInterface(viewer)
 
         self.ui = Ui_MainWidget()
@@ -86,7 +86,6 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def set_all_data(self, dataframes_dict: dict):
         self.reset()
-
         for stim_type in dataframes_dict.keys():
             tab = self.tabs[stim_type]
             assert isinstance(tab, Page)

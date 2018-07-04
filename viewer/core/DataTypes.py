@@ -28,7 +28,7 @@ from .misc_funcs import fix_fp_errors
 
 
 class ImgData:
-    def __init__(self, seq: np.ndarray, meta=None, stimMaps=None):
+    def __init__(self, seq: np.ndarray, meta: dict = None, stimMaps=None):
         self.seq = seq
         if meta is None:
             meta = {'origin': 'unknown',

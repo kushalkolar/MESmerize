@@ -37,11 +37,10 @@ class MES:
         imdata = mesfile.load_img('IF0001_0001')
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         # Open the weird matlab type objects and organize the images & meta data
         """
         :param filename: full path of a single .mes file
-        :type filename: str
         """
         self.main_dict = self._loadmat(filename)
 

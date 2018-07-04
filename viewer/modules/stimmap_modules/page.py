@@ -40,9 +40,9 @@ class Page(QtWidgets.QWidget):
 
     def add_row(self, pd_series=None):
         row = Row(pd_series)
+        self.rows.append(row)
         row.btn_remove.clicked.connect(partial(self.delete_row, row))
         self.ui.verticalLayout.insertLayout(self.ui.verticalLayout.count() - 1, row.hlayout)
-        self.rows.append(row)
 
     def delete_row(self, row):
         self.ui.verticalLayout.removeItem(row.hlayout)
