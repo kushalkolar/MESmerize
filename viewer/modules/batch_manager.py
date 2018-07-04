@@ -104,7 +104,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.create_new_batch_dir(path)
 
-    def create_new_batch_dir(self, path):
+    def create_new_batch_dir(self, path: str):
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
 
         if start and name != '':
@@ -138,10 +138,9 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             self.show_input_in_viewer(viewers[0], r, UUID)
 
-    def show_input_in_viewer(self, viewers, r, UUID):
+    def show_input_in_viewer(self, viewers, r: pandas.Series, UUID: uuid.UUID):
         """
         :param  r:  Row of batch DataFrame corresponding to the selected item
-        :type   r:  pandas.Series
         """
         if not isinstance(viewers, window_manager.WindowClass):
             viewer = viewers.viewer_reference
@@ -200,8 +199,9 @@ class ModuleGUI(QtWidgets.QWidget):
             else:
                 self.show_item_output(m, configuration.window_manager.viewers[0], UUID)
 
-    def show_item_output(self, m, viewers, UUID):
+    def show_item_output(self, module, viewers, UUID: uuid.UUID):
         """
+        :param module: The module name under /batch_run_modules that the batch item is from
         """
         if not isinstance(viewers, window_manager.WindowClass):
             viewer = viewers.viewer_reference
@@ -212,7 +212,7 @@ class ModuleGUI(QtWidgets.QWidget):
             i = int(self.lwd.listWidget.currentItem().data(0))
             viewer = viewers[i].viewer_reference
         try:
-            self.output_widgets.append(m.Output(self.batch_path, UUID, viewer))
+            self.output_widgets.append(module.Output(self.batch_path, UUID, viewer))
         except:
             QtWidgets.QMessageBox.warning(self, 'Error showing item output',
                                           'The following error occured while '
@@ -350,7 +350,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.process.start(sh_file)
         self.ui.listwBatch.item(self.current_batch_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
-    def get_batch_item_output(self, UUID):
+    def get_batch_item_output(self, UUID: uuid.UUID):
         out_file = self.batch_path + '/' + str(UUID) + '.out'
         if os.path.isfile(out_file):
             output = json.load(open(out_file, 'r'))
@@ -372,27 +372,23 @@ class ModuleGUI(QtWidgets.QWidget):
         self.current_std_out.append((str(std_out.readAllStandardOutput())))
         self.ui.textBrowserStdOut.append('\n'.join(self.current_std_out))
 
-    def add_item(self, module, viewer_reference, input_workEnv, input_params, name='', info=''):
+    def add_item(self, module: str, viewer_reference, input_workEnv: ViewerWorkEnv, input_params: dict, name='', info=''):
 
         """
-        :param  module:         The module to run, based on common.BatchRunInterface.
-        :type   module:         str
+        :param  module:         The module to run from /batch_run_modules.
 
-        :param viewer_reference:ViewerWorkEnv to communicate with
-        :type  viewer_reference:
+        :param viewer_reference:Viewer to communicate with
+        :type  viewer_reference: ImageView
 
         :param  name:           A name for the batch item
-        :type   name:           str
 
         :param  input_workEnv:  Input workEnv that the module will use
-        :type   input_workEnv:  viewerWorkEnv
 
         :param  input_params:   Input params that the module will use.
                                 Depends on your subclass of BatchRunInterface.process() method
         :type   input_params:   dict
 
         :param  info:           A dictionary with any metadata information to display in the scroll area label.
-        :type   info:           dict
         """
         if input_workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
@@ -494,7 +490,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.open_batch_dir(path)
 
-    def open_batch_dir(self, path):
+    def open_batch_dir(self, path: str):
         dfpath = path + '/dataframe.batch'
         if not os.path.isfile(dfpath):
             QtWidgets.QMessageBox.warning(self, 'Invalid batch dir',

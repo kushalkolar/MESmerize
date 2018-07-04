@@ -61,7 +61,6 @@ def viewer(file=None):
     viewerWindow.setCentralWidget(viewer_widget)
     viewerWindow.setWindowTitle('Mesmerize - Viewer - ' + str(len(configuration.window_manager.viewers)))
 
-
     configuration.window_manager.viewers[-1].show()
 
     if file is None:

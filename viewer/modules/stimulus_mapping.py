@@ -12,19 +12,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 
-if __name__ == '__main__':
-    from stimmap_modules.page import Page
-    from stimmap_modules.main_widget_pytemplate import *
-    # from viewer.core.common import ViewerInterface
-    from pyqtgraph.imageview import ImageView
-    # from common import configuration
-else:
-    from ..core.common import ViewerInterface
-    from .stimmap_modules.page import Page
-    from .stimmap_modules.main_widget_pytemplate import *
-    from pyqtgraphCore.imageview import ImageView
-    from pyqtgraphCore import LinearRegionItem
-    from common import configuration
+from ..core.common import ViewerInterface
+from .stimmap_modules.page import Page
+from .stimmap_modules.main_widget_pytemplate import *
+from pyqtgraphCore.imageview import ImageView
+from pyqtgraphCore import LinearRegionItem
+from common import configuration
 import pandas as pd
 
 
@@ -123,6 +116,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
                 d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
                 d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
+
+            d[stim_type] = d[stim_type]['dataframe']
 
         self.vi.viewer.workEnv.stim_maps = d
 

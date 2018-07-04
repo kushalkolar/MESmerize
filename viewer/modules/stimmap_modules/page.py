@@ -12,12 +12,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 
-if __name__ == '__main__':
-    from tab_page_pytemplate import Ui_TabPage
-    from row import Row
-else:
-    from .tab_page_pytemplate import *
-    from .row import Row
+from .tab_page_pytemplate import *
+from .row import Row
 import pandas as pd
 from functools import partial
 
@@ -38,13 +34,13 @@ class Page(QtWidgets.QWidget):
         for ix, series in dataframe.iterrows():
             self.add_row(series)
 
-    def add_row(self, pd_series=None):
+    def add_row(self, pd_series: pd.Series = None):
         row = Row(pd_series)
         self.rows.append(row)
         row.btn_remove.clicked.connect(partial(self.delete_row, row))
         self.ui.verticalLayout.insertLayout(self.ui.verticalLayout.count() - 1, row.hlayout)
 
-    def delete_row(self, row):
+    def delete_row(self, row: Row):
         self.ui.verticalLayout.removeItem(row.hlayout)
         row.delete()
         row.hlayout.deleteLater()
@@ -68,4 +64,3 @@ class Page(QtWidgets.QWidget):
         autocompleter = QtWidgets.QCompleter(stimulus_list)
         for row in self.rows:
             row.name.setCompleter(autocompleter)
-

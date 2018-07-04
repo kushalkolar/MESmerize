@@ -63,22 +63,9 @@ class ViewerInterface:
             self.viewer.workEnv.roi_manager.clear()
         # re-initialize ROI and curve lists
         self.viewer.workEnv.dump()
-        # self.viewer.setImage(np.array([0]))
-        #        self.viewer._remove_workEnv_observer()
-        self.viewer.ui.comboBoxStimMaps.setDisabled(True)
-
-        # Remove the background bands showing stimulus times.
-        if len(self.viewer.currStimMapBg) > 0:
-            for item in self.viewer.currStimMapBg:
-                self.viewer.ui.roiPlot.removeItem(item)
-
-            self.viewer.currStimMapBg = []
         self.viewer.workEnv.saved = True
 
         self.viewer.status_bar_label.showMessage('Work environment cleared.')
-
-        # self.viewer.initROIPlot()
-        # self.viewer.enableUI(False, clear_sample_id)
 
     def workEnv_changed(self, element=None):
         if self.viewer.workEnv is not None:

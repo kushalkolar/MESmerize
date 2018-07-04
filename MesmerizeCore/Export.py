@@ -19,6 +19,7 @@ import cv2
 import tifffile
 from functools import partial
 import imageio
+from .exporter_pytemplate import *
 
 
 # vmin & vmax only has to be supplied for video outputs since videos cannot contain
@@ -92,3 +93,33 @@ class Exporter:
             #print('entered write loop, frame# ' + str(frame))
             out.write(cv2.cvtColor(scaled[:, :, frame].T, cv2.COLOR_GRAY2BGR))
         out.release()
+
+
+class ExporterGUI(QtWidgets.QWidget, Ui_exporter_template):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.show()
+        formats = ['tiff', 'MJPG', 'X264', 'gif']
+        self.comboBoxFormat.addItems(formats)
+        self.labelSlider.setText(str(self.sliderFPS_Scaling.value()/10))
+        self.sliderFPS_Scaling.valueChanged.connect(lambda v: self.labelSlider.setText(str(v/10)))
+        self.comboBoxFormat.currentTextChanged.connect(self._enable_non_tiff)
+
+    def _enable_non_tiff(self, f):
+        if f == 'tiff':
+            self._enable_non_tiff_ui(False)
+        else:
+            self._enable_non_tiff_ui(True)
+
+    def _enable_non_tiff_ui(self, b=True):
+        self.radioAuto.setEnabled(b)
+        self.radioFromViewer.setEnabled(b)
+        self.sliderFPS_Scaling.setEnabled(True)
+
+    def file_path_dialog(self):
+        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Export filename, do not type an extension', '', '(*.*)')
+        if path == '':
+            return
+
+        self.lineEdPath.setText(path[0])

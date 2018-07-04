@@ -139,17 +139,6 @@ class ImageView(QtWidgets.QWidget):
         # Set the main viewer objects to None so that proceeding methods know that these objects
         # don't exist for certain cases.
         self.workEnv = ViewerWorkEnv()
-        self.currBatch = None
-
-        # Initialize list of bands that indicate stimulus times
-        self.currStimMapBg = []
-        self.stimMapWin = None
-
-        self.mesfileMap = None
-
-        self.ui.comboBoxStimMaps.setDisabled(True)
-        self.ui.comboBoxStimMaps.currentIndexChanged[str].connect(self.displayStimMap)
-
 
         self.ignoreTimeLine = False
 
@@ -170,15 +159,11 @@ class ImageView(QtWidgets.QWidget):
 
         self.ui.histogram.setImageItem(self.imageItem)
 
-        self.menu = None
-
-        self.ui.roiPlot.registerPlot(self.name + '_ROI')  # I don't know what this does, It was included with the original ImageView class
+        self.ui.roiPlot.registerPlot(self.name + '_ROI')
         self.view.register(self.name)
 
         self.noRepeatKeys = [QtCore.Qt.Key_Right, QtCore.Qt.Key_Left, QtCore.Qt.Key_Up,
                              QtCore.Qt.Key_Down, QtCore.Qt.Key_PageUp, QtCore.Qt.Key_PageDown]
-
-        self.watcherStarted = False
 
         # This is the splitter separating the ImageView and ROI Plot
         self.ui.splitter.setEnabled(True)
@@ -187,8 +172,6 @@ class ImageView(QtWidgets.QWidget):
         self.ui.splitterHighest.setSizes([700, 160])
         self.ui.splitterFilesImage.setSizes([200, 500])
 
-
-        self.currStimMapBg = []
 
         self.timeLine = InfiniteLine(0, movable=True, hoverPen=None)
         self.timeLine.setPen((255, 255, 0, 200))
@@ -722,235 +705,6 @@ class ImageView(QtWidgets.QWidget):
 
     def getMouseClickPos(self):
         pass
-
-#     '''################################################################################################################
-#                                             ROI Methods
-#        ################################################################################################################
-#     '''
-#
-#     def addROI(self, ev=None, load=None):
-#         ''' Method for adding PolyROI's to the plot '''
-#         # self._workEnv_changed()
-#         #self.polyROI = PolyLineROI([[0,0], [10,10], [10,30], [30,10]], closed=True, pos=[0,0], removable=True)
-#         #self.ROICurve = self.ui.roiPlot.plot()
-#
-#         # Create polyROI instance
-#         self.workEnv.ROIList.append(PolyLineROI([[0,0], [10,10], [30,10]],
-#                                                 closed=True, pos=[0,0], removable=True))
-#
-#         self.workEnv.ROIList[-1].tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'), '')
-#         # Create new plot instance for plotting the newly created ROI
-#         self.curve = self.ui.roiPlot.plot()
-#         self.workEnv.CurvesList.append(self.curve)
-#         self.workEnv.CurvesList[-1].setZValue(len(self.workEnv.CurvesList))
-#         # Just some plot initializations, these are these from the original pyqtgraph ImageView class
-#         self.ui.roiPlot.setMouseEnabled(True, True)
-#         self.ui.splitter.setSizes([self.height()*0.6, self.height()*0.4])
-#         self.ui.roiPlot.show()
-#
-#         # Connect signals to the newly created ROI
-#         self.workEnv.ROIList[-1].sigRemoveRequested.connect(self.delROI)
-#         # self.workEnv.ROIList[-1].sigRemoveRequested.connect(self._workEnv_changed)
-#         self.workEnv.ROIList[-1].sigRegionChanged.connect(self.updatePlot)# This is how the curve is plotted to correspond to this ROI
-#         # self.workEnv.ROIList[-1].sigRegionChanged.connect(self._workEnv_changed)
-#         self.workEnv.ROIList[-1].sigHoverEvent.connect(self.boldPlot)
-#         self.workEnv.ROIList[-1].sigHoverEvent.connect(self.setSelectedROI)
-#         self.workEnv.ROIList[-1].sigHoverEnd.connect(self.resetPlot)
-#
-#         # Add the ROI to the scene so it can be seen
-#         self.view.addItem(self.workEnv.ROIList[-1])
-#
-#         if load is not None:
-#             self.workEnv.ROIList[-1].setState(load)
-#
-#         self.ui.listwROIs.addItem(str(len(self.workEnv.ROIList)-1))
-# #        self.ROIlist.append(self.polyROI)
-# #        d = self.ROItagDict.copy()
-# #        self.ROItags.append(d)
-#         # Update the plot to include this ROI which was just added
-#         self.updatePlot(len(self.workEnv.ROIList)-1)
-#         self.ui.listwROIs.setCurrentRow(len(self.workEnv.ROIList)-1)
-#         # So that ROI.tags is never = {}, which would result in NaN's
-#         self.setSelectedROI(len(self.workEnv.ROIList)-1)
-#
-#     def addROI_options(self):
-#         pass
-#
-#     def setSelectedROI(self, roi=None):
-#         if type(roi) == PolyLineROI:
-#             ID = self.workEnv.ROIList.index(roi)
-#             self.ui.listwROIs.setCurrentRow(ID)
-#         else:
-#             if self.ui.listwROIs.currentRow() != -1:
-#                 ID = self.ui.listwROIs.currentRow()
-#             else:
-#                 return
-#
-#         self.ui.lineEdROIDef.clear()
-#
-#         self.checkShowAllROIs()
-#
-#         self.workEnv.ROIList[ID].show()
-#
-#         if self.priorlistwROIsSelection is not None:
-#             try:
-#                 self.workEnv.ROIList[self.priorlistwROIsSelection].setMouseHover(False)
-#             except IndexError:
-#                 pass
-#
-#         self.priorlistwROIsSelection = ID
-#
-#         self.resetPlot()
-#         self.workEnv.ROIList[ID].setMouseHover(True)
-#         self.boldPlot(ID)
-#
-#         if self.ui.listwROIDefs.count() > 0:
-#             for def_id in range(0, self.ui.listwROIDefs.count()):
-#                 self.setROITagListText(ID, def_id)
-#             self.ui.listwROIDefs.setCurrentRow(0)
-#
-#     def checkShowAllROIs(self):
-#         if self.ui.checkBoxShowAllROIs.isChecked() == False:
-#             for roi in self.workEnv.ROIList:
-#                 roi.hide()
-#             return
-#
-#         elif self.ui.checkBoxShowAllROIs.isChecked() == True:
-#             for roi in self.workEnv.ROIList:
-#                 roi.show()
-#
-#     def addROITag(self):
-#         if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
-#             QtWidgets.QMessageBox.question(self, 'Message',
-#                                            'Select an ROI Definition from the list if you want to add tags ',
-#                                            QtWidgets.QMessageBox.Ok)
-#             return
-#
-#         ROI_ID = self.ui.listwROIs.currentRow()
-#         tag = self.ui.lineEdROIDef.text()
-#         definition = self.ui.listwROIDefs.currentItem().text().split(': ')[0]
-#
-#         self.workEnv.ROIList[ROI_ID].tags[definition] = tag
-#
-#         self.setROITagListText(ROI_ID, self.ui.listwROIDefs.currentRow())
-#
-#         self.ui.lineEdROIDef.clear()
-#         print(self.workEnv.ROIList[ROI_ID].tags)
-#
-#     def setROITagListText(self, ROI_ID, DEF_ID):
-#         if self.ui.listwROIDefs.currentRow() == -1 or self.ui.listwROIs.currentRow() == -1:
-#             return
-#         definition = self.ui.listwROIDefs.item(DEF_ID).text().split(': ')[0]
-#
-#         try:
-#             tag = self.workEnv.ROIList[ROI_ID].tags[definition]
-#         except KeyError:
-#             tag = ''
-#             self.workEnv.ROIList[ROI_ID].tags[definition] = tag
-#
-#         self.ui.listwROIDefs.item(DEF_ID).setText(definition + ': ' + tag)
-#         self.ui.listwROIDefs.setCurrentRow(min(DEF_ID + 1, self.ui.listwROIDefs.count() - 1))
-#
-#     def delROI(self,roiPicked):
-#         ''' Pass in the roi object from ROI.sigRemoveRequested()
-#         gets the index position of this particular ROI from the ROIlist
-#         removes that ROI from the scene and removes it from the list
-#         AND removes the corresponding curve.'''
-#
-#         ID = self.workEnv.ROIList.index(roiPicked)
-#
-#         self.view.removeItem(self.workEnv.ROIList[ID])
-#         del self.workEnv.ROIList[ID]
-#
-# #        del self.ROItags[ID]
-#
-#         self.ui.listwROIs.takeItem(ID)
-#
-#
-#         for i in range(0, len(self.ui.listwROIs)):
-#             self.ui.listwROIs.item(i).setText(str(i))
-#
-#         if isinstance(self.workEnv.CurvesList[ID], np.ndarray) is False:
-#             self.workEnv.CurvesList[ID].clear()
-#         del self.workEnv.CurvesList[ID]
-#
-#          # Resets the color in the order of a bright rainbow, kinda.
-#          # ***** SHOULD REPLACE BY USING COLORMAP METHOD FROM PYQTGRAPH
-#         self.resetPlot()
-#         for ix in range(0,len(self.workEnv.ROIList)):
-#             self.updatePlot(ix)
-#
-#     '''
-#     ###############################################################################################################
-#                                             Plot methods
-#     ###############################################################################################################
-#     '''
-#
-#     # Pass the index of the ROI OR the ROI object itself for which you want to update the plot
-#     def updatePlot(self, ID, force=False):
-#         ''' If the index of the ROI in the ROIlist isn't passed as an argument to this function
-#          it will find the index of the ROI object which was passed. This comes from the Qt signal
-#          from the ROI: PolyLineROI.sigRegionChanged.connect'''
-#         if force is False and self.ui.btnPlot.isChecked() is False:
-#             return
-#
-#         if type(ID) != int:
-#             ID = self.workEnv.ROIList.index(ID)
-#
-#         color = self.ROIcolors[ID%(len(self.ROIcolors))]
-#         self.workEnv.ROIList[ID].setPen(color)
-#
-#         # This stuff is from pyqtgraph's original class
-#         image = self.getProcessedImage()
-#         if image.ndim == 2:
-#             axes = (0, 1)
-#         elif image.ndim == 3:
-#             axes = (1, 2)
-#         else:
-#             return
-#
-#         # Get the ROI region
-#         data = self.workEnv.ROIList[ID].getArrayRegion((image.view(np.ndarray)), self.imageItem, axes)#, returnMappedCoords=True)
-#         #,returnMappedCoords=True)
-#         if data is not None:
-#             while data.ndim > 1:
-#                 data = data.mean(axis=1)
-#             if image.ndim == 3:
-#                 # Set the curve
-#                 # Fo = np.mean(np.take(data, np.arange(0, 300)))
-#                 # data = np.divide(np.subtract(data, Fo), Fo)
-#                 self.workEnv.CurvesList[ID].setData(y=data, x=self.tVals)
-#                 self.workEnv.CurvesList[ID].setPen(color)
-#                 self.workEnv.CurvesList[ID].show()
-#             else:
-#                 while coords.ndim > 2:
-#                     coords = coords[:,:,0]
-#                 coords = coords - coords[:,0,np.newaxis]
-#                 xvals = (coords**2).sum(axis=0) ** 0.5
-#                 self.workEnv.CurvesList[ID].setData(y=data, x=xvals)
-#
-#     ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
-#     # Make the curve bold & white. Used here when mouse hovers over the ROI. called by PolyLineROI.sigHoverEvent
-#     def boldPlot(self, ID):
-#         if type(ID) is not int:
-#             ID = self.workEnv.ROIList.index(ID)
-#         self.workEnv.CurvesList[ID].setPen(width=2)
-#
-#     ''' SHOULD ADD TO PLOT CLASS ITSELF SO THAT THESE METHODS CAN BE USED ELSEWHERE OUTSIDE OF IMAGEVIEW '''
-#     # Used to un-bold and un-white, called by PolyLineROI.sigHoverEnd
-#     def resetPlot(self): #Set plot color back to what it was before
-#         for ID in range(0,len(self.workEnv.ROIList)):
-#             color = self.ROIcolors[ID%(len(self.ROIcolors))]
-#             self.workEnv.ROIList[ID].setPen(color)
-#             self.workEnv.CurvesList[ID].setPen(color)
-#
-#     def plotAll(self):
-#         if self.ui.btnPlot.isChecked() == False:
-#             return
-#         for ID in range(0, len(self.workEnv.ROIList)):
-#             self.updatePlot(ID)
-#
-
 
     def quickMinMax(self, data):
         """

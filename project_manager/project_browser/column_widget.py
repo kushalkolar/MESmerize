@@ -25,7 +25,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     signal_items_selected = QtCore.pyqtSignal(list)
     signal_sample_id_delete_request = QtCore.pyqtSignal(str)
 
-    def __init__(self, parent, tab_name, column_name, is_root=False):
+    def __init__(self, parent, tab_name: str, column_name: str, is_root=False):
         # super(ColumnWidget, self).__init__(parent)
         QtWidgets.QWidget.__init__(self, parent=parent)
         # Ui_column_template.__init__(self)
@@ -161,7 +161,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         self.listWidget.addItems(['Empty'])
         self.setDisabled(True)
 
-    def btn_apply_clicked_emit_dict(self, option=None):
+    def btn_apply_clicked_emit_dict(self, option: str = None):
         d = {'column_widget': self, 'option': option}
 
         self.signal_apply_clicked.emit(d)
@@ -176,7 +176,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
     def line_edit_view_all_in_text_browser(self):
         pass
 
-    def set_modifier(self, modifier):
+    def set_modifier(self, modifier: str):
         text = self.lineEdit.text()
         self.lineEdit.setText(modifier + text)
 
@@ -213,7 +213,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
         lineEdit_greater_than_eq.triggered.connect(partial(self.set_num_modifier, '$>=:'))
         self.lineEditMenu.addAction(lineEdit_greater_than_eq)
 
-    def set_num_modifier(self, modifier):
+    def set_num_modifier(self, modifier: str):
         text = self.lineEdit.text()
         self.lineEdit.setText(modifier + text)
 

@@ -79,17 +79,23 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if not self.vi.discard_workEnv():
             return
         try:
+            self.vi.viewer.status_bar_label.showMessage('Loading image sequence from mesfile please wait...')
             self.vi.viewer.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split(': ')[0])
         except KeyError as ke:
             QtWidgets.QMessageBox.warning(self, 'Error', str(ke), QtWidgets.QMessageBox.Ok)
+            self.vi.viewer.status_bar_label.clearMessage()
+            return
 
         except Exception:
             QtWidgets.QMessageBox.warning(self, 'Error', 'Error opening the selected ' + \
                                           'image in the currently open mes file.\n' +
                                           traceback.format_exc(), QtWidgets.QMessageBox.Ok)
+            self.vi.viewer.status_bar_label.clearMessage()
             return
 
+        self.vi.viewer.status_bar_label.showMessage('Setting Stimulus Map...')
         self.set_stimulus_map()
+        self.vi.viewer.status_bar_label.showMessage('Finished setting stimulus map!')
         self.vi.update_workEnv()
         self.vi.enable_ui(True)
 
@@ -163,3 +169,4 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                                   '" in channel <' + channel + '>.\n' + traceback.format_exc())
 
         smm.set_all_data(stimulus_dataframes)
+        smm.export_to_work_env()

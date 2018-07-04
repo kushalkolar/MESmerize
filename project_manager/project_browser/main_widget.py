@@ -60,7 +60,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
     def _create_root_context_menu(self):
         pass
 
-    def add_tab(self, dataframe, filter_history, is_root=False, name=None):
+    def add_tab(self, dataframe: pd.DataFrame, filter_history: list, is_root=False, name: str = None):
         if not is_root and name is None:
             tab_name = QtWidgets.QInputDialog.getText(self, None, 'Enter name for new tab: ')
             if tab_name[0] == '' or tab_name[1] is False:
@@ -112,7 +112,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         configuration.project_manager.remove_child_dataframe(tab_name)
 
     @QtCore.pyqtSlot(str)
-    def slot_open_sample_id_in_viewer(self, sample_id):
+    def slot_open_sample_id_in_viewer(self, sample_id: str):
         viewers = configuration.window_manager.viewers
 
         if len(viewers) == 0:
@@ -128,7 +128,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         else:
             self.open_sample_id_in_viewer(viewers[0], sample_id)
 
-    def open_sample_id_in_viewer(self, viewers, sample_id):
+    def open_sample_id_in_viewer(self, viewers, sample_id: str):
         if not isinstance(viewers, WindowClass):
             viewer = viewers.viewer_reference
         else:
