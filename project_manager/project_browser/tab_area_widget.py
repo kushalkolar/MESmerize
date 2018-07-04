@@ -26,7 +26,7 @@ class TabAreaWidget(QtWidgets.QWidget):
     signal_new_tab_requested = QtCore.pyqtSignal(pd.DataFrame, list)
     signal_open_sample_in_viewer_requested = QtCore.pyqtSignal(str)
 
-    def __init__(self, parent, tab_name, dataframe, filter_history, is_root=False):
+    def __init__(self, parent, tab_name: str, dataframe: pd.DataFrame, filter_history: list, is_root=False):
         QtWidgets.QWidget.__init__(self, parent)
 
         self.vertical_layout = QtWidgets.QVBoxLayout(self)
@@ -76,7 +76,7 @@ class TabAreaWidget(QtWidgets.QWidget):
             column.set_empty()
 
     @QtCore.pyqtSlot(dict)
-    def slot_filter_requested(self, d):
+    def slot_filter_requested(self, d: dict):
         column_widget = d['column_widget']
 
         dataframe = self.dataframe.copy()

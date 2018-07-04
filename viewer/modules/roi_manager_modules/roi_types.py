@@ -26,9 +26,10 @@ ROIClasses = TypeVar('T', bound='AbstractBaseROI')
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
     def __init__(self, curve_plot_item: pg.PlotDataItem,
-                 view_box: pg.ViewBox, state=None):
+                 view_box: pg.ViewBox, state: dict = None):
         assert isinstance(curve_plot_item, pg.PlotDataItem)
         self.curve_plot_item = curve_plot_item
+        self.curve_plot_item.setZValue(1)
 
         if state is None:
             self._tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'))
@@ -181,7 +182,7 @@ class ManualROI(AbstractBaseROI):
             return roi_graphics_object
 
     @classmethod
-    def from_state(cls, curve_plot_item, view_box, state):
+    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
         roi_graphics_object = ManualROI.get_generic_roi_graphics_object(state['shape'], (10, 10))
         return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box, state=state)
 
@@ -192,6 +193,7 @@ class CNMFROI(AbstractBaseROI):
                  curve_data=None, contour=None, state=None):
         """
         :type: curve_data: np.ndarray
+        :param curve_data: 1D numpy array of y values
         :type: contour: np.ndarray
         :type  state: dict
         """
@@ -248,7 +250,7 @@ class CNMFROI(AbstractBaseROI):
         return state
 
     @classmethod
-    def from_state(cls, curve_plot_item, view_box, state):
+    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
         return cls(curve_plot_item=curve_plot_item, view_box=view_box, state=state)
 
 
@@ -460,7 +462,7 @@ class ROIList(list):
         self.previous_index = self.current_index
         roi.reset_color()
 
-    def slot_show_all_checkbox_clicked(self, b):
+    def slot_show_all_checkbox_clicked(self, b: bool):
         if b:
             self._show_all_graphics_objects()
         else:
@@ -468,7 +470,7 @@ class ROIList(list):
             ix = self.list_widget.currentRow()
             self._show_graphics_object(ix)
 
-    def _show_graphics_object(self, ix):
+    def _show_graphics_object(self, ix: int):
         try:
             roi = self.__getitem__(ix)
         except IndexError:
@@ -477,7 +479,7 @@ class ROIList(list):
         roi_graphics_object.show()
         roi.curve_plot_item.show()
 
-    def _hide_graphics_object(self, ix):
+    def _hide_graphics_object(self, ix: int):
         roi = self.__getitem__(ix)
         roi_graphics_object = roi.get_roi_graphics_object()
         roi_graphics_object.hide()
@@ -491,10 +493,10 @@ class ROIList(list):
         for ix in range(self.__len__()):
             self._hide_graphics_object(ix)
 
-    def _live_update_requested(self, roi):
+    def _live_update_requested(self, roi: AbstractBaseROI):
         ix = self.index(roi)
         if self.roi_types == 'CNMFROI':
-            raise TypeError
+            raise TypeError('Can only live update Manually drawn ROIs when they are moved')
 
         self.vi.workEnv_changed('ROI Region')
 
@@ -559,12 +561,12 @@ class ROIList(list):
         i = self.list_widget_tags.currentRow() + 1
         self.list_widget_tags.setCurrentRow(min(i, n))
 
-    def get_tag(self, ix, roi_def):
+    def get_tag(self, ix: int, roi_def: str) -> str:
         roi_def = self.list_widget_tags.currentItem().text().split[0]
         roi = self.__getitem__(ix)
         return roi.get_tag(roi_def)
 
-    def get_all_tags(self, ix):
+    def get_all_tags(self, ix: int) -> dict:
         roi = self.__getitem__(ix)
         return roi.get_all_tags()
 

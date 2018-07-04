@@ -13,7 +13,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
-from functools import partial
 
 
 class WindowManager:
@@ -32,7 +31,7 @@ class WindowManager:
         else:
             return self._batch_manager
 
-    def show_project_browser(self, i):
+    def show_project_browser(self, i: int):
         self.project_browsers[i].show()
 
     def initalize(self):

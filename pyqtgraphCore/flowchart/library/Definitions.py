@@ -73,41 +73,40 @@ class AlignStims(CtrlNode):
                   }
 
         t = Transmission.empty_df(self.transmission)  # empty_df(), self.transmission.src)
-        for ix, r in self.transmission.df.iterrows():
+        for ix, r in transmission.df.iterrows():
             try:
-                smap = r['stimMaps'].flatten()[0][stim_def]
-                # print(smap)
+                smap = r['stim_maps'][0][0][stim_def]
             except KeyError:
                 continue
-            # print(r)
             curve = r['curve']
-            for stim in smap:
-                if stim_tag in stim[0][0]:
-                    if curve is None:
-                        continue
-                    stim_start = stim[-1][0]
-                    stim_end = stim[-1][1]
+            if curve is None:
+                continue
+            for i, stim in smap.iterrows():
+                stim_start = stim['start']
+                stim_end = stim['end']
 
-                    if zero_pos == 'start_offset':
+                if zero_pos == 'start_offset':
 
-                        tstart = max(stim_start + start_offset, 0)
-                        tend = min(stim_end + end_offset, len(curve))
+                    tstart = max(stim_start + start_offset, 0)
+                    tend = min(stim_end + end_offset, len(curve) - 1)
 
-                    elif zero_pos == 'stim_end':
-                        tstart = stim_end
-                        tend = tstart + end_offset
+                elif zero_pos == 'stim_end':
+                    tstart = stim_end
+                    tend = min(tstart + end_offset, len(curve) - 1)
 
-                    elif zero_pos == 'stim_center':
-                        tstart = int(((stim_start + stim_end) / 2)) + start_offset
-                        tend = min(stim_end + end_offset, len(curve))
+                elif zero_pos == 'stim_center':
+                    tstart = int(((stim_start + stim_end) / 2)) + start_offset
+                    tend = min(stim_end + end_offset, len(curve) - 1)
 
-                    rn = r.copy()
-                    # stim_extract = curve[int(tstart):int(tend)]
-                    stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
-                    rn['curve'] = stim_extract / np.min(stim_extract)
-                    rn[stim_def] = stim[0][0]
-                    #
-                    t.df = t.df.append(rn, ignore_index=True)
+                rn = r.copy()
+
+                stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
+
+                rn['curve'] = stim_extract
+
+                rn[stim_def] = ['name']
+
+                t.df = t.df.append(rn, ignore_index=True)
 
         t.src.append({'AlignStims': params})
         # print('ALIGN_STIMS APPENDED')

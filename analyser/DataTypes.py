@@ -11,13 +11,10 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-import sys
-sys.path.append('..')
 import pandas as pd
 import numpy as np
 import pickle
 from copy import deepcopy
-from MesmerizeCore.misc_funcs import empty_df
 from uuid import uuid4
 
 
@@ -38,7 +35,7 @@ class BaseTransmission:
         """
         self.df = df
         self.src = src
-
+        self.kwargs = kwargs
         self.kwargs_keys = list(kwargs.keys())
 
         for key in self.kwargs_keys:
@@ -81,9 +78,9 @@ class BaseTransmission:
         :return: empty DataFrame with the columns in this Transmission's dataframe along with any additional columns
         that were specified.
         """
-        c = list(transmission.df.columns)
-        e_df = empty_df(cols=c, addCols=addCols)
-        return cls(e_df, transmission.src)
+        c = list(transmission.df.columns) + addCols
+        e_df = pd.DataFrame(columns=c)
+        return cls(e_df, transmission.src, **transmission.kwargs)
 
 
 class Transmission(BaseTransmission):
@@ -98,7 +95,7 @@ class Transmission(BaseTransmission):
         :return: Transmission class object
         """
         df = dataframe.copy()
-        df[['curve', 'meta', 'stimMaps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+        df[['curve', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
         df['raw_curve'] = df['curve']
         
         try:
@@ -122,19 +119,20 @@ class Transmission(BaseTransmission):
         pikPath = proj_path + row['ImgInfoPath']
         pik = pickle.load(open(pikPath, 'rb'))
         meta = pik['meta']
+        stim_maps = pik['stim_maps']
+        
+        return pd.Series({'curve': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
 
-        return pd.Series({'curve': npz.f.curve[1], 'meta': meta, 'stimMaps': npz.f.stimMaps})
-
-    @classmethod
-    def empty_df(cls, transmission, addCols=[]):
-        """
-        :return: Same transmission with dataframe containing empty rows (columns preserved)
-        """
-        c = list(transmission.df.columns)
-        e_df = empty_df(cols=c, addCols=addCols)
-        return cls(e_df, src=transmission.src,
-                   STIM_DEFS=transmission.STIM_DEFS,
-                   ROI_DEFS=transmission.ROI_DEFS)
+    # @classmethod
+    # def empty_df(cls, transmission, addCols=[]):
+    #     """
+    #     :return: Same transmission with dataframe containing empty rows (columns preserved)
+    #     """
+    #     c = list(transmission.df.columns) + addCols
+    #     e_df = pd.DataFrame(columns=c)
+    #     return cls(e_df, src=transmission.src,
+    #                STIM_DEFS=transmission.STIM_DEFS,
+    #                ROI_DEFS=transmission.ROI_DEFS)
 
 
 class GroupTransmission(BaseTransmission):

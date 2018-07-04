@@ -12,12 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from ..core.common import ViewerInterface
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.roi_manager_pytemplate import *
-import numpy as np
-from common import configuration
-from ..core.viewer_work_environment import ViewerWorkEnv
-from pyqtgraphCore.graphicsItems import ROI
 from .roi_manager_modules import managers
 from functools import partial
 

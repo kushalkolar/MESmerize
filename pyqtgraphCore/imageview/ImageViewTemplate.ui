@@ -29,47 +29,6 @@
        </property>
        <widget class="QWidget" name="layoutWidget">
         <layout class="QGridLayout" name="gridLayout_8">
-         <item row="3" column="2">
-          <widget class="QLabel" name="label_6">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>18</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Stimulus Maps:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="2">
-          <widget class="QComboBox" name="comboBoxStimMaps">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>25</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Choose a Stimulus Map to display on the Timeline</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="2">
           <widget class="QPushButton" name="btnExportWorkEnv">
            <property name="text">
@@ -99,7 +58,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0" rowspan="6" colspan="2">
+         <item row="0" column="0" rowspan="4" colspan="2">
           <widget class="GraphicsView" name="graphicsView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -153,7 +112,6 @@
   <tabstop>roiPlot</tabstop>
   <tabstop>histogram</tabstop>
   <tabstop>graphicsView</tabstop>
-  <tabstop>comboBoxStimMaps</tabstop>
  </tabstops>
  <resources/>
  <connections/>

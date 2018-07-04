@@ -15,18 +15,10 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtGui, QtWidgets
 # from pyqtgraphCore.widgets.ColorButton import ColorButton
 import pandas as pd
-from functools import partial
 from common import configuration
-
-if __name__ == '__main__':
-    from stimmap_modules.page import Page
-    from stimmap_modules.row import Row, ColorButton
-    from stimulus_mapping import ModuleGUI as StimulusMappingModuleGUI
-
-else:
-    from .stimmap_modules.page import Page
-    from .stimmap_modules.row import Row, ColorButton
-    from .stimulus_mapping import ModuleGUI# as StimulusMappingModuleGUI
+from .stimmap_modules.page import Page
+from .stimmap_modules.row import Row, ColorButton
+from .stimulus_mapping import ModuleGUI# as StimulusMappingModuleGUI
 
 
 class MesStimmapGUI(ModuleGUI):

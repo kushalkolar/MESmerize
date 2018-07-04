@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ImageViewTemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -28,21 +28,6 @@ class Ui_Form(object):
         self.gridLayout_8 = QtWidgets.QGridLayout(self.layoutWidget)
         self.gridLayout_8.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_8.setObjectName("gridLayout_8")
-        self.label_6 = QtWidgets.QLabel(self.layoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
-        self.label_6.setSizePolicy(sizePolicy)
-        self.label_6.setMaximumSize(QtCore.QSize(16777215, 18))
-        self.label_6.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_6.setObjectName("label_6")
-        self.gridLayout_8.addWidget(self.label_6, 3, 2, 1, 1)
-        self.comboBoxStimMaps = QtWidgets.QComboBox(self.layoutWidget)
-        self.comboBoxStimMaps.setMinimumSize(QtCore.QSize(0, 25))
-        self.comboBoxStimMaps.setMaximumSize(QtCore.QSize(16777215, 22))
-        self.comboBoxStimMaps.setObjectName("comboBoxStimMaps")
-        self.gridLayout_8.addWidget(self.comboBoxStimMaps, 4, 2, 1, 1)
         self.btnExportWorkEnv = QtWidgets.QPushButton(self.layoutWidget)
         self.btnExportWorkEnv.setObjectName("btnExportWorkEnv")
         self.gridLayout_8.addWidget(self.btnExportWorkEnv, 0, 2, 1, 1)
@@ -63,7 +48,7 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.graphicsView.sizePolicy().hasHeightForWidth())
         self.graphicsView.setSizePolicy(sizePolicy)
         self.graphicsView.setObjectName("graphicsView")
-        self.gridLayout_8.addWidget(self.graphicsView, 0, 0, 6, 2)
+        self.gridLayout_8.addWidget(self.graphicsView, 0, 0, 4, 2)
         self.roiPlot = PlotWidget(self.splitter)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -78,13 +63,10 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
         Form.setTabOrder(self.roiPlot, self.histogram)
         Form.setTabOrder(self.histogram, self.graphicsView)
-        Form.setTabOrder(self.graphicsView, self.comboBoxStimMaps)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.label_6.setText(_translate("Form", "Stimulus Maps:"))
-        self.comboBoxStimMaps.setToolTip(_translate("Form", "Choose a Stimulus Map to display on the Timeline"))
         self.btnExportWorkEnv.setText(_translate("Form", "Export workEnv"))
 
 from ..widgets.GraphicsView import GraphicsView

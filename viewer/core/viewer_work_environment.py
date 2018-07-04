@@ -257,8 +257,8 @@ class ViewerWorkEnv:
         # Dict that's later used for pickling
         d = {'sample_id':   self.sample_id,
              'meta':        self.imgdata.meta,
-             'stimMaps':    self.imgdata.stimMaps,
-             'comments':    self.comments
+             'stim_maps':   self.stim_maps,
+             'comments':    self.comments,
              }
 
         if self.roi_manager is not None:
@@ -324,37 +324,33 @@ class ViewerWorkEnv:
         self._saved = False
 
         # Create a dict that contains all stim definitions as keys that refer to a list of all the stims for that sample
-        stimMapsSet = {}
+        stimuli_unique_sets = {}
         # This list is just used for gathering all new stims to add to the config file. This is just used for
         # populating the comboBoxes in the stimMapWidget GUI so that the widget doesn't need to access the DataFrame
         # for this simple task.
-        new_stims = []
+        new_stimuli = []
         if self.stim_maps is None:
             for stim_def in configuration.proj_cfg.options('STIM_DEFS'):
-                stimMapsSet[stim_def] = ['untagged']
+                stimuli_unique_sets[stim_def] = ['untagged']
         else:
-            for stim_type in self.stim_maps.keys():
-                stimList = []
-                if self.stim_maps[stim_type] is None:
-                    stimMapsSet[stim_type] = ['untagged']
+            for stim_def in self.stim_maps.keys():
+                stimuli = []
+
+                if self.stim_maps[stim_def] is None:
+                    stimuli_unique_sets[stim_def] = ['untagged']
                     continue
 
-                stimList.append(self.stim_maps[stim_type]['dataframe']['name'].values)
+                stimuli += list(self.stim_maps[stim_def]['dataframe']['name'].values)
 
+                stimuli_unique_sets[stim_def] = list(set(stimuli))
 
-                stimMapsSet[stimMap] = list(set(stimList))
-
-                # for key in configuration.proj_cfg.options('STIM_DEFS'):
-                #     if self.stim_maps[key] is None:
-                #         stimMapsSet[key] = ['untagged']
-
-                for stim in stimMapsSet[stimMap]:
+                for stim in stimuli_unique_sets[stim_def]:
                     if stim not in configuration.proj_cfg['ALL_STIMS'].keys():
-                        new_stims.append(stim)
+                        new_stimuli.append(stim)
 
         # print(stimMapsSet)
 
-        configuration.proj_cfg['ALL_STIMS'] = {**configuration.proj_cfg['ALL_STIMS'], **dict.fromkeys(new_stims)}
+        configuration.proj_cfg['ALL_STIMS'] = {**configuration.proj_cfg['ALL_STIMS'], **dict.fromkeys(new_stimuli)}
         configuration.save_proj_config()
 
         if self.imgdata.meta is not None:
@@ -390,7 +386,7 @@ class ViewerWorkEnv:
 
             curve_path = curves_dir + '/' + str(ix).zfill(5) + '.npz'
 
-            np.savez(curve_path, curve=curve_data, stimMaps=self.imgdata.stimMaps)
+            np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
             d = {'SampleID': self.sample_id,
                  'CurvePath': curve_path.split(proj_path)[1],
@@ -403,7 +399,7 @@ class ViewerWorkEnv:
 
             dicts.append({**d,
                           **self.custom_columns_dict,
-                          **stimMapsSet,
+                          **stimuli_unique_sets,
                           **roi_tags})
 
         # for ix in range(0, len(self.CurvesList)):
