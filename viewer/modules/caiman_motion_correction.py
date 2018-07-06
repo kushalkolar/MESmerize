@@ -84,15 +84,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.overlapsV = []
 
     def _make_params_dict(self):
-        d = {'max_shifts_x': self.ui.spinboxX.value(),
-             'max_shifts_y': self.ui.spinboxY.value(),
-             'iters_rigid': self.ui.spinboxIterRigid.value(),
-             'name_rigid': self.ui.lineEditNameRigid.text(),
-             'max_dev': self.ui.spinboxMaxDev.value(),
-             'strides': self.ui.sliderStrides.value(),
-             'overlaps': self.ui.sliderOverlaps.value(),
-             'upsample': self.ui.spinboxUpsample.value(),
-             'name_elas': self.ui.lineEditNameElastic.text()
+        d = {'max_shifts_x':        self.ui.spinboxX.value(),
+             'max_shifts_y':        self.ui.spinboxY.value(),
+             'iters_rigid':         self.ui.spinboxIterRigid.value(),
+             'name_rigid':          self.ui.lineEditNameRigid.text(),
+             'max_dev':             self.ui.spinboxMaxDev.value(),
+             'strides':             self.ui.sliderStrides.value(),
+             'overlaps':            self.ui.sliderOverlaps.value(),
+             'upsample':            self.ui.spinboxUpsample.value(),
+             'name_elas':           self.ui.lineEditNameElastic.text(),
+             'output_bit_depth':    self.ui.comboBoxOutputBitDepth.currentText()
              }
         return d
 

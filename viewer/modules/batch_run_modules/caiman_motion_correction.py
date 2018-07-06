@@ -86,7 +86,13 @@ def run(batch_dir, UUID, n_processes):
         #
         # else:
         m_els -= np.nanmin(m_els)
-        m_els = m_els.astype(np.uint8, copy=False)
+
+        if input_params['output_bit_depth'] == 'Do not convert':
+            pass
+        elif input_params['output_bit_depth'] == '8':
+            m_els = m_els.astype(np.uint8, copy=False)
+        elif input_params['output_bit_depth'] == '16':
+            m_els = m_els.astype(np.uint16)
 
         tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True)
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
