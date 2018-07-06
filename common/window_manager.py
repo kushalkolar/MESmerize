@@ -9,6 +9,8 @@ Chatzigeorgiou Group
 Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -16,9 +18,16 @@ from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 
 
 class WindowManager:
+    """"""
     def __init__(self):
         self._welcome_window = None
         self._batch_manager = None
+
+        self.project_browsers = None
+        self.viewers = None
+        self.flowcharts = None
+        self.plots = None
+        self.clustering_windows = None
 
     def get_batch_manager(self) -> BatchModuleGUI:
         if self._batch_manager is None:
@@ -49,6 +58,8 @@ class WindowManager:
 
 
 class WindowClass(list):
+    """Simple management of the main windows of a certain type
+     and the associated windows list widget on the welcome window"""
     def __init__(self, window_name: str):
         super(WindowClass, self).__init__()
         self.window_name = window_name

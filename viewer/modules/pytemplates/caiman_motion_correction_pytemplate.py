@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './caiman_motion_correction.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,12 +11,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(238, 503)
+        DockWidget.resize(253, 546)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.gridLayout = QtWidgets.QGridLayout(self.dockWidgetContents)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.label_16 = QtWidgets.QLabel(self.dockWidgetContents)
         font = QtGui.QFont()
@@ -33,12 +32,12 @@ class Ui_DockWidget(object):
         self.label_11.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_11.setObjectName("label_11")
         self.horizontalLayout_21.addWidget(self.label_11)
-        self.comboBox = QtWidgets.QComboBox(self.dockWidgetContents)
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.horizontalLayout_21.addWidget(self.comboBox)
+        self.comboBoxOutputBitDepth = QtWidgets.QComboBox(self.dockWidgetContents)
+        self.comboBoxOutputBitDepth.setObjectName("comboBoxOutputBitDepth")
+        self.comboBoxOutputBitDepth.addItem("")
+        self.comboBoxOutputBitDepth.addItem("")
+        self.comboBoxOutputBitDepth.addItem("")
+        self.horizontalLayout_21.addWidget(self.comboBoxOutputBitDepth)
         self.gridLayout.addLayout(self.horizontalLayout_21, 1, 0, 1, 1)
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
@@ -249,9 +248,9 @@ class Ui_DockWidget(object):
         self.label_16.setToolTip(_translate("DockWidget", "Compute some summary images (correlation and peak to noise ratio)"))
         self.label_16.setText(_translate("DockWidget", "Rigid correction"))
         self.label_11.setText(_translate("DockWidget", "Output bit depth: "))
-        self.comboBox.setItemText(0, _translate("DockWidget", "8"))
-        self.comboBox.setItemText(1, _translate("DockWidget", "16"))
-        self.comboBox.setItemText(2, _translate("DockWidget", "Do not convert"))
+        self.comboBoxOutputBitDepth.setItemText(0, _translate("DockWidget", "Do not convert"))
+        self.comboBoxOutputBitDepth.setItemText(1, _translate("DockWidget", "8"))
+        self.comboBoxOutputBitDepth.setItemText(2, _translate("DockWidget", "16"))
         self.label_9.setText(_translate("DockWidget", " max shifts X (pixels): "))
         self.label_13.setText(_translate("DockWidget", " max shifts Y (pixels): "))
         self.label_6.setText(_translate("DockWidget", " iterations for rigid: "))

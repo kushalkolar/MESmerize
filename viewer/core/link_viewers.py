@@ -61,7 +61,6 @@ class ViewerLinkages(QtWidgets.QWidget):
         for item in self.ui.listWidgetReceivers.items():
             item.setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
-
         qmodel_ixs = self.ui.listWidgetReceivers.selectedIndexes()
         receiver_ixs = [ix.row() for ix in qmodel_ixs]
 

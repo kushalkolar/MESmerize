@@ -44,21 +44,21 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           'continue!', QtWidgets.QMessageBox.Ok)
             return None
 
-        d = {'Input': self.ui.comboBoxInput.currentText(),
-             'frate': self.vi.viewer.workEnv.imgdata.meta['fps'],
-             'gSig': self.ui.spinBoxGSig.value(),
-             'min_corr': self.ui.doubleSpinBoxMinCorr.value(),
-             'min_pnr': self.ui.spinBoxMinPNR.value(),
-             'min_SNR': self.ui.spinBoxMinSNR.value(),
-             'r_values_min': self.ui.doubleSpinBoxRValuesMin.value(),
-             'decay_time': self.ui.spinBoxDecayTime.value(),
-             'rf': self.ui.spinBoxRf.value(),
-             'stride': self.ui.spinBoxOverlap.value(),
-             'gnb': self.ui.spinBoxGnb.value(),
-             'nb_patch': self.ui.spinBoxNb_patch.value(),
-             'k': self.ui.spinBoxK.value(),
-             'name_corr_pnr': self.ui.lineEdCorrPNRName.text(),
-             'name_cnmfe': self.ui.lineEdName.text()
+        d = {'Input':           self.ui.comboBoxInput.currentText(),
+             'frate':           self.vi.viewer.workEnv.imgdata.meta['fps'],
+             'gSig':            self.ui.spinBoxGSig.value(),
+             'min_corr':        self.ui.doubleSpinBoxMinCorr.value(),
+             'min_pnr':         self.ui.spinBoxMinPNR.value(),
+             'min_SNR':         self.ui.spinBoxMinSNR.value(),
+             'r_values_min':    self.ui.doubleSpinBoxRValuesMin.value(),
+             'decay_time':      self.ui.spinBoxDecayTime.value(),
+             'rf':              self.ui.spinBoxRf.value(),
+             'stride':          self.ui.spinBoxOverlap.value(),
+             'gnb':             self.ui.spinBoxGnb.value(),
+             'nb_patch':        self.ui.spinBoxNb_patch.value(),
+             'k':               self.ui.spinBoxK.value(),
+             'name_corr_pnr':   self.ui.lineEdCorrPNRName.text(),
+             'name_cnmfe':      self.ui.lineEdName.text()
              }
 
         return d

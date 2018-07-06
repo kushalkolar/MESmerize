@@ -9,6 +9,9 @@ Chatzigeorgiou Group
 Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+A back-end module for managing most project related functions, such as the root dataframe and all children,
+adding rows to the root dataframe, updating child dataframes, and updating the project configuration.
 """
 
 from PyQt5 import QtCore
