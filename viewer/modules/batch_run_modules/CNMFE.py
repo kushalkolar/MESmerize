@@ -277,11 +277,5 @@ class Output(QtWidgets.QWidget):
                                            dims=self.dims,
                                            input_params_dict=input_params)
 
-
-# class QuestionBox(QtWidgets.QWidget):
-#     def __init__(self):
-#         super(QuestionBox, self).__init__()
-
-
 if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2], sys.argv[3])

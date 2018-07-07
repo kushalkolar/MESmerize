@@ -127,6 +127,7 @@ def run(batch_dir, UUID, n_processes):
 
     json.dump(output, open(file_path + '.out', 'w'))
 
+
 class Output(QtWidgets.QWidget):
     def __init__(self, batch_dir, UUID, viewer_ref):
         # super(Output, self).__init__()
@@ -216,3 +217,6 @@ class Output(QtWidgets.QWidget):
                                            dims=self.dims,
                                            input_params_dict=input_params,
                                            dfof=True)
+
+if sys.argv[0] == __file__:
+    run(sys.argv[1], sys.argv[2], sys.argv[3])

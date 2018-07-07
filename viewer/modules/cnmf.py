@@ -113,6 +113,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                info=d
                                )
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')
+        self.ui.lineEdName.clear()
 
     @QtCore.pyqtSlot()
     def update_available_inputs(self):
