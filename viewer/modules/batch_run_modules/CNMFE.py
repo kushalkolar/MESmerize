@@ -70,22 +70,13 @@ def run(batch_dir, UUID, n_processes):
     k = input_params['k']
 
     filename = [filename]
-    # filename_reorder = fnames
-    print('***** Starting CNMFE Pool *****')
-    print('***** No live output beyond this point =O *****')
 
-    # dview = Pool(n_processes)pickle_pat
+    print('*********** Creating Process Pool ***********')
+
     c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
                                                      n_processes=n_processes,
-                                                     # number of process to use, if you go out of memory try to reduce this one
                                                      single_thread=False)
-    print('Pool started')
-    # dview.terminate()
-    # self.output.update({'baaaaaaaaaaah': 34534534})
-    # self.signals.finished.emit()
-    # print('****** sigFinished emitted ********')
-    # dview = Pool(configuration.n_processes)
-    # create memory mappable file in the right order on the hard drive (C order)
+
     bord_px = 10
     try:
         print('Creating memmap')
@@ -114,17 +105,6 @@ def run(batch_dir, UUID, n_processes):
                 os.remove(mf)
 
             return
-        # inspect the summary images and set the parameters
-        # inspect_correlation_pnr(cn_filter, pnr)
-        #
-        #
-        # reduced from .8
-        # min_corr = .89  # min correlation of peak (from correlation image)
-        # min_pnr = 4  # min peak to noise ratio
-        # min_SNR = 1  # adaptive way to set threshold on the transient size
-        # threshold on space consistency (if you lower more components will be accepted, potentially with worst quality)
-        # r_values_min = 0.7
-        # decay_time = 10  # decay time of transients/indocator
 
         cnm = cnmf.CNMF(n_processes=n_processes,
                         method_init='corr_pnr',  # use this for 1 photon
@@ -165,8 +145,6 @@ def run(batch_dir, UUID, n_processes):
             decay_time, gSig, dims, dview=dview,
             min_SNR=min_SNR, r_values_min=r_values_min, use_cnn=False)
 
-        print((len(cnm.C)))
-        print((len(idx_components)))
         # np.save(filename[:-5] + '_curves.npy', cnm.C)
         filename = filename[0]
         pickle.dump(Yr, open(filename[:-5] + '_Yr.pikl', 'wb'), protocol=4)

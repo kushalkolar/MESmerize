@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>462</width>
-    <height>783</height>
+    <height>901</height>
    </rect>
   </property>
   <property name="floating">
@@ -21,6 +21,50 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="26" column="0">
+     <widget class="QLabel" name="label_18">
+      <property name="text">
+       <string>dF/F frames window</string>
+      </property>
+     </widget>
+    </item>
+    <item row="27" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_16">
+      <item>
+       <widget class="QLabel" name="label_29">
+        <property name="text">
+         <string>frames_window:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxFramesWindow">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999</number>
+        </property>
+        <property name="value">
+         <number>250</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_13">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
     <item row="8" column="0">
      <widget class="QLabel" name="label_24">
       <property name="text">
@@ -314,7 +358,7 @@
       </item>
      </layout>
     </item>
-    <item row="32" column="0">
+    <item row="35" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_11">
       <item>
        <widget class="QLineEdit" name="lineEdName">
@@ -345,7 +389,7 @@
       </item>
      </layout>
     </item>
-    <item row="33" column="0">
+    <item row="36" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_12">
       <item>
        <widget class="QPushButton" name="btnExport">
@@ -573,6 +617,50 @@
        </spacer>
       </item>
      </layout>
+    </item>
+    <item row="29" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_17">
+      <item>
+       <widget class="QLabel" name="label_30">
+        <property name="text">
+         <string>quantileMin:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxQuantileMin">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>99</number>
+        </property>
+        <property name="value">
+         <number>8</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_17">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item row="28" column="0">
+     <widget class="QLabel" name="label_35">
+      <property name="text">
+       <string>dF/F quantileMin</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -55,7 +55,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'min_SNR':         self.ui.doubleSpinBoxMinSNR.value(),
              'rval_thr':        self.ui.doubleSpinBoxRvalThr.value(),
              'cnn_thr':         self.ui.doubleSpinBoxCNNThr.value(),
-             'decay_time':      self.ui.spinBoxDecayTime.value()
+             'decay_time':      self.ui.spinBoxDecayTime.value(),
+             'frames_window':   self.ui.spinBoxFramesWindow.value(),
+             'quantileMin':     self.ui.spinBoxQuantileMin.value()
              }
 
         return d
