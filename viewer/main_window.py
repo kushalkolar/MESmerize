@@ -40,6 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # TODO: Integrate viewer initiation here instead of outside
         self.ui.actionMesfile.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
+        self.ui.actionCNMF.triggered.connect(lambda: self.run_module(cnmf.ModuleGUI))
         self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
         self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
