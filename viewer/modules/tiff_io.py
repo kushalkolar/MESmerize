@@ -72,12 +72,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         try:
             self.vi.viewer.workEnv = ViewerWorkEnv.from_tiff(path=tiff_path,
-                                                              method=method,
-                                                              meta_path=self.ui.labelFileMeta.text())
+                                                             method=method,
+                                                             meta_path=self.ui.labelFileMeta.text())
             self.vi.update_workEnv()
             self.vi.enable_ui(True)
             self.vi.viewer.status_bar_label.showMessage('File loaded into work environment!')
         except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
+            QtWidgets.QMessageBox.warning(self, 'File open Error!',
+                                          'Could not open the chosen file.\n' + traceback.format_exc())
             self.vi.viewer.status_bar.clearMessage()
             return

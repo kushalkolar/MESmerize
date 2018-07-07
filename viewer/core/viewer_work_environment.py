@@ -224,8 +224,7 @@ class ViewerWorkEnv:
     @classmethod
     def from_tiff(cls, path: str, method: str, meta_path: str = ''):
         """
-        Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
-        tifffile.imread and any csv stimulus map that the user may want to apply.
+        Return instance of work environment with ImgData.seq set from tifffile.imread.
         """
 
         if method == 'imread':

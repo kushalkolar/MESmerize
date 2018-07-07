@@ -9,15 +9,14 @@ Chatzigeorgiou Group
 Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+Adapted from @agiovann and @epnev
 """
 
 from __future__ import division
-from __future__ import print_function
 from builtins import range
 import sys
-# sys.path.append('/home/kushal/Sars_stuff/github-repos/CaImAn/caiman')
 import cv2
-
 try:
     cv2.setNumThreads(1)
 except:
@@ -33,7 +32,7 @@ import traceback
 import numba
 from glob import glob
 
-if not len(sys.argv) > 1:
+if not sys.argv[0] == __file__:
     from ...core.common import ViewerInterface
     from ...core.viewer_work_environment import ViewerWorkEnv
 

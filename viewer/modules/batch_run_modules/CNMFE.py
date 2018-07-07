@@ -8,10 +8,11 @@ Chatzigeorgiou Group
 Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+Adapted from @agiovann and @epnev
 """
 
 from __future__ import division
-from __future__ import print_function
 import sys
 # from ..common import ViewerInterface, BatchRunInterface
 # from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
@@ -29,18 +30,15 @@ from builtins import str
 from builtins import map
 from builtins import range
 from past.utils import old_div
-
 import numpy as np
 import matplotlib.pyplot as plt
 from caiman.source_extraction import cnmf
 from caiman.utils.utils import download_demo
 from caiman.utils.visualization import inspect_correlation_pnr
 from caiman.components_evaluation import estimate_components_quality_auto
-from caiman.motion_correction import motion_correct_oneP_rigid, motion_correct_oneP_nonrigid
 import os
 import pickle
 from glob import glob
-# from multiprocessing import Pool
 from functools import partial
 import traceback
 
