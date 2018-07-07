@@ -129,10 +129,7 @@ class ViewerWorkEnv:
             except KeyError:
                 sample_id = p['imdata']['SampleID']
 
-            imdata = ImgData(seq,
-                             p['imdata']['meta'],
-                             stimMaps=p['imdata']['stimMaps'],
-                             )
+            imdata = ImgData(seq, p['imdata']['meta'])
 
             comments = p['imdata']['comments']
 

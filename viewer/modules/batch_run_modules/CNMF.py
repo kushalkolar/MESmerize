@@ -15,20 +15,11 @@ Adapted from @agiovann and @epnev
 from __future__ import division
 import sys
 import cv2
-import glob
+from glob import glob
 try:
     cv2.setNumThreads(1)
 except:
     print('Open CV is naturally single threaded')
-try:
-    if __IPYTHON__:
-        print("Running under iPython")
-        # this is used for debugging purposes only. allows to reload classes
-        # when changed
-        get_ipython().magic('load_ext autoreload')
-        get_ipython().magic('autoreload 2')
-except NameError:
-    pass
 import caiman as cm
 import numpy as np
 import os
@@ -66,6 +57,7 @@ def run(batch_dir, UUID, n_processes):
     stride_cnmf = input_params['stride_cnmf']
     K = input_params['k']
     gSig = input_params['gSig']
+    gSig = [gSig, gSig]
     min_SNR = input_params['min_SNR']
     rval_thr = input_params['rval_thr']
     cnn_thr = input_params['cnn_thr']
@@ -154,10 +146,10 @@ class Output(QtWidgets.QWidget):
 
         self.btnCNMF = QtWidgets.QPushButton()
         self.btnCNMF.setText('CaImAn CNMF visualization')
-        layout.addWidget(self.btnCNMFE)
+        layout.addWidget(self.btnCNMF)
 
         self.btnImportIntoViewer = QtWidgets.QPushButton()
-        self.btnImportIntoViewer.setText('Import CNMFE output into chosen Viewer')
+        self.btnImportIntoViewer.setText('Import CNMF output into chosen Viewer')
         layout.addWidget(self.btnImportIntoViewer)
 
         self.setLayout(layout)
@@ -177,20 +169,24 @@ class Output(QtWidgets.QWidget):
 
     def output_cnmf(self):  # , batch_dir, UUID, viewer_ref):
         pass
-        # filename = self.batch_dir + '/' + str(self.UUID)
-        #
-        # self.get_cnmf_results()
-        #
-        # Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
-        #
-        # cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-        # cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-        # cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-        # cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        # self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
-        #                                                              self.cnmC[self.idx_components], cnmb, cnm_f,
-        #                                                              self.dims[0], self.dims[1],
-        #                                                              YrA=cnmYrA[self.idx_components], img=cn_filter)
+        filename = self.batch_dir + '/' + str(self.UUID)
+
+        self.get_cnmf_results()
+
+        Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
+
+        cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
+        cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+        cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+
+        img = tifffile.imread(self.batch_dir + '/' + str(self.UUID) + '.tiff')
+        Cn = cm.local_correlations(img.transpose(1, 2, 0))
+        Cn[np.isnan(Cn)] = 0
+
+        self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
+                                                                     self.cnmC[self.idx_components], cnmb, cnm_f,
+                                                                     self.dims[0], self.dims[1],
+                                                                     YrA=cnmYrA[self.idx_components], img=Cn)
 
     def import_cnmf_into_viewer(self):
         self.get_cnmf_results()
@@ -218,4 +214,5 @@ class Output(QtWidgets.QWidget):
                                            cnmC=self.F_dff,
                                            idx_components=self.idx_components,
                                            dims=self.dims,
-                                           input_params_dict=input_params)
+                                           input_params_dict=input_params,
+                                           dfof=True)

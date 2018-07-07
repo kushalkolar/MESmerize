@@ -12,11 +12,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from ..core.common import ViewerInterface
-from ..core.viewer_work_environment import ViewerWorkEnv
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.cnmf_pytemplate import *
 import json
-import numpy as np
 from common import configuration
 
 
@@ -44,7 +41,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return None
 
         d = {'Input':           self.ui.comboBoxInput.currentText(),
-             'fr':           self.vi.viewer.workEnv.imgdata.meta['fps'],
+             'fr':              self.vi.viewer.workEnv.imgdata.meta['fps'],
              'p':               self.ui.spinBoxP.value(),
              'gnb':             self.ui.spinBoxGnb.value(),
              'merge_thresh':    self.ui.doubleSpinBoxMergeThresh.value(),
@@ -97,14 +94,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         #                                   'The chosen file is not a valid CNMF-E params file.\n' + str(e))
 
     def add_to_batch_cnmf(self):
-        if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
-            if self.vi.viewer.workEnv.isEmpty:
-                QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
-                                                                              'nothing to add to batch')
-                return
-            input_workEnv = self.vi.viewer.workEnv
-        else:
-            input_workEnv = self.ui.comboBoxInput.currentText()
+        input_workEnv = self.vi.viewer.workEnv
 
         d = self._make_params_dict()
 

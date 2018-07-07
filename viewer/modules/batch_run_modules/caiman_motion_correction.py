@@ -14,7 +14,6 @@ Adapted from @agiovann and @epnev
 """
 
 from __future__ import division
-from builtins import range
 import sys
 import cv2
 try:

@@ -76,9 +76,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.workEnv.roi_manager = self.manager
         self.ui.btnSwitchToManualMode.setEnabled(True)
 
-    def add_all_cnmfe_components(self, cnmA, cnmC, idx_components, dims, input_params_dict):
+    def add_all_cnmfe_components(self, *args, **kwargs):
         assert isinstance(self.manager, managers.ManagerCNMFE)
-        self.manager.add_all_components(cnmA, cnmC, idx_components, dims, input_params_dict)
+        self.manager.add_all_components(*args, **kwargs)
 
     def start_manual_mode(self):
         print('staring manual mode')
