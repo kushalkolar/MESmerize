@@ -124,13 +124,16 @@ class ManagerCNMFE(AbstractBaseManager):
     def create_roi_list(self):
         self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
 
-    def add_all_components(self, cnmA, cnmC, idx_components, dims, input_params_dict):
+    def add_all_components(self, cnmA, cnmC, idx_components, dims, input_params_dict, dfof=False):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
         contours = caiman_get_contours(cnmA[:, idx_components], dims)
-        temporal_components = cnmC[idx_components]
+        if dfof:
+            temporal_components = cnmC
+        else:
+            temporal_components = cnmC[idx_components]
         self.input_params_dict = self.input_params_dict
-        num_components = len(contours)
+        num_components = len(temporal_components)
         for ix in range(num_components):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
                                                         + str(ix) + ' / ' + str(num_components))

@@ -397,7 +397,7 @@ class ModuleGUI(QtWidgets.QWidget):
         vi = ViewerInterface(viewer_reference)
         UUID = uuid.uuid4()
 
-        if module == 'CNMFE' or module == 'caiman_motion_correction':
+        if module == 'CNMFE' or module == 'caiman_motion_correction' or module == 'CNMF':
             filename = self.batch_path + '/' + str(UUID) + '.tiff'
             tifffile.imsave(filename, data=input_workEnv.imgdata.seq.T, bigtiff=True)
             input_workEnv.to_pickle(self.batch_path, filename=str(UUID) + '_workEnv', save_img_seq=False)
