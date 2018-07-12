@@ -336,7 +336,7 @@ class ViewerWorkEnv:
                     stimuli_unique_sets[stim_def] = ['untagged']
                     continue
 
-                stimuli += list(self.stim_maps[stim_def]['dataframe']['name'].values)
+                stimuli += list(self.stim_maps[stim_def]['name'].values)
 
                 stimuli_unique_sets[stim_def] = list(set(stimuli))
 
