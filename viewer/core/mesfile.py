@@ -11,11 +11,9 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-import scipy.io as spio
 import numpy as np
-# from .misc_funcs import fix_fp_errors
 import traceback
-# from common.misc_functions import floating_point_equality
+from common.misc_functions import *
 
 
 class MES:
@@ -42,7 +40,7 @@ class MES:
         """
         :param filename: full path of a single .mes file
         """
-        self.main_dict = self._loadmat(filename)
+        self.main_dict = MatlabFuncs.loadmat(filename)
 
         self.main_dict_keys = [x for x in self.main_dict.keys()]
         self.main_dict_keys.sort()
