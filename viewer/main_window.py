@@ -61,6 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
     @viewer_reference.setter
     def viewer_reference(self, viewer: ImageView):
         self._viewer = viewer
+        self._viewer.workEnv = ViewerWorkEnv()
 
         self.run_module(roi_manager.ModuleGUI, hide=True)
         self.roi_manager = self.running_modules[-1]

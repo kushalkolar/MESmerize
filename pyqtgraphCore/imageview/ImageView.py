@@ -40,8 +40,8 @@ from .. import getConfigOption
 from pyqtgraph import plot as pgplot
 from multiprocessing import Process, Queue
 import numpy as np
-from common import configuration  # DO NOT REMOVE THIS LINE OR YOU WILL GET CIRCULAR IMPORTS AND BREAK EVERYTHING
-from viewer.core.viewer_work_environment import ViewerWorkEnv
+#from common import configuration  # DO NOT REMOVE THIS LINE OR YOU WILL GET CIRCULAR IMPORTS AND BREAK EVERYTHING
+#from viewer.core.viewer_work_environment import ViewerWorkEnv
 # from common import configuration
 # from MesmerizeCore import misc_widgets
 # import MesmerizeCore.Export
@@ -138,7 +138,7 @@ class ImageView(QtWidgets.QWidget):
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
         # don't exist for certain cases.
-        self.workEnv = ViewerWorkEnv()
+        self.workEnv = None
 
         self.ignoreTimeLine = False
 
