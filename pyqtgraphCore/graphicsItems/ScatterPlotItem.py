@@ -14,6 +14,7 @@ from .. import getConfigOption
 from ..pgcollections import OrderedDict
 from .. import debug
 from ..python2_3 import basestring
+from uuid import UUID
 
 __all__ = ['ScatterPlotItem', 'SpotItem']
 
@@ -243,7 +244,7 @@ class ScatterPlotItem(GraphicsObject):
         self.picture = None   # QPicture used for rendering when pxmode==False
         self.fragmentAtlas = SymbolAtlas()
 
-        self.data = np.empty(0, dtype=[('x', np.float64), ('y', np.float64), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
+        self.data = np.empty(0, dtype=[('x', np.float64), ('y', np.float64), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('uuid', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
         self.bounds = [None, None]  ## caches data bounds
         self._maxSpotWidth = 0      ## maximum size of the scale-variant portion of all spots
         self._maxSpotPxWidth = 0    ## maximum size of the scale-invariant portion of all spots
@@ -388,6 +389,9 @@ class ScatterPlotItem(GraphicsObject):
         elif 'y' in kargs:
             newData['x'] = kargs['x']
             newData['y'] = kargs['y']
+
+        if 'uuid' in kargs:
+            newData['uuid'] = kargs['uuid']
 
         if 'pxMode' in kargs:
             self.setPxMode(kargs['pxMode'])
@@ -853,9 +857,14 @@ class SpotItem(object):
         #GraphicsItem.__init__(self, register=False)
         self._data = data
         self._plot = plot
+        self._uuid = data['uuid']
         #self.setParentItem(plot)
         #self.setPos(QtCore.QPointF(data['x'], data['y']))
         #self.updateItem()
+
+    @property
+    def uuid(self) -> UUID:
+        return self._uuid
 
     def data(self):
         """Return the user data associated with this spot."""
