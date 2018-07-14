@@ -244,7 +244,7 @@ class ScatterPlotItem(GraphicsObject):
         self.picture = None   # QPicture used for rendering when pxmode==False
         self.fragmentAtlas = SymbolAtlas()
 
-        self.data = np.empty(0, dtype=[('x', np.float64), ('y', np.float64), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('uuid', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
+        self.data = np.empty(0, dtype=[('x', np.float64), ('y', np.float64), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('uuid', object), ('orig_brush', object), ('orig_pen', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
         self.bounds = [None, None]  ## caches data bounds
         self._maxSpotWidth = 0      ## maximum size of the scale-variant portion of all spots
         self._maxSpotPxWidth = 0    ## maximum size of the scale-invariant portion of all spots
@@ -364,6 +364,11 @@ class ScatterPlotItem(GraphicsObject):
 
         newData = self.data[len(oldData):]
         newData['size'] = -1  ## indicates to use default size
+
+        if 'brush' in kargs:
+            newData['orig_brush'] = kargs['brush']
+        if 'pen' in kargs:
+            newData['orig_pen'] = kargs['pen']
 
         if 'spots' in kargs:
             spots = kargs['spots']
@@ -926,6 +931,7 @@ class SpotItem(object):
     def resetPen(self):
         """Remove the pen set for this spot; the scatter plot's default pen will be used instead."""
         self._data['pen'] = None  ## Note this is NOT the same as calling setPen(None)
+        # self._data['pen'] = self._data['orig_pen']
         self.updateItem()
 
     def brush(self):
@@ -943,6 +949,7 @@ class SpotItem(object):
     def resetBrush(self):
         """Remove the brush set for this spot; the scatter plot's default brush will be used instead."""
         self._data['brush'] = None  ## Note this is NOT the same as calling setBrush(None)
+        # self._data['brush'] = self._data['orig_brush']
         self.updateItem()
 
     def setData(self, data):

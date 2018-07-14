@@ -4,8 +4,7 @@ Example beeswarm / bar chart
 """
 import sys
 sys.path.append('..')
-from pyqtgraphCore import ScatterPlotItem, PlotWidget, pseudoScatter, GraphicsLayoutWidget, mkColor
-from pyqtgraphCore import GraphicsLayoutWidget
+from pyqtgraphCore import ScatterPlotItem, SpotItem, pseudoScatter, mkColor, GraphicsLayoutWidget
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import numpy as np
 import pandas as pd
@@ -39,7 +38,7 @@ class BeeswarmPlot(QtCore.QObject):
         self.infinite_lines = []
         self.title = ''
         self.current_datapoint = None
-        self.lastClicked= []
+        self.lastClicked = []
     
     def set_plot_data(self, ix: int, dataframe: pd.DataFrame, plot_columns: list, plot_column_colors: list = None):
         if ix > len(self.plots) - 1:
@@ -79,54 +78,28 @@ class BeeswarmPlot(QtCore.QObject):
             yvals = dataframe[column]
             xvals = pseudoScatter(yvals, spacing=0.4, bidir=True) * 0.2
             scatter_plot = self.scatter_plots[ix]
-            scatter_plot.addPoints(x=xvals + i, y=yvals, uuid=self.dataframe['uuid'], name=column, brush=color, pen=color, symbol='o', size=10)
+            scatter_plot.addPoints(x=xvals + i, y=yvals, uuid=self.dataframe['uuid'], name=column, brush=color, pen='k', symbol='o', size=10)
         scatter_plot.sigClicked.connect(self._clicked)
 
     def _clicked(self, plot, points):
-        print('yay')
-        print(plot)
-        print(points)
-        self.lastClicked.append(points)
+        for i, p in enumerate(self.lastClicked):
+            assert isinstance(p, SpotItem)
+            print(p._data)
+            p.setPen(p._data['orig_pen'])
+            p.setBrush(p._data['orig_brush'])
+
         if len(points) == 1:
-            print(points[0].uuid)
-#        return
-#        i = 0
-#        for item in self.inflines:
-#            self.inflplots[i].removeItem(item)
-#            i += 1
-#
-#        self.inflplots = []
-#        self.inflines = []
-#        for ii, p in enumerate(self.lastClicked):
-#            p.resetPen()
-#            p.setBrush(self.lastClickedColors[i])
-#            ii += 1
-#        self.lastClickedColors = []
-#        for p in points:
-#            self.lastClickedColors.append(p.brush())
-#            p.setPen('w', width=4)
-#        self.lastClicked = points
-#        if len(self.lastClicked) == 1:
-#            yval = self.lastClicked[0].pos()[1]
-#
-##            fcolvals = self.df[plot.name()].values
-#
-#            ix = np.where(fcolvals == yval)[0][0]
-#
-#            #            ix = self.df[self.df[plot.name()] == yval].index[0]
-#
-#            #            print(self.df.iloc[ix])
-#            for f in self.fcols:
-#                try:
-#                    val = self.df.iloc[ix][f]
-#                    il = pg.InfiniteLine(pos=val, angle=0, pen='w')
-#
-#                    print(self.df.iloc[ix])
-#                    self.plots[f].addItem(il)
-#                    self.inflines.append(il)
-#                    self.inflplots.append(self.plots[f])
-#                except ValueError as e:
-#                    continue
+            p = points[0]
+            assert isinstance(p, SpotItem)
+            print(p.uuid)
+
+        for p in points:
+            assert isinstance(p, SpotItem)
+            p.setPen('w')
+            p.setBrush('w')
+
+        self.lastClicked = points
+
     @property
     def spot_color(self, group: str):
         pass
