@@ -4,25 +4,14 @@ Example beeswarm / bar chart
 """
 import sys
 sys.path.append('..')
-from pyqtgraphCore import ScatterPlotItem, PlotWidget, pseudoScatter
+from pyqtgraphCore import ScatterPlotItem, PlotWidget, pseudoScatter, GraphicsLayoutWidget, mkColor
 from pyqtgraphCore import GraphicsLayoutWidget
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import numpy as np
 import pandas as pd
 from uuid import uuid4, UUID
+from matplotlib import cm as matplotlib_color_map
 
-#win = pg.plot()
-#win.setWindowTitle('pyqtgraph example: beeswarm')
-
-data = np.random.normal(size=(4,20))
-data[0] += 5
-data[1] += 7
-data[2] += 5
-data[3] = 10 + data[3] * 2
-df = pd.DataFrame(data.T, columns=['a', 'b', 'c', 'd'])
-uuids = [uuid4() for i in range(20)]
-dfuuid = pd.DataFrame(uuids, columns=['uuid'])
-df = pd.concat([df, dfuuid], axis=1)
 
 ## Make bar graph
 #bar = pg.BarGraphItem(x=range(4), height=data.mean(axis=1), width=0.5, brush=0.4)
@@ -37,37 +26,62 @@ df = pd.concat([df, dfuuid], axis=1)
 #err = pg.ErrorBarItem(x=np.arange(4), y=data.mean(axis=1), height=data.std(axis=1), beam=0.5, pen={'color':'w', 'width':2})
 #win.addItem(err)
 
-class BeeswarmPlot(QtWidgets.QWidget):
-    def __init__(self):
-        QtWidgets.QWidget.__init__(self)
-        layout = QtWidgets.QVBoxLayout(self)
-        self.plot_widget = PlotWidget(self)
-        self.scatter_plot = None
-        self.plot = None
-        layout.addWidget(self.plot_widget)        
+class BeeswarmPlot(QtCore.QObject):
+    def __init__(self, graphics_view: GraphicsLayoutWidget, parent=None):
+        # QtWidgets.QWidget.__init__(self)
+        QtCore.QObject.__init__(self, parent)
+        # layout = QtWidgets.QVBoxLayout(self)
+        self.graphics_view = graphics_view
+        self.plots = []
+        self.scatter_plots = []
+        # layout.addWidget(self.plot_widget)
         
         self.infinite_lines = []
-        self.dataframe = pd.DataFrame()
         self.title = ''
-        self.plot_columns = []
         self.current_datapoint = None
         self.lastClicked= []
     
-    def set_data(self, dataframe: pd.DataFrame, title: str, plot_columns: list):
+    def set_plot_data(self, ix: int, dataframe: pd.DataFrame, plot_columns: list, plot_column_colors: list = None):
+        if ix > len(self.plots) - 1:
+            raise IndexError('Plot index out of range.')
+
         self.dataframe = dataframe
         self.plot_columns = plot_columns
-        self.title = title
-        self._plot()
-    
-    def _plot(self):
-        for i, column in enumerate(self.plot_columns):
-            yvals = self.dataframe[column]
+
+        if plot_column_colors is None:
+            plot_column_colors = self._auto_colormap(len(plot_columns))
+
+        self._plot(ix, dataframe, plot_columns, plot_column_colors)
+
+    def _auto_colormap(self, number_of_colors: int) -> list:
+        cm = matplotlib_color_map.get_cmap('hsv')
+        cm._init()
+        lut = (cm._lut * 255).view(np.ndarray)
+        cm_ixs = np.linspace(0, 210, number_of_colors, dtype=int)
+
+        colors = []
+        for ix in range(number_of_colors):
+            c = lut[cm_ixs[ix]]
+            colors.append(mkColor(c))
+
+        return colors
+
+    def add_plot(self, title: str):
+        plot = self.graphics_view.addPlot(title=title)
+        scatter_plot = ScatterPlotItem(title=title)
+        plot.addItem(scatter_plot)
+        self.scatter_plots.append(scatter_plot)
+        self.plots.append(plot)
+
+    def _plot(self, ix: int, dataframe: pd.DataFrame, plot_columns: list, plot_column_colors: list):
+        for i, column in enumerate(plot_columns):
+            color = plot_column_colors[i]
+            yvals = dataframe[column]
             xvals = pseudoScatter(yvals, spacing=0.4, bidir=True) * 0.2
-            self.scatter_plot = ScatterPlotItem(title='baaaaaaah')
-            self.scatter_plot.setData(x=xvals + i, y=yvals, uuid=self.dataframe['uuid'], name=column, pen=None, symbol='o', size=10)
-            self.scatter_plot.sigClicked.connect(self._clicked)
-            self.plot = self.plot_widget.addItem(self.scatter_plot)
-    
+            scatter_plot = self.scatter_plots[ix]
+            scatter_plot.addPoints(x=xvals + i, y=yvals, uuid=self.dataframe['uuid'], name=column, brush=color, pen=color, symbol='o', size=10)
+        scatter_plot.sigClicked.connect(self._clicked)
+
     def _clicked(self, plot, points):
         print('yay')
         print(plot)
