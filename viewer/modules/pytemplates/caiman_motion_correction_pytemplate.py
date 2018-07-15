@@ -228,6 +228,7 @@ class Ui_DockWidget(object):
         self.lineEditNameElastic.returnPressed.connect(self.btnAddToBatchElastic.click)
         self.lineEditNameRigid.returnPressed.connect(self.btnAddToBatchRigid.click)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
+        DockWidget.setTabOrder(self.comboBoxOutputBitDepth, self.spinboxX)
         DockWidget.setTabOrder(self.spinboxX, self.spinboxY)
         DockWidget.setTabOrder(self.spinboxY, self.spinboxIterRigid)
         DockWidget.setTabOrder(self.spinboxIterRigid, self.lineEditNameRigid)
@@ -239,8 +240,8 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.spinboxOverlaps, self.sliderOverlaps)
         DockWidget.setTabOrder(self.sliderOverlaps, self.btnShowQuilt)
         DockWidget.setTabOrder(self.btnShowQuilt, self.spinboxUpsample)
-        DockWidget.setTabOrder(self.spinboxUpsample, self.lineEditNameElastic)
-        DockWidget.setTabOrder(self.lineEditNameElastic, self.btnAddToBatchElastic)
+        DockWidget.setTabOrder(self.spinboxUpsample, self.btnAddToBatchElastic)
+        DockWidget.setTabOrder(self.btnAddToBatchElastic, self.lineEditNameElastic)
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate

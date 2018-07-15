@@ -668,12 +668,18 @@
  <tabstops>
   <tabstop>comboBoxInput</tabstop>
   <tabstop>spinBoxP</tabstop>
-  <tabstop>spinBoxStrideCNMF</tabstop>
-  <tabstop>doubleSpinBoxRvalThr</tabstop>
-  <tabstop>spinBoxDecayTime</tabstop>
-  <tabstop>spinBoxRf</tabstop>
   <tabstop>spinBoxGnb</tabstop>
+  <tabstop>doubleSpinBoxMergeThresh</tabstop>
+  <tabstop>spinBoxRf</tabstop>
+  <tabstop>spinBoxStrideCNMF</tabstop>
   <tabstop>spinBoxK</tabstop>
+  <tabstop>spinBoxGSig</tabstop>
+  <tabstop>doubleSpinBoxMinSNR</tabstop>
+  <tabstop>doubleSpinBoxRvalThr</tabstop>
+  <tabstop>doubleSpinBoxCNNThr</tabstop>
+  <tabstop>spinBoxDecayTime</tabstop>
+  <tabstop>spinBoxFramesWindow</tabstop>
+  <tabstop>spinBoxQuantileMin</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMF</tabstop>
   <tabstop>btnExport</tabstop>

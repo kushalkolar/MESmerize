@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>462</width>
-    <height>825</height>
+    <height>918</height>
    </rect>
   </property>
   <property name="floating">
@@ -675,6 +675,7 @@ If lower more components will be accepted, potentially with worse quality</strin
  <tabstops>
   <tabstop>comboBoxInput</tabstop>
   <tabstop>spinBoxGSig</tabstop>
+  <tabstop>lineEdCorrPNRName</tabstop>
   <tabstop>btnAddToBatchCorrPNR</tabstop>
   <tabstop>doubleSpinBoxMinCorr</tabstop>
   <tabstop>spinBoxMinPNR</tabstop>

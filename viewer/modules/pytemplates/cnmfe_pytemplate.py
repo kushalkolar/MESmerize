@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './cnmfe_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,12 +12,11 @@ class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(462, 825)
+        DockWidget.resize(462, 918)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.gridLayout = QtWidgets.QGridLayout(self.dockWidgetContents)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.horizontalLayout_18 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_18.setObjectName("horizontalLayout_18")
@@ -286,7 +285,8 @@ class Ui_DockWidget(object):
         self.lineEdName.returnPressed.connect(self.btnAddToBatchCNMFE.click)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
         DockWidget.setTabOrder(self.comboBoxInput, self.spinBoxGSig)
-        DockWidget.setTabOrder(self.spinBoxGSig, self.btnAddToBatchCorrPNR)
+        DockWidget.setTabOrder(self.spinBoxGSig, self.lineEdCorrPNRName)
+        DockWidget.setTabOrder(self.lineEdCorrPNRName, self.btnAddToBatchCorrPNR)
         DockWidget.setTabOrder(self.btnAddToBatchCorrPNR, self.doubleSpinBoxMinCorr)
         DockWidget.setTabOrder(self.doubleSpinBoxMinCorr, self.spinBoxMinPNR)
         DockWidget.setTabOrder(self.spinBoxMinPNR, self.spinBoxMinSNR)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'cnmf_pytemplate.ui'
+# Form implementation generated from reading ui file './cnmf_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -273,13 +273,19 @@ class Ui_DockWidget(object):
         self.lineEdName.returnPressed.connect(self.btnAddToBatchCNMF.click)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
         DockWidget.setTabOrder(self.comboBoxInput, self.spinBoxP)
-        DockWidget.setTabOrder(self.spinBoxP, self.spinBoxStrideCNMF)
-        DockWidget.setTabOrder(self.spinBoxStrideCNMF, self.doubleSpinBoxRvalThr)
-        DockWidget.setTabOrder(self.doubleSpinBoxRvalThr, self.spinBoxDecayTime)
-        DockWidget.setTabOrder(self.spinBoxDecayTime, self.spinBoxRf)
-        DockWidget.setTabOrder(self.spinBoxRf, self.spinBoxGnb)
-        DockWidget.setTabOrder(self.spinBoxGnb, self.spinBoxK)
-        DockWidget.setTabOrder(self.spinBoxK, self.lineEdName)
+        DockWidget.setTabOrder(self.spinBoxP, self.spinBoxGnb)
+        DockWidget.setTabOrder(self.spinBoxGnb, self.doubleSpinBoxMergeThresh)
+        DockWidget.setTabOrder(self.doubleSpinBoxMergeThresh, self.spinBoxRf)
+        DockWidget.setTabOrder(self.spinBoxRf, self.spinBoxStrideCNMF)
+        DockWidget.setTabOrder(self.spinBoxStrideCNMF, self.spinBoxK)
+        DockWidget.setTabOrder(self.spinBoxK, self.spinBoxGSig)
+        DockWidget.setTabOrder(self.spinBoxGSig, self.doubleSpinBoxMinSNR)
+        DockWidget.setTabOrder(self.doubleSpinBoxMinSNR, self.doubleSpinBoxRvalThr)
+        DockWidget.setTabOrder(self.doubleSpinBoxRvalThr, self.doubleSpinBoxCNNThr)
+        DockWidget.setTabOrder(self.doubleSpinBoxCNNThr, self.spinBoxDecayTime)
+        DockWidget.setTabOrder(self.spinBoxDecayTime, self.spinBoxFramesWindow)
+        DockWidget.setTabOrder(self.spinBoxFramesWindow, self.spinBoxQuantileMin)
+        DockWidget.setTabOrder(self.spinBoxQuantileMin, self.lineEdName)
         DockWidget.setTabOrder(self.lineEdName, self.btnAddToBatchCNMF)
         DockWidget.setTabOrder(self.btnAddToBatchCNMF, self.btnExport)
         DockWidget.setTabOrder(self.btnExport, self.btnImport)

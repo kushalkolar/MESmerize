@@ -448,6 +448,7 @@
   </widget>
  </widget>
  <tabstops>
+  <tabstop>comboBoxOutputBitDepth</tabstop>
   <tabstop>spinboxX</tabstop>
   <tabstop>spinboxY</tabstop>
   <tabstop>spinboxIterRigid</tabstop>
@@ -460,8 +461,8 @@
   <tabstop>sliderOverlaps</tabstop>
   <tabstop>btnShowQuilt</tabstop>
   <tabstop>spinboxUpsample</tabstop>
-  <tabstop>lineEditNameElastic</tabstop>
   <tabstop>btnAddToBatchElastic</tabstop>
+  <tabstop>lineEditNameElastic</tabstop>
  </tabstops>
  <resources/>
  <connections>
