@@ -15,10 +15,9 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
 
 class HistoryTreeWidget(QtWidgets.QTreeWidget):
-    def fill_widget(self, src_list):
+    def fill_widget(self, src_list: list):
         """
         :param src_list: List of Transmission.src objects.
-        :type src_list: list
         """
         self.clear()
         self._fill_item(self.invisibleRootItem(), src_list)

@@ -21,6 +21,7 @@ from pyqtgraphCore.console import ConsoleWidget
 from matplotlib import cm as matplotlib_color_map
 import numpy as np
 import os
+from uuid import UUID
 
 
 class PlotWindow(QtWidgets.QMainWindow):
@@ -72,9 +73,14 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         self.ui.dockConsole.hide()
 
+        self.history_traces = {}
+
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:
         return self.statusBar()
+
+    def get_history_trace(self, identifier: UUID) -> list:
+        return self.history_traces[identifier]
 
     def update_input_transmissions(self, transmissions: list):
         self.transmissions = transmissions
@@ -110,7 +116,7 @@ class PlotWindow(QtWidgets.QMainWindow):
             dtype = type(self.dataframe[col].iloc[0])
             if dtype is np.NaN:
                 i = 0
-                while dtype is np.Nan:
+                while dtype is np.NaN:
                     dtype = type(self.dataframe[col].iloc[i])
                     i += 1
 
@@ -124,6 +130,12 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.group_dataframes = [self.dataframe[self.dataframe[grouping_column] == group] for group in self.groups]
 
         self.uuid_column = self.ui.comboBoxUUIDColumn.currentText()
+
+        self.history_traces.clear()
+
+        for t in self.transmissions:
+            d = dict.fromkeys(t.df[self.uuid_column], t.src)
+            self.history_traces.update(d)
 
     def auto_colormap(self, number_of_colors: int, color_map: str = 'hsv') -> list:
         cm = matplotlib_color_map.get_cmap(color_map)
