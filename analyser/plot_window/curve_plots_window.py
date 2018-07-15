@@ -19,6 +19,7 @@ from numpy import ndarray
 class CurvePlotWindow(PlotWindow):
     def __init__(self, parent=None):
         super(CurvePlotWindow, self).__init__(parent)
+        self.setWindowTitle('Curves Plot Window')
 
         self.ui.comboBoxUUIDColumn.setDisabled(True)
 

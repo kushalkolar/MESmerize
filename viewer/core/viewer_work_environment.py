@@ -12,23 +12,15 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 
-import sys
-sys.path.append('..')
-if __name__ == '__main__':
-    from DataTypes import ImgData
-    from mesfile import *
-else:
-    from .mesfile import *
-    from .DataTypes import ImgData
+from .mesfile import *
+from .DataTypes import ImgData
 import numpy as np
 import pickle
-import time
 import tifffile
 import os
 from common import configuration
 from uuid import uuid4
 import json
-
 
 class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None, roi_manager=None, roi_states=None, comments='', origin_file='', custom_columns_dict=None):
@@ -313,8 +305,14 @@ class ViewerWorkEnv:
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = proj_path + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
 
+
         UUID = uuid4()
         img_path = self.to_pickle(imgdir, UUID=UUID)
+
+        max_proj = np.amax(self.imgdata.seq, axis=2)
+        max_proj_path = img_path + '_max_proj.png'
+        tifffile.imsave(max_proj_path, max_proj)
+
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False
@@ -384,10 +382,18 @@ class ViewerWorkEnv:
 
             np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
+            roi_state = {'type': rois['states'][ix]['roi_type'],
+                         'graphics_object': rois['states'][ix]['roi_graphics_object_state']
+                         }
+            if rois['states'][ix]['roi_type'] == 'ManualROI':
+                roi_state.update({'shape': rois['states'][ix]['shape']})
+
             d = {'SampleID': self.sample_id,
                  'CurvePath': curve_path.split(proj_path)[1],
                  'ImgPath': img_path.split(proj_path)[1] + '.tiff',
                  'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
+                 'MaxProjPath': max_proj_path,
+                 'ROI_State': roi_state,
                  'date': date,
                  'uuid_curve': UUID,
                  'comments': comments

@@ -39,9 +39,6 @@ else:
 sys_cfg = configparser.RawConfigParser(allow_no_value=True)
 sys_cfg.optionxform = str
 
-# configpath = None
-
-
 num_types = [int, float, np.int64, np.float64]
 
 
@@ -62,6 +59,15 @@ def write_sys_config():
 
 def open_sys_config():
     sys_cfg.read(sys_cfg_file)
+
+
+if not IS_WINDOWS:
+    sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
+    sys_cfg_file = sys_cfg_path + '/config'
+    if os.path.isfile(sys_cfg_file):
+        open_sys_config()
+    else:
+        write_new_sys_config()
 
 
 #################################################################
@@ -85,20 +91,12 @@ def save_proj_config():
     with open(proj_path + '/config.cfg', 'w') as configfile:
         proj_cfg.write(configfile)
 
-if not IS_WINDOWS:
-    sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
-    sys_cfg_file = sys_cfg_path + '/config'
-    if os.path.isfile(sys_cfg_file):
-        open_sys_config()
-    else:
-        write_new_sys_config()
-
 
 def new_proj_config():
     defaultInclude = ['SampleID', 'date', 'comments']
     proj_cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
-    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'uuid_curve']
+    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'MaxProjPath', 'uuid_curve']
     proj_cfg['EXCLUDE'] = dict.fromkeys(defaultExclude)
 
     proj_cfg['ROI_DEFS'] = {}
@@ -123,5 +121,3 @@ def open_proj_config():
 
 def set_proj_special():
         special['Timings'] = proj_cfg.options('STIM_DEFS')
-
-

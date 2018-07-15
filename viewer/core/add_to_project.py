@@ -23,6 +23,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
 
     def __init__(self, work_environment: ViewerWorkEnv):
         QtWidgets.QWidget.__init__(self)
+        self.setWindowTitle('Add to project')
 
         self.ui = Ui_Form()
         self.ui.setupUi(self)

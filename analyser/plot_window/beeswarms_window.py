@@ -22,7 +22,7 @@ class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):
     signal_changed = QtCore.pyqtSignal(str, dict)
 
     def __init__(self, parent=None):
-        super(ControlWidget, self).__init__(parent)#parent)
+        super(ControlWidget, self).__init__(parent)  # parent)
         self.setupUi(parent)
 
     def apply_all_settings(self):
@@ -46,7 +46,7 @@ class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):
 class BeeswarmPlotWindow(PlotWindow):
     def __init__(self, parent=None):
         super(BeeswarmPlotWindow, self).__init__(parent)
-
+        self.setWindowTitle('Beeswarm Plot Window')
         # self.plot_obj = BeeswarmPlot(self.ui.graphicsView, self)
         # self.plot_obj.signal_spot_clicked.connect(print)
 
@@ -65,12 +65,20 @@ class BeeswarmPlotWindow(PlotWindow):
         self.control_widget.btnTraceDatapoint.clicked.connect(self.open_datapoint_tracer)
         self.datapoint_tracers = []
 
+        self.live_datapoint_tracer = DatapointTracerWidget()
+        self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)
+
     def get_current_datapoint(self) -> UUID:
         return self.current_datapoint
 
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = identifier
+        self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
+                                              parent=self,
+                                              row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
+                                              history_trace=self.get_history_trace(identifier),
+                                              )
 
     def update_params(self):
         super(BeeswarmPlotWindow, self).update_params()
@@ -91,7 +99,8 @@ class BeeswarmPlotWindow(PlotWindow):
             return
 
         for i, data_column in enumerate(self.data_columns):
-            msg = 'Progress: ' + str(((i + 1) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
+            msg = 'Progress: ' + str(
+                ((i + 1) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
             self.status_bar.showMessage(msg)
             self.beeswarm_plot.add_plot(data_column)
 
@@ -106,12 +115,13 @@ class BeeswarmPlotWindow(PlotWindow):
 
     def open_datapoint_tracer(self):
         identifier = self.get_current_datapoint()
-        self.datapoint_tracers.append(DatapointTracerWidget(datapoint_uuid=identifier,
-                                                            parent=self,
-                                                            row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
-                                                            history_trace=self.get_history_trace(identifier),
-                                                            )
-                                      )
+        self.datapoint_tracers.append(DatapointTracerWidget())
+
+        self.datapoint_tracers[-1].set_widget(datapoint_uuid=identifier,
+                                              parent=self,
+                                              row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
+                                              history_trace=self.get_history_trace(identifier),
+                                              )
         self.datapoint_tracers[-1].show()
 
 if __name__ == '__main__':

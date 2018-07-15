@@ -32,6 +32,7 @@ class ColumnsPage(QtWidgets.QWidget):
     def __init__(self, parent=None, *args):
         QtWidgets.QWidget.__init__(self, parent, *args)
         self._context_menu_selected_list_widget = None
+        self.setWindowTitle('Project Configuration')
 
     def setupGUI(self):
         self.ui = Ui_Form()

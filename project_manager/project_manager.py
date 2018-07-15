@@ -198,4 +198,3 @@ class ProjectManager(QtCore.QObject):
         self.backup_project_dataframe()
         self.dataframe = self.dataframe[self.dataframe['SampleID'] != sample_id]
         self.emit_signal_dataframe_changed()
-

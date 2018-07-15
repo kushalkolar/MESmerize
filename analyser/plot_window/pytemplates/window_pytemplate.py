@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1037, 660)
+        MainWindow.resize(1231, 701)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -97,7 +97,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.splitter_2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1037, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1231, 23))
         self.menubar.setObjectName("menubar")
         self.menuView = QtWidgets.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
@@ -114,7 +114,11 @@ class Ui_MainWindow(object):
         self.actionConsole = QtWidgets.QAction(MainWindow)
         self.actionConsole.setCheckable(True)
         self.actionConsole.setObjectName("actionConsole")
+        self.actionLive_datapoint_tracer = QtWidgets.QAction(MainWindow)
+        self.actionLive_datapoint_tracer.setCheckable(False)
+        self.actionLive_datapoint_tracer.setObjectName("actionLive_datapoint_tracer")
         self.menuView.addAction(self.actionConsole)
+        self.menuView.addAction(self.actionLive_datapoint_tracer)
         self.menubar.addAction(self.menuView.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -137,4 +141,5 @@ class Ui_MainWindow(object):
         self.menuView.setTitle(_translate("MainWindow", "View"))
         self.dockConsole.setWindowTitle(_translate("MainWindow", "Console: Plot Window"))
         self.actionConsole.setText(_translate("MainWindow", "Console"))
+        self.actionLive_datapoint_tracer.setText(_translate("MainWindow", "Live datapoint tracer"))
 
