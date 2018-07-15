@@ -38,6 +38,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.data_columns = []
         self.groups = []
         self.group_dataframes = []
+        self.uuid_column = ''
 
         self.graphicsViews = {}
 
@@ -81,6 +82,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.dataframe = pd.concat(dfs)#, axis=1)
         self.dataframe.reset_index(inplace=True)
         self.dataframe.drop(columns=['index'], inplace=True)
+        self.dataframe = self.dataframe.sample(n=100, axis=0)
 
         columns = self.dataframe.columns.tolist()
 
@@ -92,9 +94,6 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.ui.comboBoxUUIDColumn.clear()
         self.ui.comboBoxUUIDColumn.addItems(columns)
         self.ui.comboBoxUUIDColumn.setCurrentIndex(columns.index(next(column for column in columns if 'uuid' in column)))
-
-    def set_specific_plot_controls_ui(self, control_widget):
-        pass
 
     def add_plot_tab(self, title: str):
         self.graphicsViews.update({title: GraphicsLayoutWidget(parent=self.ui.tabWidget)})

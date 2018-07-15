@@ -2,11 +2,9 @@
 """
 Example beeswarm / bar chart
 """
-import sys
-sys.path.append('..')
-from pyqtgraphCore import ScatterPlotItem, SpotItem, pseudoScatter, mkColor, GraphicsLayoutWidget
+
+from pyqtgraphCore import ScatterPlotItem, SpotItem, pseudoScatter, GraphicsLayoutWidget
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-import numpy as np
 import pandas as pd
 from uuid import UUID
 
@@ -50,12 +48,10 @@ class BeeswarmPlot(QtCore.QObject):
         self.scatter_plots.append({'scatter_plot': scatter_plot, 'i': 0})
         self.plots.append(plot)
 
-    def add_data_to_plot(self, ix: int, data_series: pd.Series, uuid_series, name, color):
+    def add_data_to_plot(self, ix: int, data_series: pd.Series, uuid_series: pd.Series, name, color):
         if ix > len(self.plots) - 1:
             raise IndexError('Plot index out of range.')
-    #     self._plot(ix, )
-    #
-    # def _plot(self, ix: int, series: pd.Series, name, color):
+
         not_nan = data_series.notna()
         yvals = data_series[not_nan].values
         xvals = pseudoScatter(yvals, spacing=0.1, bidir=True) * 0.2
