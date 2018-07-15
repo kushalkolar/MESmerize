@@ -49,6 +49,7 @@ class Ui_MainWindow(object):
         self.radioButtonGroupBySingleColumn = QtWidgets.QRadioButton(self.groupBox)
         self.radioButtonGroupBySingleColumn.setMaximumSize(QtCore.QSize(16, 16777215))
         self.radioButtonGroupBySingleColumn.setText("")
+        self.radioButtonGroupBySingleColumn.setChecked(True)
         self.radioButtonGroupBySingleColumn.setObjectName("radioButtonGroupBySingleColumn")
         self.horizontalLayout_3.addWidget(self.radioButtonGroupBySingleColumn)
         self.comboBoxGrouping = QtWidgets.QComboBox(self.groupBox)

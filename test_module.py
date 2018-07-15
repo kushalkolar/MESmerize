@@ -11,7 +11,8 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from analyser.plot_window.beeswarms_window import *
+# from analyser.plot_window.beeswarms_window import *
+from analyser.plot_window.curve_plots_window import *
 from analyser.DataTypes import Transmission
 
 # data = np.random.normal(size=(4,20))
@@ -24,9 +25,19 @@ from analyser.DataTypes import Transmission
 # dfuuid = pd.DataFrame(uuids, columns=['uuid'])
 # df = pd.concat([df, dfuuid], axis=1)
 
+#
+# app = QtWidgets.QApplication([])
+# bpw = BeeswarmPlotWindow()
+# ts = [Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/methods_paper_transmissions/for_methods_paper_pc2_pfeatures.trn'),
+#  Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/methods_paper_transmissions/for_methods_paper_eef1a_pfeatures.trn')]
+# bpw.update_input_transmissions(ts)
+# # bpw.plot_obj.add_plot('bah_title')
+# # bpw.plot_obj.set_plot_data(0, df, ['a', 'b', 'c'])
+# bpw.show()
+# app.exec_()
 
 app = QtWidgets.QApplication([])
-bpw = BeeswarmPlotWindow()
+bpw = CurvePlotWindow()
 ts = [Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/methods_paper_transmissions/for_methods_paper_pc2_pfeatures.trn'),
  Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/methods_paper_transmissions/for_methods_paper_eef1a_pfeatures.trn')]
 bpw.update_input_transmissions(ts)
