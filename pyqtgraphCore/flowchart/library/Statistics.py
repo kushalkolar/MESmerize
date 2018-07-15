@@ -48,6 +48,13 @@ class BeeswarmPlots(CtrlNode):
             if t is None:
                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
                 continue
+            if type(t) is list:
+                for i in range(len(t)):
+                    if t[i] is None:
+                        QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                        continue
+                    transmissions_list.append(t[i].copy())
+                continue
 
             transmissions_list.append(t.copy())
 

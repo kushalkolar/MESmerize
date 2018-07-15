@@ -16,14 +16,10 @@ import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
 from MesmerizeCore import misc_funcs
-
-if __name__ == '__main__':
-    from pytemplates.PeakEditor_pytemplate import *
-    from DataTypes import Transmission
-else:
-    from .pytemplates.PeakEditor_pytemplate import *
-    from .DataTypes import Transmission
-    from .HistoryWidget import HistoryTreeWidget
+from .pytemplates.PeakEditor_pytemplate import *
+from .DataTypes import Transmission
+from .HistoryWidget import HistoryTreeWidget
+import traceback
 
 
 class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -84,7 +80,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # if curve is None:
             #     QtGui.QMessageBox.warning(None, 'Empty Curve')
 
-            if min(curve) != 0:
+            if min(curve) > 0:
                 min_curve = min(curve)
             else:
                 min_curve = 0.00000001
@@ -117,11 +113,11 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.graphicsView.addItem(bases_plot)
                 self.s_plots.append(bases_plot)
 
-            except Exception as e:
-                if QtGui.QMessageBox.question(None, 'Error!', 'The curve probably contains no peaks.'
-                                                                   'Exception:\n' + \
-                        str(e) + '\n\nWould you like to view the DataFrame?',
-                                              QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+            except Exception :
+                if QtWidgets.QMessageBox.question(self, 'Error!', 'The curve probably contains no peaks.\n' +
+                                                  traceback.format_exc() + '\n\nWould you like to view the DataFrame?',
+                                                  QtWidgets.QMessageBox.Yes,
+                                                  QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.Yes:
                     pass
                 return
 
