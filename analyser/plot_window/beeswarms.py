@@ -40,6 +40,8 @@ class BeeswarmPlot(QtCore.QObject):
         self.lastClicked = []
 
     def add_plot(self, title: str):
+        if len(self.scatter_plots) % 4 == 0:
+            self.graphics_view.nextRow()
         plot = self.graphics_view.addPlot(title=title)
         scatter_plot = ScatterPlotItem(title=title)
         scatter_plot.sigClicked.connect(self._clicked)
@@ -54,7 +56,7 @@ class BeeswarmPlot(QtCore.QObject):
 
         not_nan = data_series.notna()
         yvals = data_series[not_nan].values
-        xvals = pseudoScatter(yvals, spacing=0.1, bidir=True) * 0.2
+        xvals = pseudoScatter(yvals, spacing=0.025, bidir=True) * 0.4
         scatter_plot = self.scatter_plots[ix]['scatter_plot']
         self.scatter_plots[ix]['i'] += 1
         i = self.scatter_plots[ix]['i']
@@ -77,9 +79,6 @@ class BeeswarmPlot(QtCore.QObject):
             p.setBrush('w')
 
         self.lastClicked = points
-
-
-
 
     @property
     def spot_color(self, group: str):
@@ -113,12 +112,15 @@ class BeeswarmPlot(QtCore.QObject):
     def spot_size(self, size: int):
         pass
     
-    def clear_plot(self):
-        pass
-        # self.graphics_view.scene().clear()
-        # for item in self.graphics_view.items():
-        #     self.graphics_view.removeItem(item)
-    
+    def clear_plots(self):
+        for plot in self.plots:
+            self.graphics_view.removeItem(plot)
+            plot.deleteLater()
+        del self.plots
+        self.plots = []
+        del self.scatter_plots
+        self.scatter_plots = []
+
     def export_all_plots(self):
         pass
     

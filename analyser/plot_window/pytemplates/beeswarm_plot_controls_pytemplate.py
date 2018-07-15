@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_BeeswarmControls(object):
     def setupUi(self, BeeswarmControls):
         BeeswarmControls.setObjectName("BeeswarmControls")
-        BeeswarmControls.resize(279, 88)
+        BeeswarmControls.resize(279, 109)
         self.horizontalSliderSpotSize = QtWidgets.QSlider(BeeswarmControls)
         self.horizontalSliderSpotSize.setGeometry(QtCore.QRect(9, 48, 261, 16))
         self.horizontalSliderSpotSize.setMinimum(1)
@@ -32,6 +32,9 @@ class Ui_BeeswarmControls(object):
         self.horizontalLayout_3.addWidget(self.labelSpotSize)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem)
+        self.btnTraceDatapoint = QtWidgets.QPushButton(BeeswarmControls)
+        self.btnTraceDatapoint.setGeometry(QtCore.QRect(10, 70, 111, 26))
+        self.btnTraceDatapoint.setObjectName("btnTraceDatapoint")
 
         self.retranslateUi(BeeswarmControls)
         self.horizontalSliderSpotSize.valueChanged['int'].connect(self.labelSpotSize.setNum)
@@ -42,4 +45,5 @@ class Ui_BeeswarmControls(object):
         BeeswarmControls.setWindowTitle(_translate("BeeswarmControls", "Form"))
         self.label_3.setText(_translate("BeeswarmControls", "Spot size: "))
         self.labelSpotSize.setText(_translate("BeeswarmControls", "10"))
+        self.btnTraceDatapoint.setText(_translate("BeeswarmControls", "Trace Datapoint"))
 

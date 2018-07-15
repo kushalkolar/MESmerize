@@ -36,6 +36,8 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.transmissions = None
         self.dataframe = pd.DataFrame()
         self.data_columns = []
+        self.data_columns_dtypes = []
+
         self.groups = []
         self.group_dataframes = []
         self.uuid_column = ''
@@ -103,6 +105,17 @@ class PlotWindow(QtWidgets.QMainWindow):
 
     def update_params(self):
         self.data_columns = [item.text() for item in self.ui.listWidgetDataColumns.selectedItems()]
+
+        for col in self.data_columns:
+            dtype = type(self.dataframe[col].iloc[0])
+            if dtype is np.NaN:
+                i = 0
+                while dtype is np.Nan:
+                    dtype = type(self.dataframe[col].iloc[i])
+                    i += 1
+
+            self.data_columns_dtypes.append(dtype)
+
         if self.ui.radioButtonGroupBySingleColumn.isChecked():
             grouping_column = self.ui.comboBoxGrouping.currentText()
             self.groups = list(set(self.dataframe[grouping_column].tolist()))
@@ -123,3 +136,16 @@ class PlotWindow(QtWidgets.QMainWindow):
             c = lut[cm_ixs[ix]]
             colors.append(mkColor(c))
         return colors
+
+    def data_types_check(self, accepted_dtypes: list) -> bool:
+        errors = []
+        for data_column, data_dtype in zip(self.data_columns, self.data_columns_dtypes):
+            if data_dtype not in accepted_dtypes:
+                errors.append('Unsupported data type <' + str(data_dtype) + '> in data column: ' + data_column)
+
+        if len(errors) > 0:
+            QtWidgets.QMessageBox.warning(self, 'Datatype error',
+                                          'You cannot use the following data columns:\n' + '\n'.join(errors))
+            return False
+        else:
+            return True

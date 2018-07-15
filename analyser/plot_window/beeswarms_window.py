@@ -14,6 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from .window import *
 from .pytemplates.beeswarm_plot_controls_pytemplate import *
 from .beeswarms import *
+import numpy as np
 
 
 class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):
@@ -65,23 +66,27 @@ class BeeswarmPlotWindow(PlotWindow):
         self.update_violins()
 
     def update_beeswarm(self):
-        self.beeswarm_plot.clear_plot()
+        self.beeswarm_plot.clear_plots()
         colors = self.auto_colormap(len(self.groups))
+        errors = []
+
+        accepted_datatypes = [int, float, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32,
+                              np.uint64, np.float16, np.float32, np.float64, np.uint64, np.float16, np.float32,
+                              np.float64]
+
+        if not self.data_types_check(accepted_datatypes):
+            return
+
         for i, data_column in enumerate(self.data_columns):
-            msg = 'Progress: ' + str((i / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
+            msg = 'Progress: ' + str(((i + 1 ) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
             self.status_bar.showMessage(msg)
             self.beeswarm_plot.add_plot(data_column)
+
             for ii, (dataframe, group) in enumerate(zip(self.group_dataframes, self.groups)):
                 self.status_bar.showMessage(msg + ', plotting group: ' + group)
                 self.beeswarm_plot.add_data_to_plot(i, data_series=dataframe[data_column],
                                                     uuid_series=dataframe[self.uuid_column],
                                                     name=group, color=colors[ii])
-
-        # for ix, column in enumerate(data_columns):
-        #     self.plot_obj.add_plot(column)
-        #     self.add_data_to_plot(ix)
-        #     # TODO: THINK ABOUT GROUPING. PROBABLY PUT IT IN THE PARENT CLASS!!!
-        #     # TODO: PROBABLY CREATE A COMMON CONTROL WIDGET, AND DIFFERENT PLOT TYPES HAVE THEIR OWN ON TOP OF THAT!!
 
     def update_violins(self):
         pass
