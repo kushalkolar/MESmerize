@@ -44,6 +44,8 @@ class BeeswarmPlot(QtCore.QObject):
     def add_plot(self, title: str):
         plot = self.graphics_view.addPlot(title=title)
         scatter_plot = ScatterPlotItem(title=title)
+        scatter_plot.sigClicked.connect(self._clicked)
+
         plot.addItem(scatter_plot)
         self.scatter_plots.append({'scatter_plot': scatter_plot, 'i': 0})
         self.plots.append(plot)
@@ -54,13 +56,13 @@ class BeeswarmPlot(QtCore.QObject):
     #     self._plot(ix, )
     #
     # def _plot(self, ix: int, series: pd.Series, name, color):
-        yvals = data_series.values
-        xvals = pseudoScatter(yvals, spacing=0.4, bidir=True) * 0.2
+        not_nan = data_series.notna()
+        yvals = data_series[not_nan].values
+        xvals = pseudoScatter(yvals, spacing=0.1, bidir=True) * 0.2
         scatter_plot = self.scatter_plots[ix]['scatter_plot']
         self.scatter_plots[ix]['i'] += 1
         i = self.scatter_plots[ix]['i']
-        scatter_plot.addPoints(x=xvals + i, y=yvals, uuid=uuid_series, name=name, brush=color, pen='k', symbol='o', size=10)
-        scatter_plot.sigClicked.connect(self._clicked)
+        scatter_plot.addPoints(x=xvals + i, y=yvals, uuid=uuid_series[not_nan], name=name, brush=color, pen='k', symbol='o', size=10)
 
     def _clicked(self, plot, points):
         for i, p in enumerate(self.lastClicked):

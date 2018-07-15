@@ -56,6 +56,8 @@ class BeeswarmPlotWindow(PlotWindow):
         self.beeswarm_plot = BeeswarmPlot(self.graphicsViews['Beeswarm'])
         self.add_plot_tab('Violins')
 
+        self.beeswarm_plot.signal_spot_clicked.connect(print)
+
     def update_params(self):
         super(BeeswarmPlotWindow, self).update_params()
         spot_size = self.control_widget.horizontalSliderSpotSize.value()
