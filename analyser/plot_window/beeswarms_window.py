@@ -15,6 +15,7 @@ from .window import *
 from .pytemplates.beeswarm_plot_controls_pytemplate import *
 from .beeswarms import *
 import numpy as np
+from ..datapoint_tracer import DatapointTracerWidget
 
 
 class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):
@@ -57,7 +58,19 @@ class BeeswarmPlotWindow(PlotWindow):
         self.beeswarm_plot = BeeswarmPlot(self.graphicsViews['Beeswarm'])
         self.add_plot_tab('Violins')
 
-        self.beeswarm_plot.signal_spot_clicked.connect(print)
+        self.current_datapoint = None
+
+        self.beeswarm_plot.signal_spot_clicked.connect(self.set_current_datapoint)
+
+        self.control_widget.btnTraceDatapoint.clicked.connect(self.open_datapoint_tracer)
+        self.datapoint_tracers = []
+
+    def get_current_datapoint(self) -> UUID:
+        return self.current_datapoint
+
+    @QtCore.pyqtSlot(UUID)
+    def set_current_datapoint(self, identifier: UUID):
+        self.current_datapoint = identifier
 
     def update_params(self):
         super(BeeswarmPlotWindow, self).update_params()
@@ -78,7 +91,7 @@ class BeeswarmPlotWindow(PlotWindow):
             return
 
         for i, data_column in enumerate(self.data_columns):
-            msg = 'Progress: ' + str(((i + 1 ) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
+            msg = 'Progress: ' + str(((i + 1) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
             self.status_bar.showMessage(msg)
             self.beeswarm_plot.add_plot(data_column)
 
@@ -90,6 +103,16 @@ class BeeswarmPlotWindow(PlotWindow):
 
     def update_violins(self):
         pass
+
+    def open_datapoint_tracer(self):
+        identifier = self.get_current_datapoint()
+        self.datapoint_tracers.append(DatapointTracerWidget(datapoint_uuid=identifier,
+                                                            parent=self,
+                                                            row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
+                                                            history_trace=self.get_history_trace(identifier),
+                                                            )
+                                      )
+        self.datapoint_tracers[-1].show()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
