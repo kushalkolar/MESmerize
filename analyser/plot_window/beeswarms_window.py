@@ -13,17 +13,15 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from .window import *
 from .pytemplates.beeswarm_plot_controls_pytemplate import *
-from .beeswarms_universal import *
+from .beeswarms import *
 
 
 class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):
     signal_changed = QtCore.pyqtSignal(str, dict)
 
     def __init__(self, parent=None):
-        super(ControlWidget, self).__init__(parent)
+        super(ControlWidget, self).__init__(parent)#parent)
         self.setupUi(parent)
-
-        self.btnApply.clicked.connect(self.apply_all_settings)
 
     def apply_all_settings(self):
         data_columns = self.listWidgetDataColumns.selectedItems()
@@ -47,14 +45,44 @@ class BeeswarmPlotWindow(PlotWindow):
     def __init__(self, parent=None):
         super(BeeswarmPlotWindow, self).__init__(parent)
 
-        self.control_widget = ControlWidget(parent=self.ui.tabWidget.widget(0))
-        self.control_widget.signal_changed.connect(self.set_plot)
-        self.plot_obj = BeeswarmPlot(self.ui.graphicsView, self)
+        # self.plot_obj = BeeswarmPlot(self.ui.graphicsView, self)
+        # self.plot_obj.signal_spot_clicked.connect(print)
 
-    @QtCore.pyqtSlot(str, dict)
-    def set_plot(self, data_columns: str, grouping: dict):
+        self.ui.groupBoxSpecific.setLayout(QtWidgets.QVBoxLayout())
+        self.control_widget = ControlWidget(self.ui.groupBoxSpecific)
+        self.ui.groupBoxSpecific.layout().addWidget(self.control_widget)
+
+        self.add_plot_tab('Beeswarm')
+        self.beeswarm_plot = BeeswarmPlot(self.graphicsViews['Beeswarm'])
+        self.add_plot_tab('Violins')
+
+    def update_params(self):
+        super(BeeswarmPlotWindow, self).update_params()
+        spot_size = self.control_widget.horizontalSliderSpotSize.value()
+        self.update_beeswarm()
+        self.update_violins()
+
+    def update_beeswarm(self):
+        self.beeswarm_plot.clear_plot()
+        colors = self.auto_colormap(len(self.groups))
+        for i, data_column in enumerate(self.data_columns):
+            msg = 'Plotting data column: ' + data_column
+            self.status_bar.showMessage(msg)
+            self.beeswarm_plot.add_plot(data_column)
+            for ii, (dataframe, group) in enumerate(zip(self.group_dataframes, self.groups)):
+                self.status_bar.showMessage(msg + ', plotting group: ' + group)
+                self.beeswarm_plot.add_data_to_plot(i, data_series=dataframe[data_column],
+                                                    uuid_series=dataframe[self.uuid_column],
+                                                    name=group, color=colors[ii])
+
+        # for ix, column in enumerate(data_columns):
+        #     self.plot_obj.add_plot(column)
+        #     self.add_data_to_plot(ix)
+        #     # TODO: THINK ABOUT GROUPING. PROBABLY PUT IT IN THE PARENT CLASS!!!
+        #     # TODO: PROBABLY CREATE A COMMON CONTROL WIDGET, AND DIFFERENT PLOT TYPES HAVE THEIR OWN ON TOP OF THAT!!
+
+    def update_violins(self):
         pass
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])

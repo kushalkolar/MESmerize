@@ -8,8 +8,7 @@ from pyqtgraphCore import ScatterPlotItem, SpotItem, pseudoScatter, mkColor, Gra
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import numpy as np
 import pandas as pd
-from uuid import uuid4, UUID
-from matplotlib import cm as matplotlib_color_map
+from uuid import UUID
 
 
 ## Make bar graph
@@ -26,6 +25,8 @@ from matplotlib import cm as matplotlib_color_map
 #win.addItem(err)
 
 class BeeswarmPlot(QtCore.QObject):
+    signal_spot_clicked = QtCore.pyqtSignal(UUID)
+
     def __init__(self, graphics_view: GraphicsLayoutWidget, parent=None):
         # QtWidgets.QWidget.__init__(self)
         QtCore.QObject.__init__(self, parent)
@@ -39,59 +40,38 @@ class BeeswarmPlot(QtCore.QObject):
         self.title = ''
         self.current_datapoint = None
         self.lastClicked = []
-    
-    def set_plot_data(self, ix: int, dataframe: pd.DataFrame, plot_columns: list, plot_column_colors: list = None):
-        if ix > len(self.plots) - 1:
-            raise IndexError('Plot index out of range.')
-
-        self.dataframe = dataframe
-        self.plot_columns = plot_columns
-
-        if plot_column_colors is None:
-            plot_column_colors = self._auto_colormap(len(plot_columns))
-
-        self._plot(ix, dataframe, plot_columns, plot_column_colors)
-
-    def _auto_colormap(self, number_of_colors: int) -> list:
-        cm = matplotlib_color_map.get_cmap('hsv')
-        cm._init()
-        lut = (cm._lut * 255).view(np.ndarray)
-        cm_ixs = np.linspace(0, 210, number_of_colors, dtype=int)
-
-        colors = []
-        for ix in range(number_of_colors):
-            c = lut[cm_ixs[ix]]
-            colors.append(mkColor(c))
-
-        return colors
 
     def add_plot(self, title: str):
         plot = self.graphics_view.addPlot(title=title)
         scatter_plot = ScatterPlotItem(title=title)
         plot.addItem(scatter_plot)
-        self.scatter_plots.append(scatter_plot)
+        self.scatter_plots.append({'scatter_plot': scatter_plot, 'i': 0})
         self.plots.append(plot)
 
-    def _plot(self, ix: int, dataframe: pd.DataFrame, plot_columns: list, plot_column_colors: list):
-        for i, column in enumerate(plot_columns):
-            color = plot_column_colors[i]
-            yvals = dataframe[column]
-            xvals = pseudoScatter(yvals, spacing=0.4, bidir=True) * 0.2
-            scatter_plot = self.scatter_plots[ix]
-            scatter_plot.addPoints(x=xvals + i, y=yvals, uuid=self.dataframe['uuid'], name=column, brush=color, pen='k', symbol='o', size=10)
+    def add_data_to_plot(self, ix: int, data_series: pd.Series, uuid_series, name, color):
+        if ix > len(self.plots) - 1:
+            raise IndexError('Plot index out of range.')
+    #     self._plot(ix, )
+    #
+    # def _plot(self, ix: int, series: pd.Series, name, color):
+        yvals = data_series.values
+        xvals = pseudoScatter(yvals, spacing=0.4, bidir=True) * 0.2
+        scatter_plot = self.scatter_plots[ix]['scatter_plot']
+        self.scatter_plots[ix]['i'] += 1
+        i = self.scatter_plots[ix]['i']
+        scatter_plot.addPoints(x=xvals + i, y=yvals, uuid=uuid_series, name=name, brush=color, pen='k', symbol='o', size=10)
         scatter_plot.sigClicked.connect(self._clicked)
 
     def _clicked(self, plot, points):
         for i, p in enumerate(self.lastClicked):
             assert isinstance(p, SpotItem)
-            print(p._data)
             p.setPen(p._data['orig_pen'])
             p.setBrush(p._data['orig_brush'])
 
         if len(points) == 1:
             p = points[0]
             assert isinstance(p, SpotItem)
-            print(p.uuid)
+            self.signal_spot_clicked.emit(p.uuid)
 
         for p in points:
             assert isinstance(p, SpotItem)
@@ -99,6 +79,9 @@ class BeeswarmPlot(QtCore.QObject):
             p.setBrush('w')
 
         self.lastClicked = points
+
+
+
 
     @property
     def spot_color(self, group: str):
@@ -134,6 +117,9 @@ class BeeswarmPlot(QtCore.QObject):
     
     def clear_plot(self):
         pass
+        # self.graphics_view.scene().clear()
+        # for item in self.graphics_view.items():
+        #     self.graphics_view.removeItem(item)
     
     def export_all_plots(self):
         pass
