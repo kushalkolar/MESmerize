@@ -163,10 +163,10 @@ class CtrlNode(Node):
         if In is None:
             return
 
-        if 'Out' in kwargs.items():
-            print(' !!!!!!!!! >>>>>>>>>> OUT PASSED INTO process() <<<<<<<<<<<<<<< !!!!!!!!!!!!')
-            print(kwargs['Out'])
-            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        # if 'Out' in kwargs.items():
+            # print(' !!!!!!!!! >>>>>>>>>> OUT PASSED INTO process() <<<<<<<<<<<<<<< !!!!!!!!!!!!')
+            # print(kwargs['Out'])
+            # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
         if type(In) is None:
             raise TypeError('Incoming tranmission is None')
