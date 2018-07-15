@@ -15,6 +15,7 @@ from analyser import PeakEditor
 from analyser import Extraction
 from analyser.stats_gui import StatsWindow
 from analyser.plot_window.beeswarms_window import BeeswarmPlotWindow
+from analyser.plot_window.curve_plots_window import CurvePlotWindow
 from analyser import pca_gui
 import pickle
 import traceback
@@ -29,6 +30,7 @@ class BeeswarmPlots(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
         self.plot_gui = None
+        self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
 
     def process(self, **kwargs):
         if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
@@ -49,54 +51,73 @@ class BeeswarmPlots(CtrlNode):
 
             transmissions_list.append(t.copy())
 
-        self.plot_gui.update_input(transmissions_list)
+        self.plot_gui.update_input_transmissions(transmissions_list)
 
     def _open_plot_gui(self):
         if self.plot_gui is None:
-            self.plot_gui = BeeswarmPlotWindow(parent=self)
+            self.plot_gui = BeeswarmPlotWindow(parent=self.parent())
         self.plot_gui.show()
 
 
-class CurveAnalysis(CtrlNode):
-    """Simple analysis of curves"""
-    nodeName = 'CurveAnalysis'
-    uiTemplate = [('Stats', 'button', {'text': 'Statistics/Plotting'})]
+class CurvePlotsNode(CtrlNode):
+    """Curve plots"""
+    nodeName = 'CurvePlots'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
-        self.peak_results = None
+        self.plot_gui = None
+        self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
 
     def process(self, **kwargs):
-        self.kwargs = kwargs.copy()
-        self.transmissions = self.kwargs['In']
-
-    def _open_stats_gui(self):
-        if hasattr(self, 'stats_gui'):
-            self.stats_gui.show()
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
             return
-        self.stats_gui = StatsWindow()
-        self.stats_gui.input_transmissions(self.peak_results)
-        self.stats_gui.show()
+
+        transmissions = kwargs['In']
+
+        if not len(transmissions) > 0:
+            raise Exception('No incoming transmissions')
+
+        transmissions_list = []
+
+        for t in transmissions.items():
+            t = t[1]
+            if t is None:
+                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                continue
+
+            transmissions_list.append(t.copy())
+
+        self.plot_gui.update_input_transmissions(transmissions_list)
+
+    def _open_plot_gui(self):
+        if self.plot_gui is None:
+            self.plot_gui = CurvePlotWindow(parent=self.parent())
+        self.plot_gui.show()
 
 
 class PeakFeaturesExtract(CtrlNode):
-    """Extract peak features. Use this after the Peak_Detect node."""
+    """Extract peak features. Use this after the Peak_Detect node. This node does not operate live, you must
+    click the "Extract" button to propogate newly computed peak features"""
     nodeName = 'Peak_Features'
     uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
-                  ('Stats', 'button', {'text': 'Statistics/Plotting'})
-                  ]
+                  ('Info', 'label', {'text': ''})]
+
+    # uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
+    #               ('Stats', 'button', {'text': 'Statistics/Plotting'})
+    #               ]
 
     def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out', 'bypass': 'In'}})
         self.ctrls['Extract'].clicked.connect(self._extract)
-        self.ctrls['Stats'].setEnabled(False)
-        self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
+        # self.ctrls['Stats'].setEnabled(False)
+        # self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
         self.peak_results = None
 
     def process(self, **kwargs):
         self.kwargs = kwargs.copy()
-        # return {'Out': self.peak_results}
+        return {'Out': self.peak_results}
 
     def _extract(self):
         if self.kwargs is None:
@@ -119,25 +140,28 @@ class PeakFeaturesExtract(CtrlNode):
                                  'a Peak_Detect node before this one.')
             # t = t.copy()
             try:
+                self.ctrls['Info'].setText('Please wait, computing peak features')
                 pf = Extraction.PeakFeaturesIter(t)
-                tran_with_features = pf.get_all()
+                trans_with_features = pf.get_all()
 
-                self.peak_results.append(tran_with_features)
+                self.peak_results.append(trans_with_features)
 
             except Exception as e:
                 QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak extraction:\n'
                                                                    + traceback.format_exc())
 
+        self.ctrls['Info'].setText('Finished computing peak features!')
         self.changed()
-        self.ctrls['Stats'].setEnabled(True)
 
-    def _open_stats_gui(self):
-        if hasattr(self, 'stats_gui'):
-            self.stats_gui.show()
-            return
-        self.stats_gui = StatsWindow()
-        self.stats_gui.input_transmissions(self.peak_results)
-        self.stats_gui.show()
+    #     self.ctrls['Stats'].setEnabled(True)
+    #
+    # def _open_stats_gui(self):
+    #     if hasattr(self, 'stats_gui'):
+    #         self.stats_gui.show()
+    #         return
+    #     self.stats_gui = StatsWindow()
+    #     self.stats_gui.input_transmissions(self.peak_results)
+    #     self.stats_gui.show()
 
 
 class PCA(CtrlNode):

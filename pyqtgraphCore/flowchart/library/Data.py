@@ -266,8 +266,27 @@ class SelectColumns(CtrlNode):
 
 class Filter(CtrlNode):
     nodeName = 'Filter'
-    uiTemplate = [('Column', 'combo'),
-                  ('filter', 'lineEdit', {'toolTip': 'Filter selected column'})]
+    uiTemplate = [('Column', 'lineEdit', {'toolTip': 'The column to filter with'}),
+                  ('filter', 'lineEdit', {'toolTip': 'Filter to apply in selected column'}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+        self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
+
+    def processData(self, transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        col = self.ctrls['column'].text()
+        filt = self.ctrls['filter'].text()
+
+        t = transmission.copy()
+
+        t.src.append({'Filter': {'column': col, 'filter': filt}})
+        t.df = t.df[t.df[col] == filt]
+
+        return t
 
 
 # class ColumnSelectNode(Node):
