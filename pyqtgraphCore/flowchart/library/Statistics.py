@@ -14,9 +14,48 @@ from functools import partial
 from analyser import PeakEditor
 from analyser import Extraction
 from analyser.stats_gui import StatsWindow
+from analyser.plot_window.beeswarms_window import BeeswarmPlotWindow
 from analyser import pca_gui
 import pickle
 import traceback
+
+
+class BeeswarmPlots(CtrlNode):
+    """Beeswarm and Violin plots"""
+    nodeName = 'BeeswarmPlots'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_gui = None
+
+    def process(self, **kwargs):
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+            return
+
+        transmissions = kwargs['In']
+
+        if not len(transmissions) > 0:
+            raise Exception('No incoming transmissions')
+
+        transmissions_list = []
+
+        for t in transmissions.items():
+            t = t[1]
+            if t is None:
+                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                continue
+
+            transmissions_list.append(t.copy())
+
+        self.plot_gui.update_input(transmissions_list)
+
+    def _open_plot_gui(self):
+        if self.plot_gui is None:
+            self.plot_gui = BeeswarmPlotWindow(parent=self)
+        self.plot_gui.show()
+
 
 class CurveAnalysis(CtrlNode):
     """Simple analysis of curves"""
@@ -124,7 +163,6 @@ class PCA(CtrlNode):
 
         for t in transmissions.items():
             t = t[1]
-            print(t)
             if t is None:
                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
                 continue
