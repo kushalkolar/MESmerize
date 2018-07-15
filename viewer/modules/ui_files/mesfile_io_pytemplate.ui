@@ -68,6 +68,11 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>btnOpenMesFile</tabstop>
+  <tabstop>btnStimMapGUI</tabstop>
+  <tabstop>listwMesfile</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

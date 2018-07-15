@@ -127,6 +127,14 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>btnSelectTiff</tabstop>
+  <tabstop>btnSelectMetaFile</tabstop>
+  <tabstop>radioButtonImread</tabstop>
+  <tabstop>radioButtonAsarray</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>btnLoadIntoWorkEnv</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

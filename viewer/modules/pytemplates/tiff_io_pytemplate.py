@@ -66,6 +66,11 @@ class Ui_DockWidget(object):
         self.retranslateUi(DockWidget)
         self.radioButtonAsarray.toggled['bool'].connect(self.checkBox.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
+        DockWidget.setTabOrder(self.btnSelectTiff, self.btnSelectMetaFile)
+        DockWidget.setTabOrder(self.btnSelectMetaFile, self.radioButtonImread)
+        DockWidget.setTabOrder(self.radioButtonImread, self.radioButtonAsarray)
+        DockWidget.setTabOrder(self.radioButtonAsarray, self.checkBox)
+        DockWidget.setTabOrder(self.checkBox, self.btnLoadIntoWorkEnv)
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate
