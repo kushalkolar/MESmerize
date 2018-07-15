@@ -65,7 +65,7 @@ class BeeswarmPlotWindow(PlotWindow):
         self.control_widget.btnTraceDatapoint.clicked.connect(self.open_datapoint_tracer)
         self.datapoint_tracers = []
 
-        self.live_datapoint_tracer = DatapointTracerWidget()
+        self.live_datapoint_tracer = DatapointTracerWidget(parent=self)
         self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)
 
     def get_current_datapoint(self) -> UUID:
@@ -75,7 +75,6 @@ class BeeswarmPlotWindow(PlotWindow):
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = identifier
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
-                                              parent=self,
                                               row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
                                               history_trace=self.get_history_trace(identifier),
                                               )
@@ -115,7 +114,7 @@ class BeeswarmPlotWindow(PlotWindow):
 
     def open_datapoint_tracer(self):
         identifier = self.get_current_datapoint()
-        self.datapoint_tracers.append(DatapointTracerWidget())
+        self.datapoint_tracers.append(DatapointTracerWidget(parent=self))
 
         self.datapoint_tracers[-1].set_widget(datapoint_uuid=identifier,
                                               parent=self,

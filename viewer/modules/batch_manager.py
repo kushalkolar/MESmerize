@@ -275,15 +275,15 @@ class ModuleGUI(QtWidgets.QWidget):
                                               QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
 
-        if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
-                                          'Would you like to clear all viewer work '
-                                          'environments before starting the batch?',
-                                          QtWidgets.QMessageBox.No,
-                                          QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
-
-            for viewer in configuration.window_manager.viewers:
-                vi = ViewerInterface(viewer)
-                vi.discard_workEnv()
+        # if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
+        #                                   'Would you like to clear all viewer work '
+        #                                   'environments before starting the batch?',
+        #                                   QtWidgets.QMessageBox.No,
+        #                                   QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
+        #
+        #     for viewer in configuration.window_manager.viewers:
+        #         vi = ViewerInterface(viewer)
+        #         vi.discard_workEnv()
 
         self.current_batch_item_index = start_ix - 1
         self.disable_ui_buttons(True)

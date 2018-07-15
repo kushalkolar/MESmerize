@@ -310,7 +310,7 @@ class ViewerWorkEnv:
         img_path = self.to_pickle(imgdir, UUID=UUID)
 
         max_proj = np.amax(self.imgdata.seq, axis=2)
-        max_proj_path = img_path + '_max_proj.png'
+        max_proj_path = img_path + '_max_proj.tiff'
         tifffile.imsave(max_proj_path, max_proj)
 
 
@@ -382,11 +382,17 @@ class ViewerWorkEnv:
 
             np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
-            roi_state = {'type': rois['states'][ix]['roi_type'],
-                         'graphics_object': rois['states'][ix]['roi_graphics_object_state']
-                         }
             if rois['states'][ix]['roi_type'] == 'ManualROI':
-                roi_state.update({'shape': rois['states'][ix]['shape']})
+                roi_state = {'type': 'ManualROI',
+                             'graphics_object': rois['states'][ix]['roi_graphics_object_state'],
+                             'shape': rois['states'][ix]['shape']
+                             }
+            elif rois['states'][ix]['roi_type'] == 'CNMFROI':
+                roi_state = {'type': 'CNMFROI',
+                             'roi_xs': rois['states'][ix]['roi_xs'],
+                             'roi_ys': rois['states'][ix]['roi_ys']
+                             }
+
 
             d = {'SampleID': self.sample_id,
                  'CurvePath': curve_path.split(proj_path)[1],

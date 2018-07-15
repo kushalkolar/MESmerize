@@ -21,8 +21,8 @@ import numpy as np
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):
-    def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+    def __init__(self, parent):
+        QtWidgets.QWidget.__init__(self, parent)
         self.setWindowTitle('Datapoint Tracer')
 
         self.uuid = None
@@ -45,12 +45,9 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.view = self.ui.graphicsViewImage.addViewBox()
         self.view.addItem(self.image_item)
 
-        self.ui.graphicsViewPlot.plot(np.random.normal(size=100), pen=(255,0,0), name="Red curve")
-
     def set_widget(self, datapoint_uuid: UUID,
                    row: pd.Series,
                    history_trace: list,
-                   parent=None,
                    peak_ix: int = None,
                    tstart: int = None,
                    tend: int = None):
@@ -65,7 +62,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.row.reset_index(inplace=True)
         self.pandas_series_widget.set_data(row)
 
-        img = tifffile.imread('/home/kushal/zproj.tiff')
+        img = tifffile.imread(self.row['MaxProjPath'])
+        self.ui.graphicsViewPlot.plot(self.row['curve'])
         self.image_item.setImage(img.astype(np.uint16))
         self.image_item.resetTransform()
         if (tstart is not None) and (tend is not None):
