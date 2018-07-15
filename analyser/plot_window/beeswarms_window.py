@@ -66,7 +66,7 @@ class BeeswarmPlotWindow(PlotWindow):
         self.beeswarm_plot.clear_plot()
         colors = self.auto_colormap(len(self.groups))
         for i, data_column in enumerate(self.data_columns):
-            msg = 'Plotting data column: ' + data_column
+            msg = 'Progress: ' + str((i / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
             self.status_bar.showMessage(msg)
             self.beeswarm_plot.add_plot(data_column)
             for ii, (dataframe, group) in enumerate(zip(self.group_dataframes, self.groups)):
