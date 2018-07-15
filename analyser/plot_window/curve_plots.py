@@ -18,6 +18,7 @@ import pandas as pd
 from uuid import UUID
 from typing import List, SupportsFloat
 
+
 class CurvePlot(QtCore.QObject):
     signal_spot_clicked = QtCore.pyqtSignal(UUID)
 
@@ -48,7 +49,12 @@ class CurvePlot(QtCore.QObject):
             self.plots[ix].plot(y=yval, pen=color)
 
     def clear_plot(self):
-        pass
+        for plot in self.plots:
+            self.graphics_view.removeItem(plot)
+            plot.deleteLater()
+        del self.plots
+        self.plots = []
+
         # self.graphics_view.scene().clear()
         # for item in self.graphics_view.items():
         #     self.graphics_view.removeItem(item)

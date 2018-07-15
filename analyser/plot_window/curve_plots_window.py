@@ -13,6 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from .window import *
 from .curve_plots import *
+from numpy import ndarray
 
 
 class CurvePlotWindow(PlotWindow):
@@ -32,12 +33,22 @@ class CurvePlotWindow(PlotWindow):
         self.update_curve_plot()
 
     def update_curve_plot(self):
+        for tab_ix in range(1, self.ui.tabWidget.count()):
+            self.ui.tabWidget.removeTab(1)
+
         self.curve_plot.clear_plot()
         colors = self.auto_colormap(len(self.groups))
+        errors = []
+
+        accepted_datatypes = [ndarray]
+
+        if not self.data_types_check(accepted_datatypes):
+            return
 
         for plot_ix, data_column in enumerate(self.data_columns):
-            msg = 'Progress: ' + str(
-                (plot_ix / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
+
+            msg = 'Progress: ' + \
+                  str(((plot_ix + 1) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
             self.status_bar.showMessage(msg)
 
             self.curve_plot.add_plot(data_column)
@@ -53,8 +64,14 @@ class CurvePlotWindow(PlotWindow):
                 self.curve_plot.add_data_to_plot(plot_ix, data_series=dataframe[data_column],
                                                  name=group, color=colors[ii])
 
+                rng = self.curve_plot.get_range(plot_ix)
+                self.curve_plot.set_range(plot_ix, x_range=rng[0], y_range=rng[1])
+
                 group_plot.add_plot(data_column)
                 group_plot.add_data_to_plot(plot_ix, data_series=dataframe[data_column],
                                             name=group, color=colors[ii])
-                rng = self.curve_plot.get_range(plot_ix)
                 group_plot.set_range(plot_ix, x_range=rng[0], y_range=rng[1])
+
+        if len(errors) > 0:
+            QtWidgets.QMessageBox.warning(self, 'Errors while plotting',
+                                          'The following errors occured while plotting:\n' + '\n'.join(errors))

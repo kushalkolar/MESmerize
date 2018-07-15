@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>279</width>
-    <height>88</height>
+    <height>109</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,6 +70,19 @@
      </spacer>
     </item>
    </layout>
+  </widget>
+  <widget class="QPushButton" name="btnTraceDatapoint">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>111</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Trace Datapoint</string>
+   </property>
   </widget>
  </widget>
  <resources/>

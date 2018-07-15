@@ -11,7 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-# from analyser.plot_window.beeswarms_window import *
+from analyser.plot_window.beeswarms_window import *
 from analyser.plot_window.curve_plots_window import *
 from analyser.DataTypes import Transmission
 
@@ -37,7 +37,7 @@ from analyser.DataTypes import Transmission
 # app.exec_()
 
 app = QtWidgets.QApplication([])
-bpw = CurvePlotWindow()
+bpw = BeeswarmPlotWindow()
 ts = [Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/methods_paper_transmissions/for_methods_paper_pc2_pfeatures.trn'),
  Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/methods_paper_transmissions/for_methods_paper_eef1a_pfeatures.trn')]
 bpw.update_input_transmissions(ts)
