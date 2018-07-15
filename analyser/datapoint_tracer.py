@@ -13,33 +13,71 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from .pytemplates.datapoint_tracer_pytemplate import *
 from .HistoryWidget import HistoryTreeWidget
+from pyqtgraphCore import ImageItem
 from uuid import UUID
 import pandas as pd
+import tifffile
+import numpy as np
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):
-    def __init__(self, datapoint_uuid: UUID, row: pd.Series, history_trace: list, parent=None, peak_ix: int = None, tstart: int = None, tend: int = None):
+    def __init__(self):
         QtWidgets.QWidget.__init__(self)
+        self.setWindowTitle('Datapoint Tracer')
+
+        self.uuid = None
+        self.row = None
+        self.history_trace = None
+        self.peak_ix = None
+        self.tstart = None
+        self.tend = None
 
         self.ui = Ui_DatapointTracer()
         self.ui.setupUi(self)
+        self.history_widget = HistoryTreeWidget(parent=self.ui.groupBoxInfo)
+        self.ui.groupBoxInfo.layout().addWidget(self.history_widget)
 
-        self.ui.labelUUID.setText(str(datapoint_uuid))
+        self.pandas_series_widget = PandasWidget(parent=self.ui.groupBoxInfo)
+        self.ui.groupBoxInfo.layout().addWidget(self.pandas_series_widget)
 
-        self.history_widget = HistoryTreeWidget()
-        self.history_widget.fill_widget(history_trace)
-        self.ui.verticalLayout.addWidget(self.history_widget)
+        self.image_item = ImageItem()
+        # self.image_item.setPxMode(True)
+        self.view = self.ui.graphicsViewImage.addViewBox()
+        self.view.addItem(self.image_item)
 
-        row.reset_index(inplace=True)
-        self.pandas_series_widget = PandasWidget(parent=self)
+        self.ui.graphicsViewPlot.plot(np.random.normal(size=100), pen=(255,0,0), name="Red curve")
+
+    def set_widget(self, datapoint_uuid: UUID,
+                   row: pd.Series,
+                   history_trace: list,
+                   parent=None,
+                   peak_ix: int = None,
+                   tstart: int = None,
+                   tend: int = None):
+
+        self.uuid = datapoint_uuid
+        self.row = row
+        self.history_trace = history_trace
+
+        self.ui.lineEditUUID.setText(str(self.uuid))
+        self.history_widget.fill_widget(self.history_trace)
+
+        self.row.reset_index(inplace=True)
         self.pandas_series_widget.set_data(row)
-        self.ui.verticalLayout.addWidget(self.pandas_series_widget)
 
+        img = tifffile.imread('/home/kushal/zproj.tiff')
+        self.image_item.setImage(img.astype(np.uint16))
+        self.image_item.resetTransform()
         if (tstart is not None) and (tend is not None):
             pass
 
         if peak_ix is not None:
             pass
+
+    def set_image(self):
+        pass
+        # roi = row['ROI_States'].value
+        #
 
 
 class PandasWidget(QtWidgets.QWidget):
@@ -47,8 +85,6 @@ class PandasWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent=None)
         vLayout = QtWidgets.QVBoxLayout(self)
         hLayout = QtWidgets.QHBoxLayout()
-        self.pathLE = QtWidgets.QLineEdit(self)
-        hLayout.addWidget(self.pathLE)
         vLayout.addLayout(hLayout)
         self.pandasTv = QtWidgets.QTableView(self)
         vLayout.addWidget(self.pandasTv)

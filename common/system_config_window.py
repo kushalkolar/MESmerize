@@ -22,7 +22,7 @@ import os
 class SystemConfigGUI(QtWidgets.QWidget):
     def __init__(self, parent=None, *args):
         QtWidgets.QWidget.__init__(self, parent, *args)
-
+        self.setWindowTitle('System Configuration')
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 

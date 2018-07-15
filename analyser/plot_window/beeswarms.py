@@ -21,7 +21,7 @@ from uuid import UUID
 ## Make error bars
 #err = pg.ErrorBarItem(x=np.arange(4), y=data.mean(axis=1), height=data.std(axis=1), beam=0.5, pen={'color':'w', 'width':2})
 #win.addItem(err)
-
+# TODO: ERROR BARS
 class BeeswarmPlot(QtCore.QObject):
     signal_spot_clicked = QtCore.pyqtSignal(UUID)
 

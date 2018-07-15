@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1037</width>
-    <height>660</height>
+    <width>1231</width>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -167,7 +167,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1037</width>
+     <width>1231</width>
      <height>23</height>
     </rect>
    </property>
@@ -176,6 +176,7 @@
      <string>View</string>
     </property>
     <addaction name="actionConsole"/>
+    <addaction name="actionLive_datapoint_tracer"/>
    </widget>
    <addaction name="menuView"/>
   </widget>
@@ -195,6 +196,14 @@
    </property>
    <property name="text">
     <string>Console</string>
+   </property>
+  </action>
+  <action name="actionLive_datapoint_tracer">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Live datapoint tracer</string>
    </property>
   </action>
  </widget>

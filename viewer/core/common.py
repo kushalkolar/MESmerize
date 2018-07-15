@@ -63,6 +63,7 @@ class ViewerInterface:
             self.viewer.workEnv.roi_manager.clear()
         # re-initialize ROI and curve lists
         self.viewer.workEnv.dump()
+        self.viewer.clear()
         self.viewer.workEnv.saved = True
 
         self.viewer.status_bar_label.showMessage('Work environment cleared.')
