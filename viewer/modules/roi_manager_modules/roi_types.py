@@ -27,9 +27,11 @@ ROIClasses = TypeVar('T', bound='AbstractBaseROI')
 class AbstractBaseROI(metaclass=abc.ABCMeta):
     def __init__(self, curve_plot_item: pg.PlotDataItem,
                  view_box: pg.ViewBox, state: dict = None):
-        assert isinstance(curve_plot_item, pg.PlotDataItem)
-        self.curve_plot_item = curve_plot_item
-        self.curve_plot_item.setZValue(1)
+        if isinstance(curve_plot_item, pg.PlotDataItem):
+            self.curve_plot_item = curve_plot_item
+            self.curve_plot_item.setZValue(1)
+        else:
+            self.curve_plot_item = None
 
         if state is None:
             self._tags = dict.fromkeys(configuration.proj_cfg.options('ROI_DEFS'))
@@ -48,7 +50,8 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
     @curve_data.setter
     def curve_data(self, data: list):
-
+        if self.curve_plot_item is None:
+            return
         """
         :param data: [x, y], [np.ndarray, np.ndarray]
         """
@@ -112,7 +115,8 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def remove_from_viewer(self):
         roi = self.get_roi_graphics_object()
         self.view_box.removeItem(roi)
-        self.curve_plot_item.clear()
+        if self.curve_plot_item is not None:
+            self.curve_plot_item.clear()
         del self.curve_plot_item
         del roi
 
@@ -221,7 +225,7 @@ class CNMFROI(AbstractBaseROI):
 
     def get_roi_graphics_object(self) -> pg.ScatterPlotItem:
         if self.roi_graphics_object is None:
-            raise AttributeError('Must call roi_graphics_object() first')
+            raise AttributeError('Must call set_roi_graphics_object() first')
 
         return self.roi_graphics_object
 

@@ -65,7 +65,7 @@ class BeeswarmPlotWindow(PlotWindow):
         self.control_widget.btnTraceDatapoint.clicked.connect(self.open_datapoint_tracer)
         self.datapoint_tracers = []
 
-        self.live_datapoint_tracer = DatapointTracerWidget(parent=self)
+        self.live_datapoint_tracer = DatapointTracerWidget()
         self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)
 
     def get_current_datapoint(self) -> UUID:
@@ -74,9 +74,19 @@ class BeeswarmPlotWindow(PlotWindow):
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = identifier
+
+        tstart = None
+        tend = None
+
+        if '_pfeature_ix_base_left_abs' in self.dataframe.columns:
+            tstart = self.dataframe[self.dataframe[self.uuid_column] == identifier]['_pfeature_ix_base_left_abs'].item()
+        if '_pfeature_ix_base_right_abs' in self.dataframe.columns:
+            tend = self.dataframe[self.dataframe[self.uuid_column] == identifier]['_pfeature_ix_base_right_abs'].item()
+
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
                                               row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
                                               history_trace=self.get_history_trace(identifier),
+                                              tstart=tstart, tend=tend
                                               )
 
     def update_params(self):
@@ -114,7 +124,7 @@ class BeeswarmPlotWindow(PlotWindow):
 
     def open_datapoint_tracer(self):
         identifier = self.get_current_datapoint()
-        self.datapoint_tracers.append(DatapointTracerWidget(parent=self))
+        self.datapoint_tracers.append(DatapointTracerWidget())
 
         self.datapoint_tracers[-1].set_widget(datapoint_uuid=identifier,
                                               parent=self,

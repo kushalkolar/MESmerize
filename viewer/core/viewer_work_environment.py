@@ -382,16 +382,16 @@ class ViewerWorkEnv:
 
             np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
-            if rois['states'][ix]['roi_type'] == 'ManualROI':
-                roi_state = {'type': 'ManualROI',
-                             'graphics_object': rois['states'][ix]['roi_graphics_object_state'],
-                             'shape': rois['states'][ix]['shape']
-                             }
-            elif rois['states'][ix]['roi_type'] == 'CNMFROI':
-                roi_state = {'type': 'CNMFROI',
-                             'roi_xs': rois['states'][ix]['roi_xs'],
-                             'roi_ys': rois['states'][ix]['roi_ys']
-                             }
+            # if rois['states'][ix]['roi_type'] == 'ManualROI':
+            #     roi_state = {'type': 'ManualROI',
+            #                  'graphics_object': rois['states'][ix]['roi_graphics_object_state'],
+            #                  'shape': rois['states'][ix]['shape']
+            #                  }
+            # elif rois['states'][ix]['roi_type'] == 'CNMFROI':
+            #     roi_state = {'type': 'CNMFROI',
+            #                  'roi_xs': rois['states'][ix]['roi_xs'],
+            #                  'roi_ys': rois['states'][ix]['roi_ys']
+            #                  }
 
 
             d = {'SampleID': self.sample_id,
@@ -399,7 +399,7 @@ class ViewerWorkEnv:
                  'ImgPath': img_path.split(proj_path)[1] + '.tiff',
                  'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
                  'MaxProjPath': max_proj_path,
-                 'ROI_State': roi_state,
+                 'ROI_State': rois['states'][ix],
                  'date': date,
                  'uuid_curve': UUID,
                  'comments': comments

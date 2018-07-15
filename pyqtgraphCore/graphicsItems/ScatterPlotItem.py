@@ -366,9 +366,15 @@ class ScatterPlotItem(GraphicsObject):
         newData['size'] = -1  ## indicates to use default size
 
         if 'brush' in kargs:
-            newData['orig_brush'] = kargs['brush']
+            if not isinstance(kargs['brush'], QtGui.QBrush):
+                newData['orig_brush'] = fn.mkBrush(kargs['brush'])
+            else:
+                newData['orig_brush'] = kargs['brush']
         if 'pen' in kargs:
-            newData['orig_pen'] = kargs['pen']
+            if not isinstance(kargs['pen'], QtGui.QBrush):
+                newData['orig_pen'] = fn.mkPen(kargs['brush'])
+            else:
+                newData['orig_pen'] = kargs['pen']
 
         if 'spots' in kargs:
             spots = kargs['spots']
