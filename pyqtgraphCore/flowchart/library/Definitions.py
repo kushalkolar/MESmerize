@@ -47,8 +47,7 @@ class AlignStims(CtrlNode):
     def _setAutoCompleterLineEdit(self):
         pass
 
-    def processData(self, transmission):
-        assert isinstance(transmission, Transmission)
+    def processData(self, transmission: Transmission):
         self.transmission = transmission
         ac = QtWidgets.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
         self.ctrls['Stim_Type'].setCompleter(ac)
@@ -147,8 +146,7 @@ class ROI_Selection(CtrlNode):
         ac = QtWidgets.QCompleter(tags, self.ctrls['ROI_Tags'])
         self.ctrls['ROI_Tags'].setCompleter(ac)
 
-    def processData(self, transmission):
-        assert isinstance(transmission, Transmission)
+    def processData(self, transmission: Transmission):
         self.transmission = transmission
         ac = QtWidgets.QCompleter(self.transmission.ROI_DEFS, self.ctrls['ROI_Type'])
         self.ctrls['ROI_Type'].setCompleter(ac)
@@ -200,13 +198,11 @@ class PeakDetect(CtrlNode):
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
         self.t = None
 
-    def _get_zero_crossings(self, dsig, fictional_bases=False):
+    def _get_zero_crossings(self, dsig: np.ndarray, fictional_bases: bool = False) -> pd.DataFrame:
         """
         Find the peaks and bases of the signal by finding zero crossing in the first derivative of the filtered signal
         :param dsig: The first derivative of the signal
-        :type dsig: np.array
         :return: DataFrame, all zero crossing events in one column, another column denotes it as a peak or base.
-        :rtype: pd.DataFrame
         """
         # Get array of all sign switches
         sc = np.diff(np.sign(dsig))

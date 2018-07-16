@@ -13,18 +13,10 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import pandas as pd
 import numpy as np
 import pickle
-
-if __name__ == '__main__':
-    from DataTypes import Transmission
-    #    import Compute
-    import ComputeInterfaces
-    import Compute
-
-else:
-    from .DataTypes import Transmission
-    #    from . import Compute
-    from . import ComputeInterfaces
-    from . import Compute
+from .DataTypes import Transmission
+#    from . import Compute
+from . import ComputeInterfaces
+from . import Compute
 from pyqtgraphCore.Qt import QtCore, QtGui
 from uuid import uuid4
 
@@ -67,15 +59,12 @@ class PeakFeatures:
         self.pb_df['features'] = features
         return [self.pb_df]
 
-    def _per_peak(self, df_ix, ix_peak_abs):
+    def _per_peak(self, df_ix: int, ix_peak_abs: int) -> dict:
         """
         Calculate and return peak features for each peak
         :param df_ix: DataFrame index of where this peak is located with respect to the peaks_bases DataFrame
-        :type df_ix: int
         :param ix_peak_abs: Absolute index of this peak, relative to the entire trace
-        :type: ix_peak_abs: int
         :return: dictionary with each peak feature as a key and corresponding value as the entry
-        :rtype: dict
         """
         try:
             ix_base_left_abs = self.pb_df.iloc[df_ix - 1]['event']
@@ -146,7 +135,7 @@ class PeakFeatures:
 
 
 class PeakFeaturesIter(PeakFeatures):
-    def __init__(self, transmission):
+    def __init__(self, transmission: Transmission):
         PeakFeatures.__init__(self, transmission)
 
     def get_all(self):
@@ -168,15 +157,12 @@ class PeakFeaturesIter(PeakFeatures):
         self.t.src.append({'Peak_Features': list(peak_features.iloc[0].keys())})
         return self.t
 
-    def _per_curve(self, curve, pb_df):
+    def _per_curve(self, curve: np.ndarray, pb_df: pd.DataFrame) -> pd.Series:
         """
         Calculate and return peak features of all peaks for each curve
         :param curve: raw trace of calcium signal
-        :type curve: np.array
         :param pb_df: peaks & bases DataFrame, created by _get_zero_crossings
-        :type pb_df: pd.DataFrame
         :return: Series of dicts containing numerical peak features for each peak in this curve
-        :type: pd.Series
         """
         assert isinstance(pb_df, pd.DataFrame)
         self.curve = curve
