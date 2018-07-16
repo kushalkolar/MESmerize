@@ -7,7 +7,7 @@ from ...graphicsItems.PlotCurveItem import PlotCurveItem
 from ... import PlotDataItem, ComboBox
 from ... import metaarray
 from analyser.DataTypes import Transmission
-from analyser import plot_window
+from analyser import simple_plot_window
 from .common import *
 import numpy as np
 
@@ -22,7 +22,7 @@ class Plot(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out'}})
         self.trans_ids = []
-        self.pwin = plot_window.Window()
+        self.pwin = simple_plot_window.Window()
         self.ctrls['Apply'].clicked.connect(self.update)
         self.ctrls['Show'].clicked.connect(self.pwin.setVisible)
 

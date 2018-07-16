@@ -13,6 +13,7 @@ from analyser.DataTypes import Transmission
 from scipy import signal
 from functools import partial
 import pandas as pd
+from analyser.math.tvregdiff import tv_reg_diff
 
 
 class Derivative(CtrlNode):
@@ -23,13 +24,30 @@ class Derivative(CtrlNode):
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
-    def processData(self, transmission):
+    def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
         t = transmission.copy()
         t.df['curve'] = t.df['curve'].apply(np.gradient)
         t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
         return t
+
+
+class TVDiff(CtrlNode):
+    """Total Variation Regularized Numerical Differentiation, Chartrand 2011 method"""
+    nodeName = 'TVDiff'
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+
+    def processData(self, transmission: Transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+        t = transmission.copy()
+        t.df['curve'] = t.df['curve'].apply(lambda x: self._func(x, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0))
+        t.src.append({'TVDiff': {''}})
+        return t
+
+    def _func(self, *args, **kwargs):
+        return tv_reg_diff(*args, **kwargs)
 
 
 class ButterWorth(CtrlNode):
@@ -41,7 +59,7 @@ class ButterWorth(CtrlNode):
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
-    def _func(self, x, meta):
+    def _func(self, x: np.ndarray, meta: dict):
         N = self.ctrls['order'].value()
         # print('meta: ')
         freq = 1 / meta['fps']
@@ -53,7 +71,7 @@ class ButterWorth(CtrlNode):
         sig = signal.filtfilt(b, a, x)
         return pd.Series({'curve': sig})
 
-    def processData(self, transmission):
+    def processData(self, transmission: Transmission):
         if self.ctrls['Apply'] is False:
             return
         self.t = transmission.copy()
@@ -82,7 +100,7 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
-    def processData(self, transmission):
+    def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
         self.t = transmission.copy()
@@ -117,7 +135,7 @@ class PowerSpectralDensity(CtrlNode):
     nodeName = 'PowSpectDens'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
 
-    def processData(self, transmission):
+    def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
         t = transmission.copy()

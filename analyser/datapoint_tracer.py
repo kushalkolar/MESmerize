@@ -43,6 +43,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.image_view = ImageView()
         self.image_item = self.image_view.getImageItem()
         self.view = self.ui.graphicsViewImage.addViewBox()
+        self.view.setAspectLocked(True)
         self.view.addItem(self.image_item)
 
         self.peak_region = TimelineLinearRegion(self.ui.graphicsViewPlot)

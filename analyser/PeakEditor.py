@@ -39,9 +39,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.dockWidget.setWidget(self.history_tree)
         self.brush_size = 12
 
-    def update_transmission(self, trans_curves, trans_peaks_bases):
-        assert isinstance(trans_curves, Transmission)
-
+    def update_transmission(self, trans_curves: Transmission, trans_peaks_bases: Transmission):
         if hasattr(self, 'tc'):
             if self.tc.df.index.size != trans_curves.df.index.size:
                 self.tc = trans_curves
@@ -53,7 +51,6 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.tc = trans_curves
 
-        assert isinstance(trans_peaks_bases, Transmission)
         self.tpb = trans_peaks_bases.copy()
         self._set_row()
         self.history_tree.fill_widget([trans_peaks_bases.src])
