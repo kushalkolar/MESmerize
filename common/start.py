@@ -48,6 +48,7 @@ def load_child_dataframes_gui():
 
 def viewer(file: str = None, sample_id: str = None, uuid: UUID = None):
     # Interpret image daifigOptions(imageAxisOrder='row-major')
+    pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
     ## Create window with ImageView widget
     viewerWindow = viewer_main_window.MainWindow()
     configuration.window_manager.viewers.append(viewerWindow)
