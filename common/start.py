@@ -22,6 +22,7 @@ from analyser.flowchart import Window as FlowchartWindow
 from analyser.stats_gui import StatsWindow
 from project_manager.project_browser.project_browser_window import ProjectBrowserWindow
 import json
+from uuid import UUID
 
 
 def window_manager():
@@ -45,9 +46,8 @@ def load_child_dataframes_gui():
     configuration.window_manager.project_browsers[0].reload_all_tabs()
 
 
-def viewer(file=None):
-    # Interpret image data as row-major instead of col-major
-    pyqtgraphCore.setConfigOptions(imageAxisOrder='row-major')
+def viewer(file: str = None, sample_id: str = None, uuid: UUID = None):
+    # Interpret image daifigOptions(imageAxisOrder='row-major')
     ## Create window with ImageView widget
     viewerWindow = viewer_main_window.MainWindow()
     configuration.window_manager.viewers.append(viewerWindow)
@@ -63,20 +63,22 @@ def viewer(file=None):
 
     configuration.window_manager.viewers[-1].show()
 
-    if file is None:
-        return
-    elif file.endswith('.tiff') or file.endswith('.tif'):
-        viewerWindow.run_module(tiff_io.ModuleGUI)
-        tm = viewerWindow.running_modules[-1]
-        assert isinstance(tm, tiff_io.ModuleGUI)
-        tm.ui.labelFileTiff.setText(file)
-
-    elif file.endswith('.mes'):
+    if file is not None:
+        if file.endswith('.tiff') or file.endswith('.tif'):
+            viewerWindow.run_module(tiff_io.ModuleGUI)
+            tm = viewerWindow.running_modules[-1]
+            assert isinstance(tm, tiff_io.ModuleGUI)
+            tm.ui.labelFileTiff.setText(file)
+        elif file.endswith('.mes'):
+            pass
+        elif file.endswith('.vwe'):
+            viewer_widget.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=file)
+        else:
+            raise ValueError('File extension not supported')
+    elif sample_id is not None:
         pass
-    elif file.endswith('.vwe'):
-        viewer_widget.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=file)
-    else:
-        raise ValueError('File extension not supported')
+    elif uuid is not None:
+        pass
 
 
 def flowchart(file=None):
