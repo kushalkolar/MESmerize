@@ -154,9 +154,6 @@ class ViewerWorkEnv:
         to construct viewer work environments using the classmethod viewerWorkEnv.from_mesfile.
 
         :param path: full path to a single .mes file.
-        :type path:  str
-
-        :rtype:      MES
         """
         return MES(path)
 
@@ -241,7 +238,7 @@ class ViewerWorkEnv:
     def from_splits(cls):
         pass
 
-    def _make_dict(self):
+    def _make_dict(self) -> dict:
         # Dict that's later used for pickling
         d = {'sample_id':   self.sample_id,
              'meta':        self.imgdata.meta,
@@ -262,7 +259,7 @@ class ViewerWorkEnv:
 
         return d
 
-    def to_pickle(self, dir_path: str, filename: str = None, save_img_seq=True, UUID=None):
+    def to_pickle(self, dir_path: str, filename: str = None, save_img_seq=True, UUID=None) -> str:
         """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
         for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
@@ -270,8 +267,7 @@ class ViewerWorkEnv:
         image is saved in a pickle.
         """
         if self.isEmpty:
-            print('Work environment is empty!')
-            return
+            raise AttributeError('Work environment is empty!')
 
         if UUID is None:
             UUID = uuid4()
