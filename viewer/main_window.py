@@ -32,6 +32,15 @@ from .core.add_to_project import AddToProjectDialog
 
 
 class MainWindow(QtWidgets.QMainWindow):
+    standard_modules = {'tiff_io': tiff_io.ModuleGUI,
+                        'mesfile': mesfile_io.ModuleGUI,
+                        'cnmf': cnmf.ModuleGUI,
+                        'cnmfe': cnmfe.ModuleGUI,
+                        'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
+                        'roi_manager': roi_manager.ModuleGUI,
+                        'stimulus_mapping': stimulus_mapping.ModuleGUI
+                        }
+
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self, parent=None)
         self.ui = Ui_MainWindow()
@@ -102,8 +111,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                     historyFile=cmd_history_file))
 
-    def run_module(self, module_class, hide=False):
+    def run_module(self, module_class, hide=False) -> object:
         # Show the QDockableWidget if it's already running
+        if type(module_class) is str:
+            module_class = self.standard_modules[module_class]
+
         for m in self.running_modules:
             if isinstance(m, module_class):
                 m.show()

@@ -30,6 +30,8 @@ import tifffile
 import traceback
 import numba
 from glob import glob
+import time
+
 
 if not sys.argv[0] == __file__:
     from ...core.common import ViewerInterface
@@ -37,6 +39,7 @@ if not sys.argv[0] == __file__:
 
 
 def run(batch_dir, UUID, n_processes):
+    t1 = time.time()
     output = {'status': 0, 'output_info': ''}
     file_path = batch_dir + '/' + UUID
     n_processes = int(n_processes)
@@ -60,6 +63,11 @@ def run(batch_dir, UUID, n_processes):
         upsample_factor_grid = input_params['upsample']
         max_deviation_rigid = input_params['max_dev']
 
+        if os.environ['USE_CUDA'] == 'True':
+            USE_CUDA = True
+        else:
+            USE_CUDA = False
+
         min_mov = cm.load(fname[0], subindices=range(200)).min()
 
         mc = MotionCorrect(fname[0], min_mov,
@@ -68,7 +76,7 @@ def run(batch_dir, UUID, n_processes):
                            strides=strides, overlaps=overlaps, splits_els=splits_els,
                            upsample_factor_grid=upsample_factor_grid,
                            max_deviation_rigid=max_deviation_rigid,
-                           shifts_opencv=True, nonneg_movie=True)
+                           shifts_opencv=True, nonneg_movie=True, use_cuda=USE_CUDA)
 
         mc.motion_correct_pwrigid(save_movie=True)
         m_els = cm.load(mc.fname_tot_els)
@@ -92,8 +100,10 @@ def run(batch_dir, UUID, n_processes):
         elif input_params['output_bit_depth'] == '16':
             m_els = m_els.astype(np.uint16)
 
-        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True)
+        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True)
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
+
+        print(time.time() - t1)
 
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})

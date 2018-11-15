@@ -59,10 +59,10 @@ class Row(QtWidgets.QWidget):
             self.set_series(pd_series)
 
     def set_series(self, pd_series: pd.Series):
-        self.name.setText(pd_series['name'].item())
+        self.name.setText(pd_series['name'])
         self.start.setText(str(pd_series['start']))
         self.end.setText(str(pd_series['end']))
-        self.color_btn.setColor(pd_series['color'].item())
+        self.color_btn.setColor(pd_series['color'])
 
     def get_dict(self) -> dict:
         d = {'name': self.name.text(),

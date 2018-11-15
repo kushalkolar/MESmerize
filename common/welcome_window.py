@@ -37,36 +37,40 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btnProjectBrowser.setVisible(False)
         self.ui.labelProjectBrowser.setVisible(False)
 
-        self.ui.btnProjectBrowser.setIcon(QtGui.QIcon('./common/icons/noun_917603_cc.png'))
+        mpath = os.path.abspath(__file__)
+        mdir = os.path.dirname(mpath)
+
+        self.ui.btnProjectBrowser.setIcon(QtGui.QIcon(mdir + '/icons/noun_917603_cc.png'))
         self.ui.btnProjectBrowser.setIconSize(QtCore.QSize(100, 100))
 
-        self.ui.btnNewProject.setIcon(QtGui.QIcon('./common/icons/noun_1327089_cc.png'))
+        self.ui.btnNewProject.setIcon(QtGui.QIcon(mdir + '/icons/noun_1327089_cc.png'))
         self.ui.btnNewProject.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnNewProject.clicked.connect(self.create_new_project)
 
-        self.ui.btnOpenProject.setIcon(QtGui.QIcon('./common/icons/noun_1327109_cc.png'))
+        self.ui.btnOpenProject.setIcon(QtGui.QIcon(mdir + '/icons/noun_1327109_cc.png'))
         self.ui.btnOpenProject.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnOpenProject.clicked.connect(self.open_project)
 
-        self.ui.btnViewer.setIcon(QtGui.QIcon('./common/icons/noun_38902_cc.png'))
+        self.ui.btnViewer.setIcon(QtGui.QIcon(mdir + '/icons/noun_38902_cc.png'))
+        self.ui.btnViewer.setIconSize(QtCore.QSize(24,24))
         self.ui.btnViewer.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnViewer.clicked.connect(self.spawn_new_viewer)
 
         self.ui.verticalLayoutViewersRunning.addWidget(self.window_manager.viewers.list_widget)
 
-        self.ui.btnFlowchart.setIcon(QtGui.QIcon('./common/icons/noun_907242_cc.png'))
+        self.ui.btnFlowchart.setIcon(QtGui.QIcon(mdir + '/icons/noun_907242_cc.png'))
         self.ui.btnFlowchart.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnFlowchart.clicked.connect(self.spawn_new_flowchart)
 
         self.ui.verticalLayoutFlowchartRunning.addWidget(self.window_manager.flowcharts.list_widget)
 
-        self.ui.btnPlot.setIcon(QtGui.QIcon('./common/icons/noun_635936_cc.png'))
+        self.ui.btnPlot.setIcon(QtGui.QIcon(mdir + '/icons/noun_635936_cc.png'))
         self.ui.btnPlot.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnPlot.clicked.connect(self.spawn_new_plot_gui)
 
         self.ui.verticalLayoutPlotsRunning.addWidget(self.window_manager.plots.list_widget)
 
-        self.ui.btnClustering.setIcon(QtGui.QIcon('./common/icons/noun_195949_cc.png'))
+        self.ui.btnClustering.setIcon(QtGui.QIcon(mdir + '/icons/noun_195949_cc.png'))
         self.ui.btnClustering.setIconSize(QtCore.QSize(100, 100))
 
         self.sys_config_gui = system_config_window.SystemConfigGUI()

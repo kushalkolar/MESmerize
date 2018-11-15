@@ -16,6 +16,7 @@ from . import configuration
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.system_config_pytemplate import *
 import os
+import traceback
 # configuration.n_processes = cpu_count() - 1
 
 
@@ -29,6 +30,8 @@ class SystemConfigGUI(QtWidgets.QWidget):
         self.ui.spinBoxCores.setValue(int(configuration.sys_cfg['HARDWARE']['n_processes']))
         self.ui.spinBoxCores.setMaximum((cpu_count() - 4))
 
+        self.ui.checkBoxUseCUDA.setChecked(bool(configuration.sys_cfg['HARDWARE']['USE_CUDA']))
+
         self.ui.btnCaimanPath.clicked.connect(self.choose_caiman_path)
         self.ui.btnAnacondaPath.clicked.connect(self.choose_anaconda_dir_path)
 
@@ -37,8 +40,29 @@ class SystemConfigGUI(QtWidgets.QWidget):
         self.ui.btnApply.clicked.connect(self.apply)
         self.ui.btnClose.clicked.connect(self.hide)
 
+        self.ui.pushButtonCUDAError.setVisible(False)
+        self.ui.pushButtonCUDAError.setDisabled(True)
+
+        self.cuda_error_msg = None
+
+        try:
+            import pycuda
+            import skcuda
+        except ImportError:
+            self.cuda_error_msg = traceback.format_exc()
+            self.ui.checkBoxUseCUDA.setChecked(False)
+            configuration.sys_cfg['HARDWARE']['USE_CUDA'] = str(self.ui.checkBoxUseCUDA.isChecked())
+            self.ui.checkBoxUseCUDA.setText('Use CUDA - Disabled, could not import libraries')
+            self.ui.pushButtonCUDAError.setVisible(True)
+            self.ui.pushButtonCUDAError.setEnabled(True)
+            self.ui.pushButtonCUDAError.clicked.connect(self.show_cuda_error)
+
+    def show_cuda_error(self):
+        QtWidgets.QMessageBox.information(self, 'CUDA Error', self.cuda_error_msg)
+
     def apply(self):
         configuration.sys_cfg['HARDWARE']['n_processes'] = str(self.ui.spinBoxCores.value())
+        configuration.sys_cfg['HARDWARE']['USE_CUDA'] = str(self.ui.checkBoxUseCUDA.isChecked())
         self.set_anaconda_env()
         self.set_env_variables()
         configuration.write_sys_config()

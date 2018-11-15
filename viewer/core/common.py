@@ -36,7 +36,17 @@ class ViewerInterface:
         self.viewer.setImage(self.viewer.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
                                    xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
                                                      self.viewer.workEnv.imgdata.seq.T.shape[0]))
+
         self.viewer.workEnv.roi_manager = self.viewer.parent().roi_manager.manager
+        if self.viewer.workEnv.stim_maps is not None:
+            print(self.viewer.workEnv.stim_maps)
+            smm = self.viewer.parent().run_module('stimulus_mapping')
+            smm.set_all_data(self.viewer.workEnv.stim_maps)
+            try:
+                smm.set_timeline(1)
+            except:
+                pass
+
         self.viewer.status_bar_label.showMessage('Finished updating work environment.')
 
     def enable_ui(self, b):

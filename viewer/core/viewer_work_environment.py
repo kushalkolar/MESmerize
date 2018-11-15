@@ -22,8 +22,11 @@ from common import configuration
 from uuid import uuid4
 import json
 
+
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None, roi_manager=None, roi_states=None, comments='', origin_file='', custom_columns_dict=None):
+    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
+                 roi_manager=None, roi_states=None, comments='', origin_file='',
+                 custom_columns_dict=None, history_trace=[], **kwargs):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -31,6 +34,8 @@ class ViewerWorkEnv:
 
         :param roi_states:  roi states from ROI Manager module
         :param stim_maps:   {'units': str, 'dataframe': pd.DataFrame}
+        :param history_trace: list of dicts containing a traceable history of what what done with the work environment,
+                              such as params used from modules to process the data
 
         :type imgdata:      ImgData
         :type sample_id:    str
@@ -40,6 +45,7 @@ class ViewerWorkEnv:
         :type comments:     str
         :type custom_columns_dict: dict
         :type roi_states:   dict
+        :type history_trace: list
 
         """
         if imgdata is not None:
@@ -53,6 +59,9 @@ class ViewerWorkEnv:
         self.meta = meta
 
         self.stim_maps = stim_maps
+
+        if 'stimMaps' in kwargs.keys():
+            self.stim_maps = kwargs['stimMaps']
 
         self.sample_id = sample_id
 

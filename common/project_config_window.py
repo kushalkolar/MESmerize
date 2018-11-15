@@ -202,11 +202,15 @@ class ColumnsPage(QtWidgets.QWidget):
         elif self.ui.radioButtonInt64.isChecked():
             if replacement_value == '':
                 replacement_value = 0
+            else:
+                replacement_value = int64(replacement_value)
             column_type = 'int64'
 
         elif self.ui.radioButtonFloat64.isChecked():
             if replacement_value == '':
                 replacement_value = 0.0
+            else:
+                replacement_value = float64(replacement_value)
             column_type = 'float64'
 
         elif self.ui.radioButtonBoolean.isChecked():
@@ -215,6 +219,8 @@ class ColumnsPage(QtWidgets.QWidget):
             if replacement_value not in ['True', 'False'] and not configuration.project_manager.dataframe.empty:
                 QtWidgets.QMessageBox.warning(self, 'Invalid replacement value',
                                               'You can enter only True or False for boolean data types')
+            else:
+                replacement_value = bool(replacement_value)
 
         else:
             QtWidgets.QMessageBox.warning(self, 'No data type selected',
