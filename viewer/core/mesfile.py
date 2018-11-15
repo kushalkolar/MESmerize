@@ -67,14 +67,19 @@ class MES:
                     if channel in meta.keys():
                         try:
                             if meta[channel]['y'].ndim == 2:
-                                self.voltages_lists_dict[channel] = list(set(meta[channel]['y'][1]))
+                                if channel in self.voltages_lists_dict.keys():
+                                    self.voltages_lists_dict[channel] += list(set(meta[channel]['y'][1]))
+                                else:
+                                    self.voltages_lists_dict[channel] = list(set(meta[channel]['y'][1]))
                         except (KeyError, IndexError) as e:
                             self.errors.append(str(e) + ': ' + meta['IMAGE'] + ' Does not have: ' + channel)
 
             for channel in ['PMT_EN', 'Trig', 'PMTenUG', 'PMTenUR', 'PMTenUB']:
                 if channel in meta.keys():
                     try:
-                        if meta[channel]['y'].ndim == 2:
+                        if channel in self.voltages_lists_dict.keys():
+                            self.voltages_lists_dict[channel] += list(set(meta[channel]['y'][1]))
+                        else:
                             self.voltages_lists_dict[channel] = list(set(meta[channel]['y'][1]))
                     except (KeyError, IndexError) as e:
                         self.errors.append(str(e) + ': ' + meta['IMAGE'] + ' Does not have: ' + channel)
@@ -87,7 +92,8 @@ class MES:
             except KeyError as e:
                 self.errors.append(str(e) + ': ' + '"error for: "' + image)
 
-                # print('bah')
+            for channel in self.voltages_lists_dict.keys():
+                self.voltages_lists_dict[channel] = list(set(self.voltages_lists_dict[channel]))
 
     def _loadmat(self, filename):
         data = spio.loadmat(filename, struct_as_record=False, squeeze_me=True)

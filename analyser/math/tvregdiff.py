@@ -131,8 +131,9 @@ Updated for python3 and scipy 1.0.0
 import numpy as np
 from scipy import sparse
 from scipy.sparse import linalg as splin
+import numba
 
-
+#@numba.jit
 def tv_reg_diff(data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, diagflag=1):
     ## code starts here
     # Make sure we have a column vector
@@ -286,10 +287,10 @@ if __name__ == "__main__":
 
     testf = testf + np.random.normal(0.0, 0.04, x0.shape)
 
-    deriv_sm = tv_reg_diff(testf, 100, 5e-2, dx=0.05, ep=1e-1, scale='small', diagflag=0)
-    deriv_lrg = tv_reg_diff(testf, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0)
+#    deriv_sm = tv_reg_diff(testf, 100, 5e-2, dx=0.05, ep=1e-1, scale='small', diagflag=0)
+#    deriv_lrg = tv_reg_diff(testf, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0)
 
-    plt.plot(testf)
-    plt.plot(deriv_sm)
-    plt.plot(deriv_lrg)
-    plt.show()
+#    plt.plot(testf)
+#    plt.plot(deriv_sm)
+#    plt.plot(deriv_lrg)
+#    plt.show()

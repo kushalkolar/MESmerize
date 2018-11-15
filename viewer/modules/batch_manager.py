@@ -338,6 +338,7 @@ class ModuleGUI(QtWidgets.QWidget):
                      configuration.sys_cfg['PATHS']['caiman'] + '"\n'
                                                                 'export MKL_NUM_THREADS=1\n' +
                      'export OPENBLAS_NUM_THREADS=1\n'
+                     'export USE_CUDA=' + configuration.sys_cfg['HARDWARE']['USE_CUDA'] + '\n'
                      'python "' +
                      module_path + '" "' +
                      self.batch_path + '" "' +

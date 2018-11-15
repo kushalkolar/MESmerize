@@ -36,7 +36,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.comboBoxShowTimelineChoice.currentIndexChanged.connect(self.set_timeline)
             self.timeline_stimulus_display = TimeLineStimulusMap(viewer)
             configuration.project_manager.signal_project_config_changed.connect(self.reset)
-            self.ui.btnSetAllMaps.clicked.connect(self.export_to_work_env)
+            self.ui.btnSetAllMaps.clicked.connect(self.set_all_maps)
 
     def setup_tabs(self):
         self.ui.comboBoxShowTimelineChoice.addItems([''])
@@ -102,6 +102,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
             elif dataframes_dict[stim_type]['units'] == 'frames':
                 tab.ui.comboBoxTimeUnits.setCurrentIndex(1)
 
+    def set_all_maps(self):
+        self.set_timeline(self.ui.comboBoxShowTimelineChoice.currentIndex())
+
     def export_to_work_env(self):
         d = self.get_all_stims_dataframes()
 
@@ -109,19 +112,20 @@ class ModuleGUI(QtWidgets.QDockWidget):
             if d[stim_type] is None:
                 continue
 
-            if d[stim_type]['units'] == 'seconds':
-                fps = self.vi.viewer.workEnv.meta['fps']
-                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'] * fps
-                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'].astype(int)
+            # if d[stim_type]['units'] == 'seconds':
+            #     fps = self.vi.viewer.workEnv.meta['fps']
+            #     d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'] * fps
+            #     d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'].astype(int)
+            #
+            #     d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
+                # d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
 
-                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
-                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
-
-            d[stim_type] = d[stim_type]['dataframe']
+            # d[stim_type] = d[stim_type]['dataframe']
 
         self.vi.viewer.workEnv.stim_maps = d
 
     def set_timeline(self, ix: int):
+        self.export_to_work_env()
         if ix == 0:
             self.timeline_stimulus_display.clear_all()
             return
@@ -140,7 +144,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             QtWidgets.QMessageBox.information(self, 'IndexError', str(ie))
             return
 
-        units = tab_page.ui.comboBoxTimeUnits.currentText()
+        units = self.vi.viewer.workEnv.stim_maps[stim_type]['units']
 
         if units == 'seconds':
             fps = self.vi.viewer.workEnv.meta['fps']

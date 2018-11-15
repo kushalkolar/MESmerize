@@ -50,7 +50,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             # Creates an instance of MES, see MesmerizeCore.FileInput
             self.mesfile = ViewerWorkEnv.load_mesfile(filelist[0][0])
             self.ui.listwMesfile.setEnabled(True)
-
+            self.ui.listwMesfile.clear()
             # Get the references of the images, their descriptions, and add them to the list
             for i in self.mesfile.images:
                 j = self.mesfile.image_descriptions[i]
@@ -106,7 +106,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         for channel in self.mesfile.voltages_lists_dict.keys():
             self.stim_map_gui.add_stim_type(channel)
             for voltage in self.mesfile.voltages_lists_dict[channel]:
-                pd_series = pd.Series(data={'voltage': str(voltage) + ' V: ',
+                pd_series = pd.Series(data={'voltage': '%.1f' % voltage,
                                             'name': '',
                                             'color': '#FFFFFF'
                                             })
@@ -139,7 +139,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 current_map = []
 
                 for i in range(0, y.shape[1] - 1):
-                    voltage = str(y[1][i])
+                    voltage = '%.1f' % y[1][i]
 
                     tstart_frame = int(((y[0][i] * x) - firstFrameStartTime) / frameTimeLength)
 
@@ -148,13 +148,18 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
                     tend_frame = int(((y[0][i + 1] * x) - firstFrameStartTime) / frameTimeLength)
 
-                    v = voltage + ' V: '
+                    #v = voltage# + ' V: '
 
                     mapping = voltage_mappings[stim_type]['dataframe'][
-                        voltage_mappings[stim_type]['dataframe']['voltage'] == v]
-
-                    name = mapping['name']
-                    color = mapping['color']
+                        voltage_mappings[stim_type]['dataframe']['voltage'] == voltage]
+                    try:
+                        name = mapping['name'].item()
+                    except:
+                        name = mapping['name']
+                    try:
+                        color = mapping['color'].item()
+                    except:
+                        color = mapping['color']
 
                     current_map.append({'name': name,
                                         'start': tstart_frame,
@@ -169,4 +174,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                                   '" in channel <' + channel + '>.\n' + traceback.format_exc())
 
         smm.set_all_data(stimulus_dataframes)
+        print(stimulus_dataframes)
         smm.export_to_work_env()
+        try:
+            smm.ui.comboBoxShowTimelineChoice.setCurrentIndex(1)
+        except:
+            pass

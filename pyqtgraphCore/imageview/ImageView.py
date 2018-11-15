@@ -37,7 +37,6 @@ from .. import ptime as ptime
 from .. import debug as debug
 from ..SignalProxy import SignalProxy
 from .. import getConfigOption
-from pyqtgraph import plot as pgplot
 from multiprocessing import Process, Queue
 import numpy as np
 #from common import configuration  # DO NOT REMOVE THIS LINE OR YOU WILL GET CIRCULAR IMPORTS AND BREAK EVERYTHING
