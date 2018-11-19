@@ -133,6 +133,9 @@ class Output:
         vi.update_workEnv()
         vi.enable_ui(True)
 
+
+
+
 class BitDepthConverter:
     """
     Downscale the bit depth of image to uint8, uint16, or uint32 using a Look up table.

@@ -147,12 +147,26 @@ class PowerSpectralDensity(CtrlNode):
         f, p = signal.periodogram(curve)
         return p
 
-        # def _func(self, x):
-    #     b, a = signal.butter(2, (1 / 25) / 10)
-    #     sig = signal.filtfilt(b, a, x)
-    #     return sig
 
+class Resample(CtrlNode):
+    """Resample 1D data, uses scipy.signal.resample"""
+    nodeName = 'Resample'
+    uiTemplate = [
+        ('n', 'intSpin', {'min': 2, 'max': 9999, 'value': 1000, 'step': 100}),
+        ('Apply', 'check', {'checked': True, 'applyBox': True})
+    ]
 
+    def processData(self, transmission: Transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+        t = transmission.copy()
+
+        t.df['curve'] = t.df['curve'].apply(self._func)
+        t.src.append({'Resampled': self.ctrls['n'].value()})
+        return t
+
+    def _func(self, curve):
+        return signal.resample(curve, self.ctrls['n'].value())
 
 
 # class Downsample(CtrlNode):
