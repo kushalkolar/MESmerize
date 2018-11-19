@@ -49,7 +49,7 @@ class CurvePlotWindow(PlotWindow):
         for plot_ix, data_column in enumerate(self.data_columns):
 
             msg = 'Progress: ' + \
-                  str(((plot_ix + 1) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
+                  str(((plot_ix + 1) / len(self.data_columns)) * 100) + ' % , Plotting data column: ' + data_column
             self.status_bar.showMessage(msg)
 
             self.curve_plot.add_plot(data_column)

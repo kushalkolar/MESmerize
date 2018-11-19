@@ -66,6 +66,44 @@ class BeeswarmPlots(CtrlNode):
         self.plot_gui.show()
 
 
+class StackTraces(CtrlNode):
+    """Stack Traces"""
+    nodeName = 'StackTraces'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_gui = None
+        self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
+
+    def process(self, **kwargs):
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+            return
+
+        transmissions = kwargs['In']
+
+        if not len(transmissions) > 0:
+            raise Exception('No incoming transmissions')
+
+        transmissions_list = []
+
+        for t in transmissions.items():
+            t = t[1]
+            if t is None:
+                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                continue
+
+            transmissions_list.append(t.copy())
+
+        self.plot_gui.update_input_transmissions(transmissions_list)
+
+    def _open_plot_gui(self):
+        if self.plot_gui is None:
+            self.plot_gui = CurvePlotWindow(parent=self.parent())
+        self.plot_gui.show()
+
+
 class CurvePlotsNode(CtrlNode):
     """Curve plots"""
     nodeName = 'CurvePlots'
