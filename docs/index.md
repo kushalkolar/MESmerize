@@ -2,6 +2,8 @@ To get started we recommend following the tutorial (not yet available) using the
 
 ### Welcome Window
 
+      ![](https://github.com/kushalkolar/MESmerize/master/docs/imgs/welcome%20window.png)
+
 ### Creating a new Mesmerize Project
 
 ### Directory hierarchy of a project
@@ -10,22 +12,15 @@ To get started we recommend following the tutorial (not yet available) using the
 
 ### The Viewer
 
-
+	![](https://github.com/kushalkolar/MESmerize/master/docs/imgs/overview.png)
 
 ### Opening Image sequences
 
-### Defining Stimulus maps
+### Stimulus mapping
 
- - From mes files
- - From csv's
-	> ***Importing Stimulus Data automatically from other sources.***
-	> Mesmerize is flexible enough for you to import stimulus maps from other types of sources which you may be using. In order to import & automatically organize stimulus data from other source you will just need to add an additional *elif* block to the stimMaps setter method of the ImgData class in /MesmerizeCore/DataTypes. Refer to the property decorator of stimMaps for details on how stimulus data is organized. Briefly, each occurrence of a stimulus looks like this and is stored in a list containing all the occurrences of stimuli in that particular trace/image sequence:
-	> `[['StimName', <pyqtgraph color object>], (startFrame, endFrame)]`
-	> Feel free to email us if you need assistance.
+### CaImAn modules
 
-### Performing Motion Correction using CaImAn
-
-### Creation & annotation of ROIs
+### ROI Manager
 
 ### Data analysis - programmable flowcharts
 **Types of Nodes**
