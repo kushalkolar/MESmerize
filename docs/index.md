@@ -21,9 +21,11 @@ Stimulus information from mes files or CSV's can be mapped onto your imaging dat
 Mesmerize contains front-end GUI modules for the extremely useful and versatile CaImAn library. This makes it very easy for users to make use of the library without writing a single line of code.
 
 **CaImAn Elastic Motion Correction**
+
 ![alt text](https://github.com/kushalkolar/MESmerize/raw/master/docs/imgs/Overview/motion_correction.png)
 
 **CNMFE**
+
 ![alt text](https://github.com/kushalkolar/MESmerize/raw/master/docs/imgs/Overview/cnmfe.png)
 
 The computationally intense procedures performed using the CaImAn library (Elastic Motion Correction and CNMF) can be organized using the Mesmerize Batch Manager.
