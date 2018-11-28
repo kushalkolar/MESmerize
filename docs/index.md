@@ -2,8 +2,8 @@ To get started we recommend following the tutorial (not yet available) using the
 
 ### Welcome Window
 
-	![alt text][welcome_window]
-	[welcome_window]: https://github.com/kushalkolar/MESmerize/master/docs/imgs/welcome%20window.png)
+![alt text][welcome_window]
+[welcome_window]: https://github.com/kushalkolar/MESmerize/master/docs/imgs/welcome%20window.png)
 
 ### Creating a new Mesmerize Project
 
