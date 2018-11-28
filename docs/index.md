@@ -4,12 +4,6 @@ To get started we recommend following the tutorial (not yet available) using the
 
 ![alt text](https://github.com/kushalkolar/MESmerize/raw/master/docs/imgs/Overview/welcome%20window.png "welcome window")
 
-### Creating a new Mesmerize Project
-
-### Directory hierarchy of a project
-
-### Structure of a Project DataFrame
-
 ### The Viewer
 
 ![alt text](https://github.com/kushalkolar/MESmerize/raw/master/docs/imgs/Overview/overview.png)
@@ -48,12 +42,5 @@ To get started we recommend following the tutorial (not yet available) using the
  - **Statistics**
 	 - Peak Features
 	 - Curves
-
-### Examples:
-
-	1. Calcium dynamics in response to noxious stimuli
-	2. Comparison of calcium dynamics of different cell types
  
-### Statistical analysis and plotting
-
-### Machine learning and clustering
+### Plotting
