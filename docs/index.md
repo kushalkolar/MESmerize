@@ -8,15 +8,15 @@ Overview of Mesmerize:
 
 ![alt text](https://github.com/kushalkolar/MESmerize/raw/master/docs/imgs/Overview/overview.png)
 
-## Opening Image sequences
+### Opening Image sequences
 
 Mesmerize is able to work with standard 2D imaging sequences stored as tiff files and also with mes files from Femtonics microscopes. The downstream analysis is the same regardless of the input source once it's in the viewer.
 
-## Stimulus mapping
+### Stimulus mapping
 
 Stimulus information from mes files or CSV's can be mapped onto your imaging data.
 
-## CaImAn modules
+### CaImAn modules
 
 Mesmerize contains front-end GUI modules for the extremely useful and versatile CaImAn library. This makes it very easy for users to make use of the library without writing a single line of code.
 
@@ -28,12 +28,13 @@ Mesmerize contains front-end GUI modules for the extremely useful and versatile 
 
 The computationally intense procedures performed using the CaImAn library (Elastic Motion Correction and CNMF) can be organized using the Mesmerize Batch Manager.
 
-## Batch Manager
+### Batch Manager
 
 ![alt text](https://github.com/kushalkolar/MESmerize/raw/master/docs/imgs/Overview/batch_manager.png)
 
 
-## ROI Manager
+### ROI Manager
+
 
 # Data analysis - programmable flowcharts
 **Types of Nodes**
