@@ -1,0 +1,64 @@
+To get started we recommend following the tutorial (not yet available) using the example datasets included in /examples. We include image sequences acquired from a Femtonics microscope and standard tiff files of image sequences from a simple epifluorescent microscope along with corresponding CSV's containing stimulus information.
+
+### Welcome Window
+
+### Creating a new Mesmerize Project
+
+### Directory hierarchy of a project
+
+### Structure of a Project DataFrame
+
+### The Viewer
+
+
+
+### Opening Image sequences
+
+### Defining Stimulus maps
+
+ - From mes files
+ - From csv's
+	> ***Importing Stimulus Data automatically from other sources.***
+	> Mesmerize is flexible enough for you to import stimulus maps from other types of sources which you may be using. In order to import & automatically organize stimulus data from other source you will just need to add an additional *elif* block to the stimMaps setter method of the ImgData class in /MesmerizeCore/DataTypes. Refer to the property decorator of stimMaps for details on how stimulus data is organized. Briefly, each occurrence of a stimulus looks like this and is stored in a list containing all the occurrences of stimuli in that particular trace/image sequence:
+	> `[['StimName', <pyqtgraph color object>], (startFrame, endFrame)]`
+	> Feel free to email us if you need assistance.
+
+### Performing Motion Correction using CaImAn
+
+### Creation & annotation of ROIs
+
+### Data analysis - programmable flowcharts
+**Types of Nodes**
+ - **Data Nodes**
+	 - Load_Proj_DF
+	 - New Data passthrough
+	 - Save
+	 - Load
+	 - Bypass
+ - **Display Nodes**
+	 - Plot
+	 - PSD Plot
+	 - FFT Spectrum
+ - **Definition Nodes**
+	 - Align Stims
+	 - ROI Selection
+	 - Genotype selection
+	 - Peak Detection
+	 - Custom columns, such as stage
+ - **Signal filter nodes**
+	 - Butterworth filter
+	 - Savitzsky-Golay filter
+	 - FFT Filter
+	 - Derivative
+ - **Statistics**
+	 - Peak Features
+	 - Curves
+
+### Examples:
+
+	1. Calcium dynamics in response to noxious stimuli
+	2. Comparison of calcium dynamics of different cell types
+ 
+### Statistical analysis and plotting
+
+### Machine learning and clustering
