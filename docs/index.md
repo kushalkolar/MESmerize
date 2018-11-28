@@ -12,7 +12,7 @@ To get started we recommend following the tutorial (not yet available) using the
 
 ### The Viewer
 
-	![alt text](https://github.com/kushalkolar/MESmerize/master/docs/imgs/Overview/overview.png)
+![alt text](https://github.com/kushalkolar/MESmerize/master/docs/imgs/Overview/overview.png)
 
 ### Opening Image sequences
 
