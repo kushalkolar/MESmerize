@@ -2,7 +2,7 @@ To get started we recommend following the tutorial (not yet available) using the
 
 ### Welcome Window
 
-	![](https://github.com/kushalkolar/MESmerize/master/docs/imgs/welcome%20window.png)
+	![alt text](https://github.com/kushalkolar/MESmerize/master/docs/imgs/welcome%20window.png)
 
 ### Creating a new Mesmerize Project
 
@@ -12,7 +12,7 @@ To get started we recommend following the tutorial (not yet available) using the
 
 ### The Viewer
 
-	![](https://github.com/kushalkolar/MESmerize/master/docs/imgs/overview.png)
+	![alt text](https://github.com/kushalkolar/MESmerize/master/docs/imgs/overview.png)
 
 ### Opening Image sequences
 
