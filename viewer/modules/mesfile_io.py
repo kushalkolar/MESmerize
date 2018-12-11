@@ -92,7 +92,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           traceback.format_exc(), QtWidgets.QMessageBox.Ok)
             self.vi.viewer.status_bar_label.clearMessage()
             return
-
+        self.vi.viewer.ui.label_curr_img_seq_name.setText(s.text())
         self.vi.viewer.status_bar_label.showMessage('Setting Stimulus Map...')
         self.set_stimulus_map()
         self.vi.viewer.status_bar_label.showMessage('Finished setting stimulus map!')

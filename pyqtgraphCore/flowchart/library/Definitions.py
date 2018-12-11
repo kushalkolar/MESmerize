@@ -368,3 +368,16 @@ class PeakDetect(CtrlNode):
         self.pbw = PeakEditor.PBWindow(self.t, self.t)
         self.pbw.show()
         self.pbw.btnDone.clicked.connect(self._set_editor_output)
+
+
+class DeltaFoF(CtrlNode):
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('OpenGUI', 'button', {'text': 'Open GUI'})]
+
+    def __init__(self, name, **kwargs):
+        CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
+                                                 'Curve': {'io': 'in'},
+                                                 'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
+        self.data_modified = False
+        self.editor_output = False
+        self.ctrls['Edit'].clicked.connect(self._peak_editor)

@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(369, 218)
+        DockWidget.resize(369, 230)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -47,6 +47,7 @@ class Ui_DockWidget(object):
         self.horizontalLayout.addWidget(self.btnSelectTiff)
         self.labelFileTiff = QtWidgets.QLabel(self.dockWidgetContents)
         self.labelFileTiff.setText("")
+        self.labelFileTiff.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.labelFileTiff.setObjectName("labelFileTiff")
         self.horizontalLayout.addWidget(self.labelFileTiff)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
@@ -58,6 +59,7 @@ class Ui_DockWidget(object):
         self.horizontalLayout_3.addWidget(self.btnSelectMetaFile)
         self.labelFileMeta = QtWidgets.QLabel(self.dockWidgetContents)
         self.labelFileMeta.setText("")
+        self.labelFileMeta.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.labelFileMeta.setObjectName("labelFileMeta")
         self.horizontalLayout_3.addWidget(self.labelFileMeta)
         self.gridLayout.addLayout(self.horizontalLayout_3, 1, 0, 1, 1)
@@ -74,9 +76,9 @@ class Ui_DockWidget(object):
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate
-        DockWidget.setWindowTitle(_translate("DockWidget", "Tiff file I/O"))
+        DockWidget.setWindowTitle(_translate("DockWidget", "Tiff file &I/O"))
         self.btnLoadIntoWorkEnv.setText(_translate("DockWidget", "Load into workEnv"))
-        self.radioButtonImread.setText(_translate("DockWidget", "imread"))
+        self.radioButtonImread.setText(_translate("DockWidget", "i&mread"))
         self.label.setText(_translate("DockWidget", "Load method:"))
         self.radioButtonAsarray.setText(_translate("DockWidget", "asarray"))
         self.checkBox.setText(_translate("DockWidget", "is_nih"))

@@ -277,5 +277,8 @@ class Output(QtWidgets.QWidget):
                                            dims=self.dims,
                                            input_params_dict=input_params)
 
+        name = input_params['name_cnmfe']
+        vi.viewer.ui.label_curr_img_seq_name.setText(name)
+
 if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2], sys.argv[3])

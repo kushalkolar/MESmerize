@@ -29,14 +29,14 @@
        </property>
        <widget class="QWidget" name="layoutWidget">
         <layout class="QGridLayout" name="gridLayout_8">
-         <item row="0" column="2">
+         <item row="1" column="4">
           <widget class="QPushButton" name="btnExportWorkEnv">
            <property name="text">
             <string>Export workEnv</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2" rowspan="2">
+         <item row="2" column="4" rowspan="2">
           <widget class="HistogramLUTWidget" name="histogram">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -58,7 +58,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0" rowspan="4" colspan="2">
+         <item row="1" column="0" rowspan="4" colspan="4">
           <widget class="GraphicsView" name="graphicsView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -67,6 +67,53 @@
             </sizepolicy>
            </property>
           </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="label_curr_img_seq_name">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Current image sequence:</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
