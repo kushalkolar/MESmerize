@@ -106,17 +106,17 @@ def run(batch_dir, UUID, n_processes):
         F_dff = detrend_df_f(cnm2.A, cnm2.b, cnm2.C, cnm2.f, YrA=cnm2.YrA,
                              quantileMin=quantileMin, frames_window=frames_window)
 
-        filename = filename[0]
-        pickle.dump(Yr, open(filename[:-5] + '_Yr.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.A, open(filename[:-5] + '_cnm-A.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.b, open(filename[:-5] + '_cnm-b.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.C, open(filename[:-5] + '_cnm-C.pikl', 'wb'), protocol=4)
-        pickle.dump(F_dff, open(filename[:-5] + '_F_dff.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.f, open(filename[:-5] + '_cnm-f.pikl', 'wb'), protocol=4)
-        pickle.dump(idx_components, open(filename[:-5] + '_idx_components.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.YrA, open(filename[:-5] + '_cnm-YrA.pikl', 'wb'), protocol=4)
-        pickle.dump(dims, open(filename[:-5] + '_dims.pikl', 'wb'), protocol=4)
-        output.update({'output': filename[:-5], 'status': 1})
+
+        pickle.dump(Yr, open(UUID + '_Yr.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.A, open(UUID + '_cnm-A.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.b, open(UUID + '_cnm-b.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.C, open(UUID + '_cnm-C.pikl', 'wb'), protocol=4)
+        pickle.dump(F_dff, open(UUID + '_F_dff.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.f, open(UUID + '_cnm-f.pikl', 'wb'), protocol=4)
+        pickle.dump(idx_components, open(UUID + '_idx_components.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.YrA, open(UUID  + '_cnm-YrA.pikl', 'wb'), protocol=4)
+        pickle.dump(dims, open(UUID  + '_dims.pikl', 'wb'), protocol=4)
+        output.update({'output': UUID, 'status': 1})
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 

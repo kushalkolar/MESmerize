@@ -95,9 +95,9 @@ def run(batch_dir, UUID, n_processes):
         cn_filter, pnr = cm.summary_images.correlation_pnr(
             Y, gSig=gSig, swap_dim=False)
         if not input_params['do_cnmfe'] and input_params['do_corr_pnr']:
-            pickle.dump(cn_filter, open(filename[0][:-5] + '_cn_filter.pikl', 'wb'), protocol=4)
-            pickle.dump(pnr, open(filename[0][:-5] + '_pnr.pikl', 'wb'), protocol=4)
-            output.update({'output': filename[0][:-5], 'status': 1, 'output_info': 'inspect correlation & pnr'})
+            pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
+            pickle.dump(pnr, open(UUID + '_pnr.pikl', 'wb'), protocol=4)
+            output.update({'output': UUID, 'status': 1, 'output_info': 'inspect correlation & pnr'})
             json.dump(output, open(file_path + '.out', 'w'))
             dview.terminate()
 
@@ -146,17 +146,16 @@ def run(batch_dir, UUID, n_processes):
             min_SNR=min_SNR, r_values_min=r_values_min, use_cnn=False)
 
         # np.save(filename[:-5] + '_curves.npy', cnm.C)
-        filename = filename[0]
-        pickle.dump(Yr, open(filename[:-5] + '_Yr.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.A, open(filename[:-5] + '_cnm-A.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.b, open(filename[:-5] + '_cnm-b.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.C, open(filename[:-5] + '_cnm-C.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.f, open(filename[:-5] + '_cnm-f.pikl', 'wb'), protocol=4)
-        pickle.dump(idx_components, open(filename[:-5] + '_idx_components.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.YrA, open(filename[:-5] + '_cnm-YrA.pikl', 'wb'), protocol=4)
-        pickle.dump(pnr, open(filename[0][:-5] + '_pnr.pikl', 'wb'), protocol=4)
-        pickle.dump(cn_filter, open(filename[:-5] + '_cn_filter.pikl', 'wb'), protocol=4)
-        pickle.dump(dims, open(filename[:-5] + '_dims.pikl', 'wb'), protocol=4)
+        pickle.dump(Yr, open(UUID + '_Yr.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.A, open(UUID + '_cnm-A.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.b, open(UUID + '_cnm-b.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.C, open(UUID + '_cnm-C.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.f, open(UUID + '_cnm-f.pikl', 'wb'), protocol=4)
+        pickle.dump(idx_components, open(UUID + '_idx_components.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm.YrA, open(UUID + '_cnm-YrA.pikl', 'wb'), protocol=4)
+        pickle.dump(pnr, open(UUID + '_pnr.pikl', 'wb'), protocol=4)
+        pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
+        pickle.dump(dims, open(UUID + '_dims.pikl', 'wb'), protocol=4)
         output.update({'output': filename[:-5], 'status': 1})
 
     except Exception as e:
