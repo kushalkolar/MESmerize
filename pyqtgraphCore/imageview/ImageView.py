@@ -560,6 +560,7 @@ class ImageView(QtWidgets.QWidget):
         self.timeLine.setBounds([mn, mx])
 
     def clear(self):
+        self.setImage(np.zeros((2, 2, 1)))
         self.image = None
         self.imageItem.clear()
 

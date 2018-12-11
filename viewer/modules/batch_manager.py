@@ -93,8 +93,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def create_new_batch(self):
         if self.ui.listwBatch.count() > 0:
-            if QtWidgets.QMessageBox.warning(self, 'Warning!', 'If you open a new batch, the current batch will be '
-                                                               'DISCARDED. Do you still want to continue?',
+            if QtWidgets.QMessageBox.warning(self, 'Create Batch?', 'Close the current batch and open another one?',
                                              QtWidgets.QMessageBox.Yes,
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
@@ -164,6 +163,7 @@ class ModuleGUI(QtWidgets.QWidget):
                 vi.update_workEnv()
                 vi.enable_ui(True)
                 vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
+                vi.viewer.ui.label_curr_img_seq_name.setText('Input of item: ' + r['name'].item())
 
             else:
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
@@ -275,15 +275,15 @@ class ModuleGUI(QtWidgets.QWidget):
                                               QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
 
-        # if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
-        #                                   'Would you like to clear all viewer work '
-        #                                   'environments before starting the batch?',
-        #                                   QtWidgets.QMessageBox.No,
-        #                                   QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
-        #
-        #     for viewer in configuration.window_manager.viewers:
-        #         vi = ViewerInterface(viewer)
-        #         vi.discard_workEnv()
+        if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
+                                          'Would you like to clear all viewer work '
+                                          'environments before starting the batch?',
+                                          QtWidgets.QMessageBox.No,
+                                          QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
+
+            for viewer in configuration.window_manager.viewers:
+                vi = ViewerInterface(viewer.viewer_reference)
+                vi.discard_workEnv()
 
         self.current_batch_item_index = start_ix - 1
         self.disable_ui_buttons(True)
@@ -300,14 +300,14 @@ class ModuleGUI(QtWidgets.QWidget):
             output = self.get_batch_item_output(UUID)
             if output is None:
                 self.ui.listwBatch.item(self.current_batch_item_index).setBackground(
-                    QtGui.QBrush(QtGui.QColor('orange')))
+                    QtGui.QBrush(QtGui.QColor('#ffb347'))) # orange
 
             elif output['status']:
                 self.ui.listwBatch.item(self.current_batch_item_index).setBackground(
-                    QtGui.QBrush(QtGui.QColor('green')))
+                    QtGui.QBrush(QtGui.QColor('#77dd77'))) # green
             else:
                 self.ui.listwBatch.item(self.current_batch_item_index).setBackground(
-                    QtGui.QBrush(QtGui.QColor('red')))
+                    QtGui.QBrush(QtGui.QColor('#fe0d00'))) # red
 
         self.current_batch_item_index += 1
         self.ui.progressBar.setValue(int(self.current_batch_item_index / len(self.df.index) * 100))
@@ -378,7 +378,7 @@ class ModuleGUI(QtWidgets.QWidget):
         """
         :param  module:         The module to run from /batch_run_modules.
 
-        :param viewer_reference:Viewer to communicate with
+        :param viewer_reference: Viewer to communicate with
         :type  viewer_reference: ImageView
 
         :param  name:           A name for the batch item
@@ -417,6 +417,8 @@ class ModuleGUI(QtWidgets.QWidget):
                                   'output': None,
                                   }, ignore_index=True)
 
+        assert isinstance(self.df, pandas.DataFrame)
+
         self.ui.listwBatch.addItem(module + ': ' + name)
         n = self.ui.listwBatch.count()
         item = self.ui.listwBatch.item(n - 1)
@@ -436,6 +438,8 @@ class ModuleGUI(QtWidgets.QWidget):
         s = self.ui.listwBatch.currentItem()
         UUID = s.data(3)
 
+        assert isinstance(self.df, pandas.DataFrame)
+
         dependents = self.df.loc[self.df['input_item'] == UUID]
         if not dependents.empty:
             if QtWidgets.QMessageBox.warning(self, 'This item has dependents!',
@@ -453,13 +457,15 @@ class ModuleGUI(QtWidgets.QWidget):
 
             self.df = self.df.loc[self.df['input_item'] != UUID]
 
-        self.df = self.df.loc[self.df['uuid'] != UUID]
+        self.df = self.df[self.df['uuid'] != UUID]
 
         ix = self.ui.listwBatch.indexFromItem(s).row()
         self.ui.listwBatch.takeItem(ix)
 
         for file in glob(self.batch_path + '/*' + str(UUID) + '*'):
             os.remove(file)
+
+        self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
     def save_batch(self):
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Batch as', '', '(*.batch)')
@@ -480,8 +486,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def open_batch(self):
         if self.ui.listwBatch.count() > 0:
-            if QtWidgets.QMessageBox.warning(self, 'Warning!', 'If you open a new batch, the current batch will be '
-                                                               'DISCARDED. Do you still want to continue?',
+            if QtWidgets.QMessageBox.warning(self, 'Open Batch', 'Close the current batch and open a new one?',
                                              QtWidgets.QMessageBox.Yes,
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
@@ -500,6 +505,7 @@ class ModuleGUI(QtWidgets.QWidget):
             return
         try:
             df = pandas.read_pickle(dfpath)
+            assert isinstance(df, pandas.DataFrame)
             self.df = df
             self.batch_path = path
             self.setWindowTitle('Batch Manager: ' + self.batch_path.split('/')[-1])
@@ -519,10 +525,10 @@ class ModuleGUI(QtWidgets.QWidget):
                     continue
                 elif output['status']:
                     self.ui.listwBatch.item(n - 1).setBackground(
-                        QtGui.QBrush(QtGui.QColor('green')))
+                        QtGui.QBrush(QtGui.QColor('#77dd77'))) # green
                 else:
                     self.ui.listwBatch.item(n - 1).setBackground(
-                        QtGui.QBrush(QtGui.QColor('red')))
+                        QtGui.QBrush(QtGui.QColor('#fe0d00'))) # red
 
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!',

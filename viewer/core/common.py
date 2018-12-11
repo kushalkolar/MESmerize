@@ -75,7 +75,7 @@ class ViewerInterface:
         self.viewer.workEnv.dump()
         self.viewer.clear()
         self.viewer.workEnv.saved = True
-
+        self.viewer.ui.label_curr_img_seq_name.setText('EMPTY')
         self.viewer.status_bar_label.showMessage('Work environment cleared.')
 
     def workEnv_changed(self, element=None):

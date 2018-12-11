@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>369</width>
-    <height>218</height>
+    <height>230</height>
    </rect>
   </property>
   <property name="floating">
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>Tiff file I/O</string>
+   <string>Tiff file &amp;I/O</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
@@ -28,7 +28,7 @@
     <item row="3" column="0">
      <widget class="QRadioButton" name="radioButtonImread">
       <property name="text">
-       <string>imread</string>
+       <string>i&amp;mread</string>
       </property>
      </widget>
     </item>
@@ -96,6 +96,9 @@
         <property name="text">
          <string/>
         </property>
+        <property name="textInteractionFlags">
+         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+        </property>
        </widget>
       </item>
      </layout>
@@ -119,6 +122,9 @@
        <widget class="QLabel" name="labelFileMeta">
         <property name="text">
          <string/>
+        </property>
+        <property name="textInteractionFlags">
+         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
         </property>
        </widget>
       </item>

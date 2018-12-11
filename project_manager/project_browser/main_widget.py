@@ -150,6 +150,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikPath, tiff_path=tiffPath)
         vi.update_workEnv()
         vi.viewer.workEnv.restore_rois_from_states()
+        vi.viewer.ui.label_curr_img_seq_name.setText(sample_id)
 
         try:
             self.lwd.deleteLater()
