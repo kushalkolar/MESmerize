@@ -28,9 +28,14 @@ class SystemConfigGUI(QtWidgets.QWidget):
         self.ui.setupUi(self)
 
         self.ui.spinBoxCores.setValue(int(configuration.sys_cfg['HARDWARE']['n_processes']))
-        self.ui.spinBoxCores.setMaximum((cpu_count() - 4))
+        self.ui.spinBoxCores.setMaximum((cpu_count() - 2))
 
-        self.ui.checkBoxUseCUDA.setChecked(bool(configuration.sys_cfg['HARDWARE']['USE_CUDA']))
+        if configuration.sys_cfg['HARDWARE']['USE_CUDA'] == 'True':
+            use_cuda = True
+        else:
+            use_cuda = False
+
+        self.ui.checkBoxUseCUDA.setChecked(use_cuda)
 
         self.ui.btnCaimanPath.clicked.connect(self.choose_caiman_path)
         self.ui.btnAnacondaPath.clicked.connect(self.choose_anaconda_dir_path)
