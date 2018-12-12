@@ -131,7 +131,7 @@ class Output:
         vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
 
         name = pickle.load(open(batch_path + '/' + str(UUID) + '.params', 'rb'))['name_elas']
-        vi.viewer.ui.label_curr_img_seq_name.setText(name)
+        vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
 
         vi.update_workEnv()
         vi.enable_ui(True)

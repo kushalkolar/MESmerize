@@ -276,8 +276,12 @@ class Output(QtWidgets.QWidget):
                                            dims=self.dims,
                                            input_params_dict=input_params)
 
-        name = input_params['name_cnmfe']
-        vi.viewer.ui.label_curr_img_seq_name.setText(name)
+        if 'name_cnmfe' in input_params.keys():
+            name = input_params['name_cnmfe']
+        else:
+            name = ''
+        vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + name)
+
 
 if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2], sys.argv[3])

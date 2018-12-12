@@ -219,7 +219,11 @@ class Output(QtWidgets.QWidget):
                                            dfof=True)
 
         if 'name_cnmf' in input_params.keys():
-            vi.viewer.ui.label_curr_img_seq_name.setText(input_params['name_cnmf'])
+            name = input_params['name_cnmf']
+        else:
+            name = ''
+        vi.viewer.ui.label_curr_img_seq_name.setText('CNMF of: ' + name)
+
 
 if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2], sys.argv[3])
