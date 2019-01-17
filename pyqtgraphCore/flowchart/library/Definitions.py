@@ -381,3 +381,7 @@ class DeltaFoF(CtrlNode):
         self.data_modified = False
         self.editor_output = False
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
+
+
+class SpliceCurves(CtrlNode):
+    pass
