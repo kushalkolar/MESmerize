@@ -152,7 +152,8 @@ class Resample(CtrlNode):
     """Resample 1D data, uses scipy.signal.resample"""
     nodeName = 'Resample'
     uiTemplate = [
-        ('n', 'intSpin', {'min': 2, 'max': 9999, 'value': 1000, 'step': 100}),
+        ('Rs', 'intSpin', {'min': 2, 'max': 9999, 'value': 10, 'step': 100}),
+        ('Tu', 'intSpin', {'min': 2, 'max': 9999, 'value': 1, 'step': 100}),
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
@@ -161,13 +162,45 @@ class Resample(CtrlNode):
             return
         t = transmission.copy()
 
-        t.df['curve'] = t.df['curve'].apply(self._func)
+        t.df['curve'] = t.df.apply(self._func)
         t.src.append({'Resampled': self.ctrls['n'].value()})
         return t
 
-    def _func(self, curve):
-        return signal.resample(curve, self.ctrls['n'].value())
+    def _func(self, row):
+        Nf = row.meta['fps']
+        Ns = row.curve.shape[0]
 
+        Rs = self.ctrls['Rs'].value()
+        Tu = self.ctrls['Tu'].value()
+
+        Rn = int((Ns / Nf) * (Rs / Tu))
+
+        return signal.resample(row.curve, Rn)
+
+
+class ZScore(CtrlNode):
+    nodeName = 'Z-Score'
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+
+    def processData(self, transmission: Transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+        t = transmission.copy()
+
+
+class Normalize(CtrlNode):
+    nodeName = 'Normalize'
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+
+    def processData(self, transmission: Transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        a = transmission.df['curve'].values
+
+        n = (a - np.min(a, axis=1)[:, np.newaxis]) / np.ptp(a, axis=1)[:, np.newaxis]
+
+        return n
 
 # class Downsample(CtrlNode):
 #     """Downsample by averaging samples together."""

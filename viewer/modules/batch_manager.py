@@ -34,6 +34,7 @@ import traceback
 from misc_widgets.list_widget_dialog import ListWidgetDialog
 from common import window_manager
 from glob import glob
+from multiprocessing import Pool
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -75,6 +76,43 @@ class ModuleGUI(QtWidgets.QWidget):
         self.df = pandas.DataFrame()
         self.init_batch()
 
+        self.ui.btnCompress.clicked.connect(self.compress_all)
+
+    def compress_all(self):
+        if QtWidgets.QMessageBox.warning(self, 'Compress Warning',
+                                         'YOU CANNOT ABORT THIS PROCESS ONCE IT STARTS, PROCEED?',
+                                         QtWidgets.QMessageBox.Yes,
+                                         QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+            return
+
+        # t = (psutil.virtual_memory().available / (10**9)) / ()
+
+        n, ok = QtWidgets.QInputDialog.getInt(self, 'Number of threads to use', 'Enter number of threads to use. \nDo not use more than: available ram / (size of largest image * 2)', 5, 1, 7, 1, QtWidgets.QInputDialog.Cancel)
+
+        if not ok:
+            return
+
+        uuids = self.df.uuid[self.df.compress == False]
+
+        l = []
+
+        for u in uuids:
+            l += glob(self.batch_path + '/*' + str(u) + '*.tiff')
+
+        p = Pool(n)
+
+        p.map(self._compress_tiff, l)
+
+    def _compress_tiff(self, path):
+        imgseq = tifffile.imread(path)
+
+        backup_path = path + '_bak'
+        os.rename(path, backup_path)
+
+        tifffile.imsave(path, data=imgseq.astype(np.uint16), compress=1)
+
+        os.remove(backup_path)
+
     def init_batch(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '
                                                                 'or a location for a new batch folder')
@@ -114,7 +152,7 @@ class ModuleGUI(QtWidgets.QWidget):
             return
         self.ui.listwBatch.clear()
 
-        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid'])
+        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid', 'compressed'])
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
         self.setWindowTitle('Batch Manager: ' + self.batch_path.split('/')[-1])
@@ -507,6 +545,8 @@ class ModuleGUI(QtWidgets.QWidget):
             df = pandas.read_pickle(dfpath)
             assert isinstance(df, pandas.DataFrame)
             self.df = df
+            if 'compressed' not in self.df.columns:
+                self.df['compressed'] = False * self.df.index.size
             self.batch_path = path
             self.setWindowTitle('Batch Manager: ' + self.batch_path.split('/')[-1])
 

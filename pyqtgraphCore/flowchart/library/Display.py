@@ -77,6 +77,17 @@ class Plot(CtrlNode):
             srcs.append(t.src)
 
         self.pwin.set_history_widget(srcs)
+
+
+class FrequencyDomainMagnitude(CtrlNode):
+    """Plot Frequency vs. Frequency Domain Magnitude"""
+    nodeName = 'Plot'
+    uiTemplate = [('Show', 'check', {'checked': True}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
+
+
+
         # return {'Out': kwargs}
 
 #
