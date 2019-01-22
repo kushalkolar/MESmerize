@@ -14,11 +14,42 @@ from functools import partial
 from analyser import PeakEditor
 from analyser import Extraction
 from analyser.stats_gui import StatsWindow
-from analyser.plot_window.beeswarms_window import BeeswarmPlotWindow
-from analyser.plot_window.curve_plots_window import CurvePlotWindow
+from plotting.old.beeswarms_window import BeeswarmPlotWindow
+from plotting.old.curve_plots_window import CurvePlotWindow
 from analyser import pca_gui
 import pickle
 import traceback
+from clustering.LDA.main_window import LDAPlot
+
+
+def merge_transmissions(transmissions):
+    if not len(transmissions) > 0:
+        raise Exception('No incoming transmissions')
+
+    transmissions_list = []
+
+    for t in transmissions.items():
+        t = t[1]
+        if t is None:
+            QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+            continue
+        if type(t) is list:
+            for i in range(len(t)):
+                if t[i] is None:
+                    QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                    continue
+                transmissions_list.append(t[i].copy())
+            continue
+
+        transmissions_list.append(t.copy())
+    return transmissions_list
+    #self.plot_gui.update_input_transmissions(transmissions_list)
+
+
+def _open_plot_gui(self):
+    if self.plot_gui is None:
+        self.plot_gui = BeeswarmPlotWindow(parent=self.parent())
+    self.plot_gui.show()
 
 
 class BeeswarmPlots(CtrlNode):
@@ -37,32 +68,62 @@ class BeeswarmPlots(CtrlNode):
             return
 
         transmissions = kwargs['In']
+        transmissions_list = merge_transmissions(transmissions)
 
-        if not len(transmissions) > 0:
-            raise Exception('No incoming transmissions')
-
-        transmissions_list = []
-
-        for t in transmissions.items():
-            t = t[1]
-            if t is None:
-                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-                continue
-            if type(t) is list:
-                for i in range(len(t)):
-                    if t[i] is None:
-                        QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-                        continue
-                    transmissions_list.append(t[i].copy())
-                continue
-
-            transmissions_list.append(t.copy())
+        # transmissions = kwargs['In']
+        #
+        # if not len(transmissions) > 0:
+        #     raise Exception('No incoming transmissions')
+        #
+        # transmissions_list = []
+        #
+        # for t in transmissions.items():
+        #     t = t[1]
+        #     if t is None:
+        #         QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+        #         continue
+        #     if type(t) is list:
+        #         for i in range(len(t)):
+        #             if t[i] is None:
+        #                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+        #                 continue
+        #             transmissions_list.append(t[i].copy())
+        #         continue
+        #
+        #     transmissions_list.append(t.copy())
 
         self.plot_gui.update_input_transmissions(transmissions_list)
 
     def _open_plot_gui(self):
         if self.plot_gui is None:
             self.plot_gui = BeeswarmPlotWindow(parent=self.parent())
+        self.plot_gui.show()
+
+
+class LDA(CtrlNode):
+    """LDA"""
+    nodeName = 'LDA'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_gui = None
+        self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
+
+    def process(self, **kwargs):
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+            return
+
+        transmissions = kwargs['In']
+
+        transmissions_list = merge_transmissions(transmissions)
+
+        self.plot_gui.update_input_transmissions(transmissions_list)
+
+    def _open_plot_gui(self):
+        if self.plot_gui is None:
+            self.plot_gui = LDAPlot(parent=self.parent())
         self.plot_gui.show()
 
 

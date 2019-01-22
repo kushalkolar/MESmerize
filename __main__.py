@@ -14,12 +14,23 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from common import start
+from analyser.DataTypes import Transmission
 
+
+from clustering.LDA.main_window import LDAPlot
+import pickle
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
 
     start.window_manager()
+    # w = LDAPlot()
+    #
+    # t = Transmission.from_pickle('/home/kushal/MESmerize/clustering/LDA/test_df.pickle')
+    # w.update_input_transmissions([t])
+    #
+    # w.show()
+
 
     if not len(sys.argv) > 1:
         start.main()

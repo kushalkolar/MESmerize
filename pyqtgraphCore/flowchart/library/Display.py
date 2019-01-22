@@ -81,7 +81,7 @@ class Plot(CtrlNode):
 
 class FrequencyDomainMagnitude(CtrlNode):
     """Plot Frequency vs. Frequency Domain Magnitude"""
-    nodeName = 'Plot'
+    nodeName = 'FDM Plot'
     uiTemplate = [('Show', 'check', {'checked': True}),
                   ('Apply', 'check', {'checked': True, 'applyBox': True})
                   ]

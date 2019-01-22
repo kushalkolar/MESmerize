@@ -22,6 +22,7 @@ import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
 from common import start
 from functools import partial
+from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -66,7 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.btnPlot.setIcon(QtGui.QIcon(mdir + '/icons/noun_635936_cc.png'))
         self.ui.btnPlot.setIconSize(QtCore.QSize(100, 100))
-        self.ui.btnPlot.clicked.connect(self.spawn_new_plot_gui)
+        # self.ui.btnPlot.clicked.connect(self.spawn_new_plot_gui)
 
         self.ui.verticalLayoutPlotsRunning.addWidget(self.window_manager.plots.list_widget)
 
@@ -80,6 +81,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.resize(800, 550)
         # configuration.projPath = '/home/kushal/mesmerize_test_proj'
+
+        self._batch_manager = None
 
     def initialize_console_widget(self):
         ns = {'pd': pd,
@@ -189,8 +192,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def spawn_new_flowchart(self):
         start.flowchart()
 
-    def spawn_new_plot_gui(self):
-        start.plots()
+    # def spawn_new_plot_gui(self):
+    #     start.plots()
 
-    def spawn_new_clustering_gui(self):
-        pass
+    def get_batch_manager(self) -> BatchModuleGUI:
+        if self._batch_manager is None:
+            QtWidgets.QMessageBox.information(None, 'No batch manager open',
+                                           'Choose a location for a new batch or create a new batch')
+
+            self._batch_manager = BatchModuleGUI(parent=None)
+            return self._batch_manager
+        else:
+            return self._batch_manager
