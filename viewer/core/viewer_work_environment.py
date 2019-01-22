@@ -226,6 +226,9 @@ class ViewerWorkEnv:
             seq = tifffile.imread(path)
         elif method == 'asarray':
             tif = tifffile.TiffFile(path, is_nih=True)
+            # seq = tif.asarray(key=range(0, len(tif.series)),
+            #                   maxworkers=int(8))
+
             seq = tif.asarray(key=range(0, len(tif.series)),
                               maxworkers=int(configuration.sys_cfg['HARDWARE']['n_processes']))
         else:
@@ -406,7 +409,7 @@ class ViewerWorkEnv:
                  'MaxProjPath': max_proj_path,
                  'ROI_State': rois['states'][ix],
                  'date': date,
-                 'uuid_curve': UUID,
+                 'uuid_curve': str(uuid4()),
                  'comments': comments
                  }
 

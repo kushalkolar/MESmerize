@@ -16,12 +16,12 @@ from common import welcome_window, configuration
 # from common.window_manager import WindowManager
 import pyqtgraphCore
 from viewer import main_window as viewer_main_window
-from viewer.core.viewer_work_environment import ViewerWorkEnv
-from viewer.modules import tiff_io
+# from viewer.core.viewer_work_environment import ViewerWorkEnv
+# from viewer.modules import tiff_io
 from analyser.flowchart import Window as FlowchartWindow
-from analyser.stats_gui import StatsWindow
+# from analyser.stats_gui import StatsWindow
 from project_manager.project_browser.project_browser_window import ProjectBrowserWindow
-import json
+# import json
 from uuid import UUID
 
 
@@ -64,22 +64,22 @@ def viewer(file: str = None, sample_id: str = None, uuid: UUID = None):
 
     configuration.window_manager.viewers[-1].show()
 
-    if file is not None:
-        if file.endswith('.tiff') or file.endswith('.tif'):
-            viewerWindow.run_module(tiff_io.ModuleGUI)
-            tm = viewerWindow.running_modules[-1]
-            assert isinstance(tm, tiff_io.ModuleGUI)
-            tm.ui.labelFileTiff.setText(file)
-        elif file.endswith('.mes'):
-            pass
-        elif file.endswith('.vwe'):
-            viewer_widget.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=file)
-        else:
-            raise ValueError('File extension not supported')
-    elif sample_id is not None:
-        pass
-    elif uuid is not None:
-        pass
+    # if file is not None:
+    #     if file.endswith('.tiff') or file.endswith('.tif'):
+    #         viewerWindow.run_module(tiff_io.ModuleGUI)
+    #         tm = viewerWindow.running_modules[-1]
+    #         assert isinstance(tm, tiff_io.ModuleGUI)
+    #         tm.ui.labelFileTiff.setText(file)
+    #     elif file.endswith('.mes'):
+    #         pass
+    #     elif file.endswith('.vwe'):
+    #         viewer_widget.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=file)
+    #     else:
+    #         raise ValueError('File extension not supported')
+    # elif sample_id is not None:
+    #     pass
+    # elif uuid is not None:
+    #     pass
 
 
 def flowchart(file=None):
@@ -96,15 +96,15 @@ def flowchart(file=None):
         pass
 
 
-def plots(file=None):
-    configuration.window_manager.plots.append(StatsWindow())
-    configuration.window_manager.plots[-1].show()
-
-    if file is None:
-        return
-
-    elif file.endswith('.strn'):
-        pass
-
-    elif file.endswith('.gtrn'):
-        pass
+# def plots(file=None):
+#     configuration.window_manager.plots.append(StatsWindow())
+#     configuration.window_manager.plots[-1].show()
+#
+#     if file is None:
+#         return
+#
+#     elif file.endswith('.strn'):
+#         pass
+#
+#     elif file.endswith('.gtrn'):
+#         pass

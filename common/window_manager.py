@@ -14,14 +14,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 
 
 class WindowManager:
     """"""
     def __init__(self):
         self._welcome_window = None
-        self._batch_manager = None
 
         self.project_browsers = None
         self.viewers = None
@@ -29,16 +27,8 @@ class WindowManager:
         self.plots = None
         self.clustering_windows = None
 
-    def get_batch_manager(self) -> BatchModuleGUI:
-        if self._batch_manager is None:
-            QtWidgets.QMessageBox.information(None, 'No batch manager open',
-                                           'The batch manager has not been initialized, '
-                                           'you must choose a location for a new batch or create a new batch')
-
-            self._batch_manager = BatchModuleGUI(parent=None)
-            return self._batch_manager
-        else:
-            return self._batch_manager
+    def get_batch_manager(self):
+        self._welcome_window.get_batch_manager
 
     def show_project_browser(self, i: int):
         self.project_browsers[i].show()
