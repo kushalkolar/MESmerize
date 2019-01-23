@@ -108,6 +108,8 @@ class Ui_MainWindow(object):
         self.actionMax.setObjectName("actionMax")
         self.actionStandard_Deviation = QtWidgets.QAction(MainWindow)
         self.actionStandard_Deviation.setObjectName("actionStandard_Deviation")
+        self.actionClose_all_projection_windows = QtWidgets.QAction(MainWindow)
+        self.actionClose_all_projection_windows.setObjectName("actionClose_all_projection_windows")
         self.menuFile.addAction(self.actionAdd_to_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_work_environment)
@@ -134,6 +136,8 @@ class Ui_MainWindow(object):
         self.menuProjections.addAction(self.actionMean)
         self.menuProjections.addAction(self.actionMax)
         self.menuProjections.addAction(self.actionStandard_Deviation)
+        self.menuProjections.addSeparator()
+        self.menuProjections.addAction(self.actionClose_all_projection_windows)
         self.menuImage.addAction(self.actionReset_Scale)
         self.menuImage.addAction(self.actionResize)
         self.menuImage.addAction(self.actionCrop)
@@ -197,4 +201,5 @@ class Ui_MainWindow(object):
         self.actionMean.setText(_translate("MainWindow", "Mean"))
         self.actionMax.setText(_translate("MainWindow", "Max"))
         self.actionStandard_Deviation.setText(_translate("MainWindow", "Standard Deviation"))
+        self.actionClose_all_projection_windows.setText(_translate("MainWindow", "Close all projection windows"))
 

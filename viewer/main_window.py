@@ -153,6 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionMean.triggered.connect(self.image_menu.mean_projection)
         self.ui.actionMax.triggered.connect(self.image_menu.max_projection)
         self.ui.actionStandard_Deviation.triggered.connect(self.image_menu.std_projection)
+        self.ui.actionClose_all_projection_windows.triggered.connect(self.image_menu.close_projection_windows)
 
     def start_batch_manager(self):
         batch_manager = configuration.window_manager.get_batch_manager()

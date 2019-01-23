@@ -87,6 +87,8 @@
      <addaction name="actionMean"/>
      <addaction name="actionMax"/>
      <addaction name="actionStandard_Deviation"/>
+     <addaction name="separator"/>
+     <addaction name="actionClose_all_projection_windows"/>
     </widget>
     <addaction name="actionReset_Scale"/>
     <addaction name="actionResize"/>
@@ -280,6 +282,11 @@
   <action name="actionStandard_Deviation">
    <property name="text">
     <string>Standard Deviation</string>
+   </property>
+  </action>
+  <action name="actionClose_all_projection_windows">
+   <property name="text">
+    <string>Close all projection windows</string>
    </property>
   </action>
  </widget>
