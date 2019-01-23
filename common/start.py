@@ -28,10 +28,9 @@ from uuid import UUID
 def window_manager():
     configuration.window_manager.initalize()
 
-
 def main():
     w = welcome_window.MainWindow()
-    configuration.window_manager.welcome_window = w
+    configuration.window_manager._welcome_window = w
     w.show()
 
 
