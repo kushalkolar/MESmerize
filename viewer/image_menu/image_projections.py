@@ -23,6 +23,6 @@ def display_projection(projection: str, imgseq: np.ndarray, img_name: str):
 
     ax.set_title(t)
     mw.setWindowTitle(t)
-    ax.imshow(p)
+    ax.imshow(p.T)
 
     mw.show()
