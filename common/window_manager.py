@@ -19,13 +19,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class WindowManager:
     """"""
     def __init__(self):
-        self._welcome_window = None
-
-        self.project_browsers = None
-        self.viewers = None
-        self.flowcharts = None
-        self.plots = None
-        self.clustering_windows = None
+        pass
 
     def get_batch_manager(self):
         self._welcome_window.get_batch_manager()
@@ -34,6 +28,14 @@ class WindowManager:
         self.project_browsers[i].show()
 
     def initalize(self):
+        self._welcome_window = None
+
+        # self.project_browsers = None
+        # self.viewers = None
+        # self.flowcharts = None
+        # self.plots = None
+        # self.clustering_windows = None
+
         self.project_browsers = WindowClass('Project Browser')
         self.viewers = WindowClass('Viewer')
         self.flowcharts = WindowClass('Flowchart')
