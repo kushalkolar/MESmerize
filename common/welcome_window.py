@@ -201,6 +201,8 @@ class MainWindow(QtWidgets.QMainWindow):
                                            'Choose a location for a new batch or create a new batch')
 
             self._batch_manager = BatchModuleGUI(parent=None)
-            return self._batch_manager
+            self._batch_manager.show()
+            #return self._batch_manager
         else:
-            return self._batch_manager
+            self._batch_manager.show()
+            self._batch_manager.show()
