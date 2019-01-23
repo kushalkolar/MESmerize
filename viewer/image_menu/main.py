@@ -17,6 +17,7 @@ import numpy as np
 from .resize import ResizeDialogBox
 from ..core.common import ViewerInterface
 from math import sqrt
+from .image_projections import display_projection
 
 
 class ImageMenu:
@@ -101,3 +102,12 @@ class ImageMenu:
                                               '\ndy = ' + str(dy) +\
                                               '\ndistance = ' + str(dist))
             return True
+
+    def mean_projection(self):
+        display_projection('mean', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name)
+
+    def max_projection(self):
+        display_projection('max', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name)
+
+    def std_projection(self):
+        display_projection('std', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name)
