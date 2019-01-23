@@ -104,10 +104,10 @@ class ImageMenu:
             return True
 
     def mean_projection(self):
-        display_projection('mean', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name)
+        display_projection('mean', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
 
     def max_projection(self):
-        display_projection('max', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name)
+        display_projection('max', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
 
     def std_projection(self):
-        display_projection('std', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name)
+        display_projection('std', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
