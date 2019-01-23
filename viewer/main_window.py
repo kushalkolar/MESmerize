@@ -150,9 +150,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionResize.triggered.connect(self.image_menu.resize)
         self.ui.actionCrop.triggered.connect(self.image_menu.crop)
 
+        self.ui.actionMean.triggered.connect(self.image_menu.mean_projection)
+        self.ui.actionMax.triggered.connect(self.image_menu.max_projection)
+        self.ui.actionStandard_Deviation.triggered.connect(self.image_menu.std_projection)
+
     def start_batch_manager(self):
         batch_manager = configuration.window_manager.get_batch_manager()
         batch_manager.show()
+
     def open_workEnv_editor(self):
         self.vi.viewer.status_bar_label.showMessage('Please wait, loading editor interface...')
 
