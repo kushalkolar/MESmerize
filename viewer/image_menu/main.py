@@ -104,10 +104,16 @@ class ImageMenu:
             return True
 
     def mean_projection(self):
+        self.vi.viewer.status_bar_label.showMessage('Creating Mean Projection of image sequencee, please wait...')
         display_projection('mean', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
     def max_projection(self):
+        self.vi.viewer.status_bar_label.showMessage('Creating Max Projection of image sequencee, please wait...')
         display_projection('max', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
     def std_projection(self):
+        self.vi.viewer.status_bar_label.showMessage('Creating Standard Deviation Projection of image sequencee, please wait...')
         display_projection('std', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
