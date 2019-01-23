@@ -26,3 +26,4 @@ def display_projection(projection: str, imgseq: np.ndarray, img_name: str):
     ax.imshow(p.T)
 
     mw.show()
+    return mw

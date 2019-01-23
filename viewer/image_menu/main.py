@@ -29,6 +29,8 @@ class ImageMenu:
         self.measure_line_ = None
         self.crop_roi = None
 
+        self.projection_windows = []
+
     def reset_scale(self):
         self.vi.update_workEnv()
 
@@ -105,15 +107,22 @@ class ImageMenu:
 
     def mean_projection(self):
         self.vi.viewer.status_bar_label.showMessage('Creating Mean Projection of image sequencee, please wait...')
-        display_projection('mean', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        w = display_projection('mean', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        self.projection_windows.append(w)
         self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
     def max_projection(self):
         self.vi.viewer.status_bar_label.showMessage('Creating Max Projection of image sequencee, please wait...')
-        display_projection('max', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        w = display_projection('max', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        self.projection_windows.append(w)
         self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
     def std_projection(self):
         self.vi.viewer.status_bar_label.showMessage('Creating Standard Deviation Projection of image sequencee, please wait...')
-        display_projection('std', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        w = display_projection('std', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        self.projection_windows.append(w)
         self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
+
+    def close_projection_windows(self):
+        for w in self.projection_windows:
+            w.close()
