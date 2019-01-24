@@ -195,8 +195,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # def spawn_new_plot_gui(self):
     #     start.plots()
 
-    def get_batch_manager(self) -> BatchModuleGUI:
-        if self._batch_manager is None:
+    def get_batch_manager(self, run_batch: list = None) -> BatchModuleGUI:
+        if run_batch is not None:
+            self._batch_manager = BatchModuleGUI(parent=None, run_batch=run_batch)
+            return self._batch_manager
+
+        elif self._batch_manager is None:
             QtWidgets.QMessageBox.information(None, 'No batch manager open',
                                            'Choose a location for a new batch or create a new batch')
 
