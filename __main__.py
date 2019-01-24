@@ -38,7 +38,7 @@ if __name__ == '__main__':
     if sys.argv[1] == 'run':
         if sys.argv[2] == 'batch':
             conf = start.main()
-            bm = conf.window_manager.get_batch_manager()
+            bm = conf.window_manager.get_batch_manager([sys.argv[2], sys.argv[3]])
 
     elif sys.argv[1].endswith('.tiff') or sys.argv[1].endswith('.tif'):
         start.viewer(sys.argv[1])
