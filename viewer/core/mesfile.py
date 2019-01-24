@@ -13,8 +13,31 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import numpy as np
 import traceback
-from common.misc_functions import *
+#from common.misc_functions import *
+import scipy.io as spio
+class MatlabFuncs:
+    @staticmethod
+    def loadmat(filename: str) -> dict:
+        data = spio.loadmat(filename, struct_as_record=False, squeeze_me=True)
+        return MatlabFuncs._check_keys(data)
 
+    @staticmethod
+    def _check_keys(d: dict) -> dict:
+        for key in d:
+            if isinstance(d[key], spio.matlab.mio5_params.mat_struct):
+                d[key] = MatlabFuncs._todict(d[key])
+        return d
+
+    @staticmethod
+    def _todict(matobj: spio.matlab.mio5_params.mat_struct) -> dict:
+        d = {}
+        for strg in matobj._fieldnames:
+            elem = matobj.__dict__[strg]
+            if isinstance(elem, spio.matlab.mio5_params.mat_struct):
+                d[strg] = MatlabFuncs._todict(elem)
+            else:
+                d[strg] = elem
+        return d
 
 class MES:
     """
@@ -151,6 +174,5 @@ class MES:
 
 
 # For testing
-if __name__ == '__main__':
-    mesfile = MES('/home/kushal/Sars_stuff/Olfactory exps/NH4/Dec 3 a1.mes')
+#if __name__ == '__main__':
 # y = imdata.meta['AUXo3']['y']
