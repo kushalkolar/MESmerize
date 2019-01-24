@@ -35,13 +35,14 @@ from misc_widgets.list_widget_dialog import ListWidgetDialog
 from common import window_manager
 from glob import glob
 from multiprocessing import Pool
+from uuid import UUID as UUIDType
 
 
 class ModuleGUI(QtWidgets.QWidget):
     """GUI for the Batch Manager"""
     listwchanged = QtCore.pyqtSignal()
 
-    def __init__(self, parent):
+    def __init__(self, parent, run_batch: list = None):
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
@@ -74,7 +75,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.output_widgets = []
         self.df = pandas.DataFrame()
-        self.init_batch()
+        self.init_batch(run_batch)
 
         self.ui.btnCompress.clicked.connect(self.compress_all)
 
@@ -113,11 +114,14 @@ class ModuleGUI(QtWidgets.QWidget):
 
         os.remove(backup_path)
 
-    def init_batch(self):
-        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '
-                                                                'or a location for a new batch folder')
-        if path == '':
-            return
+    def init_batch(self, run_batch):
+        if run_batch is None:
+            path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '
+                                                                    'or a location for a new batch folder')
+            if path == '':
+                return
+        else:
+            path = run_batch[0]
 
         dfpath = path + '/dataframe.batch'
         if os.path.isfile(dfpath):
@@ -128,6 +132,10 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.btnStart.setEnabled(True)
         self.ui.btnStartAtSelection.setEnabled(True)
+
+        if run_batch is not None:
+            ix = self.df.index[self.df['uuid'] == UUIDType(run_batch[1])]
+            self.process_batch(start_ix=ix.to_native_type()[0])
 
     def create_new_batch(self):
         if self.ui.listwBatch.count() > 0:
@@ -496,6 +504,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.df = self.df.loc[self.df['input_item'] != UUID]
 
         self.df = self.df[self.df['uuid'] != UUID]
+        self.df.reset_index(drop=True, inplace=True)
 
         ix = self.ui.listwBatch.indexFromItem(s).row()
         self.ui.listwBatch.takeItem(ix)
