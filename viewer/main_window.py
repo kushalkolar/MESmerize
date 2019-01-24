@@ -157,7 +157,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def start_batch_manager(self):
         batch_manager = configuration.window_manager.get_batch_manager()
-        #batch_manager.show()
+        batch_manager.show()
 
     def open_workEnv_editor(self):
         self.vi.viewer.status_bar_label.showMessage('Please wait, loading editor interface...')

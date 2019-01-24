@@ -27,7 +27,7 @@ class WindowManager:
         self.clustering_windows = None
 
     def get_batch_manager(self):
-        self._welcome_window.get_batch_manager()
+        return self._welcome_window.get_batch_manager()
 
     def show_project_browser(self, i: int):
         self.project_browsers[i].show()
