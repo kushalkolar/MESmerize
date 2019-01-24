@@ -198,6 +198,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def get_batch_manager(self, run_batch: list = None) -> BatchModuleGUI:
         if run_batch is not None:
             self._batch_manager = BatchModuleGUI(parent=None, run_batch=run_batch)
+            self._batch_manager.show()
             return self._batch_manager
 
         elif self._batch_manager is None:

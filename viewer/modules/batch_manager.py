@@ -43,6 +43,7 @@ class ModuleGUI(QtWidgets.QWidget):
     listwchanged = QtCore.pyqtSignal()
 
     def __init__(self, parent, run_batch: list = None):
+        print('starting batch mananger')
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
@@ -122,6 +123,7 @@ class ModuleGUI(QtWidgets.QWidget):
                 return
         else:
             path = run_batch[0]
+            print('Opening batch: ' + path)
 
         dfpath = path + '/dataframe.batch'
         if os.path.isfile(dfpath):
@@ -134,8 +136,9 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnStartAtSelection.setEnabled(True)
 
         if run_batch is not None:
+            print('Running from item ' + run_batch[1])
             ix = self.df.index[self.df['uuid'] == UUIDType(run_batch[1])]
-            self.process_batch(start_ix=ix.to_native_type()[0])
+            self.process_batch(start_ix=ix.to_native_types()[0])
 
     def create_new_batch(self):
         if self.ui.listwBatch.count() > 0:
@@ -294,7 +297,6 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnAbort.setEnabled(b)
 
     def process_batch(self, start_ix=0):
-        # TODO: This should ask if user wants to clear all viewer work environments before running the batch
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
 
         if len(self.df.index) == 0:
@@ -320,16 +322,16 @@ class ModuleGUI(QtWidgets.QWidget):
                                               QtWidgets.QMessageBox.Yes,
                                               QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
+        if len(configuration.window_manager.viewers) > 0:
+        	if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
+                                                  'Would you like to clear all viewer work '
+                                                  'environments before starting the batch?',
+                                                  QtWidgets.QMessageBox.No,
+                                                  QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
 
-        if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
-                                          'Would you like to clear all viewer work '
-                                          'environments before starting the batch?',
-                                          QtWidgets.QMessageBox.No,
-                                          QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
-
-            for viewer in configuration.window_manager.viewers:
-                vi = ViewerInterface(viewer.viewer_reference)
-                vi.discard_workEnv()
+                for viewer in configuration.window_manager.viewers:
+                        vi = ViewerInterface(viewer.viewer_reference)
+                        vi.discard_workEnv()
 
         self.current_batch_item_index = start_ix - 1
         self.disable_ui_buttons(True)

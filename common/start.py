@@ -32,7 +32,9 @@ def main():
     w = welcome_window.MainWindow()
     configuration.window_manager._welcome_window = w
     w.show()
-    return configuration
+
+def background_batch(run_batch: list):
+    configuration.window_manager.get_batch_manager(run_batch)
 
 def project_browser():
     project_browser_window = ProjectBrowserWindow()
