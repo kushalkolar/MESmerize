@@ -32,7 +32,7 @@ def main():
     w = welcome_window.MainWindow()
     configuration.window_manager._welcome_window = w
     w.show()
-
+    return configuration
 
 def project_browser():
     project_browser_window = ProjectBrowserWindow()

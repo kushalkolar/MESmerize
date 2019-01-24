@@ -214,7 +214,7 @@ class StatsTransmission(BaseTransmission):
 
         df = pd.concat(all_dfs)
         assert isinstance(df, pd.DataFrame)
-        df.reset_index()
+        df.reset_index(drop=True, inplace=True)
 
         return cls(df, all_srcs, all_groups=all_groups)
 

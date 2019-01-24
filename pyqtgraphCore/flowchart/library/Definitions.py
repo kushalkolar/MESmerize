@@ -253,7 +253,7 @@ class PeakDetect(CtrlNode):
         peaks_bases_df = pd.concat([peaks_df, bases_df])
         assert isinstance(peaks_bases_df, pd.DataFrame)
         peaks_bases_df = peaks_bases_df.sort_values('event')
-        peaks_bases_df = peaks_bases_df.reset_index(drop=True)
+        peaks_bases_df.reset_index(drop=True, inplace=True)
 
         peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
         peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
@@ -284,7 +284,7 @@ class PeakDetect(CtrlNode):
                         rows_drop.append(ix)
 
         peaks_bases_df.drop(peaks_bases_df.index[rows_drop], inplace=True)
-        peaks_bases_df.reset_index()
+        peaks_bases_df.reset_index(drop=True, inplace=True)
 
         self.row_ix += 1
         # print(peaks_bases_df)

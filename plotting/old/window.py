@@ -85,7 +85,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         dfs = [t.df for t in self.transmissions]
 
         self.dataframe = pd.concat(dfs)#, axis=1)
-        self.dataframe.reset_index(inplace=True)
+        self.dataframe.reset_index(drop=True, inplace=True)
         self.dataframe.drop(columns=['index'], inplace=True)
         #self.dataframe = self.dataframe.sample(n=100, axis=0)
 
