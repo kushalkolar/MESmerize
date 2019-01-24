@@ -35,10 +35,10 @@ if __name__ == '__main__':
     if not len(sys.argv) > 1:
         start.main()
 
-    if sys.argv[1] == 'run':
+    elif sys.argv[1] == 'run':
         if sys.argv[2] == 'batch':
-            conf = start.main()
-            bm = conf.window_manager.get_batch_manager([sys.argv[2], sys.argv[3]])
+            start.main()
+            start.background_batch([sys.argv[3], sys.argv[4]])
 
     elif sys.argv[1].endswith('.tiff') or sys.argv[1].endswith('.tif'):
         start.viewer(sys.argv[1])
