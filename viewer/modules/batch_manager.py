@@ -138,7 +138,8 @@ class ModuleGUI(QtWidgets.QWidget):
         if run_batch is not None:
             print('Running from item ' + run_batch[1])
             ix = self.df.index[self.df['uuid'] == UUIDType(run_batch[1])]
-            self.process_batch(start_ix=ix.to_native_types()[0])
+            i = int(ix.to_native_types()[0])
+            self.process_batch(start_ix=i)
 
     def create_new_batch(self):
         if self.ui.listwBatch.count() > 0:
