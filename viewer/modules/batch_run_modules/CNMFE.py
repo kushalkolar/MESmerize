@@ -265,6 +265,8 @@ class Output(QtWidgets.QWidget):
 
         input_params = pickle.load(open(self.batch_dir + '/' + str(self.UUID) + '.params', 'rb'))
 
+        vi.viewer.workEnv.history_trace.append(input_params)
+
         self.viewer_ref.parent().ui.actionROI_Manager.trigger()
 
         for m in self.viewer_ref.parent().running_modules:

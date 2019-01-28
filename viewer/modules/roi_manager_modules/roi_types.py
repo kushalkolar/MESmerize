@@ -50,11 +50,12 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
     @curve_data.setter
     def curve_data(self, data: list):
-        if self.curve_plot_item is None:
-            return
         """
         :param data: [x, y], [np.ndarray, np.ndarray]
         """
+
+        if self.curve_plot_item is None:
+            return
         self.curve_plot_item.setData(x=data[0], y=data[1])
 
     @property
@@ -193,13 +194,14 @@ class ManualROI(AbstractBaseROI):
 
 class CNMFROI(AbstractBaseROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem,
-                 view_box: pg.ViewBox,
+                 view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data=None, contour=None, state=None):
         """
-        :type: curve_data: np.ndarray
-        :param curve_data: 1D numpy array of y values
-        :type: contour: np.ndarray
-        :type  state: dict
+        :type: curve_data:  np.ndarray
+        :param curve_data:  1D numpy array of y values
+        :type  contour:     np.ndarray
+        :type  state:       dict
+        :param cnmf_idx:    original index of the ROI from cnmf idx_components
         """
         super(CNMFROI, self).__init__(curve_plot_item, view_box, state)
 
@@ -209,8 +211,10 @@ class CNMFROI(AbstractBaseROI):
         if state is None:
             self.set_roi_graphics_object(contour)
             self.set_curve_data(curve_data)
+            self.cnmf_idx = cnmf_idx
         else:
             self._restore_state(state)
+            self.cnmf_idx = cnmf_idx
 
     def set_curve_data(self, y_vals):
         xs = np.arange(len(y_vals))
@@ -245,11 +249,12 @@ class CNMFROI(AbstractBaseROI):
         self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s')
 
     def to_state(self) -> dict:
-        state = {'roi_xs': self.roi_xs,
-                 'roi_ys': self.roi_ys,
-                 'curve_data': self.curve_data,
-                 'tags': self.get_all_tags(),
-                 'roi_type': 'CNMFROI'
+        state = {'roi_xs':      self.roi_xs,
+                 'roi_ys':      self.roi_ys,
+                 'curve_data':  self.curve_data,
+                 'tags':        self.get_all_tags(),
+                 'roi_type':    'CNMFROI',
+                 'cnmf_idx':    self.cnmf_idx
                  }
         return state
 

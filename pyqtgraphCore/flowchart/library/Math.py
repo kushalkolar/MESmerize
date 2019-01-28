@@ -26,9 +26,11 @@ class AbsoluteValue(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        array = transmission.df['curve'].values
+        t = transmission.copy()
 
-        return np.abs(array)
+        t.df['curve'].values = transmission.df['curve'].values
+
+        return np.abs(t)
 
 
 class LogTransform(CtrlNode):
@@ -39,27 +41,34 @@ class LogTransform(CtrlNode):
                   ('data_column', {'text': '', 'placeHolder': 'Data column to transform'})]
 
     def setAutoCompleter(self):
-        autocompleter = QtWidgets.QCompleter(self.data_columns, self.ctrls['data_column'])
+        autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
         self.ctrls['data_column'].setCompleter(autocompleter)
         self.ctrls['data_column'].setToolTip('\n'.join(self.data_columns))
 
     def processData(self, transmission: Transmission):
-        self.data_columns = transmission.df.columns
+        self.columns = transmission.df.columns
         self.setAutoCompleter()
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        a = transmission.df['curves'].values
+        data_column = self.ctrls['data_column'].text()
+
+        t = transmission.copy()
+
+        a = t.df[data_column].values
+        #a = np.vstack(a)
 
         if self.ctrls['transform'].value is 'log10':
-            return np.log10(a)
+            t[data_column] = np.log10(a)
 
         elif self.ctrls['transform'].value is 'ln':
-            return np.log(a)
+            t[data_column] = np.log(a)
 
         elif self.ctrls['transform'].value is 'modlog10':
             logmod = lambda x: np.sign(x) * (np.log10(np.abs(x) + 1))
-            return logmod(a)
+            t[data_column] = logmod(a)
+
+        return t
 
 
 class RFFT(CtrlNode):
@@ -71,6 +80,8 @@ class RFFT(CtrlNode):
     def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
+
+        t = transmission.copy()
 
         a = transmission.df['rfft'].values
 
