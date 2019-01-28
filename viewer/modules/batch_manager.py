@@ -115,6 +115,9 @@ class ModuleGUI(QtWidgets.QWidget):
 
         os.remove(backup_path)
 
+    def export_submission_scripts(self):
+        pass
+
     def init_batch(self, run_batch):
         if run_batch is None:
             path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '

@@ -60,6 +60,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     def slot_delete_roi_menu(self):
         if hasattr(self, 'manager'):
+            if isinstance(self.manager, managers.ManagerCNMFE):
+                self.manager.update_idx_components(self.manager.roi_list.current_index)
+
             del self.manager.roi_list[self.manager.roi_list.current_index]
 
     def btnAddROI_context_menu_requested(self, p):

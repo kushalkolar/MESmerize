@@ -26,7 +26,8 @@ import json
 class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
                  roi_manager=None, roi_states=None, comments='', origin_file='',
-                 custom_columns_dict=None, history_trace=[], **kwargs):
+                 custom_columns_dict: dict = None, history_trace: list = None,
+                 additional_data: dict = None, **kwargs):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -48,6 +49,7 @@ class ViewerWorkEnv:
         :type history_trace: list
 
         """
+
         if imgdata is not None:
             self.isEmpty = False
             self.imgdata = imgdata
@@ -57,6 +59,11 @@ class ViewerWorkEnv:
         else:
             self.isEmpty = True
         self.meta = meta
+
+        if history_trace is None:
+            self.history_trace = []
+        else:
+            self.history_trace = history_trace
 
         self.stim_maps = stim_maps
 
@@ -74,6 +81,9 @@ class ViewerWorkEnv:
         self.origin_file = origin_file
         if custom_columns_dict is None:
             self.custom_columns_dict = {}
+
+
+        self.additional_data = additional_data
 
         self.UUID = UUID
 
@@ -123,7 +133,7 @@ class ViewerWorkEnv:
 
         p = pickle.load(open(pickle_file_path, 'rb'))
 
-        # compatability for older pickle files from older mesmerize
+        # compatibility for older pickle files from older mesmerize
         if 'imdata' in p.keys():
             try:
                 sample_id = p['imdata']['sample_id']
@@ -256,6 +266,9 @@ class ViewerWorkEnv:
              'meta':        self.imgdata.meta,
              'stim_maps':   self.stim_maps,
              'comments':    self.comments,
+             'custom_columns_dict': self.custom_columns_dict,
+             'history_trace': self.history_trace,
+             'additional_data': self.additional_data
              }
 
         if self.roi_manager is not None:

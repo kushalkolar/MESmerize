@@ -205,6 +205,7 @@ class Output(QtWidgets.QWidget):
         vi.update_workEnv()
 
         input_params = pickle.load(open(self.batch_dir + '/' + str(self.UUID) + '.params', 'rb'))
+        vi.viewer.workEnv.history_trace.append(input_params)
 
         self.viewer_ref.parent().ui.actionROI_Manager.trigger()
 

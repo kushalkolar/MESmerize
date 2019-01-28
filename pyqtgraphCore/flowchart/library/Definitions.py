@@ -12,6 +12,8 @@ from ... import metaarray as metaarray
 from analyser.DataTypes import *
 from functools import partial
 from analyser import PeakEditor
+from caiman.source_extraction.cnmf.utilities import detrend_df_f
+from common import configuration
 
 
 class AlignStims(CtrlNode):
@@ -381,6 +383,34 @@ class DeltaFoF(CtrlNode):
         self.data_modified = False
         self.editor_output = False
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
+
+
+class DetrendDFoF(CtrlNode):
+    """Uses detrend_df_f from Caiman library"""
+
+    uiTemplate=[('quantileMin', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 20}),
+                ('frames_window', 'intSpin', {'min': 2, 'max': 5000, 'step': 10, 'value': 100}),
+                ('auto_quantile', 'check', {'checked': True, 'toolTip': 'determine quantile automatically'}),
+                ('fast_filter', 'check', {'checked': True, 'tooTip': 'use approximate fast percentile filtering'}),
+                ('Apply', 'check', {'applyBox': True, 'checked': False})]
+
+    def processData(self, transmission: Transmission):
+        if self.ctrls['Apply'].isChecked() is False:
+            return self.t
+        t = transmission.copy()
+        df = t.df
+
+        proj_path = configuration.proj_path
+
+        df['cnmf_output_data'] = df.apply(lambda r: self._load_data(proj_path, r['ImgInfoPath']), axis=1)
+
+
+
+    def _load_data(self, proj_path: str, img_info_path: str):
+        pikPath = proj_path + img_info_path
+        pik = pickle.load(open(pikPath, 'rb'))
+        cnmf = pik['additional_data']['cnmf']
+
 
 
 class SpliceCurves(CtrlNode):

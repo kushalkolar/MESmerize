@@ -120,6 +120,7 @@ class ManagerCNMFE(AbstractBaseManager):
         self.create_roi_list()
         self.list_widget = self.roi_list.list_widget
         self.input_params_dict = None
+        self.idx_components = None
 
     def create_roi_list(self):
         self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
@@ -127,6 +128,7 @@ class ManagerCNMFE(AbstractBaseManager):
     def add_all_components(self, cnmA, cnmC, idx_components, dims, input_params_dict, dfof=False):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
+        self.idx_components = idx_components
         contours = caiman_get_contours(cnmA[:, idx_components], dims)
         if dfof:
             temporal_components = cnmC
@@ -140,7 +142,7 @@ class ManagerCNMFE(AbstractBaseManager):
 
             curve_data = temporal_components[ix]
             contour = contours[ix]
-            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), curve_data, contour)
+            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), idx_components[ix], curve_data, contour)
             self.roi_list.append(roi)
 
         self.roi_list.reindex_colormap()
@@ -156,12 +158,18 @@ class ManagerCNMFE(AbstractBaseManager):
         for state in states['states']:
             roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
+        self.input_params_dict = states['input_params_cnmfe']
+        self.idx_components = states['idx_components']
         self.roi_list.reindex_colormap()
 
     def get_all_states(self) -> dict:
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
         states = super(ManagerCNMFE, self).get_all_states()
-        input_dict = {'input_params_cnmfe': self.input_params_dict}
+        input_dict = {'input_params_cnmfe': self.input_params_dict, 'idx_components': self.idx_components}
         states.update(input_dict)
         return states
+
+    def update_idx_components(self, ix: int):
+        roi = self.roi_list[self.roi_list.current_index]
+        self.idx_components = np.delete(self.idx_components, np.where(self.idx_components == roi.cnmf_idx)[0])

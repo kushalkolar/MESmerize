@@ -92,7 +92,6 @@ def generateUi(opts):
             if 'toolTip' in o:
                 w.setToolTip(o['toolTip'])
 
-
         elif t == 'label':
             w = QtWidgets.QLabel()
             if 'text' in o:
