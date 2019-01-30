@@ -387,7 +387,7 @@ class DeltaFoF(CtrlNode):
 
 class DetrendDFoF(CtrlNode):
     """Uses detrend_df_f from Caiman library"""
-
+    nodeName = 'DetrendDFoF'
     uiTemplate=[('quantileMin', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 20}),
                 ('frames_window', 'intSpin', {'min': 2, 'max': 5000, 'step': 10, 'value': 100}),
                 ('auto_quantile', 'check', {'checked': True, 'toolTip': 'determine quantile automatically'}),
