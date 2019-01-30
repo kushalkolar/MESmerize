@@ -402,15 +402,47 @@ class DetrendDFoF(CtrlNode):
 
         proj_path = configuration.proj_path
 
-        df['cnmf_output_data'] = df.apply(lambda r: self._load_data(proj_path, r['ImgInfoPath']), axis=1)
+        self.current_sample_id = None
+        self.ix = 0
+        self.dfof_curves = None
 
+        df['curve'] = df.apply(lambda r: self._load_data(proj_path, r), axis=1)
 
+    def _load_data(self, proj_path: str, row: pd.Series):
+        self.dfof_curves = None
 
-    def _load_data(self, proj_path: str, img_info_path: str):
-        pikPath = proj_path + img_info_path
-        pik = pickle.load(open(pikPath, 'rb'))
-        cnmf = pik['additional_data']['cnmf']
+        self.ix += 1
 
+        if row['SampleID'] != self.current_sample_id:
+            self.idx_components = None
+            self.ix = 0
+
+            self.current_sample_id = row['SampleId']
+
+            pikPath = proj_path + row['ImgInfoPath']
+            pik = pickle.load(open(pikPath, 'rb'))
+
+            cnmA = pik['roi_states']['cnmf_output']['cnmA']
+            cnmb = pik['roi_states']['cnmf_output']['cnmb']
+            cnmC = pik['roi_states']['cnmf_output']['cnmC']
+            cnm_f = pik['roi_states']['cnmf_output']['cnm_f']
+            cnmYrA = pik['roi_states']['cnmf_output']['cnmYrA']
+
+            self.idx_components = pik['roi_states']['cnmf_output']['idx_components']
+
+            self.dfof_curves = detrend_df_f(cnmA, cnmb, cnmC, cnm_f, YrA=cnmYrA,
+                                       quantileMin=self.ctrls['quantileMin'].value(),
+                                       frames_window=self.ctrls['frames_window'].value(),
+                                       flag_auto=self.ctrls['auto_quantile'].isChecked(),
+                                       use_fast=self.ctrls['fast_filter'].isChecked())
+
+        dfof = self.dfof_curves[self.idx_components[self.ix]]
+
+        if self.idx_components[self.ix] != row['ROI_State']['cnmf_idx']:
+            raise Exception('CNMF component index Mismatch Error! Something went very wrong. Check the indices of your'
+                            'CNMF components from SampleID: ' + self.current_sample_id)
+
+        return dfof
 
 
 class SpliceCurves(CtrlNode):

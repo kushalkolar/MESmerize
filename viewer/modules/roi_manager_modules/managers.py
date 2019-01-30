@@ -122,13 +122,26 @@ class ManagerCNMFE(AbstractBaseManager):
         self.input_params_dict = None
         self.idx_components = None
 
+        self.cnmA = None
+        self.cnmb = None
+        self.cnmC = None
+        self.cnm_f = None
+        self.cnmYrA = None
+
     def create_roi_list(self):
         self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
 
-    def add_all_components(self, cnmA, cnmC, idx_components, dims, input_params_dict, dfof=False):
+    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict, dfof=False):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
+        self.cnmA = cnmA
+        self.cnmb = cnmb
+        self.cnmC = cnmC
+        self.cnm_f = cnm_f
+        self.cnmYrA = cnmYrA
         self.idx_components = idx_components
+        self.input_params_dict = input_params_dict
+
         contours = caiman_get_contours(cnmA[:, idx_components], dims)
         if dfof:
             temporal_components = cnmC
@@ -166,7 +179,22 @@ class ManagerCNMFE(AbstractBaseManager):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
         states = super(ManagerCNMFE, self).get_all_states()
-        input_dict = {'input_params_cnmfe': self.input_params_dict, 'idx_components': self.idx_components}
+
+        new_idx_components = np.array([roi.cnmf_idx for roi in self.roi_list], dtype=np.int64)
+
+        input_dict = {'input_params_cnmfe': self.input_params_dict,
+                      'cnmf_output':
+                          {
+                              'cnmA': self.cnmA,
+                              'cnmb': self.cnmb,
+                              'cnmC': self.cnmC,
+                              'cnm_f': self.cnm_f,
+                              'cnmYrA': self.cnmYrA,
+                              'idx_components': new_idx_components,
+                              'orig_idx_components': self.idx_components
+                          }
+                      }
+
         states.update(input_dict)
         return states
 
