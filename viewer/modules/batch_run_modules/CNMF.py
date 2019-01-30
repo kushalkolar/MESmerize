@@ -165,6 +165,10 @@ class Output(QtWidgets.QWidget):
         self.cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
         self.cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
         self.F_dff = pickle.load(open(filename + '_F_dff.pikl', 'rb'))
+        self.cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
+        self.cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+        self.cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+
         self.idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
         self.dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
 
@@ -213,7 +217,10 @@ class Output(QtWidgets.QWidget):
             if isinstance(m, ModuleGUI):
                 m.start_cnmfe_mode()
                 m.add_all_cnmfe_components(cnmA=self.cnmA,
+                                           cnmb=self.cnmb,
                                            cnmC=self.F_dff,
+                                           cnm_f = self.cnm_f,
+                                           cnmYrA = self.cnmYrA,
                                            idx_components=self.idx_components,
                                            dims=self.dims,
                                            input_params_dict=input_params,

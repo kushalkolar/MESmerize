@@ -27,7 +27,8 @@ class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
                  roi_manager=None, roi_states=None, comments='', origin_file='',
                  custom_columns_dict: dict = None, history_trace: list = None,
-                 additional_data: dict = None, **kwargs):
+                 additional_data: dict = None,
+                 misc: dict = None, **kwargs):
         """
         A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
         the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
@@ -82,14 +83,19 @@ class ViewerWorkEnv:
         if custom_columns_dict is None:
             self.custom_columns_dict = {}
 
+        if additional_data is not None:
+            assert isinstance(additional_data, dict)
+            self.additional_data = additional_data
+        else:
+            self.additional_data = {}
 
-        self.additional_data = additional_data
+        if misc is not None:
+            assert isinstance(misc, dict)
+            self.misc = misc
+        else:
+            self.misc = {}
 
         self.UUID = UUID
-
-    #    def __repr__(self):
-    #        return 'viewerWorkEnv()\nROIlist: {}\nCurvesList: {}\nimgdata: +\
-    #            {}\nmesfileMap: {}'.format(self.ROIlist, self.CurvesList, self.imgdata, self.mesfileMap)
 
     def dump(self):
         self.isEmpty = True
@@ -363,8 +369,6 @@ class ViewerWorkEnv:
                     if stim not in configuration.proj_cfg['ALL_STIMS'].keys():
                         new_stimuli.append(stim)
 
-        # print(stimMapsSet)
-
         configuration.proj_cfg['ALL_STIMS'] = {**configuration.proj_cfg['ALL_STIMS'], **dict.fromkeys(new_stimuli)}
         configuration.save_proj_config()
 
@@ -414,7 +418,6 @@ class ViewerWorkEnv:
             #                  'roi_ys': rois['states'][ix]['roi_ys']
             #                  }
 
-
             d = {'SampleID': self.sample_id,
                  'CurvePath': curve_path.split(proj_path)[1],
                  'ImgPath': img_path.split(proj_path)[1] + '.tiff',
@@ -423,7 +426,8 @@ class ViewerWorkEnv:
                  'ROI_State': rois['states'][ix],
                  'date': date,
                  'uuid_curve': str(uuid4()),
-                 'comments': comments
+                 'comments': comments,
+                 'misc': self.misc
                  }
 
             dicts.append({**d,
