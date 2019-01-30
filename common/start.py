@@ -30,7 +30,7 @@ def window_manager():
 
 def main():
     w = welcome_window.MainWindow()
-    configuration.window_manager._welcome_window = w
+    configuration.window_manager.welcome_window = w
     w.show()
 
 def background_batch(run_batch: list):
