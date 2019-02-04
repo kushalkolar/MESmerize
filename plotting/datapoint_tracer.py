@@ -38,7 +38,9 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.history_widget = HistoryTreeWidget(parent=self.ui.groupBoxInfo)
         self.ui.groupBoxInfo.layout().addWidget(self.history_widget)
 
-        self.pandas_series_widget = PandasWidget(parent=self.ui.groupBoxInfo)
+        # self.pandas_series_widget = PandasWidget(parent=self.ui.groupBoxInfo)
+        self.pandas_series_widget = HistoryTreeWidget(parent=self.ui.groupBoxInfo)
+
         self.ui.groupBoxInfo.layout().addWidget(self.pandas_series_widget)
         self.image_view = ImageView()
         self.image_item = self.image_view.getImageItem()
@@ -64,7 +66,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.history_widget.fill_widget(self.history_trace)
 
         self.row.reset_index(inplace=True)
-        self.pandas_series_widget.set_data(row)
+        self.pandas_series_widget.fill_widget(row.to_dict())
+        # self.pandas_series_widget.set_data(row)
 
         img = tifffile.imread(self.row['MaxProjPath'].item())
         self.image_item.setImage(img.astype(np.uint16))
