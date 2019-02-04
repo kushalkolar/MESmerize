@@ -86,7 +86,10 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         self.dataframe = pd.concat(dfs)#, axis=1)
         self.dataframe.reset_index(drop=True, inplace=True)
-        self.dataframe.drop(columns=['index'], inplace=True)
+        try:
+            self.dataframe.drop(columns=['index'], inplace=True)
+        except:
+            pass
         #self.dataframe = self.dataframe.sample(n=100, axis=0)
 
         columns = self.dataframe.columns.tolist()

@@ -43,7 +43,7 @@ class LDAPlot(PlotWindow):
         self.scatter_plot.signal_spot_clicked.connect(self.set_current_datapoint)
 
         self.control_widget.btnTraceDatapoint.clicked.connect(self.open_datapoint_tracer)
-        self.datapoint_tracesr = []
+        self.datapoint_tracers = []
 
         self.live_datapoint_tracer = DatapointTracerWidget()
         self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)

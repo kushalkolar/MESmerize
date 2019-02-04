@@ -53,14 +53,26 @@ class SystemConfigGUI(QtWidgets.QWidget):
         try:
             import pycuda
             import skcuda
+            from pycuda import driver
+            driver.Device.count()
+
         except ImportError:
             self.cuda_error_msg = traceback.format_exc()
-            self.ui.checkBoxUseCUDA.setChecked(False)
-            configuration.sys_cfg['HARDWARE']['USE_CUDA'] = str(self.ui.checkBoxUseCUDA.isChecked())
             self.ui.checkBoxUseCUDA.setText('Use CUDA - Disabled, could not import libraries')
-            self.ui.pushButtonCUDAError.setVisible(True)
-            self.ui.pushButtonCUDAError.setEnabled(True)
-            self.ui.pushButtonCUDAError.clicked.connect(self.show_cuda_error)
+            self.disable_cuda_UI()
+
+        except driver.LogicError:
+            self.cuda_error_msg = traceback.format_exc()
+            self.ui.checkBoxUseCUDA.setText('Use CUDA - Disabled, could not find CUDA devices using driver')
+            self.disable_cuda_UI()
+
+    def disable_cuda_UI(self):
+        configuration.sys_cfg['HARDWARE']['USE_CUDA'] = str(False)
+        self.ui.checkBoxUseCUDA.setChecked(False)
+        self.ui.checkBoxUseCUDA.setDisabled(True)
+        self.ui.pushButtonCUDAError.setVisible(True)
+        self.ui.pushButtonCUDAError.setEnabled(True)
+        self.ui.pushButtonCUDAError.clicked.connect(self.show_cuda_error)
 
     def show_cuda_error(self):
         QtWidgets.QMessageBox.information(self, 'CUDA Error', self.cuda_error_msg)
