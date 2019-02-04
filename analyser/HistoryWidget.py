@@ -11,7 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class HistoryTreeWidget(QtWidgets.QTreeWidget):
@@ -28,7 +28,7 @@ class HistoryTreeWidget(QtWidgets.QTreeWidget):
         if type(value) is dict:
             for key, val in sorted(value.items()):
                 child = QtWidgets.QTreeWidgetItem()
-                child.setText(0, key)
+                child.setText(0, str(key))
                 item.addChild(child)
                 self._fill_item(child, val)
 
@@ -63,7 +63,11 @@ if __name__ == '__main__':
     win = QtWidgets.QMainWindow()
     history_tree = HistoryTreeWidget()
     win.setCentralWidget(history_tree)
+    import pickle
+
+    df = pickle.load(open('/share/data/ssd2/kushal/cell_types_project/fft_data_with_index.trn', 'rb'))['df']
+
+    history_tree.fill_widget(df.iloc[0].to_dict())
+
     win.show()
-    import sys
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+    app.exec_()

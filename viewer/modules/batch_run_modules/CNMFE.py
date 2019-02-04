@@ -77,7 +77,7 @@ def run(batch_dir, UUID, n_processes):
                                                      n_processes=n_processes,
                                                      single_thread=False)
 
-    bord_px = 10
+    bord_px = 25
     try:
         print('Creating memmap')
         fname_new = cm.save_memmap_each(
