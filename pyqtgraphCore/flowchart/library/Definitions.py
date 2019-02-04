@@ -410,7 +410,7 @@ class DetrendDFoF(CtrlNode):
 
         t.df = self.df
 
-        self.t.append({'DetrendDFoF': self.params})
+        self.t.src.append({'DetrendDFoF': self.params})
 
         return t
 
