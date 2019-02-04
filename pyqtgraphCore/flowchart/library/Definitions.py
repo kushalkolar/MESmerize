@@ -398,58 +398,62 @@ class DetrendDFoF(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return self.t
         t = transmission.copy()
-        df = t.df
+        self.df = t.df
+
+        self.params = {'quantileMine':  self.ctrls['quantileMin'].value(),
+                       'frames_window': self.ctrls['frames_window'].value(),
+                       'auto_quantile': self.ctrls['auto_quantile'].isChecked(),
+                       'fast_filter':   self.ctrls['fast_filter'].isChecked()
+                       }
+
+        self._load_data()
+
+        t.df = self.df
+
+        self.t.append({'DetrendDFoF': self.params})
+
+        return t
+
+    def _load_data(self):
+        self.current_sample_id = None
+        self.ix = 0
+        dfof_curves = None
 
         proj_path = configuration.proj_path
 
-        self.current_sample_id = None
-        self.idx_components = None
-        self.ix = 0
-        self.dfof_curves = None
-        #df.apply(lambda r: print(r['ROI_State']['cnmf_idx']), axis=1)
-        df['curve'] = df.apply(lambda r: self._load_data(r), axis=1)
+        for index, row in self.df.iterrows():
+            self.ix += 1
 
-    def test(self, r):
-        print(r.name)
+            if row['SampleID'] != self.current_sample_id:
+                self.idx_components = None
+                self.ix = 0
 
-    def _load_data(self, sample_id, state):
-        self.ix += 1
-        #print(row['SampleID'])
-        #print(self.dfof_curves)
-        #print(self.idx_components)
-        #print(self.ix)
-        print(row.name)
-        if row['SampleID'] != self.current_sample_id:
-            self.idx_components = None
-            self.dfof_curves = None
-            self.ix = 0
+                self.current_sample_id = row['SampleID']
 
-            self.current_sample_id = row['SampleID']
+                pikPath = proj_path + row['ImgInfoPath']
+                pik = pickle.load(open(pikPath, 'rb'))
 
-            pikPath = configuration.proj_path + row['ImgInfoPath']
-            pik = pickle.load(open(pikPath, 'rb'))
+                cnmA = pik['roi_states']['cnmf_output']['cnmA']
+                cnmb = pik['roi_states']['cnmf_output']['cnmb']
+                cnmC = pik['roi_states']['cnmf_output']['cnmC']
+                cnm_f = pik['roi_states']['cnmf_output']['cnm_f']
+                cnmYrA = pik['roi_states']['cnmf_output']['cnmYrA']
 
-            self.cnmA = pik['roi_states']['cnmf_output']['cnmA']
-            self.cnmb = pik['roi_states']['cnmf_output']['cnmb']
-            self.cnmC = pik['roi_states']['cnmf_output']['cnmC']
-            self.cnm_f = pik['roi_states']['cnmf_output']['cnm_f']
-            self.cnmYrA = pik['roi_states']['cnmf_output']['cnmYrA']
+                self.idx_components = pik['roi_states']['cnmf_output']['idx_components']
 
-            self.idx_components = pik['roi_states']['cnmf_output']['idx_components']
-            #print('all pickle objects sutff worked')
-            self.detrend = detrend_df_f
+                dfof_curves = detrend_df_f(cnmA, cnmb, cnmC, cnm_f, YrA=cnmYrA,
+                                           quantileMin=self.params['quantileMin'],
+                                           frames_window=self.params['frames_window'])#,
+                                           # flag_auto=self.ctrls['auto_quantile'].isChecked(),
+                                           # use_fast=self.ctrls['fast_filter'].isChecked())
+                if self.idx_components[self.ix] != row['ROI_State']['cnmf_idx']:
+                    raise Exception(
+                        'CNMF component index Mismatch Error! Something went very wrong. Check the indices of your'
+                        'CNMF components from SampleID: ' + self.current_sample_id)
 
-            self.dfof_curves = detrend_df_f(self.cnmA, self.cnmb, self.cnmC, self.cnm_f, YrA=self.cnmYrA)
+            self.df.iloc[index]['curve'] = dfof_curves[self.idx_components[self.ix]]
 
-        dfof = self.dfof_curves[self.idx_components[self.ix]]
-        #print(self.idx_components[self.ix])
-        #print(row['ROI_State']['cnmf_idx'])
-        #print(self.idx_components[self.ix] != row['ROI_State']['cnmf_idx'])
-        #if self.idx_components[self.ix] != row['ROI_State']['cnmf_idx']:
-            #raise Exception('CNMF component index Mismatch Error! Something went very wrong. Check the indices of your'
-             #               'CNMF components from SampleID: ' + self.current_sample_id)
 
-        return pd.Series({'curve': [dfof]})
 
 
 class SpliceCurves(CtrlNode):
