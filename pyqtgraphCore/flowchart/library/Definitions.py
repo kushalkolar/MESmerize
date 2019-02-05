@@ -454,7 +454,41 @@ class DetrendDFoF(CtrlNode):
             self.df.iloc[index]['curve'] = dfof_curves[self.idx_components[self.ix]]
 
 
+class SpliceArrays(CtrlNode):
+    """Splice 1-D numpy arrays in a particular column"""
+    nodeName = 'SpliceArrays'
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to splice'}),
+                  ('indices', 'lineEdit', {'text': '', 'placeHolder': 'start_ix:end_ix'})]
 
+    def setAutoCompleter(self):
+        autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
+        self.ctrls['data_column'].setCompleter(autocompleter)
+        self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
 
-class SpliceCurves(CtrlNode):
-    pass
+    def processData(self, transmission: Transmission):
+        self.columns = transmission.df.columns
+        self.setAutoCompleter()
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        t = transmission.copy()
+        indices = self.ctrls['indices'].text()
+
+        if indices == '':
+            return
+        if ':' not in indices:
+            return
+        else:
+            indices = indices.split(':')
+
+        start_ix = int(indices[0])
+        end_ix = int(indices[1])
+
+        data_column = self.ctrls['data_column'].text()
+
+        t.df[data_column] = t.df[data_column].apply(lambda a: a[start_ix:end_ix])
+
+        t.src.append({'SpliceArrays': {'data_column': data_column, 'start_ix': start_ix, 'end_ix': end_ix}})
+
+        return t

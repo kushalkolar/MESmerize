@@ -10,13 +10,15 @@ from analyser.DataTypes import Transmission
 from analyser import simple_plot_window
 from .common import *
 import numpy as np
+from plotting.modules.heatmap.widget import HeatmapTracerWidget, HeatmapControlWidget
 
 
 class Plot(CtrlNode):
     """Plot curves and/or scatter points"""
     nodeName = 'Plot'
     uiTemplate = [('Show', 'check', {'checked': True}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'})
                   ]
 
     def __init__(self, name):
@@ -26,9 +28,19 @@ class Plot(CtrlNode):
         self.ctrls['Apply'].clicked.connect(self.update)
         self.ctrls['Show'].clicked.connect(self.pwin.setVisible)
 
+        # autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
+        # self.ctrls['data_column'].setCompleter(autocompleter)
+        # self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
+
     def process(self, **kwargs):
+        # self.columns = transmission.df.columns
+        # self.setAutoCompleter()
         if self.ctrls['Apply'].isChecked() is False:
             return
+
+        data_column = self.ctrls['data_column'].text()
+        if data_column == '':
+            raise ValueError('No data column entered')
 
         transmissions = kwargs['In']
 
@@ -52,20 +64,21 @@ class Plot(CtrlNode):
 
             for ix, r in t.df.iterrows():
 
-                if 'curve' in r.index:
-                    data = r['curve']
-                elif 'peak_curve' in r.index:
-                    data = r['peak_curve']
+                if data_column in r.index:
+                    data = r[data_column]
+                # elif 'peak_curve' in r.index:
+                #     data = r['peak_curve']
                 else:
-                    srcs.append('No curve data found!')
+                    srcs.append('No data found in chosen column!')
                     continue
                 if data is None:
-                    srcs.append('No curve data found!')
+                    srcs.append('No data found in chosen column!')
                     continue
 
                 plot = PlotDataItem()
                 try:
-                    plot.setData(data / np.maximum(np.min(data), 0.0000000001))
+                    plot.setData(data)
+                    # plot.setData(data / np.maximum(np.min(data), 0.0000000001))
                     plot.setPen(colors[ci])
                 except Exception as e:
                     srcs.append('Plotting error: ' + str(e))
@@ -85,6 +98,54 @@ class FrequencyDomainMagnitude(CtrlNode):
     uiTemplate = [('Show', 'check', {'checked': True}),
                   ('Apply', 'check', {'checked': True, 'applyBox': True})
                   ]
+
+
+class Heatmap(CtrlNode):
+    """Stack 1-D arrays and plot visually like a heatmap"""
+    nodeName = "Heatmap"
+    uiTemplate = [('Show', 'button', {'text': 'Show'}),
+                  ('CtrlsBtn', 'button', {'text': 'Ctrls'}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'}),
+                  ('labels_column', 'lineEdit', {'text': '', 'placeHolder': 'Column for ylabels'})
+                  ]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out'}})
+        self.trans_ids = []
+        self.ctrls['Apply'].clicked.connect(self.update)
+        self.heatmap_widget = HeatmapTracerWidget()
+        self.ctrls['Show'].clicked.connect(self.heatmap_widget.show)
+        self.heatmap_ctrl_widget = HeatmapControlWidget()
+        self.ctrls['CtrlsBtn'].clicked.connect(self.heatmap_ctrl_widget.show)
+        self.heatmap_ctrl_widget.signal_colormap_changed.connect(lambda m: self.set_data(m))
+        # autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
+        # self.ctrls['data_column'].setCompleter(autocompleter)
+        # self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
+
+    def process(self, **kwargs):
+        # self.columns = transmission.df.columns
+        # self.setAutoCompleter()
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        self.data_column = self.ctrls['data_column'].text()
+        if self.data_column == '':
+            raise ValueError('No data column entered')
+
+        self.transmissions = kwargs['In']
+
+        self.set_data()
+
+    def set_data(self, cm='jet'):
+        transmissions_list = merge_transmissions(self.transmissions)
+        labels_column = self.ctrls['labels_column'].text()
+
+        dfs = [t.df for t in transmissions_list]
+
+        self.heatmap_widget.set_data(dataframes=dfs, data_column=self.data_column, labels_columns=labels_column, cmap=cm)
+
+
 
 
 

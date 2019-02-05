@@ -255,3 +255,27 @@ def metaArrayWrapper(fn):
             return fn(self, data, *args, **kargs)
     return newFn
 
+
+def merge_transmissions(transmissions):
+    if not len(transmissions) > 0:
+        raise Exception('No incoming transmissions')
+
+    transmissions_list = []
+
+    for t in transmissions.items():
+        t = t[1]
+        if t is None:
+            QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+            continue
+        if type(t) is list:
+            for i in range(len(t)):
+                if t[i] is None:
+                    QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                    continue
+                transmissions_list.append(t[i].copy())
+            continue
+
+        transmissions_list.append(t.copy())
+    return transmissions_list
+    #self.plot_gui.update_input_transmissions(transmissions_list)
+

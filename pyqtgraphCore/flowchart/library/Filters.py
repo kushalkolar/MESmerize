@@ -149,31 +149,46 @@ class PowerSpectralDensity(CtrlNode):
 
 
 class Resample(CtrlNode):
-    """Resample 1D data, uses scipy.signal.resample"""
+    """Resample 1D data, uses scipy.signal.resample. "Rs" number of samples to resample to per "Tu" unit of time.
+    If "Tu" = 1, then Rs is the new sampling rate to resample to"""
+
     nodeName = 'Resample'
     uiTemplate = [
-        ('Rs', 'intSpin', {'min': 2, 'max': 9999, 'value': 10, 'step': 100}),
-        ('Tu', 'intSpin', {'min': 2, 'max': 9999, 'value': 1, 'step': 100}),
+        ('Rs', 'intSpin', {'min': 1, 'max': 9999, 'value': 10, 'step': 5}),
+        ('Tu', 'intSpin', {'min': 1, 'max': 9999, 'value': 1, 'step': 1}),
+        ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'}),
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
     def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
+
+        self.data_column = self.ctrls['data_column'].text()
+        if self.data_column == '':
+            return
+
         t = transmission.copy()
 
-        t.df['curve'] = t.df.apply(self._func)
-        t.src.append({'Resampled': self.ctrls['n'].value()})
+        self.Rs = self.ctrls['Rs'].value()
+        self.Tu = self.ctrls['Tu'].value()
+        self.new_rate = self.Rs / self.Tu
+
+        t.df[self.data_column] = t.df.apply(self._func, axis=1)
+        t.src.append({'Resampled': {'new_sampling_rate': self.new_rate}})
         return t
 
-    def _func(self, row):
-        Nf = row.meta['fps']
-        Ns = row.curve.shape[0]
+    def _func(self, row: pd.Series):
+        Nf = row['meta']['fps']
+        if Nf == 0:
+            raise ValueError('Framerate not set for SampleID: ' + row['SampleID']
+                             + '. You must set a framerate for this SampleID to continue')
+        Ns = row[self.data_column].shape[0]
 
         Rs = self.ctrls['Rs'].value()
         Tu = self.ctrls['Tu'].value()
 
-        Rn = int((Ns / Nf) * (Rs / Tu))
+        Rn = int((Ns / Nf) * (self.new_rate))
 
         return signal.resample(row.curve, Rn)
 
@@ -189,18 +204,28 @@ class ZScore(CtrlNode):
 
 
 class Normalize(CtrlNode):
+    """Normalize a column containing 1-D arrays such that values in each array are normalized between 0 and 1"""
     nodeName = 'Normalize'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'})
+                  ]
 
     def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        a = transmission.df['curve'].values
+        t = transmission.copy()
 
-        n = (a - np.min(a, axis=1)[:, np.newaxis]) / np.ptp(a, axis=1)[:, np.newaxis]
+        data_column = self.ctrls['data_column'].text()
 
-        return n
+        #TODO: VERIFY THAT THIS MATCH IS CORRECT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        t.df[data_column] = t.df[data_column].apply(lambda a: ((a - np.min(a)) / (np.max(a - np.min(a)))))
+
+        # t.df[data_column] = pd.Series(n.tolist())
+
+        t.src.append({'Normalized': {'data_column': data_column}})
+
+        return t
 
 # class Downsample(CtrlNode):
 #     """Downsample by averaging samples together."""
