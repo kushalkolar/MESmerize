@@ -46,7 +46,9 @@ class Heatmap(MatplotlibWidget):
         self._highlight = None
         self.cbar_ax.cla()
         self.data = data
+
         self.plot = sns.heatmap(data, *args, ax=self.ax_heatmap, cbar_ax=self.cbar_ax, **kwargs)
+
         self.draw()
 
     def highlight_row(self, ev):

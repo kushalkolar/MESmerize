@@ -19,6 +19,7 @@ from uuid import UUID
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from pyqtgraphCore.functions import mkBrush
 import pandas as pd
+from sklearn.decomposition import PCA
 
 
 class LDAPlot(PlotWindow):

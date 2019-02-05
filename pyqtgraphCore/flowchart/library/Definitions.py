@@ -396,11 +396,11 @@ class DetrendDFoF(CtrlNode):
 
     def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
-            return self.t
+            return
         t = transmission.copy()
         self.df = t.df
 
-        self.params = {'quantileMine':  self.ctrls['quantileMin'].value(),
+        self.params = {'quantileMin':  self.ctrls['quantileMin'].value(),
                        'frames_window': self.ctrls['frames_window'].value(),
                        'auto_quantile': self.ctrls['auto_quantile'].isChecked(),
                        'fast_filter':   self.ctrls['fast_filter'].isChecked()
@@ -408,9 +408,9 @@ class DetrendDFoF(CtrlNode):
 
         self._load_data()
 
-        t.df = self.df
+        t.df = self.df.reset_index(drop=True)
 
-        self.t.src.append({'DetrendDFoF': self.params})
+        t.src.append({'DetrendDFoF': self.params})
 
         return t
 
