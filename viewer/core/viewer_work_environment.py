@@ -340,6 +340,9 @@ class ViewerWorkEnv:
         max_proj_path = img_path + '_max_proj.tiff'
         tifffile.imsave(max_proj_path, max_proj)
 
+        std_proj = self.imgdata.seq.std(axis=2)
+        std_proj_path = img_path + '_std_proj.tiff'
+        tifffile.imsave(std_proj_path, std_proj)
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False
