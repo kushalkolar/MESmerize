@@ -144,8 +144,8 @@ class ManualROI(AbstractBaseROI):
 
         self.set_roi_graphics_object(roi_graphics_object)
 
-        # if state is not None:
-        #     self.set_roi_graphics_object_state(state['roi_graphics_object_state'])
+        if state is not None:
+            self.set_roi_graphics_object_state(state['roi_graphics_object_state'])
 
     def get_roi_graphics_object(self) -> tuple(pg.ROI.__subclasses__()):
         return self.roi_graphics_object

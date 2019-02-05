@@ -53,7 +53,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
     def set_widget(self, datapoint_uuid: UUID,
                    row: pd.Series,
-                   history_trace: list,
+                   history_trace: list = [],
                    peak_ix: int = None,
                    tstart: int = None,
                    tend: int = None):
@@ -65,11 +65,18 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.ui.lineEditUUID.setText(str(self.uuid))
         self.history_widget.fill_widget(self.history_trace)
 
-        self.row.reset_index(inplace=True)
+        # self.row.reset_index(inplace=True)
         self.pandas_series_widget.fill_widget(row.to_dict())
         # self.pandas_series_widget.set_data(row)
+        # mp_path= self.row['MaxProjPath']
+        # if type(mp_path) is not str:
+        try:
+            mp_path = self.row['MaxProjPath'].item()
+        except:
+            mp_path = self.row['MaxProjPath']
 
-        img = tifffile.imread(self.row['MaxProjPath'].item())
+        img = tifffile.imread(mp_path)
+
         self.image_item.setImage(img.astype(np.uint16))
         # self.image_item.setPxMode(True)
         self.image_item.resetTransform()
@@ -78,13 +85,20 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.ui.graphicsViewPlot.clear()
         if (tstart is not None) and (tend is not None):
             self.peak_region.add_linear_region(tstart, tend, color=mkColor('#a80035'))
-        self.ui.graphicsViewPlot.plot(self.row['curve'].item())
+        try:
+            self.ui.graphicsViewPlot.plot(self.row['curve'].item())
+        except:
+            self.ui.graphicsViewPlot.plot(self.row['curve'])
+
         self.ui.graphicsViewPlot.plotItem.setZValue(1)
 
         if self.roi is not None:
             self.roi.remove_from_viewer()
+        try:
+            roi_state = self.row['ROI_State'].item()
+        except:
+            roi_state = self.row['ROI_State']
 
-        roi_state = self.row['ROI_State'].item()
         if roi_state['roi_type'] == 'CNMFROI':
             self.roi = CNMFROI.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
             self.roi.get_roi_graphics_object().setBrush(mkColor('#ff0000'))

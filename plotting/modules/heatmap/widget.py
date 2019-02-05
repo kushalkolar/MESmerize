@@ -13,15 +13,11 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .heatmap import Heatmap
 from .control_widget import Ui_DockWidget
-from pyqtgraphCore.imageview.ImageView import ImageView
-from cv2 import imread
 from glob import glob
-from viewer.core.common import *
 import numpy as np
 
 import pandas as pd
-import pickle
-from scipy import signal
+from ...datapoint_tracer import DatapointTracerWidget
 
 
 class HeatmapWidget(QtWidgets.QWidget):
@@ -53,7 +49,7 @@ class HeatmapWidget(QtWidgets.QWidget):
         self.plot_widget.set(data, cmap=cmap)
 
 
-class HeatmapViewerWidget(QtWidgets.QWidget):
+class HeatmapTracerWidget(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
         self.vlayout = QtWidgets.QVBoxLayout(self)
@@ -62,28 +58,41 @@ class HeatmapViewerWidget(QtWidgets.QWidget):
         self.splitter = QtWidgets.QSplitter(self)
         self.splitter.setStretchFactor(1, 1)
         self.splitter.addWidget(self.plot_widget)
-        self.image_view = ImageView()
-        self.splitter.addWidget(self.image_view)
+        self.live_datapoint_tracer = DatapointTracerWidget()
+        self.splitter.addWidget(self.live_datapoint_tracer)
 
         self.vlayout.addWidget(self.splitter)
         self.setLayout(self.vlayout)
 
-        self.plot_widget.signal_row_selection_changed.connect(self.set_viewer)
+        self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
 
-        self.vi = ViewerInterface(self.image_view)
+        # self.vi = ViewerInterface(self.image_view)
 
         self.dataframe = None
 
-    def set_viewer(self, ix: int):
-        pik_path = '/home/kushal/Sars_stuff/palp_project_mesmerize/' + self.dataframe.iloc[ix]['ImgInfoPath']
-        tiff_path = '/home/kushal/Sars_stuff/palp_project_mesmerize/' + self.dataframe.iloc[ix]['ImgPath']
-        self.vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pik_path, tiff_path=tiff_path)
-        self.vi.update_workEnv()
-        #self.vi.viewer.workEnv.restore_rois_from_states()
-        self.vi.viewer.ui.label_curr_img_seq_name.setText(self.dataframe.iloc[ix]['SampleID'])
+    @QtCore.pyqtSlot(int)
+    def set_current_datapoint(self, ix: int):
+        # proj_path = configuration.proj_path
+        # pik_path = proj_path + self.dataframe.iloc[ix]['ImgInfoPath']
+        # tiff_path = proj_path + self.dataframe.iloc[ix]['ImgPath']
+        identifier = self.dataframe.iloc[ix]['uuid_curve']
+        self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier, row=self.dataframe[self.dataframe['uuid_curve'] == identifier])
+        # self.vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pik_path, tiff_path=tiff_path)
+        # self.vi.update_workEnv()
+        # self.vi.viewer.workEnv.restore_rois_from_states()
+        # self.vi.viewer.ui.label_curr_img_seq_name.setText(self.dataframe.iloc[ix]['SampleID'])
 
-    def set_data(self, dataframe: pd.DataFrame = None, data_column: str = None, cmap: str ='jet'):
-        self.dataframe = dataframe
+    def set_data(self, dataframes, data_column: str, labels_columns: str = 'index', cmap: str ='jet'):
+        if type(dataframes) is list:
+            dataframe = pd.concat(dataframes)
+        elif type(dataframes) is not pd.DataFrame:
+            QtWidgets.QMessageBox.warning(self, 'Invalid input data', 'You can only '
+                                                                      'pass in a dataframe or a list of dataframes')
+            return
+        else:
+            dataframe = dataframes
+
+        self.dataframe = dataframe.reset_index(drop=True)
         data = np.vstack(self.dataframe[data_column].values)
         self.plot_widget.set(data, cmap=cmap)
 
@@ -91,8 +100,8 @@ class HeatmapViewerWidget(QtWidgets.QWidget):
 class HeatmapControlWidget(QtWidgets.QDockWidget):
     signal_colormap_changed = QtCore.pyqtSignal(str)
 
-    def __init__(self):
-        QtWidgets.QDockWidget.__init__(self)
+    def __init__(self, parent=None):
+        QtWidgets.QDockWidget.__init__(self, parent=parent)
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
@@ -103,12 +112,13 @@ class HeatmapControlWidget(QtWidgets.QDockWidget):
         self.signal_colormap_changed.emit(item.text())
 
     def populate_colormaps(self):
-        for path in glob('/home/kushal/MESmerize/plotter/modules/heatmap/colormaps/*.png'):
-            img = QtGui.QIcon(path)
-            item = QtWidgets.QListWidgetItem(path.split('/')[-1][:-4])
-            item.setIcon(img)
-            self.ui.listWidgetColorMaps.addItem(item)
-        self.ui.listWidgetColorMaps.setIconSize(QtCore.QSize(100,50))
+        print(glob('./*'))
+        # for path in glob('./colormaps/plotter/modules/heatmap/colormaps/*.png'):
+        #     img = QtGui.QIcon(path)
+        #     item = QtWidgets.QListWidgetItem(path.split('/')[-1][:-4])
+        #     item.setIcon(img)
+        #     self.ui.listWidgetColorMaps.addItem(item)
+        # self.ui.listWidgetColorMaps.setIconSize(QtCore.QSize(100,50))
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
