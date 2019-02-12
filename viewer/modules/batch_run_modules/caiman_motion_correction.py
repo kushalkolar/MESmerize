@@ -102,6 +102,7 @@ def run(batch_dir, UUID, n_processes):
             m_els = m_els.astype(np.uint16)
 
         tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True)
+
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
     except Exception:
@@ -114,7 +115,13 @@ def run(batch_dir, UUID, n_processes):
 
     end_time = time()
     processing_time = (end_time - start_time) / 60
-    output.update({'processing_time': processing_time})
+
+    output_files_list = [UUID + '_mc.tiff',
+                         UUID + '.out'
+                         ]
+
+    output.update({'processing_time': processing_time,
+                   'output_files': output_files_list})
 
     json.dump(output, open(file_path + '.out', 'w'))
 
