@@ -38,7 +38,7 @@ class SystemConfigGUI(QtWidgets.QWidget):
         self.ui.checkBoxUseCUDA.setChecked(use_cuda)
 
         self.ui.btnCaimanPath.clicked.connect(self.choose_caiman_path)
-        self.ui.btnAnacondaPath.clicked.connect(self.choose_anaconda_dir_path)
+        self.ui.btnEnvPath.clicked.connect(self.choose_env_path)
 
         self.ui.btnReloadConfigFile.clicked.connect(self.reload_config_file)
 
@@ -78,6 +78,10 @@ class SystemConfigGUI(QtWidgets.QWidget):
         QtWidgets.QMessageBox.information(self, 'CUDA Error', self.cuda_error_msg)
 
     def apply(self):
+        if self.ui.radioButtonAnaconda.isChecked():
+            configuration.sys_cfg['PATHS']['env_type'] = 'anaconda'
+        elif self.ui.radioButtonVirtualEnv.isChecked():
+            configuration.sys_cfg['PATHS']['env_type'] = 'virtual'
         configuration.sys_cfg['HARDWARE']['n_processes'] = str(self.ui.spinBoxCores.value())
         configuration.sys_cfg['HARDWARE']['USE_CUDA'] = str(self.ui.checkBoxUseCUDA.isChecked())
         self.set_anaconda_env()
@@ -99,22 +103,17 @@ class SystemConfigGUI(QtWidgets.QWidget):
         configuration.sys_cfg['PATHS']['caiman'] = path
         self.ui.lineEditCaimanPath.setText(path)
 
-    def choose_anaconda_dir_path(self):
-        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select path to anaconda3')
+    def choose_env_path(self):
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select path to environment')
 
         if path == '':
             return
 
-        if not os.path.isfile(path + '/bin/activate'):
-            QtWidgets.QMessageBox.warning(self, 'Invalid anaconda directory',
-                                          'The directory you have chosen does not appear to a valid anaconda3 directory.')
-            return
+        configuration.sys_cfg['PATHS']['env'] = path
+        self.ui.lineEditEnvPath.setText(path)
 
-        configuration.sys_cfg['PATHS']['anaconda3'] = path
-        self.ui.lineEditAnacondaPath.setText(path)
-
-    def set_anaconda_env(self):
-        configuration.sys_cfg['BATCH']['anaconda_env'] = self.ui.lineEditAnacondaEnvName.text()
+    # def set_anaconda_env(self):
+    #     configuration.sys_cfg['BATCH']['anaconda_env'] = self.ui.lineEditAnacondaEnvName.text()
 
     def set_env_variables(self):
         configuration.sys_cfg['ENV'] = dict.fromkeys(list(filter(None, self.ui.plainTextEditEnvironmentVariables.toPlainText().split('\n'))))
@@ -125,8 +124,8 @@ class SystemConfigGUI(QtWidgets.QWidget):
 
     def load_ui_from_config_file(self):
         self.ui.lineEditCaimanPath.setText(configuration.sys_cfg['PATHS']['caiman'])
-        self.ui.lineEditAnacondaPath.setText(configuration.sys_cfg['PATHS']['anaconda3'])
-        self.ui.lineEditAnacondaEnvName.setText(configuration.sys_cfg['BATCH']['anaconda_env'])
+        self.ui.lineEditEnvPath.setText(configuration.sys_cfg['PATHS']['env'])
+        #self.ui.lineEditAnacondaEnvName.setText(configuration.sys_cfg['BATCH']['anaconda_env'])
         self.ui.spinBoxCores.setValue(int(configuration.sys_cfg['HARDWARE']['n_processes']))
         self.ui.plainTextEditEnvironmentVariables.setPlainText('\n'.join(configuration.sys_cfg.options('ENV')))
 

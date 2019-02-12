@@ -41,13 +41,16 @@ import pickle
 from glob import glob
 from functools import partial
 import traceback
+from time import time
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
     from ...core.common import ViewerInterface, ViewerWorkEnv
 
 
-def run(batch_dir, UUID, n_processes):
+def run(batch_dir: str, UUID: str, n_processes: str):
+    start_time = time()
+
     output = {'status': 0, 'output_info': ''}
     n_processes = int(n_processes)
     file_path = batch_dir + '/' + UUID
@@ -97,12 +100,29 @@ def run(batch_dir, UUID, n_processes):
         if not input_params['do_cnmfe'] and input_params['do_corr_pnr']:
             pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
             pickle.dump(pnr, open(UUID + '_pnr.pikl', 'wb'), protocol=4)
-            output.update({'output': UUID, 'status': 1, 'output_info': 'inspect correlation & pnr'})
-            json.dump(output, open(file_path + '.out', 'w'))
+
+            output_file_list = [UUID + '_pnr.pikl',
+                                UUID + '_cn_filter.pikl',
+                                UUID + '_dims.pikl',
+                                UUID + '.out'
+                                ]
+
+            output.update({'output': UUID,
+                           'status': 1,
+                           'output_info': 'inspect correlation & pnr',
+                           'output_files': output_file_list
+                           })
+
             dview.terminate()
 
             for mf in glob(batch_dir + '/memmap_*'):
                 os.remove(mf)
+
+            end_time = time()
+            processing_time = (end_time - start_time) / 60
+            output.update({'processing_time': processing_time})
+
+            json.dump(output, open(file_path + '.out', 'w'))
 
             return
 
@@ -156,7 +176,23 @@ def run(batch_dir, UUID, n_processes):
         pickle.dump(pnr, open(UUID + '_pnr.pikl', 'wb'), protocol=4)
         pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
         pickle.dump(dims, open(UUID + '_dims.pikl', 'wb'), protocol=4)
-        output.update({'output': filename[:-5], 'status': 1})
+
+        output_file_list = [UUID + '_Yr.pikl',
+                            UUID + '_cnm-A.pikl',
+                            UUID + '_cnm-b.pikl',
+                            UUID + '_cnm-C.pikl',
+                            UUID + '_cnm-f.pikl',
+                            UUID + '_idx_components.pikl',
+                            UUID + '_cnm-YrA.pikl',
+                            UUID + '_pnr.pikl',
+                            UUID + '_cn_filter.pikl',
+                            UUID + '_dims.pikl',
+                            UUID + '.out'
+                            ]
+        output.update({'output': filename[:-5],
+                       'status': 1,
+                       'output_files': output_file_list
+                       })
 
     except Exception as e:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
@@ -165,6 +201,10 @@ def run(batch_dir, UUID, n_processes):
 
     for mf in glob(batch_dir + '/memmap_*'):
         os.remove(mf)
+
+    end_time = time()
+    processing_time = (end_time - start_time) / 60
+    output.update({'processing_time': processing_time})
 
     json.dump(output, open(file_path + '.out', 'w'))
 

@@ -30,7 +30,7 @@ import tifffile
 import traceback
 import numba
 from glob import glob
-import time
+from time import time
 
 
 if not sys.argv[0] == __file__:
@@ -39,7 +39,8 @@ if not sys.argv[0] == __file__:
 
 
 def run(batch_dir, UUID, n_processes):
-    t1 = time.time()
+    start_time = time()
+
     output = {'status': 0, 'output_info': ''}
     file_path = batch_dir + '/' + UUID
     n_processes = int(n_processes)
@@ -103,8 +104,6 @@ def run(batch_dir, UUID, n_processes):
         tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True)
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
-        print(time.time() - t1)
-
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
@@ -112,6 +111,11 @@ def run(batch_dir, UUID, n_processes):
         os.remove(mf)
 
     dview.terminate()
+
+    end_time = time()
+    processing_time = (end_time - start_time) / 60
+    output.update({'processing_time': processing_time})
+
     json.dump(output, open(file_path + '.out', 'w'))
 
 

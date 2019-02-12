@@ -46,9 +46,10 @@ def write_new_sys_config():
     if not os.path.isdir(sys_cfg_path):
         os.makedirs(sys_cfg_path)
     sys_cfg['HARDWARE'] = {'n_processes': str(cpu_count() - 2),
-                           'USE_CUDA': str(False)}
-    sys_cfg['PATHS'] = {'caiman': '', 'anaconda3': ''}
-    sys_cfg['BATCH'] = {'anaconda_env': ''}
+                           'USE_CUDA': str(False),
+                           'WORK': ''}
+    sys_cfg['PATHS'] = {'caiman': '', 'env': '', 'env_type': ''}
+    # sys_cfg['BATCH'] = {'anaconda_env': ''}
     sys_cfg['ENV'] = dict.fromkeys(['MKL_NUM_THREADS=1', 'OPENBLAS_NUM_THREADS=1'])
     write_sys_config()
 
