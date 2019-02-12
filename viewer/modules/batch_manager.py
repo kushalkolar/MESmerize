@@ -17,7 +17,7 @@ from common import configuration
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
-from .batch_run_modules import *
+#from .batch_run_modules import *
 import uuid
 import numpy as np
 # from .common import BatchRunInterface
@@ -36,6 +36,8 @@ from common import window_manager
 from glob import glob
 from multiprocessing import Pool
 from uuid import UUID as UUIDType
+from datetime import datetime
+from time import time
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -79,6 +81,12 @@ class ModuleGUI(QtWidgets.QWidget):
         self.init_batch(run_batch)
 
         self.ui.btnCompress.clicked.connect(self.compress_all)
+        date = datetime.fromtimestamp(time())
+        time_str = date.strftime('%Y%m%d') + '_' + date.strftime('%H%M%S')
+        self.ui.lineEditWorkDir.setText('/work/' + os.environ['USER'] + '/' + time_str)
+        self.ui.checkBoxWorDir.setChecked(True)
+        self.ui.lineEditWorkDir.setEnabled(True)
+        self.working_dir = ''
 
     def compress_all(self):
         if QtWidgets.QMessageBox.warning(self, 'Compress Warning',
@@ -303,6 +311,9 @@ class ModuleGUI(QtWidgets.QWidget):
     def process_batch(self, start_ix=0):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
 
+        self.ui.checkBoxWorDir.setDisabled(True)
+        self.ui.lineEditWorkDir.setDisabled(True)
+
         if len(self.df.index) == 0:
             pass
 
@@ -345,27 +356,65 @@ class ModuleGUI(QtWidgets.QWidget):
         self.current_std_out = deque(maxlen=100)
         self.run_batch_item()
 
+    def set_list_widget_item_color(self, ix: int, color: str):
+        if color == 'orange':
+            self.ui.listwBatch.item(ix).setBackground(QtGui.QBrush(QtGui.QColor('#ffb347')))
+        elif color == 'green':
+            self.ui.listwBatch.item(ix).setBackground(QtGui.QBrush(QtGui.QColor('#77dd77')))
+        elif color == 'red':
+            self.ui.listwBatch.item(ix).setBackground(QtGui.QBrush(QtGui.QColor('#fe0d00')))
+        elif color == 'blue':
+            self.ui.listwBatch.item(ix).setBackground(QtGui.QBrush(QtGui.QColor('#85e3ff')))
+
     @QtCore.pyqtSlot()
     def run_batch_item(self):
         if self.current_batch_item_index > -1:
             UUID = self.df.iloc[self.current_batch_item_index]['uuid']
             output = self.get_batch_item_output(UUID)
+
             if output is None:
-                self.ui.listwBatch.item(self.current_batch_item_index).setBackground(
-                    QtGui.QBrush(QtGui.QColor('#ffb347'))) # orange
+                self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
 
             elif output['status']:
-                self.ui.listwBatch.item(self.current_batch_item_index).setBackground(
-                    QtGui.QBrush(QtGui.QColor('#77dd77'))) # green
+                output_files_list = output['output_files']
+
+                if self.ui.checkBoxWorDir.isChecked():
+
+                    shell_str = '#!/bin/bash\n'
+
+                    for of in output_files_list:
+                        src = self.working_dir + '/' + of
+                        dst = self.batch_path + '/' + of
+                        shell_str += 'mv ' + src + ' ' + dst + '\n'
+
+                    shell_str += 'rm *' + self.working_dir + '/' + str(UUID) + '*'
+                    move_sh_path = self.working_dir + '/move.sh'
+
+                    with(open(move_sh_path, 'w')) as sh_mv_f:
+                        sh_mv_f.write(shell_str)
+
+                    mv_st = os.stat(move_sh_path)
+                    os.chmod(move_sh_path, mv_st.st_mode | S_IEXEC)
+
+                    self.move_process = QtCore.QProcess()
+                    self.move_process.setWorkingDirectory(self.working_dir)
+                    self.move_process.finished.connect(partial(self.set_list_widget_item_color(self.current_batch_item_index, 'green')))
+                    self.move_process.start()
+                    self.set_list_widget_item_color(ix=self.current_batch_item_index, color='blue')
+
+                else:
+                    self.set_list_widget_item_color(ix=self.current_batch_item_index, color='green')
+
             else:
-                self.ui.listwBatch.item(self.current_batch_item_index).setBackground(
-                    QtGui.QBrush(QtGui.QColor('#fe0d00'))) # red
+                self.set_list_widget_item_color(ix=self.current_batch_item_index, color='red')
 
         self.current_batch_item_index += 1
         self.ui.progressBar.setValue(int(self.current_batch_item_index / len(self.df.index) * 100))
         if self.current_batch_item_index == len(self.df.index):
             self.ui.progressBar.setValue(100)
             self.disable_ui_buttons(False)
+            self.ui.checkBoxWorDir.setEnabled(True)
+            self.ui.lineEditWorkDir.setEnabled(True)
             QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
             return
 
@@ -381,22 +430,47 @@ class ModuleGUI(QtWidgets.QWidget):
         self.process.finished.connect(self.run_batch_item)
         sh_file = self.batch_path + '/' + 'run.sh'
 
+        if configuration.sys_cfg['PATHS']['env_type'] == 'anaconda':
+            env_path = configuration.sys_cfg['PATHS']['env']
+            anaconda_dir =  os.path.dirname(os.path.dirname(os.path.dirname(env_path)))
+            env_name = os.path.basename(os.path.normpath(env_path))
+            env_activation = 'export PATH=' + anaconda_dir +':$PATH\nsource activate ' + env_name
+        elif configuration.sys_cfg['PATHS']['env'] == 'virtual':
+            env_path = configuration.sys_cfg['PATHS']['env']
+            env_activation = 'source ' + env_path + '/bin/activate'
+        else:
+            raise ValueError('Invalid configruation value for environment path. Please check the entry for "env" under'
+                             'section [PATH] in the config file.')
+        caiman_path = configuration.sys_cfg['PATHS']['caiman']
+
+        if self.ui.checkBoxWorDir.isChecked():
+            try:
+                os.makedirs(self.work)
+            except PermissionError:
+                QtWidgets.QMessageBox.warning(self, 'Permission denied',
+                                              'You do not appear to have permission to write to the chosen work'
+                                              'directory.')
+                return
+
+            self.working_dir = self.ui.lineEditWorkDir.text()
+            cp_to_work_dir_str = 'cp ' + self.batch_path + '/*' + str(r['uuid']) + '* ' + self.working_dir
+        else:
+            self.working_dir = self.batch_path
+
+
         with open(sh_file, 'w') as sf:
-            sf.write('#!/bin/bash\n'
-                     'export PATH="' + configuration.sys_cfg['PATHS']['anaconda3'] + ':$PATH"\n'
-                                                                                     'source activate ' +
-                     configuration.sys_cfg['BATCH']['anaconda_env'] + '\n'
-                                                                      'export PYTHONPATH="' +
-                     configuration.sys_cfg['PATHS']['caiman'] + '"\n'
-                                                                'export MKL_NUM_THREADS=1\n' +
-                     'export OPENBLAS_NUM_THREADS=1\n'
-                     'export USE_CUDA=' + configuration.sys_cfg['HARDWARE']['USE_CUDA'] + '\n'
+            sf.write('#!/bin/bash\n' +
+                     env_activation + '\n' +
+                     'export PYTHONPATH="' + caiman_path + '"\n' +
+                     'export MKL_NUM_THREADS=1\n' +
+                     'export OPENBLAS_NUM_THREADS=1\n' +
+                     'export USE_CUDA=' + configuration.sys_cfg['HARDWARE']['USE_CUDA'] + '\n' +
                      'python "' +
                      module_path + '" "' +
-                     self.batch_path + '" "' +
+                     self.working_dir + '" "' +
                      str(r['uuid']) + '" ' +
-                     configuration.sys_cfg['HARDWARE']['n_processes'] +
-                     '\n')
+                     configuration.sys_cfg['HARDWARE']['n_processes'] + '\n')
+
         st = os.stat(sh_file)
         os.chmod(sh_file, st.st_mode | S_IEXEC)
         self.process.setWorkingDirectory(self.batch_path)

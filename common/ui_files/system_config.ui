@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>663</width>
-    <height>450</height>
+    <height>531</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -83,7 +83,7 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>CaImAn directory path</string>
+        <string>CaImAn directory path: </string>
        </property>
       </widget>
      </item>
@@ -110,23 +110,69 @@
     </layout>
    </item>
    <item>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Environment type:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonVirtualEnv">
+        <property name="text">
+         <string>P&amp;ython Virtual Environment</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="radioButtonAnaconda">
+        <property name="text">
+         <string>Ananconda&amp;3</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>204</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>anaconda3 directory path</string>
+        <string>Environment path: </string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEditAnacondaPath">
+      <widget class="QLineEdit" name="lineEditEnvPath">
        <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnAnacondaPath">
+      <widget class="QPushButton" name="btnEnvPath">
        <property name="maximumSize">
         <size>
          <width>40</width>
@@ -137,20 +183,6 @@
         <string>...</string>
        </property>
       </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>anaconda3 environment name</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEditAnacondaEnvName"/>
      </item>
     </layout>
    </item>
@@ -245,9 +277,8 @@
   <tabstop>spinBoxCores</tabstop>
   <tabstop>lineEditCaimanPath</tabstop>
   <tabstop>btnCaimanPath</tabstop>
-  <tabstop>lineEditAnacondaPath</tabstop>
-  <tabstop>btnAnacondaPath</tabstop>
-  <tabstop>lineEditAnacondaEnvName</tabstop>
+  <tabstop>lineEditEnvPath</tabstop>
+  <tabstop>btnEnvPath</tabstop>
   <tabstop>btnReloadConfigFile</tabstop>
   <tabstop>btnClose</tabstop>
   <tabstop>btnApply</tabstop>
