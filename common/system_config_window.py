@@ -84,7 +84,6 @@ class SystemConfigGUI(QtWidgets.QWidget):
             configuration.sys_cfg['PATHS']['env_type'] = 'virtual'
         configuration.sys_cfg['HARDWARE']['n_processes'] = str(self.ui.spinBoxCores.value())
         configuration.sys_cfg['HARDWARE']['USE_CUDA'] = str(self.ui.checkBoxUseCUDA.isChecked())
-        self.set_anaconda_env()
         self.set_env_variables()
         configuration.write_sys_config()
 
