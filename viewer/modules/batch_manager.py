@@ -320,14 +320,8 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Nothing to run', 'Nothing in the batch to run!')
             return
 
-        if configuration.sys_cfg['BATCH']['anaconda_env'] == '':
-            QtWidgets.QMessageBox.warning(self, 'Anaconda env not set', 'You must set the name of the anaconda '
-                                                                        'environment which you wish to use with '
-                                                                        'QProcess')
-            return
-
-        if configuration.sys_cfg['PATHS']['anaconda3'] == '':
-            QtWidgets.QMessageBox.warning(self, 'Anaconda directory not set', 'You must set the anaconda directory')
+        if configuration.sys_cfg['PATHS']['env'] == '':
+            QtWidgets.QMessageBox.warning(self, 'Environment not set', 'You must set the environment in System Configuration')
             return
 
         if configuration.sys_cfg['PATHS']['caiman'] == '':
