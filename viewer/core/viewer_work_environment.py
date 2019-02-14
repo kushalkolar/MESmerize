@@ -274,7 +274,6 @@ class ViewerWorkEnv:
              'meta':        self.imgdata.meta,
              'stim_maps':   self.stim_maps,
              'comments':    self.comments,
-             'custom_cols': self.custom_cols,
              'history_trace': self.history_trace,
              'additional_data': self.additional_data
              }
