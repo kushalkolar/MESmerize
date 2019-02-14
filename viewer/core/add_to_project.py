@@ -100,7 +100,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
                 elif entry.currentText() == 'False':
                     val = False
 
-            self.work_environment.custom_columns_dict.update({entry.objectName(): val})
+            self.work_environment.custom_cols.update({entry.objectName(): val})
 
     def must_enter_sample_id_dialog(self):
         QtWidgets.QMessageBox.warning(self, 'Animal & Trial ID', 'You must enter Animal ID and Trial ID')

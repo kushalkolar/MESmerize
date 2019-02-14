@@ -135,19 +135,18 @@ class Output:
 
         vi.viewer.status_bar_label.showMessage('Please wait, loading motion corrected image sequence...')
         pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
-        workEnv = ViewerWorkEnv.from_pickle(pik_path)
         tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
-        workEnv.imgdata.seq = tifffile.imread(tiff_path).T
-        viewer_ref.workEnv = workEnv
-        vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
+        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pik_path, tiff_path)
+        #tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
+        #workEnv.imgdata.seq = tifffile.imread(tiff_path).T
+        vi.update_workEnv()
+        vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image s128equence!')
 
         input_params = pickle.load(open(batch_path + '/' + str(UUID) + '.params', 'rb'))
-        vi.viewer.workEnv.history_trace.append(input_params)
 
         name = input_params['name_elas']
         vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
-
-        vi.update_workEnv()
+        vi.viewer.workEnv.history_trace.append(input_params)
         vi.enable_ui(True)
 
 

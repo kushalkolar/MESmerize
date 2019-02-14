@@ -32,9 +32,10 @@ from builtins import range
 from past.utils import old_div
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
 from caiman.source_extraction import cnmf
 from caiman.utils.utils import download_demo
-from caiman.utils.visualization import inspect_correlation_pnr
+from caiman.utils import visualization
 from caiman.components_evaluation import estimate_components_quality_auto
 import os
 import pickle
@@ -42,6 +43,7 @@ from glob import glob
 from functools import partial
 import traceback
 from time import time
+from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
@@ -211,11 +213,14 @@ def run(batch_dir: str, UUID: str, n_processes: str):
 
 class Output(QtWidgets.QWidget):
     def __init__(self, batch_dir, UUID, viewer_ref):
-        # super(Output, self).__init__()
+        # super(Output, self).__init__(self)
+        # QtWidgets.QWidget.__init__(self, parent=None)
         self.batch_dir = batch_dir
         self.UUID = UUID
         self.viewer_ref = viewer_ref
         self.cnmfe_results = {}
+
+        visualization.mpl.use('TkAgg')
 
         filename = batch_dir + '/' + str(UUID)
         if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
@@ -252,17 +257,66 @@ class Output(QtWidgets.QWidget):
 
     def output_corr_pnr(self):  # , batch_dir, UUID, viewer_ref):
         filename = self.batch_dir + '/' + str(self.UUID)
-
+        print(self.batch_dir)
+        print(str(self.UUID))
+        print(filename)
         cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        try:
-            pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
-        except:
-            try:
-                pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
-            except:
-                return
+        # try:
+        pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
+        # except:
+        #     try:
+        #         pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+            # except:
+            #     return
 
-        inspect_correlation_pnr(cn_filter, pnr)
+        correlation_image_pnr = cn_filter
+        pnr_image = pnr
+        self.mw = MatplotlibWidget()
+        # fig = mw.getFigure()
+        self.mw.setWindowTitle(str(self.UUID))
+        #Adapted from CaImAn library's visualization module
+        # mw.plot = plt.figure(figsize=(10,4))
+        # fig = pl.figure(figsize=(10, 4))
+        self.cn_ax = self.mw.fig.add_axes([0.05, 0.2, 0.4, 0.7])
+        self.cn_img = self.cn_ax.imshow(cn_filter, cmap='jet')
+        # im_cn = plt.imshow(correlation_image_pnr, cmap='jet')
+        # plt.title('correlation image')
+        # self.cn_ax.colorbar()
+        self.pn_ax = self.mw.fig.add_axes([0.5, 0.2, 0.4, 0.7])
+        self.pn_img = self.pn_ax.imshow(pnr, cmap='jet')
+        # im_pnr = plt.imshow(pnr_image, cmap='jet')
+        # plt.title('PNR')
+        # plt.colorbar()
+        #
+        s_cn_max_ax = self.mw.fig.add_axes([0.05, 0.01, 0.35, 0.03])
+        s_cn_max = Slider(s_cn_max_ax, 'vmax',
+                          correlation_image_pnr.min(), correlation_image_pnr.max(), valinit=correlation_image_pnr.max())
+
+        s_cn_min_ax = self.mw.fig.add_axes([0.05, 0.07, 0.35, 0.03])
+        s_cn_min = Slider(s_cn_min_ax, 'vmin',
+                          correlation_image_pnr.min(), correlation_image_pnr.max(), valinit=correlation_image_pnr.min())
+
+        s_pnr_max_ax = self.mw.fig.add_axes([0.5, 0.01, 0.35, 0.03])
+        s_pnr_max = Slider(s_pnr_max_ax, 'vmax',
+                           pnr_image.min(), pnr_image.max(), valinit=pnr_image.max())
+        s_pnr_min_ax = self.mw.fig.add_axes([0.5, 0.07, 0.35, 0.03])
+        s_pnr_min = Slider(s_pnr_min_ax, 'vmin',
+                           pnr_image.min(), pnr_image.max(), valinit=pnr_image.min())
+        #
+        def update(val):
+            self.cn_img.set_clim([s_cn_min.val, s_cn_max.val])
+            self.pn_img.set_clim([s_pnr_min.val, s_pnr_max.val])
+            self.mw.canvas.draw_idle()
+        #
+        s_cn_max.on_changed(update)
+        s_cn_min.on_changed(update)
+        s_pnr_max.on_changed(update)
+        s_pnr_min.on_changed(update)
+        # plt.ion()
+        self.mw.show()
+        # plt.show()
+
+        # visualization.inspect_correlation_pnr(cn_filter, pnr)
 
     def get_cnmfe_results(self):
         filename = self.batch_dir + '/' + str(self.UUID)
