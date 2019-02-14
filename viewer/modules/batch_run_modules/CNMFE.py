@@ -43,12 +43,12 @@ from glob import glob
 from functools import partial
 import traceback
 from time import time
-from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
     from ...core.common import ViewerInterface, ViewerWorkEnv
-
+    from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 def run(batch_dir: str, UUID: str, n_processes: str):
     start_time = time()
