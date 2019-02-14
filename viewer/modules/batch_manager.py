@@ -17,7 +17,7 @@ from common import configuration
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
-#from .batch_run_modules import *
+from .batch_run_modules import * #DO NOT REMOVE THIS LINE
 import uuid
 import numpy as np
 # from .common import BatchRunInterface
@@ -49,6 +49,12 @@ class ModuleGUI(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        date = datetime.fromtimestamp(time())
+        time_str = date.strftime('%Y%m%d') + '_' + date.strftime('%H%M%S')
+        self.ui.lineEditWorkDir.setText('/work/' + os.environ['USER'] + '/' + time_str)
+        self.ui.checkBoxWorDir.setChecked(True)
+        self.ui.lineEditWorkDir.setEnabled(True)
+        self.working_dir = self.ui.lineEditWorkDir.text()
 
         self.ui.listwBatch.itemDoubleClicked.connect(self.list_widget_item_double_clicked_slot)
 
@@ -81,12 +87,8 @@ class ModuleGUI(QtWidgets.QWidget):
         self.init_batch(run_batch)
 
         self.ui.btnCompress.clicked.connect(self.compress_all)
-        date = datetime.fromtimestamp(time())
-        time_str = date.strftime('%Y%m%d') + '_' + date.strftime('%H%M%S')
-        self.ui.lineEditWorkDir.setText('/work/' + os.environ['USER'] + '/' + time_str)
-        self.ui.checkBoxWorDir.setChecked(True)
-        self.ui.lineEditWorkDir.setEnabled(True)
-        self.working_dir = ''
+
+
 
     def compress_all(self):
         if QtWidgets.QMessageBox.warning(self, 'Compress Warning',
@@ -300,7 +302,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.ui.textBrowserOutputInfo.setText('Output file does not exist for selected item')
             return
         else:
-            self.ui.textBrowserOutputInfo.setText(output['output_info'])
+            self.ui.textBrowserOutputInfo.setText(str(output))
 
     def disable_ui_buttons(self, b):
         self.ui.btnStart.setDisabled(b)
@@ -379,7 +381,7 @@ class ModuleGUI(QtWidgets.QWidget):
                         dst = self.batch_path + '/' + of
                         shell_str += 'mv ' + src + ' ' + dst + '\n'
 
-                    shell_str += 'rm *' + self.working_dir + '/' + str(UUID) + '*'
+                    shell_str += 'rm ' + self.working_dir + '/*' + str(UUID) + '*'
                     move_sh_path = self.working_dir + '/move.sh'
 
                     with(open(move_sh_path, 'w')) as sh_mv_f:
@@ -390,8 +392,8 @@ class ModuleGUI(QtWidgets.QWidget):
 
                     self.move_process = QtCore.QProcess()
                     self.move_process.setWorkingDirectory(self.working_dir)
-                    self.move_process.finished.connect(partial(self.set_list_widget_item_color(self.current_batch_item_index, 'green')))
-                    self.move_process.start()
+                    self.move_process.finished.connect(partial(self.set_list_widget_item_color, self.current_batch_item_index, 'green'))
+                    self.move_process.start(move_sh_path)
                     self.set_list_widget_item_color(ix=self.current_batch_item_index, color='blue')
 
                 else:
@@ -427,27 +429,32 @@ class ModuleGUI(QtWidgets.QWidget):
             anaconda_dir =  os.path.dirname(os.path.dirname(os.path.dirname(env_path)))
             env_name = os.path.basename(os.path.normpath(env_path))
             env_activation = 'export PATH=' + anaconda_dir +':$PATH\nsource activate ' + env_name
-        elif configuration.sys_cfg['PATHS']['env'] == 'virtual':
+        elif configuration.sys_cfg['PATHS']['env_type'] == 'virtual':
             env_path = configuration.sys_cfg['PATHS']['env']
             env_activation = 'source ' + env_path + '/bin/activate'
-        else:
+        else:	
             raise ValueError('Invalid configruation value for environment path. Please check the entry for "env" under'
                              'section [PATH] in the config file.')
         caiman_path = configuration.sys_cfg['PATHS']['caiman']
 
         if self.ui.checkBoxWorDir.isChecked():
             try:
-                os.makedirs(self.work)
+                self.working_dir = self.ui.lineEditWorkDir.text()
+                if not os.path.isdir(self.working_dir):
+                    os.makedirs(self.working_dir)
+                elif os.path.isfile(self.working_dir):
+                    QtWidgets.QMessageBox.warning(self, 'Choose different dir', 'Choose a different directory')
             except PermissionError:
                 QtWidgets.QMessageBox.warning(self, 'Permission denied',
                                               'You do not appear to have permission to write to the chosen work'
                                               'directory.')
                 return
 
-            self.working_dir = self.ui.lineEditWorkDir.text()
             cp_to_work_dir_str = 'cp ' + self.batch_path + '/*' + str(r['uuid']) + '* ' + self.working_dir
+
         else:
             self.working_dir = self.batch_path
+            cp_to_work_dir_str = ''
 
 
         with open(sh_file, 'w') as sf:
@@ -457,6 +464,7 @@ class ModuleGUI(QtWidgets.QWidget):
                      'export MKL_NUM_THREADS=1\n' +
                      'export OPENBLAS_NUM_THREADS=1\n' +
                      'export USE_CUDA=' + configuration.sys_cfg['HARDWARE']['USE_CUDA'] + '\n' +
+                     cp_to_work_dir_str + '\n' +
                      'python "' +
                      module_path + '" "' +
                      self.working_dir + '" "' +
@@ -465,12 +473,18 @@ class ModuleGUI(QtWidgets.QWidget):
 
         st = os.stat(sh_file)
         os.chmod(sh_file, st.st_mode | S_IEXEC)
-        self.process.setWorkingDirectory(self.batch_path)
+        self.process.setWorkingDirectory(self.working_dir)
         self.process.start(sh_file)
         self.ui.listwBatch.item(self.current_batch_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
     def get_batch_item_output(self, UUID: uuid.UUID):
+        out_file = self.working_dir + '/' + str(UUID) + '.out'
+        if os.path.isfile(out_file):
+            output = json.load(open(out_file, 'r'))
+            return output
+        
         out_file = self.batch_path + '/' + str(UUID) + '.out'
+        
         if os.path.isfile(out_file):
             output = json.load(open(out_file, 'r'))
             return output

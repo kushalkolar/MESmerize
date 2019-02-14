@@ -26,7 +26,7 @@ import json
 class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
                  roi_manager=None, roi_states=None, comments='', origin_file='',
-                 custom_columns_dict: dict = None, history_trace: list = None,
+                 custom_cols = None, history_trace: list = None,
                  additional_data: dict = None,
                  misc: dict = None, **kwargs):
         """
@@ -45,7 +45,7 @@ class ViewerWorkEnv:
         :type meta:         dict
         :type stim_maps:    dict
         :type comments:     str
-        :type custom_columns_dict: dict
+        :type cust_col_dict: dict
         :type roi_states:   dict
         :type history_trace: list
 
@@ -80,8 +80,10 @@ class ViewerWorkEnv:
         self.roi_states = roi_states
         self.comments = comments
         self.origin_file = origin_file
-        if custom_columns_dict is None:
-            self.custom_columns_dict = {}
+
+        if custom_cols is None:
+            self.custom_cols = {}
+
 
         if additional_data is not None:
             assert isinstance(additional_data, dict)
@@ -272,7 +274,7 @@ class ViewerWorkEnv:
              'meta':        self.imgdata.meta,
              'stim_maps':   self.stim_maps,
              'comments':    self.comments,
-             'custom_columns_dict': self.custom_columns_dict,
+             'custom_cols': self.custom_cols,
              'history_trace': self.history_trace,
              'additional_data': self.additional_data
              }
@@ -434,7 +436,7 @@ class ViewerWorkEnv:
                  }
 
             dicts.append({**d,
-                          **self.custom_columns_dict,
+                          **self.custom_cols,
                           **stimuli_unique_sets,
                           **roi_tags})
 
