@@ -84,7 +84,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
         self.work_environment.sample_id = sample_id
 
         self.work_environment.comments = self.ui.textBoxComments.toPlainText()
-
+        self.work_environment.custom_cols = {}
         for entry in self.custom_column_entries:
             if isinstance(entry, QtWidgets.QLineEdit):
                 val = entry.text()
