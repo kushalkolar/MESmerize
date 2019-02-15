@@ -372,7 +372,7 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
 
             elif output['status']:
-                if 'output_files' in output.keys() and self.ui.checkBoxWorDir.isChecked():
+                if 'output_files' in output.keys() and self.ui.checkBoxWorDir.isChecked() and os.path.isdir(self.working_dir):
                     output_files_list = output['output_files']
                     shell_str = '#!/bin/bash\n'
 
