@@ -21,20 +21,22 @@ from matplotlib import cm
 class Heatmap(MatplotlibWidget):
     signal_row_selection_changed = QtCore.pyqtSignal(int)
 
-    def __init__(self):
+    def __init__(self, highlight_mode='row'):
         MatplotlibWidget.__init__(self)
         sns.set()
         self.ax_heatmap = self.fig.add_subplot(111)
         self.fig.subplots_adjust(right=0.8)
-        #self.ax_cbar = self.fig.add_subplot(111)
         self.cbar_ax = self.fig.add_axes([0.85, 0.15, 0.05, 0.7])
         self.data = None
         self._highlight = None
         self.highlighted_index = None
 
-        self.canvas.mpl_connect('button_press_event', self.highlight_row)
-
         self.stimulus_indicators = []
+
+        if highlight_mode == 'row':
+            self.canvas.mpl_connect('button_press_event', self.highlight_row)
+        elif highlight_mode == 'item':
+            pass
 
     def set(self, data: np.ndarray, *args, **kwargs):
         """
@@ -52,10 +54,13 @@ class Heatmap(MatplotlibWidget):
         self.draw()
 
     def highlight_row(self, ev):
-        ix = ev.ydata
-        if ix is None:
-            return
-        ix = int(ix)
+        if type(ev) is int:
+            ix = ev
+        else:
+            ix = ev.ydata
+            ix = int(ix)
+            if ix is None:
+                return
         self.highlighted_index = ix
         self.signal_row_selection_changed.emit(ix)
         if self._highlight is not None:
