@@ -172,7 +172,7 @@ class ManagerCNMFE(AbstractBaseManager):
             roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
         self.input_params_dict = states['input_params_cnmfe']
-        self.idx_components = states['idx_components']
+        self.idx_components = states['cnmf_output']['idx_components']
         self.roi_list.reindex_colormap()
 
     def get_all_states(self) -> dict:

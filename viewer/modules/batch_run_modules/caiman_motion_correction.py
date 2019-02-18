@@ -140,7 +140,7 @@ class Output:
         #tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
         #workEnv.imgdata.seq = tifffile.imread(tiff_path).T
         vi.update_workEnv()
-        vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image s128equence!')
+        vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
 
         input_params = pickle.load(open(batch_path + '/' + str(UUID) + '.params', 'rb'))
 
