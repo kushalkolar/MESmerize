@@ -19,7 +19,8 @@ from uuid import UUID
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from pyqtgraphCore.functions import mkBrush
 import pandas as pd
-from sklearn.decomposition import PCA
+from plotting.modules.heatmap.widget import HeatmapTracerWidget
+from plotting.modules.heatmap.heatmap import Heatmap
 
 
 class LDAPlot(PlotWindow):
@@ -50,6 +51,29 @@ class LDAPlot(PlotWindow):
         self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)
 
         self._lda = None
+
+        main_menu = self.menuBar()
+        lda_menu = main_menu.addMenu('LDA')
+
+        action_lda_decision_function = QtWidgets.QWidgetAction(self)
+        action_lda_decision_function.setText('Get Decision Function')
+        action_lda_decision_function.triggered.connect(self._get_decision_function)
+
+        action_lda_coefficients = QtWidgets.QWidgetAction(self)
+        action_lda_coefficients.setText('Get LDA Coefficients')
+        action_lda_coefficients.triggered.connect(self._get_coefficients)
+
+        action_lda_means = QtWidgets.QWidgetAction(self)
+        action_lda_means.setText('Get LDA Means')
+        action_lda_means.triggered.connect(self._get_lda_means)
+
+        lda_menu.addAction(action_lda_decision_function)
+        lda_menu.addAction(action_lda_coefficients)
+        lda_menu.addAction(action_lda_means)
+
+        self.decision_function_widget = None
+        self.coefficients_widget = None
+        self.lda_means_widget = None
 
     @property
     def lda(self) -> LinearDiscriminantAnalysis:
@@ -123,3 +147,21 @@ class LDAPlot(PlotWindow):
 
     def get_history_trace(self, identifier: UUID):
         return []
+
+    def _get_decision_function(self):
+        self.decision_function_widget = HeatmapTracerWidget()
+        self.decision_function = self.lda.decision_function(self.transformed_data)
+        for i, c in enumerate(self.lda.classes_):
+            col_name = c + '__dec_func'
+            self.dataframe[col_name] = self.decision_function[:, i]
+        self.decision_function_widget.dataframe = self.dataframe
+        self.decision_function_widget.plot_widget.set(self.decision_function, cmap='jet', xticklabels=self.lda.classes_)
+
+    def _get_coefficients(self):
+        self.coefficients_widget = Heatmap()
+        self.coefficients_widget.set(self.lda.coef_, cmap='jet', yticklabels=self.lda.classes_)
+
+    def _get_lda_means(self):
+        self.lda_means_widget = Heatmap()
+        self.lda_means_widget.set(self.lda.means_, cmap='jet', yticklabels=self.lda.classes_)
+

@@ -96,6 +96,9 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         data = np.vstack(self.dataframe[data_column].values)
         self.plot_widget.set(data, cmap=cmap)
 
+    def highlight_row(self, ix):
+        self.plot_widget.highlight_row(ix)
+
 
 class HeatmapControlWidget(QtWidgets.QDockWidget):
     signal_colormap_changed = QtCore.pyqtSignal(str)
