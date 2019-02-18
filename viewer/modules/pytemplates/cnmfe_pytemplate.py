@@ -12,7 +12,7 @@ class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(462, 918)
+        DockWidget.resize(465, 1013)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -125,8 +125,9 @@ class Ui_DockWidget(object):
         self.label_8.setObjectName("label_8")
         self.horizontalLayout_6.addWidget(self.label_8)
         self.doubleSpinBoxMinCorr = QtWidgets.QDoubleSpinBox(self.dockWidgetContents)
+        self.doubleSpinBoxMinCorr.setDecimals(3)
         self.doubleSpinBoxMinCorr.setMaximum(1.0)
-        self.doubleSpinBoxMinCorr.setSingleStep(0.01)
+        self.doubleSpinBoxMinCorr.setSingleStep(0.005)
         self.doubleSpinBoxMinCorr.setProperty("value", 0.89)
         self.doubleSpinBoxMinCorr.setObjectName("doubleSpinBoxMinCorr")
         self.horizontalLayout_6.addWidget(self.doubleSpinBoxMinCorr)
@@ -304,7 +305,7 @@ class Ui_DockWidget(object):
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate
-        DockWidget.setWindowTitle(_translate("DockWidget", "CNMF-E"))
+        DockWidget.setWindowTitle(_translate("DockWidget", "&CNMF-E"))
         self.label_26.setText(_translate("DockWidget", "overlap:"))
         self.label_27.setText(_translate("DockWidget", "gnb:"))
         self.label_19.setText(_translate("DockWidget", "Input:"))
