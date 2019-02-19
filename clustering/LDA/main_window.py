@@ -150,18 +150,20 @@ class LDAPlot(PlotWindow):
 
     def _get_decision_function(self):
         self.decision_function_widget = HeatmapTracerWidget()
-        self.decision_function = self.lda.decision_function(self.transformed_data)
+        self.decision_function = self.lda.decision_function(np.vstack(self.dataframe[self.data_column]))
         for i, c in enumerate(self.lda.classes_):
             col_name = c + '__dec_func'
             self.dataframe[col_name] = self.decision_function[:, i]
         self.decision_function_widget.dataframe = self.dataframe
         self.decision_function_widget.plot_widget.set(self.decision_function, cmap='jet', xticklabels=self.lda.classes_)
+        self.decision_function_widget.show()
 
     def _get_coefficients(self):
         self.coefficients_widget = Heatmap()
         self.coefficients_widget.set(self.lda.coef_, cmap='jet', yticklabels=self.lda.classes_)
+        self.coefficients_widget.show()
 
     def _get_lda_means(self):
         self.lda_means_widget = Heatmap()
         self.lda_means_widget.set(self.lda.means_, cmap='jet', yticklabels=self.lda.classes_)
-
+        self.lda_means_widget.show()
