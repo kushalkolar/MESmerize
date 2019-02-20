@@ -81,8 +81,11 @@ def run(batch_dir: str, UUID: str, n_processes: str):
     c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
                                                      n_processes=n_processes,
                                                      single_thread=False)
+    if 'bord_px' in input_params.keys():
+        bord_px = input_params['bord_px']
+    else:
+        bord_px = 6
 
-    bord_px = 25
     try:
         print('Creating memmap')
         fname_new = cm.save_memmap_each(
@@ -362,7 +365,7 @@ class Output(QtWidgets.QWidget):
 
         input_params = pickle.load(open(self.batch_dir + '/' + str(self.UUID) + '.params', 'rb'))
 
-        vi.viewer.workEnv.history_trace.append({'cnmfe': {input_params}})
+        vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
 
         self.viewer_ref.parent().ui.actionROI_Manager.trigger()
 

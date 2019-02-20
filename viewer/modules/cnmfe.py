@@ -44,9 +44,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           'continue!', QtWidgets.QMessageBox.Ok)
             return None
 
+        # Get bord_px param if motion correction was performed
+        history_trace = self.vi.viewer.workEnv.history_trace
+        bord_px = next(d for ix, d in enumerate(history_trace) if 'caiman_motion_correction' in d)['caiman_motion_correction']['bord_px']
+        if bord_px == StopIteration:
+            bord_px = 0
+
         d = {'Input':           self.ui.comboBoxInput.currentText(),
              'frate':           self.vi.viewer.workEnv.imgdata.meta['fps'],
              'gSig':            self.ui.spinBoxGSig.value(),
+             'bord_px':         bord_px,
              'min_corr':        self.ui.doubleSpinBoxMinCorr.value(),
              'min_pnr':         self.ui.spinBoxMinPNR.value(),
              'min_SNR':         self.ui.spinBoxMinSNR.value(),
