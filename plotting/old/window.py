@@ -94,6 +94,7 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         columns = self.dataframe.columns.tolist()
 
+        self.ui.listWidgetDataColumns.clear()
         self.ui.listWidgetDataColumns.addItems(columns)
 
         self.ui.comboBoxGrouping.clear()
