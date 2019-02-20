@@ -146,9 +146,9 @@ class Output:
 
         name = input_params['name_elas']
         vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
-        bpx = json.load(batch_path + '/' + str(UUID) + '.out')['bord_px']
+        bpx = json.load(open(batch_path + '/' + str(UUID) + '.out', 'r'))['bord_px']
         input_params.update({'bord_px': bpx})
-        vi.viewer.workEnv.history_trace.append({'caiman_motion_correction': {input_params}})
+        vi.viewer.workEnv.history_trace.append({'caiman_motion_correction': input_params})
         vi.enable_ui(True)
 
 

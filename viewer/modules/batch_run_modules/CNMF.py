@@ -64,6 +64,7 @@ def run(batch_dir, UUID, n_processes):
     decay_time = input_params['decay_time']
     frames_window = input_params['frames_window']
     quantileMin = input_params['quantileMin']
+    bord_px = input_params['bord_px']
 
     print('*********** Creating Process Pool ***********')
     c, dview, np = cm.cluster.setup_cluster(backend='local', n_processes=n_processes, single_thread=False)
@@ -75,7 +76,7 @@ def run(batch_dir, UUID, n_processes):
             filename,
             base_name='memmap_' + UUID,
             order='C',
-            border_to_0=7,
+            border_to_0=bord_px,
             dview=dview)
         fname_new = cm.save_memmap_join(fname_new, base_name='memmap_' + UUID, dview=dview)
 
@@ -85,7 +86,7 @@ def run(batch_dir, UUID, n_processes):
         cnm = cnmf.CNMF(n_processes=n_processes, k=K, gSig=gSig, merge_thresh=merge_thresh,
                         p=0, dview=dview, rf=rf, stride=stride_cnmf, memory_fact=1,
                         method_init='greedy_roi', alpha_snmf=None,
-                        only_init_patch=False, gnb=gnb, border_pix=7)
+                        only_init_patch=False, gnb=gnb, border_pix=bord_px)
         cnm.fit(Y)
 
         idx_components, idx_components_bad, SNR_comp, r_values, cnn_preds = \

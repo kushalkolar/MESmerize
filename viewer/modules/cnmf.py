@@ -40,8 +40,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           'continue!', QtWidgets.QMessageBox.Ok)
             return None
 
+        history_trace = self.vi.viewer.workEnv.history_trace
+        bord_px = next(d for ix, d in enumerate(history_trace) if 'caiman_motion_correction' in d)['caiman_motion_correction']['bord_px']
+        if bord_px == StopIteration:
+            bord_px = 0
+
         d = {'Input':           self.ui.comboBoxInput.currentText(),
              'fr':              self.vi.viewer.workEnv.imgdata.meta['fps'],
+             'bord_px':         bord_px,
              'p':               self.ui.spinBoxP.value(),
              'gnb':             self.ui.spinBoxGnb.value(),
              'merge_thresh':    self.ui.doubleSpinBoxMergeThresh.value(),
