@@ -46,8 +46,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # Get bord_px param if motion correction was performed
         history_trace = self.vi.viewer.workEnv.history_trace
-        bord_px = next(d for ix, d in enumerate(history_trace) if 'caiman_motion_correction' in d)['caiman_motion_correction']['bord_px']
-        if bord_px == StopIteration:
+        try:
+            bord_px = next(d for ix, d in enumerate(history_trace) if 'caiman_motion_correction' in d)['caiman_motion_correction']['bord_px']
+        except StopIteration:
             bord_px = 0
 
         d = {'Input':           self.ui.comboBoxInput.currentText(),
