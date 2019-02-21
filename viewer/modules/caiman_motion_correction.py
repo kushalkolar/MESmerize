@@ -12,13 +12,9 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from ..core.common import ViewerInterface
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.caiman_motion_correction_pytemplate import *
 import json
-import numpy as np
 from common import configuration
-from ..core.viewer_work_environment import ViewerWorkEnv
-import caiman as cm
 from pyqtgraphCore import LinearRegionItem
 
 
@@ -83,7 +79,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.overlapsH = []
         self.overlapsV = []
 
-    def _make_params_dict(self):
+    def _make_params_dict(self) -> dict:
         d = {'max_shifts_x':        self.ui.spinboxX.value(),
              'max_shifts_y':        self.ui.spinboxY.value(),
              'iters_rigid':         self.ui.spinboxIterRigid.value(),
@@ -96,6 +92,23 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'output_bit_depth':    self.ui.comboBoxOutputBitDepth.currentText()
              }
         return d
+
+    def set_params(self, params: dict):
+        self.ui.spinboxX.setValue(params['max_shifts_x'])
+        self.ui.spinboxY.setValue(params['max_shifts_y'])
+        self.ui.spinboxIterRigid.setValue(params['iters_rigid'])
+        self.ui.lineEditNameRigid.setValue(params['name_rigid'])
+        self.ui.spinboxMaxDev.setValue(params['max_dev'])
+        self.ui.sliderStrides.setValue(params['strides'])
+        self.ui.sliderOverlaps.setValue(params['overlaps'])
+        self.ui.spinboxUpsample.setValue(params['upsample'])
+        self.ui.lineEditNameElastic.setText(params['name_elas'])
+        if params['output_bit_depth'] == 'Do not convert':
+            self.ui.comboBoxOutputBitDepth.setCurrentIndex(0)
+        elif params['output_bit_depth'] == '8':
+            self.ui.comboBoxOutputBitDepth.setCurrentIndex(1)
+        elif params['output_bit_depth'] == '16':
+            self.ui.comboBoxOutputBitDepth.setCurrentIndex(2)
 
     def add_rig_corr_to_batch(self):
         pass

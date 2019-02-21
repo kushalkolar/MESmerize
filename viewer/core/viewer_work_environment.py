@@ -58,6 +58,7 @@ class ViewerWorkEnv:
                 if meta is not None:
                     self.imgdata.meta = meta
         else:
+            self.imgdata = ImgData()
             self.isEmpty = True
         self.meta = meta
 
@@ -84,7 +85,6 @@ class ViewerWorkEnv:
         if custom_cols is None:
             self.custom_cols = {}
 
-
         if additional_data is not None:
             assert isinstance(additional_data, dict)
             self.additional_data = additional_data
@@ -98,6 +98,18 @@ class ViewerWorkEnv:
             self.misc = {}
 
         self.UUID = UUID
+
+    # def get_imgdata(self):
+    #     return self.imgdata
+    #
+    # def get_seq(self):
+    #     return self.imgdata.seq
+    #
+    # def get_meta(self):
+    #     return self.meta
+    #
+    # def get_roi_manager(self):
+    #     return self.roi_manager
 
     def dump(self):
         self.isEmpty = True
@@ -128,11 +140,6 @@ class ViewerWorkEnv:
         :param: tiff_path:          str of the full path to a tiff file containing the image sequence
         """
 
-        # if (npzPath is None) and (tifffile is None):
-        #     raise ValueError('You must pass a path to either a npz or tiff image sequence.')
-        # if npzPath is not None:
-        #     npz = np.load(npzPath)
-        #     seq = npz['imgseq']
         if tiff_path is not None:
             seq = tifffile.imread(tiff_path)
             seq = seq.T

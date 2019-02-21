@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './main_window_pytemplate.ui'
+# Form implementation generated from reading ui file 'main_window_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -69,8 +69,8 @@ class Ui_MainWindow(object):
         self.actionManual_motion_correction = QtWidgets.QAction(MainWindow)
         self.actionManual_motion_correction.setCheckable(False)
         self.actionManual_motion_correction.setObjectName("actionManual_motion_correction")
-        self.actionRun_script = QtWidgets.QAction(MainWindow)
-        self.actionRun_script.setObjectName("actionRun_script")
+        self.actionScript_Editor = QtWidgets.QAction(MainWindow)
+        self.actionScript_Editor.setObjectName("actionScript_Editor")
         self.actionReload_list = QtWidgets.QAction(MainWindow)
         self.actionReload_list.setObjectName("actionReload_list")
         self.actionCNMF_E = QtWidgets.QAction(MainWindow)
@@ -126,7 +126,7 @@ class Ui_MainWindow(object):
         self.menuModules.addAction(self.actionROI_Manager)
         self.menuModules.addAction(self.actionStimulus_Mapping)
         self.menuModules.addAction(self.actionManual_motion_correction)
-        self.menuModules.addAction(self.actionRun_script)
+        self.menuModules.addAction(self.actionScript_Editor)
         self.menuModules.addSeparator()
         self.menuModules.addAction(self.actionBatch_Manager)
         self.menuModules.addSeparator()
@@ -168,10 +168,10 @@ class Ui_MainWindow(object):
         self.menuModules.setTitle(_translate("MainWindow", "&Modules"))
         self.menuLoad_images.setTitle(_translate("MainWindow", "&Load images"))
         self.menuCaImAn_toolbox.setTitle(_translate("MainWindow", "&CaImAn toolbox"))
-        self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
+        self.menuEdit.setTitle(_translate("MainWindow", "E&dit"))
         self.menuCustom_Modules.setTitle(_translate("MainWindow", "C&ustom Modules"))
         self.menuImage.setTitle(_translate("MainWindow", "&Image"))
-        self.menuProjections.setTitle(_translate("MainWindow", "Projections"))
+        self.menuProjections.setTitle(_translate("MainWindow", "&Projections"))
         self.menuView.setTitle(_translate("MainWindow", "&View"))
         self.dockConsole.setWindowTitle(_translate("MainWindow", "&Console: viewer"))
         self.actionOpen_work_environment.setText(_translate("MainWindow", "&Open work environment"))
@@ -182,7 +182,7 @@ class Ui_MainWindow(object):
         self.actionCNMF.setText(_translate("MainWindow", "&CNMF"))
         self.actionROI_Manager.setText(_translate("MainWindow", "&ROI Manager"))
         self.actionManual_motion_correction.setText(_translate("MainWindow", "&Manual motion correction"))
-        self.actionRun_script.setText(_translate("MainWindow", "R&un script"))
+        self.actionScript_Editor.setText(_translate("MainWindow", "Script Editor"))
         self.actionReload_list.setText(_translate("MainWindow", "&Reload list"))
         self.actionCNMF_E.setText(_translate("MainWindow", "CNMF-&E"))
         self.actionBatch_Manager.setText(_translate("MainWindow", "&Batch Manager"))
@@ -198,8 +198,8 @@ class Ui_MainWindow(object):
         self.actionStimulus_Mapping.setText(_translate("MainWindow", "&Stimulus Mapping"))
         self.actionConsole.setText(_translate("MainWindow", "&Console"))
         self.actionWork_Environment_Info.setText(_translate("MainWindow", "&Work Environment Editor"))
-        self.actionMean.setText(_translate("MainWindow", "Mean"))
-        self.actionMax.setText(_translate("MainWindow", "Max"))
-        self.actionStandard_Deviation.setText(_translate("MainWindow", "Standard Deviation"))
-        self.actionClose_all_projection_windows.setText(_translate("MainWindow", "Close all projection windows"))
+        self.actionMean.setText(_translate("MainWindow", "&Mean"))
+        self.actionMax.setText(_translate("MainWindow", "Ma&x"))
+        self.actionStandard_Deviation.setText(_translate("MainWindow", "&Standard Deviation"))
+        self.actionClose_all_projection_windows.setText(_translate("MainWindow", "&Close all projection windows"))
 

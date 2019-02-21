@@ -17,7 +17,6 @@ sys.setrecursionlimit(10000)
 from pyqtgraphCore.flowchart import Flowchart
 # import pyqtgraphCore as pg
 import numpy as np
-import scipy
 import pandas as pd
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
@@ -39,16 +38,17 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
         self.setupUi(self)
 
         ns = {'np': np,
-              'scipy': scipy,
               'pd': pd,
               'pickle': pickle,
+              'get_nodes': self.fc.nodes,
               'main': self
               }
 
-        txt = "Namespaces:\nTabsWidget as 'w'\n" \
+        txt = "Namespaces:\n" \
               "pickle as 'pickle'\n" \
               "numpy as 'np'\n" \
-              "self as 'main'\n"
+              "self as 'main'\n" \
+              "'get_nodes()' to get a dict of all nodes\n"
 
         if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
             os.makedirs(configuration.sys_cfg_path + '/console_history')

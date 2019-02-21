@@ -58,14 +58,14 @@
     <addaction name="actionROI_Manager"/>
     <addaction name="actionStimulus_Mapping"/>
     <addaction name="actionManual_motion_correction"/>
-    <addaction name="actionRun_script"/>
+    <addaction name="actionScript_Editor"/>
     <addaction name="separator"/>
     <addaction name="actionBatch_Manager"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>E&amp;dit</string>
     </property>
     <addaction name="actionMeta_data"/>
    </widget>
@@ -82,7 +82,7 @@
     </property>
     <widget class="QMenu" name="menuProjections">
      <property name="title">
-      <string>Projections</string>
+      <string>&amp;Projections</string>
      </property>
      <addaction name="actionMean"/>
      <addaction name="actionMax"/>
@@ -186,9 +186,9 @@
     <string>&amp;Manual motion correction</string>
    </property>
   </action>
-  <action name="actionRun_script">
+  <action name="actionScript_Editor">
    <property name="text">
-    <string>R&amp;un script</string>
+    <string>Script Editor</string>
    </property>
   </action>
   <action name="actionReload_list">
@@ -271,22 +271,22 @@
   </action>
   <action name="actionMean">
    <property name="text">
-    <string>Mean</string>
+    <string>&amp;Mean</string>
    </property>
   </action>
   <action name="actionMax">
    <property name="text">
-    <string>Max</string>
+    <string>Ma&amp;x</string>
    </property>
   </action>
   <action name="actionStandard_Deviation">
    <property name="text">
-    <string>Standard Deviation</string>
+    <string>&amp;Standard Deviation</string>
    </property>
   </action>
   <action name="actionClose_all_projection_windows">
    <property name="text">
-    <string>Close all projection windows</string>
+    <string>&amp;Close all projection windows</string>
    </property>
   </action>
  </widget>

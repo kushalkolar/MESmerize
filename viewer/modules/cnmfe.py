@@ -12,11 +12,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from ..core.common import ViewerInterface
-from ..core.viewer_work_environment import ViewerWorkEnv
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.cnmfe_pytemplate import *
 import json
-import numpy as np
 from common import configuration
 
 
@@ -37,7 +34,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # assert isinstance(self.vi.viewer_ref.batch_manager, BatchModuleGui)
 
-    def _make_params_dict(self):
+    def _make_params_dict(self) -> dict:
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
             QtWidgets.QMessageBox.warning(self, 'No framerate for current image sequence!',
                                           'You must set a framerate for the current image sequence before you can '
@@ -92,17 +89,31 @@ class ModuleGUI(QtWidgets.QDockWidget):
         try:
             with open(path, 'r') as f:
                 d = json.load(f)
-                self.ui.spinBoxGSig.setValue(d['gSig'])
-                self.ui.doubleSpinBoxMinCorr.setValue(d['min_corr'])
-                self.ui.spinBoxMinPNR.setValue(d['min_pnr'])
-                self.ui.doubleSpinBoxRValuesMin.setValue(d['r_values_min'])
-                self.ui.spinBoxDecayTime.setValue(d['decay_time'])
+                self.set_params(d)
         except IOError as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
         except KeyError as e:
             QtWidgets.QMessageBox.warning(self, 'Invalid params file!',
                                           'The chosen file is not a valid CNMF-E params file.\n' + str(e))
+        except Exception as e:
+            QtWidgets.QMessageBox.warning(self, 'Import error', str(e))
+
+    def set_params(self, params: dict):
+        self.ui.comboBoxInput.setCurrentText(params['Input'])
+        self.ui.spinBoxGSig.setValue(params['gSig'])
+        self.ui.doubleSpinBoxMinCorr.setValue(params['min_corr'])
+        self.ui.spinBoxMinPNR.setValue(params['min_pnr'])
+        self.ui.spinBoxMinSNR.setValue(params['min_SNR'])
+        self.ui.doubleSpinBoxRValuesMin.setValue(params['r_values_min'])
+        self.ui.spinBoxDecayTime.setValue(params['decay_time'])
+        self.ui.spinBoxRf.setValue(params['rf'])
+        self.ui.spinBoxOverlap.setValue(params['stride'])
+        self.ui.spinBoxGnb.setValue(params['gnb'])
+        self.ui.spinBoxNb_patch.setValue(params['nb_patch'])
+        self.ui.spinBoxK.setValue(params['k'])
+        self.ui.lineEdCorrPNRName.setText(params['name_corr_pnr'])
+        self.ui.lineEdName.setText(params['name_cnmfe'])
 
     def add_to_batch_corr_pnr(self):
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
@@ -167,9 +178,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                info=d
                                )
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMFE: ' + name + ' to batch!')
-    def save_memmap(self):
-        pass
 
     @QtCore.pyqtSlot()
     def update_available_inputs(self):
-        print('Input changes received in cnmfe module!')
+        pass

@@ -143,7 +143,7 @@ class Heatmap(CtrlNode):
 
         dfs = [t.df for t in transmissions_list]
 
-        self.heatmap_widget.set_data(dataframes=dfs, data_column=self.data_column, labels_columns=labels_column, cmap=cm)
+        self.heatmap_widget.set_data(dataframes=dfs, data_column=self.data_column, labels_column=labels_column, cmap=cm)
 
 
 

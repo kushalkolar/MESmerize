@@ -17,11 +17,7 @@ from pyqtgraphCore.console import ConsoleWidget
 from pyqtgraphCore.imageview import ImageView
 from .modules import *
 from .core.common import ViewerInterface
-import pickle
-import tifffile
 import numpy as np
-import pandas as pd
-from .core import DataTypes
 from .core.viewer_work_environment import ViewerWorkEnv
 import os
 from common import configuration
@@ -29,7 +25,8 @@ from .image_menu.main import ImageMenu
 from spyder.widgets.variableexplorer import objecteditor
 import traceback
 from .core.add_to_project import AddToProjectDialog
-
+import os
+import weakref
 
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
@@ -38,7 +35,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         'cnmfe': cnmfe.ModuleGUI,
                         'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
                         'roi_manager': roi_manager.ModuleGUI,
-                        'stimulus_mapping': stimulus_mapping.ModuleGUI
+                        'stimulus_mapping': stimulus_mapping.ModuleGUI,
+                        'script_editor': script_editor.ModuleGUI
                         }
 
     def __init__(self):
@@ -54,6 +52,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
+        self.ui.actionScript_Editor.triggered.connect(lambda: self.run_module(script_editor.ModuleGUI))
 
         self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
         self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)
@@ -84,41 +83,60 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.initialize_menubar_triggers()
 
-        ns = {'pd': pd,
-              'np': np,
-              'pickle': pickle,
-              'tifffile': tifffile,
+
+        ns = {'np': np,
+              'vi': self.vi,
+              'viewer': self.vi.viewer,
               'ViewerWorkEnv': ViewerWorkEnv,
-              'DataTypes': DataTypes,
+              'get_workEnv': self.vi.viewer.get_workEnv,
+              # 'get_seq': self.vi.viewer.workEnv.get_seq,
+              # 'get_meta': self.vi.viewer.workEnv.get_meta,
+              # 'get_imgdata': self.vi.viewer.workEnv.get_imgdata,
+              'update_workEnv': self.vi.update_workEnv,
+              'clear_workEnv': self.vi._clear_workEnv,
+              'running_modules': self.running_modules,
+              'get_module': self.run_module,
+              'get_batch_manager': self.get_batch_manager,
+              'roi_manager': self.vi.viewer.workEnv.roi_manager,
               'objecteditor': objecteditor,
               'main': self
               }
 
         txt = "Namespaces:          \n" \
               "numpy as np          \n" \
-              "pandas as pd         \n" \
-              "pickle as 'pickle    \n" \
-              "tifffile as tifffile \n" \
-              "ViewerInterface as main.vi \n" \
+              "ViewerInterface as vi \n" \
               "self as main         \n" \
-              "objecteditor as objecteditor\n"
+              "objecteditor as objecteditor\n" \
+              "useful shorcuts for scripting, see docs:\n" \
+              "viewer, get_workEnv(), running_modules\n" \
+              "get_workEnv().imgdata, get_workEnv().imgdata.seq, get_workEnv().meta, get_workEnv().roi_manager\n" \
+              "useful functions for scripting:\n" \
+              "update_workEnv, clear_workEnv, get_module, get_batch_manager\n" \
+              "ViewerWorkEnv class: workEnv"
 
         if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
             os.makedirs(configuration.sys_cfg_path + '/console_history/')
 
         cmd_history_file = configuration.sys_cfg_path + '/console_history/viewer.pik'
 
-        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                    historyFile=cmd_history_file))
+        self.console = ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
+
+        self.ui.dockConsole.setWidget(self.console)
 
     def run_module(self, module_class, hide=False) -> object:
+        """
+        :param module_class: The python module imported within this main_window module or the module name as a str
+        :param hide: To not show the widget, useful for scripting
+        :return: Return the chosen module, instantiate it if it's not already running.
+        """
         # Show the QDockableWidget if it's already running
         if type(module_class) is str:
             module_class = self.standard_modules[module_class]
 
         for m in self.running_modules:
             if isinstance(m, module_class):
-                m.show()
+                if not hide:
+                    m.show()
                 return m
 
         # Else create instance and start running it
@@ -155,8 +173,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionStandard_Deviation.triggered.connect(self.image_menu.std_projection)
         self.ui.actionClose_all_projection_windows.triggered.connect(self.image_menu.close_projection_windows)
 
+    def get_batch_manager(self) -> object:
+        return configuration.window_manager.get_batch_manager()
+
     def start_batch_manager(self):
-        batch_manager = configuration.window_manager.get_batch_manager()
+        batch_manager = self.get_batch_manager()
         batch_manager.show()
 
     def open_workEnv_editor(self):
@@ -246,7 +267,9 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         try:
-            self.vi.viewer.workEnv.to_pickle(filename=path[0])
+            dirname = os.path.dirname(path[0])
+            filename = os.path.basename(path[0])
+            self.vi.viewer.workEnv.to_pickle(dir_path=dirname, filename=filename)
         except Exception:
             QtWidgets.QMessageBox.warning(self, 'File save Error', 'Unable to save the file\n' + traceback.format_exc())
 
