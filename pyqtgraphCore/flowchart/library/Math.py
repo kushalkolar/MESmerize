@@ -65,24 +65,24 @@ class LogTransform(CtrlNode):
 
         data_column = self.ctrls['data_column'].text()
 
-        t = transmission.copy()
+        self.t = transmission.copy()
 
         transform = self.ctrls['transform'].currentText()
 
         if transform == 'log10':
-            t.df[data_column] = t.df[data_column].apply(lambda x: np.log10(x))
-            t.src.append({'log10': data_column})
+            self.t.df[data_column] = self.t.df[data_column].apply(lambda x: np.log10(x))
+            self.t.src.append({'log10': data_column})
 
         elif transform == 'ln':
-            t.df[data_column] = t.df[data_column].apply(lambda x: np.log(x))
-            t.src.append({'ln': data_column})
+            self.t.df[data_column] = self.t.df[data_column].apply(lambda x: np.log(x))
+            self.t.src.append({'ln': data_column})
 
         elif transform == 'modlog10':
             logmod = lambda x: np.sign(x) * (np.log10(np.abs(x) + 1))
-            t.df[data_column] = t.df[data_column].apply(logmod)
-            t.src.append({'logmod': data_column})
+            self.t.df[data_column] = self.t.df[data_column].apply(logmod)
+            self.t.src.append({'logmod': data_column})
 
-        return t
+        return self.t
 
 
 class RFFT(CtrlNode):

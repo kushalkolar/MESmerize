@@ -28,7 +28,7 @@ import numpy as np
 
 
 class ImgData:
-    def __init__(self, seq: np.ndarray, meta: dict = None):
+    def __init__(self, seq: np.ndarray = None, meta: dict = None):
         self.seq = seq
         if meta is None:
             meta = {'origin': 'unknown',

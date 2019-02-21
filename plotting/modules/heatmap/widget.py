@@ -82,7 +82,7 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         # self.vi.viewer.workEnv.restore_rois_from_states()
         # self.vi.viewer.ui.label_curr_img_seq_name.setText(self.dataframe.iloc[ix]['SampleID'])
 
-    def set_data(self, dataframes, data_column: str, labels_columns: str = 'index', cmap: str ='jet'):
+    def set_data(self, dataframes, data_column: str, labels_column: str = 'index', cmap: str ='jet'):
         if type(dataframes) is list:
             dataframe = pd.concat(dataframes)
         elif type(dataframes) is not pd.DataFrame:
@@ -92,9 +92,11 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         else:
             dataframe = dataframes
 
+        labels = dataframe[labels_column]
+
         self.dataframe = dataframe.reset_index(drop=True)
         data = np.vstack(self.dataframe[data_column].values)
-        self.plot_widget.set(data, cmap=cmap)
+        self.plot_widget.set(data, cmap=cmap, yticklabels=labels)
 
     def highlight_row(self, ix):
         self.plot_widget.highlight_row(ix)

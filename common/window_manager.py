@@ -26,7 +26,7 @@ class WindowManager:
         self.plots = None
         self.clustering_windows = None
 
-    def get_batch_manager(self, run_batch: list = None):
+    def get_batch_manager(self, run_batch: list = None) -> object:
         return self.welcome_window.get_batch_manager(run_batch)
 
     def show_project_browser(self, i: int):

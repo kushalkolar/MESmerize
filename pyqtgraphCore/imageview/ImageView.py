@@ -200,6 +200,9 @@ class ImageView(QtWidgets.QWidget):
 
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
 
+    def get_workEnv(self):
+        return self.workEnv
+
     @property
     def status_bar_label(self) -> QtWidgets.QStatusBar:
         return self._status_bar_label
