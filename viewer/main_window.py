@@ -27,6 +27,8 @@ import traceback
 from .core.add_to_project import AddToProjectDialog
 import os
 import weakref
+from . import image_utils
+
 
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
@@ -99,6 +101,7 @@ class MainWindow(QtWidgets.QMainWindow):
               'get_batch_manager': self.get_batch_manager,
               'roi_manager': self.vi.viewer.workEnv.roi_manager,
               'objecteditor': objecteditor,
+              'image_utils': image_utils,
               'main': self
               }
 
@@ -107,12 +110,13 @@ class MainWindow(QtWidgets.QMainWindow):
               "ViewerInterface as vi \n" \
               "self as main         \n" \
               "objecteditor as objecteditor\n" \
+              "ViewerWorkEnv class: workEnv\n" \
               "useful shorcuts for scripting, see docs:\n" \
               "viewer, get_workEnv(), running_modules\n" \
               "get_workEnv().imgdata, get_workEnv().imgdata.seq, get_workEnv().meta, get_workEnv().roi_manager\n" \
               "useful functions for scripting:\n" \
               "update_workEnv, clear_workEnv, get_module, get_batch_manager\n" \
-              "ViewerWorkEnv class: workEnv"
+              "For useful image utility functions: image_utils"
 
         if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
             os.makedirs(configuration.sys_cfg_path + '/console_history/')
