@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from .common import BitDepthConverter
+from typing import Tuple, Union, Any, List
 
 
 def _get_rect(seq: np.ndarray,
@@ -9,7 +10,7 @@ def _get_rect(seq: np.ndarray,
               denoise: str = 'blur',
               denoise_params: tuple = (16, 16),
               thresh: tuple = (50, 255),
-              padding: int = 30) -> list:
+              padding: int = 30) -> Tuple[bool, List[Tuple[Union[object, Any], Union[object, Any]]]]:
     """
 
     :param seq:             image sequence
@@ -77,18 +78,18 @@ def _get_rect(seq: np.ndarray,
         # if w > 80 and h > 80:
         # cv2.rectangle(th_img, (x,y), (x+w,y+h), (255, 0, 0), 2)
 
+    x1 = max(0, min_x - padding)
+    x2 = min(img.shape[0], max_x + padding)
+
+    y1 = max(0, min_y - padding)
+    y2 = min(img.shape[1], max_y + padding)
+
     if max_x - min_x > 0 and max_y - min_y > 0:
 
-        x1 = max(0, min_x - padding)
-        x2 = min(img.shape[0] + padding)
-
-        y1 = max(0, min_y - padding)
-        y2 = min(img.shape[1] + padding)
-
-        return [(x1, y1), (x2, y2)]
+        return True, [(x1, y1), (x2, y2)]
 
     else:
-        return False
+        return False, [(x1, y1), (x2, y2)]
 
 
 def crop(seq: np.ndarray, params: dict) -> np.ndarray:
@@ -97,7 +98,9 @@ def crop(seq: np.ndarray, params: dict) -> np.ndarray:
     :param params:  params, passed to get_rect()
     :return:        cropped image sequence
     """
-    rect = get_rect(seq, **params)
+    r, rect = _get_rect(seq, **params)
+    if r is False:
+        raise ValueError('Cannot crop image sequence, try different parameters\n' + str(rect))
 
     x1 = rect[0][0]
     y1 = rect[0][1]
@@ -105,4 +108,4 @@ def crop(seq: np.ndarray, params: dict) -> np.ndarray:
     x2 = rect[1][0]
     y2 = rect[1][1]
 
-    return seq[:, y1:y2, x1:x2]
+    return seq[y1:y2, x1:x2, :]
