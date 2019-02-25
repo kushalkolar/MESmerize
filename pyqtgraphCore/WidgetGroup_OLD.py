@@ -8,11 +8,9 @@ This class addresses the problem of having to save and restore the state
 of a large group of widgets. 
 """
 
-from .Qt import QtCore, QtGui, QT_LIB
-# from PyQt5 import QtWidgets
+from .Qt import QtCore, QtGui, QtWidgets, USE_PYQT5
 import weakref, inspect
 from .python2_3 import asUnicode
-from .widgets.ComboBox import ComboBox as QComboBox
 
 
 __all__ = ['WidgetGroup']
@@ -75,46 +73,90 @@ class WidgetGroup(QtCore.QObject):
     ## If the change signal is None, the value of the widget is not cached.
     ## Custom widgets not in this list can be made to work with WidgetGroup by giving them a 'widgetGroupInterface' method
     ##   which returns the tuple.
+    ## TODO: IF THESE ARE QtGui INSTEAD OF QtWidgets THEY ARE PROBABLY NOT BEING SAVED AND LOADED PROPERLY!
+    ## TODO: MAYBE JUST REPLACE ALL QtGui with QtWidgets?????
+
     classes = {
-        QtGui.QSpinBox:
-            (lambda w: w.valueChanged, 
-            QtGui.QSpinBox.value,
-            QtGui.QSpinBox.setValue),
-        QtGui.QDoubleSpinBox:
-            (lambda w: w.valueChanged, 
-            QtGui.QDoubleSpinBox.value,
-            QtGui.QDoubleSpinBox.setValue),
-        QtGui.QSplitter:
-            (None, 
-            splitterState,
-            restoreSplitter,
-            True),
-        QtGui.QCheckBox:
-            (lambda w: w.stateChanged,
-            QtGui.QCheckBox.isChecked,
-            QtGui.QCheckBox.setChecked),
-        QComboBox:
-            (lambda w: w.currentIndexChanged,
-            comboState,
-            setComboState),
-        QtGui.QGroupBox:
-            (lambda w: w.toggled,
-            QtGui.QGroupBox.isChecked,
-            QtGui.QGroupBox.setChecked,
-            True),
-        QtGui.QLineEdit:
-            (lambda w: w.editingFinished,
-            lambda w: str(w.text()),
-            QtGui.QLineEdit.setText),
-        QtGui.QRadioButton:
-            (lambda w: w.toggled,
-            QtGui.QRadioButton.isChecked,
-            QtGui.QRadioButton.setChecked),
-        QtGui.QSlider:
+        QtWidgets.QSpinBox:
             (lambda w: w.valueChanged,
-            QtGui.QSlider.value,
-            QtGui.QSlider.setValue),
+             QtWidgets.QSpinBox.value,
+             QtWidgets.QSpinBox.setValue),
+        QtWidgets.QDoubleSpinBox:
+            (lambda w: w.valueChanged,
+             QtWidgets.QDoubleSpinBox.value,
+             QtWidgets.QDoubleSpinBox.setValue),
+        QtWidgets.QSplitter:
+            (None,
+             splitterState,
+             restoreSplitter,
+             True),
+        QtWidgets.QCheckBox:
+            (lambda w: w.stateChanged,
+             QtWidgets.QCheckBox.isChecked,
+             QtWidgets.QCheckBox.setChecked),
+        QtWidgets.QComboBox:
+            (lambda w: w.currentIndexChanged,
+             comboState,
+             setComboState),
+        QtWidgets.QGroupBox:
+            (lambda w: w.toggled,
+             QtWidgets.QGroupBox.isChecked,
+             QtWidgets.QGroupBox.setChecked,
+             True),
+        QtWidgets.QLineEdit:
+            (lambda w: w.editingFinished,
+             lambda w: str(w.text()),
+             QtWidgets.QLineEdit.setText),
+        QtWidgets.QRadioButton:
+            (lambda w: w.toggled,
+             QtWidgets.QRadioButton.isChecked,
+             QtWidgets.QRadioButton.setChecked),
+        QtWidgets.QSlider:
+            (lambda w: w.valueChanged,
+             QtWidgets.QSlider.value,
+             QtWidgets.QSlider.setValue),
     }
+
+    # classes = {
+    #     QtGui.QSpinBox:
+    #         (lambda w: w.valueChanged,
+    #         QtGui.QSpinBox.value,
+    #         QtGui.QSpinBox.setValue),
+    #     QtGui.QDoubleSpinBox:
+    #         (lambda w: w.valueChanged,
+    #         QtGui.QDoubleSpinBox.value,
+    #         QtGui.QDoubleSpinBox.setValue),
+    #     QtGui.QSplitter:
+    #         (None,
+    #         splitterState,
+    #         restoreSplitter,
+    #         True),
+    #     QtGui.QCheckBox:
+    #         (lambda w: w.stateChanged,
+    #         QtGui.QCheckBox.isChecked,
+    #         QtGui.QCheckBox.setChecked),
+    #     QtGui.QComboBox:
+    #         (lambda w: w.currentIndexChanged,
+    #         comboState,
+    #         setComboState),
+    #     QtGui.QGroupBox:
+    #         (lambda w: w.toggled,
+    #         QtGui.QGroupBox.isChecked,
+    #         QtGui.QGroupBox.setChecked,
+    #         True),
+    #     QtGui.QLineEdit:
+    #         (lambda w: w.editingFinished,
+    #         lambda w: str(w.text()),
+    #         QtGui.QLineEdit.setText),
+    #     QtGui.QRadioButton:
+    #         (lambda w: w.toggled,
+    #         QtGui.QRadioButton.isChecked,
+    #         QtGui.QRadioButton.setChecked),
+    #     QtGui.QSlider:
+    #         (lambda w: w.valueChanged,
+    #         QtGui.QSlider.value,
+    #         QtGui.QSlider.setValue),
+    # }
     
     sigChanged = QtCore.Signal(str, object)
     
@@ -220,7 +262,7 @@ class WidgetGroup(QtCore.QObject):
         v1 = self.cache[n]
         v2 = self.readWidget(w)
         if v1 != v2:
-            if QT_LIB != 'PyQt5':
+            if not USE_PYQT5:
                 # Old signal kept for backward compatibility.
                 self.emit(QtCore.SIGNAL('changed'), self.widgetList[w], v2)
             self.sigChanged.emit(self.widgetList[w], v2)
