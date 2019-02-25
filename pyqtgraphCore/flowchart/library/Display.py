@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
-from ..Node import Node
-import weakref
-from ...Qt import QtCore, QtGui, QtWidgets
-from ...graphicsItems.ScatterPlotItem import ScatterPlotItem
-from ...graphicsItems.PlotCurveItem import PlotCurveItem
 from ... import PlotDataItem, ComboBox
-from ... import metaarray
-from analyser.DataTypes import Transmission
 from analyser import simple_plot_window
 from .common import *
 import numpy as np
-from plotting.modules.heatmap.widget import HeatmapTracerWidget, HeatmapControlWidget
+import pandas as pd
+from plotting.modules.heatmap.widget import HeatmapTracerWidget
 
 
 class Plot(CtrlNode):
@@ -18,7 +12,7 @@ class Plot(CtrlNode):
     nodeName = 'Plot'
     uiTemplate = [('Show', 'check', {'checked': True}),
                   ('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'})
+                  ('data_column', 'combo', {})
                   ]
 
     def __init__(self, name):
@@ -28,25 +22,18 @@ class Plot(CtrlNode):
         self.ctrls['Apply'].clicked.connect(self.update)
         self.ctrls['Show'].clicked.connect(self.pwin.setVisible)
 
-        # autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
-        # self.ctrls['data_column'].setCompleter(autocompleter)
-        # self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
-
     def process(self, **kwargs):
-        # self.columns = transmission.df.columns
-        # self.setAutoCompleter()
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        data_column = self.ctrls['data_column'].text()
-        if data_column == '':
-            raise ValueError('No data column entered')
-
         transmissions = kwargs['In']
 
         if not len(transmissions) > 0:
             raise Exception('No incoming transmissions')
 
+        columns = pd.concat([t.df for t in transmissions]).columns
+        self.ctrls['data_column'].setItems(columns.to_list())
+
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+        data_column = self.ctrls['data_column'].currentText()
         self.pwin.graphicsView.clear()
 
         srcs = []
@@ -104,10 +91,10 @@ class Heatmap(CtrlNode):
     """Stack 1-D arrays and plot visually like a heatmap"""
     nodeName = "Heatmap"
     uiTemplate = [('Show', 'button', {'text': 'Show'}),
-                  ('CtrlsBtn', 'button', {'text': 'Ctrls'}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'}),
-                  ('labels_column', 'lineEdit', {'text': '', 'placeHolder': 'Column for ylabels'})
+                  ('data', 'combo', {}),
+                  ('labels', 'combo', {}),
+                  ('colormap', 'cmaplist', {}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def __init__(self, name):
@@ -116,34 +103,30 @@ class Heatmap(CtrlNode):
         self.ctrls['Apply'].clicked.connect(self.update)
         self.heatmap_widget = HeatmapTracerWidget()
         self.ctrls['Show'].clicked.connect(self.heatmap_widget.show)
-        self.heatmap_ctrl_widget = HeatmapControlWidget()
-        self.ctrls['CtrlsBtn'].clicked.connect(self.heatmap_ctrl_widget.show)
-        self.heatmap_ctrl_widget.signal_colormap_changed.connect(lambda m: self.set_data(m))
-        # autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
-        # self.ctrls['data_column'].setCompleter(autocompleter)
-        # self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
+        self.ctrls['colormap'].signal_colormap_changed.connect(self.set_cmap)
 
     def process(self, **kwargs):
-        # self.columns = transmission.df.columns
-        # self.setAutoCompleter()
+        self.transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(self.transmissions)
+        self.dfs = [t.df for t in self.transmissions_list]
+j
+        columns = pd.concat(self.dfs).columns
+        self.ctrls['data'].setItems(columns.to_list())
+        self.ctrls['labels'].setItems(columns.to_list())
+
+        self.data_column = self.ctrls['data'].currentText()
+        self.labels_column = self.ctrls['labels'].currentText()
+        cmap = self.ctrls['colormap'].current_cmap
+
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        self.data_column = self.ctrls['data_column'].text()
-        if self.data_column == '':
-            raise ValueError('No data column entered')
-
-        self.transmissions = kwargs['In']
-
-        self.set_data()
-
-    def set_data(self, cm='jet'):
-        transmissions_list = merge_transmissions(self.transmissions)
-        labels_column = self.ctrls['labels_column'].text()
-
-        dfs = [t.df for t in transmissions_list]
-
-        self.heatmap_widget.set_data(dataframes=dfs, data_column=self.data_column, labels_column=labels_column, cmap=cm)
+        self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
+                                     labels_column=self.labels_column, cmap=cmap)
+    @QtCore.pyqtSlot(str)
+    def set_cmap(self, cmap: str):
+        self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
+                                     labels_column=self.labels_column, cmap=cmap)
 
 
 

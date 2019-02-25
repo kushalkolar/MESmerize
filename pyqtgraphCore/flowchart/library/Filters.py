@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from ...Qt import QtCore, QtGui, QtWidgets
-from ..Node import Node
-# from . import functions
-from ... import functions as pgfn
 from .common import *
-from ...python2_3 import xrange
-from ... import PolyLineROI
-from ... import Point
-from ... import metaarray as metaarray
 from analyser.DataTypes import Transmission
 from scipy import signal
 from functools import partial
@@ -21,16 +13,20 @@ class Derivative(CtrlNode):
     nodeName = 'Derivative'
     uiTemplate = [
         ('dt', 'intSpin', {'min': 1, 'max': 999, 'value': 1, 'step': 1}),
-        ('Apply', 'check', {'checked': True, 'applyBox': True})
+        ('Apply', 'check', {'checked': True, 'applyBox': True}),
+        ('data_column', 'combo', {})
     ]
 
     def processData(self, transmission: Transmission):
+        columns = transmission.df.columns
+        self.ctrls['data_column'].setItems(columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
-        t = transmission.copy()
-        t.df['curve'] = t.df['curve'].apply(np.gradient)
-        t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
-        return t
+        self.t = transmission.copy()
+        data_column = self.ctrls['data_column'].currentText()
+        self.t.df['curve'] = self.t.df[data_column].apply(np.gradient)
+        self.t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
+        return self.t
 
 
 class TVDiff(CtrlNode):
@@ -109,13 +105,9 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
         p = self.ctrls['polyorder'].value()
 
         if p > w:
-            QtWidgets.QMessageBox.warning(None, 'Invalid value!',
-                                            ' polyorder MUST be less than window_length')
             raise ValueError('Invalid value! polyorder MUST be less than window_length')
 
         if w % 2 == 0:
-            QtWidgets.QMessageBox.warning(None, 'Invalid value!',
-                                            ' window_length MUST be an odd number!')
             raise ValueError('Invalid value! window_length MUST be an odd number!')
 
         # t.df['curve'].apply(lambda x: self._func)
@@ -150,33 +142,35 @@ class PowerSpectralDensity(CtrlNode):
 
 class Resample(CtrlNode):
     """Resample 1D data, uses scipy.signal.resample. "Rs" number of samples to resample to per "Tu" unit of time.
-    If "Tu" = 1, then Rs is the new sampling rate to resample to"""
+    If "Tu" = 1, then Rs is the new sampling rate to resample to\nOutput Column -> Input Column"""
 
     nodeName = 'Resample'
     uiTemplate = [
         ('Rs', 'intSpin', {'min': 1, 'max': 9999, 'value': 10, 'step': 5}),
         ('Tu', 'intSpin', {'min': 1, 'max': 9999, 'value': 1, 'step': 1}),
-        ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'}),
+        ('data_column', 'combo', {}),
         ('Apply', 'check', {'checked': True, 'applyBox': True})
     ]
 
     def processData(self, transmission: Transmission):
+        columns = transmission.df.columns
+        self.ctrls['data_column'].setItems(columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        self.data_column = self.ctrls['data_column'].text()
+        self.data_column = self.ctrls['data_column'].currentText()
         if self.data_column == '':
             return
 
-        t = transmission.copy()
+        self.t = transmission.copy()
 
         self.Rs = self.ctrls['Rs'].value()
         self.Tu = self.ctrls['Tu'].value()
         self.new_rate = self.Rs / self.Tu
 
-        t.df[self.data_column] = t.df.apply(self._func, axis=1)
-        t.src.append({'Resampled': {'new_sampling_rate': self.new_rate}})
-        return t
+        self.t.df[self.data_column] = self.t.df.apply(self._func, axis=1)
+        self.t.src.append({'Resampled': {'data_column': self.data_column, 'new_sampling_rate': self.new_rate}})
+        return self.t
 
     def _func(self, row: pd.Series):
         Nf = row['meta']['fps']
@@ -204,28 +198,32 @@ class ZScore(CtrlNode):
 
 
 class Normalize(CtrlNode):
-    """Normalize a column containing 1-D arrays such that values in each array are normalized between 0 and 1"""
+    """Normalize a column containing 1-D arrays such that values in each array are normalized between 0 and 1\n
+    Output Column -> Input Column"""
+
     nodeName = 'Normalize'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to plot'})
+                  ('data_column', 'combo', {})
                   ]
 
     def processData(self, transmission: Transmission):
+        columns = transmission.df.columns
+        self.ctrls['data_column'].setItems(columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        t = transmission.copy()
+        self.t = transmission.copy()
 
-        data_column = self.ctrls['data_column'].text()
+        data_column = self.ctrls['data_column'].currentText()
 
         #TODO: VERIFY THAT THIS MATCH IS CORRECT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        t.df[data_column] = t.df[data_column].apply(lambda a: ((a - np.min(a)) / (np.max(a - np.min(a)))))
+        self.t.df[data_column] = self.t.df[data_column].apply(lambda a: ((a - np.min(a)) / (np.max(a - np.min(a)))))
 
         # t.df[data_column] = pd.Series(n.tolist())
 
-        t.src.append({'Normalized': {'data_column': data_column}})
+        self.t.src.append({'Normalized': {'data_column': data_column}})
 
-        return t
+        return self.t
 
 # class Downsample(CtrlNode):
 #     """Downsample by averaging samples together."""

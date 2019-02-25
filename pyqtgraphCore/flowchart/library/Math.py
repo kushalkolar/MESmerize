@@ -1,93 +1,76 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from ...Qt import QtCore, QtGui, QtWidgets
-from ..Node import Node
-# from . import functions
-from ... import functions as pgfn
 from .common import *
-from ...python2_3 import xrange
-from ... import PolyLineROI
-from ... import Point
-from ... import metaarray as metaarray
 from analyser.DataTypes import Transmission
 from scipy import signal
 from functools import partial
-import pandas as pd
-from analyser.math.tvregdiff import tv_reg_diff
 from scipy import fftpack
 
 
 class AbsoluteValue(CtrlNode):
-    """Performs numpy.abs(<input>). Returns root-mean-square value if <input> is complex"""
+    """Performs numpy.abs(<input>). Returns root-mean-square value if <input> is complex\n
+    Output Column -> _abs"""
     nodeName = 'AbsoluteValue'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to transform'})]
-
-    def setAutoCompleter(self):
-        autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
-        self.ctrls['data_column'].setCompleter(autocompleter)
-        self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
+                  ('data_column', 'combo', {})]
 
     def processData(self, transmission: Transmission):
-        self.columns = transmission.df.columns
-        self.setAutoCompleter()
+        columns = transmission.df.columns
+        self.ctrls['data_column'].setItems(columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        data_column = self.ctrls['data_column'].text()
+        data_column = self.ctrls['data_column'].currentText()
 
-        t = transmission.copy()
+        self.t = transmission.copy()
 
-        t.df[data_column] = t.df[data_column].apply(lambda x: np.abs(x))
+        self.t.df['_abs'] = self.t.df[data_column].apply(lambda x: np.abs(x))
 
-        t.src.append({self.nodeName: data_column})
+        self.t.src.append({self.nodeName: data_column})
 
-        return t
+        return self.t
 
 
 class LogTransform(CtrlNode):
-    """Can perform various log transforms"""
+    """Can perform various log transforms\n
+    Output Column -> _log_transform"""
     nodeName = 'LogTransform'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
                   ('transform', 'combo', {'values': ['log10', 'ln', 'modlog10']}),
-                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to transform'})]
-
-    def setAutoCompleter(self):
-        autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
-        self.ctrls['data_column'].setCompleter(autocompleter)
-        self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
+                  ('data_column', 'combo', {})]
 
     def processData(self, transmission: Transmission):
-        self.columns = transmission.df.columns
-        self.setAutoCompleter()
+        columns = transmission.df.columns
+        self.ctrls['data_column'].setItems(columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        data_column = self.ctrls['data_column'].text()
+        data_column = self.ctrls['data_column'].currentText()
 
         self.t = transmission.copy()
 
         transform = self.ctrls['transform'].currentText()
 
         if transform == 'log10':
-            self.t.df[data_column] = self.t.df[data_column].apply(lambda x: np.log10(x))
+            self.t.df['_log_transform'] = self.t.df[data_column].apply(lambda x: np.log10(x))
             self.t.src.append({'log10': data_column})
 
         elif transform == 'ln':
-            self.t.df[data_column] = self.t.df[data_column].apply(lambda x: np.log(x))
+            self.t.df['_log_transform'] = self.t.df[data_column].apply(lambda x: np.log(x))
             self.t.src.append({'ln': data_column})
 
         elif transform == 'modlog10':
             logmod = lambda x: np.sign(x) * (np.log10(np.abs(x) + 1))
-            self.t.df[data_column] = self.t.df[data_column].apply(logmod)
+            self.t.df['_log_transform'] = self.t.df[data_column].apply(logmod)
             self.t.src.append({'logmod': data_column})
 
         return self.t
 
 
 class RFFT(CtrlNode):
-    """Uses fftpack.rfft, 'Discrete Fourier transform of a real sequence.'
-    https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.rfft.html#scipy.fftpack.rfft
+    """Uses fftpack.rfft, 'Discrete Fourier transform of a real sequence.\n
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.rfft.html#scipy.fftpack.rfft\n
+    Output Column -> _rfft
     """
     nodeName = 'RFFT'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
@@ -104,7 +87,7 @@ class RFFT(CtrlNode):
 
         data_column = self.ctrls['data_column'].currentText()
 
-        self.t.df['rfft'] = self.t.df[data_column].apply(fftpack.rfft)
+        self.t.df['_rfft'] = self.t.df[data_column].apply(fftpack.rfft)
 
         self.t.src.append({'fftpack.rfft': {'data_column': data_column}})
 
@@ -112,10 +95,10 @@ class RFFT(CtrlNode):
 
 
 class iRFFT(CtrlNode):
-    """Uses fftpack.irfft, 'Return inverse discrete Fourier transform of real sequence.'
-    https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.irfft.html#scipy.fftpack.irfft
-
-    Input must have an rfft column from the RFFT node.
+    """Uses fftpack.irfft, 'Return inverse discrete Fourier transform of real sequence.'\n
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.irfft.html#scipy.fftpack.irfft\n
+    Input must have an _rfft column from the RFFT node.\n
+    Output Column -> _irfft
     """
     nodeName = 'iRFFT'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
@@ -124,10 +107,10 @@ class iRFFT(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        t = transmission.copy()
+        self.t = transmission.copy()
 
-        t.df['irfft'] = t.df['rfft'].apply(fftpack.irfft)
+        self.t.df['_irfft'] = self.t.df['_rfft'].apply(fftpack.irfft)
 
-        t.src.append({'fftpack.irfft': {'data_column': 'rfft'}})
+        self.t.src.append({'fftpack.irfft': {'data_column': '_rfft'}})
 
-        return t
+        return self.t

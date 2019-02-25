@@ -15,6 +15,7 @@ except:
     HAVE_METAARRAY = False
 
 from ...widgets.ComboBox import ComboBox as QComboBox
+from plotting.modules.widgets import ColormapListWidget
 
 
 def generateUi(opts):
@@ -109,6 +110,9 @@ def generateUi(opts):
                 w.setChecked(o['checkable'])
             if 'toolTip' in o:
                 w.setToolTip(o['toolTip'])
+
+        elif t == 'cmaplist' :
+            w = ColormapListWidget()
 
         #elif t == 'colormap':
             #w = ColorMapper()

@@ -22,8 +22,6 @@ import traceback
 from clustering.LDA.main_window import LDAPlot
 
 
-
-
 def _open_plot_gui(self):
     if self.plot_gui is None:
         self.plot_gui = BeeswarmPlotWindow(parent=self.parent())
