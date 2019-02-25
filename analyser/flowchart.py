@@ -37,6 +37,12 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
 
+        self.dockConsole.hide()
+
+        self.fc = Flowchart(terminals={'dataIn': {'io': 'in'}, 'dataOut': {'io': 'out'}})
+
+        self.fc_widget = self.fc.widget()
+
         ns = {'np': np,
               'pd': pd,
               'pickle': pickle,
@@ -58,11 +64,6 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
         self.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                  historyFile=cmd_history_file))
 
-        self.dockConsole.hide()
-
-        self.fc = Flowchart(terminals={'dataIn': {'io': 'in'}, 'dataOut': {'io': 'out'}})
-
-        self.fc_widget = self.fc.widget()
 
         self.dockFcWidget.setWidget(self.fc_widget)
 
