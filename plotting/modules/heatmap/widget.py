@@ -12,8 +12,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .heatmap import Heatmap
-from .control_widget import Ui_DockWidget
-from glob import glob
 import numpy as np
 
 import pandas as pd
@@ -102,24 +100,24 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         self.plot_widget.highlight_row(ix)
 
 
-class HeatmapControlWidget(QtWidgets.QDockWidget):
-    signal_colormap_changed = QtCore.pyqtSignal(str)
-
-    def __init__(self, parent=None):
-        QtWidgets.QDockWidget.__init__(self, parent=parent)
-        self.ui = Ui_DockWidget()
-        self.ui.setupUi(self)
-
-        self.populate_colormaps()
-        self.ui.listWidgetColorMaps.itemClicked.connect(self.emit_colormap_changed)
-
-    def emit_colormap_changed(self, item: QtWidgets.QListWidgetItem):
-        self.signal_colormap_changed.emit(item.text())
-
-    def populate_colormaps(self):
-        print(glob('./*'))
-        # for path in glob('./colormaps/plotter/modules/heatmap/colormaps/*.png'):
-        #     img = QtGui.QIcon(path)
+#class HeatmapControlWidget(QtWidgets.QWidget):
+#    signal_colormap_changed = QtCore.pyqtSignal(str)
+#
+#    def __init__(self, parent=None):
+#        QtWidgets.QDockWidget.__init__(self, parent=parent)
+#        self.ui = Ui_DockWidget()
+#        self.ui.setupUi(self)
+#
+#        self.populate_colormaps()
+#        self.ui.listWidgetColorMaps.itemClicked.connect(self.emit_colormap_changed)
+#
+#    def emit_colormap_changed(self, item: QtWidgets.QListWidgetItem):
+#        self.signal_colormap_changed.emit(item.text())
+#
+#    def populate_colormaps(self):
+#        print(glob('./*'))
+#        # for path in glob('./colormaps/plotter/modules/heatmap/colormaps/*.png'):
+#        #     img = QtGui.QIcon(path)
         #     item = QtWidgets.QListWidgetItem(path.split('/')[-1][:-4])
         #     item.setIcon(img)
         #     self.ui.listWidgetColorMaps.addItem(item)
