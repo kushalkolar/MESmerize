@@ -85,6 +85,8 @@ def generateUi(opts):
                 for i in o['values']:
                     if i != '':
                         w.addItem(i)
+            if 'items' in o.keys():
+                w.setItems(w['items'])
 
         elif t == 'lineEdit':
             w = QtGui.QLineEdit()
