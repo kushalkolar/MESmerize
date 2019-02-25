@@ -91,29 +91,24 @@ class RFFT(CtrlNode):
     """
     nodeName = 'RFFT'
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'lineEdit', {'text': '', 'placeHolder': 'Data column to splice'})
+                  ('data_column', 'combo', {})
                   ]
 
-    def setAutoCompleter(self):
-        autocompleter = QtWidgets.QCompleter(self.columns, self.ctrls['data_column'])
-        self.ctrls['data_column'].setCompleter(autocompleter)
-        self.ctrls['data_column'].setToolTip('\n'.join(self.columns))
-
     def processData(self, transmission: Transmission):
-        self.columns = transmission.df.columns
-        self.setAutoCompleter()
+        columns = transmission.df.columns
+        self.ctrls['data_column'].setItems(columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        t = transmission.copy()
+        self.t = transmission.copy()
 
-        data_column = self.ctrls['data_column'].text()
+        data_column = self.ctrls['data_column'].currentText()
 
-        t.df['rfft'] = t.df[data_column].apply(fftpack.rfft)
+        self.t.df['rfft'] = self.t.df[data_column].apply(fftpack.rfft)
 
-        t.src.append({'fftpack.rfft': {'data_column': data_column}})
+        self.t.src.append({'fftpack.rfft': {'data_column': data_column}})
 
-        return t
+        return self.t
 
 
 class iRFFT(CtrlNode):

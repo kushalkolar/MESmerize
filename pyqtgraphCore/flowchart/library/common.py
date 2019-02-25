@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ...Qt import QtCore, QtGui, QtWidgets
+from ...Qt import QtCore, QtGui
 from ...widgets.SpinBox import SpinBox
 #from ...SignalProxy import SignalProxy
 from ...WidgetGroup import WidgetGroup
@@ -14,11 +14,13 @@ try:
 except:
     HAVE_METAARRAY = False
 
+from ...widgets.ComboBox import ComboBox as QComboBox
+
 
 def generateUi(opts):
     """Convenience function for generating common UI types"""
-    widget = QtWidgets.QWidget(parent=None)
-    l = QtWidgets.QFormLayout()
+    widget = QtGui.QWidget(parent=None)
+    l = QtGui.QFormLayout()
     l.setSpacing(0)
     widget.setLayout(l)
     ctrls = {}
@@ -33,7 +35,7 @@ def generateUi(opts):
             raise Exception("Widget specification must be (name, type) or (name, type, {opts})")
         if t == 'intSpin':
             # w = QtGui.QSpinBox()
-            w = QtWidgets.QSpinBox()
+            w = QtGui.QSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
             if 'min' in o:
@@ -44,7 +46,7 @@ def generateUi(opts):
                 w.setSingleStep(o['step'])
 
         elif t == 'doubleSpin':
-            w = QtWidgets.QDoubleSpinBox()
+            w = QtGui.QDoubleSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
             if 'min' in o:
@@ -59,7 +61,7 @@ def generateUi(opts):
         #     w.setOpts(**o)
 
         elif t == 'check':
-            w = QtWidgets.QCheckBox()
+            w = QtGui.QCheckBox()
             if 'checked' in o:
                 w.setChecked(o['checked'])
             if 'toolTip' in o:
@@ -72,19 +74,19 @@ def generateUi(opts):
                                  'while keeping this checked.')
 
         elif t == 'radioBtn':
-            w = QtWidgets.QRadioButton()
+            w = QtGui.QRadioButton()
             if 'checked' in o:
                 w.setChecked(o['checked'])
 
         elif t == 'combo':
-            w = QtWidgets.QComboBox()
+            w = QComboBox()
             if 'values' in o.keys():
                 for i in o['values']:
                     if i != '':
                         w.addItem(i)
 
         elif t == 'lineEdit':
-            w = QtWidgets.QLineEdit()
+            w = QtGui.QLineEdit()
             if 'placeHolder' in o:
                 w.setPlaceholderText(o['placeHolder'])
             if 'text' in o:
@@ -93,14 +95,14 @@ def generateUi(opts):
                 w.setToolTip(o['toolTip'])
 
         elif t == 'label':
-            w = QtWidgets.QLabel()
+            w = QtGui.QLabel()
             if 'text' in o:
                 w.setText(o['text'])
             if 'toolTip' in o:
                 w.setToolTip(o['toolTip'])
 
         elif t == 'button':
-            w = QtWidgets.QPushButton()
+            w = QtGui.QPushButton()
             if 'text' in o:
                 w.setText(o['text'])
             if 'checkable' in o:
@@ -265,12 +267,12 @@ def merge_transmissions(transmissions):
     for t in transmissions.items():
         t = t[1]
         if t is None:
-            QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+            QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
             continue
         if type(t) is list:
             for i in range(len(t)):
                 if t[i] is None:
-                    QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                    QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
                     continue
                 transmissions_list.append(t[i].copy())
             continue
