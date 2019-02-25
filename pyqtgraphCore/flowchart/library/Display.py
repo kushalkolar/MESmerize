@@ -109,7 +109,7 @@ class Heatmap(CtrlNode):
         self.transmissions = kwargs['In']
         self.transmissions_list = merge_transmissions(self.transmissions)
         self.dfs = [t.df for t in self.transmissions_list]
-j
+
         columns = pd.concat(self.dfs).columns
         self.ctrls['data'].setItems(columns.to_list())
         self.ctrls['labels'].setItems(columns.to_list())
