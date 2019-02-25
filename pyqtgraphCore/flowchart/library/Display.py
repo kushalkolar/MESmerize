@@ -123,7 +123,6 @@ class Heatmap(CtrlNode):
 
         self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
-    @QtCore.pyqtSlot(str)
     def set_cmap(self, cmap: str):
         self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
