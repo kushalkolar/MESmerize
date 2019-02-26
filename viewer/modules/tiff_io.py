@@ -76,7 +76,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                                              meta_path=self.ui.labelFileMeta.text())
             self.vi.update_workEnv()
             self.vi.enable_ui(True)
-            self.vi.viewer.ui.label_curr_img_seq_name.setText(tiff_path.split('/')[-1])
+            self.vi.viewer.ui.label_curr_img_seq_name.setText(os.path.basename(tiff_path))
             self.vi.viewer.status_bar_label.showMessage('File loaded into work environment!')
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!',

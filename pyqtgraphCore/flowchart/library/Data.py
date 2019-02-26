@@ -1,20 +1,12 @@
 # -*- coding: utf-8 -*-
-from ..Node import Node
 from ...Qt import QtGui, QtCore, QtWidgets
 import numpy as np
 from .common import *
-from ...SRTTransform import SRTTransform
-from ...Point import Point
-from ...widgets.TreeWidget import TreeWidget
-from ...graphicsItems.LinearRegionItem import LinearRegionItem
 import pickle
-# from . import functions
-from collections import OrderedDict
 from functools import partial
 from analyser.DataTypes import Transmission, StatsTransmission
-import MesmerizeCore.misc_funcs
 from common import configuration
-import builtins
+from os.path import basename
 
 
 class LoadProjDF(CtrlNode):
@@ -94,7 +86,7 @@ class LoadFile(CtrlNode):
             QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
 
-        self.ctrls['fname'].setText(path[0].split('/')[-1][:-4])
+        self.ctrls['fname'].setText(basename(path[0])[:-4])
         # print(self.transmission)
         # self.update()
         self.changed()
@@ -167,22 +159,18 @@ class RunScript(CtrlNode):
 
         self.ctrls['Open'].clicked.connect(self._fileDialog)
         self.previous_output = None
-        self.script="return 'No Script'"
+        self.script = "return 'No Script'"
         self.ctrls['Run'].clicked.connect(self._execute)
 
     def _fileDialog(self):
         self.path = QtWidgets.QFileDialog.getOpenFileName(None, 'Select script', '', '(*.py)')
         if self.path == '':
             return
-        self.ctrls['fname'].setText(self.path[0].split('/')[-1][:-3])
+        self.ctrls['fname'].setText(basename(self.path[0])[:-3])
 
     def _execute(self):
-        try:
-            self.f = open(self.path[0], 'r')
-            self.script = self.f.read()
-        except Exception as e:
-            MesmerizeCore.misc_funcs.fileOpenErrorMsg(e)
-
+        self.f = open(self.path[0], 'r')
+        self.script = self.f.read()
         self.update()
 
     def process(self, **kwargs):

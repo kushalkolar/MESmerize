@@ -15,6 +15,7 @@ except:
     HAVE_METAARRAY = False
 
 from ...widgets.ComboBox import ComboBox as QComboBox
+from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
 from plotting.modules.widgets import ColormapListWidget
 
 
@@ -35,7 +36,6 @@ def generateUi(opts):
         else:
             raise Exception("Widget specification must be (name, type) or (name, type, {opts})")
         if t == 'intSpin':
-            # w = QtGui.QSpinBox()
             w = QtGui.QSpinBox()
             if 'max' in o:
                 w.setMaximum(o['max'])
@@ -57,16 +57,10 @@ def generateUi(opts):
             if 'step' in o:
                 w.setSingleStep(o['step'])
 
-        # elif t == 'spin':
-        #     w = SpinBox()
-        #     w.setOpts(**o)
-
         elif t == 'check':
             w = QtGui.QCheckBox()
             if 'checked' in o:
                 w.setChecked(o['checked'])
-            if 'toolTip' in o:
-                w.setToolTip(o['toolTip'])
             if 'applyBox' in o:
                 if o['applyBox'] is True:
                     w.setToolTip('When checked this node will process all incoming data.\n'
@@ -94,15 +88,25 @@ def generateUi(opts):
                 w.setPlaceholderText(o['placeHolder'])
             if 'text' in o:
                 w.setText(o['text'])
-            if 'toolTip' in o:
-                w.setToolTip(o['toolTip'])
+
+        elif t == 'plainTextEdit':
+            w = QtGui.QPlainTextEdit()
+            if 'placeHolder' in o:
+                w.setPlaceholderText(o['placeHolder'])
+            if 'text' in o:
+                w.setText(o['text'])
+
+        elif t == 'kwargTextEdit':
+            w = QtGui.KwargPlainTextEdit()
+            if 'placeHolder' in o:
+                w.setPlaceholderText(o['placeHolder'])
+            if 'text' in o:
+                w.setText(o['text'])
 
         elif t == 'label':
             w = QtGui.QLabel()
             if 'text' in o:
                 w.setText(o['text'])
-            if 'toolTip' in o:
-                w.setToolTip(o['toolTip'])
 
         elif t == 'button':
             w = QtGui.QPushButton()
@@ -110,19 +114,15 @@ def generateUi(opts):
                 w.setText(o['text'])
             if 'checkable' in o:
                 w.setChecked(o['checkable'])
-            if 'toolTip' in o:
-                w.setToolTip(o['toolTip'])
 
         elif t == 'cmaplist' :
             w = ColormapListWidget()
 
-        #elif t == 'colormap':
-            #w = ColorMapper()
         elif t == 'color':
             w = ColorButton()
         else:
             raise Exception("Unknown widget type '%s'" % str(t))
-        if 'tip' in o:
+        if 'toolTip' in o:
             w.setToolTip(o['tip'])
         w.setObjectName(k)
         l.addRow(k, w)
@@ -170,18 +170,11 @@ class CtrlNode(Node):
         if In is None:
             return
 
-        # if 'Out' in kwargs.items():
-            # print(' !!!!!!!!! >>>>>>>>>> OUT PASSED INTO process() <<<<<<<<<<<<<<< !!!!!!!!!!!!')
-            # print(kwargs['Out'])
-            # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-
         if type(In) is None:
-            raise TypeError('Incoming tranmission is None')
+            raise TypeError('Incoming transmission is None')
 
         if isinstance(In, Transmission):
             if In.df.empty:
-                # QtGui.QMessageBox.warning(None, 'IndexError!',
-                #                                 'The DataFrame of the incoming transmission is empty!')
                 raise IndexError('The DataFrame of the incoming transmission is empty!')
 
         out = self.processData(In)
@@ -248,7 +241,6 @@ class PlottingCtrlNode(CtrlNode):
         out['plot'] = None
         return out
 
-
 def metaArrayWrapper(fn):
     def newFn(self, data, *args, **kargs):
         if HAVE_METAARRAY and (hasattr(data, 'implements') and data.implements('MetaArray')):
@@ -273,17 +265,18 @@ def merge_transmissions(transmissions):
     for t in transmissions.items():
         t = t[1]
         if t is None:
-            QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-            continue
+            raise TypeError('One of your transmissions is None')
+           # continue
         if type(t) is list:
             for i in range(len(t)):
                 if t[i] is None:
-                    QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-                    continue
+                    raise TypeError('One of your transmissions is None')
+                    # QtGui.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                    # continue
                 transmissions_list.append(t[i].copy())
             continue
 
         transmissions_list.append(t.copy())
     return transmissions_list
-    #self.plot_gui.update_input_transmissions(transmissions_list)
+
 
