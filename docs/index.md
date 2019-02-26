@@ -70,11 +70,11 @@ The computationally intense procedures performed using the CaImAn library (Elast
 	 - Agglomerative
 	 - LDA
  - **Transform** - based on sklearn 
- 	 - Manifold Learning
-	 	- Isomap
-		- Locally Linear Embedding
-		- Spectral Embedding
-		- MDS
+ 	*Manifold Learning*
+	- Isomap
+	- Locally Linear Embedding
+	- Spectral Embedding
+	- MDS
 - **Decomposition** - based on sklearn
 	 - PCA
  
