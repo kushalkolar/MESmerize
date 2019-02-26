@@ -30,10 +30,10 @@ class ColormapListWidget(QtWidgets.QListWidget):
 
         for path in glob(mdir + '/colormaps/*.png'):
             img = QtGui.QIcon(path)
-            item = QtWidgets.QListWidgetItem(path.split('/')[-1][:-4])
+            item = QtWidgets.QListWidgetItem(os.path.basename(path)[:-4])
             item.setIcon(img)
             self.addItem(item)
-        self.setIconSize(QtCore.QSize(100,50))
+        self.setIconSize(QtCore.QSize(100, 50))
 
 
 if __name__ == '__main__':

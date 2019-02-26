@@ -94,15 +94,30 @@ class ComboBox(QtGui.QComboBox):
                 self.blockSignals(blocked)
 
             # only emit if the value has changed
-            # if self.value() != prevVal:
-            #    self.currentIndexChanged.emit(self.currentIndex())
+            if self.value() != prevVal:
+               self.currentIndexChanged.emit(self.currentIndex())
+
+            return ret
+
+        return fn
+
+    def blockForced(func):
+        # Same as blockIfUnchanged but forced blocking
+        def fn(self, *args, **kwds):
+            prevVal = self.value()
+            blocked = self.signalsBlocked()
+            self.blockSignals(True)
+            try:
+                ret = func(self, *args, **kwds)
+            finally:
+                self.blockSignals(blocked)
 
             return ret
 
         return fn
 
     @ignoreIndexChange
-    @blockIfUnchanged
+    @blockForced
     def setItems(self, items):
         """
         *items* may be a list, a tuple, or a dict.
