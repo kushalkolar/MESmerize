@@ -28,7 +28,9 @@ class KMeans(CtrlNode):
                         {'items': ['auto', 'True', 'False']}),
 
                   ('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})]
+
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def processData(self, transmission: Transmission):
         columns = transmission.df.columns
@@ -60,9 +62,7 @@ class KMeans(CtrlNode):
 
         self.kmeans.fit(self.data)
 
-        cluster_labels = self.kmeans.labels_
-
-        self.t.df[output_column] = cluster_labels
+        self.t.df[output_column] = self.kmeans.labels_
 
         self.t.src.append({'KMeans':
                                {'data_column': data_column,
@@ -79,3 +79,17 @@ class Agglomerative(CtrlNode):
     https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html\n
     Output column -> _AGG_CLUSTER_LABEL_<data_column>"""
     nodeName = 'Agglomerative'
+    uiTemplate = [('n_clusters', 'intSpin',
+                        {'min': 2, 'max': 999, 'step': 1, 'value': 2,
+                         'toolTip': 'The number of clusters to find.'}),
+
+                  ('affinity'),
+
+                  ('connectivity', 'combo',
+                        {'toolTip': 'Dataframe column containing a connectivity matrix.\n'
+                                    'Defines for each sample the neighboring samples following a given structure of the data.\n'
+                                    'This can be a connectivity matrix itself or a callable that transforms the data\n'
+                                    'into a connectivity matrix, such as derived from kneighbors_graph.\n'
+                                    'Default is None, i.e, the hierarchical clustering algorithm is unstructured.'})
+
+                  ]

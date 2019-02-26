@@ -10,11 +10,16 @@ class Manifold(CtrlNode):
     nodeName = 'Manifold'
     uiTemplate = [('method', 'combo', {'items': ['Isomap', 'Locally Linear Embedding',
                                                  'Spectral Embedding', 'MDS']}),
+
                   ('n_components', 'intSpin', {'max': 3, 'min': 2, 'value': 2, 'step': 1}),
+
                   ('kwargs', 'kwargTextEdit', {'placeHolder': 'Any additional kwargs to pass to'
                                                               'the sklearn.manifold function'}),
+
                   ('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})]
+
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def processData(self, transmission: Transmission):
         columns = transmission.df.columns
@@ -32,11 +37,16 @@ class Manifold(CtrlNode):
 
         data = np.vstack(self.t.df[data_column].values)
 
-        self.t.df[output_column] = self._get_transform(method, data, n_components, kwargs)
+        T = self._get_transform(method, data, n_components, kwargs)
+        self.t.df[output_column] = T.tolist()
 
         self.t.src.append({'Manifold':
-                               {'data_column': data_column, 'method': method, 'n_components': str(n_components),
-                                'kwargs': kwargs}})
+                               {'data_column': data_column,
+                                'method': method,
+                                'n_components': n_components,
+                                'kwargs': kwargs
+                                }
+                           })
 
         return self.t
 
