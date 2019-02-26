@@ -38,32 +38,43 @@ The computationally intense procedures performed using the CaImAn library (Elast
 ### ROI Manager
 
 
-# Data analysis - programmable flowcharts
+# Data analysis - pyqtgraph programmable flowcharts.
 **Types of Nodes**
  - **Data Nodes**
 	 - Load_Proj_DF
-	 - New Data passthrough
 	 - Save
 	 - Load
-	 - Bypass
- - **Display Nodes**
-	 - Plot
-	 - PSD Plot
-	 - FFT Spectrum
- - **Definition Nodes**
+ - **Plotting**
+	 - Simple time series
+	 - Heatmap
+ - **Categorical Filters**
 	 - Align Stims
 	 - ROI Selection
 	 - Genotype selection
 	 - Peak Detection
-	 - Custom columns, such as stage
- - **Signal filter nodes**
+	 - Custom columns
+ - **Filters and Signal Processing**
 	 - Butterworth filter
 	 - Savitzsky-Golay filter
-	 - FFT Filter
 	 - Derivative
- - **Statistics**
-	 - Peak Features
+	 - Resample
+	 - Normalize
+	 - Z-Score
+- **Math**
+	 - LogTransform
+	 - Discreate fourier transform
+	 - Inverse discrete fourier transform
+	 - Absolute value
+ - **Clustering** - based on sklearn
+	 - KMeans
+	 - Agglomerative
+	 - LDA
+ - **Transform** - based on sklearn 
+ 	 - Manifold Learning
+	 	- Isomap
+		- Locally Linear Embedding
+		- Spectral Embedding
+		- MDS
+- **Decomposition** - based on sklearn
+	 - PCA
  
-# Plotting
-
-To get started we recommend following the tutorial (not yet available) using the example datasets. We include image sequences acquired from a Femtonics microscope and standard tiff files of image sequences from a simple epifluorescent microscope.
