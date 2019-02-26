@@ -477,6 +477,9 @@ class ModuleGUI(QtWidgets.QWidget):
         self.process.start(sh_file)
         self.ui.listwBatch.item(self.current_batch_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
+    def create_run_script(self, parent_dir):
+        pass
+
     def get_batch_item_output(self, UUID: uuid.UUID):
         out_file = self.working_dir + '/' + str(UUID) + '.out'
         if os.path.isfile(out_file):
