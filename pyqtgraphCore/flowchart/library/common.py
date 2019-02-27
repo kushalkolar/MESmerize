@@ -80,7 +80,7 @@ def generateUi(opts):
                     if i != '':
                         w.addItem(i)
             if 'items' in o.keys():
-                w.setItems(w['items'])
+                w.setItems(o['items'])
 
         elif t == 'lineEdit':
             w = QtGui.QLineEdit()
@@ -123,7 +123,7 @@ def generateUi(opts):
         else:
             raise Exception("Unknown widget type '%s'" % str(t))
         if 'toolTip' in o:
-            w.setToolTip(o['tip'])
+            w.setToolTip(o['toolTip'])
         w.setObjectName(k)
         l.addRow(k, w)
         if o.get('hidden', False):
