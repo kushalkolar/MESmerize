@@ -56,7 +56,8 @@ class LoadProjDF(CtrlNode):
             proj_path = configuration.proj_path
             # print('*****************config df ref hex ID:*****************')
             # print(hex(id(df)))
-            self.t = Transmission.from_proj(proj_path, df, self.ctrls['DF_Name'].currentText(), misc_info={'dataframe_filter_history': filter_history})
+            self.t = Transmission.from_proj(proj_path, df, sub_dataframe_name=child_df_name,
+                                            dataframe_filter_history={'dataframe_filter_history': filter_history})
 
             # print('Tranmission dataframe hexID:')
             # print(hex(id(self.t.df)))

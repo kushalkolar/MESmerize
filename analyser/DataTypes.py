@@ -17,30 +17,178 @@ import pickle
 import json
 from copy import deepcopy
 from uuid import uuid4, UUID
+from typing import Tuple, List
+
+
+class DataBlockNotFound(Exception):
+    """ Requested data block not found """
+    def __init__(self, *args, **kwargs): # real signature unknown
+        pass
+
+    @staticmethod # known case of __new__
+    def __new__(*args, **kwargs): # real signature unknown
+        """ Create and return a new object.  See help(type) for accurate signature. """
+        pass
+
+
+class DataBlockAlreadyExists(Exception):
+    """ Data block already exists in HistoryTrace """
+    def __init__(self, *args, **kwargs): # real signature unknown
+        pass
+
+    @staticmethod # known case of __new__
+    def __new__(*args, **kwargs): # real signature unknown
+        """ Create and return a new object.  See help(type) for accurate signature. """
+        pass
+
+
+class OperationNotFound(Exception):
+    """ Requested operation not found in data block """
+    def __init__(self, *args, **kwargs): # real signature unknown
+        pass
+
+    @staticmethod # known case of __new__
+    def __new__(*args, **kwargs): # real signature unknown
+        """ Create and return a new object.  See help(type) for accurate signature. """
+        pass
+
+
+class HistoryTrace:
+    """
+    Structure of a history trace:
+
+    A dict with keys that are the block_ids. Each dict value is a list of operation_dicts.
+    Each operation_dict has a single key which is the name of the operation and the value of that key is the operation parameters.
+
+        {block_id_1: [
+                        {operation_1:
+                            {
+                             param_1: a,
+                             param_2: b,
+                             param_n, z
+                             }
+                         },
+
+                        {operation_2:
+                            {
+                             param_1: a,
+                             param_n, z
+                             }
+                         },
+                         ...
+                        {operation_n:
+                            {
+                             param_n: x
+                             }
+                         }
+                     ]
+         block_id_2: <list of operation dicts>,
+         ...
+         block_id_n: <list of operation dicts>
+         }
+    """
+    def __init__(self, history: dict = None, data_blocks: list = None):
+        if None in [history, data_blocks]:
+            self.data_blocks = list()
+            self._history = dict()
+        else:
+            self.data_blocks = data_blocks
+            self.history = history
+
+    @property
+    def history(self) -> dict:
+        return self._history
+
+    @history.setter
+    def history(self, h):
+        self._history = h
+
+    def create_data_block(self, dataframe: pd.DataFrame) -> Tuple[pd.DataFrame, UUID]:
+        block_id = uuid4()
+        self.add_data_block(block_id)
+        dataframe['_BLOCK_'] = uuid4()
+        return dataframe, block_id
+
+    def add_data_block(self, data_block_id: UUID):
+        if data_block_id in self.data_blocks:
+            raise DataBlockAlreadyExists(str(data_block_id))
+        else:
+            self.data_blocks.append(data_block_id)
+
+        self.history.update({data_block_id: []})
+
+    def add_operation(self, data_block_id: UUID, operation: str, parameters: dict):
+        assert isinstance(data_block_id, UUID)
+        assert isinstance(operation, str)
+        assert isinstance(parameters, dict)
+
+        if data_block_id not in self.data_blocks:
+            raise DataBlockNotFound(str(data_block_id))
+
+        self.history[data_block_id].append({operation: parameters})
+
+    def get_data_block_history(self, data_block_id: UUID) -> list:
+        if data_block_id not in self.data_blocks:
+            raise DataBlockNotFound(str(data_block_id))
+
+        return self.history[data_block_id]
+
+    def get_operation_params(self, data_block_id: UUID, operation: str) -> dict:
+        try:
+            l = self.get_data_block_history(data_block_id)
+            params = next(d for ix, d in enumerate(l) if operation in d)[operation]
+        except StopIteration:
+            raise OperationNotFound('Data block: ' + str(data_block_id) + '\nOperation: ' + operation)
+
+        return params
+
+    def _export(self):
+        return {'history': self.history, 'data_blocks': self.data_blocks}
+
+    def to_json(self, path: str):
+        json.dump(self._export(), open(path, 'w'))
+
+    @classmethod
+    def from_json(cls, path: str):
+        j = json.load(open(path, 'r'))
+        return cls(history=j['history'], data_blocks=['data_blocks'])
+
+    def to_pickle(self, path):
+        pickle.dump(self._export(), open(path, 'wb'))
+
+    @classmethod
+    def from_pickle(cls, path: str):
+        p = pickle.load(open(path, 'r'))
+        return cls(history=p['history'], data_blocks=p['data_blocks'])
+
+    @classmethod
+    def merge(cls, history_traces: list):
+        assert all(isinstance(h, HistoryTrace) for h in history_traces)
+        data_blocks = [h.data_blocks for h in history_traces]
+
+        history = dict()
+        for h in history_traces:
+            d = h.history
+            history.update(d)
+
+        return cls(history=history, data_blocks=data_blocks)
 
 
 class BaseTransmission:
-    def __init__(self, df: pd.DataFrame, src: list, **kwargs):
+    def __init__(self, df: pd.DataFrame, history_trace: HistoryTrace, **kwargs):
         """
         Base class for common Transmission functions
-
-        :param  src:    List of dicts with history of the nodes & node parameters
-                        the transmission has been processed through
-
-        Some optional kwargs:
-        :param  STIM_DEFS:  STIM_DEF columns, used by the AlignStims control node for example
-        :type   STIM_DEFS:  list
-
-        :param  ROI_DEFS:   ROI_DEF columns, used by the ROI selection control node for example
-        :type   ROI_DEFS:   list
+        :param  dataframe:      Transmission dataframe
+        :param  history_trace:  HistoryTrace object, keeps track of the nodes & node parameters
+                                the transmission has been processed through
         """
         self.df = df
-        self.src = src
-        self.kwargs = kwargs
-        self.kwargs_keys = list(kwargs.keys())
-
-        for key in self.kwargs_keys:
-            setattr(self, key, kwargs[key])
+        self.history_trace = history_trace
+        # self.kwargs = kwargs
+        # self.kwargs_keys = list(kwargs.keys())
+        #
+        # for key in self.kwargs_keys:
+        #     setattr(self, key, kwargs[key])
 
     @classmethod
     def from_pickle(cls, path):
@@ -55,11 +203,11 @@ class BaseTransmission:
         """
         Package attributes as a dict, useful for pickling
         """
-        d = {'df':  self.df,
-             'src': self.src}
+        d = {'df':              self.df,
+             'history_trace':   self.history_trace}
 
-        for key in self.kwargs_keys:
-            d.update({key: getattr(self, key)})
+        # for key in self.kwargs_keys:
+        #     d.update({key: getattr(self, key)})
         return d
 
     def to_pickle(self, path: str):
@@ -81,38 +229,41 @@ class BaseTransmission:
         """
         c = list(transmission.df.columns) + addCols
         e_df = pd.DataFrame(columns=c)
-        return cls(e_df, transmission.src, **transmission.kwargs)
+        return cls(e_df, transmission.history_trace, **transmission.kwargs)
 
 
 class Transmission(BaseTransmission):
     """The regular transmission class used throughout the flowchart"""
     @classmethod
-    def from_proj(cls, proj_path: str, dataframe: pd.DataFrame, df_name='', misc_info=None):
+    def from_proj(cls, proj_path: str, dataframe: pd.DataFrame, sub_dataframe_name: str = 'root',
+                  dataframe_filter_history: dict = None):
         """
         :param proj_path: root directory of the project
         :param dataframe: Chosen Child DataFrame from the Mesmerize Project
-        :param df_name:   name of dataframe, usually the project browswer tab indicating the child dataframe name
 
-        :return: Transmission class object
         """
         df = dataframe.copy()
         df[['curve', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
         df['raw_curve'] = df['curve']
 
-        df['_BLOCK_'] = uuid4()
-        
-        try:
-            from common import configuration
-            if configuration.proj_path is not None:
-                stim_defs = configuration.proj_cfg.options('STIM_DEFS')
-                roi_defs = configuration.proj_cfg.options('ROI_DEFS')
-            else:
-                stim_defs = []
-                roi_defs = []
-        except:
-            return cls(df, src=[{'raw': df_name}])
+        h = HistoryTrace()
+        df, block_id = h.create_data_block(dataframe)
 
-        return cls(df, src=[{'raw': df_name}], STIM_DEFS=stim_defs, ROI_DEFS=roi_defs, misc_info=misc_info)
+        params = {'sub_dataframe_name': sub_dataframe_name, 'dataframe_filter_history': dataframe_filter_history}
+        h.add_operation(data_block_id=block_id, operation='spawn_transmission', parameters=params)
+
+        # try:
+        #     from common import configuration
+        #     if configuration.proj_path is not None:
+        #         stim_defs = configuration.proj_cfg.options('STIM_DEFS')
+        #         roi_defs = configuration.proj_cfg.options('ROI_DEFS')
+        #     else:
+        #         stim_defs = []
+        #         roi_defs = []
+        # except:
+        #     return cls(df, history_trace=h)
+
+        return cls(df, history_trace=h)
 
     @staticmethod
     def _load_files(proj_path: str, row: pd.Series) -> pd.Series:
@@ -121,25 +272,23 @@ class Transmission(BaseTransmission):
 
         path = proj_path + row['CurvePath']
         npz = np.load(path)
-#        print(npz.f.curve[1])
 
-        pikPath = proj_path + row['ImgInfoPath']
-        pik = pickle.load(open(pikPath, 'rb'))
+        pik_path = proj_path + row['ImgInfoPath']
+        pik = pickle.load(open(pik_path, 'rb'))
         meta = pik['meta']
         stim_maps = pik['stim_maps']
         
         return pd.Series({'curve': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
 
-    # @classmethod
-    # def empty_df(cls, transmission, addCols=[]):
-    #     """
-    #     :return: Same transmission with dataframe containing empty rows (columns preserved)
-    #     """
-    #     c = list(transmission.df.columns) + addCols
-    #     e_df = pd.DataFrame(columns=c)
-    #     return cls(e_df, src=transmission.src,
-    #                STIM_DEFS=transmission.STIM_DEFS,
-    #                ROI_DEFS=transmission.ROI_DEFS)
+    @classmethod
+    def merge(cls, transmissions: list):
+        dfs = [t.df for t in transmissions]
+        df = pd.concat(dfs)
+
+        h = [t.history_trace for t in transmissions]
+        h = HistoryTrace.merge(h)
+
+        return cls(df, history_trace=h)
 
 
 class GroupTransmission(BaseTransmission):
@@ -263,137 +412,3 @@ class StatsTransmission(BaseTransmission):
         return cls(df, all_srcs, all_groups=all_groups)
 
 
-class DataBlockNotFound(Exception):
-    """ Requested data block not found """
-    def __init__(self, *args, **kwargs): # real signature unknown
-        pass
-
-    @staticmethod # known case of __new__
-    def __new__(*args, **kwargs): # real signature unknown
-        """ Create and return a new object.  See help(type) for accurate signature. """
-        pass
-
-
-class DataBlockAlreadyExists(Exception):
-    """ Data block already exists in HistoryTrace """
-    def __init__(self, *args, **kwargs): # real signature unknown
-        pass
-
-    @staticmethod # known case of __new__
-    def __new__(*args, **kwargs): # real signature unknown
-        """ Create and return a new object.  See help(type) for accurate signature. """
-        pass
-
-
-class OperationNotFound(Exception):
-    """ Requested operation not found in data block """
-    def __init__(self, *args, **kwargs): # real signature unknown
-        pass
-
-    @staticmethod # known case of __new__
-    def __new__(*args, **kwargs): # real signature unknown
-        """ Create and return a new object.  See help(type) for accurate signature. """
-        pass
-
-
-class HistoryTrace:
-    """
-    Structure of a history trace:
-
-    A dict with keys that are the block_ids. Each dict value is a list of operation_dicts.
-    Each operation_dict has a single key which is the name of the operation and the value of that key is the operation parameters.
-
-        {block_id_1: [
-                        {operation_1:
-                            {
-                             param_1: a,
-                             param_2: b,
-                             param_n, z
-                             }
-                         },
-
-                        {operation_2:
-                            {
-                             param_1: a,
-                             param_n, z
-                             }
-                         },
-                         ...
-                        {operation_n:
-                            {
-                             param_n: x
-                             }
-                         }
-                     ]
-         block_id_2: <list of operation dicts>,
-         ...
-         block_id_n: <list of operation dicts>
-         }
-    """
-    def __init__(self, history: dict = None, data_blocks: list = None):
-        if None in [history, data_blocks]:
-            self.data_blocks = list()
-            self._history = dict()
-        else:
-            self.data_blocks = data_blocks
-            self.history = history
-
-    @property
-    def history(self) -> dict:
-        return self._history
-
-    @history.setter
-    def history(self, h):
-        self._history = h
-
-    def add_data_block(self, data_block: UUID):
-        if data_block in self.data_blocks:
-            raise DataBlockAlreadyExists(str(data_block))
-        else:
-            self.data_blocks.append(data_block)
-
-        self.history.update({data_block: []})
-
-    def add_operation(self, data_block: UUID, operation: str, parameters: dict):
-        assert isinstance(data_block, UUID)
-        assert isinstance(operation, str)
-        assert isinstance(parameters, dict)
-
-        if data_block not in self.data_blocks:
-            raise DataBlockNotFound(str(data_block))
-
-        self.history[data_block].append({operation: parameters})
-
-    def get_data_block_history(self, data_block: UUID) -> list:
-        if data_block not in self.data_blocks:
-            raise DataBlockNotFound(str(data_block))
-
-        return self.history[data_block]
-
-    def get_operation_params(self, data_block: UUID, operation: str) -> dict:
-        try:
-            l = self.get_data_block_history(data_block)
-            params = next(d for ix, d in enumerate(l) if operation in d)[operation]
-        except StopIteration:
-            raise OperationNotFound('Data block: ' + str(data_block) + '\nOperation: ' + operation)
-
-        return params
-
-    def _export(self):
-        return {'history': self.history, 'data_blocks': self.data_blocks}
-
-    def to_json(self, path: str):
-        json.dump(self._export(), open(path, 'w'))
-
-    @classmethod
-    def from_json(cls, path: str):
-        j = json.load(open(path, 'r'))
-        return cls(history=j['history'], data_blocks=['data_blocks'])
-
-    def to_pickle(self, path):
-        pickle.dump(self._export(), open(path, 'wb'))
-
-    @classmethod
-    def from_pickle(cls, path: str):
-        p = pickle.load(open(path, 'r'))
-        return cls(history=p['history'], data_blocks=p['data_blocks'])
