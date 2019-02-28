@@ -6,7 +6,9 @@ class KMeans(CtrlNode):
     """KMeans clustering\nhttps://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html\n
     Output column -> _KMEANS_CLUSTER_<data_column>"""
     nodeName = "KMeans"
-    uiTemplate = [('n_clusters', 'intSpin',
+    uiTemplate = [('data_column', 'combo', {}),
+
+                  ('n_clusters', 'intSpin',
                    {'max': 100, 'min': 2, 'value': 2, 'step': 1,
                     'toolTip': 'The number of clusters to form as well as the number of centroids to generate.'}),
 
@@ -27,14 +29,13 @@ class KMeans(CtrlNode):
                   ('precompute_distances', 'combo',
                    {'items': ['auto', 'True', 'False']}),
 
-                  ('data_column', 'combo', {}),
-
                   ('Apply', 'check', {'checked': True, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
-        columns = transmission.df.columns
-        self.ctrls['data_column'].setItems(columns.to_list())
+        self.t = transmission
+        self.set_data_column_combo_box()
+
         if self.ctrls['Apply'].isChecked() is False:
             return
 
@@ -51,10 +52,9 @@ class KMeans(CtrlNode):
         elif precompute_distances == 'False':
             precompute_distances = False
 
-        data_column = self.ctrls['data_column'].currentText()
-        self.data = np.vstack(self.t.df[data_column].values)
+        self.data = np.vstack(self.t.df[self.data_column].values)
 
-        output_column = '_KMEANS_CLUSTER_LABEL_' + data_column
+        output_column = '_KMEANS_CLUSTER_LABEL'
 
         self.kmeans = skcluster.KMeans(n_clusters=n_clusters, n_init=n_init, max_iter=max_iter, tol=tol,
                                        precompute_distances=precompute_distances)
@@ -63,12 +63,13 @@ class KMeans(CtrlNode):
 
         self.t.df[output_column] = self.kmeans.labels_
 
-        self.t.src.append({'KMeans':
-                               {'data_column': data_column,
-                                'n_init': n_init,
-                                'max_iter': max_iter,
-                                'tol': tol,
-                                'precompute_distances': precompute_distances}})
+        params = {'data_column': self.data_column,
+                  'n_init': n_init,
+                  'max_iter': max_iter,
+                  'tol': tol,
+                  'precompute_distances': precompute_distances}
+        self.t.history_trace.add_operation(data_block_id='all', operation='kmeans_clustering', parameters=params)
+        self.t.last_output = output_column
 
         return self.t
 
@@ -78,7 +79,9 @@ class Agglomerative(CtrlNode):
     https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html\n
     Output column -> _AGG_CLUSTER_<data_column>"""
     nodeName = 'Agglomerative'
-    uiTemplate = [('n_clusters', 'intSpin',
+    uiTemplate = [('data_column', 'combo', {}),
+
+                  ('n_clusters', 'intSpin',
                    {'min': 2, 'max': 999, 'step': 1, 'value': 2,
                     'toolTip': 'The number of clusters to find.'}),
 
@@ -114,9 +117,11 @@ class Agglomerative(CtrlNode):
                   ]
 
     def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
         columns = transmission.df.columns
-        self.ctrls['data_column'].setItems(columns.to_list())
         self.ctrls['connectivity_matrix'].setItems(['None'] + columns.to_list())
+
         if self.ctrls['Apply'].isChecked() is False:
             return
 
@@ -140,10 +145,10 @@ class Agglomerative(CtrlNode):
             compute_full_tree = False
 
         linkage = self.ctrls['linkage'].currentText()
-        data_column = self.ctrls['data_column'].currentText()
-        output_column = '_AGG_CLUSTER_' + data_column
 
-        data = np.vstack(self.t.df['data_column'].values)
+        output_column = '_AGG_CLUSTER_LABEL'
+
+        data = np.vstack(self.t.df[self.data_column].values)
 
         self.clustering = skcluster.AgglomerativeClustering(n_clusters=n_clusters, affinity=affinity,
                                                             connectivity=connectivity_matrix,
@@ -152,14 +157,15 @@ class Agglomerative(CtrlNode):
         self.clustering.fit(data)
 
         self.t.df[output_column] = self.clustering.labels_
-        self.t.src.append({'Agglomerative Clustering':
-                               {'data_column': data_column,
-                                'n_clusters': n_clusters,
-                                'affinity': affinity,
-                                'connectivity_matrix_column': connectivity_matrix_col,
-                                'compute_full_tree': compute_full_tree,
-                                'linkage': linkage
-                                }
-                           })
+
+        params = {'data_column': self.data_column,
+                  'n_clusters': n_clusters,
+                  'affinity': affinity,
+                  'connectivity_matrix_column': connectivity_matrix_col,
+                  'compute_full_tree': compute_full_tree,
+                  'linkage': linkage
+                  }
+        self.t.history_trace.add_operation(data_block_id='all', operation='agglomerative_clustering', parameters=params)
+        self.t.last_output = output_column
 
         return self.t

@@ -7,7 +7,9 @@ class KneighborsGraph(CtrlNode):
     """Computes the (weighted) graph of k-Neighbors for points in data\n
     Output column -> _KNGRAPH_<data_column>"""
     nodeName = 'KneighborsGraph'
-    uiTemplate = [('n_neighbors', 'intSpin',
+    uiTemplate = [('data_column', 'combo', {}),
+
+                  ('n_neighbors', 'intSpin',
                    {'max': 1000, 'min': 1, 'value': 2, 'step': 5,
                     'toolTip': 'Number of neighbors for each sample'}),
 
@@ -31,8 +33,6 @@ class KneighborsGraph(CtrlNode):
 
                   ('include_self', 'check', {'toolTip': 'Mark each sample as the first nearest neighbor to itself.'}),
 
-                  ('data_column', 'combo', {}),
-
                   ('Apply', 'check', {'checked': True, 'applyBox': True})
                   ]
 
@@ -51,23 +51,23 @@ class KneighborsGraph(CtrlNode):
         metric_params = self.ctrls['metric_params'].get_kwargs()
         include_self = self.ctrls['include_self'].isChecked()
 
-        data_column = self.ctrls['data_column'].currentText()
-        output_column = '_KNGRAPH_' + data_column
+        output_column = '_KNEIGHBORS_GRAPH'
 
-        data = self.t.df[data_column]
+        data = self.t.df[self.data_column]
 
         kngraph = neighbors.kneighbors_graph(data, n_neighbors=n_neighbors, mode=mode, metric=metric,
                                              p=p, metric_params=metric_params, include_self=include_self,
                                              n_jobs=sys_cfg['HARDWARE']['n_processes'])
         kngraph_array = kngraph.toarray()
 
-        self.t.df[output_column] = kngraph.tolist()
-        self.t.src.append({'KneighborsGraph':
-                               {'data_column': data_column,
-                                'n_neigbors': n_neighbors,
-                                'mode': mode,
-                                'metric': metric
-                                }
-                           })
+        self.t.df[output_column] = kngraph_array.tolist()
+
+        params = {'data_column': self.data_column,
+                  'n_neigbors': n_neighbors,
+                  'mode': mode,
+                  'metric': metric
+                  }
+        self.t.history_trace.add_operation(data_block_id='all', operation='kneighbors_graph', parameters=params)
+        self.t.last_output = output_column
 
         return self.t
