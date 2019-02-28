@@ -3,7 +3,6 @@ import numpy as np
 from .common import *
 from analyser.DataTypes import Transmission
 from scipy import signal
-from functools import partial
 import pandas as pd
 from analyser.math.tvregdiff import tv_reg_diff
 
@@ -11,36 +10,55 @@ from analyser.math.tvregdiff import tv_reg_diff
 class Derivative(CtrlNode):
     """Return the Derivative of a curve."""
     nodeName = 'Derivative'
-    uiTemplate = [
-        ('dt', 'intSpin', {'min': 1, 'max': 999, 'value': 1, 'step': 1}),
-        ('Apply', 'check', {'checked': True, 'applyBox': True}),
-        ('data_column', 'combo', {})
-    ]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('dt', 'intSpin', {'min': 1, 'max': 999, 'value': 1, 'step': 1}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def processData(self, transmission: Transmission):
-        columns = transmission.df.columns
-        self.ctrls['data_column'].setItems(columns.to_list())
+        self.t = transmission
+        self.set_data_column_combo_box()
         if self.ctrls['Apply'].isChecked() is False:
             return
+
         self.t = transmission.copy()
-        data_column = self.ctrls['data_column'].currentText()
-        self.t.df['curve'] = self.t.df[data_column].apply(np.gradient)
-        self.t.src.append({'Derivative': {'dt': self.ctrls['dt'].value()}})
+
+        output_column = '_DERIVATIVE'
+
+        self.t.df[output_column] = self.t.df[self.data_column].apply(np.gradient)
+        self.t.last_output = output_column
+
+        params = {'data_column': self.data_column}
+        self.t.history_trace.add_operation(data_block_id='all', operation='derivative', parameters=params)
+
         return self.t
 
 
 class TVDiff(CtrlNode):
     """Total Variation Regularized Numerical Differentiation, Chartrand 2011 method"""
     nodeName = 'TVDiff'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ]
 
     def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
         if self.ctrls['Apply'].isChecked() is False:
             return
-        t = transmission.copy()
-        t.df['curve'] = t.df['curve'].apply(lambda x: self._func(x, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0))
-        t.src.append({'TVDiff': {''}})
-        return t
+
+        self.t = transmission.copy()
+
+        output_column = '_TVDIFF'
+
+        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: self._func(x, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0))
+        self.t.last_output = output_column
+
+        params = {'data_column': self.data_column}
+        self.t.history_trace.add_operation(data_block_id='all', operation='tvdiff', parameters=params)
+
+        return self.t
 
     def _func(self, *args, **kwargs):
         return tv_reg_diff(*args, **kwargs)
@@ -49,40 +67,49 @@ class TVDiff(CtrlNode):
 class ButterWorth(CtrlNode):
     """Butterworth Filter"""
     nodeName = 'ButterWorth'
-    uiTemplate = [
-        ('order', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 2}),
-        ('freqDivider', 'doubleSpin', {'min': 0.01, 'max': 100.00, 'step': 0.05, 'value': 2.00}),
-        ('Apply', 'check', {'checked': True, 'applyBox': True})
-    ]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('order', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 2}),
+                  ('freq_divisor', 'doubleSpin', {'min': 0.01, 'max': 100.00, 'step': 0.05, 'value': 2.00}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def _func(self, x: np.ndarray, meta: dict):
         N = self.ctrls['order'].value()
-        # print('meta: ')
         freq = 1 / meta['fps']
-        divider = self.ctrls['freqDivider'].value()
 
-        self.Wn = freq/divider
+        self.Wn = freq/self.freq_divisor
 
         b, a = signal.butter(N, self.Wn)
         sig = signal.filtfilt(b, a, x)
-        return pd.Series({'curve': sig})
+
+        return pd.Series({self.output_column: sig})
 
     def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
         if self.ctrls['Apply'] is False:
             return
+
         self.t = transmission.copy()
 
+        self.output_column = '_BUTTERWORTH'
+
+        self.order = self.ctrls['order'].value()
+        self.freq_divisor = self.ctrls['freq_divisor'].value()
+
         try:
-            self.t.df['curve'] = self.t.df.apply(lambda x: self._func(x['curve'], x['meta']), axis=1)
+            self.t.df[self.output_column] = self.t.df.apply(lambda x: self._func(x[self.data_column], x['meta']), axis=1)
         except KeyError as e:
             raise KeyError(str(e))
-        # self.t.plot_this = self.t.data_column['curve']
 
-        params = {'N - order': self.ctrls['order'].value(),
-                  'Wn - freq/divider': self.Wn,
-                  'divider': self.ctrls['freqDivider'].value()
+        params = {'data_column': self.data_column,
+                  'order': self.order,
+                  'Wn': self.Wn,
+                  'freq_divider': self.freq_divisor
                   }
-        self.t.src.append({'ButterWorth': params})
+
+        self.t.history_trace.add_operation(data_block_id='all', operation='butterworth', parameters=params)
+        self.t.last_output = output_column
 
         return self.t
 
@@ -90,17 +117,21 @@ class ButterWorth(CtrlNode):
 class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
     """Savitzky-Golay filter."""
     nodeName = 'Savitzky_Golay'
-    uiTemplate = [
-        ('window_length', 'intSpin', {'min': 3, 'max': 999, 'value': 3, 'step': 2}),
-        ('polyorder', 'intSpin', {'min': 1, 'max': 998, 'value': 1, 'step': 1}),
-        ('Apply', 'check', {'checked': True, 'applyBox': True})
-    ]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('window_length', 'intSpin', {'min': 3, 'max': 999, 'value': 3, 'step': 2}),
+                  ('polyorder', 'intSpin', {'min': 1, 'max': 998, 'value': 1, 'step': 1}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
         if self.ctrls['Apply'].isChecked() is False:
             return
+
         self.t = transmission.copy()
-        # print(self.ctrls)
+
         w = self.ctrls['window_length'].value()
         p = self.ctrls['polyorder'].value()
 
@@ -110,30 +141,45 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
         if w % 2 == 0:
             raise ValueError('Invalid value! window_length MUST be an odd number!')
 
-        # t.df['curve'].apply(lambda x: self._func)
+        output_column = '_SAVITZKY_GOLAY'
 
-        self.t.df['curve'] = self.t.df['curve'].apply(signal.savgol_filter, window_length=w, polyorder=p)
+        self.t.df[output_column] = self.t.df[self.data_column].apply(signal.savgol_filter, window_length=w, polyorder=p)
 
-        params = {'window_length': w,
+        params = {'data_column': self.data_column,
+                  'window_length': w,
                   'polyorder': p}
 
-        self.t.src.append({'SavitzkyGolay': params})
-        # self.t.plot_this = self.t.data_column['curve']
+        self.t.history_trace.add_operation(data_block_id='all', operation='savitzky_golay', parameters=params)
+        self.t.last_output = output_column
+
         return self.t
 
 
 class PowerSpectralDensity(CtrlNode):
     """Return the Power Spectral Density of a curve."""
     nodeName = 'PowSpectDens'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
         if self.ctrls['Apply'].isChecked() is False:
             return
-        t = transmission.copy()
-        t.df['power_spectral_density'] = t.df['curve'].apply(self._func)
-        t.src.append({'Power Spectral Density': ''})
-        return t
+
+        self.t = transmission.copy()
+
+        output_column = '_POWER_SPECTRAL_DENSITY'
+
+        self.t.df[output_column] = self.t.df[self.data_column].apply(self._func)
+
+        params = {'data_column': self.data_column}
+        self.t.history_trace.add_operation(data_block_id='all', operation='power_spectral_density', parameters=params)
+        self.t.last_output = output_column
+
+        return self.t
 
     def _func(self, curve):
         f, p = signal.periodogram(curve)
@@ -145,21 +191,18 @@ class Resample(CtrlNode):
     If "Tu" = 1, then Rs is the new sampling rate to resample to\nOutput Column -> Input Column"""
 
     nodeName = 'Resample'
-    uiTemplate = [
-        ('Rs', 'intSpin', {'min': 1, 'max': 9999, 'value': 10, 'step': 5}),
-        ('Tu', 'intSpin', {'min': 1, 'max': 9999, 'value': 1, 'step': 1}),
-        ('data_column', 'combo', {}),
-        ('Apply', 'check', {'checked': True, 'applyBox': True})
-    ]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Rs', 'intSpin', {'min': 1, 'max': 9999, 'value': 10, 'step': 5}),
+                  ('Tu', 'intSpin', {'min': 1, 'max': 9999, 'value': 1, 'step': 1}),
+                  ('data_column', 'combo', {}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def processData(self, transmission: Transmission):
-        columns = transmission.df.columns
-        self.ctrls['data_column'].setItems(columns.to_list())
-        if self.ctrls['Apply'].isChecked() is False:
-            return
+        self.t = transmission
+        self.set_data_column_combo_box()
 
-        self.data_column = self.ctrls['data_column'].currentText()
-        if self.data_column == '':
+        if self.ctrls['Apply'].isChecked() is False:
             return
 
         self.t = transmission.copy()
@@ -168,8 +211,14 @@ class Resample(CtrlNode):
         self.Tu = self.ctrls['Tu'].value()
         self.new_rate = self.Rs / self.Tu
 
-        self.t.df[self.data_column] = self.t.df.apply(self._func, axis=1)
-        self.t.src.append({'Resampled': {'data_column': self.data_column, 'new_sampling_rate': self.new_rate}})
+        output_column = '_RESAMPLE'
+
+        self.t.df[output_column] = self.t.df.apply(self._func, axis=1)
+
+        params = {'data_column': self.data_column, 'output_rate': self.new_rate}
+        self.t.history_trace.add_operation(data_block_id='all', operation='resample', parameters=params)
+        self.t.last_output = output_column
+
         return self.t
 
     def _func(self, row: pd.Series):
@@ -189,7 +238,9 @@ class Resample(CtrlNode):
 
 class ZScore(CtrlNode):
     nodeName = 'Z-Score'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
 
     def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
@@ -202,26 +253,25 @@ class Normalize(CtrlNode):
     Output Column -> Input Column"""
 
     nodeName = 'Normalize'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'combo', {})
-                  ]
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
-        columns = transmission.df.columns
-        self.ctrls['data_column'].setItems(columns.to_list())
+        self.t = transmission
+        self.set_data_column_combo_box()
         if self.ctrls['Apply'].isChecked() is False:
             return
 
         self.t = transmission.copy()
 
-        data_column = self.ctrls['data_column'].currentText()
+        output_column = '_NORMALIZE'
 
         #TODO: VERIFY THAT THIS MATCH IS CORRECT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        self.t.df[data_column] = self.t.df[data_column].apply(lambda a: ((a - np.min(a)) / (np.max(a - np.min(a)))))
+        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda a: ((a - np.min(a)) / (np.max(a - np.min(a)))))
 
-        # t.df[data_column] = pd.Series(n.tolist())
-
-        self.t.src.append({'Normalized': {'data_column': data_column}})
+        params = {'data_column': self.data_column}
+        self.t.history_trace.add_operation(data_block_id='all', operation='normalize', parameters=params)
+        self.t.last_output = output_column
 
         return self.t
 

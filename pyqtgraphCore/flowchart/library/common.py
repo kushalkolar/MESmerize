@@ -156,6 +156,8 @@ class CtrlNode(Node):
         self.ui, self.stateGroup, self.ctrls = generateUi(ui)
         self.stateGroup.sigChanged.connect(self.changed)
         self.count = 0
+        self.t = None
+        self._data_column = None
 
     def ctrlWidget(self):
         return self.ui
@@ -203,6 +205,28 @@ class CtrlNode(Node):
         l = self.ui.layout().labelForField(w)
         w.show()
         l.show()
+
+    def set_data_column_combo_box(self):
+        try:
+            columns = self.t.df.columns
+            self.ctrls['data_column'].setItems(columns.to_list())
+            ix = self.ctrls['data_column'].findText(self.t.last_output)
+            if ix > 0:
+                self.ctrls['data_column'].setCurrentIndex(ix)
+        except:
+            pass
+
+    @property
+    def data_column(self):
+        try:
+            self._data_column = self.ctrls['data_column'].currentText()
+            return self._data_column
+        except:
+            return None
+
+    @data_column.setter
+    def data_column(self, d):
+        pass
 
 
 class PlottingCtrlNode(CtrlNode):
