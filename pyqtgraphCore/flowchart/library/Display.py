@@ -91,7 +91,7 @@ class Heatmap(CtrlNode):
     """Stack 1-D arrays and plot visually like a heatmap"""
     nodeName = "Heatmap"
     uiTemplate = [('Show', 'button', {'text': 'Show'}),
-                  ('data', 'combo', {}),
+                  ('data_column', 'combo', {}),
                   ('labels', 'combo', {}),
                   ('colormap', 'cmaplist', {}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
@@ -111,10 +111,9 @@ class Heatmap(CtrlNode):
         self.dfs = [t.df for t in self.transmissions_list]
 
         columns = pd.concat(self.dfs).columns
-        self.ctrls['data'].setItems(columns.to_list())
+        self.ctrls['data_column'].setItems(columns.to_list())
         self.ctrls['labels'].setItems(columns.to_list())
 
-        self.data_column = self.ctrls['data'].currentText()
         self.labels_column = self.ctrls['labels'].currentText()
         cmap = self.ctrls['colormap'].current_cmap
 
@@ -123,12 +122,10 @@ class Heatmap(CtrlNode):
 
         self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
+
     def set_cmap(self, cmap: str):
         self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
-
-
-
 
 
         # return {'Out': kwargs}
