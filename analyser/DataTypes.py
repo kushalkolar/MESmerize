@@ -118,14 +118,19 @@ class HistoryTrace:
         self.history.update({data_block_id: []})
 
     def add_operation(self, data_block_id: UUID, operation: str, parameters: dict):
-        assert isinstance(data_block_id, UUID)
         assert isinstance(operation, str)
         assert isinstance(parameters, dict)
-
-        if data_block_id not in self.data_blocks:
-            raise DataBlockNotFound(str(data_block_id))
-
-        self.history[data_block_id].append({operation: parameters})
+        if isinstance(data_block_id, str):
+            if data_block_id != 'all':
+                raise ValueError("DataBlock ID must either be a UUID or 'all'")
+            else:
+                _ids = self.data_blocks
+        else:
+            _ids = [data_block_id]
+        if not all(u in self.data_blocks for u in _ids):
+            raise DataBlockNotFound()
+        for _id in _ids:
+            self.history[_id].append({operation: parameters})
 
     def get_data_block_history(self, data_block_id: UUID) -> list:
         if data_block_id not in self.data_blocks:
@@ -175,7 +180,7 @@ class HistoryTrace:
 
 
 class BaseTransmission:
-    def __init__(self, df: pd.DataFrame, history_trace: HistoryTrace, **kwargs):
+    def __init__(self, df: pd.DataFrame, history_trace: HistoryTrace, last_output: str = None):
         """
         Base class for common Transmission functions
         :param  dataframe:      Transmission dataframe
@@ -184,6 +189,7 @@ class BaseTransmission:
         """
         self.df = df
         self.history_trace = history_trace
+        self.last_output = last_output
         # self.kwargs = kwargs
         # self.kwargs_keys = list(kwargs.keys())
         #
@@ -206,8 +212,6 @@ class BaseTransmission:
         d = {'df':              self.df,
              'history_trace':   self.history_trace}
 
-        # for key in self.kwargs_keys:
-        #     d.update({key: getattr(self, key)})
         return d
 
     def to_pickle(self, path: str):
@@ -243,8 +247,8 @@ class Transmission(BaseTransmission):
 
         """
         df = dataframe.copy()
-        df[['curve', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
-        df['raw_curve'] = df['curve']
+        df[['_CURVE', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+        df['raw_curve'] = df['_CURVE']
 
         h = HistoryTrace()
         df, block_id = h.create_data_block(dataframe)
@@ -252,18 +256,7 @@ class Transmission(BaseTransmission):
         params = {'sub_dataframe_name': sub_dataframe_name, 'dataframe_filter_history': dataframe_filter_history}
         h.add_operation(data_block_id=block_id, operation='spawn_transmission', parameters=params)
 
-        # try:
-        #     from common import configuration
-        #     if configuration.proj_path is not None:
-        #         stim_defs = configuration.proj_cfg.options('STIM_DEFS')
-        #         roi_defs = configuration.proj_cfg.options('ROI_DEFS')
-        #     else:
-        #         stim_defs = []
-        #         roi_defs = []
-        # except:
-        #     return cls(df, history_trace=h)
-
-        return cls(df, history_trace=h)
+        return cls(df, history_trace=h, last_output='_CURVE')
 
     @staticmethod
     def _load_files(proj_path: str, row: pd.Series) -> pd.Series:
@@ -278,7 +271,7 @@ class Transmission(BaseTransmission):
         meta = pik['meta']
         stim_maps = pik['stim_maps']
         
-        return pd.Series({'curve': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
+        return pd.Series({'_CURVE': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
 
     @classmethod
     def merge(cls, transmissions: list):
@@ -309,10 +302,6 @@ class GroupTransmission(BaseTransmission):
         t = transmission.copy()
 
         t.df, groups_list = GroupTransmission._append_group_bools(t.df, groups_list)
-
-        # gid = uuid4()
-        #
-        # t.df['uuid'] = gid
 
         t.src.append({'Grouped': ', '.join(groups_list)})
 
