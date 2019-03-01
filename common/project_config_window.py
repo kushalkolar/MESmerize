@@ -166,6 +166,7 @@ class ColumnsPage(QtWidgets.QWidget):
                 p = pickle.load(open(f, 'rb'))
                 for s in p['roi_states']['states']:
                     s['tags'].update({new_def: 'untagged'})
+                pickle.dump(p, open(f, 'wb'))
 
         self.new_roi_defs = []
 
