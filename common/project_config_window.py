@@ -22,6 +22,9 @@ else:
 
 from numpy import int64, float64
 from functools import partial
+from glob import glob
+import pickle
+
 
 '''
 Just a simple GUI for modifying the project config.cfg file.
@@ -74,6 +77,7 @@ class ColumnsPage(QtWidgets.QWidget):
         self.ui.listwCustomColumns.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.listwCustomColumns.customContextMenuRequested.connect(lambda p: self._list_widget_context_menu_requested(p, self.ui.listwCustomColumns))
 
+        self.new_roi_defs = []
         # TODO: Deletable columns for ROI, Stim, and Custom columns.
 
     def _list_widget_context_menu_requested(self, p, list_widget):
@@ -108,6 +112,7 @@ class ColumnsPage(QtWidgets.QWidget):
             self.ui.listwROIDefs.addItem(text)
             self.ui.listwInclude.addItem(text)
             self.ui.lineEdNewROIDef.clear()
+            self.new_roi_defs.append(text)
         
     def _addStimDef(self):
         if self.ui.lineEdNewStimCol.text() != '':
@@ -154,7 +159,16 @@ class ColumnsPage(QtWidgets.QWidget):
         for i in range(0, self.ui.listwROIDefs.count()):
             roi_defs.append(self.ui.listwROIDefs.item(i).text())
         configuration.proj_cfg['ROI_DEFS'] = dict.fromkeys(roi_defs)
-        
+
+        images_dir = configuration.proj_path + '/images'
+        for new_def in self.new_roi_defs:
+            for f in glob(images_dir + '/*.pik'):
+                p = pickle.load(open(f, 'rb'))
+                for s in p['roi_states']['states']:
+                    s['tags'].update({new_def: 'untagged'})
+
+        self.new_roi_defs = []
+
         stim_defs = []
         for i in range(0, self.ui.listwStimDefs.count()):
             stim_defs.append(self.ui.listwStimDefs.item(i).text())
