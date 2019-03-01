@@ -348,6 +348,7 @@ class Output(QtWidgets.QWidget):
                                                                      self.cnmC[self.idx_components], cnmb, cnm_f,
                                                                      self.dims[0], self.dims[1],
                                                                      YrA=cnmYrA[self.idx_components], img=cn_filter)
+        #self.hide()
 
     def import_cnmfe_into_viewer(self):
         self.get_cnmfe_results()
@@ -387,6 +388,8 @@ class Output(QtWidgets.QWidget):
         else:
             name = ''
         vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + name)
+        #self.hide()
+        self.close()
 
 
 if sys.argv[0] == __file__:

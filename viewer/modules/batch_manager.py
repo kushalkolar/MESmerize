@@ -266,6 +266,12 @@ class ModuleGUI(QtWidgets.QWidget):
         """
         :param module: The module name under /batch_run_modules that the batch item is from
         """
+        if len(self.output_widgets) > 3:
+            try:
+                self.output_widgets[0].close()
+            except:
+                pass
+
         if not isinstance(viewers, window_manager.WindowClass):
             viewer = viewers.viewer_reference
         else:
