@@ -214,7 +214,7 @@ class CNMFROI(AbstractBaseROI):
             self.cnmf_idx = cnmf_idx
         else:
             self._restore_state(state)
-            self.cnmf_idx = cnmf_idx
+            #self.cnmf_idx = cnmf_idx
 
     def set_curve_data(self, y_vals):
         xs = np.arange(len(y_vals))
@@ -225,8 +225,9 @@ class CNMFROI(AbstractBaseROI):
         self.roi_ys = state['roi_ys']
 
         self._create_scatter_plot()
-        self.curve_data = state['curve_data']
-
+        # self.curve_data = state['curve_data']
+        self.cnmf_idx = state['cnmf_idx']
+        
     def get_roi_graphics_object(self) -> pg.ScatterPlotItem:
         if self.roi_graphics_object is None:
             raise AttributeError('Must call set_roi_graphics_object() first')

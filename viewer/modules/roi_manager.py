@@ -118,6 +118,5 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.manager.restore_from_states(states)
 
         elif states['roi_type'] == 'ManualROI':
-            print(states['roi_type'] == 'ManualROI')
             self.start_manual_mode()
             self.manager.restore_from_states(states)
