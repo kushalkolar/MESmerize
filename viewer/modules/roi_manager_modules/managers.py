@@ -16,6 +16,7 @@ from caiman.utils.visualization import get_contours as caiman_get_contours
 from .roi_types import *
 from ...core.common import ViewerInterface
 import pyqtgraphCore as pg
+from copy import deepcopy
 
 
 class AbstractBaseManager(metaclass=abc.ABCMeta):
@@ -121,6 +122,7 @@ class ManagerCNMFE(AbstractBaseManager):
         self.list_widget = self.roi_list.list_widget
         self.input_params_dict = None
         self.idx_components = None
+        self.orig_idx_components = None
 
         self.cnmA = None
         self.cnmb = None
@@ -140,6 +142,7 @@ class ManagerCNMFE(AbstractBaseManager):
         self.cnm_f = cnm_f
         self.cnmYrA = cnmYrA
         self.idx_components = idx_components
+        self.orig_idx_components = deepcopy(idx_components)
         self.input_params_dict = input_params_dict
 
         contours = caiman_get_contours(cnmA[:, idx_components], dims)
@@ -173,6 +176,7 @@ class ManagerCNMFE(AbstractBaseManager):
             self.roi_list.append(roi)
         self.input_params_dict = states['input_params_cnmfe']
         self.idx_components = states['cnmf_output']['idx_components']
+        self.orig_idx_components = states['cnmf_output']['orig_idx_components']
         self.roi_list.reindex_colormap()
 
     def get_all_states(self) -> dict:
@@ -191,7 +195,7 @@ class ManagerCNMFE(AbstractBaseManager):
                               'cnm_f': self.cnm_f,
                               'cnmYrA': self.cnmYrA,
                               'idx_components': new_idx_components,
-                              'orig_idx_components': self.idx_components
+                              'orig_idx_components': self.orig_idx_components
                           }
                       }
 
