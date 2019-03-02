@@ -67,6 +67,7 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         self.dataframe = None
         self._history_trace = None
         self.has_history_trace = False
+        self.data_column = None
 
     @QtCore.pyqtSlot(int)
     def set_current_datapoint(self, ix: int):
@@ -75,11 +76,14 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
 
         if self.has_history_trace:
             block_id = r._BLOCK_
-            h = self.history_trace.get_data_block_history(block_id)
+            if isinstance(block_id, pd.Series):
+                block_id = block_id.item()
+            h = self._history_trace.get_data_block_history(block_id)
         else:
             h = None
 
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
+                                              data_column_curve=self.data_column,
                                               row=r,
                                               history_trace=h)
 
@@ -93,11 +97,14 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         else:
             dataframe = dataframes
 
+        self.data_column = data_column
+
         labels = dataframe[labels_column]
 
         self.dataframe = dataframe.reset_index(drop=True)
         data = np.vstack(self.dataframe[data_column].values)
         self.plot_widget.set(data, cmap=cmap, yticklabels=labels)
+        self._history_trace = None
 
     def highlight_row(self, ix):
         self.plot_widget.highlight_row(ix)

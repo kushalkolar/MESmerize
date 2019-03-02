@@ -48,7 +48,7 @@ class ScatterPlotWidget(PlotWindow):
         self.current_datapoint = identifier
         r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
 
-        block_id = r._BLOCK_
+        block_id = r._BLOCK_.item()
         h = self.merged_transmission.history_trace.get_data_block_history(block_id)
 
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,

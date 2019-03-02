@@ -52,6 +52,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.roi = None
 
     def set_widget(self, datapoint_uuid: UUID,
+                   data_column_curve: str,
                    row: pd.Series,
                    history_trace: list = None,
                    peak_ix: int = None,
@@ -89,9 +90,9 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         if (tstart is not None) and (tend is not None):
             self.peak_region.add_linear_region(tstart, tend, color=mkColor('#a80035'))
         try:
-            self.ui.graphicsViewPlot.plot(self.row['curve'].item())
+            self.ui.graphicsViewPlot.plot(self.row[data_column_curve].item())
         except:
-            self.ui.graphicsViewPlot.plot(self.row['curve'])
+            self.ui.graphicsViewPlot.plot(self.row[data_column_curve])
 
         self.ui.graphicsViewPlot.plotItem.setZValue(1)
 

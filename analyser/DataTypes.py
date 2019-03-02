@@ -18,9 +18,10 @@ import json
 from copy import deepcopy
 from uuid import uuid4, UUID
 from typing import Tuple, List
+from itertools import chain
 
 
-class DataBlockNotFound(Exception):
+class DataBlockNotFound(BaseException):
     """ Requested data block not found """
     def __init__(self, *args, **kwargs): # real signature unknown
         pass
@@ -31,7 +32,7 @@ class DataBlockNotFound(Exception):
         pass
 
 
-class DataBlockAlreadyExists(Exception):
+class DataBlockAlreadyExists(BaseException):
     """ Data block already exists in HistoryTrace """
     def __init__(self, *args, **kwargs): # real signature unknown
         pass
@@ -42,7 +43,7 @@ class DataBlockAlreadyExists(Exception):
         pass
 
 
-class OperationNotFound(Exception):
+class OperationNotFound(BaseException):
     """ Requested operation not found in data block """
     def __init__(self, *args, **kwargs): # real signature unknown
         pass
@@ -106,7 +107,7 @@ class HistoryTrace:
     def create_data_block(self, dataframe: pd.DataFrame) -> Tuple[pd.DataFrame, UUID]:
         block_id = uuid4()
         self.add_data_block(block_id)
-        dataframe['_BLOCK_'] = uuid4()
+        dataframe['_BLOCK_'] = str(block_id)
         return dataframe, block_id
 
     def add_data_block(self, data_block_id: UUID):
@@ -133,12 +134,18 @@ class HistoryTrace:
             self.history[_id].append({operation: parameters})
 
     def get_data_block_history(self, data_block_id: UUID) -> list:
+        if isinstance(data_block_id, str):
+            data_block_id = UUID(data_block_id)
+
         if data_block_id not in self.data_blocks:
             raise DataBlockNotFound(str(data_block_id))
 
         return self.history[data_block_id]
 
     def get_operation_params(self, data_block_id: UUID, operation: str) -> dict:
+        if isinstance(data_block_id, str):
+            data_block_id = UUID(data_block_id)
+
         try:
             l = self.get_data_block_history(data_block_id)
             params = next(d for ix, d in enumerate(l) if operation in d)[operation]
@@ -169,7 +176,8 @@ class HistoryTrace:
     @classmethod
     def merge(cls, history_traces: list):
         assert all(isinstance(h, HistoryTrace) for h in history_traces)
-        data_blocks = [h.data_blocks for h in history_traces]
+        data_blocks_l2_list = [h.data_blocks for h in history_traces]
+        data_blocks = list(chain.from_iterable(data_blocks_l2_list))
 
         history = dict()
         for h in history_traces:
@@ -247,16 +255,15 @@ class Transmission(BaseTransmission):
 
         """
         df = dataframe.copy()
-        df[['_CURVE', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
-        df['raw_curve'] = df['_CURVE']
+        df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
 
         h = HistoryTrace()
-        df, block_id = h.create_data_block(dataframe)
+        df, block_id = h.create_data_block(df)
 
         params = {'sub_dataframe_name': sub_dataframe_name, 'dataframe_filter_history': dataframe_filter_history}
         h.add_operation(data_block_id=block_id, operation='spawn_transmission', parameters=params)
 
-        return cls(df, history_trace=h, last_output='_CURVE')
+        return cls(df, history_trace=h, last_output='_RAW_CURVE')
 
     @staticmethod
     def _load_files(proj_path: str, row: pd.Series) -> pd.Series:
@@ -271,7 +278,7 @@ class Transmission(BaseTransmission):
         meta = pik['meta']
         stim_maps = pik['stim_maps']
         
-        return pd.Series({'_CURVE': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
+        return pd.Series({'_RAW_CURVE': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
 
     @classmethod
     def merge(cls, transmissions: list):
