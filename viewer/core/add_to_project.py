@@ -34,6 +34,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
         self.work_environment = work_environment
 
         self.ui.radioButtonAddToDataFrame.clicked.connect(self._disable_sample_id_text_entry)
+        self.ui.radioButtonAddToDataFrame.clicked.connect(lambda x: self.ui.checkBoxSaveChanges.setChecked(False))
 
         if self.work_environment.sample_id != '' and self.work_environment.sample_id is not None:
             self.ui.lineEditAnimalID.setText(self.work_environment.sample_id.split('-_-')[0])
