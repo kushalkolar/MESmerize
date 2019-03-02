@@ -24,10 +24,10 @@ class ScatterPlotWidget(PlotWindow):
     def __init__(self, parent=None):
         super(ScatterPlotWidget, self).__init__(parent)
         self.setWindowTitle('Scatter Plot')
-
-        self.ui.groupBoxSpecific.setLayout(QtWidgets.QVBoxLayout())
-        self.control_widget = ControlWidget(self.ui.groupBoxSpecific)
-        self.ui.groupBoxSpecific.layout().addWidget(self.control_widget)
+        #
+        # self.ui.groupBoxSpecific.setLayout(QtWidgets.QVBoxLayout())
+        # self.control_widget = ControlWidget(self.ui.groupBoxSpecific)
+        # self.ui.groupBoxSpecific.layout().addWidget(self.control_widget)
 
         self.ui.label_group.setText('Color based on:')
         self.ui.listWidgetDataColumns.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
@@ -46,10 +46,14 @@ class ScatterPlotWidget(PlotWindow):
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = identifier
+        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
+
+        block_id = r._BLOCK_
+        h = self.merged_transmission.history_trace.get_data_block_history(block_id)
 
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
-                                              row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
-                                              history_trace=self.get_history_trace(identifier))
+                                              row=r,
+                                              history_trace=h)
 
     def update_plot(self):
         self.scatter_plot.clear()
@@ -71,6 +75,8 @@ class ScatterPlotWidget(PlotWindow):
         # try:
         colors = self.auto_colormap(len(self.groups))
 
+        shapes = {0: 'o', 1: 's', 2: 't', 3: 'd', 4: '+'}
+
         # labels_list = []
 
         # for numerical_label, group_name in self.groups:
@@ -84,12 +90,13 @@ class ScatterPlotWidget(PlotWindow):
             xs = df[df[self.grouping_column] == label]['x']
             ys = df[df[self.grouping_column] == label]['y']
 
-            us = df[df.targets == label]['uuid']
+            us = df[df[self.grouping_column] == label]['uuid']
 
-            self.scatter_plot.add_data(xs, ys, uuid_series=us, color=colors[ix])
+            self.scatter_plot.add_data(xs, ys, uuid_series=us, color=colors[ix], symbol=shapes[ix])
         # except:
         #     QtWidgets.QMessageBox.warning(self, 'Improper input data for scatter plot. '
         #                                         'The data in the selected data column should form a 2D array. '
         #                                         'The following exception was raised: ' + traceback.format_exc())
         #     return
+
 

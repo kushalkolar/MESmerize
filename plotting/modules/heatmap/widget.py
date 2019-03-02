@@ -13,9 +13,9 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtWidgets
 from .heatmap import Heatmap
 import numpy as np
-
 import pandas as pd
 from ...datapoint_tracer import DatapointTracerWidget
+from analyser.DataTypes import HistoryTrace
 
 
 class HeatmapWidget(QtWidgets.QWidget):
@@ -65,11 +65,23 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
 
         self.dataframe = None
+        self._history_trace = None
+        self.has_history_trace = False
 
     @QtCore.pyqtSlot(int)
     def set_current_datapoint(self, ix: int):
         identifier = self.dataframe.iloc[ix]['uuid_curve']
-        self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier, row=self.dataframe[self.dataframe['uuid_curve'] == identifier])
+        r = self.dataframe[self.dataframe['uuid_curve'] == identifier]
+
+        if self.has_history_trace:
+            block_id = r._BLOCK_
+            h = self.history_trace.get_data_block_history(block_id)
+        else:
+            h = None
+
+        self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
+                                              row=r,
+                                              history_trace=h)
 
     def set_data(self, dataframes, data_column: str, labels_column: str = 'index', cmap: str ='jet'):
         if type(dataframes) is list:
@@ -89,3 +101,8 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
 
     def highlight_row(self, ix):
         self.plot_widget.highlight_row(ix)
+
+    def set_history_trace(self, history_trace: HistoryTrace):
+        assert isinstance(history_trace, HistoryTrace)
+        self._history_trace = history_trace
+        self.has_history_trace = True

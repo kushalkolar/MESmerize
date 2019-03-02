@@ -82,6 +82,16 @@
             </layout>
            </item>
            <item>
+            <widget class="QLabel" name="labelShapesBasedOn">
+             <property name="text">
+              <string>Shapes based on:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBoxShape"/>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QRadioButton" name="radioButtonGroupByTransmissions">
