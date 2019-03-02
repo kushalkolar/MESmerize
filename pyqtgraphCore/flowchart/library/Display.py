@@ -123,14 +123,19 @@ class Heatmap(CtrlNode):
         self.labels_column = self.ctrls['labels'].currentText()
         cmap = self.ctrls['colormap'].current_cmap
 
+        self.set_data_column_combo_box()
+
         if self.ctrls['Apply'].isChecked() is False:
             return
 
         self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
-        self.heatmap_widget.history_trace = self.t.history_trace
+        self.heatmap_widget.set_history_trace(self.t.history_trace)
         
     def set_cmap(self, cmap: str):
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
         self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
 

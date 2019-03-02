@@ -109,7 +109,7 @@ class ButterWorth(CtrlNode):
                   }
 
         self.t.history_trace.add_operation(data_block_id='all', operation='butterworth', parameters=params)
-        self.t.last_output = output_column
+        self.t.last_output = self.output_column
 
         return self.t
 
