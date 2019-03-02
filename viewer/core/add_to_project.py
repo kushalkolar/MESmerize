@@ -16,6 +16,7 @@ from .add_to_project_dialog_pytemplate import Ui_Form
 from common import configuration
 from .viewer_work_environment import ViewerWorkEnv
 from numpy import int64, float64
+import traceback
 
 
 class AddToProjectDialog(QtWidgets.QWidget):
@@ -36,13 +37,27 @@ class AddToProjectDialog(QtWidgets.QWidget):
             self.ui.lineEditAnimalID.setText(self.work_environment.sample_id.split('-_-')[0])
             self.ui.lineEditTrialID.setText(self.work_environment.sample_id.split('-_-')[1])
             self.ui.radioButtonSaveChanges.setVisible(True)
+            self.ui.radioButtonSaveChanges.clicked.connect(self._disable_sample_id_text_entry)
+
+            self.ui.textBoxComments.setPlainText(self.work_environment.comments)
         else:
             self.ui.radioButtonSaveChanges.setVisible(False)
+            self.ui.radioButtonSaveChanges.setDisabled(True)
 
         self.custom_column_entries = []
 
         for custom_column in configuration.proj_cfg.options('CUSTOM_COLUMNS'):
             data_type = configuration.proj_cfg['CUSTOM_COLUMNS'][custom_column]
+
+            val = None
+
+            if self.work_environment.sample_id != '' and self.work_environment.sample_id is not None:
+                try:
+                    sample_id_df = configuration.project_manager.get_sample_id_rows(self.work_environment.sample_id)
+                    if not sample_id_df.empty:
+                        val = sample_id_df[custom_column].iloc[0]
+                except:
+                    pass
 
             if data_type == 'bool':
                 combo_box = QtWidgets.QComboBox(self)
@@ -58,6 +73,15 @@ class AddToProjectDialog(QtWidgets.QWidget):
 
                 self.custom_column_entries.append(combo_box)
 
+                if val is not None:
+                    try:
+                        if val is True:
+                            combo_box.setCurrentIndex(0)
+                        elif val is False:
+                            combo_box.setCurrentIndex(1)
+                    except:
+                        pass
+
             else:
                 line_edit = QtWidgets.QLineEdit(self)
                 line_edit.setObjectName(custom_column)
@@ -72,9 +96,30 @@ class AddToProjectDialog(QtWidgets.QWidget):
 
                 self.custom_column_entries.append(line_edit)
 
+                if val is not None:
+                    try:
+                        line_edit.setText(str(val))
+                    except:
+                        pass
+
         self.ui.checkBoxSaveChanges.setVisible(False)
 
         self.ui.btnProceed.clicked.connect(self.slot_proceed)
+
+    def _disable_sample_id_text_entry(self):
+        if self.ui.radioButtonSaveChanges.isChecked() and self.ui.checkBoxSaveChanges.isChecked():
+            animal_id = self.work_environment.sample_id.split('-_-')[0]
+            trial_id = self.work_environment.sample_id.split('-_-')[1]
+
+            self.ui.lineEditAnimalID.setText(animal_id)
+            self.ui.lineEditAnimalID.setDisabled(True)
+
+            self.ui.lineEditTrialID.setText(trial_id)
+            self.ui.lineEditTrialID.setDisabled(True)
+
+        else:
+            self.ui.lineEditAnimalID.setEnabled(True)
+            self.ui.lineEditTrialID.setEnabled(True)
 
     def update_work_environment_dicts(self):
         animal_id = self.ui.lineEditAnimalID.text()
@@ -151,11 +196,15 @@ class AddToProjectDialog(QtWidgets.QWidget):
         # self.signal_finished.emit()
 
     def save_changes_to_sample(self):
-        dicts_to_append = self.work_environment.to_pandas(configuration.proj_path)
+        try:
+            dicts_to_append = self.work_environment.to_pandas(configuration.proj_path, overwrite=True)
+        except:
+            QtWidgets.QMessageBox.warning(self, 'Exception while trying to overwrite',
+                                          'The following exception was raised while trying to package the current'
+                                          'work environment to overwrite the SampleID rows: ' + traceback.format_exc())
         configuration.project_manager.change_sample_rows(self.work_environment.sample_id, dicts_to_append)
         self.work_environment.saved = True
         self.label_wait.setText('FINISHED!')
-
         # self.signal_finished.emit()
 
     def close(self):

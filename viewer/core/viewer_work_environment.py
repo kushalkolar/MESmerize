@@ -18,8 +18,10 @@ import numpy as np
 import pickle
 import tifffile
 import os
+from shutil import rmtree
 from common import configuration
 from uuid import uuid4
+from uuid import UUID as UUID_type
 import json
 
 
@@ -328,7 +330,7 @@ class ViewerWorkEnv:
 
         return filename
 
-    def to_pandas(self, proj_path: str) -> list:
+    def to_pandas(self, proj_path: str, overwrite: bool = False) -> list:
         """
         :param      proj_path: Root path of the current project
         :return:    list of dicts that each correspond to a single curve that can be appended
@@ -340,10 +342,18 @@ class ViewerWorkEnv:
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = proj_path + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
 
+        if self.UUID is None:
+            UUID = uuid4()
+        else:
+            assert isinstance(self.UUID, UUID_type)
+            UUID = self.UUID
+        curves_dir = proj_path + '/curves/' + self.sample_id + '-_-' + str(UUID)
 
-        UUID = uuid4()
+        if overwrite:
+            rmtree(curves_dir)
+
         img_path = self.to_pickle(imgdir, UUID=UUID)
-
+        
         max_proj = np.amax(self.imgdata.seq, axis=2)
         max_proj_path = img_path + '_max_proj.tiff'
         tifffile.imsave(max_proj_path, max_proj)
@@ -395,8 +405,6 @@ class ViewerWorkEnv:
             comments = 'untagged'
         else:
             comments = self.comments
-
-        curves_dir = proj_path + '/curves/' + self.sample_id + '-_-' + str(UUID)
 
         if os.path.isdir(curves_dir) is False:
             os.mkdir(curves_dir)
