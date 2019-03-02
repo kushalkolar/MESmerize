@@ -202,6 +202,8 @@ class AddToProjectDialog(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Exception while trying to overwrite',
                                           'The following exception was raised while trying to package the current'
                                           'work environment to overwrite the SampleID rows: ' + traceback.format_exc())
+            return
+        
         configuration.project_manager.change_sample_rows(self.work_environment.sample_id, dicts_to_append)
         self.work_environment.saved = True
         self.label_wait.setText('FINISHED!')
