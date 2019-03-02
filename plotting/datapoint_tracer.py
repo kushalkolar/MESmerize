@@ -69,7 +69,10 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.history_widget.fill_widget(self.history_trace)
 
         # self.row.reset_index(inplace=True)
-        self.pandas_series_widget.fill_widget(row.to_dict())
+        row_dict = row.to_dict()
+        for k in row_dict.keys():
+            row_dict[k] = row_dict[k][row.index.item()]
+        self.pandas_series_widget.fill_widget(row_dict)
         self.pandas_series_widget.collapseAll()
         # self.pandas_series_widget.set_data(row)
         # mp_path= self.row['MaxProjPath']

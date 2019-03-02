@@ -97,7 +97,7 @@ def generateUi(opts):
                 w.setText(o['text'])
 
         elif t == 'kwargTextEdit':
-            w = QtGui.KwargPlainTextEdit()
+            w = KwargPlainTextEdit()
             if 'placeHolder' in o:
                 w.setPlaceholderText(o['placeHolder'])
             if 'text' in o:
