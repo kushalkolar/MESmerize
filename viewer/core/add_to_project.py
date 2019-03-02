@@ -37,12 +37,13 @@ class AddToProjectDialog(QtWidgets.QWidget):
             self.ui.lineEditAnimalID.setText(self.work_environment.sample_id.split('-_-')[0])
             self.ui.lineEditTrialID.setText(self.work_environment.sample_id.split('-_-')[1])
             self.ui.radioButtonSaveChanges.setVisible(True)
-            self.ui.radioButtonSaveChanges.clicked.connect(self._disable_sample_id_text_entry)
+            self.ui.checkBoxSaveChanges.clicked.connect(self._disable_sample_id_text_entry)
 
             self.ui.textBoxComments.setPlainText(self.work_environment.comments)
         else:
             self.ui.radioButtonSaveChanges.setVisible(False)
-            self.ui.radioButtonSaveChanges.setDisabled(True)
+            self.ui.radioButtonSaveChanges.setChecked(False)
+            self.ui.checkBoxSaveChanges.setChecked(False)
 
         self.custom_column_entries = []
 
@@ -203,7 +204,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
                                           'The following exception was raised while trying to package the current'
                                           'work environment to overwrite the SampleID rows: ' + traceback.format_exc())
             return
-        
+
         configuration.project_manager.change_sample_rows(self.work_environment.sample_id, dicts_to_append)
         self.work_environment.saved = True
         self.label_wait.setText('FINISHED!')
