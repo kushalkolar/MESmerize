@@ -10,6 +10,9 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
+from typing import List, Any, Union
+
+from PyQt5.QtGui import QColor
 
 from .pytemplates.window_pytemplate import *
 import pandas as pd
@@ -20,6 +23,7 @@ from pyqtgraphCore.console import ConsoleWidget
 from matplotlib import cm as matplotlib_color_map
 import numpy as np
 from uuid import UUID
+from analyser.DataTypes import Transmission
 
 
 class PlotWindow(QtWidgets.QMainWindow):
@@ -33,6 +37,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
         self.transmissions = None
+        self.merged_transmission = None
         self.dataframe = pd.DataFrame()
         self.data_columns = []
         self.data_columns_dtypes = []
@@ -72,6 +77,8 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         self.history_traces = {}
 
+        self.ui.comboBoxShape.hide()
+
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:
         return self.statusBar()
@@ -94,11 +101,16 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         columns = self.dataframe.columns.tolist()
 
+        self.merged_transmission = Transmission.merge(self.transmissions)
+
         self.ui.listWidgetDataColumns.clear()
         self.ui.listWidgetDataColumns.addItems(columns)
 
         self.ui.comboBoxGrouping.clear()
         self.ui.comboBoxGrouping.addItems(columns)
+
+        self.ui.comboBoxShape.clear()
+        self.ui.comboBoxShape.addItems(columns)
 
         self.ui.comboBoxUUIDColumn.clear()
         self.ui.comboBoxUUIDColumn.addItems(columns)
@@ -129,7 +141,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         else:
             return
         self.group_dataframes = [self.dataframe[self.dataframe[self.grouping_column] == group] for group in self.groups]
-
+        self.shape_column = self.ui.comboBoxShape.currentText()
         self.uuid_column = self.ui.comboBoxUUIDColumn.currentText()
 
         self.history_traces.clear()
@@ -138,7 +150,7 @@ class PlotWindow(QtWidgets.QMainWindow):
             d = dict.fromkeys(t.df[self.uuid_column], t.src)
             self.history_traces.update(d)
 
-    def auto_colormap(self, number_of_colors: int, color_map: str = 'hsv') -> list:
+    def auto_colormap(self, number_of_colors: int, color_map: str = 'hsv') -> List[Union[QColor, Any]]:
         cm = matplotlib_color_map.get_cmap(color_map)
         cm._init()
         lut = (cm._lut * 255).view(np.ndarray)

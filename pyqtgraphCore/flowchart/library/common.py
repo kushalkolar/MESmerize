@@ -280,7 +280,7 @@ def metaArrayWrapper(fn):
     return newFn
 
 
-def merge_transmissions(transmissions):
+def merge_transmissions(transmissions) -> list:
     if not len(transmissions) > 0:
         raise Exception('No incoming transmissions')
 

@@ -53,13 +53,15 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
     def set_widget(self, datapoint_uuid: UUID,
                    row: pd.Series,
-                   history_trace: list = [],
+                   history_trace: list = None,
                    peak_ix: int = None,
                    tstart: int = None,
                    tend: int = None):
 
         self.uuid = datapoint_uuid
         self.row = row
+        if history_trace is None:
+            self.history_trace = []
         self.history_trace = history_trace
 
         self.ui.lineEditUUID.setText(str(self.uuid))
@@ -67,6 +69,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         # self.row.reset_index(inplace=True)
         self.pandas_series_widget.fill_widget(row.to_dict())
+        self.pandas_series_widget.collapseAll()
         # self.pandas_series_widget.set_data(row)
         # mp_path= self.row['MaxProjPath']
         # if type(mp_path) is not str:

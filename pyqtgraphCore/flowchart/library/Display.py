@@ -108,9 +108,15 @@ class Heatmap(CtrlNode):
     def process(self, **kwargs):
         self.transmissions = kwargs['In']
         self.transmissions_list = merge_transmissions(self.transmissions)
-        self.dfs = [t.df for t in self.transmissions_list]
 
-        columns = pd.concat(self.dfs).columns
+        self.t = Transmission.merge(self.transmissions_list)
+
+        # self.dfs = [t.df for t in self.transmissions_list]
+
+        # columns = pd.concat(self.dfs).columns
+
+        columns = self.t.df.columns
+
         self.ctrls['data_column'].setItems(columns.to_list())
         self.ctrls['labels'].setItems(columns.to_list())
 
@@ -120,11 +126,12 @@ class Heatmap(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
+        self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
-
+        self.heatmap_widget.history_trace = self.t.history_trace
+        
     def set_cmap(self, cmap: str):
-        self.heatmap_widget.set_data(dataframes=self.dfs, data_column=self.data_column,
+        self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
                                      labels_column=self.labels_column, cmap=cmap)
 
 

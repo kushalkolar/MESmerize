@@ -13,7 +13,6 @@ from pyqtgraphCore import ScatterPlotItem, SpotItem, GraphicsLayoutWidget
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import pandas as pd
 from uuid import UUID
-import numpy as np
 
 
 class ScatterPlot(QtCore.QObject):
@@ -31,8 +30,8 @@ class ScatterPlot(QtCore.QObject):
 
         self.plots.addItem(self.plot)
 
-    def add_data(self, xs, ys, uuid_series: pd.Series, color: QtGui.QColor):
-        self.plot.addPoints(xs, ys, uuid=uuid_series, pen='k', brush=color, symbol='o', size=10)
+    def add_data(self, xs, ys, uuid_series: pd.Series, color: QtGui.QColor, **kwargs):
+        self.plot.addPoints(xs, ys, uuid=uuid_series, pen='k', brush=color, size=10, **kwargs)
 
     def _clicked(self, plot, points):
         for i, p in enumerate(self.lastClicked):
