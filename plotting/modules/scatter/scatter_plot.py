@@ -50,7 +50,7 @@ class ScatterPlotWidget(PlotWindow):
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = str(identifier)
         r = self.dataframe[self.dataframe[self.uuid_column] == self.current_datapoint]
-        print(r)
+
         if isinstance(r._BLOCK_, pd.Series):
             block_id = r._BLOCK_.item()
         elif isinstance(r._BLOCK_, str):
@@ -80,12 +80,12 @@ class ScatterPlotWidget(PlotWindow):
         self.data_column = self.data_columns[0]
         s = self.dataframe[self.data_column]
         try:
-            data = np.vstack(s)
+            self.data = np.vstack(s)
         except:
             QtWidgets.QMessageBox.warning(self, 'Exception while stacking data column',
                                           'The following exception was raised.' + traceback.format_exc())
             return
-        if data.shape[1] != 2:
+        if self.data.shape[1] != 2:
             QtWidgets.QMessageBox.warning(self, 'Improper data column',
 
                                           'Data within the chosen Data column must form a 2D Array')
@@ -103,20 +103,23 @@ class ScatterPlotWidget(PlotWindow):
 
         shapes_map_ref = {0: 'o', 1: 's', 2: 't', 3: 'd', 4: '+'}
 
-        shapes_column = list(set(self.ui.comboBoxShape.currentText()))
+        shapes_column = self.ui.comboBoxShape.currentText()
 
         shapes_series = self.dataframe[shapes_column]
 
         shapes_map = {}
 
-        for i, s in enumerate(set(shapes_series.to_list)):
+        for i, s in enumerate(set(shapes_series.to_list())):
             shapes_map.update({s: shapes_map_ref[i]})
 
         shapes = shapes_series.map(shapes_map)
 
+        self.shapes = shapes
+        self.colors_series = colors_series
+
         us = self.dataframe[self.uuid_column]
 
-        self.scatter_plot.add_data(data[:, 0], data[:, 1], uuid_series=us, color=colors_series, symbol=shapes)
+        self.scatter_plot.add_data(self.data[:, 0], self.data[:, 1], uuid_series=us, color=colors_series.to_list(), symbol=shapes.to_list())
         # except:
         #     QtWidgets.QMessageBox.warning(self, 'Improper input data for scatter plot. '
         #                                         'The data in the selected data column should form a 2D array. '
