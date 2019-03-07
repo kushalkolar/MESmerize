@@ -82,8 +82,12 @@ class BeeswarmPlotWindow(PlotWindow):
         if '_pfeature_ix_base_right_abs' in self.dataframe.columns:
             tend = self.dataframe[self.dataframe[self.uuid_column] == identifier]['_pfeature_ix_base_right_abs'].item()
 
+        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
+
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
-                                              row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
+                                              data_column_curve=self.datapoint_tracer_curve_column,
+                                              row=r,
+                                              proj_path=self.merged_transmission.get_proj_path(),
                                               history_trace=self.get_history_trace(identifier),
                                               tstart=tstart, tend=tend
                                               )
@@ -125,9 +129,13 @@ class BeeswarmPlotWindow(PlotWindow):
         identifier = self.get_current_datapoint()
         self.datapoint_tracers.append(DatapointTracerWidget())
 
+        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
+
         self.datapoint_tracers[-1].set_widget(datapoint_uuid=identifier,
+                                              data_column_curve=self.datapoint_tracer_curve_column,
                                               parent=self,
-                                              row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
+                                              row=r,
+                                              proj_path=self.merged_transmission.get_proj_path(),
                                               history_trace=self.get_history_trace(identifier),
                                               )
         self.datapoint_tracers[-1].show()

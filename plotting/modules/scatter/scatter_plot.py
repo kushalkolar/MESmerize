@@ -43,6 +43,9 @@ class ScatterPlotWidget(PlotWindow):
         self.live_datapoint_tracer = DatapointTracerWidget()
         self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)
 
+        self.ui.comboBoxShape.show()
+        self.ui.labelShapesBasedOn.show()
+
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = identifier
@@ -52,7 +55,9 @@ class ScatterPlotWidget(PlotWindow):
         h = self.merged_transmission.history_trace.get_data_block_history(block_id)
 
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
+                                              data_column_curve=self.datapoint_tracer_curve_column,
                                               row=r,
+                                              proj_path=self.merged_transmission.get_proj_path(),
                                               history_trace=h)
 
     def update_plot(self):
@@ -73,6 +78,7 @@ class ScatterPlotWidget(PlotWindow):
                                           'The following exception was raised.' + traceback.format_exc())
             return
         # try:
+
         colors = self.auto_colormap(len(self.groups))
 
         shapes = {0: 'o', 1: 's', 2: 't', 3: 'd', 4: '+'}

@@ -85,10 +85,13 @@ class LDAPlot(PlotWindow):
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = identifier
+        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
 
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
-                                              row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
-                                              history_trace=self.get_history_trace(identifier))
+                                              data_column_curve=self.datapoint_tracer_curve_column,
+                                              row=r,
+                                              proj_path=self.merged_transmission.get_proj_path(),
+                                              history_trace=self.merged_transmission.get_history_trace(identifier))
 
     def update_params(self):
         super(LDAPlot, self).update_params()
@@ -138,15 +141,15 @@ class LDAPlot(PlotWindow):
         identifier = self.get_current_datapoint()
         self.datapoint_tracers.append(DatapointTracerWidget())
 
+        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
+
         self.datapoint_tracers[-1].set_widget(datapoint_uuid=identifier,
-                                              parent=self,
-                                              row=self.dataframe[self.dataframe[self.uuid_column] == identifier],
+                                              data_column_curve=self.datapoint_tracer_curve_column,
+                                              row=r,
+                                              proj_path=self.merged_transmission.get_proj_path(),
                                               history_trace=self.get_history_trace(identifier),
                                               )
         self.datapoint_tracers[-1].show()
-
-    def get_history_trace(self, identifier: UUID):
-        return []
 
     def _get_decision_function(self):
         self.decision_function_widget = HeatmapTracerWidget()
@@ -156,6 +159,7 @@ class LDAPlot(PlotWindow):
             self.dataframe[col_name] = self.decision_function[:, i]
         self.decision_function_widget.dataframe = self.dataframe
         self.decision_function_widget.plot_widget.set(self.decision_function, cmap='jet', xticklabels=self.lda.classes_)
+        self.decision_function_widget.set_transmission(self.merged_transmission)
         self.decision_function_widget.show()
 
     def _get_coefficients(self):

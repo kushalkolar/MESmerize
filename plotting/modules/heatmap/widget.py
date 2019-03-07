@@ -15,7 +15,7 @@ from .heatmap import Heatmap
 import numpy as np
 import pandas as pd
 from ...datapoint_tracer import DatapointTracerWidget
-from analyser.DataTypes import HistoryTrace
+from analyser.DataTypes import HistoryTrace, Transmission
 
 
 class HeatmapWidget(QtWidgets.QWidget):
@@ -65,9 +65,11 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
 
         self.dataframe = None
+        self._transmission = None
         self._history_trace = None
         self.has_history_trace = False
         self.data_column = None
+        self.datapoint_tracer_curve_column = None
 
     @QtCore.pyqtSlot(int)
     def set_current_datapoint(self, ix: int):
@@ -83,11 +85,13 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
             h = None
 
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
-                                              data_column_curve=self.data_column,
+                                              data_column_curve=self.datapoint_tracer_curve_column,
                                               row=r,
+                                              proj_path=self.get_transmission().get_proj_path(),
                                               history_trace=h)
 
-    def set_data(self, dataframes, data_column: str, labels_column: str = 'index', cmap: str ='jet'):
+    def set_data(self, dataframes, data_column: str, labels_column: str, datapoint_tracer_curve_column: str, cmap: str ='jet',
+                 transmission: Transmission = None):
         if type(dataframes) is list:
             dataframe = pd.concat(dataframes)
         elif type(dataframes) is not pd.DataFrame:
@@ -104,7 +108,26 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         self.dataframe = dataframe.reset_index(drop=True)
         data = np.vstack(self.dataframe[data_column].values)
         self.plot_widget.set(data, cmap=cmap, yticklabels=labels)
+
+        self._transmission = None
         self._history_trace = None
+        self.has_history_trace = False
+
+        if transmission is not None:
+            assert isinstance(transmission, Transmission)
+            self.set_transmission(transmission)
+
+        self.datapoint_tracer_curve_column = datapoint_tracer_curve_column
+
+    def set_transmission(self, transmission):
+        self._transmission = transmission
+        self.set_history_trace(transmission.history_trace)
+
+    def get_transmission(self) -> Transmission:
+        if self._transmission is None:
+            raise ValueError('No tranmission is set')
+        else:
+            return self._transmission
 
     def highlight_row(self, ix):
         self.plot_widget.highlight_row(ix)
