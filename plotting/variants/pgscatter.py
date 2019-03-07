@@ -11,9 +11,10 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from pyqtgraphCore import ScatterPlotItem, SpotItem, GraphicsLayoutWidget
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from pyqtgraphCore.functions import mkBrush
 import pandas as pd
 from uuid import UUID
-
+from collections.abc import Iterable
 
 class ScatterPlot(QtCore.QObject):
     signal_spot_clicked = QtCore.pyqtSignal(UUID)
