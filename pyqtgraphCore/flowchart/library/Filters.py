@@ -12,7 +12,7 @@ class Derivative(CtrlNode):
     nodeName = 'Derivative'
     uiTemplate = [('data_column', 'combo', {}),
                   ('dt', 'intSpin', {'min': 1, 'max': 999, 'value': 1, 'step': 1}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -38,7 +38,7 @@ class TVDiff(CtrlNode):
     """Total Variation Regularized Numerical Differentiation, Chartrand 2011 method"""
     nodeName = 'TVDiff'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True}),
                   ]
 
     def processData(self, transmission: Transmission):
@@ -70,7 +70,7 @@ class ButterWorth(CtrlNode):
     uiTemplate = [('data_column', 'combo', {}),
                   ('order', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 2}),
                   ('freq_divisor', 'doubleSpin', {'min': 0.01, 'max': 100.00, 'step': 0.05, 'value': 2.00}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def _func(self, x: np.ndarray, meta: dict):
@@ -120,7 +120,7 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
     uiTemplate = [('data_column', 'combo', {}),
                   ('window_length', 'intSpin', {'min': 3, 'max': 999, 'value': 3, 'step': 2}),
                   ('polyorder', 'intSpin', {'min': 1, 'max': 998, 'value': 1, 'step': 1}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -159,7 +159,7 @@ class PowerSpectralDensity(CtrlNode):
     """Return the Power Spectral Density of a curve."""
     nodeName = 'PowSpectDens'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -195,7 +195,7 @@ class Resample(CtrlNode):
                   ('Rs', 'intSpin', {'min': 1, 'max': 9999, 'value': 10, 'step': 5}),
                   ('Tu', 'intSpin', {'min': 1, 'max': 9999, 'value': 1, 'step': 1}),
                   ('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -239,7 +239,7 @@ class Resample(CtrlNode):
 class ZScore(CtrlNode):
     nodeName = 'Z-Score'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -254,7 +254,7 @@ class Normalize(CtrlNode):
 
     nodeName = 'Normalize'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})]
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
         self.t = transmission

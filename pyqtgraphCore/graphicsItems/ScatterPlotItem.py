@@ -244,7 +244,7 @@ class ScatterPlotItem(GraphicsObject):
         self.picture = None   # QPicture used for rendering when pxmode==False
         self.fragmentAtlas = SymbolAtlas()
 
-        self.data = np.empty(0, dtype=[('x', np.float64), ('y', np.float64), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('uuid', object), ('orig_brush', object), ('orig_pen', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
+        self.data = np.empty(0, dtype=[('x', np.float64), ('y', np.float64), ('size', float), ('symbol', object), ('pen', object), ('brush', object), ('data', object), ('uuid', object), ('orig_symbol', object), ('orig_brush', object), ('orig_pen', object), ('item', object), ('sourceRect', object), ('targetRect', object), ('width', float)])
         self.bounds = [None, None]  ## caches data bounds
         self._maxSpotWidth = 0      ## maximum size of the scale-variant portion of all spots
         self._maxSpotPxWidth = 0    ## maximum size of the scale-invariant portion of all spots
@@ -375,6 +375,8 @@ class ScatterPlotItem(GraphicsObject):
                 newData['orig_pen'] = fn.mkPen(kargs['brush'])
             else:
                 newData['orig_pen'] = kargs['pen']
+        if 'symbol' in kargs:
+            newData['orig_symbol'] = kargs['symbol']
 
         if 'spots' in kargs:
             spots = kargs['spots']
