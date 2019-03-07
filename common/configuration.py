@@ -98,7 +98,7 @@ def new_proj_config():
     defaultInclude = ['SampleID', 'date', 'comments']
     proj_cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
-    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'MaxProjPath', 'ROI_State', 'uuid_curve', 'misc']
+    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'ImgUUID', 'ROI_State', 'uuid_curve', 'misc']
     proj_cfg['EXCLUDE'] = dict.fromkeys(defaultExclude)
 
     proj_cfg['ROI_DEFS'] = {}

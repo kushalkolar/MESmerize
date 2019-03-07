@@ -190,7 +190,7 @@ class HistoryTrace:
 
 
 class BaseTransmission:
-    def __init__(self, df: pd.DataFrame, proj_path: str, history_trace: HistoryTrace, last_output: str = None,
+    def __init__(self, df: pd.DataFrame, history_trace: HistoryTrace, proj_path: str = None, last_output: str = None,
                  ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
         """
         Base class for common Transmission functions
@@ -200,11 +200,14 @@ class BaseTransmission:
         """
         self.df = df
         self.history_trace = history_trace
+
         self._proj_path = None
-        self.set_proj_path(proj_path)
+        if proj_path is not None:
+            self.set_proj_path(proj_path)
+
         self.last_output = last_output
 
-        if self.ROI_DEFS is None:
+        if ROI_DEFS is None:
             self.ROI_DEFS = []
         else:
             assert isinstance(ROI_DEFS, list)
@@ -340,7 +343,7 @@ class Transmission(BaseTransmission):
 
     @classmethod
     def merge(cls, transmissions: list):
-        proj_path_list = [os.path.abspath(t.proj_path) for t in transmissions]
+        proj_path_list = [os.path.abspath(t.get_proj_path()) for t in transmissions]
         if len(set(proj_path_list)) > 1:
             raise ValueError('You cannot merge transmissions from different projects. '
                              'You have tried to merge transmissions from the following projects: '
