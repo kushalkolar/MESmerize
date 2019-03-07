@@ -29,7 +29,7 @@ class KMeans(CtrlNode):
                   ('precompute_distances', 'combo',
                    {'items': ['auto', 'True', 'False']}),
 
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -112,8 +112,9 @@ class Agglomerative(CtrlNode):
                                '\nward minimizes the variance of the clusters being merged.\n'
                                'average uses the average of the distances of each observation of the two sets.\n'
                                'complete or maximum linkage uses the maximum distances between all observations of the two sets.\n'
-                               'single uses the minimum of the distances between all observations of the two sets.'})
+                               'single uses the minimum of the distances between all observations of the two sets.'}),
 
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):

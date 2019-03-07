@@ -5,13 +5,14 @@ from .common import *
 import numpy as np
 import pandas as pd
 from plotting.modules.heatmap.widget import HeatmapTracerWidget
+from plotting.modules.scatter.scatter_plot import ScatterPlotWidget
 
 
 class Plot(CtrlNode):
     """Plot curves and/or scatter points"""
     nodeName = 'Plot'
     uiTemplate = [('Show', 'check', {'checked': True}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True}),
                   ('data_column', 'combo', {})
                   ]
 
@@ -147,6 +148,32 @@ class Heatmap(CtrlNode):
                                      datapoint_tracer_curve_column=self.dpt_curve_curve,
                                      cmap=cmap, transmission=self.t, reset_data=False)
 
+
+class ScatterPlot(CtrlNode):
+    """Scatter Plot, useful for visualizing transformed data and clusters"""
+    nodeName = "ScatterPlot"
+    uiTemplate = [('Show', 'button', {'text': 'Show'}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_gui = None
+        self.ctrls['Show'].clicked.connect(self._open_plot_gui)
+
+    def process(self, **kwargs):
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+            return
+
+        transmissions = kwargs['In']
+
+        transmissions_list = merge_transmissions(transmissions)
+
+        self.plot_gui.update_input_transmissions(transmissions_list)
+
+    def _open_plot_gui(self):
+        if self.plot_gui is None:
+            self.plot_gui = ScatterPlotWidget(parent=self.parent())
+        self.plot_gui.show()
 
         # return {'Out': kwargs}
 

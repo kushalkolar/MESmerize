@@ -24,8 +24,8 @@ class ScatterPlot(QtCore.QObject):
         self.graphics_view = graphics_view
         self.current_datapoint = None
         self.lastClicked = []
-        self.plots = self.graphics_view.addPlot(title='LDA')
-        self.plot = ScatterPlotItem(title='LDA')
+        self.plots = self.graphics_view.addPlot(title='Scatter_Plot')
+        self.plot = ScatterPlotItem(title='Scatter_Plot')
         self.plot.sigClicked.connect(self._clicked)
 
         self.plots.addItem(self.plot)
@@ -38,14 +38,17 @@ class ScatterPlot(QtCore.QObject):
             assert isinstance(p, SpotItem)
             p.setPen('k')#p._data['orig_pen'])
             p.setBrush(p._data['orig_brush'])
+            p.setSymbol(p._data['orig_symbol'])
 
         if len(points) == 1:
             p = points[0]
             assert isinstance(p, SpotItem)
-            self.signal_spot_clicked.emit(p.uuid)
+            u = UUID(p.uuid)
+            self.signal_spot_clicked.emit(u)
 
         for p in points:
             assert isinstance(p, SpotItem)
+            p.setSymbol(p._data['orig_symbol'])
             p.setPen('w')
             p.setBrush('w')
 
