@@ -92,7 +92,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         if self.ui.radioButtonMaxProjection.isChecked():
             self.set_image('max')
-        elif self.ui.radioButtonSTDProjection.isChecked('std'):
+        elif self.ui.radioButtonSTDProjection.isChecked():
             self.set_image('std')
 
         self.peak_region.clear_all()

@@ -51,15 +51,19 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
         self.vlayout = QtWidgets.QVBoxLayout(self)
+
         self.plot_widget = Heatmap()
+        self.plot_widget.unhide_sort_gui()
 
         self.splitter = QtWidgets.QSplitter(self)
         self.splitter.setStretchFactor(1, 1)
         self.splitter.addWidget(self.plot_widget)
+
         self.live_datapoint_tracer = DatapointTracerWidget()
         self.splitter.addWidget(self.live_datapoint_tracer)
 
         self.vlayout.addWidget(self.splitter)
+        # self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
         self.setLayout(self.vlayout)
 
         self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
@@ -91,7 +95,7 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
                                               history_trace=h)
 
     def set_data(self, dataframes, data_column: str, labels_column: str, datapoint_tracer_curve_column: str, cmap: str ='jet',
-                 transmission: Transmission = None):
+                 transmission: Transmission = None, reset_data: bool = True):
         if type(dataframes) is list:
             dataframe = pd.concat(dataframes)
         elif type(dataframes) is not pd.DataFrame:
@@ -101,9 +105,15 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         else:
             dataframe = dataframes
 
+        assert isinstance(dataframe, pd.DataFrame)
+
         self.data_column = data_column
 
         labels = dataframe[labels_column]
+
+        if reset_data:
+            self.plot_widget.comboBoxSortColumn.clear()
+            self.plot_widget.comboBoxSortColumn.addItems(dataframe.columns.to_list())
 
         self.dataframe = dataframe.reset_index(drop=True)
         data = np.vstack(self.dataframe[data_column].values)

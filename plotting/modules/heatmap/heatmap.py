@@ -38,6 +38,22 @@ class Heatmap(MatplotlibWidget):
         elif highlight_mode == 'item':
             pass
 
+        self.labelSort = QtWidgets.QLabel(self)
+        self.labelSort.setText('Sort heatmap according to column:')
+        self.labelSort.setMinimumHeight(30)
+        self.labelSort.setMaximumHeight(30)
+        self.comboBoxSortColumn = QtWidgets.QComboBox(self)
+        #
+        self.layout().addWidget(self.labelSort)
+        self.layout().addWidget(self.comboBoxSortColumn)
+
+        self.labelSort.hide()
+        self.comboBoxSortColumn.hide()
+
+    def unhide_sort_gui(self):
+        self.labelSort.show()
+        self.comboBoxSortColumn.show()
+
     def set(self, data: np.ndarray, *args, **kwargs):
         """
         :param data:    2D numpy array
