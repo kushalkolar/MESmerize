@@ -18,7 +18,7 @@ class Manifold(CtrlNode):
                   ('kwargs', 'kwargTextEdit', {'placeHolder': 'Any additional kwargs to pass to'
                                                               'the sklearn.manifold function'}),
 
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):

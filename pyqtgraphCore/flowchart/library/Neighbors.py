@@ -33,7 +33,7 @@ class KneighborsGraph(CtrlNode):
 
                   ('include_self', 'check', {'toolTip': 'Mark each sample as the first nearest neighbor to itself.'}),
 
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):

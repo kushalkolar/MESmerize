@@ -11,7 +11,7 @@ class AbsoluteValue(CtrlNode):
     """Performs numpy.abs(<input>). Returns root-mean-square value if <input> is complex"""
     nodeName = 'AbsoluteValue'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})]
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
         self.t = transmission
@@ -37,7 +37,7 @@ class LogTransform(CtrlNode):
     nodeName = 'LogTransform'
     uiTemplate = [('data_column', 'combo', {}),
                   ('transform', 'combo', {'values': ['log10', 'ln', 'modlog10']}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})]
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
         self.t = transmission
@@ -76,7 +76,7 @@ class RFFT(CtrlNode):
     """
     nodeName = 'RFFT'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -106,7 +106,7 @@ class iRFFT(CtrlNode):
     Input must have an _RFFT column from the RFFT node.\n
     """
     nodeName = 'iRFFT'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True})]
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
         self.t = transmission
