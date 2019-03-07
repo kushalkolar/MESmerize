@@ -48,10 +48,14 @@ class ScatterPlotWidget(PlotWindow):
 
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
-        self.current_datapoint = identifier
-        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
+        self.current_datapoint = str(identifier)
+        r = self.dataframe[self.dataframe[self.uuid_column] == self.current_datapoint]
+        print(r)
+        if isinstance(r._BLOCK_, pd.Series):
+            block_id = r._BLOCK_.item()
+        elif isinstance(r._BLOCK_, str):
+            block_id = r._BLOCK_
 
-        block_id = r._BLOCK_.item()
         h = self.merged_transmission.history_trace.get_data_block_history(block_id)
 
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
@@ -60,23 +64,33 @@ class ScatterPlotWidget(PlotWindow):
                                               proj_path=self.merged_transmission.get_proj_path(),
                                               history_trace=h)
 
+    def update_params(self):
+        super(ScatterPlotWidget, self).update_params()
+        self.update_plot()
+
     def update_plot(self):
         self.scatter_plot.clear()
 
         accepted_datatypes = [np.ndarray]
 
-        if not self.data_types_check(accepted_datatypes):
-            QtWidgets.QMessageBox.warning(self, 'Invalid data type in data column',
-                                          'The data column can only contain the following data types: np.ndarray')
-            return
-
-        s = self.dataframes[self.data_column]
+        # if not self.data_types_check(accepted_datatypes):
+        #     QtWidgets.QMessageBox.warning(self, 'Invalid data type in data column',
+        #                                   'The data column can only contain the following data types: np.ndarray')
+        #     return
+        self.data_column = self.data_columns[0]
+        s = self.dataframe[self.data_column]
         try:
             data = np.vstack(s)
         except:
             QtWidgets.QMessageBox.warning(self, 'Exception while stacking data column',
                                           'The following exception was raised.' + traceback.format_exc())
             return
+        if data.shape[1] != 2:
+            QtWidgets.QMessageBox.warning(self, 'Improper data column',
+
+                                          'Data within the chosen Data column must form a 2D Array')
+            return
+        # if data.shape[1]
         # try:
 
         colors = self.auto_colormap(len(self.groups))

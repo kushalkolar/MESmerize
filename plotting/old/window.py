@@ -76,17 +76,12 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         self.ui.dockConsole.hide()
 
-        self.history_traces = {}
-
         self.ui.comboBoxShape.hide()
         self.ui.labelShapesBasedOn.hide()
 
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:
         return self.statusBar()
-
-    def get_history_trace(self, identifier: UUID) -> list:
-        return self.history_traces[identifier]
 
     def update_input_transmissions(self, transmissions: list):
         self.transmissions = transmissions
@@ -113,6 +108,9 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         self.ui.comboBoxShape.clear()
         self.ui.comboBoxShape.addItems(columns)
+
+        self.ui.comboBoxDataPointTracerCurveColumn.clear()
+        self.ui.comboBoxDataPointTracerCurveColumn.addItems(columns)
 
         self.ui.comboBoxUUIDColumn.clear()
         self.ui.comboBoxUUIDColumn.addItems(columns)
@@ -145,12 +143,6 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.group_dataframes = [self.dataframe[self.dataframe[self.grouping_column] == group] for group in self.groups]
         self.shape_column = self.ui.comboBoxShape.currentText()
         self.uuid_column = self.ui.comboBoxUUIDColumn.currentText()
-
-        self.history_traces.clear()
-
-        for t in self.transmissions:
-            d = dict.fromkeys(t.df[self.uuid_column], t.src)
-            self.history_traces.update(d)
 
         self.datapoint_tracer_curve_column = self.ui.comboBoxDataPointTracerCurveColumn.currentText()
 
