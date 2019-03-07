@@ -68,6 +68,7 @@ class Ui_DatapointTracer(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.radioButtonMaxProjection = QtWidgets.QRadioButton(self.groupBoxImageViewAndCurve)
+        self.radioButtonMaxProjection.setChecked(True)
         self.radioButtonMaxProjection.setObjectName("radioButtonMaxProjection")
         self.horizontalLayout_2.addWidget(self.radioButtonMaxProjection)
         self.radioButtonSTDProjection = QtWidgets.QRadioButton(self.groupBoxImageViewAndCurve)
