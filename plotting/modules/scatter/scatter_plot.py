@@ -95,24 +95,28 @@ class ScatterPlotWidget(PlotWindow):
 
         colors = self.auto_colormap(len(self.groups))
 
-        shapes = {0: 'o', 1: 's', 2: 't', 3: 'd', 4: '+'}
+        colors_map = {}
+        for i, c in enumerate(colors):
+            colors_map.update({self.groups[i]: c})
 
-        # labels_list = []
+        colors_series = self.dataframe[self.grouping_column].map(colors_map)
 
-        # for numerical_label, group_name in self.groups:
-        #     labels_list += [numerical_label] * self.dataframe[self.grouping_column].value_counts()[group_name]
+        shapes_map_ref = {0: 'o', 1: 's', 2: 't', 3: 'd', 4: '+'}
 
-        df = pd.DataFrame(data, columns=['x', 'y'])
-        df[self.grouping_column] = self.dataframe[self.grouping_column]
-        df['uuid'] = self.dataframe[self.uuid_column]
+        shapes_column = list(set(self.ui.comboBoxShape.currentText()))
 
-        for ix, label in enumerate(set(self.groups)):
-            xs = df[df[self.grouping_column] == label]['x']
-            ys = df[df[self.grouping_column] == label]['y']
+        shapes_series = self.dataframe[shapes_column]
 
-            us = df[df[self.grouping_column] == label]['uuid']
+        shapes_map = {}
 
-            self.scatter_plot.add_data(xs, ys, uuid_series=us, color=colors[ix], symbol=shapes[ix])
+        for i, s in enumerate(set(shapes_series.to_list)):
+            shapes_map.update({s: shapes_map_ref[i]})
+
+        shapes = shapes_series.map(shapes_map)
+
+        us = self.dataframe[self.uuid_column]
+
+        self.scatter_plot.add_data(data[:, 0], data[:, 1], uuid_series=us, color=colors_series, symbol=shapes)
         # except:
         #     QtWidgets.QMessageBox.warning(self, 'Improper input data for scatter plot. '
         #                                         'The data in the selected data column should form a 2D array. '
