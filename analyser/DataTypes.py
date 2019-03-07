@@ -19,7 +19,9 @@ from copy import deepcopy
 from uuid import uuid4, UUID
 from typing import Tuple, List
 from itertools import chain
-
+import os
+import traceback
+from configparser import RawConfigParser
 
 class DataBlockNotFound(BaseException):
     """ Requested data block not found """
@@ -188,7 +190,8 @@ class HistoryTrace:
 
 
 class BaseTransmission:
-    def __init__(self, df: pd.DataFrame, history_trace: HistoryTrace, last_output: str = None):
+    def __init__(self, df: pd.DataFrame, proj_path: str, history_trace: HistoryTrace, last_output: str = None,
+                 ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
         """
         Base class for common Transmission functions
         :param  dataframe:      Transmission dataframe
@@ -197,12 +200,27 @@ class BaseTransmission:
         """
         self.df = df
         self.history_trace = history_trace
+        self._proj_path = None
+        self.set_proj_path(proj_path)
         self.last_output = last_output
-        # self.kwargs = kwargs
-        # self.kwargs_keys = list(kwargs.keys())
-        #
-        # for key in self.kwargs_keys:
-        #     setattr(self, key, kwargs[key])
+
+        if self.ROI_DEFS is None:
+            self.ROI_DEFS = []
+        else:
+            assert isinstance(ROI_DEFS, list)
+            self.ROI_DEFS = ROI_DEFS
+
+        if STIM_DEFS is None:
+            self.STIM_DEFS = []
+        else:
+            assert isinstance(STIM_DEFS, list)
+            self.STIM_DEFS = STIM_DEFS
+
+        if CUSTOM_COLUMNS is None:
+            self.CUSTOM_COLUMNS = []
+        else:
+            assert isinstance(CUSTOM_COLUMNS, list)
+            self.CUSTOM_COLUMNS = CUSTOM_COLUMNS
 
     @classmethod
     def from_pickle(cls, path):
@@ -243,6 +261,36 @@ class BaseTransmission:
         e_df = pd.DataFrame(columns=c)
         return cls(e_df, transmission.history_trace, **transmission.kwargs)
 
+    def get_proj_path(self) -> str:
+        if self._proj_path is None:
+            raise ValueError('No project path set')
+        return self._proj_path
+
+    def set_proj_path(self, path: str):
+        path = os.path.abspath(path)
+
+        if not os.path.isdir(path + '/images'):
+            raise NotADirectoryError('images directory not found')
+        if not os.path.isfile(path + '/config.cfg'):
+            raise FileNotFoundError('Project config not found')
+
+        self._proj_path = path
+
+    def set_proj_config(self):
+        proj_path = self.get_proj_path()
+        if proj_path is None:
+            raise ValueError('Project path must be set before setting project configuration')
+
+        config_path = proj_path + '/config.cfg'
+
+        proj_config = RawConfigParser(allow_no_value=True)
+        proj_config.optionxform = str
+        proj_config.read(config_path)
+
+        self.ROI_DEFS = proj_config.options('ROI_DEFS')
+        self.STIM_DEFS = proj_config.options('STIM_DEFS')
+        self.CUSTOM_COLUMNS = proj_config.options('CUSTOM_COLUMNS')
+
 
 class Transmission(BaseTransmission):
     """The regular transmission class used throughout the flowchart"""
@@ -263,7 +311,17 @@ class Transmission(BaseTransmission):
         params = {'sub_dataframe_name': sub_dataframe_name, 'dataframe_filter_history': dataframe_filter_history}
         h.add_operation(data_block_id=block_id, operation='spawn_transmission', parameters=params)
 
-        return cls(df, history_trace=h, last_output='_RAW_CURVE')
+        try:
+            from common import configuration
+            roi_type_defs = configuration.proj_cfg.options('ROI_DEFS')
+            stim_type_defs = configuration.proj_cfg.options('STIM_DEFS')
+            custom_columns = configuration.proj_cfg.options('CUSTOM_COLUMNS')
+        except:
+            raise ValueError('Could not read project configuration when creating Transmission'
+                             '\n' + traceback.format_exc())
+
+        return cls(df, proj_path=proj_path, history_trace=h, last_output='_RAW_CURVE',
+                   ROI_DEFS=roi_type_defs, STIM_DEFS=stim_type_defs, CUSTOM_COLUMNS=custom_columns)
 
     @staticmethod
     def _load_files(proj_path: str, row: pd.Series) -> pd.Series:
@@ -282,13 +340,25 @@ class Transmission(BaseTransmission):
 
     @classmethod
     def merge(cls, transmissions: list):
+        proj_path_list = [os.path.abspath(t.proj_path) for t in transmissions]
+        if len(set(proj_path_list)) > 1:
+            raise ValueError('You cannot merge transmissions from different projects. '
+                             'You have tried to merge transmissions from the following projects: '
+                             + '\n'.join(set(proj_path_list)))
+        else:
+            proj_path = proj_path_list[0]
+            roi_defs = transmissions[0].ROI_DEFS
+            stim_defs = transmissions[0].STIM_DEFS
+            custom_columns = transmissions[0].CUSTOM_COLUMNS
+
         dfs = [t.df for t in transmissions]
         df = pd.concat(dfs)
 
         h = [t.history_trace for t in transmissions]
         h = HistoryTrace.merge(h)
 
-        return cls(df, history_trace=h)
+        return cls(df, proj_path=proj_path, history_trace=h,
+                   ROI_DEFS=roi_defs, STIM_DEFS=stim_defs, CUSTOM_COLUMNS=custom_columns)
 
 
 class GroupTransmission(BaseTransmission):

@@ -12,7 +12,7 @@ class Plot(CtrlNode):
     nodeName = 'Plot'
     uiTemplate = [('Show', 'check', {'checked': True}),
                   ('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'combo', {})
+                  ('data_col', 'combo', {})
                   ]
 
     def __init__(self, name):
@@ -29,11 +29,11 @@ class Plot(CtrlNode):
             raise Exception('No incoming transmissions')
 
         columns = pd.concat([t.df for t in transmissions]).columns
-        self.ctrls['data_column'].setItems(columns.to_list())
+        self.ctrls['data_col'].setItems(columns.to_list())
 
         if self.ctrls['Apply'].isChecked() is False:
             return
-        data_column = self.ctrls['data_column'].currentText()
+        data_column = self.ctrls['data_col'].currentText()
         self.pwin.graphicsView.clear()
 
         srcs = []
@@ -91,9 +91,10 @@ class Heatmap(CtrlNode):
     """Stack 1-D arrays and plot visually like a heatmap"""
     nodeName = "Heatmap"
     uiTemplate = [('Show', 'button', {'text': 'Show'}),
-                  ('data_column', 'combo', {}),
+                  ('data_col', 'combo', {}),
                   ('labels', 'combo', {}),
                   ('colormap', 'cmaplist', {}),
+                  ('DPT_curve', 'combo', {}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
@@ -117,10 +118,14 @@ class Heatmap(CtrlNode):
 
         columns = self.t.df.columns
 
-        self.ctrls['data_column'].setItems(columns.to_list())
+        self.ctrls['data_col'].setItems(columns.to_list())
         self.ctrls['labels'].setItems(columns.to_list())
+        self.ctrls['DPT_curve'].setItems(columns.to_list())
 
         self.labels_column = self.ctrls['labels'].currentText()
+
+        self.dpt_curve_curve = self.ctrls['DPT_curve'].currentText()
+
         cmap = self.ctrls['colormap'].current_cmap
 
         self.set_data_column_combo_box()
@@ -129,15 +134,18 @@ class Heatmap(CtrlNode):
             return
 
         self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
-                                     labels_column=self.labels_column, cmap=cmap)
-        self.heatmap_widget.set_history_trace(self.t.history_trace)
+                                     labels_column=self.labels_column,
+                                     datapoint_tracer_curve_column=self.dpt_curve_curve,
+                                     cmap=cmap, transmission=self.t)
         
     def set_cmap(self, cmap: str):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
         self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
-                                     labels_column=self.labels_column, cmap=cmap)
+                                     labels_column=self.labels_column,
+                                     datapoint_tracer_curve_column=self.dpt_curve_curve,
+                                     cmap=cmap, transmission=self.t)
 
 
         # return {'Out': kwargs}

@@ -19,6 +19,7 @@ import pandas as pd
 import tifffile
 import numpy as np
 from viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
+from common import configuration
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):
@@ -28,6 +29,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         self.uuid = None
         self.row = None
+        self.proj_path = None
+        self.sample_id = None
         self.history_trace = None
         self.peak_ix = None
         self.tstart = None
@@ -38,7 +41,6 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.history_widget = HistoryTreeWidget(parent=self.ui.groupBoxInfo)
         self.ui.groupBoxInfo.layout().addWidget(self.history_widget)
 
-        # self.pandas_series_widget = PandasWidget(parent=self.ui.groupBoxInfo)
         self.pandas_series_widget = HistoryTreeWidget(parent=self.ui.groupBoxInfo)
 
         self.ui.groupBoxInfo.layout().addWidget(self.pandas_series_widget)
@@ -51,9 +53,13 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.peak_region = TimelineLinearRegion(self.ui.graphicsViewPlot)
         self.roi = None
 
+        self.ui.radioButtonMaxProjection.clicked.connect(lambda x: self.set_image('max'))
+        self.ui.radioButtonSTDProjection.clicked.connect(lambda x: self.set_image('std'))
+
     def set_widget(self, datapoint_uuid: UUID,
                    data_column_curve: str,
                    row: pd.Series,
+                   proj_path: str,
                    history_trace: list = None,
                    peak_ix: int = None,
                    tstart: int = None,
@@ -61,6 +67,16 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         self.uuid = datapoint_uuid
         self.row = row
+        self.proj_path = proj_path
+        self.sample_id = self.row['SampleID']
+
+        if isinstance(self.sample_id, pd.Series):
+            self.sample_id = self.sample_id.item()
+
+        if not isinstance(self.sample_id, str):
+            raise ValueError('SampleID datatype is not str or pandas.Series. '
+                             'Something is wrong, it is this datatype :' + str(type(self.sample_id)))
+
         if history_trace is None:
             self.history_trace = []
         self.history_trace = history_trace
@@ -68,25 +84,16 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.ui.lineEditUUID.setText(str(self.uuid))
         self.history_widget.fill_widget(self.history_trace)
 
-        # self.row.reset_index(inplace=True)
         row_dict = row.to_dict()
         for k in row_dict.keys():
             row_dict[k] = row_dict[k][row.index.item()]
         self.pandas_series_widget.fill_widget(row_dict)
         self.pandas_series_widget.collapseAll()
-        # self.pandas_series_widget.set_data(row)
-        # mp_path= self.row['MaxProjPath']
-        # if type(mp_path) is not str:
-        try:
-            mp_path = self.row['MaxProjPath'].item()
-        except:
-            mp_path = self.row['MaxProjPath']
 
-        img = tifffile.imread(mp_path)
-
-        self.image_item.setImage(img.astype(np.uint16))
-        # self.image_item.setPxMode(True)
-        self.image_item.resetTransform()
+        if self.ui.radioButtonMaxProjection.isChecked():
+            self.set_image('max')
+        elif self.ui.radioButtonSTDProjection.isChecked('std'):
+            self.set_image('std')
 
         self.peak_region.clear_all()
         self.ui.graphicsViewPlot.clear()
@@ -117,83 +124,29 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         if peak_ix is not None:
             pass
 
-    def set_image(self):
-        pass
-        # roi = row['ROI_States'].value
-        #
+    def set_image(self, projection: str):
+        img_uuid = self.row['ImgUUID']
 
+        if isinstance(img_uuid, pd.Series):
+            img_uuid = img_uuid.item()
 
-class PandasWidget(QtWidgets.QWidget):
-    def __init__(self, parent=None):
-        QtWidgets.QWidget.__init__(self, parent=None)
-        vLayout = QtWidgets.QVBoxLayout(self)
-        hLayout = QtWidgets.QHBoxLayout()
-        vLayout.addLayout(hLayout)
-        self.pandasTv = QtWidgets.QTableView(self)
-        vLayout.addWidget(self.pandasTv)
-        self.pandasTv.setSortingEnabled(True)
+        if not isinstance(img_uuid, str):
+            raise ValueError('Datatype for Projection Path must be pandas.Series or str, it is currently : ' + str(
+                type(img_uuid)))
 
-    def set_data(self, series: pd.Series):
-        model = PandasModel(series)
-        self.pandasTv.setModel(model)
-
-
-class PandasModel(QtCore.QAbstractTableModel):
-    def __init__(self, df = pd.Series(), parent=None):
-        QtCore.QAbstractTableModel.__init__(self, parent=parent)
-        self._df = df
-
-    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
-        if role != QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
-
-        if orientation == QtCore.Qt.Horizontal:
-            try:
-                return self._df.columns.tolist()[section]
-            except (IndexError, ):
-                return QtCore.QVariant()
-        elif orientation == QtCore.Qt.Vertical:
-            try:
-                # return self.df.index.tolist()
-                return self._df.index.tolist()[section]
-            except (IndexError, ):
-                return QtCore.QVariant()
-
-    def data(self, index, role=QtCore.Qt.DisplayRole):
-        if role != QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
-
-        if not index.isValid():
-            return QtCore.QVariant()
-
-        return QtCore.QVariant(str(self._df.ix[index.row(), index.column()]))
-
-    def setData(self, index, value, role):
-        row = self._df.index[index.row()]
-        col = self._df.columns[index.column()]
-        if hasattr(value, 'toPyObject'):
-            # PyQt4 gets a QVariant
-            value = value.toPyObject()
+        if projection == 'max':
+            suffix = '_max_proj.tiff'
+        elif projection == 'std':
+            suffix = '_std_proj.tiff'
         else:
-            # PySide gets an unicode
-            dtype = self._df[col].dtype
-            if dtype != object:
-                value = None if value == '' else dtype.type(value)
-        self._df.set_value(row, col, value)
-        return True
+            raise ValueError('Can only accept "max" and "std" arguments')
 
-    def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self._df.index)
+        img_path = self.proj_path + '/images/' + self.sample_id + '-_-' + img_uuid + suffix
 
-    def columnCount(self, parent=QtCore.QModelIndex()):
-        return len(self._df.columns)
+        img = tifffile.imread(img_path)
 
-    def sort(self, column, order):
-        colname = self._df.columns.tolist()[column]
-        self.layoutAboutToBeChanged.emit()
-        self._df.sort_values(colname, ascending= order == QtCore.Qt.AscendingOrder, inplace=True)
-        self._df.reset_index(inplace=True, drop=True)
-        self.layoutChanged.emit()
+        self.image_item.setImage(img.astype(np.uint16))
+        self.image_item.resetTransform()
 
 
 class TimelineLinearRegion:

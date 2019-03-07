@@ -24,6 +24,7 @@ from matplotlib import cm as matplotlib_color_map
 import numpy as np
 from uuid import UUID
 from analyser.DataTypes import Transmission
+from os.path import abspath
 
 
 class PlotWindow(QtWidgets.QMainWindow):
@@ -78,6 +79,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.history_traces = {}
 
         self.ui.comboBoxShape.hide()
+        self.ui.labelShapesBasedOn.hide()
 
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:
@@ -149,6 +151,8 @@ class PlotWindow(QtWidgets.QMainWindow):
         for t in self.transmissions:
             d = dict.fromkeys(t.df[self.uuid_column], t.src)
             self.history_traces.update(d)
+
+        self.datapoint_tracer_curve_column = self.ui.comboBoxDataPointTracerCurveColumn.currentText()
 
     def auto_colormap(self, number_of_colors: int, color_map: str = 'hsv') -> List[Union[QColor, Any]]:
         cm = matplotlib_color_map.get_cmap(color_map)

@@ -439,9 +439,9 @@ class ViewerWorkEnv:
 
             d = {'SampleID': self.sample_id,
                  'CurvePath': curve_path.split(proj_path)[1],
+                 'ImgUUID': str(UUID),
                  'ImgPath': img_path.split(proj_path)[1] + '.tiff',
                  'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
-                 'MaxProjPath': max_proj_path,
                  'ROI_State': rois['states'][ix],
                  'date': date,
                  'uuid_curve': str(uuid4()),

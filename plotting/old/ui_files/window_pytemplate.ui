@@ -92,6 +92,16 @@
             <widget class="QComboBox" name="comboBoxShape"/>
            </item>
            <item>
+            <widget class="QLabel" name="labelDatapointTracerCurve">
+             <property name="text">
+              <string>Datapoint tracer curve:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBoxDataPointTracerCurveColumn"/>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QRadioButton" name="radioButtonGroupByTransmissions">

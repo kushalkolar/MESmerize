@@ -68,16 +68,21 @@ class LoadProjDF(CtrlNode):
 class LoadFile(CtrlNode):
     """Load Transmission data object from pickled file"""
     nodeName = 'LoadFile'
-    uiTemplate = [('loadBtn', 'button', {'text': 'OpenFileDialog'}),
+    uiTemplate = [('load_trn', 'button', {'text': 'Open .trn File'}),
                   ('fname', 'label', {'text': ''}),
+                  ('proj_path', 'button', {'text': 'Project Path'}),
+                  ('proj_path_label', 'label', {'text': ''})
                   ]
+
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'Out': {'io': 'out'}})
-        self.ctrls['loadBtn'].clicked.connect(self._fileDialog)
+        self.ctrls['load_trn'].clicked.connect(self.file_dialog_trn_file)
+        self.ctrls['proj_path'].clicked.connect(self.dir_dialog_proj_path)
+
         self.transmission = None
         self._loadNode = True
 
-    def _fileDialog(self):
+    def file_dialog_trn_file(self):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
         if path == '':
             return
@@ -91,6 +96,19 @@ class LoadFile(CtrlNode):
         # print(self.transmission)
         # self.update()
         self.changed()
+
+    def dir_dialog_proj_path(self):
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
+
+        if path == '':
+            return
+
+        try:
+            self.transmission.set_proj_path(path)
+            self.transmission.set_proj_config()
+        except (FileNotFoundError, NotADirectoryError) as e:
+            QtWidgets.QMessageBox.warning(None, 'Invalid Project Folder', 'This is not a valid Mesmerize project\n' + e)
+            return
 
     def process(self):
         return {'Out': self.transmission}
@@ -139,7 +157,7 @@ class Save(CtrlNode):
             try:
                 transmission.to_pickle(self.ctrls['path'].text())
             except Exception as e:
-                QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the tranmission to file.\n'
+                QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the transmission to file.\n'
                                           + str(e))
 
 
