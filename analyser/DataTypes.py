@@ -252,8 +252,8 @@ class BaseTransmission:
     def copy(self):
         return deepcopy(self)
 
-    @classmethod
-    def empty_df(cls, transmission, addCols=[]):
+    # @classmethod
+    def empty_df(cls, transmission, addCols=[]) -> pd.DataFrame:
         """
         :param transmission: Transmission object
         :param addCols: list of columns to add
@@ -262,7 +262,8 @@ class BaseTransmission:
         """
         c = list(transmission.df.columns) + addCols
         e_df = pd.DataFrame(columns=c)
-        return cls(e_df, transmission.history_trace, **transmission.kwargs)
+        return e_df
+        # return cls(e_df, transmission.history_trace, **transmission.kwargs)
 
     def get_proj_path(self) -> str:
         if self._proj_path is None:
@@ -355,7 +356,7 @@ class Transmission(BaseTransmission):
             custom_columns = transmissions[0].CUSTOM_COLUMNS
 
         dfs = [t.df for t in transmissions]
-        df = pd.concat(dfs)
+        df = pd.concat(dfs, copy=True)
 
         h = [t.history_trace for t in transmissions]
         h = HistoryTrace.merge(h)

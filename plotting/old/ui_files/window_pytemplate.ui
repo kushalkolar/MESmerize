@@ -82,9 +82,9 @@
             </layout>
            </item>
            <item>
-            <widget class="QLabel" name="labelShapesBasedOn">
+            <widget class="QCheckBox" name="checkBoxUseDifferentShapes">
              <property name="text">
-              <string>Shapes based on:</string>
+              <string>Use different shapes based on:</string>
              </property>
             </widget>
            </item>

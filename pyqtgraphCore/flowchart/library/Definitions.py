@@ -16,70 +16,70 @@ from caiman.source_extraction.cnmf.utilities import detrend_df_f
 from common import configuration
 
 
-class AlignStims(CtrlNode):
-    """Align Stimulus Definitions"""
-    nodeName = 'AlignStims'
+class ExtractStim(CtrlNode):
+    """Extract portions of curves according to stimulus maps"""
+    nodeName = 'ExtractStim'
     # Cannot use QComboBox for Stim_type since it leads to a stack overflow in Node.__getattr__ when removing or clearing the combobox
-    uiTemplate = [('Stim_Type', 'lineEdit', {'text': '', 'placeHolder': 'Enter Stimulus type'}),
-                  ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus and/or Substim', 'text': ''}),
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Stim_Type', 'combo', {}),
+                  ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus', 'text': ''}),
                   ('start_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('end_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
+    # def __init__(self, name):
+    #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+        # self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
 
-    def setAutoCompleter(self):
-        stim_def = self.ctrls['Stim_Type'].text()
-        try:
-            stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
-        except (KeyError, IndexError) as e:
-            QtWidgets.QMessageBox.warning(None, 'Stimulus type not found',
-                                          'The stimulus type which you have entered'
-                                          ' does not exist in the incoming dataframe\n'
-                                          + str(e))
-            return
-        autocompleter = QtWidgets.QCompleter(stims, self.ctrls['Stimulus'])
-        self.ctrls['Stimulus'].setCompleter(autocompleter)
-        self.ctrls['Stimulus'].setToolTip('\n'.join(stims))
-
-    def _setAutoCompleterLineEdit(self):
-        pass
+    # def setAutoCompleter(self):
+    #     stim_def = self.ctrls['Stim_Type'].text()
+    #     try:
+    #         stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
+    #     except (KeyError, IndexError) as e:
+    #         QtWidgets.QMessageBox.warning(None, 'Stimulus type not found',
+    #                                       'The stimulus type which you have entered'
+    #                                       ' does not exist in the incoming dataframe\n'
+    #                                       + str(e))
+    #         return
+    #     autocompleter = QtWidgets.QCompleter(stims, self.ctrls['Stimulus'])
+    #     self.ctrls['Stimulus'].setCompleter(autocompleter)
+    #     self.ctrls['Stimulus'].setToolTip('\n'.join(stims))
+    #
+    # def _setAutoCompleterLineEdit(self):
+    #     pass
 
     def processData(self, transmission: Transmission):
-        self.transmission = transmission
-        ac = QtWidgets.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
-        self.ctrls['Stim_Type'].setCompleter(ac)
-        self.ctrls['Stim_Type'].setToolTip('\n'.join(self.transmission.STIM_DEFS))
+        # self.transmission = transmission
+        self.t = transmission
+        self.set_data_column_combo_box()
+        self.ctrls['Stim_Type'].setItems(self.t.STIM_DEFS)
+
+        # ac = QtWidgets.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
+        # self.ctrls['Stim_Type'].setCompleter(ac)
+        # self.ctrls['Stim_Type'].setToolTip('\n'.join(self.transmission.STIM_DEFS))
 
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        self.transmission = transmission.copy()
+        self.t = transmission.copy()
 
-        stim_def = self.ctrls['Stim_Type'].text()
+        data_column = self.ctrls['data_column'].currentText()
+
+        stim_def = self.ctrls['Stim_Type'].currentText()
         stim_tag = self.ctrls['Stimulus'].text()
         start_offset = self.ctrls['start_offset'].value()
         end_offset = self.ctrls['end_offset'].value()
         zero_pos = self.ctrls['zero_pos'].currentText()
 
-        params = {'stim_def': stim_def,
-                  'stim_tag': stim_tag,
-                  'start_offset': start_offset,
-                  'end_offset': end_offset,
-                  'zero_pos': zero_pos
-                  }
-
-        t = Transmission.empty_df(self.transmission)  # empty_df(), self.transmission.src)
+        df = Transmission.empty_df(self.transmission, addCols=['_EXTRACT_STIM', '_STIM_TYPE', '_STIMULUS'])  # empty_df(), self.transmission.src)
         for ix, r in transmission.df.iterrows():
             try:
                 smap = r['stim_maps'][0][0][stim_def]
             except KeyError:
                 continue
-            curve = r['curve']
+            curve = r[data_column]
             if curve is None:
                 continue
             for i, stim in smap.iterrows():
@@ -103,26 +103,45 @@ class AlignStims(CtrlNode):
 
                 stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
 
-                rn['curve'] = stim_extract
+                rn['_EXTRACT_STIM'] = stim_extract
+                rn['_STIM_TYPE'] = stim_def
+                rn['_STIMULUS'] = stim_tag
 
-                rn[stim_def] = ['name']
+                df.append(rn, ignore_index=True)
 
-                t.df = t.df.append(rn, ignore_index=True)
+        df.reset_index(inplace=True, drop=True)
 
-        t.src.append({'AlignStims': params})
+        self.t.df = df
+
+        params = {'stim_type': stim_def,
+                  'stimulus': stim_tag,
+                  'start_offset': start_offset,
+                  'end_offset': end_offset,
+                  'zero_pos': zero_pos
+                  }
+
+        self.t.history_trace.add_operation('all', operation='extract_stim', parameters=params)
+
+
+                # rn[stim_def] = ['name']
+
+                # t.df = t.df.append(rn, ignore_index=True)
+
+        # t.history_trace = self.t.history_trace
+
+        # t.src.append({'AlignStims': params})
         # print('ALIGN_STIMS APPENDED')
         # print(t.src)
-        return t
+        return self.t
 
 
-class ROI_Selection(CtrlNode):
+class ROI_TagFilter(CtrlNode):
     """Pass-through DataFrame rows if they have the chosen tags"""
-    nodeName = 'ROI_Selection'
+    nodeName = 'ROI_TagFilter'
     # Cannot use QComboBox for ROI_Type since it leads to a stack overflow in Node.__getattr__ when removing or clearing the combobox
-    uiTemplate = [('ROI_Type', 'lineEdit', {'text': '', 'placeHolder': 'Enter ROI type'}),
-                  ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
-                  ('ROI_Tags', 'lineEdit', {'toolTip': 'Enter one or many tags separated by commas (,)\n' + \
-                                                       'Spaces before or after commas do not matter'}),
+    uiTemplate = [('ROI_Type', 'combo', {}),
+                  # ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
+                  ('ROI_Tag', 'combo', {}),
                   ('Include', 'radioBtn', {'checked': True}),
                   ('Exclude', 'radioBtn', {'checked': False}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
@@ -130,54 +149,88 @@ class ROI_Selection(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
+        self.ctrls['ROI_Type'].currentIndexChanged.connect(self._setAvailTags)
+        # QtWidgets.QComboBox.currentInde
+        # self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
     def _setAvailTags(self):
         try:
-            tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
-        except (KeyError, IndexError) as e:
-            QtWidgets.QMessageBox.warning(None, 'ROI type not found',
-                                          'The ROI type which you have entered'
-                                          ' does not exist in the incoming dataframe\n' + str(e))
-            return
-        self.ctrls['availTags'].setText(', '.join(tags))
-        self.ctrls['availTags'].setToolTip('\n'.join(tags))
-        self._setROITagAutoCompleter(tags)
+            roi_type = self.ctrls['ROI_Type'].currentText()
+            avail_tags = list(set(self.t.df[roi_type]))
+            self.ctrls['ROI_Tag'].setItems(avail_tags)
+        except:
+            pass
 
-    def _setROITagAutoCompleter(self, tags):
-        ac = QtWidgets.QCompleter(tags, self.ctrls['ROI_Tags'])
-        self.ctrls['ROI_Tags'].setCompleter(ac)
+    #     try:
+    #         tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
+    #     except (KeyError, IndexError) as e:
+    #         QtWidgets.QMessageBox.warning(None, 'ROI type not found',
+    #                                       'The ROI type which you have entered'
+    #                                       ' does not exist in the incoming dataframe\n' + str(e))
+    #         return
+    #     self.ctrls['availTags'].setText(', '.join(tags))
+    #     self.ctrls['availTags'].setToolTip('\n'.join(tags))
+    #     self._setROITagAutoCompleter(tags)
+    #
+    # def _setROITagAutoCompleter(self, tags):
+    #     ac = QtWidgets.QCompleter(tags, self.ctrls['ROI_Tags'])
+    #     self.ctrls['ROI_Tags'].setCompleter(ac)
 
     def processData(self, transmission: Transmission):
-        self.transmission = transmission
-        ac = QtWidgets.QCompleter(self.transmission.ROI_DEFS, self.ctrls['ROI_Type'])
-        self.ctrls['ROI_Type'].setCompleter(ac)
-        self.ctrls['ROI_Type'].setToolTip('\n'.join(self.transmission.ROI_DEFS))
+        self.t = transmission
+        # self.set_data_column_combo_box()
 
+        self.ctrls['ROI_Type'].setItems(self.t.ROI_DEFS)
+        self._setAvailTags()
+        # ac = QtWidgets.QCompleter(self.tran/smission.ROI_DEFS, self.ctrls['ROI_Type'])
+        # self.ctrls['ROI_Type'].setCompleter(ac)
+        # self.ctrls['ROI_Type'].setToolTip('\n'.join(self.transmission.ROI_DEFS))
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        self.transmission = transmission.copy()
+        self.t = transmission.copy()
 
-        chosen_tags = [tag.strip() for tag in self.ctrls['ROI_Tags'].text().split(',')]
+        roi_type = self.ctrls['ROI_Type'].currentText()
+        roi_tag = self.ctrls['ROI_Tag'].currentText()
 
-        t = self.transmission.copy()
-        '''***************************************************************************'''
-        ## TODO: CHECK IF THIS IS ACTUALLY DOING THE RIGHT THING!!!!
-        if self.ctrls['Include'].isChecked():
-            t.df = t.df[t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
-            prefix = 'include tags'
-        elif self.ctrls['Exclude'].isChecked():
-            t.df = t.df[~t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
-            prefix = 'exclude tags'
-        '''***************************************************************************'''
+        include = self.ctrls['Include'].isChecked()
+        exclude = self.ctrls['Exclude'].isChecked()
 
-        params = {'ROI_DEF': self.ctrls['ROI_Type'].text(),
-                  prefix: chosen_tags}
+        params = {'roi_type': roi_type,
+                  'roi_tag': roi_tag,
+                  'include': include,
+                  'exclude': exclude
+                  }
 
-        t.src.append({'ROI_Include': params})
+        if include:
+            self.t.df = self.t.df[self.t.df[roi_type] == roi_tag]
+        elif exclude:
+            self.t.df = self.t.df[self.t.df[roi_type] != roi_tag]
 
-        return t
+        self.t.history_trace.add_operation(data_block_id='all', operation='roi_tag_filter', parameters=params)
+
+        return self.t
+
+
+        # chosen_tags = [tag.strip() for tag in self.ctrls['ROI_Tags'].text().split(',')]
+        #
+        # t = self.transmission.copy()
+        # '''***************************************************************************'''
+        # TODO: CHECK IF THIS IS ACTUALLY DOING THE RIGHT THING!!!!
+        # if self.ctrls['Include'].isChecked():
+        #     t.df = t.df[t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
+        #     prefix = 'include tags'
+        # elif self.ctrls['Exclude'].isChecked():
+        #     t.df = t.df[~t.df[self.ctrls['ROI_Type'].text()].isin(chosen_tags)]
+        #     prefix = 'exclude tags'
+        # '''***************************************************************************'''
+        #
+        # params = {'ROI_DEF': self.ctrls['ROI_Type'].text(),
+        #           prefix: chosen_tags}
+        #
+        # t.src.append({'ROI_Include': params})
+
+        # return t
 
 
 class PeakDetect(CtrlNode):
@@ -260,8 +313,8 @@ class PeakDetect(CtrlNode):
         peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
         peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
 
-        # Set the peaks at the index of the local maxima of the raw curve instead of the approximate maxima inferred
-        # from the derivative after .
+        # Set the peaks at the index of the local maxima of the raw curve instead of the maxima inferred
+        # from the derivative
         # Also remove peaks which are lower than the relative amplitude threshold
         rows_drop = []
         for ix, r in peaks_bases_df.iterrows():
@@ -352,10 +405,10 @@ class PeakDetect(CtrlNode):
         if hasattr(self, 'pbw'):
             self.pbw.update_transmission(self.t, self.t)
 
-        self.t.src.append({'Peak_Detect':
+        params = {'data_column':
                            {'SlopeThr': self.ctrls['SlopeThr'].value(),
                             'AmplThrRel': self.ctrls['AmplThrRel'].value(),
-                            'AmplThrAbs': self.ctrls['AmplThrAbs'].value()}})
+                            'AmplThrAbs': self.ctrls['AmplThrAbs'].value()}}
         return self.t
 
     def _set_editor_output(self):

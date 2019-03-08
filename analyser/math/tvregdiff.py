@@ -286,11 +286,10 @@ if __name__ == "__main__":
     testf = [np.sin(x) for x in x0]
 
     testf = testf + np.random.normal(0.0, 0.04, x0.shape)
+    deriv_sm = tv_reg_diff(testf, 100, 5e-2, dx=0.05, ep=1e-1, scale='small', diagflag=0)
+    deriv_lrg = tv_reg_diff(testf, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0)
 
-#    deriv_sm = tv_reg_diff(testf, 100, 5e-2, dx=0.05, ep=1e-1, scale='small', diagflag=0)
-#    deriv_lrg = tv_reg_diff(testf, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0)
-
-#    plt.plot(testf)
-#    plt.plot(deriv_sm)
-#    plt.plot(deriv_lrg)
-#    plt.show()
+    plt.plot(testf)
+    plt.plot(deriv_sm, c='r')
+    plt.plot(deriv_lrg, c='g')
+    plt.show()
