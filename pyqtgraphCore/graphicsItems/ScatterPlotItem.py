@@ -365,18 +365,19 @@ class ScatterPlotItem(GraphicsObject):
         newData = self.data[len(oldData):]
         newData['size'] = -1  ## indicates to use default size
 
-        if 'brush' in kargs:
-            if not isinstance(kargs['brush'], QtGui.QBrush):
-                newData['orig_brush'] = fn.mkBrush(kargs['brush'])
-            else:
-                newData['orig_brush'] = kargs['brush']
-        if 'pen' in kargs:
-            if not isinstance(kargs['pen'], QtGui.QBrush):
-                newData['orig_pen'] = fn.mkPen(kargs['brush'])
-            else:
-                newData['orig_pen'] = kargs['pen']
-        if 'symbol' in kargs:
-            newData['orig_symbol'] = kargs['symbol']
+        # if 'brush' in kargs:
+        #     if not isinstance(kargs['brush'], QtGui.QBrush):
+        #         newData['orig_brush'] = fn.mkBrush(kargs['brush'])
+        #     else:
+        #         newData['orig_brush'] = kargs['brush']
+        # if 'pen' in kargs:
+        #     if not isinstance(kargs['pen'], QtGui.QBrush):
+        #         newData['orig_pen'] = fn.mkPen(kargs['brush'])
+        #     else:
+        #         newData['orig_pen'] = kargs['pen']
+        # if 'symbol' in kargs:
+        #     newData['orig_symbol'] = kargs['symbol']
+        #
 
         if 'spots' in kargs:
             spots = kargs['spots']
@@ -476,10 +477,7 @@ class ScatterPlotItem(GraphicsObject):
         all spots which do not have a brush explicitly set."""
         update = kargs.pop('update', True)
         dataSet = kargs.pop('dataSet', self.data)
-        print("args len is: " + str(len(args)))
-        print("args type is" + str(type(args[0])))
         if len(args) == 1 and (isinstance(args[0], np.ndarray) or isinstance(args[0], list)):
-            print('BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH')
             brushes = args[0]
             if 'mask' in kargs and kargs['mask'] is not None:
                 brushes = brushes[kargs['mask']]

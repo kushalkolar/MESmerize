@@ -38,8 +38,8 @@ class ScatterPlot(QtCore.QObject):
         for i, p in enumerate(self.lastClicked):
             assert isinstance(p, SpotItem)
             p.setPen('k')#p._data['orig_pen'])
-            p.setBrush(p._data['orig_brush'])
-            p.setSymbol(p._data['orig_symbol'])
+            # p.setBrush(p._data['orig_brush'])
+            # p.setSymbol(p._data['orig_symbol'])
 
         if len(points) == 1:
             p = points[0]
@@ -49,9 +49,10 @@ class ScatterPlot(QtCore.QObject):
 
         for p in points:
             assert isinstance(p, SpotItem)
-            p.setSymbol(p._data['orig_symbol'])
+            # p.setSymbol(p._data['orig_symbol'])
             p.setPen('w')
-            p.setBrush('w')
+
+            # p.setBrush('w')
 
         self.lastClicked = points
 
