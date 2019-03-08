@@ -44,7 +44,7 @@ class ScatterPlotWidget(PlotWindow):
         self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)
 
         self.ui.comboBoxShape.show()
-        self.ui.labelShapesBasedOn.show()
+        self.ui.checkBoxUseDifferentShapes.show()
 
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
@@ -103,23 +103,28 @@ class ScatterPlotWidget(PlotWindow):
 
         shapes_map_ref = {0: 'o', 1: 's', 2: 't', 3: 'd', 4: '+'}
 
-        shapes_column = self.ui.comboBoxShape.currentText()
+        different_shapes = self.ui.checkBoxUseDifferentShapes.isChecked()
+        if different_shapes:
+            shapes_column = self.ui.comboBoxShape.currentText()
 
-        shapes_series = self.dataframe[shapes_column]
+            shapes_series = self.dataframe[shapes_column]
 
-        shapes_map = {}
+            shapes_map = {}
 
-        for i, s in enumerate(set(shapes_series.to_list())):
-            shapes_map.update({s: shapes_map_ref[i]})
+            for i, s in enumerate(set(shapes_series.to_list())):
+                shapes_map.update({s: shapes_map_ref[i]})
 
-        shapes = shapes_series.map(shapes_map)
+            shapes = shapes_series.map(shapes_map)
+            shapes = shapes.to_list()
 
-        self.shapes = shapes
+        else:
+            shapes = ['o'] * self.data.shape[0]
+
         self.colors_series = colors_series
 
         us = self.dataframe[self.uuid_column]
 
-        self.scatter_plot.add_data(self.data[:, 0], self.data[:, 1], uuid_series=us, color=colors_series.to_list(), symbol=shapes.to_list())
+        self.scatter_plot.add_data(self.data[:, 0], self.data[:, 1], uuid_series=us, color=colors_series.to_list(), symbol=shapes)
         # except:
         #     QtWidgets.QMessageBox.warning(self, 'Improper input data for scatter plot. '
         #                                         'The data in the selected data column should form a 2D array. '

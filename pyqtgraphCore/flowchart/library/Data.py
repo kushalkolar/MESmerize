@@ -161,87 +161,101 @@ class Save(CtrlNode):
                                           + str(e))
 
 
-class RunScript(CtrlNode):
-    """Run a python script"""
-    nodeName = 'RunScript'
-    uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog'}),
-                  ('fname', 'label', {'text': ': '}),
-                  ('Run', 'button', {'text': 'Run Script'})
-                  ]
-
-    def __init__(self, name):
-        # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
-        CtrlNode.__init__(self, name, terminals={
-                'In': {'io': 'in', 'renamable': True, 'multiable': True},
-                'Out': {'io': 'out', 'bypass': 'In', 'renamable': True, 'multiable': True}},
-                allowAddInput=True, allowAddOutput=True)
-
-        self.ctrls['Open'].clicked.connect(self._fileDialog)
-        self.previous_output = None
-        self.script = "return 'No Script'"
-        self.ctrls['Run'].clicked.connect(self._execute)
-
-    def _fileDialog(self):
-        self.path = QtWidgets.QFileDialog.getOpenFileName(None, 'Select script', '', '(*.py)')
-        if self.path == '':
-            return
-        self.ctrls['fname'].setText(basename(self.path[0])[:-3])
-
-    def _execute(self):
-        self.f = open(self.path[0], 'r')
-        self.script = self.f.read()
-        self.update()
+class Merge(CtrlNode):
+    """Merge transmissions"""
+    nodeName = 'Merge'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def process(self, **kwargs):
-        if self.path == '':
-            return
+        self.transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(self.transmissions)
 
-        g = globals()
-        l = locals()
-        exec(self.script, g, l)
+        self.t = Transmission.merge(self.transmissions_list)
 
-        return l['output']
+        return {'Out': self.t}
 
 
-class NewDataPass(CtrlNode):
-    """Check curve uuid against Stats DataFrame and only pass through new samples"""
-    nodeName = 'NewDataPass'
-    uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog', 'toolTip': 'Select the Stats DataFrame to compare against'}),
-                  ('fname', 'label', {'text': ': '}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
-                  ]
+# class RunScript(CtrlNode):
+#     """Run a python script"""
+#     nodeName = 'RunScript'
+#     uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog'}),
+#                   ('fname', 'label', {'text': ': '}),
+#                   ('Run', 'button', {'text': 'Run Script'})
+#                   ]
+#
+#     def __init__(self, name):
+#         # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
+#         CtrlNode.__init__(self, name, terminals={
+#                 'In': {'io': 'in', 'renamable': True, 'multiable': True},
+#                 'Out': {'io': 'out', 'bypass': 'In', 'renamable': True, 'multiable': True}},
+#                 allowAddInput=True, allowAddOutput=True)
+#
+#         self.ctrls['Open'].clicked.connect(self._fileDialog)
+#         self.previous_output = None
+#         self.script = "return 'No Script'"
+#         self.ctrls['Run'].clicked.connect(self._execute)
+#
+#     def _fileDialog(self):
+#         self.path = QtWidgets.QFileDialog.getOpenFileName(None, 'Select script', '', '(*.py)')
+#         if self.path == '':
+#             return
+#         self.ctrls['fname'].setText(basename(self.path[0])[:-3])
+#
+#     def _execute(self):
+#         self.f = open(self.path[0], 'r')
+#         self.script = self.f.read()
+#         self.update()
+#
+#     def process(self, **kwargs):
+#         if self.path == '':
+#             return
+#
+#         g = globals()
+#         l = locals()
+#         exec(self.script, g, l)
+#
+#         return l['output']
 
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, {'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        self.ctrls['Open'].clicked.connect(self._fileDialog)
-        self.transmission = None
 
-    def _fileDialog(self):
-        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Import Statistics object', '', '(*.strn)')
-        if path == '':
-            return
-        try:
-            self.StatsData = StatsTransmission.from_pickle(path[0])
-        except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
-            return
-
-        self.ctrls['fname'].setText(path)
-
-        self.changed()
-
-    def processData(self, transmission):
-        t = transmission.copy()
-        t.df = t.df[t.df['uuid_curve']]
-
-
-class Bypass(CtrlNode):
-    """Just a bypass node that doesn't do anything. Useful for quickly swapping Project DataFrames with an existing
-    analysis flowchart whilst keeping the connections after the DataFrame."""
-    uiTemplate = [('Bypass Node', 'label', {'text': ''})]
-
-    def processData(self, In):
-        return In
+# class NewDataPass(CtrlNode):
+#     """Check curve uuid against Stats DataFrame and only pass through new samples"""
+#     nodeName = 'NewDataPass'
+#     uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog', 'toolTip': 'Select the Stats DataFrame to compare against'}),
+#                   ('fname', 'label', {'text': ': '}),
+#                   ('Apply', 'check', {'checked': True, 'applyBox': True})
+#                   ]
+#
+#     def __init__(self, name):
+#         CtrlNode.__init__(self, name, {'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+#         self.ctrls['Open'].clicked.connect(self._fileDialog)
+#         self.transmission = None
+#
+#     def _fileDialog(self):
+#         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Import Statistics object', '', '(*.strn)')
+#         if path == '':
+#             return
+#         try:
+#             self.StatsData = StatsTransmission.from_pickle(path[0])
+#         except Exception as e:
+#             QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+#             return
+#
+#         self.ctrls['fname'].setText(path)
+#
+#         self.changed()
+#
+#     def processData(self, transmission):
+#         t = transmission.copy()
+#         t.df = t.df[t.df['uuid_curve']]
+#
+#
+# class Bypass(CtrlNode):
+#     """Just a bypass node that doesn't do anything. Useful for quickly swapping Project DataFrames with an existing
+#     analysis flowchart whilst keeping the connections after the DataFrame."""
+#     uiTemplate = [('Bypass Node', 'label', {'text': ''})]
+#
+#     def processData(self, In):
+#         return In
 
 
 class iloc(CtrlNode):
@@ -271,29 +285,45 @@ class SelectColumns(CtrlNode):
     pass
 
 
-class Filter(CtrlNode):
+class TextFilter(CtrlNode):
     nodeName = 'Filter'
-    uiTemplate = [('Column', 'lineEdit', {'toolTip': 'The column to filter with'}),
+    uiTemplate = [('Column', 'combo', {'toolTip': 'Filter according to this column'}),
                   ('filter', 'lineEdit', {'toolTip': 'Filter to apply in selected column'}),
+                  ('Include', 'radioBtn', {'checked': True}),
+                  ('Exclude', 'radioBtn', {'checked': False}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
+    # def __init__(self, name):
+    #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+    #     self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
     def processData(self, transmission):
+        self.ctrls['Column'].addItems(transmission.df.columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        col = self.ctrls['column'].text()
+        col = self.ctrls['Column'].text()
         filt = self.ctrls['filter'].text()
 
-        t = transmission.copy()
+        self.t = transmission.copy()
 
-        t.src.append({'Filter': {'column': col, 'filter': filt}})
-        t.df = t.df[t.df[col] == filt]
+        include = self.ctrls['Include'].isChecked()
+        exclude = self.ctrls['Exclude'].isChecked()
 
-        return t
+        params = {'column': col,
+                  'filter': filt,
+                  'include': include,
+                  'exclude': exclude
+                  }
+
+        if include:
+            self.t.df = self.t.df[self.t.df[col] == filt]
+        elif exclude:
+            self.t.df = self.t.df[self.t.df[col] != filt]
+
+        self.t.history_tracee.add_operation('all', operation='text_filter', parameters=params)
+
+        return self.t
 
 
 # class ColumnSelectNode(Node):

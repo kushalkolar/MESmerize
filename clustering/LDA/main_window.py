@@ -113,22 +113,33 @@ class LDAPlot(PlotWindow):
 
         colors = self.auto_colormap(len(self.groups))
 
-        self.targets = []
+        # self.targets = []
 
-        for cl in self.lda.classes_:
-            self.targets += [cl] * self.dataframe[self.grouping_column].value_counts()[cl]
+        # for cl in self.lda.classes_:
+        #     self.targets += [cl] * self.dataframe[self.grouping_column].value_counts()[cl]
 
-        df = pd.DataFrame(self.transformed_data, columns=['x', 'y'])
-        df['targets'] = self.dataframe[self.grouping_column]
-        df['uuid'] =    self.dataframe[self.uuid_column]
+        colors_list = []
 
-        for ix, t in enumerate(set(self.targets)):
-            xs = df[df.targets == t]['x']
-            ys = df[df.targets == t]['y']
+        for ix, lda_class in self.lda.classes_:
+            colors_list += colors[ix] * self.data_column[self.grouping_column].value_counts()[lda_class]
 
-            us = df[df.targets == t]['uuid']
+        us = self.data_column[self.uuid_column]
 
-            self.scatter_plot.add_data(xs, ys, uuid_series=us, color=colors[ix])
+        self.scatter_plot.add_data(self.transformed_data[:, 0], self.transformed_data[:, 1],
+                                   uuid_series=us, colors=colors_list)
+
+        # df = pd.DataFrame(self.transformed_data, columns=['x', 'y'])
+        # df['targets'] = self.dataframe[self.grouping_column]
+        # df['uuid'] =    self.dataframe[self.uuid_column]
+        #
+        # for ix, t in enumerate(set(self.targets)):
+        #     xs = df[df.targets == t]['x']
+        #     ys = df[df.targets == t]['y']
+        #
+        #     us = df[df.targets == t]['uuid']
+
+        # self.scatter_plot.add_data(self.transformed_data[:,0], self.transformed_data[:,1],
+        #                            uuid_series=us, color=colors[ix])
 
     def transform_data(self):
         self._lda = LinearDiscriminantAnalysis(n_components=2)

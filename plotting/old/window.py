@@ -77,7 +77,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.ui.dockConsole.hide()
 
         self.ui.comboBoxShape.hide()
-        self.ui.labelShapesBasedOn.hide()
+        self.ui.checkBoxUseDifferentShapes.hide()
 
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:
