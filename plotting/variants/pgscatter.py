@@ -31,8 +31,12 @@ class ScatterPlot(QtCore.QObject):
 
         self.plots.addItem(self.plot)
 
+        # self.legend = self.plots.addLegend()
+        # self.legend.setParentItem(self.plots)
+        # self.legend.addItem(self.plot, 'Legend')
+        
     def add_data(self, xs, ys, uuid_series: pd.Series, color: QtGui.QColor, **kwargs):
-        self.plot.addPoints(xs, ys, uuid=uuid_series, pen='k', brush=color, size=10, **kwargs)
+        self.plot.addPoints(xs, ys, uuid=uuid_series, pen='k', brush=color, size=10, name='scatter', **kwargs)
 
     def _clicked(self, plot, points):
         for i, p in enumerate(self.lastClicked):
