@@ -49,6 +49,8 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         self.graphicsViews = {}
 
+        self.ui.listWidgetDataColumns.setSortingEnabled(True)
+
         self.ui.btnApplyAll.clicked.connect(self.update_params)
 
         ns = {'np': np,
@@ -79,9 +81,33 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.ui.comboBoxShape.hide()
         self.ui.checkBoxUseDifferentShapes.hide()
 
+        self.old_column_selection = {'group': None,
+                                     'shape': None,
+                                     'uuid': None
+                                     }
+
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:
         return self.statusBar()
+
+    def set_old_selections(self):
+        if self.old_column_selection['group'] is not None:
+            ix = self.ui.comboBoxGrouping.findText(self.old_column_selection['group'])
+            if ix != -1:
+                self.ui.comboBoxGrouping.setCurrentIndex(ix)
+
+        if self.old_column_selection['shape'] is not None:
+            ix = self.ui.comboBoxShape.findText(self.old_column_selection['shape'])
+            if ix != -1:
+                self.ui.comboBoxShape.setCurrentIndex(ix)
+
+        if self.old_column_selection['uuid'] is not None:
+            ix = self.ui.comboBoxUUIDColumn.findText(self.old_column_selection['uuid'])
+            if ix != -1:
+                self.ui.comboBoxUUIDColumn.setCurrentIndex(ix)
+        # if self.old_column_selection['data'] is not None:
+        #     item = self.ui.listWidgetDataColumns.get(self.old_column_selection['data'], QtCore.Qt.MatchExactly).text()
+        #     self.ui.listWidgetDataColumns.setSelection()
 
     def update_input_transmissions(self, transmissions: list):
         self.transmissions = transmissions
@@ -97,6 +123,8 @@ class PlotWindow(QtWidgets.QMainWindow):
         #self.dataframe = self.dataframe.sample(n=100, axis=0)
 
         columns = self.dataframe.columns.tolist()
+
+        columns.sort()
 
         self.merged_transmission = Transmission.merge(self.transmissions)
 
@@ -115,6 +143,8 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.ui.comboBoxUUIDColumn.clear()
         self.ui.comboBoxUUIDColumn.addItems(columns)
         self.ui.comboBoxUUIDColumn.setCurrentIndex(columns.index(next(column for column in columns if 'uuid' in column)))
+
+        self.set_old_selections()
 
     def add_plot_tab(self, title: str):
         self.graphicsViews.update({title: GraphicsLayoutWidget(parent=self.ui.tabWidget)})
@@ -145,6 +175,10 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.uuid_column = self.ui.comboBoxUUIDColumn.currentText()
 
         self.datapoint_tracer_curve_column = self.ui.comboBoxDataPointTracerCurveColumn.currentText()
+
+        self.old_column_selection['group'] = self.grouping_column
+        self.old_column_selection['shape'] = self.shape_column
+        self.old_column_selection['uuid'] = self.uuid_column
 
     def auto_colormap(self, number_of_colors: int, color_map: str = 'hsv') -> List[Union[QColor, Any]]:
         cm = matplotlib_color_map.get_cmap(color_map)

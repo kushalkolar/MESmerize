@@ -139,7 +139,7 @@ class Agglomerative(CtrlNode):
             connectivity_matrix_col = connectivity_matrix
             connectivity_matrix = np.vstack(self.t.df[connectivity_matrix_col].values)
 
-        compute_full_tree = self.ctrls['compute_full_tree'].isChecked()
+        compute_full_tree = self.ctrls['compute_full_tree'].currentText()
         if compute_full_tree == 'True':
             compute_full_tree = True
         elif compute_full_tree == 'False':
