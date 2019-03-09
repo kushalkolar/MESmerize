@@ -11,20 +11,15 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-import sys
-sys.path.append('..')
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-if __name__ == '__main__':
-    from pytemplates.plot_window_pytemplate import *
-    from DataTypes import Transmission
-    from HistoryWidget import HistoryTreeWidget
-else:
-    from .pytemplates.plot_window_pytemplate import *
-    from .DataTypes import Transmission
-    from .HistoryWidget import HistoryTreeWidget
+# import sys
+# sys.path.append('..')
+from .pytemplates.plot_window_pytemplate import *
+from .DataTypes import Transmission
+from .HistoryWidget import HistoryTreeWidget
+from pyqtgraphCore import LinearRegionItem
 
 
-class Window(QtWidgets.QMainWindow, Ui_MainWindow):
+class PlotWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None, *args):
         super().__init__()
         self.setupUi(self)
@@ -40,8 +35,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def _set_curve_color(self):
         pass
 
-if __name__ == '__main__':
-    r, t = Transmission.from_pickle('/home/kushal/Sars_stuff/github-repos/MESmerize/peaks_new_with_bool.trn')
-    pwin = Window()
 
-    pwin.set_history_widget([t.src, t.src])
+class RegionSelectionPlot(PlotWindow):
+    def __init__(self, parent=None, *args):
+        PlotWindow.__init__(self)
+        self.linear_region = None
+        self.btnSetFo = QtWidgets.QPushButton(self)
+        self.gridLayout.addItem(self.btnSetFo, 0, 0, 0, 0)
+
+    def set_linear_region(self, bounds: list):
+        self.linear_region = LinearRegionItem(bounds)
+        self.linear_region.setZValue(-10)
+        self.graphicsView.addItem(self.linear_region)
+
+    def get_linear_region_bounds(self) -> tuple:
+        return self.linear_region.get_region()

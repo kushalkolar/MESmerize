@@ -252,8 +252,8 @@ class BaseTransmission:
     def copy(self):
         return deepcopy(self)
 
-    # @classmethod
-    def empty_df(cls, transmission, addCols=[]) -> pd.DataFrame:
+    @staticmethod
+    def empty_df(transmission, addCols=[]) -> pd.DataFrame:
         """
         :param transmission: Transmission object
         :param addCols: list of columns to add

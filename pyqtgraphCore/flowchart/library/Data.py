@@ -298,7 +298,7 @@ class TextFilter(CtrlNode):
     #     self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
     def processData(self, transmission):
-        self.ctrls['Column'].addItems(transmission.df.columns.to_list())
+        self.ctrls['Column'].setItems(transmission.df.columns.to_list())
         if self.ctrls['Apply'].isChecked() is False:
             return
 

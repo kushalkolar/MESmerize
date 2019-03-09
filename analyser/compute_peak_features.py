@@ -17,7 +17,7 @@ import os
 # os.system("taskset -p 0xff %d" % os.getpid())
 
 
-class PeakFeatures:
+class ComputePeakFeatures:
     @staticmethod
     def amplitude_relative(q, peak_curve, ix_peak_rel):
         try:
