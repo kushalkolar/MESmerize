@@ -1,5 +1,6 @@
 from .common import *
 from sklearn import cluster as skcluster
+from clustering.LDA.main_window import LDAPlot
 
 
 class KMeans(CtrlNode):
@@ -170,3 +171,30 @@ class Agglomerative(CtrlNode):
         self.t.last_output = output_column
 
         return self.t
+
+
+class LDA(CtrlNode):
+    """LDA"""
+    nodeName = 'LDA'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_gui = None
+        self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
+
+    def process(self, **kwargs):
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+            return
+
+        transmissions = kwargs['In']
+
+        transmissions_list = merge_transmissions(transmissions)
+
+        self.plot_gui.update_input_transmissions(transmissions_list)
+
+    def _open_plot_gui(self):
+        if self.plot_gui is None:
+            self.plot_gui = LDAPlot(parent=self.parent())
+        self.plot_gui.show()

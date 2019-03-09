@@ -112,21 +112,18 @@ class LDAPlot(PlotWindow):
         self.transformed_data = self.transform_data()
 
         colors = self.auto_colormap(len(self.groups))
-
-        # self.targets = []
-
-        # for cl in self.lda.classes_:
-        #     self.targets += [cl] * self.dataframe[self.grouping_column].value_counts()[cl]
-
         colors_list = []
+        colors_map = {}
+        for ix, lda_class in enumerate(self.lda.classes_):
+            colors_map.update({lda_class: colors[ix]})
+            colors_list += [colors[ix]] * self.dataframe[self.grouping_column].value_counts()[lda_class]
 
-        for ix, lda_class in self.lda.classes_:
-            colors_list += colors[ix] * self.data_column[self.grouping_column].value_counts()[lda_class]
-
-        us = self.data_column[self.uuid_column]
+        us = self.dataframe[self.uuid_column]
 
         self.scatter_plot.add_data(self.transformed_data[:, 0], self.transformed_data[:, 1],
-                                   uuid_series=us, colors=colors_list)
+                                   uuid_series=us, color=colors_list)
+
+        self.scatter_plot.set_legend(colors_map)
 
         # df = pd.DataFrame(self.transformed_data, columns=['x', 'y'])
         # df['targets'] = self.dataframe[self.grouping_column]

@@ -119,12 +119,14 @@ class ScatterPlotWidget(PlotWindow):
 
         else:
             shapes = ['o'] * self.data.shape[0]
+            shapes_map = None
 
         self.colors_series = colors_series
 
         us = self.dataframe[self.uuid_column]
 
         self.scatter_plot.add_data(self.data[:, 0], self.data[:, 1], uuid_series=us, color=colors_series.to_list(), symbol=shapes)
+        self.scatter_plot.set_legend(colors=colors_map, shapes=shapes_map)
         # except:
         #     QtWidgets.QMessageBox.warning(self, 'Improper input data for scatter plot. '
         #                                         'The data in the selected data column should form a 2D array. '

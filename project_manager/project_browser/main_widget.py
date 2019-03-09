@@ -73,7 +73,6 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
             configuration.project_manager.add_child_dataframe(tab_name, filter_history, dataframe)
         elif is_root:
             tab_name = 'root'
-            # TODO: Allow SampleID column to be deletable in root dataframe
         else:
             tab_name = name
 

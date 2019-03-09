@@ -15,8 +15,8 @@ import numpy as np
 import pickle
 from .DataTypes import Transmission
 #    from . import Compute
-from . import ComputeInterfaces
-from . import Compute
+from . import compute_utils
+from .compute_peak_features import ComputePeakFeatures
 from pyqtgraphCore.Qt import QtCore, QtGui
 from uuid import uuid4
 
@@ -120,9 +120,9 @@ class PeakFeatures:
                   }
         # print(args_d)
 
-        to_compute = Compute.PeakFeatures
+        to_compute = ComputePeakFeatures
         # Create instance of Static interface by passing in Compute class and args dictionary
-        compute_interface = ComputeInterfaces.StaticMT(to_compute, args_d)
+        compute_interface = compute_utils.StaticMT(to_compute, args_d)
         # Spawn and run the processes, and get results
         peak_features = compute_interface.compute()
         peak_features.update({'_pfeature_ix_peak_abs': ix_peak_abs, '_pfeature_ix_peak_rel': ix_peak_rel,

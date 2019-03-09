@@ -31,8 +31,14 @@ class ScatterPlot(QtCore.QObject):
 
         self.plots.addItem(self.plot)
 
-        # self.legend = self.plots.addLegend()
-        # self.legend.setParentItem(self.plots)
+        self.legend = self.plots.addLegend()
+        self.legend.setParentItem(self.plots)
+
+        self.color_legend_items = []
+        self.shape_legend_items = []
+
+        # For creating legend
+        self.pseudo_plots = []
         # self.legend.addItem(self.plot, 'Legend')
         
     def add_data(self, xs, ys, uuid_series: pd.Series, color: QtGui.QColor, **kwargs):
@@ -59,6 +65,39 @@ class ScatterPlot(QtCore.QObject):
             # p.setBrush('w')
 
         self.lastClicked = points
+
+    def set_legend(self, colors: dict, shapes: dict = None):
+        self.clear_legend()
+
+        for k in colors.keys():
+            p = ScatterPlotItem()
+            p.setData(x=[0], y=[0], brush=colors[k])
+            self.color_legend_items.append(k)
+            self.legend.addItem(p, k)
+            self.pseudo_plots.append(p)
+
+        if shapes is None:
+            return
+
+        for k in shapes.keys():
+            p = ScatterPlotItem()
+            p.setData(x=[0], y=[0], brush='w', symbol=shapes[k])
+            self.shape_legend_items.append(k)
+            self.legend.addItem(p, k)
+            self.pseudo_plots.append(p)
+
+    def clear_legend(self):
+        for i in range(len(self.pseudo_plots)):
+            del self.pseudo_plots[0]
+
+        for name in self.color_legend_items:
+            self.legend.removeItem(name)
+        self.color_legend_items.clear()
+
+        for name in self.shape_legend_items:
+            self.legend.removeItem(name)
+        self.shape_legend_items.clear()
+
 
     @property
     def spot_color(self, group: str):
