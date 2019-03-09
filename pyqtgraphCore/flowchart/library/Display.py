@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from plotting.modules.heatmap.widget import HeatmapTracerWidget
 from plotting.modules.scatter.scatter_plot import ScatterPlotWidget
+from plotting.old.beeswarms_window import BeeswarmPlotWindow
 
 
 class Plot(CtrlNode):
@@ -19,7 +20,7 @@ class Plot(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out'}})
         self.trans_ids = []
-        self.pwin = simple_plot_window.Window()
+        self.pwin = simple_plot_window.PlotWindow()
         self.ctrls['Apply'].clicked.connect(self.update)
         self.ctrls['Show'].clicked.connect(self.pwin.setVisible)
 
@@ -28,6 +29,8 @@ class Plot(CtrlNode):
 
         if not len(transmissions) > 0:
             raise Exception('No incoming transmissions')
+
+        transmissions = merge_transmissions(transmissions)
 
         columns = pd.concat([t.df for t in transmissions]).columns
         self.ctrls['data_column'].setItems(columns.to_list())
@@ -41,8 +44,7 @@ class Plot(CtrlNode):
         plots = []
         colors = ['m', 'r', 'y', 'g', 'c', 'b']
         ci = 0
-        for t in transmissions.items():
-            t = t[1]
+        for t in transmissions:
             if t is None:
                 srcs.append(str(type(None)))
                 continue
@@ -75,7 +77,6 @@ class Plot(CtrlNode):
                 self.pwin.graphicsView.addItem(plot)
 
             ci += 1
-            srcs.append(t.src)
 
         self.pwin.set_history_widget(srcs)
 
@@ -175,9 +176,56 @@ class ScatterPlot(CtrlNode):
             self.plot_gui = ScatterPlotWidget(parent=self.parent())
         self.plot_gui.show()
 
-        # return {'Out': kwargs}
 
-#
+class BeeswarmPlots(CtrlNode):
+    """Beeswarm and Violin plots"""
+    nodeName = 'BeeswarmPlots'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_gui = None
+        self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
+
+    def process(self, **kwargs):
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+            return
+
+        transmissions = kwargs['In']
+        transmissions_list = merge_transmissions(transmissions)
+
+        # transmissions = kwargs['In']
+        #
+        # if not len(transmissions) > 0:
+        #     raise Exception('No incoming transmissions')
+        #
+        # transmissions_list = []
+        #
+        # for t in transmissions.items():
+        #     t = t[1]
+        #     if t is None:
+        #         QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+        #         continue
+        #     if type(t) is list:
+        #         for i in range(len(t)):
+        #             if t[i] is None:
+        #                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+        #                 continue
+        #             transmissions_list.append(t[i].copy())
+        #         continue
+        #
+        #     transmissions_list.append(t.copy())
+
+        self.plot_gui.update_input_transmissions(transmissions_list)
+
+    def _open_plot_gui(self):
+        if self.plot_gui is None:
+            self.plot_gui = BeeswarmPlotWindow(parent=self.parent())
+        self.plot_gui.show()
+
+
+
 # class PlotWidgetNode(Node):
 #     """Connection to PlotWidget. Will plot arrays, metaarrays, and display event lists."""
 #     nodeName = 'PlotWidget'

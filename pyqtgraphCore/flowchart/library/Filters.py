@@ -194,7 +194,6 @@ class Resample(CtrlNode):
     uiTemplate = [('data_column', 'combo', {}),
                   ('Rs', 'intSpin', {'min': 1, 'max': 9999, 'value': 10, 'step': 5}),
                   ('Tu', 'intSpin', {'min': 1, 'max': 9999, 'value': 1, 'step': 1}),
-                  ('data_column', 'combo', {}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
@@ -233,7 +232,7 @@ class Resample(CtrlNode):
 
         Rn = int((Ns / Nf) * (self.new_rate))
 
-        return signal.resample(row.curve, Rn)
+        return signal.resample(row[self.data_column], Rn)
 
 
 class ZScore(CtrlNode):

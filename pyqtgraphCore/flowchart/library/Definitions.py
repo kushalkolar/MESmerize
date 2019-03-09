@@ -73,16 +73,18 @@ class ExtractStim(CtrlNode):
         end_offset = self.ctrls['end_offset'].value()
         zero_pos = self.ctrls['zero_pos'].currentText()
 
-        df = Transmission.empty_df(self.transmission, addCols=['_EXTRACT_STIM', '_STIM_TYPE', '_STIMULUS'])  # empty_df(), self.transmission.src)
-        for ix, r in transmission.df.iterrows():
+        df = Transmission.empty_df(self.t, addCols=['_EXTRACT_STIM', '_STIM_TYPE', '_STIMULUS'])  # empty_df(), self.transmission.src)
+        for ix, r in self.t.df.iterrows():
             try:
-                smap = r['stim_maps'][0][0][stim_def]
+                smap = r['stim_maps'][0][0][stim_def]['dataframe']
             except KeyError:
                 continue
             curve = r[data_column]
             if curve is None:
                 continue
             for i, stim in smap.iterrows():
+                if not stim['name'].startswith(stim_tag):
+                    continue
                 stim_start = stim['start']
                 stim_end = stim['end']
 
@@ -107,7 +109,7 @@ class ExtractStim(CtrlNode):
                 rn['_STIM_TYPE'] = stim_def
                 rn['_STIMULUS'] = stim_tag
 
-                df.append(rn, ignore_index=True)
+                df.loc[df.index.size] = rn
 
         df.reset_index(inplace=True, drop=True)
 
@@ -121,6 +123,7 @@ class ExtractStim(CtrlNode):
                   }
 
         self.t.history_trace.add_operation('all', operation='extract_stim', parameters=params)
+        self.t.last_output = '_EXTRACT_STIM'
 
 
                 # rn[stim_def] = ['name']
