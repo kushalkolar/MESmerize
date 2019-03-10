@@ -119,7 +119,8 @@ class PeakFeatures(CtrlNode):
 
     def process(self, **kwargs):
         self.kwargs = kwargs.copy()
-        return {'Out': self.peak_results}
+        merged = Transmission.merge(self.peak_results)
+        return {'Out': merged}
 
     def _compute(self):
         if self.kwargs is None:
@@ -137,12 +138,12 @@ class PeakFeatures(CtrlNode):
             if t is None:
                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
                 continue
-            elif not any('Peak_Detect' in d for d in t.src):
-                raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
-                                 'a Peak_Detect node before this one.')
+            # elif not any('Peak_Detect' in d for d in t.src):
+            #     raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
+            #                      'a Peak_Detect node before this one.')
             # t = t.copy()
             try:
-                self.ctrls['Info'].setText('Please wait, computing peak features')
+                self.ctrls['Info'].setText('Please wait...')
                 pf = peak_feature_extraction.PeakFeaturesIter(t)
                 trans_with_features = pf.get_all()
 
@@ -152,7 +153,7 @@ class PeakFeatures(CtrlNode):
                 QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak feature extraction:\n'
                                                                    + traceback.format_exc())
 
-        self.ctrls['Info'].setText('Finished computing peak features!')
+        self.ctrls['Info'].setText('Finished!')
         self.changed()
 
     #     self.ctrls['Stats'].setEnabled(True)
