@@ -67,6 +67,11 @@ class ScatterPlot(QtCore.QObject):
         self.lastClicked = points
 
     def set_legend(self, colors: dict, shapes: dict = None):
+        """
+        :param colors: {'group_name': QtGui.QColor}
+        :param shapes: {'group_name': <shape>}
+        :return:
+        """
         self.clear_legend()
 
         for k in colors.keys():
