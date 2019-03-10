@@ -30,7 +30,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setWindowTitle('Mesmerize - Peak-Base editor')
         self.history_tree = HistoryTreeWidget()
-        self.history_tree.fill_widget([trans_peaks_bases.src])
+        self.history_tree.fill_widget(trans_peaks_bases.history_trace.get_all_data_blocks_history)
         self.update_transmission(trans_curves, trans_peaks_bases)
         self._reset_listw()
         self.listwIndices.currentItemChanged.connect(self._set_row)
@@ -53,7 +53,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.tpb = trans_peaks_bases.copy()
         self._set_row()
-        self.history_tree.fill_widget([trans_peaks_bases.src])
+        self.history_tree.fill_widget(trans_peaks_bases.history_trace.get_all_data_blocks_history())
 
     def _reset_listw(self):
         self.listwIndices.clear()

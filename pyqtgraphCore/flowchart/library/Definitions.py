@@ -31,7 +31,7 @@ class ExtractStim(CtrlNode):
 
     # def __init__(self, name):
     #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        # self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
+    # self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
 
     # def setAutoCompleter(self):
     #     stim_def = self.ctrls['Stim_Type'].text()
@@ -73,7 +73,8 @@ class ExtractStim(CtrlNode):
         end_offset = self.ctrls['end_offset'].value()
         zero_pos = self.ctrls['zero_pos'].currentText()
 
-        df = Transmission.empty_df(self.t, addCols=['_EXTRACT_STIM', '_STIM_TYPE', '_STIMULUS'])  # empty_df(), self.transmission.src)
+        df = Transmission.empty_df(self.t, addCols=['_EXTRACT_STIM', '_STIM_TYPE',
+                                                    '_STIMULUS'])  # empty_df(), self.transmission.src)
         for ix, r in self.t.df.iterrows():
             try:
                 smap = r['stim_maps'][0][0][stim_def]['dataframe']
@@ -125,10 +126,9 @@ class ExtractStim(CtrlNode):
         self.t.history_trace.add_operation('all', operation='extract_stim', parameters=params)
         self.t.last_output = '_EXTRACT_STIM'
 
+        # rn[stim_def] = ['name']
 
-                # rn[stim_def] = ['name']
-
-                # t.df = t.df.append(rn, ignore_index=True)
+        # t.df = t.df.append(rn, ignore_index=True)
 
         # t.history_trace = self.t.history_trace
 
@@ -164,7 +164,7 @@ class ROI_TagFilter(CtrlNode):
         except:
             pass
 
-    #     try:
+    # try:
     #         tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
     #     except (KeyError, IndexError) as e:
     #         QtWidgets.QMessageBox.warning(None, 'ROI type not found',
@@ -239,12 +239,13 @@ class ROI_TagFilter(CtrlNode):
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
     nodeName = 'Peak_Detect'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('Fictional_Bases', 'check', {'checked': False}),
-                  ('Edit', 'button', {'text': 'Open Editor'}),
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Fictional_Bases', 'check', {'checked': True}),
+                  ('Edit', 'button', {'text': 'Open GUI'}),
                   ('SlopeThr', 'doubleSpin', {'min': -100.00, 'max': 1.0, 'step': 0.010}),
                   ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 100000.00, 'step': 100.00}),
-                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 100000.00, 'step': 100.00})
+                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 100000.00, 'step': 100.00}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def __init__(self, name, **kwargs):
@@ -329,11 +330,14 @@ class PeakDetect(CtrlNode):
                     #  Adjust the xval of the curve by finding the absolute maxima of this section of the raw curve,
                     # flanked by the bases of the peak
                     peak_revised = np.where(self.t.df.iloc[self.row_ix]['raw_curve'] == np.max(
-                        np.take(self.t.df.iloc[self.row_ix]['raw_curve'], np.arange(ix_left_base, ix_right_base))))[0][0]
+                        np.take(self.t.df.iloc[self.row_ix]['raw_curve'], np.arange(ix_left_base, ix_right_base))))[0][
+                        0]
 
                     # Get rising and falling amplitudes
-                    rise_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - self.t.df.iloc[self.row_ix]['raw_curve'][ix_left_base]
-                    fall_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - self.t.df.iloc[self.row_ix]['raw_curve'][ix_right_base]
+                    rise_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - \
+                                self.t.df.iloc[self.row_ix]['raw_curve'][ix_left_base]
+                    fall_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - \
+                                self.t.df.iloc[self.row_ix]['raw_curve'][ix_right_base]
 
                     # Check if above relative amplitude threshold
                     if (rise_ampl + fall_ampl) > self.ctrls['AmplThrRel'].value():
@@ -353,6 +357,8 @@ class PeakDetect(CtrlNode):
         return {'Out': out}
 
     def processData(self, **inputs):
+        columns = inputs['Curve'].df.columns.to_list()
+        self.ctrls['data_column'].setItems(columns)
         if self.editor_output:
             return self.t
 
@@ -393,25 +399,29 @@ class PeakDetect(CtrlNode):
         self.t = inputs['Derivative'].copy()
 
         selected = inputs['Curve'].copy()
-        self.t.df['raw_curve'] = selected.df['curve']
+        data_column = self.ctrls['data_column'].currentText()
+        self.t.df['raw_curve'] = selected.df[data_column]
 
         assert isinstance(self.t, Transmission)
 
         # self.t.data_column['peaks_bases'] = 'peaks_bases'
         fb = self.ctrls['Fictional_Bases'].isChecked()
         self.row_ix = 0
-        self.t.df['peaks_bases'] = self.t.df['curve'].apply(lambda s: self._get_zero_crossings(s, fb))
+        self.t.df['peaks_bases'] = self.t.df[data_column].apply(lambda s: self._get_zero_crossings(s, fb))
 
-        self.t.df['curve'] = self.t.df['raw_curve']
+        self.t.df['curve'] = self.t.df[data_column]
         self.t.df.drop(columns=['raw_curve'])
 
         if hasattr(self, 'pbw'):
             self.pbw.update_transmission(self.t, self.t)
 
-        params = {'data_column':
-                           {'SlopeThr': self.ctrls['SlopeThr'].value(),
-                            'AmplThrRel': self.ctrls['AmplThrRel'].value(),
-                            'AmplThrAbs': self.ctrls['AmplThrAbs'].value()}}
+        params = {'data_column': data_column,
+                  'SlopeThr': self.ctrls['SlopeThr'].value(),
+                  'AmplThrRel': self.ctrls['AmplThrRel'].value(),
+                  'AmplThrAbs': self.ctrls['AmplThrAbs'].value()}
+
+        self.t.history_trace.add_operation('all', operation='peak_detect', parameters=params)
+
         return self.t
 
     def _set_editor_output(self):
@@ -444,11 +454,11 @@ class DeltaFoF(CtrlNode):
 class DetrendDFoF(CtrlNode):
     """Uses detrend_df_f from Caiman library"""
     nodeName = 'DetrendDFoF'
-    uiTemplate=[('quantileMin', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 20}),
-                ('frames_window', 'intSpin', {'min': 2, 'max': 5000, 'step': 10, 'value': 100}),
-                ('auto_quantile', 'check', {'checked': True, 'toolTip': 'determine quantile automatically'}),
-                ('fast_filter', 'check', {'checked': True, 'tooTip': 'use approximate fast percentile filtering'}),
-                ('Apply', 'check', {'applyBox': True, 'checked': False})]
+    uiTemplate = [('quantileMin', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 20}),
+                  ('frames_window', 'intSpin', {'min': 2, 'max': 5000, 'step': 10, 'value': 100}),
+                  ('auto_quantile', 'check', {'checked': True, 'toolTip': 'determine quantile automatically'}),
+                  ('fast_filter', 'check', {'checked': True, 'tooTip': 'use approximate fast percentile filtering'}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})]
 
     def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
@@ -456,10 +466,10 @@ class DetrendDFoF(CtrlNode):
         t = transmission.copy()
         self.df = t.df
 
-        self.params = {'quantileMin':  self.ctrls['quantileMin'].value(),
+        self.params = {'quantileMin': self.ctrls['quantileMin'].value(),
                        'frames_window': self.ctrls['frames_window'].value(),
                        'auto_quantile': self.ctrls['auto_quantile'].isChecked(),
-                       'fast_filter':   self.ctrls['fast_filter'].isChecked()
+                       'fast_filter': self.ctrls['fast_filter'].isChecked()
                        }
 
         self._load_data()
@@ -499,9 +509,9 @@ class DetrendDFoF(CtrlNode):
 
                 dfof_curves = detrend_df_f(cnmA, cnmb, cnmC, cnm_f, YrA=cnmYrA,
                                            quantileMin=self.params['quantileMin'],
-                                           frames_window=self.params['frames_window'])#,
-                                           # flag_auto=self.ctrls['auto_quantile'].isChecked(),
-                                           # use_fast=self.ctrls['fast_filter'].isChecked())
+                                           frames_window=self.params['frames_window'])  # ,
+                # flag_auto=self.ctrls['auto_quantile'].isChecked(),
+                # use_fast=self.ctrls['fast_filter'].isChecked())
                 if self.idx_components[self.ix] != row['ROI_State']['cnmf_idx']:
                     raise Exception(
                         'CNMF component index Mismatch Error! Something went very wrong. Check the indices of your'
@@ -555,4 +565,3 @@ class ManualDFoF(CtrlNode):
     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
                   ('data_column', 'combo', {}),
                   ('OpenGUI', 'button', {'text': 'OpenGUI'})]
-

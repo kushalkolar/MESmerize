@@ -138,7 +138,7 @@ class PeakFeaturesIter(PeakFeatures):
     def __init__(self, transmission: Transmission):
         PeakFeatures.__init__(self, transmission)
 
-    def get_all(self):
+    def get_all(self) -> Transmission:
         df_exist = False
         for ix, r in self.t.df.iterrows():
             peak_features = self._per_curve(r['curve'], r['peaks_bases'])
@@ -154,7 +154,7 @@ class PeakFeaturesIter(PeakFeatures):
                 tdf = pd.DataFrame(ps)
                 newdf = pd.concat([newdf, tdf.T], ignore_index=True)
         self.t.df = newdf
-        self.t.src.append({'Peak_Features': list(peak_features.iloc[0].keys())})
+        self.t.history_trace.add_operation('all', operation='peak_features', parameters={})
         return self.t
 
     def _per_curve(self, curve: np.ndarray, pb_df: pd.DataFrame) -> pd.Series:
