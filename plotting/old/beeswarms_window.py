@@ -61,7 +61,7 @@ class BeeswarmPlotWindow(PlotWindow):
 
         self.beeswarm_plot.signal_spot_clicked.connect(self.set_current_datapoint)
 
-        self.control_widget.btnTraceDatapoint.clicked.connect(self.open_datapoint_tracer)
+        # self.control_widget.btnTraceDatapoint.clicked.connect(self.open_datapoint_tracer)
         self.datapoint_tracers = []
 
         self.live_datapoint_tracer = DatapointTracerWidget()
@@ -84,11 +84,18 @@ class BeeswarmPlotWindow(PlotWindow):
 
         r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
 
+        if isinstance(r._BLOCK_, pd.Series):
+            block_id = r._BLOCK_.item()
+        elif isinstance(r._BLOCK_, str):
+            block_id = r._BLOCK_
+
+        h = self.merged_transmission.history_trace.get_data_block_history(block_id)
+
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
                                               data_column_curve=self.datapoint_tracer_curve_column,
                                               row=r,
                                               proj_path=self.merged_transmission.get_proj_path(),
-                                              history_trace=self.get_history_trace(identifier),
+                                              history_trace=h,
                                               tstart=tstart, tend=tend
                                               )
 
@@ -125,20 +132,20 @@ class BeeswarmPlotWindow(PlotWindow):
     def update_violins(self):
         pass
 
-    def open_datapoint_tracer(self):
-        identifier = self.get_current_datapoint()
-        self.datapoint_tracers.append(DatapointTracerWidget())
-
-        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
-
-        self.datapoint_tracers[-1].set_widget(datapoint_uuid=identifier,
-                                              data_column_curve=self.datapoint_tracer_curve_column,
-                                              parent=self,
-                                              row=r,
-                                              proj_path=self.merged_transmission.get_proj_path(),
-                                              history_trace=self.get_history_trace(identifier),
-                                              )
-        self.datapoint_tracers[-1].show()
+    # def open_datapoint_tracer(self):
+    #     identifier = self.get_current_datapoint()
+    #     self.datapoint_tracers.append(DatapointTracerWidget())
+    #
+    #     r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
+    #
+    #     self.datapoint_tracers[-1].set_widget(datapoint_uuid=identifier,
+    #                                           data_column_curve=self.datapoint_tracer_curve_column,
+    #                                           parent=self,
+    #                                           row=r,
+    #                                           proj_path=self.merged_transmission.get_proj_path(),
+    #                                           history_trace=self.get_history_trace(identifier),
+    #                                           )
+    #     self.datapoint_tracers[-1].show()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])

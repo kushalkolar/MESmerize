@@ -91,12 +91,24 @@ class HistoryTrace:
          }
     """
     def __init__(self, history: dict = None, data_blocks: list = None):
+        self._history = None
+        self._data_blocks = None
+
         if None in [history, data_blocks]:
-            self.data_blocks = list()
-            self._history = dict()
+            self.data_blocks = []
+            self.history = dict()
         else:
             self.data_blocks = data_blocks
             self.history = history
+
+    @property
+    def data_blocks(self) -> list:
+        """List of UUIDs"""
+        return self._data_blocks
+
+    @data_blocks.setter
+    def data_blocks(self, dbl: list):
+        self._data_blocks = dbl
 
     @property
     def history(self) -> dict:
@@ -143,6 +155,14 @@ class HistoryTrace:
             raise DataBlockNotFound(str(data_block_id))
 
         return self.history[data_block_id]
+
+    def get_all_data_blocks_history(self) -> dict:
+        h = {}
+
+        for block_id in self.data_blocks:
+            h.update({str(block_id): self.get_data_block_history(block_id)})
+
+        return h
 
     def get_operation_params(self, data_block_id: UUID, operation: str) -> dict:
         if isinstance(data_block_id, str):
