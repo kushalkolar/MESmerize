@@ -18,7 +18,7 @@ Widget used for displaying 2D or 3D data. Features:
 '''
 
 import os
-from ..Qt import QtCore, QtGui, QtWidgets
+# from ..Qt import QtCore, QtGui, QtWidgets
 
 # if USE_PYSIDE:
 #     from .ImageViewTemplate_pyside import *
@@ -28,16 +28,14 @@ from ..Qt import QtCore, QtGui, QtWidgets
 
 from .ImageView_pytemplate import *
 from ..graphicsItems.ImageItem import *
-from ..graphicsItems.ROI import *
-from ..graphicsItems.LinearRegionItem import *
 from ..graphicsItems.InfiniteLine import *
 from ..graphicsItems.ViewBox import *
 from ..graphicsItems.GradientEditorItem import addGradientListToDocstring
 from .. import ptime as ptime
 from .. import debug as debug
-from ..SignalProxy import SignalProxy
-from .. import getConfigOption
-from multiprocessing import Process, Queue
+# from ..SignalProxy import SignalProxy
+# from .. import getConfigOption
+# from multiprocessing import Process, Queue
 import numpy as np
 #from common import configuration  # DO NOT REMOVE THIS LINE OR YOU WILL GET CIRCULAR IMPORTS AND BREAK EVERYTHING
 #from viewer.core.viewer_work_environment import ViewerWorkEnv
@@ -45,18 +43,11 @@ import numpy as np
 # from MesmerizeCore import misc_widgets
 # import MesmerizeCore.Export
 # from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
-import time
-from functools import partial
-
+from viewer import export
 try:
     from bottleneck import nanmin, nanmax
 except ImportError:
     from numpy import nanmin, nanmax
-
-# if configuration.IS_WINDOWS:
-#     from MesmerizeCore.caimanMotionCorrect_threading import caimanPipeline
-# else:
-#     from MesmerizeCore.caimanMotionCorrect import caimanPipeline
 
 
 class ImageView(QtWidgets.QWidget):
@@ -122,7 +113,6 @@ class ImageView(QtWidgets.QWidget):
 
             pg.ImageView(view=pg.PlotItem())
         """
-        # Just setup the pyqtgraph stuff
         QtWidgets.QWidget.__init__(self, parent, *args)
         self.levelMax = 4096
         self.levelMin = 0
@@ -133,6 +123,7 @@ class ImageView(QtWidgets.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.scene = self.ui.graphicsView.scene()
+        self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
         # self.ui.btnResetScale.clicked.connect(self.resetImgScale)
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
@@ -211,29 +202,11 @@ class ImageView(QtWidgets.QWidget):
     def status_bar_label(self, status_bar_label: QtWidgets.QStatusBar):
         self._status_bar_label = status_bar_label
 
-    def edit_meta_data(self):
-        if hasattr(self, '_meta_data_editor'):
-            self._meta_data_editor.close()
-            self._meta_data_editor = None
-
-        self._meta_data_editor = misc_widgets.MetaDataEditor(self)
-        self._meta_data_editor.fill_widget(self.workEnv.imgdata.meta)
-        self._meta_data_editor.btnSave.clicked.connect(self.set_meta_data)
-
-    def set_meta_data(self):
-        try:
-            d = self._meta_data_editor.get_data()
-            self.workEnv.imgdata.meta.update(d)
-        except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'Error', 'The following error occured while trying to save the meta-data:\n'
-                                                     + str(e))
-        self._meta_data_editor.close()
-
     def init_export_gui(self):
         if hasattr(self, 'export_gui'):
             self.export_gui.close()
             self.export_gui = None
-        self.export_gui = misc_widgets.Exporter()
+        self.export_gui = export.ExporterGUI()
         self.export_gui.btnExport.clicked.connect(self.export_workEnv)
 
     def export_workEnv(self):
@@ -249,7 +222,7 @@ class ImageView(QtWidgets.QWidget):
 
         if self.export_gui.comboBoxFormat.currentText() == 'tiff':
             try:
-                MesmerizeCore.Export.Exporter(self.workEnv.imgdata, path + '.tiff')
+                export.Exporter(self.workEnv.imgdata, path + '.tiff')
             except Exception as e:
                 QtWidgets.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
                                                                 'environment: \n' + str(e))
@@ -268,149 +241,16 @@ class ImageView(QtWidgets.QWidget):
         elif self.export_gui.comboBoxFormat.currentText() == 'gif':
             ex = '.gif'
 
+        if self.export_gui.checkBoxPseudocolor.isChecked():
+            imgdata_to_export = self.getProcessedImage().T
+        else:
+            imgdata_to_export = self.workEnv.imgdata.seq
+
         try:
-            MesmerizeCore.Export.Exporter(self.workEnv.imgdata, path + ex, levels=histLevels, fps=f)
+            export.Exporter(imgdata_to_export, path + ex, levels=histLevels, fps=f)
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
                                                             'environment: \n' + str(e))
-
-    # '''##################################################################################################################
-    #                                         Split Seq Mode methods
-    # ##################################################################################################################'''
-    #
-    # def split_seq_ui_toggle(self, b):
-    #     # Disable a lot of buttons for functions that shouldn't be used in splitseq mode
-    #     self.ui.btnAddROI.setDisabled(b)
-    #     # self.ui.btnCrop.setDisabled(b)
-    #     self.ui.btnChangeSMap.setDisabled(b)
-    #     self.ui.btnResetSMap.setDisabled(b)
-    #     self.ui.btnImportSMap.setDisabled(b)
-    #
-    #     self.ui.listwSplits.setEnabled(b)
-    #     self.ui.btnPlotSplits.setEnabled(b)
-    #     self.ui.btnDoneSplitSeqs.setEnabled(b)
-    #
-    # def enterSplitSeqMode(self):
-    #     if self.splitSeqMode is False:
-    #         if QtWidgets.QMessageBox.question(self, 'Enter Split Seq Mode?', 'Are you sure you want to enter split-seq mode? ' +\
-    #                                   'You CANNOT add any more ROIs in split-seq mode and many other functins are '
-    #                                   ' disabled.\n\nAlso make sure you have tagged ALL your ROIs and applied any stimulus'
-    #                                   ' maps you may be interested in. You will loose everything if you tag ROIs after '
-    #                                   'exiting split-seq mode', QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)\
-    #                                     == QtWidgets.QMessageBox.No:
-    #             return
-    #         self.splitSeqMode = True
-    #         # Create temp dir to hold the splits
-    #         self.splitsDir = configuration.projPath + '/tmp/splits/' + str(time.time())
-    #         os.makedirs(self.splitsDir)
-    #
-    #         self.split_seq_ui_toggle(True)
-    #
-    #         # Each split is portrayed as an index item on the ui.listwSplits Qt widget
-    #         currentSplit = 0
-    #         self.ui.listwSplits.addItems([str(currentSplit).zfill(3)])
-    #         self.ui.listwSplits.setCurrentRow(0)
-    #         self.ui.stackedWidget.setCurrentIndex(2)
-    #
-    #     # Cannot split at zero because there is nothing before the 0th index of an image seq
-    #     if self.currentIndex == 0:
-    #         QtWidgets.QMessageBox.warning(self, 'Index = 0!', 'You cannot slice at the 0th index! '+\
-    #                                   'What\'s the point in that?!', QtWidgets.QMessageBox.Ok)
-    #         return
-    #
-    #     # Store the next sequence to spawn the next workEnv
-    #     nextseq = self.workEnv.imgdata.seq[:, :, self.currentIndex:]
-    #     print(self.workEnv.imgdata.seq.shape)
-    #     # Set current workEnv.seq up to the current index in the image sequence
-    #     self.workEnv.imgdata.seq = self.workEnv.imgdata.seq[:, :, :self.currentIndex]
-    #     print(self.workEnv.imgdata.seq.shape)
-    #
-    #     # Set index of this current split of the current WorkEnv.seq to the index of the listwidget
-    #     currentSplit = int(self.ui.listwSplits.currentItem().text())
-    #
-    #     print('currentSplit is: ' + str(currentSplit))
-    #
-    #     self.splitSeq(currentSplit)  # Save this split by basically using workEnv.to_pickle
-    #
-    #     # Spawn new workEnv from the just saved sequence which is the rest of the image sequence after the
-    #     # previous once was cut-off
-    #     self.workEnv.imgdata.seq = nextseq
-    #
-    #     # Get the number of splits that have currently been done
-    #     num_splits = int(self.ui.listwSplits.count())
-    #     print('Number of splits is: ' + str(num_splits))
-    #
-    #     # See if the split we had just saved to disk was a "middle split"
-    #     # I.e. if it was a split of a sequence that itself was already a split.
-    #     # In other terms, if it was not a terminal split, or basically it that split
-    #     # was not from the end of the image.
-    #     if int(self.ui.listwSplits.count()) > int(currentSplit) + 1:
-    #         print('middle split!!')
-    #         # If it was a middle split, rename all splits after that one so that we make space to not
-    #         # overwrite the new split, i.e. nextseq
-    #         for fname in reversed(range(currentSplit + 2, num_splits + 1)):
-    #             dst = self.splitsDir + '/' + str(fname).zfill(3)
-    #             src = self.splitsDir + '/' + str(fname - 1).zfill(3)
-    #             print('Renamed: ' + src + ' to :' + dst)
-    #             os.rename(src + '.pik', dst + '.pik')
-    #             os.rename(src + '.tiff', dst + '.tiff')
-    #
-    #     # Add references for all the splits to the list widget
-    #     l = list(range(num_splits + 1))
-    #     print('new list items are: ' + str(l))
-    #     self.ui.listwSplits.clear()
-    #     self.ui.listwSplits.addItems([str(i).zfill(3) for i in l])
-    #
-    #     # Save nextseq to disk
-    #     self.splitSeq(currentSplit + 1)
-    #     self.ui.listwSplits.setCurrentRow(currentSplit + 1)
-    #
-    # def splitSeq(self, splitNum):
-    #     self.resetImgScale()  # New splits are a spawned instance of workEnv. Calling resetImgScale() will set the image
-    #                           # in the imageview so that plots can updated from the ROIs.
-    #     for ID in range(0, len(self.workEnv.ROIList)):
-    #         self.updatePlot(ID, force=True)  # Force update of the plot to get intensity values for each ROI.
-    #     fn = str(splitNum).zfill(3)
-    #     print('Saving to disk! ' + fn)
-    #     self.workEnv.to_pickle(self.splitsDir, filename=fn)  # Save the split
-    #
-    # # Just a function that ultimately stiches together ROI plotting under all the splits
-    # def splits_hstack(self, plot=False):
-    #     self.masterCurvesList = []
-    #     self.masterROIList = []
-    #
-    #     for i in range(0, self.ui.listwSplits.count()):
-    #         self.workEnv.saved = True
-    #         self.updateWorkEnv(str(i).zfill(3), origin='splits', iterate=True, qtsig=False)
-    #
-    #         for ID in range(0, len(self.workEnv.ROIList)):
-    #             self.updatePlot(ID, force=True)
-    #             self.masterROIList.append([self.workEnv.ROIList])
-    #
-    #         for ID in range(0, len(self.workEnv.CurvesList)):
-    #             if i == 0:
-    #                 self.masterCurvesList.append(self.workEnv.CurvesList[ID].getData())
-    #             else:
-    #                 self.masterCurvesList[ID] = np.hstack((self.masterCurvesList[ID],
-    #                                                        self.workEnv.CurvesList[ID].getData()))
-    #     if plot:
-    #         for curve in self.masterCurvesList:
-    #             pgplot(curve[1])
-    #
-    # def splits_seq_mode_done(self):
-    #     if QtWidgets.QMessageBox.question(self, 'Warning!', "Are you sure you're done?",
-    #                                       QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-    #         return
-    #
-    #     self.splits_hstack()
-    #     self.workEnv.CurvesList = self.masterCurvesList
-    #     # self.workEnv.ROIList = self.masterROIList
-    #     self.exit_split_seq_mode()
-    #
-    # def exit_split_seq_mode(self):
-    #     self.ui.listwSplits.clear()
-    # #     self.split_seq_ui_toggle(False)
-    #
 
     def setImage(self, img, autoRange=True, autoLevels=True, levels=None, axes=None, xvals=None, pos=None, scale=None, transform=None, autoHistogramRange=True):
         """

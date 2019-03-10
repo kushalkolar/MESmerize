@@ -18,7 +18,6 @@ import numpy as np
 import cv2
 import tifffile
 from functools import partial
-import imageio
 from .exporter_pytemplate import *
 
 
@@ -62,14 +61,14 @@ class Exporter:
                 writer.append_data(scaled[:, :, frame].T)
 
     def tiff(self):
-        tifffile.imsave(self.out_file,self.img_data.seq.T)
+        tifffile.imsave(self.out_file, self.img_data.T)
 
     def npz(self):
         print('yay')
 
     def scale_levels(self):
 
-        scaled = ((self.img_data.seq - self.vmin) * (255/self.vmax)).clip(min=0, max=255).astype(np.uint8)
+        scaled = ((self.img_data - self.vmin) * (255/self.vmax)).clip(min=0, max=255).astype(np.uint8)
 #        scaled = (((self.img_data.seq - self.vmin) * (self.vmax - self.vmin)) * (255.0/self.vmax)).clip(min=0, max=255).astype(np.uint8)#.clip(min=0, max=255).astype(np.uint8)
 #        self.min_substract = (self.img_data - self.vmin).astype(np.uint8)
         return scaled
@@ -78,8 +77,8 @@ class Exporter:
         fourcc = cv2.VideoWriter_fourcc(*codec)
         print('YAY CODEC IS ' + codec)
         out = cv2.VideoWriter(self.out_file, fourcc, int(self.fps),
-                        (self.img_data.seq.shape[0],
-                         self.img_data.seq.shape[1]))
+                        (self.img_data.shape[0],
+                         self.img_data.shape[1]))
         scaled = self.scale_levels()
         # if (self.vmin and self.vmax) == None:
         #     self.vmin = self.img_data.vmin
@@ -116,6 +115,8 @@ class ExporterGUI(QtWidgets.QWidget, Ui_exporter_template):
         self.radioAuto.setEnabled(b)
         self.radioFromViewer.setEnabled(b)
         self.sliderFPS_Scaling.setEnabled(True)
+        # self.checkBoxPseudocolor.setChecked(b)
+        self.checkBoxPseudocolor.setEnabled(b)
 
     def file_path_dialog(self):
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Export filename, do not type an extension', '', '(*.*)')
