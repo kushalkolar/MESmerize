@@ -14,6 +14,7 @@ from .pytemplates.beeswarm_plot_controls_pytemplate import Ui_BeeswarmControls
 from .beeswarms import *
 import numpy as np
 from ..datapoint_tracer import DatapointTracerWidget
+from ..variants.violins import ViolinsPlot
 
 
 class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):
@@ -55,7 +56,10 @@ class BeeswarmPlotWindow(PlotWindow):
 
         self.add_plot_tab('Beeswarm')
         self.beeswarm_plot = BeeswarmPlot(self.graphicsViews['Beeswarm'])
-        self.add_plot_tab('Violins')
+        # self.add_plot_tab('Violins')
+        self.violins_plot = ViolinsPlot()
+        self.ui.tabWidget.addTab(self.violins_plot, 'Violins')
+        # self.ui.tabWidget.widget(1).setLayout(QtWidgets.QVBoxLayout())
 
         self.current_datapoint = None
 
@@ -108,7 +112,10 @@ class BeeswarmPlotWindow(PlotWindow):
     def update_beeswarm(self):
         self.beeswarm_plot.clear_plots()
         colors = self.auto_colormap(len(self.groups))
-        errors = []
+
+        colors_map = {}
+        for ix, g in enumerate(self.groups):
+            colors_map.update({g: colors[ix]})
 
         accepted_datatypes = [int, float, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32,
                               np.uint64, np.float16, np.float32, np.float64, np.uint64, np.float16, np.float32,
@@ -119,18 +126,22 @@ class BeeswarmPlotWindow(PlotWindow):
 
         for i, data_column in enumerate(self.data_columns):
             msg = 'Progress: ' + str(
-                ((i + 1) / len(self.data_columns)) * 100) + ' % ,Plotting data column: ' + data_column
+                int(((i + 1) / len(self.data_columns)) * 100)) + ' % ,Plotting data column: ' + data_column
             self.status_bar.showMessage(msg)
             self.beeswarm_plot.add_plot(data_column)
 
-            for ii, (dataframe, group) in enumerate(zip(self.group_dataframes, self.groups)):
+            for ix, (dataframe, group) in enumerate(zip(self.group_dataframes, self.groups)):
                 self.status_bar.showMessage(msg + ', plotting group: ' + group)
                 self.beeswarm_plot.add_data_to_plot(i, data_series=dataframe[data_column],
                                                     uuid_series=dataframe[self.uuid_column],
-                                                    name=group, color=colors[ii])
+                                                    name=group, color=colors[ix])
+        self.beeswarm_plot.set_legend(colors_map)
 
     def update_violins(self):
-        pass
+        cols = self.data_columns + [self.grouping_column]
+        sub_df = self.dataframe.loc[:, cols]
+        self.violins_plot.set(sub_df, x_column=self.grouping_column, data_columns=self.data_columns, x_order=self.groups)
+
 
     # def open_datapoint_tracer(self):
     #     identifier = self.get_current_datapoint()

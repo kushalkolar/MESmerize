@@ -38,6 +38,12 @@ class BeeswarmPlot(QtCore.QObject):
         self.title = ''
         self.current_datapoint = None
         self.lastClicked = []
+        self.pseudo_plots = []
+
+        # self.legend = self.graphics_view
+        # self.legend.setParentItem(self.plots)
+
+        self.color_legend_items = []
 
     def add_plot(self, title: str):
         if len(self.scatter_plots) % 4 == 0:
@@ -79,6 +85,31 @@ class BeeswarmPlot(QtCore.QObject):
             p.setBrush('w')
 
         self.lastClicked = points
+
+    def set_legend(self, colors: dict, shapes: dict = None):
+        """
+        :param colors: {'group_name': QtGui.QColor}
+        :param shapes: {'group_name': <shape>}
+        :return:
+        """
+        return
+        self.clear_legend()
+
+        for k in colors.keys():
+            p = ScatterPlotItem()
+            p.setData(x=[0], y=[0], brush=colors[k])
+            self.color_legend_items.append(k)
+            self.legend.addItem(p, k)
+            self.pseudo_plots.append(p)
+
+    def clear_legend(self):
+        for i in range(len(self.pseudo_plots)):
+            del self.pseudo_plots[0]
+
+        for name in self.color_legend_items:
+            self.legend.removeItem(name)
+        self.color_legend_items.clear()
+
 
     @property
     def spot_color(self, group: str):

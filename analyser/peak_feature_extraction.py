@@ -35,7 +35,6 @@ class PeakFeatures:
 
         newdf = self.t.df.apply(lambda x: self._per_curve(x['curve'], x['peaks_bases']), axis=1)
 
-        print('Reaches here')
         return newdf  # self.t#self.t.df
 
     def _per_curve(self, curve, pb_df):
@@ -49,9 +48,7 @@ class PeakFeatures:
         features = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else {}, axis=1)
 
         #        self.pb_df.apply(lambda x: print(x), axis=1)
-        #        print(self.pb_df)
-        print('Finished with curve' + str(self.row))
-        self.row += 1
+        #        print(self.pb_df)        self.row += 1
         #        print(type(self.pb_df.transpose()))
         #        return self.pb_df
         #        return features
@@ -85,8 +82,6 @@ class PeakFeatures:
         #            return None
 
         try:
-            print('self.all_peaks: ' + str(self.all_peaks))
-            print('ix_peak_abs: ' + str(ix_peak_abs))
             ixp = np.where(self.all_peaks == ix_peak_abs)[0][0]
             print(ixp)
             ix_pre_peak = self.all_peaks[ixp - 1]
@@ -153,7 +148,19 @@ class PeakFeaturesIter(PeakFeatures):
                 ps = ps.append(r)
                 tdf = pd.DataFrame(ps)
                 newdf = pd.concat([newdf, tdf.T], ignore_index=True)
+
+        newdf['_pfeature_amplitude_relative'] = newdf['_pfeature_amplitude_relative'].astype(np.float32)
+        newdf['_pfeature_amplitude_abs'] = newdf['_pfeature_amplitude_abs'].astype(np.float32)
+        newdf['_pfeature_area'] = newdf['_pfeature_area'].astype(np.float32)
+        newdf['_pfeature_rising_slope_avg'] = newdf['_pfeature_rising_slope_avg'].astype(np.float32)
+        newdf['_pfeature_falling_slope_avg'] = newdf['_pfeature_falling_slope_avg'].astype(np.float32)
+        newdf['_pfeature_duration_base'] = newdf['_pfeature_duration_base'].astype(np.float32)
+        newdf['_pfeature_inter_peak_interval'] = newdf['_pfeature_inter_peak_interval'].astype(np.float32)
+
         self.t.df = newdf
+
+
+
         self.t.history_trace.add_operation('all', operation='peak_features', parameters={})
         return self.t
 
