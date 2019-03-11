@@ -7,6 +7,7 @@ import pandas as pd
 from plotting.modules.heatmap.widget import HeatmapTracerWidget
 from plotting.modules.scatter.scatter_plot import ScatterPlotWidget
 from plotting.old.beeswarms_window import BeeswarmPlotWindow
+from plotting.variants.timeseries import TimeseriesPlot
 
 
 class Plot(CtrlNode):
@@ -87,6 +88,42 @@ class FrequencyDomainMagnitude(CtrlNode):
     uiTemplate = [('Show', 'check', {'checked': True}),
                   ('Apply', 'check', {'checked': True, 'applyBox': True})
                   ]
+
+
+class Timeseries(CtrlNode):
+    """Seaborn Timeseries plot"""
+    nodeName = 'Timeseries'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('err_style', 'combo', {'items': ['band', 'bars']}),
+                  ('Show', 'button', {'text': 'Show'}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True}),
+                  ]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.ctrls['Apply'].clicked.connect(self.update)
+        self.timeseries_widget = TimeseriesPlot()
+        self.ctrls['Show'].clicked.connect(self.timeseries_widget.show)
+
+    def process(self, **kwargs):
+        transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(transmissions)
+
+        self.t = Transmission.merge(self.transmissions_list)
+
+        columns = self.t.df.columns.to_list()
+
+        self.ctrls['data_column'].setItems(columns)
+
+        if not self.ctrls['Apply'].isChecked():
+            return
+
+        data_column = self.ctrls['data_column'].currentText()
+        data = np.vstack(self.t.df[data_column].values)
+
+        es = self.ctrls['err_style'].currentText()
+
+        self.timeseries_widget.set(data=data, err_style=es)
 
 
 class Heatmap(CtrlNode):

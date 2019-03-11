@@ -146,7 +146,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         filter_history = child['filter_history']
         self.project_browser.tabs[tab_name].dataframe = dataframe
         self.project_browser.tabs[tab_name].filter_history = filter_history
-        self.project_browser.tabs[tab_name].tab_name.populate_tab()
+        self.project_browser.tabs[tab_name].populate_tab()
 
     def update_tabs_from_child_dataframes(self):
         for tab_name in self.project_browser.tabs.keys():
