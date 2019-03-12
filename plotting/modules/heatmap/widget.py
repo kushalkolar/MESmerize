@@ -53,7 +53,16 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
         self.plot_widget = Heatmap()
-        self.plot_widget.unhide_sort_gui()
+
+        self.labelSort = QtWidgets.QLabel(self)
+        self.labelSort.setText('Sort heatmap according to column:')
+        self.labelSort.setMinimumHeight(30)
+        self.labelSort.setMaximumHeight(30)
+        self.comboBoxSortColumn = QtWidgets.QComboBox(self)
+        self.comboBoxSortColumn.currentTextChanged.connect(self._set_sort_order)
+
+        self.plot_widget.layout().addWidget(self.labelSort)
+        self.plot_widget.layout().addWidget(self.comboBoxSortColumn)
 
         self.splitter = QtWidgets.QSplitter(self)
         self.splitter.setStretchFactor(1, 1)
@@ -69,6 +78,11 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
         self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
 
         self.dataframe = None
+        self.labels_column = None
+        self.cmap = None
+
+        self.previous_sort_column = ''
+
         self._transmission = None
         self._history_trace = None
         self.has_history_trace = False
@@ -94,30 +108,32 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
                                               proj_path=self.get_transmission().get_proj_path(),
                                               history_trace=h)
 
-    def set_data(self, dataframes, data_column: str, labels_column: str, datapoint_tracer_curve_column: str, cmap: str ='jet',
-                 transmission: Transmission = None, reset_data: bool = True):
+    def _disconnect_comboBoxSort(self):
+        self.comboBoxSortColumn.currentTextChanged.disconnect(self._set_sort_order)
+
+    def _connect_comboBoxSort(self):
+        self.comboBoxSortColumn.currentTextChanged.connect(self._set_sort_order)
+
+    def set_data(self, dataframes,
+                 data_column: str,
+                 labels_column: str,
+                 datapoint_tracer_curve_column: str,
+                 cmap: str ='jet',
+                 transmission: Transmission = None,
+                 reset_data: bool = True):
+
         if type(dataframes) is list:
             dataframe = pd.concat(dataframes)
-        elif type(dataframes) is not pd.DataFrame:
-            QtWidgets.QMessageBox.warning(self, 'Invalid input data', 'You can only '
-                                                                      'pass in a dataframe or a list of dataframes')
-            return
         else:
             dataframe = dataframes
 
         assert isinstance(dataframe, pd.DataFrame)
 
         self.data_column = data_column
-
-        labels = dataframe[labels_column]
-
-        if reset_data:
-            self.plot_widget.comboBoxSortColumn.clear()
-            self.plot_widget.comboBoxSortColumn.addItems(dataframe.columns.to_list())
+        self.cmap = cmap
+        self.labels_column = labels_column
 
         self.dataframe = dataframe.reset_index(drop=True)
-        data = np.vstack(self.dataframe[data_column].values)
-        self.plot_widget.set(data, cmap=cmap, yticklabels=labels)
 
         self._transmission = None
         self._history_trace = None
@@ -128,6 +144,33 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
             self.set_transmission(transmission)
 
         self.datapoint_tracer_curve_column = datapoint_tracer_curve_column
+
+        self._disconnect_comboBoxSort()
+
+        if reset_data:
+            self.comboBoxSortColumn.clear()
+            self.comboBoxSortColumn.addItems(dataframe.columns.to_list())
+
+        ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
+        if (ix != -1) and (self.previous_sort_column != ''):
+            self.comboBoxSortColumn.setCurrentIndex(ix)
+            self._set_sort_order(self.previous_sort_column)
+        else:
+            data = np.vstack(self.dataframe[self.data_column].values)
+            self._set_plot(data)
+
+        self._connect_comboBoxSort()
+
+    def _set_plot(self, data_array: np.ndarray):
+        cmap = self.cmap
+        ylabels = self.dataframe[self.labels_column]
+        self.plot_widget.set(data_array, cmap=self.cmap, ylabels_bar=ylabels)
+
+    def _set_sort_order(self, column: str):
+        self.dataframe.sort_values(by=[column], inplace=True)
+        a = np.vstack(self.dataframe[self.data_column].values)
+        self.previous_sort_column = column
+        self._set_plot(a)
 
     def set_transmission(self, transmission):
         self._transmission = transmission

@@ -9,13 +9,16 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import numpy as np
-import seaborn as sns
+from seaborn import heatmap as seaborn_heatmap
 from matplotlib.patches import Rectangle as RectangularPatch
 from matplotlib.lines import Line2D
-from matplotlib import cm
+from matplotlib.transforms import Bbox
+from matplotlib.patches import Patch as MPatch
+from matplotlib import rcParams
+from pandas import Series
 
 
 class Heatmap(MatplotlibWidget):
@@ -23,8 +26,12 @@ class Heatmap(MatplotlibWidget):
 
     def __init__(self, highlight_mode='row'):
         MatplotlibWidget.__init__(self)
-        sns.set()
+        rcParams['image.interpolation'] = None
         self.ax_heatmap = self.fig.add_subplot(111)
+        self.ax_heatmap.get_yaxis().set_visible(False)
+
+        self.ax_ylabel_bar = self.ax_heatmap.twiny()
+
         self.fig.subplots_adjust(right=0.8)
         self.cbar_ax = self.fig.add_axes([0.85, 0.15, 0.05, 0.7])
         self.data = None
@@ -38,23 +45,7 @@ class Heatmap(MatplotlibWidget):
         elif highlight_mode == 'item':
             pass
 
-        self.labelSort = QtWidgets.QLabel(self)
-        self.labelSort.setText('Sort heatmap according to column:')
-        self.labelSort.setMinimumHeight(30)
-        self.labelSort.setMaximumHeight(30)
-        self.comboBoxSortColumn = QtWidgets.QComboBox(self)
-        #
-        self.layout().addWidget(self.labelSort)
-        self.layout().addWidget(self.comboBoxSortColumn)
-
-        self.labelSort.hide()
-        self.comboBoxSortColumn.hide()
-
-    def unhide_sort_gui(self):
-        self.labelSort.show()
-        self.comboBoxSortColumn.show()
-
-    def set(self, data: np.ndarray, *args, **kwargs):
+    def set(self, data: np.ndarray, *args, ylabels_bar: Series = None, cmap_ylabels_bar: str = 'tab20', **kwargs):
         """
         :param data:    2D numpy array
         :param args:    Additional args that are passed to sns.heatmap()
@@ -65,9 +56,44 @@ class Heatmap(MatplotlibWidget):
         self.cbar_ax.cla()
         self.data = data
 
-        self.plot = sns.heatmap(data, *args, ax=self.ax_heatmap, cbar_ax=self.cbar_ax, **kwargs)
+        # labels = kwargs.pop('ylabels_bar')
+        # cmap_ylabels_bar = kwargs.pop('cmap_ylabels_bar')
+
+        self.plot = seaborn_heatmap(data, *args, ax=self.ax_heatmap, cbar_ax=self.cbar_ax, **kwargs)
+
+        if ylabels_bar is not None:
+            self._set_ylabel_bar(ylabels_bar, cmap=cmap_ylabels_bar)
 
         self.draw()
+
+    def _set_ylabel_bar(self, labels : Series, cmap: str = 'tab20'):
+        assert isinstance(labels, Series)
+
+        self.ax_ylabel_bar.cla()
+
+        [[x1, y1], [x2, y2]] = self.ax_heatmap.get_position().get_points()
+        bb = Bbox.from_extents([[0.123, y1], [0.11, y2]])
+        self.ax_ylabel_bar.set_position(bb)
+
+        # self.ax_ylabel_bar.get_xaxis().set_visible(False)set
+        # self.ax_ylabel_bar.get_yaxis().set_visible(False)
+        self.ax_ylabel_bar.axis('off')
+
+        labels_unique = labels.unique()
+        colors_map = {}
+
+        for ix, c in enumerate(labels_unique):
+            colors_map.update({labels_unique[ix]: ix})
+
+        colors = labels.map(colors_map)
+        color_labels_array = np.expand_dims(colors.values, axis=1)
+
+        ylabel_bar = self.ax_ylabel_bar.imshow(color_labels_array, aspect='auto', cmap=cmap)
+
+        cs = np.unique(color_labels_array.ravel())
+        colors = [ylabel_bar.cmap(ylabel_bar.norm(c)) for c in cs]
+        ps = [MPatch(color=colors[i], label=labels_unique[i]) for i in range(len(cs))]
+        self.ax_ylabel_bar.legend(handles=ps, bbox_to_anchor=(1,1))
 
     def highlight_row(self, ev):
         if type(ev) is int:
@@ -108,12 +134,3 @@ class Clustermap(Heatmap):
         self.data = data
         self.plot = sns.clustermap(data, *args, ax=self.ax_heatmap, cbar_ax=self.cbar_ax, **kwargs)
         self.draw()
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-    w = Heatmap()
-    w.show()
-    data = np.load('/home/kushal/Sars_stuff/palp_project_mesmerize/zst_data.npy')
-    w.set(data, cmap='jet')
-    w.add_stimulus_indicator(144, 288, 'k')
-    app.exec()
