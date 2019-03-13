@@ -15,7 +15,6 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
-from MesmerizeCore import misc_funcs
 from .pytemplates.PeakEditor_pytemplate import *
 from .DataTypes import Transmission
 from .HistoryWidget import HistoryTreeWidget
