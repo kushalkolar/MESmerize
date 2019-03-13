@@ -109,7 +109,10 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
                                               history_trace=h)
 
     def _disconnect_comboBoxSort(self):
-        self.comboBoxSortColumn.currentTextChanged.disconnect(self._set_sort_order)
+        try:
+            self.comboBoxSortColumn.currentTextChanged.disconnect(self._set_sort_order)
+        except TypeError:
+            pass
 
     def _connect_comboBoxSort(self):
         self.comboBoxSortColumn.currentTextChanged.connect(self._set_sort_order)
