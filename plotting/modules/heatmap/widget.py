@@ -118,7 +118,7 @@ class HeatmapTracerWidget(QtWidgets.QWidget):
                  data_column: str,
                  labels_column: str,
                  datapoint_tracer_curve_column: str,
-                 cmap: str ='jet',
+                 cmap: str = 'jet',
                  transmission: Transmission = None,
                  reset_data: bool = True):
 
