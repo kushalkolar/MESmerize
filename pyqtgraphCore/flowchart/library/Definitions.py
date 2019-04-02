@@ -473,7 +473,7 @@ class DetrendDFoF(CtrlNode):
                        'output_column': '_DETREND_DF_O_F'
                        }
 
-        self.t.df.sort_values(by=['SampleID'], inplace=True)
+        self.t.df.sort_values(by=['SampleID', 'CurvePath'], inplace=True)
         self.t.df = self.t.df.reset_index(drop=True)
 
         self._load_data()
