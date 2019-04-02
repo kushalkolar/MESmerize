@@ -463,8 +463,8 @@ class DetrendDFoF(CtrlNode):
     def processData(self, transmission: Transmission):
         if self.ctrls['Apply'].isChecked() is False:
             return
-        t = transmission.copy()
-        self.df = t.df
+        self.t = transmission.copy()
+        # self.df = t.df
 
         self.params = {'quantileMin': self.ctrls['quantileMin'].value(),
                        'frames_window': self.ctrls['frames_window'].value(),
@@ -474,11 +474,11 @@ class DetrendDFoF(CtrlNode):
 
         self._load_data()
 
-        t.df = self.df.reset_index(drop=True)
+        self.t.df = self.df.reset_index(drop=True)
 
-        t.src.append({'DetrendDFoF': self.params})
+        self.t.src.append({'DetrendDFoF': self.params})
 
-        return t
+        return self.t
 
     def _load_data(self):
         self.current_sample_id = None
@@ -487,7 +487,7 @@ class DetrendDFoF(CtrlNode):
 
         proj_path = configuration.proj_path
 
-        for index, row in self.df.iterrows():
+        for index, row in self.t.df.iterrows():
             self.ix += 1
 
             if row['SampleID'] != self.current_sample_id:
@@ -506,10 +506,14 @@ class DetrendDFoF(CtrlNode):
                 cnmYrA = pik['roi_states']['cnmf_output']['cnmYrA']
 
                 self.idx_components = pik['roi_states']['cnmf_output']['idx_components']
-
-                dfof_curves = detrend_df_f(cnmA, cnmb, cnmC, cnm_f, YrA=cnmYrA,
-                                           quantileMin=self.params['quantileMin'],
-                                           frames_window=self.params['frames_window'])  # ,
+                try:
+                    dfof_curves = detrend_df_f(cnmA, cnmb, cnmC, cnm_f, YrA=cnmYrA,
+                                               quantileMin=self.params['quantileMin'],
+                                               frames_window=self.params['frames_window'])  # ,
+                except:
+                    tb = traceback.format_exc()
+                    raise Exception('The following exception was raised in caiman detrend_df_f method for SampleID: '
+                                    + self.current_sample_id + '/' + tb)
                 # flag_auto=self.ctrls['auto_quantile'].isChecked(),
                 # use_fast=self.ctrls['fast_filter'].isChecked())
                 if self.idx_components[self.ix] != row['ROI_State']['cnmf_idx']:
@@ -517,7 +521,7 @@ class DetrendDFoF(CtrlNode):
                         'CNMF component index Mismatch Error! Something went very wrong. Check the indices of your'
                         'CNMF components from SampleID: ' + self.current_sample_id)
 
-            self.df.iloc[index]['curve'] = dfof_curves[self.idx_components[self.ix]]
+            self.t.df.iloc[index]['curve'] = dfof_curves[self.idx_components[self.ix]]
 
 
 class SpliceArrays(CtrlNode):
