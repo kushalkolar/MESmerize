@@ -475,7 +475,7 @@ class DetrendDFoF(CtrlNode):
 
         self._load_data()
 
-        self.t.df = self.df.reset_index(drop=True)
+        self.t.df = self.t.df.reset_index(drop=True)
 
         self.t.src.append({'DetrendDFoF': self.params})
 
@@ -494,6 +494,7 @@ class DetrendDFoF(CtrlNode):
             if row['SampleID'] != self.current_sample_id:
                 self.idx_components = None
                 self.ix = 0
+                dfof_curves = None
 
                 self.current_sample_id = row['SampleID']
 
@@ -511,6 +512,7 @@ class DetrendDFoF(CtrlNode):
                     dfof_curves = detrend_df_f(cnmA, cnmb, cnmC, cnm_f, YrA=cnmYrA,
                                                quantileMin=self.params['quantileMin'],
                                                frames_window=self.params['frames_window'])  # ,
+                    self.dfof_curves = dfof_curves
                 except:
                     tb = traceback.format_exc()
                     raise Exception('The following exception was raised in caiman detrend_df_f method for SampleID: '
