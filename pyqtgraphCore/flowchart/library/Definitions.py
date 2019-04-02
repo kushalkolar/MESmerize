@@ -487,7 +487,7 @@ class DetrendDFoF(CtrlNode):
         dfof_curves = None
 
         proj_path = configuration.proj_path
-        self.t.df['_DETREND_DF_O_F']
+        self.t.df['_DETREND_DF_O_F'] = np.nan
         for index, row in self.t.df.iterrows():
             self.ix += 1
 
