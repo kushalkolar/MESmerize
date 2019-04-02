@@ -512,7 +512,7 @@ class DetrendDFoF(CtrlNode):
                     dfof_curves = detrend_df_f(cnmA, cnmb, cnmC, cnm_f, YrA=cnmYrA,
                                                quantileMin=self.params['quantileMin'],
                                                frames_window=self.params['frames_window'])  # ,
-                    self.dfof_curves = dfof_curves
+                    # self.dfof_curves = dfof_curves
                 except:
                     tb = traceback.format_exc()
                     raise Exception('The following exception was raised in caiman detrend_df_f method for SampleID: '
@@ -524,7 +524,7 @@ class DetrendDFoF(CtrlNode):
                         'CNMF component index Mismatch Error! Something went very wrong. Check the indices of your'
                         'CNMF components from SampleID: ' + self.current_sample_id)
 
-            self.t.df.iloc[index]['_DETREND_DF_O_F'] = dfof_curves[self.idx_components[self.ix]]
+            self.t.df.at[index, '_DETREND_DF_O_F'] = dfof_curves[self.idx_components[self.ix]]
 
 
 class SpliceArrays(CtrlNode):
