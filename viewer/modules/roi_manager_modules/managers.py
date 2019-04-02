@@ -175,6 +175,11 @@ class ManagerCNMFE(AbstractBaseManager):
             roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
         self.input_params_dict = states['input_params_cnmfe']
+        self.cnmA = states['cnmf_output']['cnmA']
+        self.cnmb = states['cnmf_output']['cnmb']
+        self.cnmC = states['cnmf_output']['cnmC']
+        self.cnm_f = states['cnmf_output']['cnm_f']
+        self.cnmYrA = states['cnmf_output']['cnmYrA']
         self.idx_components = states['cnmf_output']['idx_components']
         self.orig_idx_components = states['cnmf_output']['orig_idx_components']
         self.roi_list.reindex_colormap()
@@ -185,6 +190,10 @@ class ManagerCNMFE(AbstractBaseManager):
         states = super(ManagerCNMFE, self).get_all_states()
 
         new_idx_components = np.array([roi.cnmf_idx for roi in self.roi_list], dtype=np.int64)
+
+        if None in [self.cnmA, self.cnmb, self.cnmC, self.cnm_f, self.cnmYrA,
+                    self.orig_idx_components, new_idx_components]:
+            raise ValueError('One or more pieces of CNMF data are missing')
 
         input_dict = {'input_params_cnmfe': self.input_params_dict,
                       'cnmf_output':
