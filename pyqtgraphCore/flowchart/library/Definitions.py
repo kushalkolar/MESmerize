@@ -477,7 +477,7 @@ class DetrendDFoF(CtrlNode):
 
         self.t.df = self.t.df.reset_index(drop=True)
 
-        self.t.src.append({'DetrendDFoF': self.params})
+        self.t.history_trace.add_operation('all', operation='detrend_df_o_f', parameters=self.params)
 
         return self.t
 
@@ -486,7 +486,7 @@ class DetrendDFoF(CtrlNode):
         self.ix = 0
         dfof_curves = None
 
-        proj_path = configuration.proj_path
+        proj_path = self.t.get_proj_path()
         self.t.df['_DETREND_DF_O_F'] = np.nan
         for index, row in self.t.df.iterrows():
             self.ix += 1
