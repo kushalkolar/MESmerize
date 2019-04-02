@@ -521,8 +521,8 @@ class DetrendDFoF(CtrlNode):
                 # use_fast=self.ctrls['fast_filter'].isChecked())
                 if self.idx_components[self.ix] != row['ROI_State']['cnmf_idx']:
                     raise Exception(
-                        'CNMF component index Mismatch Error! Something went very wrong. Check the indices of your'
-                        'CNMF components from SampleID: ' + self.current_sample_id)
+                        'CNMF component index Mismatch Error! Something went very wrong. Check the indices of your '
+                        'CNMF components from SampleID: ' + self.current_sample_id + '\n' + traceback.format_exc())
 
             self.t.df.at[index, '_DETREND_DF_O_F'] = dfof_curves[self.idx_components[self.ix]]
 
