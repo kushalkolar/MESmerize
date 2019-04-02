@@ -321,7 +321,7 @@ class TextFilter(CtrlNode):
         elif exclude:
             self.t.df = self.t.df[self.t.df[col] != filt]
 
-        self.t.history_tracee.add_operation('all', operation='text_filter', parameters=params)
+        self.t.history_trace.add_operation('all', operation='text_filter', parameters=params)
 
         return self.t
 
