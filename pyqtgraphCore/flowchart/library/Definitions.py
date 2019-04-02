@@ -473,9 +473,10 @@ class DetrendDFoF(CtrlNode):
                        'output_column': '_DETREND_DF_O_F'
                        }
 
-        self._load_data()
-
+        self.t.df.sort_values(by=['SampleID'], inplace=True)
         self.t.df = self.t.df.reset_index(drop=True)
+
+        self._load_data()
 
         self.t.history_trace.add_operation('all', operation='detrend_df_o_f', parameters=self.params)
 

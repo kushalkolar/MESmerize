@@ -23,6 +23,7 @@ import os
 import traceback
 from configparser import RawConfigParser
 
+
 class DataBlockNotFound(BaseException):
     """ Requested data block not found """
     def __init__(self, *args, **kwargs): # real signature unknown
@@ -328,6 +329,9 @@ class Transmission(BaseTransmission):
         """
         df = dataframe.copy()
         df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+
+        df.sort_values(by=['SampleID'], inplace=True)
+        df = df.reset_index(drop=True)
 
         h = HistoryTrace()
         df, block_id = h.create_data_block(df)
