@@ -522,7 +522,9 @@ class DetrendDFoF(CtrlNode):
                 if self.idx_components[self.ix] != row['ROI_State']['cnmf_idx']:
                     raise Exception(
                         'CNMF component index Mismatch Error! Something went very wrong. Check the indices of your '
-                        'CNMF components from SampleID: ' + self.current_sample_id + '\n' + traceback.format_exc())
+                        'CNMF components from SampleID: ' + self.current_sample_id +
+                        '\nIndex in pickle is: ' + str(self.idx_components[self.ix]) +
+                        '\nIndex in dataframe is: ' + str(row['ROI_State']['cnmf_idx']) + '\n at iloc: ' + str(index))
 
             self.t.df.at[index, '_DETREND_DF_O_F'] = dfof_curves[self.idx_components[self.ix]]
 
