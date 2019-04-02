@@ -302,7 +302,7 @@ class TextFilter(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        col = self.ctrls['Column'].text()
+        col = self.ctrls['Column'].currentText()
         filt = self.ctrls['filter'].text()
 
         self.t = transmission.copy()
