@@ -286,7 +286,7 @@ class SelectColumns(CtrlNode):
 
 
 class TextFilter(CtrlNode):
-    nodeName = 'Filter'
+    nodeName = 'TextFilter'
     uiTemplate = [('Column', 'combo', {'toolTip': 'Filter according to this column'}),
                   ('filter', 'lineEdit', {'toolTip': 'Filter to apply in selected column'}),
                   ('Include', 'radioBtn', {'checked': True}),
@@ -320,6 +320,8 @@ class TextFilter(CtrlNode):
             self.t.df = self.t.df[self.t.df[col] == filt]
         elif exclude:
             self.t.df = self.t.df[self.t.df[col] != filt]
+
+        self.t.df = self.df.reset_index(drop=True)
 
         self.t.history_trace.add_operation('all', operation='text_filter', parameters=params)
 
