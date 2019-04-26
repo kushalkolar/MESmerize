@@ -88,8 +88,6 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.btnCompress.clicked.connect(self.compress_all)
 
-
-
     def compress_all(self):
         if QtWidgets.QMessageBox.warning(self, 'Compress Warning',
                                          'YOU CANNOT ABORT THIS PROCESS ONCE IT STARTS, PROCEED?',
@@ -180,7 +178,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid', 'compressed'])
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
-        self.setWindowTitle('Batch Manager: ' + os.path.dirname(self.batch_path))
+        self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
         self.show()
 
     def btn_view_input_slot(self):
@@ -316,7 +314,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnDelete.setDisabled(b)
         self.ui.btnAbort.setEnabled(b)
 
-    def process_batch(self, start_ix=0):
+    def process_batch(self, start_ix=0, clear_viewers=False):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
 
         self.ui.checkBoxWorDir.setDisabled(True)
@@ -339,16 +337,15 @@ class ModuleGUI(QtWidgets.QWidget):
                                               QtWidgets.QMessageBox.Yes,
                                               QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
-        if len(configuration.window_manager.viewers) > 0:
+        if not clear_viewers:
             if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
                                                   'Would you like to clear all viewer work '
                                                   'environments before starting the batch?',
                                                   QtWidgets.QMessageBox.No,
                                                   QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes:
-
-                for viewer in configuration.window_manager.viewers:
-                            vi = ViewerInterface(viewer.viewer_reference)
-                            vi.discard_workEnv()
+                self._clear_viewers()
+        else:
+            self._clear_viewers()
 
         self.current_batch_item_index = start_ix - 1
         self.disable_ui_buttons(True)
@@ -367,6 +364,11 @@ class ModuleGUI(QtWidgets.QWidget):
             self.ui.listwBatch.item(ix).setBackground(QtGui.QBrush(QtGui.QColor('#fe0d00')))
         elif color == 'blue':
             self.ui.listwBatch.item(ix).setBackground(QtGui.QBrush(QtGui.QColor('#85e3ff')))
+
+    def _clear_viewers(self):
+        for viewer in configuration.window_manager.viewers:
+            vi = ViewerInterface(viewer.viewer_reference)
+            vi.discard_workEnv()
 
     @QtCore.pyqtSlot()
     def run_batch_item(self):
