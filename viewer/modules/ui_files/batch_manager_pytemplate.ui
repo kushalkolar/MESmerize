@@ -15,6 +15,40 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
+    <widget class="QLabel" name="labelBatchPath">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QSplitter" name="splitter_3">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -23,7 +57,7 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QListWidget" name="listwBatch">
@@ -342,8 +376,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>647</width>
-          <height>291</height>
+          <width>646</width>
+          <height>245</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -390,8 +424,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>342</width>
-          <height>326</height>
+          <width>343</width>
+          <height>303</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -416,8 +450,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>342</width>
-          <height>325</height>
+          <width>343</width>
+          <height>302</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
