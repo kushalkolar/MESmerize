@@ -179,6 +179,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
         self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
+        self.ui.labelBatchPath.setText(os.path.dirname(self.batch_path))
         self.show()
 
     def btn_view_input_slot(self):
@@ -654,7 +655,8 @@ class ModuleGUI(QtWidgets.QWidget):
             if 'compressed' not in self.df.columns:
                 self.df['compressed'] = False * self.df.index.size
             self.batch_path = path
-            self.setWindowTitle('Batch Manager: ' + os.path.dirname(self.batch_path))
+            self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
+            self.ui.labelBatchPath.setText(os.path.dirname(self.batch_path))
 
             self.ui.listwBatch.clear()
 
