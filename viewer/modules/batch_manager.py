@@ -150,7 +150,7 @@ class ModuleGUI(QtWidgets.QWidget):
             print('Running from item ' + run_batch[1])
             ix = self.df.index[self.df['uuid'] == UUIDType(run_batch[1])]
             i = int(ix.to_native_types()[0])
-            self.process_batch(start_ix=i)
+            self.process_batch(start_ix=i, clear_viewers=True)
 
     def create_new_batch(self):
         if self.ui.listwBatch.count() > 0:
@@ -162,10 +162,20 @@ class ModuleGUI(QtWidgets.QWidget):
         if path == '':
             return
 
+        if any(s in path for s in [' ', '(', ')', '?']):
+            QtWidgets.QMessageBox.warning(self, 'Invalid path',
+                                          'Batch path cannot contain spaces or special characters')
+            return
+
         self.create_new_batch_dir(path)
 
     def create_new_batch_dir(self, path: str):
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
+
+        if any(s in name for s in [' ', '(', ')', '?']):
+            QtWidgets.QMessageBox.warning(self, 'Invalid name',
+                                          'Batch name can only contain alphanumeric characters')
+            return
 
         if start and name != '':
             batch_path = path + '/' + name
@@ -639,6 +649,9 @@ class ModuleGUI(QtWidgets.QWidget):
         if path == '':
             return
 
+        if any(s in path for s in [' ', '(', ')', '?']):
+            QtWidgets.QMessageBox.warning(self, 'Invalid batch path', 'Batch path can only contain alphanumeric characters')
+            return
         self.open_batch_dir(path)
 
     def open_batch_dir(self, path: str):
