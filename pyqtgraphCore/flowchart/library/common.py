@@ -304,3 +304,4 @@ def merge_transmissions(transmissions) -> list:
     return transmissions_list
 
 
+normalize_zero_one = lambda a: ((a - np.min(a)) / (np.max(a - np.min(a))))

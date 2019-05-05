@@ -243,40 +243,41 @@ class PeakDetect(CtrlNode):
                   ('Fictional_Bases', 'check', {'checked': True}),
                   ('Edit', 'button', {'text': 'Open GUI'}),
                   ('SlopeThr', 'doubleSpin', {'min': -100.00, 'max': 1.0, 'step': 0.010}),
-                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 100000.00, 'step': 100.00}),
-                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 100000.00, 'step': 100.00}),
+                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
+                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def __init__(self, name, **kwargs):
         CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
                                                  'Curve': {'io': 'in'},
+                                                 'Normalized': {'io': 'in'},
                                                  'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
         self.data_modified = False
         self.editor_output = False
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
         self.t = None
 
-    def _get_zero_crossings(self, dsig: np.ndarray, fictional_bases: bool = False) -> pd.DataFrame:
+    def _get_zero_crossings(self, d1: np.ndarray, sig: np.ndarray, norm_sig: np.ndarray, fictional_bases: bool = False) -> pd.DataFrame:
         """
         Find the peaks and bases of the signal by finding zero crossing in the first derivative of the filtered signal
         :param dsig: The first derivative of the signal
         :return: DataFrame, all zero crossing events in one column, another column denotes it as a peak or base.
         """
         # Get array of all sign switches
-        sc = np.diff(np.sign(dsig))
+        sc = np.diff(np.sign(d1))
 
         peaks_raw = np.where(sc < 0)[0]
         bases = np.where(sc > 0)[0]
 
         # Remove all peaks where amplitude is below the specified threshold
-        peak_yvals = np.take(self.t.df.iloc[self.row_ix]['raw_curve'], peaks_raw)
+        peak_yvals = np.take(norm_sig, peaks_raw)
         # print('peak_yvals: ' + str(peak_yvals))
         ix_below_ampl_thr = np.where(peak_yvals < self.ctrls['AmplThrAbs'].value())
         # print('ix_below_ampl_thr: ' + str(ix_below_ampl_thr))
         peaks_ampl_thr = np.delete(peaks_raw, ix_below_ampl_thr)
 
-        s2 = np.gradient(dsig)
+        s2 = np.gradient(d1)
         # Remove all peaks where the 2nd derivative is below a certain threshold
         peak_d2 = np.take(s2, peaks_ampl_thr)
         ix_below_slope_thr = np.where(peak_d2 > self.ctrls['SlopeThr'].value())
@@ -329,15 +330,13 @@ class PeakDetect(CtrlNode):
 
                     #  Adjust the xval of the curve by finding the absolute maxima of this section of the raw curve,
                     # flanked by the bases of the peak
-                    peak_revised = np.where(self.t.df.iloc[self.row_ix]['raw_curve'] == np.max(
-                        np.take(self.t.df.iloc[self.row_ix]['raw_curve'], np.arange(ix_left_base, ix_right_base))))[0][
+                    peak_revised = np.where(sig == np.max(
+                        np.take(sig, np.arange(ix_left_base, ix_right_base))))[0][
                         0]
 
                     # Get rising and falling amplitudes
-                    rise_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - \
-                                self.t.df.iloc[self.row_ix]['raw_curve'][ix_left_base]
-                    fall_ampl = self.t.df.iloc[self.row_ix]['raw_curve'][peak_revised] - \
-                                self.t.df.iloc[self.row_ix]['raw_curve'][ix_right_base]
+                    rise_ampl = sig[peak_revised] - sig[ix_left_base]
+                    fall_ampl = sig[peak_revised] - sig[ix_right_base]
 
                     # Check if above relative amplitude threshold
                     if (rise_ampl + fall_ampl) > self.ctrls['AmplThrRel'].value():
@@ -372,6 +371,8 @@ class PeakDetect(CtrlNode):
                 return self.t
         self.data_modified = False
 
+        if not self.ctrls['Apply'].isChecked():
+            return
         # if inputs['Derivative'] is None:
         #     raise Exception('No incoming Derivative transmission. '
         #                     'You must input at least a derivative')
@@ -396,21 +397,28 @@ class PeakDetect(CtrlNode):
         if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
             raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
 
-        self.t = inputs['Derivative'].copy()
+        t_d1 = inputs['Derivative'].copy()
+        d1 = t_d1.df['_DERIVATIVE']
 
-        selected = inputs['Curve'].copy()
+        t_norm = inputs['Normalized'].copy()
+        norm_series = t_norm.df[t_norm.last_output]
+
+        self.t = inputs['Curve'].copy()
+        self.t.df['_DERIVATIVE'] = d1
+        self.t.df['_NORM_PD'] = norm_series
         data_column = self.ctrls['data_column'].currentText()
-        self.t.df['raw_curve'] = selected.df[data_column]
+        # self.t.df['raw_curve'] = self.t.df[data_column]
 
         assert isinstance(self.t, Transmission)
 
         # self.t.data_column['peaks_bases'] = 'peaks_bases'
         fb = self.ctrls['Fictional_Bases'].isChecked()
         self.row_ix = 0
-        self.t.df['peaks_bases'] = self.t.df[data_column].apply(lambda s: self._get_zero_crossings(s, fb))
+        self.t.df['peaks_bases'] = self.t.df.apply(lambda r: self._get_zero_crossings(r['_DERIVATIVE'], r[data_column], r['_NORM_PD'], fb), axis=1)
 
         self.t.df['curve'] = self.t.df[data_column]
-        self.t.df.drop(columns=['raw_curve'])
+        self.t.df.drop(columns=['_NORM_PD'], inplace=True)
+        # self.t.df.drop(columns=['raw_curve'])
 
         if hasattr(self, 'pbw'):
             self.pbw.update_transmission(self.t, self.t)
@@ -479,6 +487,7 @@ class DetrendDFoF(CtrlNode):
         self._load_data()
 
         self.t.history_trace.add_operation('all', operation='detrend_df_o_f', parameters=self.params)
+        self.t.last_output = '_DETREND_DF_O_F'
 
         return self.t
 
