@@ -251,10 +251,10 @@ class ScalerMeanVariance(CtrlNode):
     """Scaler for time series. Scales time series so that their mean (resp. standard deviation) in each dimension is mu (resp. std).\n
     See https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html#tslearn.preprocessing.TimeSeriesScalerMeanVariance"""
     nodeName = 'ScalerMeanVariance'
-    uiTemplate = [('data_column', 'combo', {},
+    uiTemplate = [('data_column', 'combo', {}),
                    ('mu', 'doubleSpin', {'value': 0.0, 'step': 0.1, 'toolTip': 'Mean of the output time series'}),
                    ('std', 'doubleSpin', {'value': 1.0, 'step': 1.0, 'toolTip': 'Standard deviation of the output time series'}),
-                   ('Apply', 'check', {'checked': False, 'applyBox': True}))]
+                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
         self.t = transmission

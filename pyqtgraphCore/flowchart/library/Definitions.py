@@ -549,7 +549,7 @@ class StaticDFoFo(CtrlNode):
     """Perform (F - Fo / Fo) without a rolling window to find Fo"""
     nodeName = 'StaticDFoFo'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
