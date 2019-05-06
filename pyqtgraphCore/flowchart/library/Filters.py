@@ -5,7 +5,7 @@ from analyser.DataTypes import Transmission
 from scipy import signal
 import pandas as pd
 from analyser.math.tvregdiff import tv_reg_diff
-
+from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
 class Derivative(CtrlNode):
     """Return the Derivative of a curve."""
@@ -245,6 +245,42 @@ class ZScore(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
         t = transmission.copy()
+
+
+class ScalerMeanVariance(CtrlNode):
+    """Scaler for time series. Scales time series so that their mean (resp. standard deviation) in each dimension is mu (resp. std).\n
+    See https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html#tslearn.preprocessing.TimeSeriesScalerMeanVariance"""
+    nodeName = 'ScalerMeanVariance'
+    uiTemplate = [('data_column', 'combo', {},
+                   ('mu', 'doubleSpin', {'value': 0.0, 'step': 0.1, 'toolTip': 'Mean of the output time series'}),
+                   ('std', 'doubleSpin', {'value': 1.0, 'step': 1.0, 'toolTip': 'Standard deviation of the output time series'}),
+                   ('Apply', 'check', {'checked': False, 'applyBox': True}))]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if not self.ctrls.isChecked():
+            return
+
+        self.t = transmission.copy()
+
+        mu = self.ctrls['mu'].value()
+        std = self.ctrls['std'].value()
+
+        params = {'data_column': self.data_column,
+                  'mu': mu,
+                  'std': std
+                  }
+
+        output_column = '_SCALER_MEAN_VARIANCE'
+
+        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda a: TimeSeriesScalerMeanVariance(mu=mu, std=std).fit_transform(a))
+        self.t.history_trace.add_operation(data_block_id='all', operation='scaler_mean_variance', parameters=params)
+        self.t.last_output = output_column
+
+        return self.t
+
 
 
 class Normalize(CtrlNode):
