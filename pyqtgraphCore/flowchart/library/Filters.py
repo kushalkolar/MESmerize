@@ -275,7 +275,7 @@ class ScalerMeanVariance(CtrlNode):
 
         output_column = '_SCALER_MEAN_VARIANCE'
 
-        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda a: TimeSeriesScalerMeanVariance(mu=mu, std=std).fit_transform(a))
+        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda a: TimeSeriesScalerMeanVariance(mu=mu, std=std).fit_transform(a)[:, :, 0])
         self.t.history_trace.add_operation(data_block_id='all', operation='scaler_mean_variance', parameters=params)
         self.t.last_output = output_column
 
