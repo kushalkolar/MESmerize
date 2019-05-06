@@ -235,16 +235,16 @@ class Resample(CtrlNode):
         return signal.resample(row[self.data_column], Rn)
 
 
-class ZScore(CtrlNode):
-    nodeName = 'Z-Score'
-    uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True})
-                  ]
-
-    def processData(self, transmission: Transmission):
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-        t = transmission.copy()
+# class ZScore(CtrlNode):
+#     nodeName = 'Z-Score'
+#     uiTemplate = [('data_column', 'combo', {}),
+#                   ('Apply', 'check', {'checked': False, 'applyBox': True})
+#                   ]
+#
+#     def processData(self, transmission: Transmission):
+#         if self.ctrls['Apply'].isChecked() is False:
+#             return
+#         t = transmission.copy()
 
 
 class ScalerMeanVariance(CtrlNode):
@@ -280,7 +280,6 @@ class ScalerMeanVariance(CtrlNode):
         self.t.last_output = output_column
 
         return self.t
-
 
 
 class Normalize(CtrlNode):
