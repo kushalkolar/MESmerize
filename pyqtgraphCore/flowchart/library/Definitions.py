@@ -16,6 +16,12 @@ from caiman.source_extraction.cnmf.utilities import detrend_df_f
 from common import configuration
 
 
+def _static_dfof(F: np.ndarray) -> np.ndarray:
+    Fo = np.min(F)
+    d = ((F - Fo) / Fo) * np.sign(Fo)
+    return d
+
+
 class ExtractStim(CtrlNode):
     """Extract portions of curves according to stimulus maps"""
     nodeName = 'ExtractStim'
@@ -460,7 +466,7 @@ class DeltaFoF(CtrlNode):
 
 
 class DetrendDFoF(CtrlNode):
-    """Uses detrend_df_f from Caiman library"""
+    """Uses detrend_df_f from Caiman library."""
     nodeName = 'DetrendDFoF'
     uiTemplate = [('quantileMin', 'intSpin', {'min': 1, 'max': 100, 'step': 1, 'value': 20}),
                   ('frames_window', 'intSpin', {'min': 2, 'max': 5000, 'step': 10, 'value': 100}),
@@ -537,6 +543,34 @@ class DetrendDFoF(CtrlNode):
                         '\nIndex in dataframe is: ' + str(row['ROI_State']['cnmf_idx']) + '\n at iloc: ' + str(index))
 
             self.t.df.at[index, '_DETREND_DF_O_F'] = dfof_curves[self.idx_components[self.ix]]
+
+
+class StaticDFoFo(CtrlNode):
+    """Perform (F - Fo / Fo) without a rolling window to find Fo"""
+    nodeName = 'StaticDFoFo'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'checked': True, 'applyBox': True})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = Transmission
+        self.set_data_column_combo_box()
+
+        if not self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+        data_column = self.ctrls['data_column'].currentText()
+        output_column = '_STATIC_DF_O_F'
+        params = {'data_column': data_column}
+
+        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: _static_dfof(a))
+
+        self.t.history_trace.add_operation(data_block_id='all', operation='static_df_o_f', parameters=params)
+        self.t.last_output = output_column
+
+        return self.t
 
 
 class SpliceArrays(CtrlNode):
