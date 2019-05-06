@@ -260,7 +260,7 @@ class ScalerMeanVariance(CtrlNode):
         self.t = transmission
         self.set_data_column_combo_box()
 
-        if not self.ctrls.isChecked():
+        if not self.ctrls['Apply'].isChecked():
             return
 
         self.t = transmission.copy()
