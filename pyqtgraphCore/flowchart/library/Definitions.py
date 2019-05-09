@@ -256,8 +256,8 @@ class PeakDetect(CtrlNode):
 
     def __init__(self, name, **kwargs):
         CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
-                                                 'Curve': {'io': 'in'},
                                                  'Normalized': {'io': 'in'},
+                                                 'Curve': {'io': 'in'},
                                                  'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
         self.data_modified = False
         self.editor_output = False
@@ -321,24 +321,23 @@ class PeakDetect(CtrlNode):
         peaks_bases_df = peaks_bases_df.sort_values('event')
         peaks_bases_df.reset_index(drop=True, inplace=True)
 
-        peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
-        peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
+        # peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
+        # peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
 
         # Set the peaks at the index of the local maxima of the raw curve instead of the maxima inferred
         # from the derivative
         # Also remove peaks which are lower than the relative amplitude threshold
         rows_drop = []
         for ix, r in peaks_bases_df.iterrows():
-            if r['peak'] and ix > 0:
-                if peaks_bases_df.iloc[ix - 1]['base'] and peaks_bases_df.iloc[ix + 1]['base']:
+            if r['label'] == 'peak' and ix > 0:
+                if peaks_bases_df.iloc[ix - 1]['label'] == 'base' and peaks_bases_df.iloc[ix + 1]['label'] == 'base':
                     ix_left_base = peaks_bases_df.iloc[ix - 1]['event']
                     ix_right_base = peaks_bases_df.iloc[ix + 1]['event']
 
                     #  Adjust the xval of the curve by finding the absolute maxima of this section of the raw curve,
                     # flanked by the bases of the peak
                     peak_revised = np.where(sig == np.max(
-                        np.take(sig, np.arange(ix_left_base, ix_right_base))))[0][
-                        0]
+                        np.take(sig, np.arange(ix_left_base, ix_right_base))))[0][0]
 
                     # Get rising and falling amplitudes
                     rise_ampl = sig[peak_revised] - sig[ix_left_base]
@@ -349,6 +348,15 @@ class PeakDetect(CtrlNode):
                         peaks_bases_df.set_value(ix, 'event', peak_revised)
                     else:
                         rows_drop.append(ix)
+
+        peaks_bases_df.drop(peaks_bases_df.index[rows_drop], inplace=True)
+        peaks_bases_df.reset_index(drop=True, inplace=True)
+
+        # remove bases that aren't around any peak
+        for ix, r in peaks_bases_df.iterrows():
+            if r['label'] == 'base' and 1 < ix < (peaks_bases_df.index.size - 1):
+                if peaks_bases_df.iloc[ix - 1]['label'] != 'peak' and peaks_bases_df.iloc[ix + 1]['label'] != 'peak':
+                    rows_drop.append(ix)
 
         peaks_bases_df.drop(peaks_bases_df.index[rows_drop], inplace=True)
         peaks_bases_df.reset_index(drop=True, inplace=True)
@@ -404,9 +412,11 @@ class PeakDetect(CtrlNode):
             raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
 
         t_d1 = inputs['Derivative'].copy()
+        assert isinstance(t_d1, Transmission)
         d1 = t_d1.df['_DERIVATIVE']
 
         t_norm = inputs['Normalized'].copy()
+        assert isinstance(t_norm, Transmission)
         norm_series = t_norm.df[t_norm.last_output]
 
         self.t = inputs['Curve'].copy()
@@ -427,12 +437,15 @@ class PeakDetect(CtrlNode):
         # self.t.df.drop(columns=['raw_curve'])
 
         if hasattr(self, 'pbw'):
+            # self.pbw.curve_column = data_column
             self.pbw.update_transmission(self.t, self.t)
 
         params = {'data_column': data_column,
                   'SlopeThr': self.ctrls['SlopeThr'].value(),
                   'AmplThrRel': self.ctrls['AmplThrRel'].value(),
-                  'AmplThrAbs': self.ctrls['AmplThrAbs'].value()}
+                  'AmplThrAbs': self.ctrls['AmplThrAbs'].value(),
+                  'derivative_input_history_trace': t_d1.history_trace.get_all_data_blocks_history(),
+                  'normalized_input_history_trace': t_norm.history_trace.get_all_data_blocks_history()}
 
         self.t.history_trace.add_operation('all', operation='peak_detect', parameters=params)
 
@@ -452,17 +465,17 @@ class PeakDetect(CtrlNode):
         self.pbw.btnDone.clicked.connect(self._set_editor_output)
 
 
-class DeltaFoF(CtrlNode):
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('OpenGUI', 'button', {'text': 'Open GUI'})]
-
-    def __init__(self, name, **kwargs):
-        CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
-                                                 'Curve': {'io': 'in'},
-                                                 'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
-        self.data_modified = False
-        self.editor_output = False
-        self.ctrls['Edit'].clicked.connect(self._peak_editor)
+# class DeltaFoF(CtrlNode):
+#     uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
+#                   ('OpenGUI', 'button', {'text': 'Open GUI'})]
+#
+#     def __init__(self, name, **kwargs):
+#         CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
+#                                                  'Curve': {'io': 'in'},
+#                                                  'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
+#         self.data_modified = False
+#         self.editor_output = False
+#         self.ctrls['Edit'].clicked.connect(self._peak_editor)
 
 
 class DetrendDFoF(CtrlNode):

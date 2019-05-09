@@ -233,6 +233,7 @@ class ScatterPlotItem(GraphicsObject):
     """
     #sigPointClicked = QtCore.Signal(object, object)
     sigClicked = QtCore.Signal(object, object)  ## self, points
+    sigClickedNothing = QtCore.Signal(object, object)
     sigPlotChanged = QtCore.Signal(object)
     def __init__(self, *args, **kargs):
         """
@@ -852,8 +853,10 @@ class ScatterPlotItem(GraphicsObject):
                 self.sigClicked.emit(self, self.ptsClicked)
                 ev.accept()
             else:
-                #print "no spots"
-                ev.ignore()
+                pt = ev.pos()
+                self.sigClickedNothing.emit(self, pt)
+                ev.accept()
+#                ev.ignore()
         else:
             ev.ignore()
 
