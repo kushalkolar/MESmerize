@@ -175,7 +175,7 @@ class PeakFeaturesIter(PeakFeatures):
         self.curve = curve
         self.pb_df = pb_df
         try:
-            self.all_peaks = self.pb_df['event'][self.pb_df['peak']] #np.where(self.pb_df['peak'])[0]
+            self.all_peaks = self.pb_df['event'][self.pb_df['label'] == 'peak'] #np.where(self.pb_df['peak'])[0]
             # print(self.all_peaks)
             self.all_peaks = self.all_peaks.values
             # pickle.dump(self.all_peaks, open('/home/kushal/Sars_stuff/github-repos/MESmerize/test_all_peaks.pik', 'wb'))

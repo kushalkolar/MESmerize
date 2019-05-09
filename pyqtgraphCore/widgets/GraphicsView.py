@@ -44,6 +44,7 @@ class GraphicsView(QtGui.QGraphicsView):
     sigDeviceTransformChanged = QtCore.Signal(object)
     sigMouseReleased = QtCore.Signal(object)
     sigSceneMouseMoved = QtCore.Signal(object)
+    sigMouseClicked = QtCore.Signal(object, object)
     #sigRegionChanged = QtCore.Signal(object)
     sigScaleChanged = QtCore.Signal(object)
     lastFileDir = None
@@ -340,7 +341,7 @@ class GraphicsView(QtGui.QGraphicsView):
         
     def mousePressEvent(self, ev):
         QtGui.QGraphicsView.mousePressEvent(self, ev)
-        
+        self.sigMouseClicked.emit(self, ev.pos())
 
         if not self.mouseEnabled:
             return
@@ -349,6 +350,7 @@ class GraphicsView(QtGui.QGraphicsView):
         self.clickAccepted = ev.isAccepted()
         if not self.clickAccepted:
             self.scene().clearSelection()
+            
         return   ## Everything below disabled for now..
         
     def mouseReleaseEvent(self, ev):
@@ -385,6 +387,7 @@ class GraphicsView(QtGui.QGraphicsView):
             
             self.translate(tr[0], tr[1])
             self.sigDeviceRangeChanged.emit(self, self.range)
+    
         
     def pixelSize(self):
         """Return vector with the length and width of one view pixel in scene coordinates"""
