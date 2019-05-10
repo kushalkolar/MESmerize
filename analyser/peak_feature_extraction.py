@@ -187,7 +187,7 @@ class PeakFeaturesIter(PeakFeatures):
                                           QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
                 pass
             return
-        self.pb_df['peak_features'] = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if x.peak else False,
+        self.pb_df['peak_features'] = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if (x.label == 'peak') else False,
                                                        axis=1)
         self.pb_df.drop(self.pb_df[self.pb_df['peak_features'] == False].index, inplace=True)
         self.pb_df.reset_index(drop=True)

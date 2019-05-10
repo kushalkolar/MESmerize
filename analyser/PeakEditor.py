@@ -176,7 +176,7 @@ class PeaksItemGraph(pg.GraphItem):
 #        print("clicked: %s" % spot_items)
         
         if self.mode == 'delete':
-            print(spot_items)
+#            print(spot_items)
             if not len(spot_items) == 1:
                 return
             self.delete_item(spot_items[0])
@@ -187,14 +187,21 @@ class PeaksItemGraph(pg.GraphItem):
             
 
 class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+    sig_disconnect_flowchart = QtCore.pyqtSignal()
+    sig_reconnect_flowchart = QtCore.pyqtSignal()
+    sig_send_data = QtCore.pyqtSignal(Transmission)
+    
     def __init__(self, trans_curves, trans_peaks_bases):
         # super().__init__()
         super(PBWindow, self).__init__()
         # Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.setWindowTitle('Mesmerize - Peak-Base editor')
-        
+        self.tpb = None
+
+        self.connected = True
         self.current_curve = None
+        self.btnDisconnectFromFlowchart.setStyleSheet("background-color: yellow")
 #        self.current_scatter_plots = None
         self.current_peak_scatter_plot = None
         
@@ -221,6 +228,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.update_transmission(trans_curves, trans_peaks_bases)
         self._reset_listw()
         self.listwIndices.currentItemChanged.connect(self._set_row)
+        self.listwIndices.setCurrentRow(0)
 #        self.listwIndices.itemClicked.connect(self._set_row)
         self.sliderDotSize.valueChanged.connect(self._set_pens)
         self.dockWidget.setWidget(self.history_tree)
@@ -228,6 +236,36 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.graphicsView.sigMouseClicked.connect(lambda gv, coors: self._add_event(self.current_curve.getViewBox().mapSceneToView(coors).toPoint()))
         
         self.btnSaveCurve.clicked.connect(self.save_current_curve)
+
+        self.btnDisconnectFromFlowchart.clicked.connect(self._disconnect_flowchart)
+        self.btnSendToFlowchart.clicked.connect(self._send_data_to_flowchart)
+
+    def _disconnect_flowchart(self):
+        self.connected = False
+        self.btnDisconnectFromFlowchart.setText('Re-connect to flowchart')
+        self.btnDisconnectFromFlowchart.setStyleSheet("background-color: orange")
+        self.btnDisconnectFromFlowchart.clicked.disconnect(self._disconnect_flowchart)
+        self.btnDisconnectFromFlowchart.clicked.connect(self._reconnect_flowchart)
+        self.sig_disconnect_flowchart.emit()
+    
+    def _reconnect_flowchart(self):
+        if QtWidgets.QMessageBox.question(self, 'RECONNECT?', 'Are you sure you want to reconnect to the flowchart?\n'
+                                                              'YOU WILL LOOSE ALL MODFICATIONS THAT YOU HAVE MADE!') == QtWidgets.QMessageBox.No:
+            return
+        # self.btnDisconnectFromFlowchart.setChecked(False)
+        self.btnDisconnectFromFlowchart.clicked.disconnect(self._reconnect_flowchart)
+        self.btnDisconnectFromFlowchart.clicked.connect(self._disconnect_flowchart)
+        self.btnDisconnectFromFlowchart.setText('Disconnect from flowchart')
+        self.btnDisconnectFromFlowchart.setStyleSheet("background-color: yellow")
+        self.connected = True
+        self.sig_reconnect_flowchart.emit()
+    
+    def _send_data_to_flowchart(self):
+        if self.tpb is None:
+            QtWidgets.QMessageBox.warning(self, 'Nothing to send', 'No data has been loaded that can be transmitted')
+            return
+        
+        self.sig_send_data.emit(self.get_data())
         
     def connect_mode_buttons(self):
         for k in self.mode_buttons.keys():
@@ -268,6 +306,9 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.current_peak_scatter_plot.add_item((qpoint.x(), qpoint.y()))
 
     def update_transmission(self, trans_curves: Transmission, trans_peaks_bases: Transmission):
+        if not self.connected:
+            return
+        
         if hasattr(self, 'tc'):
             if self.tc.df.index.size != trans_curves.df.index.size:
                 self.tc = trans_curves
@@ -396,7 +437,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 #    def _getBases(self):
 #        pass
 
-    def getData(self):
+    def get_data(self) -> Transmission:
         return self.tpb
 
 
