@@ -258,6 +258,7 @@ class PeakDetect(CtrlNode):
         CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
                                                  'Normalized': {'io': 'in'},
                                                  'Curve': {'io': 'in'},
+                                                 'PB_Input': {'io': 'in'},
                                                  'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
         self.data_modified = False
         self.editor_output = False
@@ -451,18 +452,21 @@ class PeakDetect(CtrlNode):
 
         return self.t
 
-    def _set_editor_output(self):
-        self.pbw.close()
+    def _set_editor_output(self, edited_transmission: Transmission):
+        self.t = edited_transmission
         self.editor_output = True
-        self.t = self.pbw.getData()
-        self.pbw = None
         self.data_modified = True
+        # self.pbw.close()
+        # self.editor_output = True
+        # self.t = self.pbw.getData()
+        # self.pbw = None
+        # self.data_modified = True
         self.changed()
 
     def _peak_editor(self):
         self.pbw = PeakEditor.PBWindow(self.t, self.t)
         self.pbw.show()
-        self.pbw.btnDone.clicked.connect(self._set_editor_output)
+        self.pbw.sig_send_data.connect(self._set_editor_output)
 
 
 # class DeltaFoF(CtrlNode):
