@@ -19,7 +19,7 @@ import abc
 
 
 class Interface(metaclass=abc.ABCMeta):
-    def __init__(self, compute_class, args_dict):
+    def __init__(self, compute_class, args_dict: dict):
         self.compute_class = compute_class
         self.args_dict = args_dict
         self.func_names = [f for f in self.args_dict.keys() if hasattr(self.compute_class, f)]
@@ -27,17 +27,18 @@ class Interface(metaclass=abc.ABCMeta):
         self.Q = None
 
     @abc.abstractmethod
-    def compute(self):
+    def compute(self) -> dict:
         pass
 
-    def get_results(self):
+    def get_results(self) -> dict:
         if self.Q is None:
             raise Exception('You must run the compute method first')
 
-        l = {}
+        l = dict()
         while self.Q.qsize() > 0:
             l.update(self.Q.get())
         return l
+
 
 class Static(Interface):
     def compute(self):
