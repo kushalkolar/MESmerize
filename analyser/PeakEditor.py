@@ -34,6 +34,8 @@ class PeaksItemGraph(pg.GraphItem):
         self.orig_data = None
         self.mode = 'view'
         self._brush_size = 15
+        
+        self.changed = False
     
     def set_mode(self, mode: str):
         self.mode = mode
@@ -116,6 +118,8 @@ class PeaksItemGraph(pg.GraphItem):
         self.data['pos'][ind][1] = self.curve_data[x_pos]
         self.updateGraph()
         ev.accept()
+        
+        self.changed = True
     
     def get_edited_dataframe(self) -> pd.DataFrame:
         d = {'event': self.data['pos'][:, 0].astype(np.int64), 'label': self.events}
@@ -123,11 +127,6 @@ class PeaksItemGraph(pg.GraphItem):
         return df
     
     def delete_item(self, pt):
-#        print('spot position:')
-#        print(pt.pos())
-#        print(pt.data())
-#        
-#        ix = np.where(self.data['pos'] == pt.pos())[0][0]
         ix = pt.data()[0]
         data = self.data.copy()
         data['pos'] = np.delete(self.data['pos'], ix, axis=0)
@@ -136,6 +135,7 @@ class PeaksItemGraph(pg.GraphItem):
 #        print(self.data)
 #        self.updateGraph()
         self.setData(**data)
+        self.changed = True
     
     def add_item(self, pos):
         x_pos = pos[0]
@@ -158,6 +158,7 @@ class PeaksItemGraph(pg.GraphItem):
         data['symbolBrush'] += [brush]
         
         self.setData(**data)
+        self.changed = True
     
     def mouseDragEvent(self, ev):
         if self.mode == 'drag':
@@ -331,8 +332,13 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def save_current_curve(self):
         ix = self.current_ix
         self.tpb.df.at[ix, 'peaks_bases'] = self.current_peak_scatter_plot.get_edited_dataframe()
+        self.current_peak_scatter_plot.changed = False
 
     def _set_row(self):
+        if self.current_peak_scatter_plot is not None:
+            if self.current_peak_scatter_plot.changed:
+                self.save_current_curve()
+
         self.graphicsView.clear()
 #        self.c_plots = []
 #        ixs = [item.text() for item in self.listwIndices.selectedItems()]
