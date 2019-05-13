@@ -9,7 +9,8 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+#from pyqtgraphCore.widgets import MatplotlibWidget as MatplotlibWidget
+#from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import seaborn as sns
 from math import ceil
 
@@ -32,4 +33,18 @@ class ViolinsPlot(MatplotlibWidget):
             self.axes.append(self.fig.add_subplot(num_rows, self.num_columns, i + 1))
             sns.violinplot(x=x_column, y=data_column, hue=sub_group_column, order=x_order, palette='muted',
                                 data=sub_dataframe[sub_dataframe[data_column].notna()], ax=self.axes[i])
+
+            self.axes.set_xticklabels(self.axes.get_xticklabels(), rotation = 30)
         self.draw()
+
+if __name__ == "__main__":
+    import pandas as pd
+
+    import sys
+    from PyQt5 import QtWidgets
+    iris = sns.load_dataset('iris')
+    app = QtWidgets.QApplication(sys.argv)
+    v = ViolinsPlot()
+    v.set(iris, ["versicolor", "setosa", "virginica"], "sepal_length")
+    v.show()
+    sys.exit(app.exec())
