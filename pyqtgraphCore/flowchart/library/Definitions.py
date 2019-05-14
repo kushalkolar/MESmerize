@@ -262,6 +262,7 @@ class PeakDetect(CtrlNode):
                                                  'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
         self.data_modified = False
         self.editor_output = False
+        self.pbw = None
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
         self.t = None
 
@@ -371,6 +372,16 @@ class PeakDetect(CtrlNode):
         return {'Out': out}
 
     def processData(self, **inputs):
+        pb_input = inputs['PB_Input']
+        if isinstance(pb_input, Transmission):
+            self.t = pb_input
+            if self.pbw is None:
+                self._peak_editor()
+            else:
+                self.pbw.update_transmission(self.t, self.t)
+            self.pbw.btnDisconnectFromFlowchart.setDisabled(True)
+            return self.t
+
         columns = inputs['Curve'].df.columns.to_list()
         self.ctrls['data_column'].setItems(columns)
         if self.editor_output:
@@ -464,9 +475,12 @@ class PeakDetect(CtrlNode):
         self.changed()
 
     def _peak_editor(self):
-        self.pbw = PeakEditor.PBWindow(self.t, self.t)
+        if self.pbw is None:
+            self.pbw = PeakEditor.PBWindow(self.t, self.t)
+
         self.pbw.show()
         self.pbw.sig_send_data.connect(self._set_editor_output)
+        self.pbw.sig_reconnect_flowchart.connect(self.changed)
 
 
 # class DeltaFoF(CtrlNode):
