@@ -73,7 +73,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         # self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
         self.setLayout(self.vlayout)
 
-        self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
+        # self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
 
         self.dataframe = None
         self.labels_column = None
@@ -202,8 +202,8 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
 #        # self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
 #        self.setLayout(self.vlayout)
 #
-#        self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)
-#
+        self.plot_widget.sig_selection_changed.connect(self.set_current_datapoint)
+
 #        self.dataframe = None
 #        self.labels_column = None
 #        self.cmap = None
@@ -215,6 +215,9 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
 #        self.has_history_trace = False
 #        self.data_column = None
         self.datapoint_tracer_curve_column = None
+
+    # def set_data(self, *args, **kwargs):
+    #     super(HeatmapTracerWidget, self).set_data(*args, **kwargs)
 
     @QtCore.pyqtSlot(tuple)
     def set_current_datapoint(self, ix: tuple):

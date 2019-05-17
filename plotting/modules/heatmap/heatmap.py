@@ -23,7 +23,8 @@ from pandas import Series
 
 
 class Heatmap(MatplotlibWidget):
-    signal_row_selection_changed = QtCore.pyqtSignal(tuple)
+    # signal_row_selection_changed = QtCore.pyqtSignal(tuple)
+    sig_selection_changed = QtCore.pyqtSignal(tuple)
 
     def __init__(self, highlight_mode='row'):
         MatplotlibWidget.__init__(self)
@@ -40,11 +41,16 @@ class Heatmap(MatplotlibWidget):
         self.fig.subplots_adjust(right=0.8)
         self.cbar_ax = self.fig.add_axes([0.85, 0.15, 0.05, 0.7])
         self.data = None
-        self._highlight = None
-        self.highlighted_index = None
+        # self._highlight = None
+        # self.highlighted_index = None
+        self.selector = Selection()
+        self.selector.sig_selection_changed.connect(self.sig_selection_changed.emit)
+
 
         self.stimulus_indicators = []
         self.highlight_mode = highlight_mode
+
+        self.plot = None
         
     def set(self, data: np.ndarray, *args, ylabels_bar: Series = None, cmap_ylabels_bar: str = 'tab20', **kwargs):
         """
@@ -53,7 +59,7 @@ class Heatmap(MatplotlibWidget):
         :param kwargs:  Additional kwargs that are passed to sns.heatmap()
         """
         self.ax_heatmap.cla()
-        self._highlight = None
+        # self._highlight = None
         self.cbar_ax.cla()
         self.data = data
 
@@ -61,10 +67,14 @@ class Heatmap(MatplotlibWidget):
         # cmap_ylabels_bar = kwargs.pop('cmap_ylabels_bar')
 
         self.plot = seaborn_heatmap(data, *args, ax=self.ax_heatmap, cbar_ax=self.cbar_ax, **kwargs)
-#        
-        
-        self._selector = Selection(self, mode=self.highlight_mode)
-        
+
+        self.selector.set(self, mode=self.highlight_mode)
+        # if isinstance(self.selector, Selection):
+        #     self.selector.sig_selection_changed.disconnect(self.sig_selection_changed.emit)
+        #     del self.selector
+
+        # self.selector = Selection(self, mode=self.highlight_mode)
+
         if ylabels_bar is not None:
             self._set_ylabel_bar(ylabels_bar, cmap=cmap_ylabels_bar)
 
@@ -99,20 +109,20 @@ class Heatmap(MatplotlibWidget):
         ps = [MPatch(color=colors[i], label=labels_unique[i]) for i in range(len(cs))]
         self.ax_ylabel_bar.legend(handles=ps, bbox_to_anchor=(1,1))
 
-    def highlight_row(self, ev):
-        if type(ev) is int:
-            ix = ev
-        else:
-            ix = ev.ydata
-            ix = int(ix)
-            if ix is None:
-                return
-        self.highlighted_index = ix
-        self.signal_row_selection_changed.emit((0, ix))
-        if self._highlight is not None:
-            self._highlight.remove()
-        self._highlight = self.plot.add_patch(RectangularPatch((0, ix), self.data.shape[1], 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
-        self.draw()
+    # def highlight_row(self, ev):
+    #     if type(ev) is int:
+    #         ix = ev
+    #     else:
+    #         ix = ev.ydata
+    #         ix = int(ix)
+    #         if ix is None:
+    #             return
+    #     self.highlighted_index = ix
+    #     self.signal_row_selection_changed.emit((0, ix))
+    #     if self._highlight is not None:
+    #         self._highlight.remove()
+    #     self._highlight = self.plot.add_patch(RectangularPatch((0, ix), self.data.shape[1], 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
+    #     self.draw()
 
     def add_stimulus_indicator(self, start: int, end: int, color: str):
         for t in [start, end]:
@@ -124,33 +134,55 @@ class Heatmap(MatplotlibWidget):
 
 
 class Selection(QtCore.QObject):
-    signal_selection_changed = QtCore.pyqtSignal(tuple)
-    def __init__(self, heatmap_obj, mode: str = 'row'):
+    sig_selection_changed = QtCore.pyqtSignal(tuple)
+
+    def __init__(self): #, heatmap_obj, mode: str = 'row'):
         QtCore.QObject.__init__(self)
-        self.canvas = heatmap_obj.canvas
-        self.plot = heatmap_obj.plot
-        self.heatmap = heatmap_obj
-        
-        self.mode = mode
-        
-        if mode == 'row':
-            self.canvas.mpl_connect('button_press_event', self.select_row)
-        elif mode == 'item':
-            rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
-            self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
-                                       drawtype='box', useblit=True,
-                                       button=[1, 3],  # don't use middle button
-                                       minspanx=1, minspany=1,
-                                       spancoords='data',
-                                       interactive=True, rectprops=rp)
-            self.RS.set_active(True)
-            
+        self.canvas = None #heatmap_obj.canvas
+        self.plot = None #heatmap_obj.plot
+        self.heatmap = None #heatmap_obj
+
+        self.mode = None #mode
+        # if mode == 'row':
+        #     self.canvas.mpl_connect('button_press_event', self.select_row)
+        # elif mode == 'item':
+        #     rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
+        #     self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
+        #                                drawtype='box', useblit=True,
+        #                                button=[1, 3],  # don't use middle button
+        #                                minspanx=1, minspany=1,
+        #                                spancoords='data',
+        #                                interactive=True, rectprops=rp)
+        #     self.RS.set_active(True)
+        self.RS = None
         self.current_ix = None
         self._highlight = None
         self._start_ixs = None
         
         self._multiselect = False
-    
+
+    def set(self, heatmap_obj, mode: str = 'row'):
+        self._highlight = None
+        self.current_ix = None
+
+        self.canvas = heatmap_obj.canvas
+        self.plot = heatmap_obj.plot
+        self.heatmap = heatmap_obj
+
+        self.mode = mode
+
+        if mode == 'row':
+            self.canvas.mpl_connect('button_press_event', self.select_row)
+        elif mode == 'item':
+            rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
+            self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
+                                        drawtype='box', useblit=True,
+                                        button=[1, 3],  # don't use middle button
+                                        minspanx=1, minspany=1,
+                                        spancoords='data',
+                                        interactive=True, rectprops=rp)
+            self.RS.set_active(True)
+
     def _clear_highlight(self):
         if self._highlight is not None:
             self._highlight.remove()
@@ -158,7 +190,7 @@ class Selection(QtCore.QObject):
     def update_selection(self, ix: tuple):
         self._clear_highlight()
         self.current_ix = ix
-        self.signal_selection_changed.emit(self.current_ix)
+        self.sig_selection_changed.emit(self.current_ix)
         
     def select_row(self, ev):
         if type(ev) is int:
