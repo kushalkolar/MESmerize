@@ -372,6 +372,9 @@ class PeakDetect(CtrlNode):
         return {'Out': out}
 
     def processData(self, **inputs):
+        if self.editor_output:
+            return self.t
+
         pb_input = inputs['PB_Input']
         if isinstance(pb_input, Transmission):
             self.t = pb_input
@@ -384,8 +387,6 @@ class PeakDetect(CtrlNode):
 
         columns = inputs['Curve'].df.columns.to_list()
         self.ctrls['data_column'].setItems(columns)
-        if self.editor_output:
-            return self.t
 
         if self.data_modified is True:
             if QtWidgets.QMessageBox.question(None, 'Discard peak edits?',
@@ -457,7 +458,9 @@ class PeakDetect(CtrlNode):
                   'AmplThrRel': self.ctrls['AmplThrRel'].value(),
                   'AmplThrAbs': self.ctrls['AmplThrAbs'].value(),
                   'derivative_input_history_trace': t_d1.history_trace.get_all_data_blocks_history(),
-                  'normalized_input_history_trace': t_norm.history_trace.get_all_data_blocks_history()}
+                  'normalized_input_history_trace': t_norm.history_trace.get_all_data_blocks_history()
+                  'units': self.t.last_unit
+                  }
 
         self.t.history_trace.add_operation('all', operation='peak_detect', parameters=params)
 
@@ -641,7 +644,7 @@ class SpliceArrays(CtrlNode):
                   'end_ix': end_ix,
                   'units': self.t.last_unit
                   }
-        
+
         self.t.history_trace.add_operation(data_block_id='all', operation='splice_arrays', parameters=params)
         self.t.last_output = output_column
 
