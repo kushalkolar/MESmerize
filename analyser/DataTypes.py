@@ -52,32 +52,39 @@ class HistoryTrace:
     A dict with keys that are the block_ids. Each dict value is a list of operation_dicts.
     Each operation_dict has a single key which is the name of the operation and the value of that key is the operation parameters.
 
-        {block_id_1: [
-                        {operation_1:
-                            {
-                             param_1: a,
-                             param_2: b,
-                             param_n, z
-                             }
-                         },
+        {block_id_1: [\n
+                        {operation_1:\n
+                            {\n
+                             param_1: a,\n
+                             param_2: b,\n
+                             param_n, z\n
+                             }\n
+                         },\n
+\n
+                        {operation_2:\n
+                            {\n
+                             param_1: a,\n
+                             param_n, z\n
+                             }\n
+                         },\n
+                         ...\n
+                        {operation_n:\n
+                            {\n
+                             param_n: x\n
+                             }\n
+                         }\n
+                     ]\n
+         block_id_2: <list of operation dicts>,\n
+         ...\n
+         block_id_n: <list of operation dicts>\n
+         }\n
 
-                        {operation_2:
-                            {
-                             param_1: a,
-                             param_n, z
-                             }
-                         },
-                         ...
-                        {operation_n:
-                            {
-                             param_n: x
-                             }
-                         }
-                     ]
-         block_id_2: <list of operation dicts>,
-         ...
-         block_id_n: <list of operation dicts>
-         }
+    **The main dict illustrated above should never be worked with directly.**\n
+    **You must use the helper methods of this class to query or add information**
+
+    :ivar _history:     The dict of the actual data, as illustrated above. Should not be accessed directly. Use the `hitory` property or call `get_all_data_blocks_history()`.
+    :ivar _data_blocks: List of all data blocks. Should not be called directly, use the property `data_blocks` instead.
+
     """
     def __init__(self, history: dict = None, data_blocks: list = None):
         self._history = None
@@ -250,7 +257,7 @@ class BaseTransmission:
                  last_unit: str = None, ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
         """
         Base class for common Transmission functions
-        :param  dataframe:      Transmission dataframe
+        :param  df:      Transmission dataframe
 
         :param  history_trace:  HistoryTrace object, keeps track of the nodes & node parameters
                                 the transmission has been processed through
@@ -260,8 +267,18 @@ class BaseTransmission:
         :param  last_output:    Last data column that was appended via a node's operation
 
         :param  last_unit:      Current units of the data. Refers to the units of column in last_output
+
+        :ivar df:               Dataframe instance belonging to a Transmission instance
+        :ivar history_trace:    :class: `HistoryTrace` instance
+        :ivar proj_path:        project path
+        :type proj_path:        str
+        :ivar last_output:      Name of last data column that was the output of a node
+        :type last_output:      str
+        :ivar last_unit:        The data units corresponding to `last_output`
+        :type last_unit:        str
         """
         self.df = df
+
         self.history_trace = history_trace
 
         self._proj_path = None
@@ -321,8 +338,9 @@ class BaseTransmission:
         """
         :param transmission: Transmission object that forms the basis
         :param addCols: list of columns to add
-        :return: The input transmission with an empty dataframe containing the same columns plus
-        any additional columns that were passed
+
+        :return: The input transmission with an empty dataframe containing the same columns and any additional columns that were passed
+        
         """
         if addCols is None:
             addCols = []
