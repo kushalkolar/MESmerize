@@ -1,5 +1,5 @@
-API of the data types that are used in the flowchart
-****************************************************
+Data types used for analysis
+****************************
 
 BaseTransmission
 ================

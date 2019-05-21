@@ -78,11 +78,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Viewer_data_types_api.html">API of classes used by the Viewer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Analysis_data_types_api.html">API of the data types that are used in the flowchart</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/faq.html">FAQs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 </ul>
 
             
@@ -190,7 +197,7 @@
         <span class="k">return</span> <span class="n">d</span>
 
 
-<div class="viewcode-block" id="MES"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.mesfile.MES">[docs]</a><span class="k">class</span> <span class="nc">MES</span><span class="p">:</span>
+<div class="viewcode-block" id="MES"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.mesfile.MES">[docs]</a><span class="k">class</span> <span class="nc">MES</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handles of opening .mes files and organizing the images and meta data.</span>
 <span class="sd">    The load_img() method returns a 3D array (dims are [time, cols, rows])</span>
@@ -210,7 +217,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="MES.__init__"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.mesfile.MES.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="MES.__init__"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="c1"># Open the weird matlab type objects and organize the images &amp; meta data</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param filename: full path of a single .mes file</span>
@@ -290,12 +297,12 @@
                 <span class="nb">dict</span><span class="p">[</span><span class="n">strg</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem</span>
         <span class="k">return</span> <span class="nb">dict</span>
 
-<div class="viewcode-block" id="MES.get_image_references"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.mesfile.MES.get_image_references">[docs]</a>    <span class="k">def</span> <span class="nf">get_image_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="MES.get_image_references"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.get_image_references">[docs]</a>    <span class="k">def</span> <span class="nf">get_image_references</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get a list of all image references available in the instance&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images</span></div>
 
     <span class="c1"># Returns image as ImgData class object.</span>
-<div class="viewcode-block" id="MES.load_img"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.mesfile.MES.load_img">[docs]</a>    <span class="k">def</span> <span class="nf">load_img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+<div class="viewcode-block" id="MES.load_img"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.load_img">[docs]</a>    <span class="k">def</span> <span class="nf">load_img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param img_reference: The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx</span>
 <span class="sd">        :return: numpy array of the image sequence, dict of metadata</span>

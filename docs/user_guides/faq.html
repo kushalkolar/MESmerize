@@ -1,0 +1,380 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FAQs &mdash; Mesmerize 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Viewer classes" href="../api_reference/Viewer_data_types.html" />
+    <link rel="prev" title="Installation Guide" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FAQs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rois">ROIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cnmfe">CNMFE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caiman-motion-correction">Caiman Motion Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-organization">Project Organization</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>FAQs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user_guides/faq.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="faqs">
+<h1>FAQs<a class="headerlink" href="#faqs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rois">
+<h2>ROIs<a class="headerlink" href="#rois" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>Can I delete an ROI?</dt>
+<dd><ul class="first last">
+<li>See ROI Manager guide, page 4, line 4.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>I don’t want to delete ROIs but I want to mark them for exclusion in further analysis, how can I do this?</dt>
+<dd><ul class="first last">
+<li>You can do this by creating an ROI type category. See &lt;link here&gt; <em>Add New ROI Type Later</em> which uses this as an example. You can also create this ROI Type category when you create a New Project, not necessarily when you already have a project as the example uses.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Can I tag more than one piece of information to each ROI?</dt>
+<dd><ul class="first last">
+<li>Yes, add as many ROI Type categories as you want in the Project Configuration (See &lt;link here&gt; <em>New Project Configuration guide</em> and &lt;link here&gt; <em>ROI Manager guide</em>)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>I already have a Mesmerize project with many Samples in it. Can I add a new ROI Type category?</dt>
+<dd><ul class="first last">
+<li>Yes see &lt;link here&gt; <em>Add New ROI Type Later guide</em></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Can some samples in my project have ROIs that originate from CNMF(E) and others that are manually drawn?</dt>
+<dd><ul class="first last">
+<li>No.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="cnmfe">
+<h2>CNMFE<a class="headerlink" href="#cnmfe" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>I have ROIs that clearly encompass multiple cells instead of just one</dt>
+<dd><ul class="first last">
+<li>Increase min_coor, see &lt;link here&gt; <em>CNMFE guide</em>.</li>
+<li>Might help to reduce gSig as well</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>I have too many garbage ROIs around random regions that are clearly noise</dt>
+<dd><ul class="first last">
+<li>Increase &lt;link here&gt; <em>min_pnr</em></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Min_PNR image is completely blue and void of any signals</dt>
+<dd><ul class="first last">
+<li>Increase &lt;link here&gt; <em>gSig</em></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Vmin slider is stuck in Inspect Correlation &amp; PNR GUI.</dt>
+<dd><ul class="first last">
+<li>Close and reopen it. This is a matplotlib issue, not something I can fix.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="caiman-motion-correction">
+<h2>Caiman Motion Correction<a class="headerlink" href="#caiman-motion-correction" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>I have video tearing</dt>
+<dd><ul class="first last">
+<li>Try increasing <em>upsample grid</em> &lt;link here&gt;</li>
+<li>It’s possible that the movement is too severe to be motion corrected. When the movement is so severe that the information does not exist, it is impossible to motion correct it.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>My animal is growing</dt>
+<dd><ul class="first last">
+<li>This is growth, not motion. Unfortunately cannot be corrected for. If you have an idea for a technique I can try it out.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>The output actually has more motion, it has created false motion.</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>Try these things:</dt>
+<dd><ul class="first last">
+<li>Reduce <em>Strides</em> &amp; <em>Overlaps</em> by ~25%</li>
+<li>Reduce <em>max shifts X &amp; Y</em> by ~25%</li>
+<li>Reduce <em>max deviation from rigid</em> by ~25%</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="project-organization">
+<h2>Project Organization<a class="headerlink" href="#project-organization" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>Can I modify a sample?</dt>
+<dd><ul class="first last">
+<li>See &lt;link here&gt; <em>Modify Sample and Overwrite guide</em>. Double click the Sample ID in the Project Browser to open it in a viewer. You can then make any modifications you want and then go to File -&gt; Add to Project and select the “Save Changes Overwrite” option at the bottom.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Can I change the SampleID?</dt>
+<dd><ul class="first last">
+<li>No this is fundamentally impossible due to the underlying data structure.</li>
+<li>A work-around is to open that Sample in the viewer (double click it in the project browser), make any modifications if necessary, then go to File -&gt; Add to Project, enter the the information for this sample and a new Animal ID (and Trial ID if wanted), and then select the option “Add to Project Dataframe” at the bottom and click Proceed. This will now add a new Sample to the project with this Sample ID. You can then delete the previous Sample, see &lt;link here&gt; <em>Project Browser guide</em></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Can I add a new Custom Column, ROI Column, or Stimulus Column to my project when I already have samples in my project?</dt>
+<dd><ul class="first last">
+<li>Yes, just modify your Project Configuration using the exact same GUI that you used when creating your project. In the Welcome Window go to Configure -&gt; Project Configuration. Add anything that you want, and then click “Save and Apply”. It’s best to immediately restart Mesmerize whenever you change your project configuration.</li>
+<li>If you are adding a new Custom Column you can enter a “Dataframe replace value”. This will allow you to set a value for all existing Samples in your project for this new column.</li>
+<li>If you do not set a Dataframe replace value it will label all existing as “untagged”</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../api_reference/Viewer_data_types.html" class="btn btn-neutral float-right" title="Viewer classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

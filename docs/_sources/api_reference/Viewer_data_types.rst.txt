@@ -1,5 +1,5 @@
-API of classes used by the Viewer
-*********************************
+Viewer classes
+**************
 
 Viewer Work Environment
 =======================
