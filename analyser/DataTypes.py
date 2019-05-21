@@ -221,25 +221,29 @@ class HistoryTrace:
         return {'history': self.history, 'data_blocks': self.data_blocks}
 
     def to_json(self, path: str):
+        """Save to json file"""
         json.dump(self._export(), open(path, 'w'))
 
     @classmethod
     def from_json(cls, path: str):
+        """Load from json file"""
         j = json.load(open(path, 'r'))
         return cls(history=j['history'], data_blocks=['data_blocks'])
 
     def to_pickle(self, path):
+        """Save as pickle"""
         pickle.dump(self._export(), open(path, 'wb'))
 
     @classmethod
     def from_pickle(cls, path: str):
+        """Load from pickle"""
         p = pickle.load(open(path, 'r'))
         return cls(history=p['history'], data_blocks=p['data_blocks'])
 
     @classmethod
     def merge(cls, history_traces: list):
         """Merge a list of HistoryTrace instances into one HistoryTrace instance.
-        Useful when merging Transmission objs"""
+        Useful when merging Transmission objects"""
         assert all(isinstance(h, HistoryTrace) for h in history_traces)
         data_blocks_l2_list = [h.data_blocks for h in history_traces]
         data_blocks = list(chain.from_iterable(data_blocks_l2_list))
@@ -492,7 +496,7 @@ def get_sampling_rate(transmission: Transmission, tolerance: float = 0.1) -> flo
     Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.
 
     :param transmission:    Transmission object of the data from which sampling rate is obtained.
-    :type transmission:     :class: `Transmission`
+    :type transmission:     Transmission
 
     :param tolerance:       Maximum tolerance (in Hertz) of sampling rate variation between different samples
     :type tolerance:        float
@@ -524,6 +528,9 @@ def get_sampling_rate(transmission: Transmission, tolerance: float = 0.1) -> flo
 
 def get_array_size(transmission: Transmission, data_column: str) -> int:
     """Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match
+
+    :param transmission:    Desired Transmission
+    :param data_column:     Data column of the Transmission from which to retrieve the size
 
     :type transmission:     Transmission
     :type data_column:      str
