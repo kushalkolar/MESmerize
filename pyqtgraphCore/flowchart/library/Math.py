@@ -97,7 +97,7 @@ class RFFT(CtrlNode):
             if transmission.history_trace.check_operation_exists(db, 'resample'):
                 sampling_rates.append(transmission.history_trace.get_operation_params(db, 'resample')['output_rate'])
             else:
-                r = pd.DataFrame(transmission.get_datablock_dataframe(db).meta.to_list()['fps'].unique())
+                r = pd.DataFrame(transmission.get_data_block_dataframe(db).meta.to_list())['fps'].unique()
                 # if rates.size > 1:
                 #     raise ValueError("Sampling rates for the data do not match")
                 # else:

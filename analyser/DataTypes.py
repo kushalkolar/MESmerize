@@ -173,7 +173,7 @@ class HistoryTrace:
         """Returns just a simple list of operations in the order that they were performed on the given datablock"""
         data_block_id = self._to_uuid(data_block_id)
 
-        l = [next(iter(d)) for d in self.get_data_block_history()]
+        l = [next(iter(d)) for d in self.get_data_block_history(data_block_id)]
         return l
 
     def get_operation_params(self, data_block_id: UUID, operation: str) -> dict:
@@ -422,12 +422,12 @@ class Transmission(BaseTransmission):
         
         return pd.Series({'_RAW_CURVE': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
 
-    def get_datablock_dataframe(self, data_block_id: UUID):
-        if isinstance(data_block_id, str):
-            data_block_id = UUID(data_block_id)
-        assert isinstance(data_block_id, UUID)
+    def get_data_block_dataframe(self, data_block_id: str):
+        if isinstance(data_block_id, UUID):
+            data_block_id = str(data_block_id)
+        assert isinstance(data_block_id, str)
 
-        if data_block_id not in self.history_trace.data_blocks:
+        if UUID(data_block_id) not in self.history_trace.data_blocks:
             raise DataBlockNotFound(data_block_id)
 
         return self.df[self.df._BLOCK_ == data_block_id]
