@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#basetransmission">BaseTransmission</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#transmission">Transmission</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#historytrace">HistoryTrace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#helper-functions">Helper functions</a></li>
 </ul>
 </li>
 </ul>
@@ -502,6 +503,49 @@ as stored in the history trace data structure (self.history) and outlined in the
 Useful when merging Transmission objs</p>
 </dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="helper-functions">
+<h2>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="analyser.DataTypes.get_sampling_rate">
+<code class="descclassname">DataTypes.</code><code class="descname">get_sampling_rate</code><span class="sig-paren">(</span><em>tolerance: float = 0.1</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#analyser.DataTypes.get_sampling_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>transmission</strong> – Transmission object of the data from which sampling rate is obtained.</li>
+<li><strong>tolerance</strong> (<em>float</em>) – Maximum tolerance (in Hertz) of sampling rate variation between different samples</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mean sampling rate of all data in the Transmission</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="analyser.DataTypes.get_array_size">
+<code class="descclassname">DataTypes.</code><code class="descname">get_array_size</code><span class="sig-paren">(</span><em>data_column: str</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#analyser.DataTypes.get_array_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Size of the 1D arrays of the specified data column</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

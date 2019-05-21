@@ -24,3 +24,10 @@ HistoryTrace
 	:members:
 	:private-members:
 
+Helper functions
+================
+
+.. automethod:: analyser.DataTypes.get_sampling_rate
+
+.. automethod:: analyser.DataTypes.get_array_size
+
