@@ -85,9 +85,11 @@
 <li class="toctree-l1"><a class="reference internal" href="Viewer_data_types_api.html">API of classes used by the Viewer</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API of the data types that are used in the flowchart</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basetransmission">BaseTransmission</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#transmission">Transmission</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transmission">Transmission</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#transmission-helper-functions">Transmission Helper functions</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#historytrace">HistoryTrace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#helper-functions">Helper functions</a></li>
 </ul>
 </li>
 </ul>
@@ -340,6 +342,57 @@ HistoryTrace objects are also merged using HistoryTrace.merge.</p>
 
 </dd></dl>
 
+<div class="section" id="transmission-helper-functions">
+<h3>Transmission Helper functions<a class="headerlink" href="#transmission-helper-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="analyser.DataTypes.get_sampling_rate">
+<code class="descclassname">analyser.DataTypes.</code><code class="descname">get_sampling_rate</code><span class="sig-paren">(</span><em>transmission: analyser.DataTypes.Transmission</em>, <em>tolerance: float = 0.1</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="_modules/analyser/DataTypes.html#get_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.get_sampling_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>transmission</strong> (<a class="reference internal" href="#analyser.DataTypes.Transmission" title="analyser.DataTypes.Transmission"><em>Transmission</em></a>) – Transmission object of the data from which sampling rate is obtained.</li>
+<li><strong>tolerance</strong> (<em>float</em>) – Maximum tolerance (in Hertz) of sampling rate variation between different samples</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mean sampling rate of all data in the Transmission</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="analyser.DataTypes.get_array_size">
+<code class="descclassname">analyser.DataTypes.</code><code class="descname">get_array_size</code><span class="sig-paren">(</span><em>transmission: analyser.DataTypes.Transmission</em>, <em>data_column: str</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="_modules/analyser/DataTypes.html#get_array_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.get_array_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>transmission</strong> (<a class="reference internal" href="#analyser.DataTypes.Transmission" title="analyser.DataTypes.Transmission"><em>Transmission</em></a>) – Desired Transmission</li>
+<li><strong>data_column</strong> (<em>str</em>) – Data column of the Transmission from which to retrieve the size</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Size of the 1D arrays of the specified data column</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 </div>
 <div class="section" id="historytrace">
 <h2>HistoryTrace<a class="headerlink" href="#historytrace" title="Permalink to this headline">¶</a></h2>
@@ -466,6 +519,18 @@ Added to all or specific datablock(s), depending on which datablock(s) the node 
 as stored in the history trace data structure (self.history) and outlined in the doc string</p>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="analyser.DataTypes.HistoryTrace.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analyser/DataTypes.html#HistoryTrace.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.HistoryTrace.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load from json file</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="analyser.DataTypes.HistoryTrace.from_pickle">
+<em class="property">classmethod </em><code class="descname">from_pickle</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analyser/DataTypes.html#HistoryTrace.from_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.HistoryTrace.from_pickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load from pickle</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="analyser.DataTypes.HistoryTrace.get_all_data_blocks_history">
 <code class="descname">get_all_data_blocks_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="_modules/analyser/DataTypes.html#HistoryTrace.get_all_data_blocks_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.HistoryTrace.get_all_data_blocks_history" title="Permalink to this definition">¶</a></dt>
@@ -500,52 +565,21 @@ as stored in the history trace data structure (self.history) and outlined in the
 <dt id="analyser.DataTypes.HistoryTrace.merge">
 <em class="property">classmethod </em><code class="descname">merge</code><span class="sig-paren">(</span><em>history_traces: list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analyser/DataTypes.html#HistoryTrace.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.HistoryTrace.merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge a list of HistoryTrace instances into one HistoryTrace instance.
-Useful when merging Transmission objs</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="helper-functions">
-<h2>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
-<dl class="method">
-<dt id="analyser.DataTypes.get_sampling_rate">
-<code class="descclassname">DataTypes.</code><code class="descname">get_sampling_rate</code><span class="sig-paren">(</span><em>tolerance: float = 0.1</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#analyser.DataTypes.get_sampling_rate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>transmission</strong> – Transmission object of the data from which sampling rate is obtained.</li>
-<li><strong>tolerance</strong> (<em>float</em>) – Maximum tolerance (in Hertz) of sampling rate variation between different samples</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mean sampling rate of all data in the Transmission</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
+Useful when merging Transmission objects</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="analyser.DataTypes.get_array_size">
-<code class="descclassname">DataTypes.</code><code class="descname">get_array_size</code><span class="sig-paren">(</span><em>data_column: str</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#analyser.DataTypes.get_array_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Size of the 1D arrays of the specified data column</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<dt id="analyser.DataTypes.HistoryTrace.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analyser/DataTypes.html#HistoryTrace.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.HistoryTrace.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save to json file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="analyser.DataTypes.HistoryTrace.to_pickle">
+<code class="descname">to_pickle</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/analyser/DataTypes.html#HistoryTrace.to_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#analyser.DataTypes.HistoryTrace.to_pickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save as pickle</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

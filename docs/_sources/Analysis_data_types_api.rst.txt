@@ -17,17 +17,17 @@ Transmission
 	:members:
 	:private-members:
 
+Transmission Helper functions
+-----------------------------
+
+.. autofunction:: analyser.DataTypes.get_sampling_rate
+
+.. autofunction:: analyser.DataTypes.get_array_size
+
 HistoryTrace
 ================
 .. autoclass:: analyser.DataTypes.HistoryTrace
 	:special-members:
 	:members:
 	:private-members:
-
-Helper functions
-================
-
-.. automethod:: analyser.DataTypes.get_sampling_rate
-
-.. automethod:: analyser.DataTypes.get_array_size
 
