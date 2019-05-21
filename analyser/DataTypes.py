@@ -257,7 +257,8 @@ class BaseTransmission:
                  last_unit: str = None, ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
         """
         Base class for common Transmission functions
-        :param  df:      Transmission dataframe
+        
+        :param  df:             Transmission dataframe
 
         :param  history_trace:  HistoryTrace object, keeps track of the nodes & node parameters
                                 the transmission has been processed through
@@ -340,7 +341,7 @@ class BaseTransmission:
         :param addCols: list of columns to add
 
         :return: The input transmission with an empty dataframe containing the same columns and any additional columns that were passed
-        
+
         """
         if addCols is None:
             addCols = []
