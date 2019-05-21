@@ -257,7 +257,7 @@ class BaseTransmission:
                  last_unit: str = None, ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
         """
         Base class for common Transmission functions
-        
+
         :param  df:             Transmission dataframe
 
         :param  history_trace:  HistoryTrace object, keeps track of the nodes & node parameters
@@ -488,6 +488,18 @@ class Transmission(BaseTransmission):
 
 
 def get_sampling_rate(transmission: Transmission, tolerance: float = 0.1) -> float:
+    """
+    Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.
+
+    :param transmission:    Transmission object of the data from which sampling rate is obtained.
+    :type transmission:     :class: `Transmission`
+
+    :param tolerance:       Maximum tolerance (in Hertz) of sampling rate variation between different samples
+    :type tolerance:        float
+
+    :return:                The mean sampling rate of all data in the Transmission
+    :rtype:                 float
+    """
     sampling_rates = []
     for db in transmission.history_trace.data_blocks:
         if transmission.history_trace.check_operation_exists(db, 'resample'):
@@ -511,6 +523,14 @@ def get_sampling_rate(transmission: Transmission, tolerance: float = 0.1) -> flo
 
 
 def get_array_size(transmission: Transmission, data_column: str) -> int:
+    """Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match
+
+    :type transmission:     Transmission
+    :type data_column:      str
+
+    :return:                Size of the 1D arrays of the specified data column
+    :rtype:                 int
+    """
     if data_column not in transmission.df.columns:
         raise KeyError("Requested data column: " + data_column + " not found in transmission DataFrame")
     array_size = transmission.df[data_column].apply(lambda a: a.size).unique()
