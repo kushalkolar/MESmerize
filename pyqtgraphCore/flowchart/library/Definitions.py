@@ -636,7 +636,12 @@ class SpliceArrays(CtrlNode):
 
         self.t.df[output_column] = self.t.df[data_column].apply(lambda a: a[start_ix:end_ix])
 
-        params = {'data_column': data_column, 'start_ix': start_ix, 'end_ix': end_ix}
+        params = {'data_column': data_column,
+                  'start_ix': start_ix,
+                  'end_ix': end_ix,
+                  'units': self.t.last_unit
+                  }
+        
         self.t.history_trace.add_operation(data_block_id='all', operation='splice_arrays', parameters=params)
         self.t.last_output = output_column
 

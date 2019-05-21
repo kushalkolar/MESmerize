@@ -28,7 +28,10 @@ class Derivative(CtrlNode):
         self.t.df[output_column] = self.t.df[self.data_column].apply(np.gradient)
         self.t.last_output = output_column
 
-        params = {'data_column': self.data_column}
+        params = {'data_column': self.data_column,
+                  'units': self.t.last_unit
+                  }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='derivative', parameters=params)
 
         return self.t
@@ -55,7 +58,10 @@ class TVDiff(CtrlNode):
         self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: self._func(x, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0))
         self.t.last_output = output_column
 
-        params = {'data_column': self.data_column}
+        params = {'data_column': self.data_column,
+                  'units': self.t.last_unit
+                  }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='tvdiff', parameters=params)
 
         return self.t
@@ -105,7 +111,8 @@ class ButterWorth(CtrlNode):
         params = {'data_column': self.data_column,
                   'order': self.order,
                   'Wn': self.Wn,
-                  'freq_divider': self.freq_divisor
+                  'freq_divider': self.freq_divisor,
+                  'units': self.t.last_unit
                   }
 
         self.t.history_trace.add_operation(data_block_id='all', operation='butterworth', parameters=params)
@@ -147,7 +154,9 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
 
         params = {'data_column': self.data_column,
                   'window_length': w,
-                  'polyorder': p}
+                  'polyorder': p,
+                  'units': self.t.last_unit
+                  }
 
         self.t.history_trace.add_operation(data_block_id='all', operation='savitzky_golay', parameters=params)
         self.t.last_output = output_column
@@ -214,7 +223,11 @@ class Resample(CtrlNode):
 
         self.t.df[output_column] = self.t.df.apply(self._func, axis=1)
 
-        params = {'data_column': self.data_column, 'output_rate': self.new_rate}
+        params = {'data_column': self.data_column,
+                  'output_rate': self.new_rate,
+                  'units': self.t.last_unit
+                  }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='resample', parameters=params)
         self.t.last_output = output_column
 
@@ -270,7 +283,8 @@ class ScalerMeanVariance(CtrlNode):
 
         params = {'data_column': self.data_column,
                   'mu': mu,
-                  'std': std
+                  'std': std,
+                  'units': self.t.last_unit
                   }
 
         output_column = '_SCALER_MEAN_VARIANCE'
@@ -303,7 +317,10 @@ class Normalize(CtrlNode):
         #TODO: VERIFY THAT THIS MATCH IS CORRECT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         self.t.df[output_column] = self.t.df[self.data_column].apply(lambda a: ((a - np.min(a)) / (np.max(a - np.min(a)))))
 
-        params = {'data_column': self.data_column}
+        params = {'data_column': self.data_column,
+                  'units': self.t.last_unit
+                  }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='normalize', parameters=params)
         self.t.last_output = output_column
 

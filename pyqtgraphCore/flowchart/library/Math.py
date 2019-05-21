@@ -26,7 +26,10 @@ class AbsoluteValue(CtrlNode):
 
         self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: np.abs(x))
 
-        params = {'data_column': self.data_column}
+        params = {'data_column': self.data_column,
+                  'units': self.t.last_unit
+                  }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='absolute_value', parameters=params)
         self.t.last_output = output_column
 
@@ -52,7 +55,8 @@ class LogTransform(CtrlNode):
 
         transform = self.ctrls['transform'].currentText()
         params = {'data_column': self.data_column,
-                  'transform': transform}
+                  'transform': transform,
+                  'units': self.t.last_unit}
 
         if transform == 'log10':
             self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: np.log10(x))
@@ -124,7 +128,8 @@ class RFFT(CtrlNode):
         params = {'data_column':    self.data_column,
                   'frequencies':    freqs,
                   'sampling_rate':  framerate,
-                  'nyquist_frequency': freqs.max()
+                  'nyquist_frequency': freqs.max(),
+                  'units': self.t.last_unit
                   }
 
         self.t.history_trace.add_operation(data_block_id='all', operation='rfft', parameters=params)
@@ -155,7 +160,10 @@ class iRFFT(CtrlNode):
 
         self.t.df[output_column] = self.t.df['_RFFT'].apply(fftpack.irfft)
 
-        params = {'data_column': '_RFFT'}
+        params = {'data_column': '_RFFT',
+                  'units': self.t.last_unit
+                  }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='irfft', parameters=params)
         self.t.last_output = output_column
         self.t.last_unit = 'time'
