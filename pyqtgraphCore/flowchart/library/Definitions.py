@@ -368,13 +368,14 @@ class PeakDetect(CtrlNode):
         return peaks_bases_df
 
     def process(self, display=True, **kwargs):
-        out = self.processData(**kwargs)
+        if self.editor_output:
+            out = self.t
+        else:
+            out = self.processData(**kwargs)
+
         return {'Out': out}
 
     def processData(self, **inputs):
-        if self.editor_output:
-            return self.t
-
         pb_input = inputs['PB_Input']
         if isinstance(pb_input, Transmission):
             self.t = pb_input
