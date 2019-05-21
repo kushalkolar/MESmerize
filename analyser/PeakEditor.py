@@ -265,7 +265,8 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.tpb is None:
             QtWidgets.QMessageBox.warning(self, 'Nothing to send', 'No data has been loaded that can be transmitted')
             return
-        
+
+        self.save_current_curve()
         self.sig_send_data.emit(self.get_data())
         
     def connect_mode_buttons(self):
@@ -454,7 +455,8 @@ class workEnv():
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
 
-    t = Transmission.from_pickle('/home/kushal/Sars_stuff/all_data_jorgen_wt_PEAK_DETECT_TRANSMISSION.trn')
+#    t = Transmission.from_pickle('/home/kushal/Sars_stuff/all_data_jorgen_wt_PEAK_DETECT_TRANSMISSION.trn')
+    t = Transmission.from_pickle('/share/data/temp/kushal/post_edit.trn')
 
     pbw = PBWindow(t, t)#.df['_RAW_CURVE'], t.df['_RAW_CURVE'])
     pbw.show()
