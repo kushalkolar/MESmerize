@@ -1,0 +1,27 @@
+API of Flowchart Data Types
+***************************
+
+BaseTransmission
+================
+
+.. autoclass:: analyser.DataTypes.BaseTransmission
+	:special-members:
+	:members:
+	:private-members:
+
+Transmission
+================
+**Inherits from BaseTransmission**
+
+.. autoclass:: analyser.DataTypes.Transmission
+	:special-members:
+	:members:
+	:private-members:
+
+HistoryTrace
+================
+.. autoclass:: analyser.DataTypes.HistoryTrace
+	:special-members:
+	:members:
+	:private-members:
+
