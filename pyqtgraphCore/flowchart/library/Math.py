@@ -125,16 +125,17 @@ class RFFT(CtrlNode):
 
         self.t.df[output_column] = self.t.df[self.data_column].apply(fftpack.rfft)
 
+        self.t.last_unit = 'frequency'
+
         params = {'data_column':    self.data_column,
                   'frequencies':    freqs,
                   'sampling_rate':  framerate,
                   'nyquist_frequency': freqs.max(),
-                  'units': self.t.last_unit
+                  'units': 'frequency'
                   }
 
         self.t.history_trace.add_operation(data_block_id='all', operation='rfft', parameters=params)
         self.t.last_output = output_column
-        self.t.last_unit = 'frequency'
 
         return self.t
 
@@ -159,13 +160,13 @@ class iRFFT(CtrlNode):
         output_column = '_IRFFT'
 
         self.t.df[output_column] = self.t.df['_RFFT'].apply(fftpack.irfft)
+        self.t.last_unit = 'time'
 
         params = {'data_column': '_RFFT',
-                  'units': self.t.last_unit
+                  'units': 'time'
                   }
 
         self.t.history_trace.add_operation(data_block_id='all', operation='irfft', parameters=params)
         self.t.last_output = output_column
-        self.t.last_unit = 'time'
 
         return self.t
