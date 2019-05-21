@@ -169,6 +169,13 @@ class HistoryTrace:
 
         return h
 
+    def get_operations_list(self, data_block_id: UUID) -> list:
+        """Returns just a simple list of operations in the order that they were performed on the given datablock"""
+        data_block_id = self._to_uuid(data_block_id)
+
+        l = [next(iter(d)) for d in self.get_data_block_history()]
+        return l
+
     def get_operation_params(self, data_block_id: UUID, operation: str) -> dict:
         """Get the parameters dict for a specific operation that was performed on a specific data block"""
         # if isinstance(data_block_id, str):
