@@ -468,6 +468,40 @@ class Transmission(BaseTransmission):
                    ROI_DEFS=roi_defs, STIM_DEFS=stim_defs, CUSTOM_COLUMNS=custom_columns)
 
 
+def get_sampling_rate(transmission: Transmission, tolerance: float = 0.1) -> float:
+    sampling_rates = []
+    for db in transmission.history_trace.data_blocks:
+        if transmission.history_trace.check_operation_exists(db, 'resample'):
+            sampling_rates.append(transmission.history_trace.get_operation_params(db, 'resample')['output_rate'])
+        else:
+            r = pd.DataFrame(transmission.get_data_block_dataframe(db).meta.to_list())['fps'].unique()
+            # if rates.size > 1:
+            #     raise ValueError("Sampling rates for the data do not match")
+            # else:
+            sampling_rates.append(r)
+
+    rates = np.hstack([sampling_rates])
+
+    if np.ptp(rates) > tolerance:
+        raise ValueError("Sampling rates of the data differ by "
+                         "greater than the set tolerance of " + str(tolerance) + " Hz")
+
+    framerate = float(np.mean(sampling_rates))
+
+    return framerate
+
+
+def get_array_size(transmission: Transmission, data_column: str) -> int:
+    if data_column not in transmission.df.columns:
+        raise KeyError("Requested data column: " + data_column + " not found in transmission DataFrame")
+    array_size = transmission.df[data_column].apply(lambda a: a.size).unique()
+
+    if array_size.size > 1:
+        raise ValueError("Size of all arrays in data column must match exactly.")
+
+    return array_size[0]
+
+
 class GroupTransmission(BaseTransmission):
     """DEPRECATED. This was a stupid idea.
     Transmission class for setting groups to individual transmissions that can later be merged into a single
