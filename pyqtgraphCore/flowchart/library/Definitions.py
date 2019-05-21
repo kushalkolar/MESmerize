@@ -458,7 +458,7 @@ class PeakDetect(CtrlNode):
                   'AmplThrRel': self.ctrls['AmplThrRel'].value(),
                   'AmplThrAbs': self.ctrls['AmplThrAbs'].value(),
                   'derivative_input_history_trace': t_d1.history_trace.get_all_data_blocks_history(),
-                  'normalized_input_history_trace': t_norm.history_trace.get_all_data_blocks_history()
+                  'normalized_input_history_trace': t_norm.history_trace.get_all_data_blocks_history(),
                   'units': self.t.last_unit
                   }
 
