@@ -78,11 +78,18 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Viewer_data_types_api.html">API of classes used by the Viewer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Analysis_data_types_api.html">API of the data types that are used in the flowchart</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/faq.html">FAQs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 </ul>
 
             
@@ -173,8 +180,8 @@
 <span class="kn">import</span> <span class="nn">json</span>
 
 
-<div class="viewcode-block" id="ViewerWorkEnv"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv">[docs]</a><span class="k">class</span> <span class="nc">ViewerWorkEnv</span><span class="p">:</span>
-<div class="viewcode-block" id="ViewerWorkEnv.__init__"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgdata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stim_maps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="ViewerWorkEnv"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv">[docs]</a><span class="k">class</span> <span class="nc">ViewerWorkEnv</span><span class="p">:</span>
+<div class="viewcode-block" id="ViewerWorkEnv.__init__"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgdata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stim_maps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">roi_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">roi_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">origin_file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                  <span class="n">custom_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">history_trace</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">additional_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -279,7 +286,7 @@
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">set_all_from_states</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ViewerWorkEnv.from_pickle"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_pickle">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ViewerWorkEnv.from_pickle"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_pickle">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_pickle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pickle_file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tiff_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get pickled image data from a pickle file &amp; image sequence from a npz or tiff. Used after motion correction</span>
@@ -330,7 +337,7 @@
         <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">changed_items</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="ViewerWorkEnv.load_mesfile"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv.load_mesfile">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ViewerWorkEnv.load_mesfile"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.load_mesfile">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_mesfile</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MES</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Just passes the path of a .mes file to the constructor of class MES in MesmerizeCore.FileInput.</span>
@@ -377,7 +384,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unrecognized meta data source.&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ViewerWorkEnv.from_mesfile"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_mesfile">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ViewerWorkEnv.from_mesfile"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_mesfile">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_mesfile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesfile_object</span><span class="p">:</span> <span class="n">MES</span><span class="p">,</span> <span class="n">img_reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from</span>
@@ -391,7 +398,7 @@
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">imdata</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta_data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ViewerWorkEnv.from_tiff"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_tiff">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ViewerWorkEnv.from_tiff"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_tiff">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_tiff</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">meta_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return instance of work environment with ImgData.seq set from tifffile.imread.</span>
@@ -448,7 +455,7 @@
 
         <span class="k">return</span> <span class="n">d</span>
 
-<div class="viewcode-block" id="ViewerWorkEnv.to_pickle"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pickle">[docs]</a>    <span class="k">def</span> <span class="nf">to_pickle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_img_seq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="ViewerWorkEnv.to_pickle"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pickle">[docs]</a>    <span class="k">def</span> <span class="nf">to_pickle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_img_seq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as</span>
 <span class="sd">        for motion correction and package them into a pickle &amp; image seq array. Used for batch motion correction and</span>
@@ -478,7 +485,7 @@
 
         <span class="k">return</span> <span class="n">filename</span></div>
 
-<div class="viewcode-block" id="ViewerWorkEnv.to_pandas"><a class="viewcode-back" href="../../../Viewer_data_types_api.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<div class="viewcode-block" id="ViewerWorkEnv.to_pandas"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param      proj_path: Root path of the current project</span>
 <span class="sd">        :return:    list of dicts that each correspond to a single curve that can be appended</span>

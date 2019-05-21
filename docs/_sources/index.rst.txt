@@ -7,12 +7,21 @@ Welcome to Mesmerize's documentation!
 =====================================
 
 .. toctree::
-	:maxdepth: 2
-	:caption: Contents:
-	
 	./Overview
-	./Viewer_data_types_api
-	./Analysis_data_types_api
+
+.. toctree::
+	:maxdepth: 2
+	:caption: User Guides:
+	
+	./user_guides/installation
+	./user_guides/faq
+
+.. toctree::
+	:maxdepth: 2
+	:caption: API Reference:
+
+	./api_reference/Viewer_data_types
+	./api_reference/Analysis_data_types
 
 
 
