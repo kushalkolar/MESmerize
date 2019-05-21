@@ -24,37 +24,25 @@ import traceback
 from configparser import RawConfigParser
 
 
-class DataBlockNotFound(BaseException):
-    """ Requested data block not found """
-    def __init__(self, *args, **kwargs): # real signature unknown
-        pass
+class _HistoryTraceExceptions(BaseException):
+    def __init__(self, msg):
+        assert isinstance(msg, str)
+        self.msg = msg
 
-    @staticmethod # known case of __new__
-    def __new__(*args, **kwargs): # real signature unknown
-        """ Create and return a new object.  See help(type) for accurate signature. """
-        pass
+    def __str__(self):
+        return str(self.__doc__) + '\n' + self.msg
 
 
-class DataBlockAlreadyExists(BaseException):
-    """ Data block already exists in HistoryTrace """
-    def __init__(self, *args, **kwargs): # real signature unknown
-        pass
-
-    @staticmethod # known case of __new__
-    def __new__(*args, **kwargs): # real signature unknown
-        """ Create and return a new object.  See help(type) for accurate signature. """
-        pass
+class DataBlockNotFound(_HistoryTraceExceptions):
+    """Requested data block not found"""
 
 
-class OperationNotFound(BaseException):
-    """ Requested operation not found in data block """
-    def __init__(self, *args, **kwargs): # real signature unknown
-        pass
+class DataBlockAlreadyExists(_HistoryTraceExceptions):
+    """Data block already exists in HistoryTrace."""
 
-    @staticmethod # known case of __new__
-    def __new__(*args, **kwargs): # real signature unknown
-        """ Create and return a new object.  See help(type) for accurate signature. """
-        pass
+
+class OperationNotFound(_HistoryTraceExceptions):
+    """Requested operation not found in data block."""
 
 
 class HistoryTrace:
@@ -104,7 +92,8 @@ class HistoryTrace:
 
     @property
     def data_blocks(self) -> list:
-        """List of UUIDs"""
+        """List of UUIDs that allow you to pin down the history of specific rows of the dataframe to their history
+        as stored in the history trace data structure (self.history) and outlined in the doc string"""
         return self._data_blocks
 
     @data_blocks.setter
@@ -113,6 +102,7 @@ class HistoryTrace:
 
     @property
     def history(self) -> dict:
+        """The actual history trace data that is stored in the structured outlined in the doc string"""
         return self._history
 
     @history.setter
@@ -120,12 +110,15 @@ class HistoryTrace:
         self._history = h
 
     def create_data_block(self, dataframe: pd.DataFrame) -> Tuple[pd.DataFrame, UUID]:
+        """Creates a new UUID, assigns it to the input dataframe by setting the UUID in the _BLOCK_ column"""
         block_id = uuid4()
         self.add_data_block(block_id)
         dataframe['_BLOCK_'] = str(block_id)
         return dataframe, block_id
 
     def add_data_block(self, data_block_id: UUID):
+        """Adds new datablock UUID to the list of datablocks in this instance.
+        Throws exception if UUID already exists."""
         if data_block_id in self.data_blocks:
             raise DataBlockAlreadyExists(str(data_block_id))
         else:
@@ -134,23 +127,33 @@ class HistoryTrace:
         self.history.update({data_block_id: []})
 
     def add_operation(self, data_block_id: UUID, operation: str, parameters: dict):
+        """Add a single operation, that is usually performed by a node, to the history trace.
+        Added to all or specific datablock(s), depending on which datablock(s) the node performed the operation on"""
         assert isinstance(operation, str)
         assert isinstance(parameters, dict)
+
         if isinstance(data_block_id, str):
-            if data_block_id != 'all':
-                raise ValueError("DataBlock ID must either be a UUID or 'all'")
-            else:
+            if data_block_id == 'all':
                 _ids = self.data_blocks
+            else:
+                try:
+                    _ids = [self._to_uuid(data_block_id)]
+                except ValueError:
+                    raise ValueError("data_block_id must be a UUID, str representation of a UUID, or 'all' ")
+
         else:
             _ids = [data_block_id]
+
         if not all(u in self.data_blocks for u in _ids):
             raise DataBlockNotFound()
         for _id in _ids:
             self.history[_id].append({operation: parameters})
 
     def get_data_block_history(self, data_block_id: UUID) -> list:
-        if isinstance(data_block_id, str):
-            data_block_id = UUID(data_block_id)
+        """Get the full history trace of the one requested data block"""
+        # if isinstance(data_block_id, str):
+        #     data_block_id = UUID(data_block_id)
+        data_block_id = self._to_uuid(data_block_id)
 
         if data_block_id not in self.data_blocks:
             raise DataBlockNotFound(str(data_block_id))
@@ -158,6 +161,7 @@ class HistoryTrace:
         return self.history[data_block_id]
 
     def get_all_data_blocks_history(self) -> dict:
+        """Returns history trace of all datablocks"""
         h = {}
 
         for block_id in self.data_blocks:
@@ -166,16 +170,38 @@ class HistoryTrace:
         return h
 
     def get_operation_params(self, data_block_id: UUID, operation: str) -> dict:
-        if isinstance(data_block_id, str):
-            data_block_id = UUID(data_block_id)
+        """Get the parameters dict for a specific operation that was performed on a specific data block"""
+        # if isinstance(data_block_id, str):
+        #     data_block_id = UUID(data_block_id)
+        data_block_id = self._to_uuid(data_block_id)
 
         try:
             l = self.get_data_block_history(data_block_id)
-            params = next(d for ix, d in enumerate(l) if operation in d)[operation]
+            params = next(d for ix, d in enumerate(reversed(l)) if operation in d)[operation]
         except StopIteration:
-            raise OperationNotFound('Data block: ' + str(data_block_id) + '\nOperation: ' + operation)
+            raise OperationNotFound('Data block: ' + str(data_block_id) + ', Operation: ' + operation)
 
         return params
+
+    def check_operation_exists(self, data_block_id: UUID, operation: str) -> bool:
+        """Check if a specific operation was performed on a specific datablock"""
+        data_block_id = self._to_uuid(data_block_id)
+        try:
+            self.get_operation_params(data_block_id, operation)
+        except OperationNotFound:
+            return False
+        else:
+            return True
+
+    def _to_uuid(self, u) -> UUID:
+        """If input is a <str> that can be formatted as a UUID, return it as UUID type.
+        If input is a UUID, just returns it."""
+        if isinstance(u, UUID):
+            return u
+        elif isinstance(u, str):
+            return UUID(u)
+        else:
+            raise TypeError('Must pass str or UUID')
 
     def _export(self):
         return {'history': self.history, 'data_blocks': self.data_blocks}
@@ -198,6 +224,8 @@ class HistoryTrace:
 
     @classmethod
     def merge(cls, history_traces: list):
+        """Merge a list of HistoryTrace instances into one HistoryTrace instance.
+        Useful when merging Transmission objs"""
         assert all(isinstance(h, HistoryTrace) for h in history_traces)
         data_blocks_l2_list = [h.data_blocks for h in history_traces]
         data_blocks = list(chain.from_iterable(data_blocks_l2_list))
@@ -212,12 +240,19 @@ class HistoryTrace:
 
 class BaseTransmission:
     def __init__(self, df: pd.DataFrame, history_trace: HistoryTrace, proj_path: str = None, last_output: str = None,
-                 ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
+                 last_unit: str = None, ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
         """
         Base class for common Transmission functions
         :param  dataframe:      Transmission dataframe
+
         :param  history_trace:  HistoryTrace object, keeps track of the nodes & node parameters
                                 the transmission has been processed through
+
+        :param  proj_path:      Project path, necessary for the datapoint tracer
+
+        :param  last_output:    Last data column that was appended via a node's operation
+
+        :param  last_unit:      Current units of the data. Refers to the units of column in last_output
         """
         self.df = df
         self.history_trace = history_trace
@@ -227,6 +262,7 @@ class BaseTransmission:
             self.set_proj_path(proj_path)
 
         self.last_output = last_output
+        self.last_unit = last_unit
 
         if ROI_DEFS is None:
             self.ROI_DEFS = []
@@ -257,7 +293,7 @@ class BaseTransmission:
 
     def _make_dict(self) -> dict:
         """
-        Package attributes as a dict, useful for pickling
+        Package Transmission as a dict, useful for pickling
         """
         d = {'df':              self.df,
              'history_trace':   self.history_trace}
@@ -274,24 +310,35 @@ class BaseTransmission:
         return deepcopy(self)
 
     @staticmethod
-    def empty_df(transmission, addCols=[]) -> pd.DataFrame:
+    def empty_df(transmission, addCols: list = None) -> pd.DataFrame:
         """
-        :param transmission: Transmission object
+        :param transmission: Transmission object that forms the basis
         :param addCols: list of columns to add
-        :return: empty DataFrame with the columns in this Transmission's dataframe along with any additional columns
-        that were specified.
+        :return: The input transmission with an empty dataframe containing the same columns plus
+        any additional columns that were passed
         """
+        if addCols is None:
+            addCols = []
+
         c = list(transmission.df.columns) + addCols
         e_df = pd.DataFrame(columns=c)
         return e_df
         # return cls(e_df, transmission.history_trace, **transmission.kwargs)
 
     def get_proj_path(self) -> str:
+        """
+        :return: Root directory of the project
+        """
         if self._proj_path is None:
             raise ValueError('No project path set')
         return self._proj_path
 
     def set_proj_path(self, path: str):
+        """
+        Set the project path for appending relative paths (stored in the project dataframe) to the various project files.
+
+        :type path: Root directory of the project
+        """
         path = os.path.abspath(path)
 
         if not os.path.isdir(path + '/images'):
@@ -318,13 +365,15 @@ class BaseTransmission:
 
 
 class Transmission(BaseTransmission):
-    """The regular transmission class used throughout the flowchart"""
+    """The transmission object used throughout the flowchart"""
     @classmethod
     def from_proj(cls, proj_path: str, dataframe: pd.DataFrame, sub_dataframe_name: str = 'root',
                   dataframe_filter_history: dict = None):
         """
         :param proj_path: root directory of the project
         :param dataframe: Chosen Child DataFrame from the Mesmerize Project
+        :param sub_dataframe_name: Name of the child dataframe to load
+        :param dataframe_filter_history: Filter history of the child dataframe
 
         """
         df = dataframe.copy()
@@ -348,13 +397,13 @@ class Transmission(BaseTransmission):
             raise ValueError('Could not read project configuration when creating Transmission'
                              '\n' + traceback.format_exc())
 
-        return cls(df, proj_path=proj_path, history_trace=h, last_output='_RAW_CURVE',
+        return cls(df, proj_path=proj_path, history_trace=h, last_output='_RAW_CURVE', last_unit='time',
                    ROI_DEFS=roi_type_defs, STIM_DEFS=stim_type_defs, CUSTOM_COLUMNS=custom_columns)
 
     @staticmethod
     def _load_files(proj_path: str, row: pd.Series) -> pd.Series:
-        """Loads npz and pickle files of Curves & Img metadata according to the paths specified in each row of the
-        chosen child DataFrame in the project"""
+        """Loads npz of curve data and pickle files containing metadata using the paths specified in each row of the
+        chosen sub-dataframe of the project"""
 
         path = proj_path + row['CurvePath']
         npz = np.load(path)
@@ -366,8 +415,25 @@ class Transmission(BaseTransmission):
         
         return pd.Series({'_RAW_CURVE': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
 
+    def get_datablock_dataframe(self, data_block_id: UUID):
+        if isinstance(data_block_id, str):
+            data_block_id = UUID(data_block_id)
+        assert isinstance(data_block_id, UUID)
+
+        if data_block_id not in self.history_trace.data_blocks:
+            raise DataBlockNotFound(data_block_id)
+
+        return self.df[self.df._BLOCK_ == data_block_id]
+
     @classmethod
     def merge(cls, transmissions: list):
+        """
+        Merges a list of Transmissions into one transmission. A single dataframe is created by simple concatenation.
+        HistoryTrace objects are also merged using HistoryTrace.merge.
+
+        :param transmissions: A list containing Transmission objects to merge
+        :return: Merged transmission
+        """
         proj_path_list = [os.path.abspath(t.get_proj_path()) for t in transmissions]
         if len(set(proj_path_list)) > 1:
             raise ValueError('You cannot merge transmissions from different projects. '
@@ -378,6 +444,12 @@ class Transmission(BaseTransmission):
             roi_defs = transmissions[0].ROI_DEFS
             stim_defs = transmissions[0].STIM_DEFS
             custom_columns = transmissions[0].CUSTOM_COLUMNS
+
+        units = set([t.last_unit for t in transmissions])
+
+        if len(units) > 1:
+            raise ValueError('Cannot merge transmissions of differing data units. The inputs have the following '
+                             'units in their last output data column: \n' + str(units))
 
         dfs = [t.df for t in transmissions]
         df = pd.concat(dfs, copy=True)
@@ -390,7 +462,8 @@ class Transmission(BaseTransmission):
 
 
 class GroupTransmission(BaseTransmission):
-    """Transmission class for setting groups to individual transmissions that can later be merged into a single
+    """DEPRECATED. This was a stupid idea.
+    Transmission class for setting groups to individual transmissions that can later be merged into a single
     StatsTransmission"""
     @classmethod
     def from_ca_data(cls, transmission: Transmission, groups_list: list):
@@ -433,7 +506,8 @@ class GroupTransmission(BaseTransmission):
 
 
 class StatsTransmission(BaseTransmission):
-    """Transmission class that contains a DataFrame consisting of data from many groups. Columns with names that start
+    """DEPRECATED. This was a stupid idea.
+    Transmission class that contains a DataFrame consisting of data from many groups. Columns with names that start
     with '_G_' denote groups. Booleans indicate whether or not that row belong to that group."""
     @classmethod
     def from_group_trans(cls, transmissions: list):

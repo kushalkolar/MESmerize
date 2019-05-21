@@ -142,7 +142,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.label.setText(_translate("Form", "Maximum number of cores to use:"))
+        self.label.setText(_translate("Form", "Maximum number of threads to use:"))
         self.checkBoxUseCUDA.setText(_translate("Form", "Use CUDA cores when possible"))
         self.pushButtonCUDAError.setText(_translate("Form", "Click to view specific error"))
         self.label_2.setText(_translate("Form", "CaImAn directory path: "))

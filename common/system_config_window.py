@@ -37,6 +37,13 @@ class SystemConfigGUI(QtWidgets.QWidget):
 
         self.ui.checkBoxUseCUDA.setChecked(use_cuda)
 
+        if configuration.sys_cfg['PATHS']['env_type'] == 'anaconda':
+            self.ui.radioButtonVirtualEnv.setChecked(False)
+            self.ui.radioButtonAnaconda.setChecked(True)
+        elif configuration.sys_cfg['PATHS']['env_type'] == 'virtual':
+            self.ui.radioButtonAnaconda.setChecked(False)
+            self.ui.radioButtonVirtualEnv.setChecked(True)
+
         self.ui.btnCaimanPath.clicked.connect(self.choose_caiman_path)
         self.ui.btnEnvPath.clicked.connect(self.choose_env_path)
 

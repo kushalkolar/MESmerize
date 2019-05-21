@@ -5,6 +5,7 @@ from analyser.DataTypes import Transmission
 from scipy import signal
 from functools import partial
 from scipy import fftpack
+import pandas as pd
 
 
 class AbsoluteValue(CtrlNode):
@@ -86,15 +87,49 @@ class RFFT(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
+        sampling_rates = []
+
+        for db in transmission.history_trace.data_blocks:
+            if transmission.history_trace.check_operation_exists(db, 'resample'):
+                sampling_rates.append(transmission.history_trace.get_operation_params(db, 'resample')['output_rate'])
+            else:
+                r = pd.DataFrame(transmission.get_datablock_dataframe(db).meta.to_list()['fps'].unique())
+                # if rates.size > 1:
+                #     raise ValueError("Sampling rates for the data do not match")
+                # else:
+                sampling_rates.append(r)
+
+        rates = np.hstack([sampling_rates])
+
+        if np.ptp(rates) > 0.1:
+            raise ValueError("Sampling rates of the data differ by greater than the tolerance of 0.1 Hz")
+
+        framerate = int(np.mean(sampling_rates))
+
+        array_size = transmission.df[self.data_column].apply(lambda a: a.size).unique()
+
+        if array_size.size > 1:
+            raise ValueError("Size of all arrays in data column must match exactly.")
+
+        array_size = array_size[0]
+
+        freqs = fftpack.rfftfreq(array_size) * framerate
+
         self.t = transmission.copy()
 
         output_column = '_RFFT'
 
         self.t.df[output_column] = self.t.df[self.data_column].apply(fftpack.rfft)
 
-        params = {'data_column': self.data_column}
+        params = {'data_column':    self.data_column,
+                  'frequencies':    freqs,
+                  'sampling_rate':  framerate,
+                  'nyquist_frequency': freqs.max()
+                  }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='rfft', parameters=params)
         self.t.last_output = output_column
+        self.t.last_unit = 'frequency'
 
         return self.t
 
@@ -123,5 +158,6 @@ class iRFFT(CtrlNode):
         params = {'data_column': '_RFFT'}
         self.t.history_trace.add_operation(data_block_id='all', operation='irfft', parameters=params)
         self.t.last_output = output_column
+        self.t.last_unit = 'time'
 
         return self.t
