@@ -47,6 +47,6 @@ if __name__ == "__main__":
     iris = sns.load_dataset('iris')
     app = QtWidgets.QApplication([])
     v = ViolinsPlot()
-    v.set(iris, [x for x in iris.columns if "species" not in x], "species", label_rotation=90)
+    v.set(iris, [x for x in iris.columns if "species" not in x], "species")
     v.show()
     sys.exit(app.exec())
