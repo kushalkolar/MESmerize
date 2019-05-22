@@ -427,9 +427,19 @@
     </property>
     <addaction name="actionViewer_linker"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionDocs_homepage"/>
+    <addaction name="separator"/>
+    <addaction name="actionNew_Project_Docs"/>
+    <addaction name="actionSystem_Configuration_Docs"/>
+   </widget>
    <addaction name="menuConfiguration"/>
    <addaction name="menuView"/>
    <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockConsole">
@@ -479,6 +489,21 @@
   <action name="actionViewer_linker">
    <property name="text">
     <string>&amp;Viewer linker</string>
+   </property>
+  </action>
+  <action name="actionDocs_homepage">
+   <property name="text">
+    <string>Docs homepage</string>
+   </property>
+  </action>
+  <action name="actionNew_Project_Docs">
+   <property name="text">
+    <string>New Project</string>
+   </property>
+  </action>
+  <action name="actionSystem_Configuration_Docs">
+   <property name="text">
+    <string>System Configuration</string>
    </property>
   </action>
  </widget>

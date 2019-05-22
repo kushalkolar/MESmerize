@@ -91,6 +91,8 @@ class RFFT(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
 
+        # TODO: Replace this code block with the DataTypes.get_framerate() method
+        ##############################################################################################################
         sampling_rates = []
 
         for db in transmission.history_trace.data_blocks:
@@ -109,6 +111,7 @@ class RFFT(CtrlNode):
             raise ValueError("Sampling rates of the data differ by greater than the tolerance of 0.1 Hz")
 
         framerate = int(np.mean(sampling_rates))
+        ##############################################################################################################
 
         array_size = transmission.df[self.data_column].apply(lambda a: a.size).unique()
 

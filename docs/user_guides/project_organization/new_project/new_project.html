@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Create a New Project &mdash; Mesmerize 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Viewer classes" href="../../../api_reference/Viewer_data_types.html" />
+    <link rel="prev" title="Viewer" href="../../viewer/viewer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/viewer.html">Viewer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Create a New Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#biological-questions">Biological Questions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#new-project">New Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-configuration">Project Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#categorical-data-columns">Categorical Data Columns</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#roi-type-columns">ROI Type Columns</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stimulus-type-columns">Stimulus Type Columns</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-columns">Custom Columns</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#visible-hidden-in-project-browser">Visible / Hidden in Project Browser</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Create a New Project</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/user_guides/project_organization/new_project/new_project.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="create-a-new-project">
+<h1>Create a New Project<a class="headerlink" href="#create-a-new-project" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="biological-questions">
+<h2>Biological Questions<a class="headerlink" href="#biological-questions" title="Permalink to this headline">¶</a></h2>
+<p><strong>Before you create a new Mesmerize Project you must thoroughly think about the biological questions that you interested in. Here are some thoughts to help you:</strong></p>
+<blockquote>
+<div><ul>
+<li><p class="first">The effects of different types of temporary stimulation? Such as poking or odors?</p>
+</li>
+<li><p class="first">Differences in calcium dynamics between different anatomical regions?</p>
+</li>
+<li><p class="first">Chemogenetic experiments using transgenes to express DDREADs.</p>
+</li>
+<li><p class="first">Non-temporary effects of drugs (for example, if the animal is bathed in drug for longer recordings).</p>
+<blockquote>
+<div><ul class="simple">
+<li>For example, if you are inducing seizures with PTZ, where you are interested in the differences between a control recording of 5 minutes and  subsequent 5 minute recordings where the animal is bathed in PTZ (or whatever duration you determine is biologically meaningful). You could also be interested in a recovery stage to see what happens to the calcium dynamics when you “perfuse-back” the liquid medium (such as seawater, steinberg’s solution etc.) without the drug.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Differences in calcium dynamics between different stages during development</p>
+</li>
+<li><p class="first">Differences in calcium dynamics between different cell types using GCaMP driven by specific promoters.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<hr class="docutils" />
+<div class="section" id="new-project">
+<h2>New Project<a class="headerlink" href="#new-project" title="Permalink to this headline">¶</a></h2>
+<p>To create a new project click <strong>New Project</strong> in the welcome window.</p>
+<img alt="../../../_images/welcome_window1.png" src="../../../_images/welcome_window1.png" />
+<p>Choose a location to store your project.</p>
+<img alt="../../../_images/12.png" src="../../../_images/12.png" />
+<p>Choose a name for your project. This will create a directory within the location you have selected above using the name that you enter here. You can change the name of this project later.</p>
+<p><img alt="2png" src="../../../_images/21.png" /> <img alt="3png" src="../../../_images/3.png" /></p>
+</div>
+<div class="section" id="project-configuration">
+<h2>Project Configuration<a class="headerlink" href="#project-configuration" title="Permalink to this headline">¶</a></h2>
+<p>After setting a project name you must configure it. This is where your biological questions of interest are important. You can change your project configuration later, but it is most time efficient if you enter all your categories of interest now.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It’s best practice to restart Mesmerize whenever you change the project configuration.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><strong>&lt;link here&gt; *Add to Project* guide to understand how the project configuration relates to the addition of data samples to your project</strong></p>
+</div>
+<img alt="../../../_images/41.png" src="../../../_images/41.png" />
+<div class="section" id="categorical-data-columns">
+<h3>Categorical Data Columns<a class="headerlink" href="#categorical-data-columns" title="Permalink to this headline">¶</a></h3>
+<p><strong>Mesmerize allows you to create three main different types of categorical data columns (for the project DataFrame), and an unlimited number of each type. These categorical data columns allow you to group your data during analysis, and therefore perform comparisons between experimental groups. In essense, these categorical data columns form scaffold with which you can create your experimental groups during analysis.</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can change the project configuration at any point in the future by adding new columns or changing the visible/hidden columns.</p>
+</div>
+<div class="section" id="roi-type-columns">
+<h4>ROI Type Columns<a class="headerlink" href="#roi-type-columns" title="Permalink to this headline">¶</a></h4>
+<p>Create ROI-bound <em>categories</em> with which you want to group your data. Enter the desired name for the category and click <strong>Add</strong>. Here are some examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li>If you are interested in calcium dynamics between different anatomical regions, you create a column named <code class="docutils literal notranslate"><span class="pre">anatomical_region</span></code>.</li>
+<li>You want to define defined notochord cell identities on a anterior-posterior axis, defined as “cell_1”, “cell_2”, … “cell_n”. You can create an ROI Type Column named <code class="docutils literal notranslate"><span class="pre">notochord_cell_id</span></code>.</li>
+</ul>
+</div></blockquote>
+<img alt="../../../_images/5.png" src="../../../_images/5.png" />
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><strong>&lt;link here&gt; *ROI Manager guide* to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.</strong></p>
+</div>
+</div>
+<div class="section" id="stimulus-type-columns">
+<h4>Stimulus Type Columns<a class="headerlink" href="#stimulus-type-columns" title="Permalink to this headline">¶</a></h4>
+<p>If you’re interested in temporally mapping stimulus information to your traces you can add a “Stimulus Type column”. These are only for when you are applying a stimuli that are <strong>temporary and do not span the entire length of the video.</strong></p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><strong>&lt;link here&gt; Stimulus Mapping guide, to understand how stimuli can be labelled.</strong></p>
+</div>
+</div>
+<div class="section" id="custom-columns">
+<h4>Custom Columns<a class="headerlink" href="#custom-columns" title="Permalink to this headline">¶</a></h4>
+<p>Here you can create categories to tag any other piece of useful information to each Sample. i.e. to the entire video recording. For example:</p>
+<blockquote>
+<div><ul class="simple">
+<li>You are studying seizures, you perform a 5 minute recording in the medium, and then subsequent 5 minute recordings in PTZ. You can create a category called “drug_state”. When you add samples to your project you can tag drug states named “control”,  “ptz_1”, “ptz_2”, “ptz_recovery_1” etc.</li>
+<li>This is also what you would use for chemogenetics experiments if you are recording for example without CNO for 5 minutes, and then with CNO for another 5 minutes.</li>
+</ul>
+</div></blockquote>
+<p>Three different data types can be tagged to a category, <strong>standard text</strong>, <strong>whole numbers</strong>, and <strong>decimal numbers</strong>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Data types cannot be changed later. If you are familiar with pandas you can manually change it, and the corresponding value in the project config file.</p>
+</div>
+<p>If you want to tag numerical information, such as the animal’s development stage, it can be useful to set the data type to <strong>whole numbers</strong>. This allows you to sort your data numerically. For example you may want to compare dynamics of all curves between stage 48 and 72.</p>
+<img alt="../../../_images/6.png" src="../../../_images/6.png" />
+<p>If you are interested in dynamics between different cell types for which you are using specific GCaMP promoters, you can create a custom column called <code class="docutils literal notranslate"><span class="pre">promoter</span></code> or <code class="docutils literal notranslate"><span class="pre">cell_type</span></code> and select <strong>standard text</strong> as the data type.</p>
+<img alt="../../../_images/5.png" src="../../../_images/5.png" />
+<p>When you add samples to your project from the viewer, you will be prompted to enter information that is directly based on the Custom Columns that you create here.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">&lt;link_here&gt; Add to Project guide</p>
+</div>
+<img alt="../../../_images/add_to_proj.png" src="../../../_images/add_to_proj.png" />
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="visible-hidden-in-project-browser">
+<h3>Visible / Hidden in Project Browser<a class="headerlink" href="#visible-hidden-in-project-browser" title="Permalink to this headline">¶</a></h3>
+<p>You can drag and drop items (column names) between these two lists to set which ones are visible in the Project Browser. This is just to avoid clutter.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">&lt;link here&gt; Project Browser guide</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../api_reference/Viewer_data_types.html" class="btn btn-neutral float-right" title="Viewer classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../../viewer/viewer.html" class="btn btn-neutral float-left" title="Viewer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
