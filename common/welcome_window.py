@@ -65,21 +65,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.verticalLayoutFlowchartRunning.addWidget(self.window_manager.flowcharts.list_widget)
 
-        self.ui.btnPlot.setIcon(QtGui.QIcon(mdir + '/icons/noun_635936_cc.png'))
-        self.ui.btnPlot.setIconSize(QtCore.QSize(100, 100))
-        # self.ui.btnPlot.clicked.connect(self.spawn_new_plot_gui)
-
-        self.ui.verticalLayoutPlotsRunning.addWidget(self.window_manager.plots.list_widget)
-
-        self.ui.btnClustering.setIcon(QtGui.QIcon(mdir + '/icons/noun_195949_cc.png'))
-        self.ui.btnClustering.setIconSize(QtCore.QSize(100, 100))
+        # self.ui.btnPlot.setIcon(QtGui.QIcon(mdir + '/icons/noun_635936_cc.png'))
+        # self.ui.btnPlot.setIconSize(QtCore.QSize(100, 100))
+        # # self.ui.btnPlot.clicked.connect(self.spawn_new_plot_gui)
+        #
+        # self.ui.verticalLayoutPlotsRunning.addWidget(self.window_manager.plots.list_widget)
+        #
+        # self.ui.btnClustering.setIcon(QtGui.QIcon(mdir + '/icons/noun_195949_cc.png'))
+        # self.ui.btnClustering.setIconSize(QtCore.QSize(100, 100))
 
         self.sys_config_gui = system_config_window.SystemConfigGUI()
         self.ui.actionSystem_Configuration.triggered.connect(self.sys_config_gui.show)
 
         self.initialize_console_widget()
 
-        self.resize(800, 550)
+        self.resize(800, 625)
         # configuration.projPath = '/home/kushal/mesmerize_test_proj'
 
         self._batch_manager = None
@@ -111,7 +111,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                  historyFile=cmd_history_file))
 
-        self.ui.dockConsole.hide()
+        # self.ui.dockConsole.hide()
 
     def create_new_project(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose location for a new project')
@@ -119,6 +119,10 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Project Name:', QtWidgets.QLineEdit.Normal, '')
+
+        if any(s in name for s in [' ', '(', ')', '?']):
+            QtWidgets.QMessageBox.warning(self, 'Invalid Name', 'Project Name can only contain alphanumeric characters')
+            return
 
         if start and name != '':
             try:

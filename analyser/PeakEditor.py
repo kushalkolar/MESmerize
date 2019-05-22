@@ -355,6 +355,14 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.current_curve = curve_plot
 
         curve = self.tc.df['curve'].iloc[ix]
+
+        uuid_curve = self.tc.df['uuid_curve'].iloc[ix]
+        if not isinstance(uuid_curve, str):
+            try:
+                uuid_curve = str(uuid_curve)
+            except:
+                print("Could not display UUID for curve at index: " + str(ix))
+        self.lineEditUUID.setText(uuid_curve)
         # print('curve: ')
         # print(curve)
         # if curve is None:

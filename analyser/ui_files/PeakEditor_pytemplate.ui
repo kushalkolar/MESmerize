@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1128</width>
+    <width>1143</width>
     <height>661</height>
    </rect>
   </property>
@@ -415,7 +415,7 @@ relative maxima</string>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="lineEditUUID">
             <property name="font">
              <font>
               <weight>75</weight>
@@ -477,7 +477,7 @@ relative maxima</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1128</width>
+     <width>1143</width>
      <height>30</height>
     </rect>
    </property>
@@ -541,7 +541,7 @@ relative maxima</string>
   <tabstop>btnSetPeaksAtRelativeMaxima</tabstop>
   <tabstop>btnSaveCurve</tabstop>
   <tabstop>btnDisconnectFromFlowchart</tabstop>
-  <tabstop>lineEdit</tabstop>
+  <tabstop>lineEditUUID</tabstop>
   <tabstop>graphicsView</tabstop>
   <tabstop>listwIndices</tabstop>
  </tabstops>
