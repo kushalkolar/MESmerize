@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main_window_pytemplate.ui'
+# Form implementation generated from reading ui file './main_window_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -36,6 +36,8 @@ class Ui_MainWindow(object):
         self.menuProjections.setObjectName("menuProjections")
         self.menuView = QtWidgets.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
+        self.menuHelp = QtWidgets.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -110,6 +112,8 @@ class Ui_MainWindow(object):
         self.actionStandard_Deviation.setObjectName("actionStandard_Deviation")
         self.actionClose_all_projection_windows = QtWidgets.QAction(MainWindow)
         self.actionClose_all_projection_windows.setObjectName("actionClose_all_projection_windows")
+        self.actionOpen_docs = QtWidgets.QAction(MainWindow)
+        self.actionOpen_docs.setObjectName("actionOpen_docs")
         self.menuFile.addAction(self.actionAdd_to_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_work_environment)
@@ -150,12 +154,14 @@ class Ui_MainWindow(object):
         self.menuView.addAction(self.actionWork_Environment_Info)
         self.menuView.addSeparator()
         self.menuView.addAction(self.actionConsole)
+        self.menuHelp.addAction(self.actionOpen_docs)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuImage.menuAction())
         self.menubar.addAction(self.menuModules.menuAction())
         self.menubar.addAction(self.menuCustom_Modules.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
+        self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         self.actionConsole.toggled['bool'].connect(self.dockConsole.setVisible)
@@ -173,6 +179,7 @@ class Ui_MainWindow(object):
         self.menuImage.setTitle(_translate("MainWindow", "&Image"))
         self.menuProjections.setTitle(_translate("MainWindow", "&Projections"))
         self.menuView.setTitle(_translate("MainWindow", "&View"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
         self.dockConsole.setWindowTitle(_translate("MainWindow", "&Console: viewer"))
         self.actionOpen_work_environment.setText(_translate("MainWindow", "&Open work environment"))
         self.actionSave_work_environment.setText(_translate("MainWindow", "&Save work environment"))
@@ -182,7 +189,7 @@ class Ui_MainWindow(object):
         self.actionCNMF.setText(_translate("MainWindow", "&CNMF"))
         self.actionROI_Manager.setText(_translate("MainWindow", "&ROI Manager"))
         self.actionManual_motion_correction.setText(_translate("MainWindow", "&Manual motion correction"))
-        self.actionScript_Editor.setText(_translate("MainWindow", "Script Editor"))
+        self.actionScript_Editor.setText(_translate("MainWindow", "Script &Editor"))
         self.actionReload_list.setText(_translate("MainWindow", "&Reload list"))
         self.actionCNMF_E.setText(_translate("MainWindow", "CNMF-&E"))
         self.actionBatch_Manager.setText(_translate("MainWindow", "&Batch Manager"))
@@ -202,4 +209,5 @@ class Ui_MainWindow(object):
         self.actionMax.setText(_translate("MainWindow", "Ma&x"))
         self.actionStandard_Deviation.setText(_translate("MainWindow", "&Standard Deviation"))
         self.actionClose_all_projection_windows.setText(_translate("MainWindow", "&Close all projection windows"))
+        self.actionOpen_docs.setText(_translate("MainWindow", "Open docs"))
 

@@ -10,11 +10,12 @@ Welcome to Mesmerize's documentation!
 	./Overview
 
 .. toctree::
-	:maxdepth: 2
+	:maxdepth: 1
 	:caption: User Guides:
 	
 	./user_guides/installation
 	./user_guides/faq
+	./user_guides/viewer/viewer
 
 .. toctree::
 	:maxdepth: 2
