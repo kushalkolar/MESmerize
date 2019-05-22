@@ -136,7 +136,7 @@
        <item row="0" column="1">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Include in Project Browser View</string>
+          <string>Visible in Project Browser</string>
          </property>
         </widget>
        </item>
@@ -201,7 +201,7 @@
        <item row="0" column="1">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Exclude in Project Browser View</string>
+          <string>Hidden in Project Browser</string>
          </property>
         </widget>
        </item>
@@ -269,7 +269,7 @@
       <item row="2" column="0">
        <widget class="QRadioButton" name="radioButtonStr">
         <property name="text">
-         <string>standard text (str)</string>
+         <string>standard te&amp;xt (str)</string>
         </property>
        </widget>
       </item>
@@ -283,14 +283,14 @@
       <item row="3" column="0">
        <widget class="QRadioButton" name="radioButtonInt64">
         <property name="text">
-         <string>whole numbers (np.int64)</string>
+         <string>whole &amp;numbers (np.int64)</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
        <widget class="QRadioButton" name="radioButtonFloat64">
         <property name="text">
-         <string>decimal numbers (np.float64)</string>
+         <string>deci&amp;mal numbers (np.float64)</string>
         </property>
        </widget>
       </item>
@@ -323,7 +323,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>boolean (True/False values)</string>
+         <string>boolean (True/False &amp;values)</string>
         </property>
        </widget>
       </item>

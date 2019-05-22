@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './project_config_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -241,19 +241,19 @@ class Ui_Form(object):
         self.label_4.setText(_translate("Form", "ROI Type Columns"))
         self.lineEdNewROIDef.setPlaceholderText(_translate("Form", "Enter New ROI Column Name"))
         self.btnAddNewROICol.setText(_translate("Form", "Add"))
-        self.label_2.setText(_translate("Form", "Include in Project Browser View"))
-        self.label_3.setText(_translate("Form", "Exclude in Project Browser View"))
+        self.label_2.setText(_translate("Form", "Visible in Project Browser"))
+        self.label_3.setText(_translate("Form", "Hidden in Project Browser"))
         self.groupBox.setTitle(_translate("Form", "Add new custom column"))
         self.btnAddCustomColumn.setText(_translate("Form", "Add"))
-        self.radioButtonStr.setText(_translate("Form", "standard text (str)"))
+        self.radioButtonStr.setText(_translate("Form", "standard te&xt (str)"))
         self.label_7.setText(_translate("Form", "Choose data type:"))
-        self.radioButtonInt64.setText(_translate("Form", "whole numbers (np.int64)"))
-        self.radioButtonFloat64.setText(_translate("Form", "decimal numbers (np.float64)"))
+        self.radioButtonInt64.setText(_translate("Form", "whole &numbers (np.int64)"))
+        self.radioButtonFloat64.setText(_translate("Form", "deci&mal numbers (np.float64)"))
         self.lineEditCustomColumnReplacementValue.setToolTip(_translate("Form", "If the project dataframe is not empty this value will be set in all rows of the new column"))
         self.lineEditCustomColumnReplacementValue.setPlaceholderText(_translate("Form", "Dataframe replacement value"))
         self.lineEditCustomColumnName.setToolTip(_translate("Form", "Name for the new column"))
         self.lineEditCustomColumnName.setPlaceholderText(_translate("Form", "Column name"))
-        self.radioButtonBoolean.setText(_translate("Form", "boolean (True/False values)"))
+        self.radioButtonBoolean.setText(_translate("Form", "boolean (True/False &values)"))
         self.btnClose.setText(_translate("Form", "Close"))
         self.btnSave.setText(_translate("Form", "Save and apply"))
         self.label_5.setText(_translate("Form", "Stimulus Type Columns"))

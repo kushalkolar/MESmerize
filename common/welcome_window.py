@@ -14,7 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import sys
 from pyqtgraphCore.console import ConsoleWidget
 from .welcome_window_pytemplate import *
-from common import configuration, system_config_window
+from common import configuration, system_config_window, doc_pages
 # from viewer.modules import batch_manager
 import traceback
 from project_manager.project_manager import ProjectManager
@@ -73,6 +73,9 @@ class MainWindow(QtWidgets.QMainWindow):
         #
         # self.ui.btnClustering.setIcon(QtGui.QIcon(mdir + '/icons/noun_195949_cc.png'))
         # self.ui.btnClustering.setIconSize(QtCore.QSize(100, 100))
+
+        self.ui.actionDocs_homepage.triggered.connect(doc_pages['home'])
+        self.ui.actionNew_Project_Docs.triggered.connect(doc_pages['new_project'])
 
         self.sys_config_gui = system_config_window.SystemConfigGUI()
         self.ui.actionSystem_Configuration.triggered.connect(self.sys_config_gui.show)

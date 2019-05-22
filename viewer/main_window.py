@@ -26,7 +26,6 @@ import traceback
 from .core.add_to_project import AddToProjectDialog
 import os
 from . import image_utils
-from webbrowser import open_new_tab as open_browser
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -58,7 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
         self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)
         self.ui.actionSave_work_environment.triggered.connect(self.save_work_environment_dialog)
-        self.ui.actionOpen_docs.triggered.connect(lambda: open_browser(doc_pages['viewer']))
+        self.ui.actionOpen_docs.triggered.connect(doc_pages['viewer'])
 
         self.add_to_project_dialog = None
 
