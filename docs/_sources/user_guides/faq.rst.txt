@@ -49,6 +49,7 @@ Caiman Motion Correction
 			- Reduce *max shifts X & Y* by ~25%
 			- Reduce *max deviation from rigid* by ~25%
 
+.. _faq-project-organization:
 
 Project Organization
 ====================
@@ -63,3 +64,6 @@ Project Organization
 		- Yes, just modify your Project Configuration using the exact same GUI that you used when creating your project. In the Welcome Window go to Configure -> Project Configuration. Add anything that you want, and then click “Save and Apply”. It's best to immediately restart Mesmerize whenever you change your project configuration.
 		- If you are adding a new Custom Column you can enter a “Dataframe replace value”. This will allow you to set a value for all existing Samples in your project for this new column.
 		- If you do not set a Dataframe replace value it will label all existing as “untagged”
+
+.. seealso:: :ref:`Project Configuration <project-configuration>`
+
