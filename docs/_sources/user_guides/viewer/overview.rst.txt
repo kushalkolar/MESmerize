@@ -1,5 +1,5 @@
-Viewer
-******
+Viewer overview
+***************
 
 **The Viewer allows you to do the following things:**
 
@@ -10,7 +10,7 @@ Viewer
 Viewer layout
 -------------
 
-.. image:: 1.png
+.. image:: ./overview/1.png
 
 To access Viewer modules choose the module you want to run from the Modules menu at the top. All modules, except the Batch Manager, are small floating windows which you can dock into the Viewer by dragging them to an edge of the viewer.
 
@@ -23,11 +23,11 @@ To open tiff files just click the “Select file” button and choose your file.
 
 .. note:: To open files from our whole brain brain you must choose the “asarray” option.
 
-.. image:: 2.png
+.. image:: ./overview/2.png
 
 When you choose tiff files from the whole brain, it will automatically locate and find the associated .json meta data if it has the same name as that tiff file.
 
-.. image:: 4.png
+.. image:: ./overview/4.png
 
 .. warning:: If the name of the tiff file and .json meta data file are different, you must specify the .json meta data file using the *Select meta data* button.
 
@@ -41,22 +41,22 @@ Exploring the work environment
 ------------------------------
 You can explore everything, such as meta data, in your work environment by going to View - > Work Environment Editor..
 
-.. image:: 8.png
+.. image:: ./overview/8.png
 
 .. note:: This is read only, you cannot edit via this GUI.
 
 For example if you want to see your meta data, double click on “imgdata” and then you can see that “imgdata” has two things, the image sequence (i.e. your video) and the meta data.
 
-.. image:: 9.png
+.. image:: ./overview/9.png
 
 If you double click on “meta” above you can see your meta data.
 
-.. image:: 10.png
+.. image:: ./overview/10.png
 
 A faster way to explore your meta data is through the console.
 
 Open the console by going to View -> Console.
 You can then type the following to see the meta data: ``viewer.workEnv.imgdata.meta``
 
-.. image:: 11.png
+.. image:: ./overview/11.png
 

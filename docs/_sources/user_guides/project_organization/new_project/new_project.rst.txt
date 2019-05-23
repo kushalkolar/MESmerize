@@ -40,6 +40,9 @@ Choose a name for your project. This will create a directory within the location
 
 .. |3png| image:: ./3.png
 
+
+.. _project-configuration:
+
 Project Configuration
 =====================
 
@@ -47,7 +50,7 @@ After setting a project name you must configure it. This is where your biologica
 
 .. warning:: It's best practice to restart Mesmerize whenever you change the project configuration.
 
-.. seealso:: **<link here> *Add to Project* guide to understand how the project configuration relates to the addition of data samples to your project**
+.. seealso:: :ref:`Add To Project Guide <add-to-project>` **to understand how the project configuration relates to the addition of data samples to your project**
 
 .. image:: ./4.png
 
@@ -99,7 +102,7 @@ If you are interested in dynamics between different cell types for which you are
 
 When you add samples to your project from the viewer, you will be prompted to enter information that is directly based on the Custom Columns that you create here.
 
-.. seealso:: <link_here> Add to Project guide
+.. seealso:: :ref:`Add to Project guide <add-to-project>`
 
 .. image:: ./add_to_proj.png
 
