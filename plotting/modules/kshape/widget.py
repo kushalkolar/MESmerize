@@ -98,6 +98,31 @@ class KShapeWidget(QtWidgets.QMainWindow):
         d = self.control_widget.get_params()
         return d
 
+    def pad_input_data(self, a: np.ndarray) -> np.ndarray:
+        l = 0
+
+        for c in a:
+            s = c.size
+            if s > l:
+                l = s
+
+        p = np.zeros(shape=(a.size, l))
+
+        for i in range(p.shape[0]):
+            s = a[i].size
+
+            if s == l:
+                p[i, :] = a[i]
+                continue
+
+            max_pad_en_ix = l - s
+
+            pre = np.random.randint(0, max_pad_en_ix)
+            post = l - (pre + s)
+            p[i, :] = np.pad(a[i], (pre, post), 'minimum')
+
+        return p
+
     def start_process(self):
         if self.finished:
             if QtWidgets.QMessageBox.warning(self, 'Discard data?',
@@ -110,7 +135,7 @@ class KShapeWidget(QtWidgets.QMainWindow):
         scaler = TimeSeriesScalerMeanVariance()
         try:
             arrays = self.transmission.df[self.data_column].values
-            arrays = np.vstack(arrays)
+            arrays = self.pad_input_data(arrays)
             self.input_data = scaler.fit_transform(arrays)[:, :, 0]
         except:
             QtWidgets.QMessageBox.warning(self, 'Invalid data column',
@@ -203,10 +228,11 @@ class KShapeWidget(QtWidgets.QMainWindow):
         self.y_pred = pickle.load(open(y_pred_path, 'rb'))
 
         num_clusters = self.params['kwargs']['n_clusters']
-        self.control_widget.ui.listWidgetClusterNumber.clear()
-        self.control_widget.ui.listWidgetClusterNumber.addItems(list(map(str, range(num_clusters))))
 
         self.finished = True
+
+        self.control_widget.ui.listWidgetClusterNumber.clear()
+        self.control_widget.ui.listWidgetClusterNumber.addItems(list(map(str, range(num_clusters))))
 
     def set_plot(self, item: QtWidgets.QListWidgetItem):
         if not self.finished:
@@ -237,11 +263,11 @@ class KShapeWidget(QtWidgets.QMainWindow):
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
 
-    t = Transmission.from_pickle('/home/kushal/Sars_stuff/mesmerize_toy_datasets/cesa_hnk1_raw_data.trn')
-    t.df['splice'] = t.df._RAW_CURVE.apply(lambda x: x[:2990])
+    t = Transmission.from_pickle('/home/kushal/Sars_stuff/jorgen_stuff/pfeatures_100_curves.trn')
+    # t.df['splice'] = t.df._RAW_CURVE.apply(lambda x: x[:2990])
 
     w = KShapeWidget()
-    w.set_input(t, data_column='splice')
+    w.set_input(t, data_column='_pfeature_peak_curve')
     w.show()
 
     app.exec_()

@@ -24,6 +24,8 @@ def run(data_path: str, params_path: str):
     with open(out, 'w') as f:
         f.write('0')
 
+    print('** Fitting input data **')
+
     kwargs = params['kwargs']
     ks = KShape(**kwargs)
     ks.fit(X)
@@ -31,6 +33,7 @@ def run(data_path: str, params_path: str):
     ks_path = params['workdir'] + '/ks.pickle'
     pickle.dump(ks, open(ks_path, 'wb'))
 
+    print('** Fitting predictions **')
     y_pred = ks.fit_predict(X)
 
     y_pred_path = params['workdir'] + '/y_pred.pickle'
@@ -38,6 +41,9 @@ def run(data_path: str, params_path: str):
 
     with open(out, 'w') as f:
         f.write('1')
+
+    print('* Done! *')
+
 
 if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2])
