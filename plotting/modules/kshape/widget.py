@@ -1,0 +1,247 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+@author: kushal
+
+Chatzigeorgiou Group
+Sars International Centre for Marine Molecular Biology
+
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+"""
+
+from control_widget import *
+import kshape_process
+import psutil
+import os
+from signal import SIGKILL
+from common.process_utils import make_workdir, make_runfile
+import pickle
+from analyser.DataTypes import Transmission
+import numpy as np
+import traceback
+from functools import partial
+from collections import deque
+from plotting.variants.lineplot import Lineplot
+from tslearn.preprocessing import TimeSeriesScalerMeanVariance
+
+
+class KShapeControlDock(QtWidgets.QDockWidget):
+    def __init__(self, parent):
+        QtWidgets.QDockWidget.__init__(self, parent=parent)
+        self.ui = Ui_KShapeControl()
+        self.ui.setupUi(self)
+        self.setFloating(False)
+
+    def get_params(self) -> dict:
+        if self.ui.checkBoxRandom.isChecked():
+            random_state = None
+        else:
+            random_state = self.ui.spinBoxRandom.value()
+
+        d = {'n_clusters':      self.ui.spinBoxN_clusters.value(),
+             'max_iter':        self.ui.spinBoxMaxIter.value(),
+             'tol':             10 ** self.ui.spinBoxTol.value(),
+             'n_init':          self.ui.spinBoxN_init.value(),
+             'random_state':    random_state
+             }
+
+        return d
+
+    def set_active(self):
+        self.ui.pushButtonStart.setDisabled(True)
+        self.ui.pushButtonAbort.setEnabled(True)
+
+    def set_inactive(self):
+        self.ui.pushButtonStart.setEnabled(True)
+        self.ui.pushButtonAbort.setDisabled(True)
+
+
+class KShapeWidget(QtWidgets.QMainWindow):
+    def __init__(self):
+        QtWidgets.QMainWindow.__init__(self, parent=None)
+        self.setWindowTitle('KShapes Clustering')
+        self.control_widget = KShapeControlDock(parent=self)
+
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.control_widget)
+
+        self.finished = False
+        self.process = None
+
+        self._workdir = None
+
+        self.input_data = None
+        self.params = None
+
+        self.ks = None
+        self.y_pred = None
+
+        self.transmission = None
+        self.data_column = None
+
+        self.std_out = deque(maxlen=500)
+
+        self.control_widget.ui.pushButtonStart.clicked.connect(self.start_process)
+        self.control_widget.ui.pushButtonAbort.clicked.connect(self.abort_process)
+
+        self.control_widget.ui.listWidgetClusterNumber.currentItemChanged.connect(self.set_plot)
+
+        self.plot = Lineplot()
+
+        self.setCentralWidget(self.plot)
+
+    def set_input(self, transmission: Transmission, data_column: str):
+        assert isinstance(transmission, Transmission)
+        self.transmission = transmission
+        self.data_column = data_column
+
+    def get_params_dict(self) -> dict:
+        d = self.control_widget.get_params()
+        return d
+
+    def start_process(self):
+        if self.finished:
+            if QtWidgets.QMessageBox.warning(self, 'Discard data?',
+                                             'Would you like to discard the current clustering data?',
+                                             QtWidgets.QMessageBox.Yes,
+                                             QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                return
+            self.plot.clear()
+
+        scaler = TimeSeriesScalerMeanVariance()
+        try:
+            arrays = self.transmission.df[self.data_column].values
+            arrays = np.vstack(arrays)
+            self.input_data = scaler.fit_transform(arrays)[:, :, 0]
+        except:
+            QtWidgets.QMessageBox.warning(self, 'Invalid data column',
+                                          'The data types in the chosen '
+                                          'data column is not appropriate.\n' + traceback.format_exc())
+            return
+
+        workdir = self.get_workdir()
+
+        self.clear_workdir()
+
+        self.params = {'kwargs': self.get_params_dict(),
+                       'workdir': workdir,
+                       'out': workdir + '/out'}
+
+        params_path = os.path.abspath(workdir + '/params.pickle')
+        pickle.dump(self.params, open(params_path, 'wb'))
+
+        data_path = os.path.abspath(workdir + '/data.npy')
+        np.save(data_path, self.input_data)
+
+        self.process = QtCore.QProcess()
+        self.process.setWorkingDirectory(self.get_workdir())
+
+        self.process.setProcessChannelMode(QtCore.QProcess.MergedChannels)
+        self.process.readyReadStandardOutput.connect(partial(self.print_stdout, self.process))
+        self.process.finished.connect(self.process_finished)
+
+        m = os.path.abspath(kshape_process.__file__)
+        args = data_path + ' ' + params_path
+        sh_file_path = make_runfile(module_path=m, workdir=self.get_workdir(), args_str=args)
+
+        self.control_widget.ui.textBrowser.clear()
+
+        self.process.start(sh_file_path)
+
+        self.finished = False
+        self.control_widget.set_active()
+
+    def print_stdout(self, process: QtCore.QProcess):
+        std_out = process.readAllStandardOutput().data().decode('utf8')
+        self.control_widget.ui.textBrowser.append(std_out)
+
+    def get_workdir(self):
+        if self._workdir is None:
+            self._workdir = make_workdir('kshape')
+        return os.path.abspath(self._workdir)
+
+    def clear_workdir(self):
+        if self._workdir is None:
+            return
+
+        workdir = self.get_workdir()
+
+        for f in ['params.pickle', 'data.npy', 'ks.pickle', 'out.pickle']:
+            try:
+                os.remove(workdir + '/' + f)
+            except FileNotFoundError:
+                pass
+
+    def abort_process(self):
+        if QtWidgets.QMessageBox.warning(self, 'Abort?',
+                                         'Confirm abort',
+                                         QtWidgets.QMessageBox.Yes,
+                                         QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+            return
+        self.terminate_qprocess()
+        self.control_widget.set_inactive()
+
+    def terminate_qprocess(self):
+        try:
+            py_proc = psutil.Process(self.process.pid()).children()[0].pid
+        except psutil.NoSuchProcess:
+            return
+        children = psutil.Process(py_proc).children()
+        os.kill(py_proc, SIGKILL)
+        for child in children:
+            os.kill(child.pid, SIGKILL)
+
+    def process_finished(self):
+        self.control_widget.set_inactive()
+
+        if open(self.params['out'], 'r').read() == 0:
+            return
+
+        ks_path = self.params['workdir'] + '/ks.pickle'
+        self.ks = pickle.load(open(ks_path, 'rb'))
+
+        y_pred_path = self.params['workdir'] + '/y_pred.pickle'
+        self.y_pred = pickle.load(open(y_pred_path, 'rb'))
+
+        num_clusters = self.params['kwargs']['n_clusters']
+        self.control_widget.ui.listWidgetClusterNumber.clear()
+        self.control_widget.ui.listWidgetClusterNumber.addItems(list(map(str, range(num_clusters))))
+
+        self.finished = True
+
+    def set_plot(self, item: QtWidgets.QListWidgetItem):
+        if not self.finished:
+            QtWidgets.QMessageBox.warning(self, 'Nothing to plot', 'Clustering must finish '
+                                                                   'before you can plot anything')
+            return
+
+        cluster_num = int(item.text())
+
+        self.plot.clear()
+
+        for xx in self.input_data[self.y_pred == cluster_num]:
+            self.plot.ax.plot(xx.ravel(), 'k-', alpha=0.2)
+
+        center = self.ks.cluster_centers_[cluster_num].ravel()
+        self.plot.ax.plot(center, 'r-')
+
+        low = np.min(self.input_data)
+        high = np.max(self.input_data)
+
+        self.plot.ax.set_ylim(low, high)
+
+        self.plot.ax.set_title('Cluster ' + str(cluster_num))
+
+        self.plot.draw()
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication([])
+
+    t = Transmission.from_pickle('/home/kushal/Sars_stuff/mesmerize_toy_datasets/cesa_hnk1_raw_data.trn')
+    t.df['splice'] = t.df._RAW_CURVE.apply(lambda x: x[:2990])
+
+    w = KShapeWidget()
+    w.set_input(t, data_column='splice')
+    w.show()
+
+    app.exec_()

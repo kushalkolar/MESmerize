@@ -28,7 +28,18 @@ class TimeseriesPlot(MatplotlibWidget):
     #     pass
 
     def _set_lineplot(self, data, **kwargs):
-        self.ax.cla()
+        self.clear()
         df = DataFrame(data).melt()
         self.plot = sns.lineplot(x='variable', y='value', data=df, ax=self.ax, **kwargs)
         self.draw()
+
+    def set_single_line(self, y: np.ndarray, x: np.ndarray = None, **kwargs):
+        self.clear()
+        if x is None:
+            x = np.arange(0, len(y))
+
+        self.plot = sns.lineplot(x=x, y=y, ax=self.ax, **kwargs)
+        self.draw()
+
+    def clear(self):
+        self.ax.cla()

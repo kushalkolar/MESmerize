@@ -523,9 +523,10 @@ class ModuleGUI(QtWidgets.QWidget):
         for child in children:
             os.kill(child.pid, SIGKILL)
 
-    def print_qprocess_std_out(self, std_out):
-        self.current_std_out.append((str(std_out.readAllStandardOutput())))
-        self.ui.textBrowserStdOut.append('\n'.join(self.current_std_out))
+    def print_qprocess_std_out(self, proc):
+        text = proc.readAllStandardOutput().data().decode('utf8')
+        # self.current_std_out.append(text)
+        self.ui.textBrowserStdOut.append(text)
 
     def add_item(self, module: str, viewer_reference, input_workEnv: ViewerWorkEnv, input_params: dict, name='', info=''):
 
