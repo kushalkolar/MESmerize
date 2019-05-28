@@ -39,7 +39,7 @@ class Ui_KShapeControl(object):
         self.spinBoxMaxIter = QtWidgets.QSpinBox(self.dockWidgetContents)
         self.spinBoxMaxIter.setMaximum(9999)
         self.spinBoxMaxIter.setSingleStep(50)
-        self.spinBoxMaxIter.setProperty("value", 100)
+        self.spinBoxMaxIter.setProperty("value", 300)
         self.spinBoxMaxIter.setObjectName("spinBoxMaxIter")
         self.horizontalLayout_2.addWidget(self.spinBoxMaxIter)
         self.horizontalLayout_6.addLayout(self.horizontalLayout_2)
