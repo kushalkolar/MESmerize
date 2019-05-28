@@ -135,6 +135,7 @@ class Heatmap(MatplotlibWidget):
 
 class Selection(QtCore.QObject):
     sig_selection_changed = QtCore.pyqtSignal(tuple)
+    sig_multi_selection_changed = QtCore.pyqtSignal(list)
 
     def __init__(self): #, heatmap_obj, mode: str = 'row'):
         QtCore.QObject.__init__(self)
@@ -158,8 +159,10 @@ class Selection(QtCore.QObject):
         self.current_ix = None
         self._highlight = None
         self._start_ixs = None
-        
+        self.multi_select_mode = False
+
         self._multiselect = False
+        self.multi_selection_list = list()
 
     def set(self, heatmap_obj, mode: str = 'row'):
         self._highlight = None
@@ -174,6 +177,12 @@ class Selection(QtCore.QObject):
         if mode == 'row':
             self.canvas.mpl_connect('button_press_event', self.select_row)
         elif mode == 'item':
+            self.canvas.mpl_connect('button_press_event', self.select_item)
+            self.canvas.setFocusPolicy(QtCore.Qt.ClickFocus)
+            self.canvas.setFocus()
+            self.canvas.mpl_connect('key_press_event', self.set_multi_select_mode_on)
+            self.canvas.mpl_connect('key_release_event', self.set_multi_select_mode_off)
+        elif mode == 'span':
             rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
             self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
                                         drawtype='box', useblit=True,
@@ -182,15 +191,24 @@ class Selection(QtCore.QObject):
                                         spancoords='data',
                                         interactive=True, rectprops=rp)
             self.RS.set_active(True)
+        else:
+            raise ValueError("Invalid selection mode: '" + str(mode) + "' Valid modes are: 'row', 'item' or 'span'.")
 
     def _clear_highlight(self):
         if self._highlight is not None:
             self._highlight.remove()
     
     def update_selection(self, ix: tuple):
-        self._clear_highlight()
+        if not self.multi_select_mode:
+            self._clear_highlight()
+            self.multi_selection_list.clear()
+
         self.current_ix = ix
         self.sig_selection_changed.emit(self.current_ix)
+
+        if self.multi_select_mode:
+            self.multi_selection_list.append(ix)
+            self.sig_multi_selection_changed.emit(self.multi_selection_list)
         
     def select_row(self, ev):
         if type(ev) is int:
@@ -210,7 +228,27 @@ class Selection(QtCore.QObject):
     def _draw_row_selection(self, y):
         self._highlight = self.plot.add_patch(RectangularPatch((0, y), self.heatmap.data.shape[1], 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
         self.canvas.draw()
-    
+
+    def set_multi_select_mode_on(self, ev):
+        print(ev.key)
+        if ev.key == 'control':
+            self.multi_select_mode = True
+
+    def set_multi_select_mode_off(self, ev):
+        if ev.key == 'control':
+            self.multi_select_mode = False
+
+    def select_item(self, ev):
+        if type(ev) is not tuple:
+            ix = (int(ev.xdata), int(ev.ydata))
+
+            self.update_selection(ix)
+            self._draw_item_selection(ix)
+
+    def _draw_item_selection(self, ix: tuple):
+        self._highlight = self.plot.add_patch(RectangularPatch(ix, 1, 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
+        self.canvas.draw()
+
     def toggle_selector(self, event):
         print('bah')
 
@@ -263,4 +301,3 @@ if __name__ == '__main__':
     
     w.show()
     app.exec_()
-    

@@ -49,11 +49,11 @@ class HeatmapWidget(QtWidgets.QWidget):
 
 
 class HeatmapSplitterWidget(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, highlight_mode='row'):
         QtWidgets.QWidget.__init__(self)
         self.vlayout = QtWidgets.QVBoxLayout(self)
         
-        self.plot_widget = Heatmap()
+        self.plot_widget = Heatmap(highlight_mode=highlight_mode)
 
         self.labelSort = QtWidgets.QLabel(self)
         self.labelSort.setText('Sort heatmap according to column:')
@@ -86,6 +86,10 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         self.has_history_trace = False
         self.data_column = None
 
+    def add_to_splitter(self, ui):
+        self.splitter.addWidget(ui)
+        return ui
+
     def _disconnect_comboBoxSort(self):
         try:
             self.comboBoxSortColumn.currentTextChanged.disconnect(self._set_sort_order)
@@ -95,6 +99,16 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
     def _connect_comboBoxSort(self):
         self.comboBoxSortColumn.currentTextChanged.connect(self._set_sort_order)
 
+    @staticmethod
+    def merge_dataframes(dataframes) -> pd.DataFrame:
+        if type(dataframes) is list:
+            dataframe = pd.concat(dataframes)
+        else:
+            dataframe = dataframes
+
+        assert isinstance(dataframe, pd.DataFrame)
+        return dataframe
+
     def set_data(self, dataframes,
                  data_column: str,
                  labels_column: str,
@@ -103,17 +117,10 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
                  reset_data: bool = True,
                  **kwargs):
         """
-
         :param dataframes:      list of dataframes or a single DataFrame
         :type dataframes:       list or pd.DataFrame
         """
-        if type(dataframes) is list:
-            dataframe = pd.concat(dataframes)
-        else:
-            dataframe = dataframes
-
-        assert isinstance(dataframe, pd.DataFrame)
-
+        dataframe = self.merge_dataframes(dataframes)
         self.data_column = data_column
         self.cmap = cmap
         self.labels_column = labels_column
@@ -132,7 +139,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
 
         if reset_data:
             self.comboBoxSortColumn.clear()
-            self.comboBoxSortColumn.addItems(dataframe.columns.to_list())
+            self.comboBoxSortColumn.addItems(self.dataframe.columns.to_list())
 
         ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
         if (ix != -1) and (self.previous_sort_column != ''):
@@ -196,7 +203,7 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
 #        self.splitter.addWidget(self.plot_widget)
 
         self.live_datapoint_tracer = DatapointTracerWidget()
-        self.splitter.addWidget(self.live_datapoint_tracer)
+        self.add_to_splitter(self.live_datapoint_tracer)
 
 #        self.vlayout.addWidget(self.splitter)
 #        # self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
