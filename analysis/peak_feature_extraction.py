@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import pandas as pd
 import numpy as np
 import pickle
-from .DataTypes import Transmission
+from .data_types import Transmission
 #    from . import Compute
 from . import compute_utils
 from .compute_peak_features import ComputePeakFeatures

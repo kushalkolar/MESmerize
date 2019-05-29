@@ -20,12 +20,9 @@ import numpy as np
 import pandas as pd
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 
-if __name__ == '__main__':
-    import mainwindow_pytemplate as uiWin
-    from DataTypes import Transmission
-else:
-    from .pytemplates import mainwindow_pytemplate as uiWin
-    from .DataTypes import Transmission
+
+from .pytemplates import mainwindow_pytemplate as uiWin
+from .data_types import Transmission
 from pyqtgraphCore.console import ConsoleWidget
 import pickle
 from common import configuration

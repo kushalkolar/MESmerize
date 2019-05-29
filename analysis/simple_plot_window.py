@@ -14,8 +14,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 # import sys
 # sys.path.append('..')
 from .pytemplates.plot_window_pytemplate import *
-from .DataTypes import Transmission
-from .HistoryWidget import HistoryTreeWidget
+from .data_types import Transmission
+from .history_widget import HistoryTreeWidget
 from pyqtgraphCore import LinearRegionItem
 
 

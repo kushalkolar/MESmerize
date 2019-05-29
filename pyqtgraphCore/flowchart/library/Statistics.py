@@ -1,22 +1,11 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-from ...Qt import QtCore, QtGui, QtWidgets
-from ..Node import Node
+from ...Qt import QtWidgets
 # from . import functions
-from ... import functions as pgfn
 from .common import *
-from ...python2_3 import xrange
-from ... import PolyLineROI
-from ... import Point
-from ... import metaarray as metaarray
-from analysis.DataTypes import *
-from functools import partial
-from analysis import PeakEditor
+from analysis.data_types import *
 from analysis import peak_feature_extraction
-from analysis.stats_gui import StatsWindow
 from plotting.widgets import CurvePlotWindow
 from analysis import pca_gui
-import pickle
 import traceback
 
 

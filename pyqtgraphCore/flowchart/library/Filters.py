@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from .common import *
-from analysis.DataTypes import Transmission
+from analysis.data_types import Transmission
 from scipy import signal
 import pandas as pd
 from analysis.math.tvregdiff import tv_reg_diff

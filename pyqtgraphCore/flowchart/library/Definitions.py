@@ -1,19 +1,10 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-from ...Qt import QtCore, QtGui, QtWidgets
-from ..Node import Node
+from ...Qt import QtWidgets
 # from . import functions
-from ... import functions as pgfn
 from .common import *
-from ...python2_3 import xrange
-from ... import PolyLineROI
-from ... import Point
-from ... import metaarray as metaarray
-from analysis.DataTypes import *
-from functools import partial
-from analysis import PeakEditor
+from analysis.data_types import *
+from plotting.widgets.peak_editor import peak_editor
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
-from common import configuration
 
 
 def _static_dfof(F: np.ndarray) -> np.ndarray:
@@ -479,7 +470,7 @@ class PeakDetect(CtrlNode):
 
     def _peak_editor(self):
         if self.pbw is None:
-            self.pbw = PeakEditor.PBWindow(self.t, self.t)
+            self.pbw = peak_editor.PBWindow(self.t, self.t)
 
         self.pbw.show()
         self.pbw.sig_send_data.connect(self._set_editor_output)
