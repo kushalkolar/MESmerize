@@ -5,7 +5,7 @@ from .common import *
 from analysis.data_types import *
 from analysis import peak_feature_extraction
 from plotting.widgets import CurvePlotWindow
-from analysis import pca_gui
+# from analysis import pca_gui
 import traceback
 
 
@@ -115,47 +115,47 @@ class PeakFeatures(CtrlNode):
     #     self.stats_gui.show()
 
 
-class PCA(CtrlNode):
-    """PCA (Principal component analysis)"""
-    nodeName = 'PCA'
-    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
-                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.ctrls['ShowGUI'].clicked.connect(self._open_pca_gui)
-
-    def process(self, **kwargs):
-        if (self.ctrls['Apply'].isChecked() is False) or not hasattr(self, 'pca_gui'):
-            return
-
-        transmissions = kwargs['In']
-
-        if not len(transmissions) > 0:
-            raise Exception('No incoming transmissions')
-
-        transmissions_list = []
-
-        for t in transmissions.items():
-            t = t[1]
-            if t is None:
-                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-                continue
-
-            if not any('Power Spectral Density' in d for d in t.src):
-                raise KeyError('Cannot perform PCA with incoming transmissions. '
-                               'You must pass through one of the following nodes before performing a PCA:\n'
-                               'Power Spectral Density')
-
-            transmissions_list.append(t.copy())
-
-        self.pca_gui.update_input(transmissions_list)
-
-    def _open_pca_gui(self):
-        if hasattr(self, 'pca_gui'):
-            self.pca_gui.show()
-            return
-
-        self.pca_gui = pca_gui.PCA_GUI()
-        self.pca_gui.show()
-        self.changed()
+# class PCA(CtrlNode):
+#     """PCA (Principal component analysis)"""
+#     nodeName = 'PCA'
+#     uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+#                   ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+#
+#     def __init__(self, name):
+#         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+#         self.ctrls['ShowGUI'].clicked.connect(self._open_pca_gui)
+#
+#     def process(self, **kwargs):
+#         if (self.ctrls['Apply'].isChecked() is False) or not hasattr(self, 'pca_gui'):
+#             return
+#
+#         transmissions = kwargs['In']
+#
+#         if not len(transmissions) > 0:
+#             raise Exception('No incoming transmissions')
+#
+#         transmissions_list = []
+#
+#         for t in transmissions.items():
+#             t = t[1]
+#             if t is None:
+#                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+#                 continue
+#
+#             if not any('Power Spectral Density' in d for d in t.src):
+#                 raise KeyError('Cannot perform PCA with incoming transmissions. '
+#                                'You must pass through one of the following nodes before performing a PCA:\n'
+#                                'Power Spectral Density')
+#
+#             transmissions_list.append(t.copy())
+#
+#         self.pca_gui.update_input(transmissions_list)
+#
+#     def _open_pca_gui(self):
+#         if hasattr(self, 'pca_gui'):
+#             self.pca_gui.show()
+#             return
+#
+#         self.pca_gui = pca_gui.PCA_GUI()
+#         self.pca_gui.show()
+#         self.changed()

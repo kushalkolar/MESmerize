@@ -19,7 +19,7 @@ import pickle
 import tifffile
 import os
 from shutil import rmtree
-#from common import configuration
+from common import configuration
 from uuid import uuid4
 from uuid import UUID as UUID_type
 import json
