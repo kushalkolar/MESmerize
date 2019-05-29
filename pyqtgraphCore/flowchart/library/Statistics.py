@@ -9,13 +9,13 @@ from ...python2_3 import xrange
 from ... import PolyLineROI
 from ... import Point
 from ... import metaarray as metaarray
-from analyser.DataTypes import *
+from analysis.DataTypes import *
 from functools import partial
-from analyser import PeakEditor
-from analyser import peak_feature_extraction
-from analyser.stats_gui import StatsWindow
+from analysis import PeakEditor
+from analysis import peak_feature_extraction
+from analysis.stats_gui import StatsWindow
 from plotting.widgets import CurvePlotWindow
-from analyser import pca_gui
+from analysis import pca_gui
 import pickle
 import traceback
 

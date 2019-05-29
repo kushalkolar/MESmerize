@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from .common import *
-from analyser.DataTypes import Transmission
+from analysis.DataTypes import Transmission
 from scipy import signal
 from functools import partial
 from scipy import fftpack

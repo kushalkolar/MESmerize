@@ -9,9 +9,9 @@ from ...python2_3 import xrange
 from ... import PolyLineROI
 from ... import Point
 from ... import metaarray as metaarray
-from analyser.DataTypes import *
+from analysis.DataTypes import *
 from functools import partial
-from analyser import PeakEditor
+from analysis import PeakEditor
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
 from common import configuration
 

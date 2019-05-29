@@ -7,7 +7,7 @@ from ...WidgetGroup import WidgetGroup
 from ..Node import Node
 import numpy as np
 from ...widgets.ColorButton import ColorButton
-from analyser.DataTypes import Transmission
+from analysis.DataTypes import Transmission
 try:
     import metaarray
     HAVE_METAARRAY = True

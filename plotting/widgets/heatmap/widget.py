@@ -15,7 +15,7 @@ from ...variants import Heatmap
 import numpy as np
 import pandas as pd
 from .. import DatapointTracerWidget
-from analyser.DataTypes import HistoryTrace, Transmission
+from analysis.DataTypes import HistoryTrace, Transmission
 
 
 class HeatmapWidget(QtWidgets.QWidget):

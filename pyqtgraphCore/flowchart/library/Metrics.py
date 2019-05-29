@@ -2,6 +2,7 @@ from .common import *
 import numpy as np
 from sklearn.metrics import calinski_harabaz_score
 from sklearn.cluster import KMeans
+from analysis.math import drfft_dtw
 
 
 class DRFFT_DTW(CtrlNode):
@@ -23,21 +24,34 @@ class DRFFT_DTW(CtrlNode):
                  ('interpolate', 'check', {'toolTip': 'Interpoate the inverse fourier transforms. Increases computation'
                                                       'time SIGNIFICANTLY but may produce more accurate results.'}),
 
-                 ('Apply', 'check', {'checked': False, 'applyBox': True})
+                 ('start', 'button', {'text': 'Compute'})
+                 # ('Apply', 'check', {'checked': False, 'applyBox': True})
                  ]
 
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        self.set_data_column_combo_box()
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out', 'bypass': 'In'}})
+        self.ctrls['start'].clicked.connect(self._compute)
+        self.results = None
+        self.widget = drfft_dtw.Widget()
 
-        if self.ctrls['Apply'].isChecked() is False:
-            return
+    def process(self, **kwargs):
+        transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(transmissions)
 
-        self.t = transmission.copy()
+        self.t = Transmission.merge(self.transmissions_list).copy()
+        columns = self.t.df.columns.to_list()
+        self.ctrls['data_column'].setItems(columns)
 
-        step_size = self.ctrls['step_size'].value()
-        step_start = self.ctrls['step_start'].value()
-        interpolate = self.ctrls['interpolate'].isChecked()
+        self.param_step = self.ctrls['step_size'].value()
+        self.param_start = self.ctrls['step_start'].value()
+        self.param_interpolate = self.ctrls['interpolate'].isChecked()
 
         self.data = np.vstack(self.t.df[self.data_column])
 
+    def _compute(self):
+        # self.ctrls['start'].setDisabled(True)
+        self.widget.show()
+        start = self.param_start
+        step = self.param_step
+        interp = self.param_interpolate
+        self.widget.start(start, step, interp, self.data)
