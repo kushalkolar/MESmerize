@@ -16,7 +16,7 @@ import os
 from signal import SIGKILL
 from common.process_utils import make_workdir, make_runfile
 import pickle
-from analyser.DataTypes import Transmission
+from analysis.DataTypes import Transmission
 import numpy as np
 import traceback
 from functools import partial
@@ -24,7 +24,7 @@ from collections import deque
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from matplotlib.gridspec import GridSpec
-from analyser.utils import get_cluster_proportions
+from analysis.utils import get_cluster_proportions
 
 
 class KShapeControlDock(QtWidgets.QDockWidget):

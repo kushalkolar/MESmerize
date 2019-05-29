@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from ... import PlotDataItem, ComboBox
-from analyser import simple_plot_window
+from analysis import simple_plot_window
 from .common import *
 import numpy as np
 import pandas as pd

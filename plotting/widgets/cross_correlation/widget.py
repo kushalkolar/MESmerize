@@ -13,8 +13,8 @@ from PyQt5 import QtCore, QtWidgets
 from .control_widget import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
-from analyser.DataTypes import Transmission
-from analyser.math import cross_correlation as cc_funcs
+from analysis.DataTypes import Transmission
+from analysis.math import cross_correlation as cc_funcs
 import numpy as np
 from pyqtgraphCore import PlotDataItem
 

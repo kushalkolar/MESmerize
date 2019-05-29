@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from .common import *
-from analyser.DataTypes import Transmission
+from analysis.DataTypes import Transmission
 from scipy import signal
 import pandas as pd
-from analyser.math.tvregdiff import tv_reg_diff
+from analysis.math.tvregdiff import tv_reg_diff
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
 class Derivative(CtrlNode):

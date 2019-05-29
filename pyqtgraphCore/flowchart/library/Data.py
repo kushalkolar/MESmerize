@@ -4,7 +4,7 @@ import numpy as np
 from .common import *
 import pickle
 from functools import partial
-from analyser.DataTypes import Transmission, StatsTransmission
+from analysis.DataTypes import Transmission, StatsTransmission
 from common import configuration
 from os.path import basename
 

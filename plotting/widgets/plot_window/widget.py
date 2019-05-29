@@ -22,7 +22,7 @@ from pyqtgraphCore import GraphicsLayoutWidget, mkColor
 from pyqtgraphCore.console import ConsoleWidget
 from matplotlib import cm as matplotlib_color_map
 import numpy as np
-from analyser.DataTypes import Transmission
+from analysis.DataTypes import Transmission
 
 
 class PlotWindow(QtWidgets.QMainWindow):

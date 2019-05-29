@@ -18,8 +18,8 @@ import pyqtgraphCore
 from viewer import main_window as viewer_main_window
 # from viewer.core.viewer_work_environment import ViewerWorkEnv
 # from viewer.modules import tiff_io
-from analyser.flowchart import Window as FlowchartWindow
-# from analyser.stats_gui import StatsWindow
+from analysis.flowchart import Window as FlowchartWindow
+# from analysis.stats_gui import StatsWindow
 from project_manager.project_browser.project_browser_window import ProjectBrowserWindow
 # import json
 from uuid import UUID
