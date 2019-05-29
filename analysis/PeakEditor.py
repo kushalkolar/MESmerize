@@ -15,9 +15,9 @@ from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
-from analyser.pytemplates.PeakEditor_pytemplate import *
-from analyser.DataTypes import Transmission
-from analyser.HistoryWidget import HistoryTreeWidget
+from analysis.pytemplates.PeakEditor_pytemplate import *
+from analysis.DataTypes import Transmission
+from analysis.HistoryWidget import HistoryTreeWidget
 import traceback
 from functools import partial
 
