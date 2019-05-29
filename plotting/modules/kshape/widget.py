@@ -9,8 +9,8 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from control_widget import *
-import kshape_process
+from .control_widget import *
+from . import kshape_process
 import psutil
 import os
 from signal import SIGKILL
@@ -21,8 +21,10 @@ import numpy as np
 import traceback
 from functools import partial
 from collections import deque
-from plotting.variants.lineplot import Lineplot
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
+from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from matplotlib.gridspec import GridSpec
+from analyser.utils import get_cluster_proportions
 
 
 class KShapeControlDock(QtWidgets.QDockWidget):
@@ -56,10 +58,20 @@ class KShapeControlDock(QtWidgets.QDockWidget):
         self.ui.pushButtonAbort.setDisabled(True)
 
 
+class KShapePlot(MatplotlibWidget):
+    def __init__(self):
+        MatplotlibWidget.__init__(self)
+        gs = GridSpec(1, 3, wspace=0.3)
+        self.ax_curves = self.fig.add_subplot(gs[0, :2])
+        self.ax_prop = self.fig.add_subplot(gs[0, 2])
+        self.ax_prop.set_title('Proportions')
+
+
 class KShapeWidget(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self, parent=None)
-        self.setWindowTitle('KShapes Clustering')
+        self.setWindowTitle('k-Shape Clustering')
+        self.resize(1200, 400)
         self.control_widget = KShapeControlDock(parent=self)
 
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.control_widget)
@@ -85,14 +97,25 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         self.control_widget.ui.listWidgetClusterNumber.currentItemChanged.connect(self.set_plot)
 
-        self.plot = Lineplot()
+        self.control_widget.ui.comboBoxGroups.currentTextChanged.connect(self.plot_proportions)
+
+        self.plot = KShapePlot()
 
         self.setCentralWidget(self.plot)
 
-    def set_input(self, transmission: Transmission, data_column: str):
+    def set_input(self, transmission: Transmission):
         assert isinstance(transmission, Transmission)
         self.transmission = transmission
-        self.data_column = data_column
+        self.transmission.df.reset_index(drop=True, inplace=True)
+
+        cols = self.transmission.df.columns.tolist()
+        cols.sort()
+
+        self.control_widget.ui.comboBoxDataColumn.clear()
+        self.control_widget.ui.comboBoxDataColumn.addItems(cols)
+
+        self.control_widget.ui.comboBoxGroups.clear()
+        self.control_widget.ui.comboBoxGroups.addItems(cols)
 
     def get_params_dict(self) -> dict:
         d = self.control_widget.get_params()
@@ -130,10 +153,12 @@ class KShapeWidget(QtWidgets.QMainWindow):
                                              QtWidgets.QMessageBox.Yes,
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
-            self.plot.clear()
+            self.plot.fig.clear()
+            # self.plot.clear()
 
         scaler = TimeSeriesScalerMeanVariance()
         try:
+            self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
             arrays = self.transmission.df[self.data_column].values
             arrays = self.pad_input_data(arrays)
             self.input_data = scaler.fit_transform(arrays)[:, :, 0]
@@ -229,12 +254,17 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         num_clusters = self.params['kwargs']['n_clusters']
 
-        self.finished = True
-
         self.control_widget.ui.listWidgetClusterNumber.clear()
         self.control_widget.ui.listWidgetClusterNumber.addItems(list(map(str, range(num_clusters))))
 
+        self.finished = True
+
+        self.plot_proportions(self.control_widget.ui.comboBoxGroups.currentText())
+
     def set_plot(self, item: QtWidgets.QListWidgetItem):
+        if item is None:
+            return
+
         if not self.finished:
             QtWidgets.QMessageBox.warning(self, 'Nothing to plot', 'Clustering must finish '
                                                                    'before you can plot anything')
@@ -242,22 +272,39 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         cluster_num = int(item.text())
 
-        self.plot.clear()
+        self.plot.ax_curves.cla()
 
         for xx in self.input_data[self.y_pred == cluster_num]:
-            self.plot.ax.plot(xx.ravel(), 'k-', alpha=0.2)
+            self.plot.ax_curves.plot(xx.ravel(), 'k-', alpha=0.2)
 
         center = self.ks.cluster_centers_[cluster_num].ravel()
-        self.plot.ax.plot(center, 'r-')
+        self.plot.ax_curves.plot(center, 'r-')
 
         low = np.min(self.input_data)
         high = np.max(self.input_data)
 
-        self.plot.ax.set_ylim(low, high)
+        self.plot.ax_curves.set_ylim(low, high)
 
-        self.plot.ax.set_title('Cluster ' + str(cluster_num))
+        self.plot.ax_curves.set_title('Cluster ' + str(cluster_num))
 
         self.plot.draw()
+
+    def plot_proportions(self, grouping_column):
+        if not self.finished:
+            return
+
+        group_labels = self.transmission.df[grouping_column]
+
+        try:
+            self.plot.ax_prop.cla()
+            props = get_cluster_proportions(self.y_pred, group_labels)
+            props.plot(kind='bar', stacked=True, ax=self.plot.ax_prop)
+            self.plot.ax_prop.legend(loc='best', bbox_to_anchor=(1.0, 0.5))
+            self.plot.draw()
+        except:
+            QtWidgets.QMessageBox.warning(self, 'Error showing proportions',
+                                          'You probably did not select an '
+                                          'appropriate grouping column\n' + traceback.format_exc())
 
 
 if __name__ == '__main__':
