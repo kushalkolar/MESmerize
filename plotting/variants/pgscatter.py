@@ -16,7 +16,8 @@ import pandas as pd
 from uuid import UUID
 from collections.abc import Iterable
 
-class ScatterPlot(QtCore.QObject):
+
+class PgScatterPlot(QtCore.QObject):
     signal_spot_clicked = QtCore.pyqtSignal(UUID)
 
     def __init__(self, graphics_view: GraphicsLayoutWidget, parent=None):

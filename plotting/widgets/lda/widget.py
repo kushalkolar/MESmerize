@@ -10,17 +10,18 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from plotting.old.window import PlotWindow
-from plotting.old.beeswarms_window import ControlWidget
+from ..plot_window import PlotWindow
+from ..beeswarms.widget import ControlWidget
+# from plotting.old.beeswarms_window import ControlWidget
 import numpy as np
-from plotting.datapoint_tracer import DatapointTracerWidget
-from plotting.variants.pgscatter import ScatterPlot
+from .. import DatapointTracerWidget
+from ...variants import PgScatterPlot
 from uuid import UUID
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from pyqtgraphCore.functions import mkBrush
-import pandas as pd
-from plotting.modules.heatmap.widget import HeatmapTracerWidget
-from plotting.modules.heatmap.heatmap import Heatmap
+# from pyqtgraphCore.functions import mkBrush
+# import pandas as pd
+from .. import HeatmapTracerWidget
+from ...variants import Heatmap
 
 
 class LDAPlot(PlotWindow):
@@ -40,7 +41,7 @@ class LDAPlot(PlotWindow):
 
         self.current_datapoint = None
 
-        self.scatter_plot = ScatterPlot(graphics_view=self.graphicsViews['LDA_Projection'])
+        self.scatter_plot = PgScatterPlot(graphics_view=self.graphicsViews['LDA_Projection'])
 
         self.scatter_plot.signal_spot_clicked.connect(self.set_current_datapoint)
 

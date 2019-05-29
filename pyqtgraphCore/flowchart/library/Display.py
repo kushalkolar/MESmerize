@@ -4,9 +4,9 @@ from analyser import simple_plot_window
 from .common import *
 import numpy as np
 import pandas as pd
-from plotting.modules.heatmap.widget import HeatmapTracerWidget
-from plotting.modules.scatter.scatter_plot import ScatterPlotWidget
-from plotting.old.beeswarms_window import BeeswarmPlotWindow
+from plotting.widgets import HeatmapTracerWidget
+from plotting.widgets import ScatterPlotWidget
+from plotting.widgets import BeeswarmPlotWindow
 from plotting.variants.timeseries import TimeseriesPlot
 
 

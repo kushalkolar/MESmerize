@@ -11,7 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from .pytemplates.datapoint_tracer_pytemplate import *
+from .datapoint_tracer_pytemplate import *
 from analyser.HistoryWidget import HistoryTreeWidget
 from pyqtgraphCore import ImageView, LinearRegionItem, mkColor
 from uuid import UUID
@@ -19,7 +19,7 @@ import pandas as pd
 import tifffile
 import numpy as np
 from viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
-from common import configuration
+# from common import configuration
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):

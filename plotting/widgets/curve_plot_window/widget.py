@@ -11,8 +11,9 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from .window import *
-from .curve_plots import *
+from PyQt5 import QtWidgets
+from ..plot_window import PlotWindow
+from ...variants import PgCurvePlot
 from numpy import ndarray
 
 
@@ -24,7 +25,7 @@ class CurvePlotWindow(PlotWindow):
         self.ui.comboBoxUUIDColumn.setDisabled(True)
 
         self.add_plot_tab('Curves')
-        self.curve_plot = CurvePlot(self.graphicsViews['Curves'])
+        self.curve_plot = PgCurvePlot(self.graphicsViews['Curves'])
         self.legends = []
 
         self.plotting_tabs = {'Curves': self.curve_plot}
@@ -59,7 +60,7 @@ class CurvePlotWindow(PlotWindow):
                 self.status_bar.showMessage(msg + ', plotting group: ' + group)
 
                 self.add_plot_tab(title=group)
-                group_plot = CurvePlot(self.graphicsViews[group])
+                group_plot = PgCurvePlot(self.graphicsViews[group])
                 self.plotting_tabs.update({group: group_plot})
 
                 self.curve_plot.add_data_to_plot(plot_ix, data_series=dataframe[data_column],

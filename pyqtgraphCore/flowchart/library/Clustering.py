@@ -1,6 +1,14 @@
 from .common import *
 from sklearn import cluster as skcluster
-from clustering.LDA.main_window import LDAPlot
+from plotting.widgets import LDAPlot
+from plotting.widgets import KShapeWidget
+
+class KShape(CtrlNode):
+    """k-Shape clustering"""
+    nodeName = "KShape"
+    uiTemplate = [('ShowGUI', 'button', {'text': 'ShowGUI'})]
+
+
 
 
 class KMeans(CtrlNode):
@@ -198,3 +206,5 @@ class LDA(CtrlNode):
         if self.plot_gui is None:
             self.plot_gui = LDAPlot(parent=self.parent())
         self.plot_gui.show()
+
+

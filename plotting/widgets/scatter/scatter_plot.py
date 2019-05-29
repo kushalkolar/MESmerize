@@ -10,10 +10,10 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ...variants.pgscatter import ScatterPlot
-from ...old.window import PlotWindow
-from ...old.beeswarms_window import ControlWidget
-from ...datapoint_tracer import DatapointTracerWidget
+from ...variants.pgscatter import PgScatterPlot
+from ..plot_window import PlotWindow
+# from ...old.beeswarms_window import ControlWidget
+from .. import DatapointTracerWidget
 from uuid import UUID
 import numpy as np
 import pandas as pd
@@ -36,7 +36,7 @@ class ScatterPlotWidget(PlotWindow):
 
         self.current_datapoint = None
 
-        self.scatter_plot = ScatterPlot(graphics_view=self.graphicsViews['Scatter_Plot'])
+        self.scatter_plot = PgScatterPlot(graphics_view=self.graphicsViews['Scatter_Plot'])
 
         self.scatter_plot.signal_spot_clicked.connect(self.set_current_datapoint)
 
