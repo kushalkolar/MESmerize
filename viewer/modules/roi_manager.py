@@ -15,6 +15,7 @@ from ..core.common import ViewerInterface
 from .pytemplates.roi_manager_pytemplate import *
 from .roi_manager_modules import managers
 from functools import partial
+import traceback
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -54,6 +55,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.listWidgetROIs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.listWidgetROIs.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
+
+        self.ui.pushButtonImportFromImageJ.clicked.connect(self.import_from_imagej)
 
     def _list_widget_context_menu_requested(self, p):
         self.list_widget_context_menu.exec_(self.ui.listWidgetROIs.mapToGlobal(p))
@@ -120,3 +123,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
         elif states['roi_type'] == 'ManualROI':
             self.start_manual_mode()
             self.manager.restore_from_states(states)
+
+    def import_from_imagej(self):
+        path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import ImageJ ROIs', '', '(*.zip)')
+        if path == '':
+            return
+        self.start_manual_mode()
+        try:
+            self.manager.import_from_imagej(path[0])
+        except:
+            QtWidgets.QMessageBox.warning(None, 'File open Error',
+                                          'Could not open the chosen file.\n'
+                                          'It might not be an ImageJ ROIs file' + traceback.format_exc())
+

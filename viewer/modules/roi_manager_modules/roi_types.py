@@ -14,19 +14,93 @@ import abc
 import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraphCore as pg
-from typing import Type, TypeVar
+# from typing import Type, TypeVar
 from functools import partial
 from ...core.common import ViewerInterface
 from common import configuration
 from copy import deepcopy
 from matplotlib import cm as matplotlib_color_map
 
-ROIClasses = TypeVar('T', bound='AbstractBaseROI')
-
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
-    def __init__(self, curve_plot_item: pg.PlotDataItem,
-                 view_box: pg.ViewBox, state: dict = None):
+    @abc.abstractmethod
+    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
+        pass
+
+    @property
+    @abc.abstractmethod
+    def curve_data(self) -> list:
+        pass
+
+    @curve_data.setter
+    @abc.abstractmethod
+    def curve_data(self, data: list):
+        """
+        :param data: [x, y], [np.ndarray, np.ndarray]
+        """
+        pass
+
+    @abc.abstractmethod
+    def get_roi_graphics_object(self) -> QtWidgets.QGraphicsObject:
+        pass
+
+    @abc.abstractmethod
+    def set_roi_graphics_object(self, *args, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def reset_color(self):
+        pass
+
+    @abc.abstractmethod
+    def set_original_color(self, color):
+        pass
+
+    @abc.abstractmethod
+    def get_color(self):
+        pass
+
+    @abc.abstractmethod
+    def set_color(self, color: np.ndarray, *args, **kwargs):
+        pass
+
+    @abc.abstractmethod
+    def set_text(self, text: str):
+        pass
+
+    @abc.abstractmethod
+    def set_tag(self, roi_def: str, tag: str):
+        pass
+
+    @abc.abstractmethod
+    def get_tag(self, roi_def) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_all_tags(self) -> dict:
+        pass
+
+    @abc.abstractmethod
+    def add_to_viewer(self):
+        pass
+
+    @abc.abstractmethod
+    def remove_from_viewer(self):
+        pass
+
+    @abc.abstractmethod
+    def to_state(self):
+        pass
+
+    @classmethod
+    @abc.abstractmethod
+    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
+        pass
+
+
+class BaseROI(AbstractBaseROI):
+    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict = None):
+        # super().__init__(curve_plot_item, view_box, state)
         if isinstance(curve_plot_item, pg.PlotDataItem):
             self.curve_plot_item = curve_plot_item
             self.curve_plot_item.setZValue(1)
@@ -66,11 +140,9 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
     def zValue(self, val: int):
         self._zValue = val
 
-    @abc.abstractmethod
     def get_roi_graphics_object(self) -> QtWidgets.QGraphicsObject:
         pass
 
-    @abc.abstractmethod
     def set_roi_graphics_object(self, *args, **kwargs):
         pass
 
@@ -121,17 +193,8 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         del self.curve_plot_item
         del roi
 
-    @abc.abstractmethod
-    def to_state(self):
-        pass
 
-    @classmethod
-    @abc.abstractmethod
-    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
-        pass
-
-
-class ManualROI(AbstractBaseROI):
+class ManualROI(BaseROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem,
                  roi_graphics_object: pg.ROI,
                  view_box: pg.ViewBox, state=None):
@@ -145,15 +208,15 @@ class ManualROI(AbstractBaseROI):
         self.set_roi_graphics_object(roi_graphics_object)
 
         if state is not None:
-            self.set_roi_graphics_object_state(state['roi_graphics_object_state'])
+            self._set_roi_graphics_object_state(state['roi_graphics_object_state'])
 
-    def get_roi_graphics_object(self) -> tuple(pg.ROI.__subclasses__()):
+    def get_roi_graphics_object(self) -> pg.ROI:
         return self.roi_graphics_object
 
-    def set_roi_graphics_object(self, graphics_object: tuple(pg.ROI.__subclasses__())):
+    def set_roi_graphics_object(self, graphics_object: pg.ROI):
         self.roi_graphics_object = graphics_object
 
-    def set_roi_graphics_object_state(self, state):
+    def _set_roi_graphics_object_state(self, state):
         self.roi_graphics_object.setState(state)
 
     def to_state(self):
@@ -171,7 +234,7 @@ class ManualROI(AbstractBaseROI):
         return state
 
     @staticmethod
-    def get_generic_roi_graphics_object(shape: str, dims: tuple) -> tuple(pg.ROI.__subclasses__()):
+    def get_generic_roi_graphics_object(shape: str, dims: tuple) -> pg.ROI:
         x = dims[0]
         y = dims[1]
 
@@ -191,8 +254,16 @@ class ManualROI(AbstractBaseROI):
         roi_graphics_object = ManualROI.get_generic_roi_graphics_object(state['shape'], (10, 10))
         return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box, state=state)
 
+    @classmethod
+    def from_positions(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, positions: list):
+        """
+        :param positions: list of (x, y) tuples; [(x1, y1), (x2, y2), ... (xn, yn)]
+        """
+        roi_graphics_object = pg.PolyLineROI(positions=positions, closed=True, removable=True)
+        return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box)
 
-class CNMFROI(AbstractBaseROI):
+
+class CNMFROI(BaseROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem,
                  view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data=None, contour=None, state=None):
@@ -325,7 +396,7 @@ class ROIList(list):
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
-    def append(self, roi: AbstractBaseROI):
+    def append(self, roi: BaseROI):
         roi.add_to_viewer()
 
         roi_graphics_object = roi.get_roi_graphics_object()
@@ -431,7 +502,7 @@ class ROIList(list):
             roi.set_original_color(c)
             roi.set_color(c)
 
-    def __getitem__(self, item) -> AbstractBaseROI:
+    def __getitem__(self, item) -> BaseROI:
         return super(ROIList, self).__getitem__(item)
 
     def set_current_index(self, ix):
@@ -451,7 +522,7 @@ class ROIList(list):
         self._show_graphics_object(ix)
         self.set_list_widget_tags()
 
-    def highlight_roi(self, roi: tuple(pg.ROI.__subclasses__())):
+    def highlight_roi(self, roi: QtWidgets.QGraphicsObject):
         ix = self.index(roi)
         self.highlight_curve(ix)
         self.list_widget.setCurrentRow(ix)

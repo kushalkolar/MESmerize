@@ -4,7 +4,7 @@ from .common import BitDepthConverter
 from typing import Tuple, Union, Any, List
 
 
-def _get_rect(seq: np.ndarray,
+def get_rect(seq: np.ndarray,
               projection: str,
               method: str,
               denoise: str = 'blur',
@@ -98,7 +98,7 @@ def crop(seq: np.ndarray, params: dict) -> np.ndarray:
     :param params:  params, passed to get_rect()
     :return:        cropped image sequence
     """
-    r, rect = _get_rect(seq, **params)
+    r, rect = get_rect(seq, **params)
     if r is False:
         raise ValueError('Cannot crop image sequence, try different parameters\n' + str(rect))
 

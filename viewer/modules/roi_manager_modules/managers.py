@@ -17,6 +17,7 @@ from .roi_types import *
 from ...core.common import ViewerInterface
 import pyqtgraphCore as pg
 from copy import deepcopy
+from .read_imagej import read_roi_zip as read_imagej
 
 
 class AbstractBaseManager(metaclass=abc.ABCMeta):
@@ -85,10 +86,27 @@ class ManagerManual(AbstractBaseManager):
         for state in states['states']:
             roi = ManualROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
-        ix = 0
-        for state in states['states']:
-            self.roi_list[ix].set_roi_graphics_object_state(state['roi_graphics_object_state'])
-            ix += 1
+        # ix = 0
+        # for state in states['states']:
+        #     self.roi_list[ix].set_roi_graphics_object_state(state['roi_graphics_object_state'])
+        #     ix += 1
+        self.roi_list.reindex_colormap()
+
+    def import_from_imagej(self, path: str):
+        """
+        Uses read-roi package created by Hadrien Mary.
+        For licence see MESmerize/viewer/modules/roi_manager_modules/read_imagej/LICENSE
+        """
+        ij_roi = read_imagej(path)
+        for k in ij_roi.keys():
+            xs = ij_roi[k]['x']
+            ys = ij_roi[k]['y']
+            ps = list(zip(xs, ys))
+
+            roi = ManualROI.from_positions(positions=ps,
+                                           curve_plot_item=self.get_plot_item(),
+                                           view_box=self.vi.viewer.getView())
+            self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
     def get_all_states(self) -> dict:
