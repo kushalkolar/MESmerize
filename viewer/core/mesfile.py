@@ -45,20 +45,21 @@ class MatlabFuncs:
 class MES:
     """
     Handles of opening .mes files and organizing the images and meta data.
-    The load_img() method returns a 3D array (2D + time) of the image sequence
-    and meta data as a ImgData class object.
+    The load_img() method returns a 3D array (dims are [time, cols, rows])
+    of the image sequence and its associated meta data.
 
     Usage:
-    Create a mesfile object by passing the path of your mes file, example:
+    Create a MES instance by passing the path of your mes file, example:
 
     mesfile = MES('/path/to/mesfile/experiment_Feb_31.mes')
 
-    To get images from the mesfile object:
+    Call the get_image_references() method to get a list of references for images that can be loaded.
 
-        Pass a dictionary key (extracted by the class constructor) as a string
-        which refers to the desired image to load.
+    To load an image that is available in the instance, just pass one of the references from get_image_references()
+    to the load_img method:
 
-        imdata = mesfile.load_img('IF0001_0001')
+        img_array, meta_dict = mesfile.load_img('IF0001_0001')
+
     """
 
     def __init__(self, filename: str):
@@ -70,14 +71,14 @@ class MES:
 
         self.main_dict_keys = [x for x in self.main_dict.keys()]
         self.main_dict_keys.sort()
-        self.images = [x for x in self.main_dict_keys if "I" in x]
+        self._images = [x for x in self.main_dict_keys if "I" in x]
 
         self.image_descriptions = {}
 
         self.voltages_lists_dict = {}
         self.errors = []
 
-        for image in self.images:
+        for image in self._images:
             try:
                 meta = self.main_dict["D" + image[1:6]].tolist()
                 meta = self._todict(meta[int(image[-1]) - 1])
@@ -141,12 +142,21 @@ class MES:
                 dict[strg] = elem
         return dict
 
+    def get_image_references(self) -> list:
+        """Get a list of all image references available in the instance"""
+        return self._images
+
     # Returns image as ImgData class object.
     def load_img(self, img_reference: str) -> (np.ndarray, dict):
         """
         :param img_reference: The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx
         :return: numpy array of the image sequence, dict of metadata
         """
+
+        if img_reference not in self._images:
+            raise KeyError('Image reference: ' + img_reference + ' not found.\nCall get_image_references for a '
+                           'list of all available references to images that can be loaded.')
+
         meta = self.main_dict["D" + img_reference[1:6]].tolist()
         meta = self._todict(meta[0])
         #        except KeyError:
@@ -170,7 +180,7 @@ class MES:
 
             return seq, meta
         else:
-            raise KeyError("'" + str(img_reference) + "' does not have the required "
+            raise ValueError("'" + str(img_reference) + "' does not have the required "
                                                         "'FoldedFrameInfo' meta-data which is "
                                                         "required for the construction of an image "
                                                         "sequence from mesfile data")

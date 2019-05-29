@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './roi_manager_pytemplate.ui'
+# Form implementation generated from reading ui file './ui_files/roi_manager_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,8 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(380, 478)
-        DockWidget.setMinimumSize(QtCore.QSize(380, 314))
+        DockWidget.resize(393, 536)
+        DockWidget.setMinimumSize(QtCore.QSize(393, 362))
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -74,12 +74,15 @@ class Ui_DockWidget(object):
         self.btnPlot = QtWidgets.QPushButton(self.tabStandard)
         self.btnPlot.setObjectName("btnPlot")
         self.gridLayout.addWidget(self.btnPlot, 0, 3, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 0, 5, 1, 1)
         self.btnSwitchToManualMode = QtWidgets.QPushButton(self.tabStandard)
         self.btnSwitchToManualMode.setEnabled(False)
         self.btnSwitchToManualMode.setObjectName("btnSwitchToManualMode")
-        self.gridLayout.addWidget(self.btnSwitchToManualMode, 1, 1, 1, 3)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem, 0, 5, 1, 1)
+        self.gridLayout.addWidget(self.btnSwitchToManualMode, 1, 2, 1, 2)
+        self.pushButtonImportFromImageJ = QtWidgets.QPushButton(self.tabStandard)
+        self.pushButtonImportFromImageJ.setObjectName("pushButtonImportFromImageJ")
+        self.gridLayout.addWidget(self.pushButtonImportFromImageJ, 1, 0, 1, 2)
         self.tabWidget.addTab(self.tabStandard, "")
         self.tabMetaROI = QtWidgets.QWidget()
         self.tabMetaROI.setObjectName("tabMetaROI")
@@ -94,7 +97,7 @@ class Ui_DockWidget(object):
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate
-        DockWidget.setWindowTitle(_translate("DockWidget", "ROI Manager"))
+        DockWidget.setWindowTitle(_translate("DockWidget", "&ROI Manager"))
         self.btnAddROI.setText(_translate("DockWidget", "Add ROI"))
         self.checkBoxShowAll.setText(_translate("DockWidget", "Show all"))
         self.checkBoxLivePlot.setText(_translate("DockWidget", "Live plot"))
@@ -104,6 +107,7 @@ class Ui_DockWidget(object):
         self.btnSetROITag.setText(_translate("DockWidget", "Set ROI tag"))
         self.btnPlot.setText(_translate("DockWidget", "Plot"))
         self.btnSwitchToManualMode.setText(_translate("DockWidget", "Switch to manual mode"))
+        self.pushButtonImportFromImageJ.setText(_translate("DockWidget", "Import from ImageJ"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabStandard), _translate("DockWidget", "Standard ROIs"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabMetaROI), _translate("DockWidget", "Meta ROIs"))
 

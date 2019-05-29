@@ -1,0 +1,20 @@
+{
+  "point": {
+    "type": "point",
+    "x": [
+      68.0
+    ],
+    "y": [
+      77.25
+    ],
+    "n": 1,
+    "name": "point",
+	"counters": [0],
+	"slices": [1],
+    "position": {
+      "channel": 1,
+      "slice": 1,
+      "frame": 1
+    }
+  }
+}
