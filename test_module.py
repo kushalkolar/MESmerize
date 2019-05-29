@@ -11,9 +11,9 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from analyser.plot_window.beeswarms_window import *
-from analyser.plot_window.curve_plots_window import *
-from analyser.DataTypes import Transmission
+from analysis.plot_window.beeswarms_window import *
+from analysis.plot_window.curve_plots_window import *
+from analysis.DataTypes import Transmission
 
 # data = np.random.normal(size=(4,20))
 # data[0] += 5
