@@ -10,9 +10,9 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtWidgets
-from plotting.modules.cross_correlation.control_widget import Ui_CrossCorrelationControls
-from plotting.modules.heatmap.widget import HeatmapSplitterWidget
-from plotting.variants.timeseries import TimeseriesPlot
+from .control_widget import Ui_CrossCorrelationControls
+from .. import HeatmapSplitterWidget
+from ...variants import TimeseriesPlot
 from analyser.DataTypes import Transmission
 from analyser.math import cross_correlation as cc_funcs
 import numpy as np

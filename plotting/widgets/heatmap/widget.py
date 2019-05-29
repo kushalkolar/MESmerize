@@ -11,10 +11,10 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 
 from PyQt5 import QtCore, QtWidgets
-from .heatmap import Heatmap
+from ...variants import Heatmap
 import numpy as np
 import pandas as pd
-from ...datapoint_tracer import DatapointTracerWidget
+from .. import DatapointTracerWidget
 from analyser.DataTypes import HistoryTrace, Transmission
 
 

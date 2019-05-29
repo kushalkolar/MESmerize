@@ -9,12 +9,15 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from .window import *
-from .pytemplates.beeswarm_plot_controls_pytemplate import Ui_BeeswarmControls
-from .beeswarms import *
+from PyQt5 import QtCore, QtGui, QtWidgets
+from ..plot_window import PlotWindow
+from .beeswarm_plot_controls_pytemplate import Ui_BeeswarmControls
+from ...variants import BeeswarmPlot
+from .. import DatapointTracerWidget
+from ...variants import ViolinsPlot
 import numpy as np
-from ..datapoint_tracer import DatapointTracerWidget
-from ..variants.violins import ViolinsPlot
+from uuid import UUID
+import pandas as pd
 
 
 class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):

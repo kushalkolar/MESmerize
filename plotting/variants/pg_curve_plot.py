@@ -19,7 +19,7 @@ from uuid import UUID
 from typing import List, SupportsFloat
 
 
-class CurvePlot(QtCore.QObject):
+class PgCurvePlot(QtCore.QObject):
     signal_spot_clicked = QtCore.pyqtSignal(UUID)
 
     def __init__(self, graphics_view: GraphicsLayoutWidget, parent=None):
