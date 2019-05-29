@@ -19,8 +19,8 @@ from pyqtgraphCore import PlotItem, PlotDataItem, PlotCurveItem, ScatterPlotItem
 from pyqtgraphCore.functions import pseudoScatter
 from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from .pytemplates.stats_gui_pytemplate import *
-from . import DataTypes
-from .HistoryWidget import HistoryTreeWidget
+from . import data_types
+from .history_widget import HistoryTreeWidget
 from .stats_plots import *
 from .pytemplates.stim_plots_pytemplate import *
 from .pytemplates.stats_peak_plots_pytemplate import *
@@ -56,7 +56,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
               'pickle': pickle,
               'scipy': scipy,
               'pd': pd,
-              'DataTypes': DataTypes,
+              'DataTypes': data_types,
               'main': self,
               'curr_tab': self.tabWidget.currentWidget
               }
@@ -187,13 +187,13 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                   QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                     return
             group_list = [e.strip() for e in entry.text().split(',')]
-            gt = DataTypes.GroupTransmission.from_ca_data(self.transmissions_list[i], group_list)
+            gt = data_types.GroupTransmission.from_ca_data(self.transmissions_list[i], group_list)
             self.gts.append(gt)
             i += 1
 
         self.listwGroups.show()
         self.listwStats.show()
-        self.StatsData = DataTypes.StatsTransmission.from_group_trans(self.gts)
+        self.StatsData = data_types.StatsTransmission.from_group_trans(self.gts)
         self.listwGroups.addItems(self.StatsData.all_groups)
         self.set_data()
 
@@ -294,7 +294,7 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if path == '':
             return
         try:
-            self.StatsData = DataTypes.StatsTransmission.from_pickle(path[0])
+            self.StatsData = data_types.StatsTransmission.from_pickle(path[0])
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
@@ -312,16 +312,16 @@ class StatsWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         try:
             for path in paths[0]:
-                groups.append(DataTypes.GroupTransmission.from_pickle(path))
+                groups.append(data_types.GroupTransmission.from_pickle(path))
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
             return
 
         if hasattr(self, 'StatsData'):
             l = [self.StatsData] + groups
-            self.StatsData = DataTypes.StatsTransmission.merge([l])
+            self.StatsData = data_types.StatsTransmission.merge([l])
         else:
-            self.StatsData = DataTypes.StatsTransmission.from_group_trans(groups)
+            self.StatsData = data_types.StatsTransmission.from_group_trans(groups)
             self.gts += groups
 
     def _save_groups(self):

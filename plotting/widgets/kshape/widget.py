@@ -16,7 +16,7 @@ import os
 from signal import SIGKILL
 from common.process_utils import make_workdir, make_runfile
 import pickle
-from analysis.DataTypes import Transmission
+from analysis.data_types import Transmission
 import numpy as np
 import traceback
 from functools import partial

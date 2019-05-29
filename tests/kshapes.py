@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets
-from analysis.DataTypes import Transmission
+from analysis.data_types import Transmission
 from plotting.widgets import KShapeWidget
 
 

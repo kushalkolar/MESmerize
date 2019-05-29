@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .pytemplates.datapoint_tracer_pytemplate import *
-from .HistoryWidget import HistoryTreeWidget
+from .history_widget import HistoryTreeWidget
 from pyqtgraphCore import ImageView, LinearRegionItem, mkColor
 from uuid import UUID
 import pandas as pd
