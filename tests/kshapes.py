@@ -3,13 +3,14 @@ from analysis.data_types import Transmission
 from plotting.widgets import KShapeWidget
 
 
-app = QtWidgets.QApplication([])
+def run():
+    t = Transmission.from_pickle('/home/kushal/Sars_stuff/jorgen_stuff/pfeatures_100_curves.trn')
+    w = KShapeWidget()
+    w.set_input(t)
+    w.show()
 
-t = Transmission.from_pickle('/home/kushal/Sars_stuff/jorgen_stuff/pfeatures_100_curves.trn')
-# t.df['splice'] = t.df._RAW_CURVE.apply(lambda x: x[:2990])
 
-w = KShapeWidget()
-w.set_input(t)
-w.show()
-
-app.exec_()
+if __name__ == '__main__':
+    app = QtWidgets.QApplication([])
+    run()
+    app.exec_()
