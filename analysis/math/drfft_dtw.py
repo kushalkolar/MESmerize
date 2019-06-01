@@ -4,12 +4,14 @@ import numpy as np
 from multiprocessing import Pool, Manager
 from PyQt5 import QtCore, QtWidgets
 from functools import partial
-from common import configuration
 from plotting.variants.timeseries import TimeseriesPlot
 from time import sleep
 import traceback
-
-n_processes = int(configuration.sys_cfg['HARDWARE']['n_processes'])
+from os import environ
+try:
+    n_processes = environ['n_processes']
+except:
+    n_processes = 4
 
 
 def single_curve(steps: np.ndarray, interpolate: bool, q: Manager().Queue = None,

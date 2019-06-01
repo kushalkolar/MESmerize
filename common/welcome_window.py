@@ -110,9 +110,13 @@ class MainWindow(QtWidgets.QMainWindow):
             os.makedirs(configuration.sys_cfg_path + '/console_history/')
 
         cmd_history_file = configuration.sys_cfg_path + '/console_history/main.pik'
+        console = ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
+        self.ui.dockConsole.setWidget(console)
 
-        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile=cmd_history_file))
+        self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
+        # console.resize(self.ui.dockConsole.width(), 100)
+        # self.ui.dockConsole.resize(self.ui.dockConsole.width(), 150)
+        # console.input.resize(console.input.width(), 80)
 
         # self.ui.dockConsole.hide()
 

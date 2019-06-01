@@ -43,51 +43,42 @@
 ##
 #############################################################################
 
-from PyQt5.QtCore import QFile, QRegExp, Qt
-from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCharFormat
-from PyQt5.QtWidgets import (QApplication, QFileDialog, QMainWindow, QMenu, QWidget,
-        QMessageBox, QTextEdit)
+from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCharFormat, QColor
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit
+from pygments import highlight
+from pygments.lexers.python import Python3Lexer
+from pygments.formatter import Formatter
+from pygments.token import Name, Keyword
+
+
+def hex2QColor(c):
+    r=int(c[0:2],16)
+    g=int(c[2:4],16)
+    b=int(c[4:6],16)
+    return QColor(r,g,b)
+
+
+class ViewerLexer(Python3Lexer):
+    extra_vars = {'viewer', 'running_modules', 'roi_manager'}
+    extra_callables = {'update_workEnv', 'clear_workEnv', 'get_module', 'get_batch_manager', 'get_workEnv'}
+
+    def get_tokens_unprocessed(self, text):
+        for index, token, value in Python3Lexer.get_tokens_unprocessed(self, text):
+            if token is Name and value in self.extra_vars:
+                yield index, Name.Namespace, value
+            elif token is Name and value in self.extra_callables:
+                yield index, Name.Function, value
+            else:
+                yield index, token, value
 
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(QMainWindow, self).__init__(parent)
 
-#        self.setupFileMenu()
-#        self.setupHelpMenu()
         self.setupEditor()
 
         self.setCentralWidget(self.editor)
-#        self.setWindowTitle("Syntax Highlighter")
-
-#    def about(self):
-#        QMessageBox.about(self, "About Syntax Highlighter",
-#                "<p>The <b>Syntax Highlighter</b> example shows how to " \
-#                "perform simple syntax highlighting by subclassing the " \
-#                "QSyntaxHighlighter class and describing highlighting " \
-#                "rules using regular expressions.</p>")
-
-#    def newFile(self):
-#        self.editor.clear()
-#
-#    def openFile(self, path=None):
-#        if not path:
-#            path, _ = QFileDialog.getOpenFileName(self, "Open File", '',
-#                    "python scripts (*.py)")
-#
-#        if path:
-#            inFile = QFile(path)
-#            if inFile.open(QFile.ReadOnly | QFile.Text):
-#                text = inFile.readAll()
-#
-#                try:
-#                    # Python v3.
-#                    text = str(text, encoding='ascii')
-#                except TypeError:
-#                    # Python v2.
-#                    text = str(text)
-#
-#                self.editor.setPlainText(text)
 
     def setupEditor(self):
         font = QFont()
@@ -98,115 +89,61 @@ class MainWindow(QMainWindow):
         self.editor = QTextEdit()
         self.editor.setFont(font)
 
-        self.highlighter = Highlighter(self.editor.document())
+        # self.highlighter = Highlighter(self.editor.document())
 
-#    def setupFileMenu(self):
-#        fileMenu = QMenu("&File", self)
-#        self.menuBar().addMenu(fileMenu)
-#
-#        fileMenu.addAction("&New...", self.newFile, "Ctrl+N")
-#        fileMenu.addAction("&Open...", self.openFile, "Ctrl+O")
-#        fileMenu.addAction("E&xit", QApplication.instance().quit, "Ctrl+Q")
-#
-#    def setupHelpMenu(self):
-#        helpMenu = QMenu("&Help", self)
-#        self.menuBar().addMenu(helpMenu)
-#
-#        helpMenu.addAction("&About", self.about)
-#        helpMenu.addAction("About &Qt", QApplication.instance().aboutQt)
+class QFormatter(Formatter):
+
+    def __init__(self):
+        Formatter.__init__(self)
+        self.data = []
+
+        self.styles = {}
+        for token, style in self.style:
+            qtf = QTextCharFormat()
+
+            if style['color']:
+                qtf.setForeground(hex2QColor(style['color']))
+            if style['bgcolor']:
+                qtf.setBackground(hex2QColor(style['bgcolor']))
+            if style['bold']:
+                qtf.setFontWeight(QFont.Bold)
+            if style['italic']:
+                qtf.setFontItalic(True)
+            if style['underline']:
+                qtf.setFontUnderline(True)
+            self.styles[str(token)] = qtf
+
+    def format(self, tokensource, outfile):
+        global styles
+        self.data = []
+
+
+        for ttype, value in tokensource:
+            l = len(value)
+            t = str(ttype)
+            self.data.extend([self.styles[t], ] * l)
 
 
 class Highlighter(QSyntaxHighlighter):
     def __init__(self, parent=None):
         super(Highlighter, self).__init__(parent)
-
-        keywordFormat = QTextCharFormat()
-        keywordFormat.setForeground(Qt.darkBlue)
-        keywordFormat.setFontWeight(QFont.Bold)
-        
-        keywords = ['False', 'None', 'True', 'and', 'as', 'assert', 'break', 'class',
-                    'continue', 'def', 'del', 'elif', 'if', 'else', 'except', 'finally',
-                    'for', 'from', 'import', 'global', 'in', 'is', 'lambda', 'not',
-                    'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield']
-
-        keywordPatterns = ['\\b' + k + '\\b' for k in keywords]
-
-        self.highlightingRules = [(QRegExp(pattern), keywordFormat) for pattern in keywordPatterns]
-        
-        viewer_words = ['viewer', 'imgdata', 'seq', 'meta',
-                        'running_modules', 'roi_manager', 'workEnv']
-        viewer_syntax_words = ['\\b' + w + '\\b' for w in viewer_words]
-
-        viewer_syntax = QTextCharFormat()
-        viewer_syntax.setFontWeight(QFont.Bold)
-        viewer_syntax.setForeground(Qt.darkMagenta)
-        self.highlightingRules += [(QRegExp(pattern), viewer_syntax) for pattern in viewer_syntax_words]
-        
-        singleLineCommentFormat = QTextCharFormat()
-        singleLineCommentFormat.setForeground(Qt.darkGray)
-        self.highlightingRules.append((QRegExp("#[^\n]*"),
-                singleLineCommentFormat))
-
-        self.multiLineCommentFormat = QTextCharFormat()
-        self.multiLineCommentFormat.setForeground(Qt.red)
-        
-        numberFormat = QTextCharFormat()
-        numberFormat.setForeground(Qt.red)
-        self.highlightingRules.append((QRegExp("[\s]?[,]?[.]?\d+"), numberFormat))
-
-        quotationFormat = QTextCharFormat()
-        quotationFormat.setForeground(Qt.darkGreen)
-        self.highlightingRules.append((QRegExp("\".*\""), quotationFormat))
-        # self.highlightingRules.append((QRegExp("\'.*\'"), quotationFormat))
-
-
-        functionFormat = QTextCharFormat()
-        functionFormat.setFontWeight(QFont.Bold)
-        functionFormat.setForeground(Qt.blue)
-        self.highlightingRules.append((QRegExp("\\b[A-Za-z0-9_]+(?=\\()"),
-                functionFormat))
-
-        viewer_callables = ['update_workEnv', 'clear_workEnv', 'get_module', 'get_batch_manager', 'get_workEnv']
-        
-        viewer_callables_syntax = ['\\b' + w + '\\b' for w in viewer_callables]
-        
-        viewer_callables_syntax_highlight = QTextCharFormat()
-        viewer_callables_syntax_highlight.setFontWeight(QFont.Bold)
-        viewer_callables_syntax_highlight.setForeground(Qt.magenta)
-        self.highlightingRules += [(QRegExp(pattern), viewer_callables_syntax_highlight) for pattern in viewer_callables_syntax]
-
-
-        self.commentStartExpression = QRegExp('/"""*')
-        self.commentEndExpression = QRegExp('\\"""')
+        self.formatter = QFormatter()
+        self.lexer = ViewerLexer()
 
     def highlightBlock(self, text):
-        for pattern, format in self.highlightingRules:
-            expression = QRegExp(pattern)
-            index = expression.indexIn(text)
-            while index >= 0:
-                length = expression.matchedLength()
-                self.setFormat(index, length, format)
-                index = expression.indexIn(text, index + length)
 
-        self.setCurrentBlockState(0)
+        cb = self.currentBlock()
+        p = cb.position()
 
-        startIndex = 0
-        if self.previousBlockState() != 1:
-            startIndex = self.commentStartExpression.indexIn(text)
+        text = self.document().toPlainText()
 
-        while startIndex >= 0:
-            endIndex = self.commentEndExpression.indexIn(text, startIndex)
+        highlight(text, self.lexer, self.formatter)
 
-            if endIndex == -1:
-                self.setCurrentBlockState(1)
-                commentLength = len(text) - startIndex
-            else:
-                commentLength = endIndex - startIndex + self.commentEndExpression.matchedLength()
-
-            self.setFormat(startIndex, commentLength,
-                    self.multiLineCommentFormat)
-            startIndex = self.commentStartExpression.indexIn(text,
-                    startIndex + commentLength);
+        for i in range(len(text)):
+            try:
+                self.setFormat(i, 1, self.formatter.data[p + i])
+            except IndexError:
+                pass
 
 
 if __name__ == '__main__':

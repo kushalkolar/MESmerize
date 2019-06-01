@@ -3,13 +3,32 @@ from sklearn import cluster as skcluster
 from plotting.widgets import LDAPlot
 from plotting.widgets import KShapeWidget
 
+
 class KShape(CtrlNode):
     """k-Shape clustering"""
     nodeName = "KShape"
     uiTemplate = [('ShowGUI', 'button', {'text': 'ShowGUI'})]
 
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
+        self.kshape_widget = KShapeWidget()
+        self.kshape_widget.sig_output_changed.connect(self.process)
+        self.ctrls['ShowGUI'].clicked.connect(self.kshape_widget.show)
 
+    def process(self, output_transmission=False, **kwargs):
+        if output_transmission:
+            out = output_transmission
+        else:
+            out = self.processData(**kwargs)
 
+        return {'Out': out}
+
+    def processData(self, **kwargs):
+        self.transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(self.transmissions)
+        self.t = Transmission.merge(self.transmissions_list)
+        self.kshape_widget.set_input(self.t)
+        return None
 
 class KMeans(CtrlNode):
     """KMeans clustering\nhttps://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html\n

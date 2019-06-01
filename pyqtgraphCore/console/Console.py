@@ -13,6 +13,8 @@ else:
     from . import template_pyqt as template
 from os.path import isfile
 
+from viewer.modules.script_editor_modules.syntax_editor import Highlighter
+
 class ConsoleWidget(QtGui.QWidget):
     """
     Widget displaying console output and accepting command input.
@@ -56,8 +58,13 @@ class ConsoleWidget(QtGui.QWidget):
         self.ui = template.Ui_Form()
         self.ui.setupUi(self)
         self.output = self.ui.output
+        self.output.highlighter = Highlighter(self.output.document())
+
         self.input = self.ui.input
+        self.input.highlighter = Highlighter(self.input.document())
         self.input.setFocus()
+        # self.input.resize(self.input.width(), 80)
+        # self.ui.splitter_2.setSizes([135, 80])
         
         if text is not None:
             self.output.setPlainText(text)
@@ -85,7 +92,7 @@ class ConsoleWidget(QtGui.QWidget):
         self.ui.onlyUncaughtCheck.toggled.connect(self.updateSysTrace)
         
         self.currentTraceback = None
-        
+
     def loadHistory(self):
         """Return the list of previously-invoked command strings (or None)."""
         if self.historyFile is not None:

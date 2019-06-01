@@ -1,12 +1,12 @@
 from ..Qt import QtCore, QtGui
 from ..python2_3 import asUnicode
 
-class CmdInput(QtGui.QLineEdit):
+class CmdInput(QtGui.QTextEdit):
     
     sigExecuteCmd = QtCore.Signal(object)
     
     def __init__(self, parent):
-        QtGui.QLineEdit.__init__(self, parent)
+        QtGui.QTextEdit.__init__(self, parent)
         self.history = [""]
         self.ptr = 0
         #self.lastCmd = None
@@ -14,18 +14,18 @@ class CmdInput(QtGui.QLineEdit):
     
     def keyPressEvent(self, ev):
         #print "press:", ev.key(), QtCore.Qt.Key_Up, QtCore.Qt.Key_Down, QtCore.Qt.Key_Enter
-        if ev.key() == QtCore.Qt.Key_Up and self.ptr < len(self.history) - 1:
+        if ev.key() == QtCore.Qt.Key_PageUp and self.ptr < len(self.history) - 1:
             self.setHistory(self.ptr+1)
             ev.accept()
             return
-        elif ev.key() ==  QtCore.Qt.Key_Down and self.ptr > 0:
+        elif ev.key() ==  QtCore.Qt.Key_PageDown and self.ptr > 0:
             self.setHistory(self.ptr-1)
             ev.accept()
             return
-        elif ev.key() == QtCore.Qt.Key_Return:
+        elif (ev.modifiers() == QtCore.Qt.ShiftModifier) and ev.key() == QtCore.Qt.Key_Return:
             self.execCmd()
         else:
-            QtGui.QLineEdit.keyPressEvent(self, ev)
+            QtGui.QTextEdit.keyPressEvent(self, ev)
             self.history[0] = asUnicode(self.text())
         
     def execCmd(self):
@@ -40,6 +40,9 @@ class CmdInput(QtGui.QLineEdit):
     def setHistory(self, num):
         self.ptr = num
         self.setText(self.history[self.ptr])
+
+    def text(self) -> str:
+        return self.toPlainText()
         
     #def setMultiline(self, m):
         #height = QtGui.QFontMetrics(self.font()).lineSpacing()

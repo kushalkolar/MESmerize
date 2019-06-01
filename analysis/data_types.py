@@ -14,10 +14,11 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import pandas as pd
 import numpy as np
 import pickle
+import hickle
 import json
 from copy import deepcopy
 from uuid import uuid4, UUID
-from typing import Tuple, List
+from typing import Tuple
 from itertools import chain
 import os
 import traceback
@@ -82,7 +83,7 @@ class HistoryTrace:
     **The main dict illustrated above should never be worked with directly.**\n
     **You must use the helper methods of this class to query or add information**
 
-    :ivar _history:     The dict of the actual data, as illustrated above. Should not be accessed directly. Use the `hitory` property or call `get_all_data_blocks_history()`.
+    :ivar _history:     The dict of the actual data, as illustrated above. Should not be accessed directly. Use the `history` property or call `get_all_data_blocks_history()`.
     :ivar _data_blocks: List of all data blocks. Should not be called directly, use the property `data_blocks` instead.
 
     """
@@ -94,7 +95,11 @@ class HistoryTrace:
             self.data_blocks = []
             self.history = dict()
         else:
+            for i in range(len(data_blocks)):
+                data_blocks[i] = self._to_uuid(data_blocks[i])
             self.data_blocks = data_blocks
+            for k in history.keys():
+                history[self._to_uuid(k)] = history.pop(k)
             self.history = history
 
     @property
@@ -126,6 +131,7 @@ class HistoryTrace:
     def add_data_block(self, data_block_id: UUID):
         """Adds new datablock UUID to the list of datablocks in this instance.
         Throws exception if UUID already exists."""
+        assert isinstance(data_block_id, UUID)
         if data_block_id in self.data_blocks:
             raise DataBlockAlreadyExists(str(data_block_id))
         else:
@@ -217,12 +223,12 @@ class HistoryTrace:
         else:
             raise TypeError('Must pass str or UUID')
 
-    def _export(self):
+    def to_dict(self):
         return {'history': self.history, 'data_blocks': self.data_blocks}
 
     def to_json(self, path: str):
         """Save to json file"""
-        json.dump(self._export(), open(path, 'w'))
+        json.dump(self.to_dict(), open(path, 'w'))
 
     @classmethod
     def from_json(cls, path: str):
@@ -232,7 +238,7 @@ class HistoryTrace:
 
     def to_pickle(self, path):
         """Save as pickle"""
-        pickle.dump(self._export(), open(path, 'wb'))
+        pickle.dump(self.to_dict(), open(path, 'wb'))
 
     @classmethod
     def from_pickle(cls, path: str):
@@ -284,7 +290,10 @@ class BaseTransmission:
         """
         self.df = df
 
-        self.history_trace = history_trace
+        if isinstance(history_trace, HistoryTrace):
+            self.history_trace = history_trace
+        elif isinstance(history_trace, dict):
+            self.history_trace = HistoryTrace(**history_trace)
 
         self._proj_path = None
         if proj_path is not None:
@@ -311,29 +320,39 @@ class BaseTransmission:
             assert isinstance(CUSTOM_COLUMNS, list)
             self.CUSTOM_COLUMNS = CUSTOM_COLUMNS
 
-    @classmethod
-    def from_pickle(cls, path):
-        """
-        :param path: Path to the pickle file
-        :return: Transmission class object
-        """
-        p = pickle.load(open(path, 'rb'))
-        return cls(**p)
-
-    def _make_dict(self) -> dict:
+    def to_dict(self) -> dict:
         """
         Package Transmission as a dict, useful for pickling
         """
         d = {'df':              self.df,
-             'history_trace':   self.history_trace}
+             'history_trace':   self.history_trace.to_dict(),
+             'last_output':     self.last_output,
+             'last_unit':       self.last_unit
+             }
 
         return d
+
+    def to_hickle(self, path):
+        hickle.dump(self.to_dict(), path)
+
+    @classmethod
+    def from_hickle(cls, path):
+        h = hickle.load(path)
+        return cls(**h)
+
+    @classmethod
+    def from_pickle(cls, path):
+        """
+        :param path: Path to the pickle file
+        """
+        p = pickle.load(open(path, 'rb'))
+        return cls(**p)
 
     def to_pickle(self, path: str):
         """
         :param path: Path of where to store pickle
         """
-        pickle.dump(self._make_dict(), open(path, 'wb'), protocol=4)
+        pickle.dump(self.to_dict(), open(path, 'wb'), protocol=4)
 
     def copy(self):
         return deepcopy(self)
@@ -490,180 +509,120 @@ class Transmission(BaseTransmission):
         return cls(df, proj_path=proj_path, history_trace=h,
                    ROI_DEFS=roi_defs, STIM_DEFS=stim_defs, CUSTOM_COLUMNS=custom_columns)
 
-
-def get_sampling_rate(transmission: Transmission, tolerance: float = 0.1) -> float:
-    """
-    Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.
-
-    :param transmission:    Transmission object of the data from which sampling rate is obtained.
-    :type transmission:     Transmission
-
-    :param tolerance:       Maximum tolerance (in Hertz) of sampling rate variation between different samples
-    :type tolerance:        float
-
-    :return:                The mean sampling rate of all data in the Transmission
-    :rtype:                 float
-    """
-    sampling_rates = []
-    for db in transmission.history_trace.data_blocks:
-        if transmission.history_trace.check_operation_exists(db, 'resample'):
-            sampling_rates.append(transmission.history_trace.get_operation_params(db, 'resample')['output_rate'])
-        else:
-            r = pd.DataFrame(transmission.get_data_block_dataframe(db).meta.to_list())['fps'].unique()
-            # if rates.size > 1:
-            #     raise ValueError("Sampling rates for the data do not match")
-            # else:
-            sampling_rates.append(r)
-
-    rates = np.hstack([sampling_rates])
-
-    if np.ptp(rates) > tolerance:
-        raise ValueError("Sampling rates of the data differ by "
-                         "greater than the set tolerance of " + str(tolerance) + " Hz")
-
-    framerate = float(np.mean(sampling_rates))
-
-    return framerate
-
-
-def get_array_size(transmission: Transmission, data_column: str) -> int:
-    """Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match
-
-    :param transmission:    Desired Transmission
-    :param data_column:     Data column of the Transmission from which to retrieve the size
-
-    :type transmission:     Transmission
-    :type data_column:      str
-
-    :return:                Size of the 1D arrays of the specified data column
-    :rtype:                 int
-    """
-    if data_column not in transmission.df.columns:
-        raise KeyError("Requested data column: " + data_column + " not found in transmission DataFrame")
-    array_size = transmission.df[data_column].apply(lambda a: a.size).unique()
-
-    if array_size.size > 1:
-        raise ValueError("Size of all arrays in data column must match exactly.")
-
-    return array_size[0]
-
-
-class GroupTransmission(BaseTransmission):
-    """DEPRECATED. This was a stupid idea.
-    Transmission class for setting groups to individual transmissions that can later be merged into a single
-    StatsTransmission"""
-    @classmethod
-    def from_ca_data(cls, transmission: Transmission, groups_list: list):
-        """
-        :param  transmission: Raw Transmission object
-        :param  groups_list: List of groups to which the raw Transmission object belongs
-
-        :return: GroupTransmission
-        """
-        if not (any('Peak_Features' in d for d in transmission.src) or
-                    any('AlignStims' in d for d in transmission.src)):
-            raise IndexError('No Peak Features or Stimulus Alignment data to group the data.')
-
-        t = transmission.copy()
-
-        t.df, groups_list = GroupTransmission._append_group_bools(t.df, groups_list)
-
-        t.src.append({'Grouped': ', '.join(groups_list)})
-
-        return cls(t.df, t.src, groups_list=groups_list)
-
-    @classmethod
-    def from_behav_data(cls, transmission: Transmission, groups_list: list):
-        raise NotImplementedError
-
-    @staticmethod
-    def _append_group_bools(df: pd.DataFrame, groups_list: list) -> (pd.DataFrame, list):
-        """
-        :param df:
-        :param groups_list:
-        :return:
-        """
-        new_gl = []
-        for group in groups_list:
-            group = '_G_' + group
-            new_gl.append(group)
-            df[group] = True
-
-        return df, new_gl
-
-
-class StatsTransmission(BaseTransmission):
-    """DEPRECATED. This was a stupid idea.
-    Transmission class that contains a DataFrame consisting of data from many groups. Columns with names that start
-    with '_G_' denote groups. Booleans indicate whether or not that row belong to that group."""
-    @classmethod
-    def from_group_trans(cls, transmissions: list):
-        """
-        :param transmissions list of GroupTransmission objects
-        """
-        all_groups = []
-        for tran in transmissions:
-            assert isinstance(tran, GroupTransmission)
-            all_groups += tran.groups_list
-
-        all_groups = list(set(all_groups))
-
-        all_dfs = []
-        all_srcs = []
-        for tran in transmissions:
-            tran = tran.copy()
-            assert isinstance(tran, GroupTransmission)
-            for group in all_groups:
-                if group in tran.groups_list:
-                    tran.df[group] = True
-                else:
-                    tran.df[group] = False
-            all_srcs.append(tran.src)
-            all_dfs.append(tran.df)
-
-        all_groups = list(set(all_groups))
-
-        df = pd.concat(all_dfs)
-        assert isinstance(df, pd.DataFrame)
-        df.reset_index(drop=True, inplace=True)
-
-        return cls(df, all_srcs, all_groups=all_groups)
-
-    @classmethod
-    def merge(cls, transmissions):
-        """
-        :param  transmissions: Transmission objects
-        :type   transmissions: GroupTransmission, StatsTransmission
-
-        :return: StatsTransmission
-        """
-        groups = []
-        stats = []
-        all_srcs = []
-        all_groups = []
-
-        for t in transmissions:
-            if isinstance(t, GroupTransmission):
-                groups.append(t)
-
-            elif isinstance(t, StatsTransmission):
-                stats.append(t)
-                all_srcs.append(t.src)
-                all_groups.append(t.all_groups)
-            else:
-                e = type(t)
-                raise TypeError("Cannot merge type: '" + str(e) + "'\n"
-                                "You must only pass GroupTransmission or StatsTransmission objects.")
-
-        g_merge = StatsTransmission.from_group_trans(groups)
-
-        all_groups = list(set(all_groups + g_merge.all_groups))
-
-        all_srcs = all_srcs + g_merge.all_srcs
-
-        all_dfs = [g_merge] + stats
-
-        df = pd.concat(all_dfs)
-        return cls(df, all_srcs, all_groups=all_groups)
-
-
+# class GroupTransmission(BaseTransmission):
+#     """DEPRECATED. This was a stupid idea.
+#     Transmission class for setting groups to individual transmissions that can later be merged into a single
+#     StatsTransmission"""
+#     @classmethod
+#     def from_ca_data(cls, transmission: Transmission, groups_list: list):
+#         """
+#         :param  transmission: Raw Transmission object
+#         :param  groups_list: List of groups to which the raw Transmission object belongs
+#
+#         :return: GroupTransmission
+#         """
+#         if not (any('Peak_Features' in d for d in transmission.src) or
+#                     any('AlignStims' in d for d in transmission.src)):
+#             raise IndexError('No Peak Features or Stimulus Alignment data to group the data.')
+#
+#         t = transmission.copy()
+#
+#         t.df, groups_list = GroupTransmission._append_group_bools(t.df, groups_list)
+#
+#         t.src.append({'Grouped': ', '.join(groups_list)})
+#
+#         return cls(t.df, t.src, groups_list=groups_list)
+#
+#     @classmethod
+#     def from_behav_data(cls, transmission: Transmission, groups_list: list):
+#         raise NotImplementedError
+#
+#     @staticmethod
+#     def _append_group_bools(df: pd.DataFrame, groups_list: list) -> (pd.DataFrame, list):
+#         """
+#         :param df:
+#         :param groups_list:
+#         :return:
+#         """
+#         new_gl = []
+#         for group in groups_list:
+#             group = '_G_' + group
+#             new_gl.append(group)
+#             df[group] = True
+#
+#         return df, new_gl
+#
+#
+# class StatsTransmission(BaseTransmission):
+#     """DEPRECATED. This was a stupid idea.
+#     Transmission class that contains a DataFrame consisting of data from many groups. Columns with names that start
+#     with '_G_' denote groups. Booleans indicate whether or not that row belong to that group."""
+#     @classmethod
+#     def from_group_trans(cls, transmissions: list):
+#         """
+#         :param transmissions list of GroupTransmission objects
+#         """
+#         all_groups = []
+#         for tran in transmissions:
+#             assert isinstance(tran, GroupTransmission)
+#             all_groups += tran.groups_list
+#
+#         all_groups = list(set(all_groups))
+#
+#         all_dfs = []
+#         all_srcs = []
+#         for tran in transmissions:
+#             tran = tran.copy()
+#             assert isinstance(tran, GroupTransmission)
+#             for group in all_groups:
+#                 if group in tran.groups_list:
+#                     tran.df[group] = True
+#                 else:
+#                     tran.df[group] = False
+#             all_srcs.append(tran.src)
+#             all_dfs.append(tran.df)
+#
+#         all_groups = list(set(all_groups))
+#
+#         df = pd.concat(all_dfs)
+#         assert isinstance(df, pd.DataFrame)
+#         df.reset_index(drop=True, inplace=True)
+#
+#         return cls(df, all_srcs, all_groups=all_groups)
+#
+#     @classmethod
+#     def merge(cls, transmissions):
+#         """
+#         :param  transmissions: Transmission objects
+#         :type   transmissions: GroupTransmission, StatsTransmission
+#
+#         :return: StatsTransmission
+#         """
+#         groups = []
+#         stats = []
+#         all_srcs = []
+#         all_groups = []
+#
+#         for t in transmissions:
+#             if isinstance(t, GroupTransmission):
+#                 groups.append(t)
+#
+#             elif isinstance(t, StatsTransmission):
+#                 stats.append(t)
+#                 all_srcs.append(t.src)
+#                 all_groups.append(t.all_groups)
+#             else:
+#                 e = type(t)
+#                 raise TypeError("Cannot merge type: '" + str(e) + "'\n"
+#                                 "You must only pass GroupTransmission or StatsTransmission objects.")
+#
+#         g_merge = StatsTransmission.from_group_trans(groups)
+#
+#         all_groups = list(set(all_groups + g_merge.all_groups))
+#
+#         all_srcs = all_srcs + g_merge.all_srcs
+#
+#         all_dfs = [g_merge] + stats
+#
+#         df = pd.concat(all_dfs)
+#         return cls(df, all_srcs, all_groups=all_groups)

@@ -26,6 +26,8 @@ import traceback
 from .core.add_to_project import AddToProjectDialog
 import os
 from . import image_utils
+import importlib
+from .modules import custom_modules
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -60,8 +62,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionOpen_docs.triggered.connect(doc_pages['viewer'])
 
         self.add_to_project_dialog = None
+        self.custom_modules = None
+        self._cms = []
+        self._cms_actions = []
+        self.set_custom_module_triggers()
 
         self.ui.dockConsole.hide()
+
+    def set_custom_module_triggers(self):
+        self.custom_modules = dict()
+
+        for mstr in custom_modules.__all__:
+            mstr = '.' + mstr
+            mod = importlib.import_module(mstr, package='viewer.modules.custom_modules')
+            c = getattr(mod, 'ModuleGUI')
+            self.custom_modules[mod.module_name] = c
+
+            name = mod.module_name
+            action = QtWidgets.QAction(self)
+            action.setCheckable(False)
+            action.setObjectName("custom_module" + name)
+            action.setText(name)
+
+            action.triggered.connect(lambda: self.run_module(c))
+
+            self._cms_actions.append(action)
+            self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
 
     @property
     def viewer_reference(self):
@@ -79,11 +105,9 @@ class MainWindow(QtWidgets.QMainWindow):
         status_bar = self.statusBar()
         # status_bar.addWidget(status_label)
 
-
         self._viewer.status_bar_label = status_label
 
         self.initialize_menubar_triggers()
-
 
         ns = {'np': np,
               'vi': self.vi,
@@ -134,7 +158,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         # Show the QDockableWidget if it's already running
         if type(module_class) is str:
-            module_class = self.standard_modules[module_class]
+            module_class = {**self.standard_modules, **self.custom_modules}[module_class]
 
         for m in self.running_modules:
             if isinstance(m, module_class):

@@ -2,9 +2,9 @@
 from ...Qt import QtGui, QtCore, QtWidgets
 import numpy as np
 from .common import *
-import pickle
+import traceback
 from functools import partial
-from analysis.data_types import Transmission, StatsTransmission
+from analysis.data_types import Transmission
 from common import configuration
 from os.path import basename
 
@@ -86,10 +86,11 @@ class LoadFile(CtrlNode):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
         if path == '':
             return
+        print(path)
         try:
-            self.transmission = Transmission.from_pickle(path[0])
-        except Exception as e:
-            QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
+            self.transmission = Transmission.from_hickle(path[0])
+        except:
+            QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
 
         self.ctrls['fname'].setText(basename(path[0])[:-4])
@@ -155,7 +156,7 @@ class Save(CtrlNode):
 
         if self.ctrls['path'].text() != '':
             try:
-                transmission.to_pickle(self.ctrls['path'].text())
+                transmission.to_hickle(self.ctrls['path'].text())
             except Exception as e:
                 QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the transmission to file.\n'
                                           + str(e))
