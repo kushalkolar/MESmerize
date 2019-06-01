@@ -68,6 +68,8 @@ class KShapePlot(MatplotlibWidget):
 
 
 class KShapeWidget(QtWidgets.QMainWindow):
+    sig_output_changed = QtCore.pyqtSignal(Transmission)
+
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self, parent=None)
         self.setWindowTitle('k-Shape Clustering')
@@ -261,6 +263,14 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         self.plot_proportions(self.control_widget.ui.comboBoxGroups.currentText())
 
+        self.send_output_transmission()
+
+    def send_output_transmission(self):
+        self.transmission.df['_KSHAPE'] = self.y_pred
+        params = self.params['kwargs']
+        self.transmission.history_trace.add_operation('all', operation='kshape', parameters=params)
+        self.sig_output_changed.emit(self.transmission)
+
     def set_plot(self, item: QtWidgets.QListWidgetItem):
         if item is None:
             return
@@ -305,16 +315,3 @@ class KShapeWidget(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.warning(self, 'Error showing proportions',
                                           'You probably did not select an '
                                           'appropriate grouping column\n' + traceback.format_exc())
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-
-    t = Transmission.from_pickle('/home/kushal/Sars_stuff/jorgen_stuff/pfeatures_100_curves.trn')
-    # t.df['splice'] = t.df._RAW_CURVE.apply(lambda x: x[:2990])
-
-    w = KShapeWidget()
-    w.set_input(t, data_column='_pfeature_peak_curve')
-    w.show()
-
-    app.exec_()

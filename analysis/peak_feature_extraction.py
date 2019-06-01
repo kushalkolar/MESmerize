@@ -121,7 +121,7 @@ class PeakFeatures:
         # Spawn and run the processes, and get results
         peak_features = compute_interface.compute()
         peak_features.update({'_pfeature_ix_peak_abs': ix_peak_abs, '_pfeature_ix_peak_rel': ix_peak_rel,
-                              '_pfeature_peak_curve': peak_curve, '_pfeature_uuid': uuid4(),
+                              '_pfeature_peak_curve': peak_curve, '_pfeature_uuid': str(uuid4()),
                               '_pfeature_ix_base_left_abs': ix_base_left_abs,
                               '_pfeature_ix_base_right_abs': ix_base_right_abs})
         return peak_features
