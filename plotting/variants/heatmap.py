@@ -230,7 +230,6 @@ class Selection(QtCore.QObject):
         self.canvas.draw()
 
     def set_multi_select_mode_on(self, ev):
-        print(ev.key)
         if ev.key == 'control':
             self.multi_select_mode = True
 

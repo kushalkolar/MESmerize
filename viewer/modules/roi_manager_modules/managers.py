@@ -11,8 +11,8 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-import abc
 from caiman.utils.visualization import get_contours as caiman_get_contours
+from viewer.modules.roi_manager_modules.roi_list import ROIList
 from .roi_types import *
 from ...core.common import ViewerInterface
 import pyqtgraphCore as pg
