@@ -14,10 +14,10 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import sys
 from pyqtgraphCore.console import ConsoleWidget
 from .welcome_window_pytemplate import *
+from project_manager import ProjectManager
 from common import configuration, system_config_window, doc_pages
 # from viewer.modules import batch_manager
 import traceback
-from project_manager.project_manager import ProjectManager
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
 from common import start

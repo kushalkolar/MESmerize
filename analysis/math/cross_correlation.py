@@ -20,20 +20,26 @@ def ncc_c(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     return cc
 
 
-def get_omega(x: np.ndarray, y: np.ndarray) -> int:
-    cc = ncc_c(x, y)
+def get_omega(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> int:
+    if cc is None:
+        cc = ncc_c(x, y)
     w = np.argmax(cc)
     return w
 
 
-def get_lag(x: np.ndarray, y: np.ndarray) -> int:
-    w = get_omega(x, y)
-    s = w - x.shape[0]
+def get_lag(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> int:
+    if cc is None:
+        w = get_omega(x, y)
+        s = w - x.shape[0]
+    else:
+        w = get_omega(cc=cc)
+        s = w - int(cc.shape[0] / 2)
     return s
 
 
-def get_epsilon(x, y) -> float:
-    cc = ncc_c(x, y)
+def get_epsilon(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> float:
+    if cc is None:
+        cc = ncc_c(x, y)
     e = np.max(cc)
     return e
 
@@ -43,19 +49,33 @@ def get_epsilon(x, y) -> float:
 # elif normalize == 'minmax':
 #     data = TimeSeriesScalerMinMax().fit_transform(data)[:, :, 0]
 
-def get_lag_matrix(data: np.ndarray) -> np.ndarray:
-    m = data.shape[0]
-    a = np.zeros((m, m))
-    for i in range(m):
-        for j in range(m):
-            a[i, j] = get_lag(data[i], data[j])
-    return a
+def get_lag_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndarray:
+    if ccs is None:
+        m = curves.shape[0]
+        a = np.zeros((m, m))
+        for i in range(m):
+            for j in range(m):
+                a[i, j] = get_lag(curves[i], curves[j])
+
+        return a
+    return _compute_from_ccs(ccs, get_lag)
 
 
-def get_epsilon_matrix(data: np.ndarray) -> np.ndarray:
-    m = data.shape[0]
-    a = np.zeros((m, m))
+def get_epsilon_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndarray:
+    if ccs is None:
+        m = curves.shape[0]
+        a = np.zeros((m, m))
+        for i in range(m):
+            for j in range(m):
+                a[i, j] = get_epsilon(curves[i], curves[j])
+        return a
+    return _compute_from_ccs(ccs, get_epsilon)
+
+
+def _compute_from_ccs(ccs: np.ndarray, func: callable):
+    m = ccs.shape[0]
+    a = np.zeros(shape=(m, m))
     for i in range(m):
         for j in range(m):
-            a[i, j] = get_epsilon(data[i], data[j])
+            a[i, j] = func(cc=ccs[i, j, :])
     return a

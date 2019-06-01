@@ -10,6 +10,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtWidgets
+from .compute_cc import compute_cc_data, CC_Data
 from .control_widget import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
@@ -39,10 +40,10 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.current_sample_id = None
         self.control_widget.ui.listWidgetSampleID.currentItemChanged.connect(self.set_current_sample)
 
-        self.main_dataframe = None
-        self.data = None
+        # self.main_dataframe = None
         self.transmission = None
-        self._samples_list = None
+        self.sample_list = None
+        self.cc_data = None
 
         self.plot_widget.sig_selection_changed.connect(self.set_lineplots)
 
@@ -52,17 +53,26 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.graphicsViewCurve1.addItem(self.curve_plot_1)
         self.control_widget.ui.graphicsViewCurve2.addItem(self.curve_plot_2)
 
-    def set_heatmap(self, sample_id: str):
-        sample_df = self.main_dataframe[self.main_dataframe.SampleID == sample_id]
+        self.control_widget.ui.pushButtonComputeAllData.clicked.connect(self.compute_dataframe)
 
-        self.data = np.vstack(sample_df[self.data_column].values)
+        self.control_widget.ui.radioButtonMaxima.clicked.connect(self.set_heatmap)
+        self.control_widget.ui.radioButtonLag.clicked.connect(self.set_heatmap)
+
+    def set_heatmap(self):
+        sample_id = self.current_sample_id
+        # sample_df = self.main_dataframe[self.main_dataframe.SampleID == sample_id]
+
+        # self.data = np.vstack(sample_df[self.data_column].values)
 
         if self.control_widget.ui.radioButtonLag.isChecked():
-            self.cc_data = cc_funcs.get_lag_matrix(self.data)
-        elif self.control_widget.ui.radioButtonMaxima.isChecked():
-            self.cc_data = cc_funcs.get_epsilon_matrix(self.data)
+            plot_data = self.cc_data[sample_id].lag_matrix
+            cmap = 'brg'
 
-        self.plot_widget.set(self.cc_data, cmap=self.cmap)
+        elif self.control_widget.ui.radioButtonMaxima.isChecked():
+            plot_data = self.cc_data[sample_id].epsilon_matrix
+            cmap = 'jet'
+
+        self.plot_widget.set(plot_data, cmap=cmap)
 
         # self.set_data(sample_df, data_column=self.data_column, labels_column=self.labels_column,
         #               cmap=self.cmap, transmission=self.transmission)
@@ -71,9 +81,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         if self.plot_widget.selector.multi_select_mode:
             nccs = []
             for ix in self.plot_widget.selector.multi_selection_list:
-                x = self.data[ix[0]]
-                y = self.data[ix[1]]
-                nccs.append(cc_funcs.ncc_c(x, y))
+                # x = self.data[ix[0]]
+                # y = self.data[ix[1]]
+                i = ix[0]
+                j = ix[1]
+                nccs.append(self.cc_data[self.current_sample_id].ccs[i, j, :])
+
             if len(nccs) < 1:
                 return
 
@@ -84,8 +97,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
             self.cross_corr_plot.set(a)
         else:
-            x = self.data[indices[0]]
-            y = self.data[indices[1]]
+            x = self.curve_data[indices[0]]
+            y = self.curve_data[indices[1]]
 
             self.curve_plot_1.clear()
             self.curve_plot_2.clear()
@@ -97,43 +110,35 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
             self.cross_corr_plot.set_single_line(ncc)
 
-    def set(self, dataframes,
-            data_column: str,
-            cmap: str = 'brg',
-            transmission: Transmission = None):
-
-        df = self.merge_dataframes(dataframes)
-        self.main_dataframe = df.reset_index(drop=True)
-
-        self.data_column = data_column
-        self.cmap = cmap
+    def set_input(self, transmission: Transmission = None):
         self.transmission = transmission
+        self.transmission.df.reset_index(drop=True, inplace=True)
+        # self.main_dataframe = self.transmission.df
+
+        self.control_widget.ui.comboBoxDataColumn.clear()
+        self.control_widget.ui.comboBoxDataColumn.addItems(self.transmission.df.columns)
 
         self.reset_sample_id_list_widget()
         self.control_widget.ui.listWidgetSampleID.setCurrentRow(0)
 
     def reset_sample_id_list_widget(self):
+        self.sample_list = self.transmission.df.SampleID.unique().tolist()
         self.control_widget.ui.listWidgetSampleID.clear()
-        self._samples_list = self.main_dataframe.SampleID.unique().tolist()
-        self.control_widget.ui.listWidgetSampleID.addItems(self._samples_list)
+        self.control_widget.ui.listWidgetSampleID.addItems(self.sample_list)
 
     def set_current_sample(self):
+        if self.cc_data is None:
+            return
         ix = self.control_widget.ui.listWidgetSampleID.currentRow()
+        self.current_sample_id = self.sample_list[ix]
+        self.curve_data = np.vstack(self.transmission.df[self.transmission.df.SampleID == self.current_sample_id][self.data_column].values)
+        self.set_heatmap()
 
-        self.current_sample_id = self._samples_list[ix]
-        self.set_heatmap(self.current_sample_id)
+    def compute_dataframe(self):
+        self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
 
+        self.cc_data = dict.fromkeys(self.sample_list)
 
-if __name__ == '__main__':
-    import pickle
-    t = pickle.load(open('/home/kushal/Sars_stuff/mesmerize_toy_datasets/cesa_hnk1_raw_data.trn', 'rb'))
-    df = t['df']
-
-    df['_SPLICE_ARRAYS'] = df._RAW_CURVE.apply(lambda x: x[:2998])
-
-    app = QtWidgets.QApplication([])
-    w = CrossCorrelationWidget()
-    w.set(dataframes=df, data_column='_SPLICE_ARRAYS', transmission=t)
-
-    w.show()
-    app.exec_()
+        for sample_id in self.sample_list:
+            data = np.vstack(self.transmission.df[self.transmission.df.SampleID == sample_id][self.data_column].values)
+            self.cc_data[sample_id] = compute_cc_data(data)

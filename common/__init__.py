@@ -13,12 +13,13 @@ def get_sys_config() -> configparser.RawConfigParser:
     return sys_cfg
 
 
-def get_proj_config(proj_path: str) -> configparser.RawConfigParser:
+def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
+    if proj_path is None:
+        proj_path = os.environ['_mesmerize_proj_path']
     proj_cfg = configparser.RawConfigParser(allow_no_value=True)
     proj_cfg.optionxform = str
     proj_cfg.read(proj_path + '/config.cfg')
     return proj_cfg
-
 
 docs_dir = os.path.dirname(os.path.dirname(__file__)) + '/docs'
 docs_dir = docs_dir + '/user_guides'

@@ -20,7 +20,7 @@ from viewer import main_window as viewer_main_window
 # from viewer.modules import tiff_io
 from analysis.flowchart import Window as FlowchartWindow
 # from analysis.stats_gui import StatsWindow
-from project_manager.project_browser.project_browser_window import ProjectBrowserWindow
+from project_manager import ProjectBrowserWindow
 # import json
 from uuid import UUID
 
