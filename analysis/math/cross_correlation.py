@@ -27,14 +27,14 @@ def get_omega(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None)
     return w
 
 
-def get_lag(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> int:
+def get_lag(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> float:
     if cc is None:
         w = get_omega(x, y)
         s = w - x.shape[0]
     else:
         w = get_omega(cc=cc)
         s = w - int(cc.shape[0] / 2)
-    return s
+    return float(-s)
 
 
 def get_epsilon(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> float:
@@ -56,8 +56,8 @@ def get_lag_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndar
         for i in range(m):
             for j in range(m):
                 a[i, j] = get_lag(curves[i], curves[j])
-
         return a
+
     return _compute_from_ccs(ccs, get_lag)
 
 
@@ -69,6 +69,7 @@ def get_epsilon_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.
             for j in range(m):
                 a[i, j] = get_epsilon(curves[i], curves[j])
         return a
+
     return _compute_from_ccs(ccs, get_epsilon)
 
 

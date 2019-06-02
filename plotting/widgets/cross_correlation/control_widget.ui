@@ -13,13 +13,13 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_10">
+  <layout class="QVBoxLayout" name="verticalLayout_9">
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QWidget" name="">
       <layout class="QVBoxLayout" name="verticalLayoutLeftMain">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -237,35 +237,69 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_6">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Curve 1</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Curve 1</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditCurve1UUID">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="PlotWidget" name="graphicsViewCurve1"/>
        </item>
        <item>
-        <widget class="QLabel" name="label_7">
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Curve 2</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="font">
+            <font>
+             <pointsize>14</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Curve 2</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditCurve2UUID">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="PlotWidget" name="graphicsViewCurve2"/>

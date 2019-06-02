@@ -14,7 +14,7 @@ from .compute_cc import compute_cc_data, CC_Data
 from .control_widget import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
-from analysis.data_types import Transmission
+from analysis import Transmission, get_sampling_rate, get_array_size
 from analysis.math import cross_correlation as cc_funcs
 import numpy as np
 from pyqtgraphCore import PlotDataItem
@@ -57,25 +57,33 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         self.control_widget.ui.radioButtonMaxima.clicked.connect(self.set_heatmap)
         self.control_widget.ui.radioButtonLag.clicked.connect(self.set_heatmap)
+        self.control_widget.ui.doubleSpinBoxMaximaThreshold.valueChanged.connect(self.set_heatmap)
+        self.control_widget.ui.doubleSpinBoxLagThreshold.valueChanged.connect(self.set_heatmap)
 
     def set_heatmap(self):
+        if self.cc_data is None:
+            return
+        
         sample_id = self.current_sample_id
-        # sample_df = self.main_dataframe[self.main_dataframe.SampleID == sample_id]
 
-        # self.data = np.vstack(sample_df[self.data_column].values)
+        abs_val = self.control_widget.ui.checkBoxAbsoluteValue.isChecked()
+
+        lt = self.control_widget.ui.doubleSpinBoxLagThreshold.value()
+        mt = self.control_widget.ui.doubleSpinBoxMaximaThreshold.value()
 
         if self.control_widget.ui.radioButtonLag.isChecked():
-            plot_data = self.cc_data[sample_id].lag_matrix
+            opt = 'lag'
             cmap = 'brg'
 
         elif self.control_widget.ui.radioButtonMaxima.isChecked():
-            plot_data = self.cc_data[sample_id].epsilon_matrix
+            opt = 'maxima'
             cmap = 'jet'
+        else:
+            raise ValueError
+
+        plot_data = self.cc_data[sample_id].get_threshold_matrix(matrix_type=opt, lag_thr=lt, max_thr=mt, lag_thr_abs=abs_val)
 
         self.plot_widget.set(plot_data, cmap=cmap)
-
-        # self.set_data(sample_df, data_column=self.data_column, labels_column=self.labels_column,
-        #               cmap=self.cmap, transmission=self.transmission)
 
     def set_lineplots(self, indices):
         if self.plot_widget.selector.multi_select_mode:
@@ -95,20 +103,39 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.curve_plot_1.clear()
             self.curve_plot_2.clear()
 
-            self.cross_corr_plot.set(a)
+            xticks = self._get_xticks_linspace(nccs[0])
+
+            self.cross_corr_plot.set(a, xticks=xticks)
         else:
-            x = self.curve_data[indices[0]]
-            y = self.curve_data[indices[1]]
+            i = indices[0]
+            j = indices[1]
+            x = self.curve_data[i]
+            y = self.curve_data[j]
 
             self.curve_plot_1.clear()
             self.curve_plot_2.clear()
 
+            sub_df = self.transmission.df[self.transmission.df.SampleID == self.current_sample_id].reset_index(drop=True)
+            ux = sub_df.uuid_curve.iloc[i]
+            uy = sub_df.uuid_curve.iloc[j]
+            self.control_widget.ui.lineEditCurve1UUID.setText(ux)
+            self.control_widget.ui.lineEditCurve2UUID.setText(uy)
+
             self.curve_plot_1.setData(x)
             self.curve_plot_2.setData(y)
 
-            ncc = cc_funcs.ncc_c(x, y)
+            ncc = self.cc_data[self.current_sample_id].ccs[i, j, :]
 
-            self.cross_corr_plot.set_single_line(ncc)
+            xticks = self._get_xticks_linspace(ncc)
+
+            self.cross_corr_plot.set_single_line(x=xticks, y=ncc)
+        self.cross_corr_plot.ax.set_xlabel("lag (seconds)")
+
+    def _get_xticks_linspace(self, ncc) -> np.ndarray:
+        m = ncc.size
+        stop = ((m / 2) / self.sampling_rate)
+        start = -stop
+        return np.linspace(start, stop, m)
 
     def set_input(self, transmission: Transmission = None):
         self.transmission = transmission
@@ -140,5 +167,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.cc_data = dict.fromkeys(self.sample_list)
 
         for sample_id in self.sample_list:
-            data = np.vstack(self.transmission.df[self.transmission.df.SampleID == sample_id][self.data_column].values)
+            sub_df = self.transmission.df[self.transmission.df.SampleID == sample_id]
+            data = np.vstack(sub_df[self.data_column].values)
+            r = get_sampling_rate(self.transmission)
+            self.sampling_rate = r
+
             self.cc_data[sample_id] = compute_cc_data(data)
+            self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
+
+        self.set_current_sample()
