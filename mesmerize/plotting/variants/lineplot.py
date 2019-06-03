@@ -9,7 +9,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ...pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 
 class Lineplot(MatplotlibWidget):

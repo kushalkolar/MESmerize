@@ -11,13 +11,13 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-import pyqtgraphCore as pg
+# from ....pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from .... import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
-from analysis.pytemplates.PeakEditor_pytemplate import *
-from analysis.data_types import Transmission
-from analysis.history_widget import HistoryTreeWidget
+from .template import *
+from ....analysis.data_types import Transmission
+from ....analysis.history_widget import HistoryTreeWidget
 import traceback
 from functools import partial
 

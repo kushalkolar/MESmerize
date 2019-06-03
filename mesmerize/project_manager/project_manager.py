@@ -15,7 +15,7 @@ adding rows to the root dataframe, updating child dataframes, and updating the p
 """
 
 from PyQt5 import QtCore
-from common import configuration, project_config_window, start
+from ..common import configuration, project_config_window, start
 import os
 import pandas as pd
 from time import time

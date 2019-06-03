@@ -11,17 +11,17 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.console import ConsoleWidget
+from ..pyqtgraphCore.console import ConsoleWidget
 from .welcome_window_pytemplate import *
-from project_manager import ProjectManager
-from common import configuration, system_config_window, doc_pages
+from ..project_manager import ProjectManager
+from ..common import configuration, system_config_window, doc_pages
 # from viewer.modules import batch_manager
 import traceback
 import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
-from common import start
+from ..common import start
 from functools import partial
-from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
+from ..viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 
 
 class MainWindow(QtWidgets.QMainWindow):

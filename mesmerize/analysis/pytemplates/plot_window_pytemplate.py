@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'plot_window_template.ui'
+# Form implementation generated from reading ui file './ui_files/plot_window_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.graphicsView, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 30))
         self.menubar.setObjectName("menubar")
         self.menuView = QtWidgets.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
@@ -32,7 +32,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.dockWidgetTransmissions = QtWidgets.QDockWidget(MainWindow)
-        self.dockWidgetTransmissions.setMinimumSize(QtCore.QSize(219, 36))
+        self.dockWidgetTransmissions.setMinimumSize(QtCore.QSize(219, 50))
         self.dockWidgetTransmissions.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable|QtWidgets.QDockWidget.DockWidgetMovable)
         self.dockWidgetTransmissions.setObjectName("dockWidgetTransmissions")
         self.dockWidgetContents = QtWidgets.QWidget()
@@ -54,9 +54,9 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.menuView.setTitle(_translate("MainWindow", "View"))
-        self.menuAdvanced.setTitle(_translate("MainWindow", "Advanced"))
-        self.dockWidgetTransmissions.setWindowTitle(_translate("MainWindow", "Tranmissions w/ ordered history"))
-        self.actionTranmissions_Tree.setText(_translate("MainWindow", "Tranmissions Tree"))
+        self.menuView.setTitle(_translate("MainWindow", "&View"))
+        self.menuAdvanced.setTitle(_translate("MainWindow", "Adva&nced"))
+        self.dockWidgetTransmissions.setWindowTitle(_translate("MainWindow", "T&ranmissions w/ ordered history"))
+        self.actionTranmissions_Tree.setText(_translate("MainWindow", "&Tranmissions Tree"))
 
-from pyqtgraphCore import PlotWidget
+from ...pyqtgraphCore import PlotWidget

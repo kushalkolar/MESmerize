@@ -15,9 +15,9 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core.common import ViewerInterface
 from .stimmap_modules.page import Page
 from .stimmap_modules.main_widget_pytemplate import *
-from pyqtgraphCore.imageview import ImageView
-from pyqtgraphCore import LinearRegionItem
-from common import configuration
+from ...pyqtgraphCore.imageview import ImageView
+from ...pyqtgraphCore import LinearRegionItem
+from ...common import configuration
 import pandas as pd
 
 

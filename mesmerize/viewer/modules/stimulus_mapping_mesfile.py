@@ -15,7 +15,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtGui, QtWidgets
 # from pyqtgraphCore.widgets.ColorButton import ColorButton
 import pandas as pd
-from common import configuration
+from ...common import configuration
 from .stimmap_modules.page import Page
 from .stimmap_modules.row import Row, ColorButton
 from .stimulus_mapping import ModuleGUI# as StimulusMappingModuleGUI

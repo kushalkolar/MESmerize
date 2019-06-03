@@ -13,7 +13,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ..core.common import ViewerInterface
 from ..core.viewer_work_environment import ViewerWorkEnv
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.mesfile_io_pytemplate import *
 from .stimulus_mapping_mesfile import *
 import traceback

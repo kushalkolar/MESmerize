@@ -1,4 +1,4 @@
-from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ...pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import numpy as np
 
 

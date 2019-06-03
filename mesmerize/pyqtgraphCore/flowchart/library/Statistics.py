@@ -2,12 +2,12 @@
 from ...Qt import QtWidgets
 # from . import functions
 from .common import *
-from analysis.data_types import *
-from analysis import peak_feature_extraction
-from plotting.widgets import CurvePlotWindow
+from ....analysis.data_types import *
+from ....analysis import peak_feature_extraction
+from ....plotting.widgets import CurvePlotWindow
 # from analysis import pca_gui
 import traceback
-from plotting.widgets import CrossCorrelationWidget
+from ....plotting.widgets import CrossCorrelationWidget
 
 
 class CrossCorr(CtrlNode):

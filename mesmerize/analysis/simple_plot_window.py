@@ -16,7 +16,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from .pytemplates.plot_window_pytemplate import *
 from .data_types import Transmission
 from .history_widget import HistoryTreeWidget
-from pyqtgraphCore import LinearRegionItem
+from ..pyqtgraphCore import LinearRegionItem
 
 
 class PlotWindow(QtWidgets.QMainWindow, Ui_MainWindow):

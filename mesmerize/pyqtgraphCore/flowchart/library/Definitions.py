@@ -2,8 +2,8 @@
 from ...Qt import QtWidgets
 # from . import functions
 from .common import *
-from analysis.data_types import *
-from plotting.widgets.peak_editor import peak_editor
+from ....analysis.data_types import *
+from ....plotting.widgets.peak_editor import peak_editor
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
 
 

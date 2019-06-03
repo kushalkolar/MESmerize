@@ -13,14 +13,14 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .main_widget import ProjectBrowserWidget
-from pyqtgraphCore.console import ConsoleWidget
+from ...pyqtgraphCore.console import ConsoleWidget
 from .pytemplates.mainwindow_pytemplate import Ui_MainWindow
 from spyder.widgets.variableexplorer import objecteditor
 import pandas as pd
 import numpy as np
 import pickle
 import os
-from common import configuration
+from ...common import configuration
 from functools import partial
 
 

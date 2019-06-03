@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
-from analysis.data_types import Transmission
-from plotting.widgets import KShapeWidget
+from mesmerize.analysis.data_types import Transmission
+from mesmerize.plotting.widgets import KShapeWidget
 
 
 def run():

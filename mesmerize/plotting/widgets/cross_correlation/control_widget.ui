@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayoutLeftMain">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -349,7 +349,7 @@
   <customwidget>
    <class>PlotWidget</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraphCore</header>
+   <header>....pyqtgraphCore</header>
   </customwidget>
  </customwidgets>
  <resources/>

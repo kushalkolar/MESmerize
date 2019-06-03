@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from pyqtgraphCore.widgets.ColorButton import ColorButton
+from ....pyqtgraphCore.widgets.ColorButton import ColorButton
 import pandas as pd
 
 

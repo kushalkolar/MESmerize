@@ -14,13 +14,13 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .tab_area_widget import TabAreaWidget
 import pandas as pd
-from common import configuration
-from misc_widgets.list_widget_dialog import ListWidgetDialog
+from ...common import configuration
+from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from functools import partial
-from viewer.core.common import ViewerInterface
-from viewer.core.viewer_work_environment import ViewerWorkEnv
-from common.window_manager import WindowClass
-from common import start
+from ...viewer.core.common import ViewerInterface
+from ...viewer.core.viewer_work_environment import ViewerWorkEnv
+from ...common.window_manager import WindowClass
+from ...common import start
 
 
 class ProjectBrowserWidget(QtWidgets.QWidget):

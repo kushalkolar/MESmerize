@@ -43,7 +43,7 @@ import numpy as np
 # from MesmerizeCore import misc_widgets
 # import MesmerizeCore.Export
 # from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
-from viewer import export
+from ...viewer import export
 try:
     from bottleneck import nanmin, nanmax
 except ImportError:

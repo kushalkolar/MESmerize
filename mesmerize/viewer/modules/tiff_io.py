@@ -12,7 +12,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from ..core.common import ViewerInterface
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.tiff_io_pytemplate import *
 from ..core.viewer_work_environment import ViewerWorkEnv
 import os

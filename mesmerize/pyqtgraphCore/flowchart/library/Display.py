@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from ... import PlotDataItem, ComboBox
-from analysis import simple_plot_window
+from ....analysis import simple_plot_window
 from .common import *
 import numpy as np
 import pandas as pd
-from plotting.widgets import HeatmapTracerWidget
-from plotting.widgets import ScatterPlotWidget
-from plotting.widgets import BeeswarmPlotWindow
-from plotting.variants.timeseries import TimeseriesPlot
+from ....plotting.widgets import HeatmapTracerWidget
+from ....plotting.widgets import ScatterPlotWidget
+from ....plotting.widgets import BeeswarmPlotWindow
+from ....plotting.variants.timeseries import TimeseriesPlot
 
 
 class Plot(CtrlNode):

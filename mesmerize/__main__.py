@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from common import start
+from mesmerize.common import start
 # from analysis.DataTypes import Transmission
 #
 #

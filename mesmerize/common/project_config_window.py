@@ -12,14 +12,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 import sys
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-if __name__ == '__main__':
-    import configuration
-    from pytemplates.project_config_pytemplate import *
-else:
-    from . import configuration
-    from .pytemplates.project_config_pytemplate import *
-
+from . import configuration
+from .pytemplates.project_config_pytemplate import *
 from numpy import int64, float64
 from functools import partial
 from glob import glob

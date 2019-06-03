@@ -11,8 +11,8 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-from pyqtgraphCore import LineSegmentROI, ROI
+from PyQt5 import QtWidgets
+from ...pyqtgraphCore import LineSegmentROI, ROI
 import numpy as np
 from .resize import ResizeDialogBox
 from ..core.common import ViewerInterface

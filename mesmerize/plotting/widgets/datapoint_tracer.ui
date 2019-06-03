@@ -173,12 +173,12 @@
   <customwidget>
    <class>GraphicsLayoutWidget</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraphCore</header>
+   <header>...pyqtgraphCore</header>
   </customwidget>
   <customwidget>
    <class>PlotWidget</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraphCore</header>
+   <header>...pyqtgraphCore</header>
   </customwidget>
  </customwidgets>
  <resources/>

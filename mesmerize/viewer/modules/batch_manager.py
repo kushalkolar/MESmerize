@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ..core.common import ViewerInterface
 from ..core.viewer_work_environment import ViewerWorkEnv
-from common import configuration, get_timestamp_str
+from ...common import configuration, get_timestamp_str
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
@@ -31,12 +31,12 @@ from collections import deque
 import psutil
 from signal import SIGKILL
 import traceback
-from misc_widgets.list_widget_dialog import ListWidgetDialog
-from common import window_manager
+from ...misc_widgets.list_widget_dialog import ListWidgetDialog
+from ...common import window_manager
 from glob import glob
 from multiprocessing import Pool
 from uuid import UUID as UUIDType
-from common.process_utils import make_runfile
+from ...common.process_utils import make_runfile
 
 
 class ModuleGUI(QtWidgets.QWidget):

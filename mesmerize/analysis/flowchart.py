@@ -14,18 +14,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import sys
 
 sys.setrecursionlimit(10000)
-from pyqtgraphCore.flowchart import Flowchart
+from ..pyqtgraphCore.flowchart import Flowchart
 # import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-
+from ..pyqtgraphCore.Qt import QtCore, QtWidgets
 
 from .pytemplates import mainwindow_pytemplate as uiWin
-from .data_types import Transmission
-from pyqtgraphCore.console import ConsoleWidget
+from ..pyqtgraphCore.console import ConsoleWidget
 import pickle
-from common import configuration
+from ..common import configuration
 import os
 
 

@@ -11,8 +11,8 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore import GraphicsLayoutWidget, LegendItem
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from ...pyqtgraphCore import GraphicsLayoutWidget, LegendItem
+from ...pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import numpy as np
 import pandas as pd
 from uuid import UUID

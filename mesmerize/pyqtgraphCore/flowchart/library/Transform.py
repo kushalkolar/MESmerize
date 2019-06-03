@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from sklearn import manifold
-import pandas as pd
-import numpy as np
 from .common import *
 
 

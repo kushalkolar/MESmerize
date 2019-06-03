@@ -7,7 +7,7 @@ from ...WidgetGroup import WidgetGroup
 from ..Node import Node
 import numpy as np
 from ...widgets.ColorButton import ColorButton
-from analysis.data_types import Transmission
+from ....analysis import Transmission
 try:
     import metaarray
     HAVE_METAARRAY = True
@@ -16,7 +16,7 @@ except:
 
 from ...widgets.ComboBox import ComboBox as QComboBox
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
-from plotting.widgets import ColormapListWidget
+from ....plotting.widgets import ColormapListWidget
 
 
 def generateUi(opts):

@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .add_to_project_dialog_pytemplate import Ui_Form
-from common import configuration
+from ...common import configuration
 from .viewer_work_environment import ViewerWorkEnv
 from numpy import int64, float64
 import traceback

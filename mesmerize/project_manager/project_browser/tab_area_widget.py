@@ -19,7 +19,7 @@ import pandas as pd
 from numpy import int64, float64
 from copy import deepcopy
 from functools import partial
-from common import configuration
+from ...common import configuration
 
 
 class TabAreaWidget(QtWidgets.QWidget):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ImageViewTemplate.ui'
+# Form implementation generated from reading ui file 'ImageViewTemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -93,4 +93,4 @@ class Ui_Form(object):
 
 from ..widgets.GraphicsView import GraphicsView
 from ..widgets.HistogramLUTWidget import HistogramLUTWidget
-from pyqtgraphCore import PlotWidget
+from ..widgets.PlotWidget import PlotWidget

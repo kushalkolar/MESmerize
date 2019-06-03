@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './datapoint_tracer.ui'
+# Form implementation generated from reading ui file 'datapoint_tracer.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -115,4 +115,4 @@ class Ui_DatapointTracer(object):
         self.radioButtonMaxProjection.setText(_translate("DatapointTracer", "&Max Projection"))
         self.radioButtonSTDProjection.setText(_translate("DatapointTracer", "Standard De&viation Projection"))
 
-from pyqtgraphCore import GraphicsLayoutWidget, PlotWidget
+from ...pyqtgraphCore import GraphicsLayoutWidget, PlotWidget

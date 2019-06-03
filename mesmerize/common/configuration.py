@@ -17,8 +17,8 @@ import configparser
 import numpy as np
 import os
 from psutil import cpu_count
-from common.window_manager import WindowManager
-from project_manager import ProjectManager
+from ..common.window_manager import WindowManager
+from ..project_manager import ProjectManager
 # from .project_config_window import ProjectConfigUpdater
 
 

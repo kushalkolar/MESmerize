@@ -10,12 +10,10 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
-if __name__ == '__main__':
-    from link_viewers_dialog_pytemplate import *
-else:
-    from .link_viewers_dialog_pytemplate import *
-from common import configuration
-from pyqtgraphCore.imageview import ImageView
+
+from .link_viewers_dialog_pytemplate import *
+from ...common import configuration
+from ...pyqtgraphCore.imageview import ImageView
 
 
 class ViewerLinkages(QtWidgets.QWidget):
