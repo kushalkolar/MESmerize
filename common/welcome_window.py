@@ -11,7 +11,6 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-import sys
 from pyqtgraphCore.console import ConsoleWidget
 from .welcome_window_pytemplate import *
 from project_manager import ProjectManager

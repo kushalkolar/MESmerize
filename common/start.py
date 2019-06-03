@@ -12,7 +12,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 
-from common import welcome_window, configuration
 # from common.window_manager import WindowManager
 import pyqtgraphCore
 from viewer import main_window as viewer_main_window
@@ -21,6 +20,7 @@ from viewer import main_window as viewer_main_window
 from analysis.flowchart import Window as FlowchartWindow
 # from analysis.stats_gui import StatsWindow
 from project_manager import ProjectBrowserWindow
+from common import welcome_window, configuration
 # import json
 from uuid import UUID
 
