@@ -24,14 +24,22 @@ def make_workdir(suffix: str = '') -> str:
     return workdir
 
 
-def make_runfile(module_path: str, workdir: str, args_str: str = None) -> str:
+def make_runfile(module_path: str, workdir: str, args_str: str = None, filename: str = None,
+                 pre_run: str = '', post_run: str = '') -> str:
     """
     :param module_path: absolute module path
-    :param args_str: str of args that is directly passed with the python command in the bash script
-    :param workdir: working directory
-    :return:
+    :param args_str:    str of args that is directly passed with the python command in the bash script
+    :param workdir:     working directory
+    :param filename:    optional, specific filename for the script
+    :param pre_run:     optional, str to run before module is ran
+    :param post_run:    optional, str to run after module has run
+
+    :return: path to the shell script that can be run
     """
-    sh_file = workdir + '/' + 'run.sh'
+    if filename is None:
+        sh_file = workdir + '/' + 'run.sh'
+    else:
+        sh_file = workdir + '/' + filename
 
     sys_cfg = get_sys_config()
 
@@ -71,7 +79,9 @@ def make_runfile(module_path: str, workdir: str, args_str: str = None) -> str:
                  'export OPENBLAS_NUM_THREADS=1\n'
                  'export MESMERIZE_N_PROCESSES=' + str(n_processes) + '\n'
                  'export USE_CUDA=' + sys_cfg['HARDWARE']['USE_CUDA'] + '\n' +
-                 'python ' + module_path + args_str + '\n'
+                 pre_run +
+                 'python ' + module_path + args_str + '\n' +
+                 post_run
                  )
 
     st = os.stat(sh_file)

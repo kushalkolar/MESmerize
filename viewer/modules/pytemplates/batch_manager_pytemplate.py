@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './batch_manager_pytemplate.ui'
+# Form implementation generated from reading ui file './ui_files/batch_manager_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -134,6 +134,9 @@ class Ui_Form(object):
         self.btnCompress = QtWidgets.QPushButton(self.layoutWidget)
         self.btnCompress.setObjectName("btnCompress")
         self.gridLayout.addWidget(self.btnCompress, 1, 6, 1, 1)
+        self.btnExportShScripts = QtWidgets.QPushButton(self.layoutWidget)
+        self.btnExportShScripts.setObjectName("btnExportShScripts")
+        self.gridLayout.addWidget(self.btnExportShScripts, 0, 6, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)
         self.widget = QtWidgets.QWidget(self.layoutWidget)
         self.widget.setObjectName("widget")
@@ -243,6 +246,7 @@ class Ui_Form(object):
         self.btnOpen.setText(_translate("Form", "Open Batch"))
         self.btnViewInput.setText(_translate("Form", "View Input"))
         self.btnCompress.setText(_translate("Form", "Compress"))
+        self.btnExportShScripts.setText(_translate("Form", "Export shell scripts"))
         self.checkBoxWorDir.setToolTip(_translate("Form", "Use a temporary working directory to process each batch item. Moves output back to batch directory when done. Useful if you have a very fast filesystem with limited capacity."))
         self.checkBoxWorDir.setText(_translate("Form", "Use work dir"))
         self.textBrowserItemInfo.setHtml(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"

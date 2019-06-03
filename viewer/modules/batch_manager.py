@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ..core.common import ViewerInterface
 from ..core.viewer_work_environment import ViewerWorkEnv
-from common import configuration
+from common import configuration, get_timestamp_str
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
@@ -36,8 +36,7 @@ from common import window_manager
 from glob import glob
 from multiprocessing import Pool
 from uuid import UUID as UUIDType
-from datetime import datetime
-from time import time
+from common.process_utils import make_runfile
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -49,9 +48,7 @@ class ModuleGUI(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
-        date = datetime.fromtimestamp(time())
-        time_str = date.strftime('%Y%m%d') + '_' + date.strftime('%H%M%S')
-        self.ui.lineEditWorkDir.setText('/work/' + os.environ['USER'] + '/' + time_str)
+        self.ui.lineEditWorkDir.setText('/work/' + os.environ['USER'] + '/' + get_timestamp_str())
         self.ui.checkBoxWorDir.setChecked(True)
         self.ui.lineEditWorkDir.setEnabled(True)
         self.working_dir = self.ui.lineEditWorkDir.text()
@@ -87,6 +84,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.init_batch(run_batch)
 
         self.ui.btnCompress.clicked.connect(self.compress_all)
+        self.ui.btnExportShScripts.clicked.connect(self.export_submission_scripts)
 
     def compress_all(self):
         if QtWidgets.QMessageBox.warning(self, 'Compress Warning',
@@ -122,9 +120,6 @@ class ModuleGUI(QtWidgets.QWidget):
         tifffile.imsave(path, data=imgseq.astype(np.uint16), compress=1)
 
         os.remove(backup_path)
-
-    def export_submission_scripts(self):
-        pass
 
     def init_batch(self, run_batch):
         if run_batch is None:
@@ -451,30 +446,15 @@ class ModuleGUI(QtWidgets.QWidget):
         elif configuration.sys_cfg['PATHS']['env_type'] == 'virtual':
             env_path = configuration.sys_cfg['PATHS']['env']
             env_activation = 'source ' + env_path + '/bin/activate'
-        else:	
+        else:
             raise ValueError('Invalid configruation value for environment path. Please check the entry for "env" under'
                              'section [PATH] in the config file.')
         caiman_path = configuration.sys_cfg['PATHS']['caiman']
 
-        if self.ui.checkBoxWorDir.isChecked():
-            try:
-                self.working_dir = self.ui.lineEditWorkDir.text()
-                if not os.path.isdir(self.working_dir):
-                    os.makedirs(self.working_dir)
-                elif os.path.isfile(self.working_dir):
-                    QtWidgets.QMessageBox.warning(self, 'Choose different dir', 'Choose a different directory')
-            except PermissionError:
-                QtWidgets.QMessageBox.warning(self, 'Permission denied',
-                                              'You do not appear to have permission to write to the chosen work'
-                                              'directory.')
-                return
+        cp_to_work_dir_str = self.get_copy_workdir_str(r['uuid'])
 
-            cp_to_work_dir_str = 'cp ' + self.batch_path + '/*' + str(r['uuid']) + '* ' + self.working_dir
-
-        else:
-            self.working_dir = self.batch_path
-            cp_to_work_dir_str = ''
-
+        if not cp_to_work_dir_str:
+            return
 
         with open(sh_file, 'w') as sf:
             sf.write('#!/bin/bash\n' +
@@ -483,7 +463,7 @@ class ModuleGUI(QtWidgets.QWidget):
                      'export MKL_NUM_THREADS=1\n' +
                      'export OPENBLAS_NUM_THREADS=1\n' +
                      'export USE_CUDA=' + configuration.sys_cfg['HARDWARE']['USE_CUDA'] + '\n' +
-                     cp_to_work_dir_str + '\n' +
+                     cp_to_work_dir_str +
                      'python "' +
                      module_path + '" "' +
                      self.working_dir + '" "' +
@@ -496,6 +476,46 @@ class ModuleGUI(QtWidgets.QWidget):
         self.process.start(sh_file)
         self.ui.listwBatch.item(self.current_batch_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
+    def get_copy_workdir_str(self, u: uuid.UUID) -> str:
+        if self.ui.checkBoxWorDir.isChecked():
+            try:
+                self.working_dir = self.ui.lineEditWorkDir.text()
+                if not os.path.isdir(self.working_dir):
+                    os.makedirs(self.working_dir)
+                elif os.path.isfile(self.working_dir):
+                    QtWidgets.QMessageBox.warning(self, 'Choose different dir', 'Choose a different directory')
+            except PermissionError:
+                QtWidgets.QMessageBox.warning(self, 'Permission denied',
+                                              'You do not appear to have permission to write to the chosen work'
+                                              'directory.')
+                return False
+
+            cp_to_work_dir_str = 'cp ' + self.batch_path + '/*' + str(u) + '* ' + self.working_dir + '\n'
+
+        else:
+            self.working_dir = self.batch_path
+            cp_to_work_dir_str = ''
+
+        return cp_to_work_dir_str
+
+    def export_submission_scripts(self):
+        for ix, r in self.df.iterrows():
+            m = globals()[r['module']]
+            module_path = os.path.abspath(m.__file__)
+            u = r['uuid']
+
+            cp_str = self.get_copy_workdir_str(u)
+            if self.working_dir != self.batch_path:
+                mv_str = 'mv -n ' + self.working_dir + '/*' + str(u) + '* ' + self.batch_path
+            else:
+                mv_str = ''
+
+            args = '"' + self.working_dir + '" "' + str(u) + '" ' + configuration.sys_cfg['HARDWARE']['n_processes'] + '\n'
+            save_path = self.batch_path + '/jobs_' + get_timestamp_str()
+            make_runfile(module_path=module_path, workdir=save_path, args_str=args, filename=str(u), pre_run=cp_str, post_run=mv_str)
+
+        QtWidgets.QMessageBox.information(self, 'Exported', 'Submission scripts for this batch have been exported to:\n' + save_path)
+
     def create_run_script(self, parent_dir):
         pass
 
@@ -504,9 +524,9 @@ class ModuleGUI(QtWidgets.QWidget):
         if os.path.isfile(out_file):
             output = json.load(open(out_file, 'r'))
             return output
-        
+
         out_file = self.batch_path + '/' + str(UUID) + '.out'
-        
+
         if os.path.isfile(out_file):
             output = json.load(open(out_file, 'r'))
             return output
