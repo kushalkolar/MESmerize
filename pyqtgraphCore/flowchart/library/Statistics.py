@@ -7,6 +7,22 @@ from analysis import peak_feature_extraction
 from plotting.widgets import CurvePlotWindow
 # from analysis import pca_gui
 import traceback
+from plotting.widgets import CrossCorrelationWidget
+
+
+class CrossCorr(CtrlNode):
+    """Cross Correlation"""
+    nodeName = 'CrossCorr'
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.cc_widget = CrossCorrelationWidget
+        self.ctrls['ShowGUI'].clicked.connect(self.cc_widget.show)
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.cc_widget.set_input(transmission)
+        return None
 
 
 class CurvePlotsNode(CtrlNode):

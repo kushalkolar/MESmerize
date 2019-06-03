@@ -2,7 +2,8 @@ import os
 from webbrowser import open_new_tab
 from functools import partial
 import configparser
-
+from datetime import datetime
+from time import time
 
 def get_sys_config() -> configparser.RawConfigParser:
     sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
@@ -33,3 +34,8 @@ doc_pages = {'home':            '/../index.html',
 for k in doc_pages.keys():
     doc_pages[k] = partial(open_new_tab, docs_dir + doc_pages[k])
 
+
+def get_timestamp_str() -> str:
+    date = datetime.fromtimestamp(time())
+    time_str = date.strftime('%Y%m%d') + '_' + date.strftime('%H%M%S')
+    return time_str
