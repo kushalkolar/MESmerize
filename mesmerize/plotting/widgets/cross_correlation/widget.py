@@ -14,10 +14,9 @@ from .compute_cc import compute_cc_data, CC_Data
 from .control_widget import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
-from analysis import Transmission, get_sampling_rate, get_array_size
-from analysis.math import cross_correlation as cc_funcs
+from ....analysis import Transmission, get_sampling_rate, get_array_size
 import numpy as np
-from pyqtgraphCore import PlotDataItem
+from ....pyqtgraphCore import PlotDataItem
 
 
 class ControlWidget(QtWidgets.QWidget):

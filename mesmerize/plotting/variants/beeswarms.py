@@ -3,8 +3,8 @@
 Example beeswarm / bar chart
 """
 
-from pyqtgraphCore import ScatterPlotItem, SpotItem, pseudoScatter, GraphicsLayoutWidget
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from ...pyqtgraphCore import ScatterPlotItem, SpotItem, pseudoScatter, GraphicsLayoutWidget
+from ...pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 import pandas as pd
 from uuid import UUID
 

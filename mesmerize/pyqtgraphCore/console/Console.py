@@ -13,7 +13,7 @@ else:
     from . import template_pyqt as template
 from os.path import isfile
 
-from viewer.modules.script_editor_modules.syntax_editor import Highlighter
+from ...viewer.modules.script_editor_modules.syntax_editor import Highlighter
 
 class ConsoleWidget(QtGui.QWidget):
     """

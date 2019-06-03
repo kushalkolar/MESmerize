@@ -12,14 +12,14 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .main_window_pytemplate import *
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
-from pyqtgraphCore.console import ConsoleWidget
-from pyqtgraphCore.imageview import ImageView
+from ..pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from ..pyqtgraphCore.console import ConsoleWidget
+from ..pyqtgraphCore.imageview import ImageView
 from .modules import *
 from .core.common import ViewerInterface
 import numpy as np
 from .core.viewer_work_environment import ViewerWorkEnv
-from common import configuration, doc_pages
+from ..common import configuration, doc_pages
 from .image_menu.main import ImageMenu
 from spyder.widgets.variableexplorer import objecteditor
 import traceback

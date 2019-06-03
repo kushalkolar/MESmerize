@@ -1,6 +1,6 @@
 from .common import *
 from sklearn import neighbors
-from common.configuration import sys_cfg
+from ....common.configuration import sys_cfg
 
 
 class KneighborsGraph(CtrlNode):

@@ -10,7 +10,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtWidgets
-from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ...pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import numpy as np
 from seaborn import heatmap as seaborn_heatmap
 from matplotlib.patches import Rectangle as RectangularPatch

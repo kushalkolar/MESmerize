@@ -26,18 +26,18 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>23</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>&amp;View</string>
     </property>
     <addaction name="actionTranmissions_Tree"/>
    </widget>
    <widget class="QMenu" name="menuAdvanced">
     <property name="title">
-     <string>Advanced</string>
+     <string>Adva&amp;nced</string>
     </property>
    </widget>
    <addaction name="menuView"/>
@@ -48,14 +48,14 @@
    <property name="minimumSize">
     <size>
      <width>219</width>
-     <height>36</height>
+     <height>50</height>
     </size>
    </property>
    <property name="features">
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>Tranmissions w/ ordered history</string>
+    <string>T&amp;ranmissions w/ ordered history</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>
@@ -70,7 +70,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Tranmissions Tree</string>
+    <string>&amp;Tranmissions Tree</string>
    </property>
   </action>
  </widget>
@@ -78,7 +78,7 @@
   <customwidget>
    <class>PlotWidget</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraphCore</header>
+   <header>...pyqtgraphCore</header>
   </customwidget>
  </customwidgets>
  <resources/>

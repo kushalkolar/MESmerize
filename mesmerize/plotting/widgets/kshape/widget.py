@@ -14,17 +14,17 @@ from . import kshape_process
 import psutil
 import os
 from signal import SIGKILL
-from common.process_utils import make_workdir, make_runfile
+from ....common.process_utils import make_workdir, make_runfile
 import pickle
-from analysis.data_types import Transmission
+from ....analysis.data_types import Transmission
 import numpy as np
 import traceback
 from functools import partial
 from collections import deque
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
-from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from matplotlib.gridspec import GridSpec
-from analysis.utils import get_cluster_proportions
+from ....analysis.utils import get_cluster_proportions
 
 
 class KShapeControlDock(QtWidgets.QDockWidget):

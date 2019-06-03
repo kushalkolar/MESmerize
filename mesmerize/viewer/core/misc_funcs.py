@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import pandas as pd
 import numpy as np
-from common import configuration
+from ...common import configuration
 
 
 def empty_df(cols=None, addCols=[]):

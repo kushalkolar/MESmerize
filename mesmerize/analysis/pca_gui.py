@@ -16,7 +16,7 @@ sys.path.append('..')
 from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 if __name__ != '__main__':
     from .pytemplates.pca_window_pytemplate import *
-    from . import DataTypes
+    from . import data_types
     from common import configuration
 else:
     from pytemplates.pca_window_pytemplate import *
@@ -61,7 +61,7 @@ class PCA_GUI(QtWidgets.QMainWindow):
               'pickle': pickle,
               'scipy': scipy,
               'pd': pd,
-              'DataTypes': DataTypes,
+              'DataTypes': data_types,
               'main': self,
               'animation': animation
               }

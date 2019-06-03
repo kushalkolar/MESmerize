@@ -14,8 +14,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core.common import ViewerInterface
 from .pytemplates.caiman_motion_correction_pytemplate import *
 import json
-from common import configuration
-from pyqtgraphCore import LinearRegionItem
+from ...common import configuration
+from ...pyqtgraphCore import LinearRegionItem
 
 
 class ModuleGUI(QtWidgets.QDockWidget):

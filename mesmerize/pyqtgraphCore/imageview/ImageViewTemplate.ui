@@ -141,7 +141,7 @@
   <customwidget>
    <class>PlotWidget</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraphCore</header>
+   <header>..widgets.PlotWidget</header>
    <container>1</container>
   </customwidget>
   <customwidget>

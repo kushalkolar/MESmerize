@@ -12,13 +12,13 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .datapoint_tracer_pytemplate import *
-from analysis.history_widget import HistoryTreeWidget
-from pyqtgraphCore import ImageView, LinearRegionItem, mkColor
+from ...analysis.history_widget import HistoryTreeWidget
+from ...pyqtgraphCore import ImageView, LinearRegionItem, mkColor
 from uuid import UUID
 import pandas as pd
 import tifffile
 import numpy as np
-from viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
+from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
 # from common import configuration
 
 

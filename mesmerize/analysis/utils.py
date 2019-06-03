@@ -11,7 +11,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import numpy as np
 import pandas as pd
 
-from analysis import Transmission
+from . import Transmission
 
 
 def get_cluster_proportions(cluster_labels: iter, group_labels: iter) -> pd.DataFrame:

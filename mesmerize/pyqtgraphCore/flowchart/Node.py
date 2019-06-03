@@ -6,7 +6,6 @@ from .Terminal import *
 from ..pgcollections import OrderedDict
 from ..debug import *
 import numpy as np
-from common import configuration
 
 def strDict(d):
     return dict([(str(k), v) for k, v in d.items()])

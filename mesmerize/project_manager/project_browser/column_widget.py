@@ -16,7 +16,7 @@ from .pytemplates.column_pytemplate import Ui_column_template
 from functools import partial
 import pandas as pd
 from numpy import int64, float64
-from common import configuration
+from ...common import configuration
 
 
 class ColumnWidget(QtWidgets.QWidget, Ui_column_template):

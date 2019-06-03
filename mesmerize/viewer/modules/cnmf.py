@@ -14,7 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core.common import ViewerInterface
 from .pytemplates.cnmf_pytemplate import *
 import json
-from common import configuration
+from ...common import configuration
 
 
 class ModuleGUI(QtWidgets.QDockWidget):

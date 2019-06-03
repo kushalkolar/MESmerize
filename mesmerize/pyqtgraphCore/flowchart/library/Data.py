@@ -4,8 +4,8 @@ import numpy as np
 from .common import *
 import traceback
 from functools import partial
-from analysis.data_types import Transmission
-from common import configuration
+from ....analysis import Transmission
+from ....common import configuration
 from os.path import basename
 
 

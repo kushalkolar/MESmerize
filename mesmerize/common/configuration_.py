@@ -14,8 +14,8 @@ A module that is globally accessible from all modules.
 import numpy as np
 import os
 from psutil import cpu_count
-from common.window_manager import WindowManager
-from project_manager.project_manager import ProjectManager
+from ..common.window_manager import WindowManager
+from ..project_manager.project_manager import ProjectManager
 import json
 
 window_manager = WindowManager()

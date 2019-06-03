@@ -11,13 +11,13 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
+from ...pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from skimage.transform import rescale
 import numpy as np
 from ..core.common import ViewerInterface
 from functools import partial
 from multiprocessing.pool import ThreadPool as Pool
-from common.configuration import sys_cfg
+from ...common.configuration import sys_cfg
 import traceback
 
 

@@ -12,12 +12,11 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import pandas as pd
 import numpy as np
-import pickle
 from .data_types import Transmission
 #    from . import Compute
 from . import compute_utils
 from .compute_peak_features import ComputePeakFeatures
-from pyqtgraphCore.Qt import QtCore, QtGui
+from PyQt5 import QtWidgets
 from uuid import uuid4
 
 
@@ -181,10 +180,10 @@ class PeakFeaturesIter(PeakFeatures):
             # pickle.dump(self.all_peaks, open('/home/kushal/Sars_stuff/github-repos/MESmerize/test_all_peaks.pik', 'wb'))
             # self.all_peaks = self.all_peaks.values()
         except Exception as e:
-            if QtGui.QMessageBox.question(None, 'Error!', 'One of your curves probably contains no peaks.'
+            if QtWidgets.QMessageBox.question(None, 'Error!', 'One of your curves probably contains no peaks.'
                                                           'Exception:\n' + \
                     str(e) + '\n\nWould you like to view the DataFrame?',
-                                          QtGui.QMessageBox.Yes, QtGui.QMessageBox.No) == QtGui.QMessageBox.Yes:
+                                          QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.Yes:
                 pass
             return
         self.pb_df['peak_features'] = self.pb_df.apply(lambda x: self._per_peak(x.name, x.event) if (x.label == 'peak') else False,

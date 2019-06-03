@@ -1,7 +1,7 @@
 from .common import *
 from sklearn import cluster as skcluster
-from plotting.widgets import LDAPlot
-from plotting.widgets import KShapeWidget
+from ....plotting.widgets import LDAPlot
+from ....plotting.widgets import KShapeWidget
 
 
 class KShape(CtrlNode):

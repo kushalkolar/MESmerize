@@ -13,7 +13,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from psutil import cpu_count
 from . import configuration
-from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .pytemplates.system_config_pytemplate import *
 import os
 import traceback

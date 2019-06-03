@@ -4,10 +4,11 @@ import numpy as np
 from PyQt5 import QtWidgets, QtGui
 from matplotlib import cm as matplotlib_color_map
 
-import pyqtgraphCore as pg
-from viewer.core.common import ViewerInterface
-from viewer.modules.roi_manager_modules.roi_types import BaseROI, ManualROI
-from common import configuration
+from .... import pyqtgraphCore as pg
+from ....viewer.core.common import ViewerInterface
+from ....viewer.modules.roi_manager_modules.roi_types import BaseROI, ManualROI
+from ....common import configuration
+
 
 class ROIList(list):
     def __init__(self, ui, roi_types: str, viewer_interface: ViewerInterface):
