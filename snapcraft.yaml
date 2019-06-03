@@ -1,0 +1,44 @@
+name: mesmerize
+version: 0.1
+summary: Platform for Calcium Imaging analysis
+description: >
+  Calcium imaging anlaysis platform
+
+confinement: devmode
+
+parts:
+  mesmerize:
+    after: [desktop-qt5]
+    plugin: python
+    requirements: requirements.txt
+    python-version: python3
+    source: .
+    build-packages:
+      - python3
+      - python3-pyqt5
+      - gcc
+      - gfortran
+      - libblas3
+      - liblapack3
+      - libopenblas-dev
+      - liblapack-dev
+      - cython
+
+    stage-packages:
+      - python3
+      - python3-pyqt5
+      - libc-bin
+      - locales
+      - cython
+
+apps:
+  mesmerize:
+    command: desktop-launch $SNAP/mesmerize
+    plugs:
+      - desktop
+      - desktop-legacy
+      - unity7
+      - wayland
+      - x11
+      - opengl
+
