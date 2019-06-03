@@ -24,7 +24,7 @@ setup(
               'mesmerize.pyqtgraphCore.multiprocess', 'mesmerize.pyqtgraphCore.GraphicsScene',
               'mesmerize.pyqtgraphCore.graphicsItems', 'mesmerize.pyqtgraphCore.graphicsItems.ViewBox',
               'mesmerize.pyqtgraphCore.graphicsItems.PlotItem', 'mesmerize.pyqtgraphCore.parametertree',
-              'mesmerize.project_manager', 'mesmerize.project_manager.project_browser', 'clustering', 'clustering.PCA'],
+              'mesmerize.project_manager', 'mesmerize.project_manager.project_browser'],
     url='https://kushalkolar.github.io/MESmerize/',
     license='GNU General Public License v3.0',
     author='Kushal Kolar, Daniel Dondorp',
