@@ -13,24 +13,13 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-from mesmerize.common import start
-# from analysis.DataTypes import Transmission
-#
-#
-# from clustering.LDA.main_window import LDAPlot
-# import pickle
+from common import start
 
-if __name__ == '__main__':
+
+def main():
     app = QtWidgets.QApplication([])
 
     start.window_manager()
-    # w = LDAPlot()
-    #
-    # t = Transmission.from_pickle('/home/kushal/MESmerize/clustering/LDA/test_df.pickle')
-    # w.update_input_transmissions([t])
-    #
-    # w.show()
-
 
     if not len(sys.argv) > 1:
         start.main()
@@ -50,3 +39,7 @@ if __name__ == '__main__':
         raise ValueError('Invalid argument')
 
     app.exec_()
+
+
+if __name__ == '__main__':
+    main()
