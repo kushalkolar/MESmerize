@@ -12,12 +12,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
-from common import start
+from PyQt5.QtWidgets import QApplication
+from mesmerize.common import start
 
 
 def main():
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
 
     start.window_manager()
 

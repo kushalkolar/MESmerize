@@ -74,7 +74,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for mstr in custom_modules.__all__:
             mstr = '.' + mstr
-            mod = importlib.import_module(mstr, package='viewer.modules.custom_modules')
+            mod = importlib.import_module(mstr, package='mesmerize.viewer.modules.custom_modules')
             c = getattr(mod, 'ModuleGUI')
             self.custom_modules[mod.module_name] = c
 

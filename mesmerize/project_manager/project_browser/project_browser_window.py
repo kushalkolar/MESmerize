@@ -71,7 +71,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
 
         self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                  historyFile=cmd_history_file))
-        self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
+        # self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
         self.ui.dockConsole.hide()
 
         self._status_bar = None

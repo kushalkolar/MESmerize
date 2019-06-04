@@ -4,6 +4,8 @@ from functools import partial
 import configparser
 from datetime import datetime
 from time import time
+from .. import docs
+
 
 def get_sys_config() -> configparser.RawConfigParser:
     sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
@@ -22,7 +24,8 @@ def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
     proj_cfg.read(proj_path + '/config.cfg')
     return proj_cfg
 
-docs_dir = os.path.dirname(os.path.dirname(__file__)) + '/docs'
+
+docs_dir = os.path.dirname(docs.__file__)
 docs_dir = docs_dir + '/user_guides'
 
 doc_pages = {'home':            '/../index.html',

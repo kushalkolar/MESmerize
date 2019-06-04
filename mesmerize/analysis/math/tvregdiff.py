@@ -131,9 +131,8 @@ Updated for python3 and scipy 1.0.0
 import numpy as np
 from scipy import sparse
 from scipy.sparse import linalg as splin
-import numba
 
-#@numba.jit
+
 def tv_reg_diff(data, itern, alph, u0=None, scale='small', ep=1e-6, dx=None, diagflag=1):
     ## code starts here
     # Make sure we have a column vector

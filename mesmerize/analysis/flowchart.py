@@ -58,8 +58,7 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
 
         self.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
                                                  historyFile=cmd_history_file))
-        self.resizeDocks([self.dockConsole], [235], QtCore.Qt.Vertical)
-
+        # self.resizeDocks([self.dockConsole], [235], QtCore.Qt.Vertical)
 
         self.dockFcWidget.setWidget(self.fc_widget)
 
