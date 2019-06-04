@@ -7,14 +7,20 @@ description: >
 confinement: devmode
 
 parts:
-  mesmerize:
+  setup:
     after: [desktop-qt5]
+    plugin: python
+    python-version: python3
+    python-packages: [Cython, python-dateutil]
+  mesmerize:
+    after: [setup]
     plugin: python
     requirements: requirements.txt
     python-version: python3
     source: .
     build-packages:
       - python3
+      - python3-tk
       - python3-pyqt5
       - gcc
       - gfortran
@@ -22,18 +28,19 @@ parts:
       - liblapack3
       - libopenblas-dev
       - liblapack-dev
-      - cython
+      - cython3
 
     stage-packages:
       - python3
+      - python3-tk
       - python3-pyqt5
       - libc-bin
       - locales
-      - cython
+      - cython3
 
 apps:
   mesmerize:
-    command: desktop-launch $SNAP/mesmerize
+    command: desktop-launch $SNAP/bin/mesmerize
     plugs:
       - desktop
       - desktop-legacy

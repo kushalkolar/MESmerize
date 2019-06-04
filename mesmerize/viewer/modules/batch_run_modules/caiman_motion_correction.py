@@ -28,7 +28,7 @@ import json
 from caiman.motion_correction import MotionCorrect
 import tifffile
 import traceback
-import numba
+# import numba
 from glob import glob
 from time import time
 
@@ -166,7 +166,6 @@ class BitDepthConverter:
     downscaled_img = apply_lut(img, lut_8_bit)
     """
     @staticmethod
-    @numba.jit
     def create_lut(levels, source, out):
         """
         :param levels:      min and max levels with which to create the LUT
@@ -197,7 +196,6 @@ class BitDepthConverter:
         return lut.astype(type_str)
 
     @staticmethod
-    @numba.jit
     def apply_lut(image, lut):
         """
         :param image:   The image upon which to apply the LUT (Look up table) and change its bit depth

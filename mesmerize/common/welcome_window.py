@@ -26,7 +26,7 @@ from ..viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        QtWidgets.QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -112,7 +112,7 @@ class MainWindow(QtWidgets.QMainWindow):
         console = ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
         self.ui.dockConsole.setWidget(console)
 
-        self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
+        # self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
         # console.resize(self.ui.dockConsole.width(), 100)
         # self.ui.dockConsole.resize(self.ui.dockConsole.width(), 150)
         # console.input.resize(console.input.width(), 80)
