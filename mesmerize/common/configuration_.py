@@ -36,34 +36,43 @@ sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]
 
+sys_cfg_path = os.environ['HOME'] + '/.mesmerize/config.json'
 
-def write_new_sys_config():
+_prefix_commands = ["export MKL_NUM_THREADS=1",
+                    "export OPENBLAS_NUM_THREADS=1"]
+
+_default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
+                       '_MESMERIZE_USE_CUDA': False,
+                       '_MESMERIZE_PYTHON_CALL': 'python3',
+                       '_MESMERIZE_PREFIX_COMMANDS': '\n'.join(_prefix_commands)
+                       }
+
+
+def create_new_sys_config() -> dict:
     if not os.path.isdir(sys_cfg_path):
         os.makedirs(sys_cfg_path)
-    sys_cfg = {'HARDWARE': {'n_processes': str(cpu_count() - 2),
-                            'USE_CUDA': str(False),
-                            },
 
-               'PATHS': {'caiman': '',
-                         'env': '',
-                         'env_type': '',
-                         },
+    with open(sys_cfg_path, 'w') as f:
+        json.dump(_default_sys_config, f)
 
-               'ENV': {'MKL_NUM_THREADS': 1,
-                       'OPENBLAS_NUM_THREADS': 1
-                       }
-               }
+    return _default_sys_config
 
 
+def get_sys_config() -> dict:
+    if not os.path.isfile(sys_cfg_path):
+        return create_new_sys_config()
 
-def open_sys_config():
-    sys_cfg = json.load(open(sys_cfg_path, 'r'))
+    with open(sys_cfg_path, 'r') as f:
+        sys_cfg = json.load(f)
+
+    return sys_cfg
 
 
-if not IS_WINDOWS:
-    sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
-    sys_cfg_file = sys_cfg_path + '/config'
-    if os.path.isfile(sys_cfg_file):
-        open_sys_config()
-    else:
-        write_new_sys_config()
+def save_sys_config(cfg: dict):
+    if not set(cfg.keys()).issubset(_default_sys_config.keys()):
+        raise KeyError('Required config fields are missing. The following fields must be present:\n' + str(cfg.keys()))
+
+    with open(sys_cfg_path, 'w') as f:
+        json.dump(cfg, f)
+
+
