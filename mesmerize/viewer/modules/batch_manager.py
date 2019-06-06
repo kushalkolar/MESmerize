@@ -447,12 +447,7 @@ class ModuleGUI(QtWidgets.QWidget):
         print(ev)
         if ev:
             workdir = get_sys_config()['_MESMERIZE_WORKDIR']
-            if workdir == '':
-                self.working_dir = self.batch_path
-                self.ui.checkBoxUseWorkDir.setChecked(False)
-                return
-
-            elif not os.access(workdir, os.W_OK):
+            if workdir == '' or not os.access(workdir, os.W_OK):
                 self.working_dir = self.batch_path
                 QtWidgets.QMessageBox.warning(self, 'Insufficent permissions',
                                               'You do not have permission to write to the chosen working directory.')
