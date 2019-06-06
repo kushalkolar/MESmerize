@@ -448,6 +448,9 @@ class ImageView(QtWidgets.QWidget):
         self.ui.roiPlot.close()
         self.ui.graphicsView.close()
         self.scene.clear()
+        if self.workEnv is not None:
+            self.workEnv.clear()
+            self.clear()
         del self.image
         del self.imageDisp
         super(ImageView, self).close()
