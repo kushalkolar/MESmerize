@@ -30,7 +30,7 @@ class SystemConfigGUI(QtWidgets.QWidget):
         self.set_ui_from_config()
 
         self.ui.btnApply.clicked.connect(self.set_config_from_ui)
-        # self.ui.btnClose.clicked.connect(self.close_requested)
+        self.ui.btnClose.clicked.connect(self.close)
 
         self.ui.pushButtonCUDAError.setVisible(False)
         self.ui.pushButtonCUDAError.setDisabled(True)
