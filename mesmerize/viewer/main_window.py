@@ -294,3 +294,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_work_environment_dialog(self):
         pass
+
+    def closeEvent(self, QCloseEvent):
+        if not self.vi.discard_workEnv():
+            QCloseEvent.ignore()
+        else:
+            QCloseEvent.accept()
