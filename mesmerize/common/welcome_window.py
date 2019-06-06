@@ -56,7 +56,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.listWidgetRecentProjects.itemDoubleClicked.connect(lambda item: self.open_project(item.text()))
 
         self.ui.btnViewer.setIcon(QtGui.QIcon(mdir + '/icons/noun_38902_cc.png'))
-        self.ui.btnViewer.setIconSize(QtCore.QSize(24,24))
+        self.ui.btnViewer.setIconSize(QtCore.QSize(24, 24))
         self.ui.btnViewer.setIconSize(QtCore.QSize(100, 100))
         self.ui.btnViewer.clicked.connect(self.open_new_viewer)
 
@@ -204,12 +204,23 @@ class MainWindow(QtWidgets.QMainWindow):
 
         elif self._batch_manager is None:
             QtWidgets.QMessageBox.information(None, 'No batch manager open',
-                                           'Choose a location for a new batch or create a new batch')
+                                              'Choose a location for a new batch or create a new batch')
 
             self._batch_manager = BatchModuleGUI(parent=None)
-            #self._batch_manager.show()
+            # self._batch_manager.show()
             return self._batch_manager
         else:
             return self._batch_manager
-            #self._batch_manager.show()
-            #self._batch_manager.show()
+            # self._batch_manager.show()
+            # self._batch_manager.show()
+
+    def closeEvent(self, QCloseEvent):
+        if QtWidgets.QMessageBox.warning(self, 'Close Application?',
+                                         'Are you sure you want to close all Mesmerize windows?',
+                                         QtWidgets.QMessageBox.Yes,
+                                         QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+            QCloseEvent.ignore()
+        else:
+            for w in QtWidgets.QApplication.topLevelWidgets():
+                QCloseEvent.accept()
+                w.close()

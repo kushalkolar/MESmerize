@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import QApplication
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
     if proj_path is None:
-        proj_path = os.environ['_mesmerize_proj_path']
+        proj_path = get_project_manager().root_dir
     proj_cfg = configparser.RawConfigParser(allow_no_value=True)
     proj_cfg.optionxform = str
     proj_cfg.read(proj_path + '/config.cfg')

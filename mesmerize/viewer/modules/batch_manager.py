@@ -88,6 +88,8 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnCompress.clicked.connect(self.compress_all)
         self.ui.btnExportShScripts.clicked.connect(self.export_submission_scripts)
 
+        self.lwd = None
+
     def compress_all(self):
         if QtWidgets.QMessageBox.warning(self, 'Compress Warning',
                                          'YOU CANNOT ABORT THIS PROCESS ONCE IT STARTS, PROCEED?',
@@ -239,8 +241,9 @@ class ModuleGUI(QtWidgets.QWidget):
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
                                               'The input files do not exist for this item.')
                 vi.viewer.status_bar_label.showMessage('Error, could not load input into work environment.')
-        if hasattr(self, 'lwd'):
-            self.lwd.deleteLater()
+        if self.lwd is not None:
+            self.lwd.close()
+            self.lwd = None
 
     def list_widget_item_double_clicked_slot(self, s: QtWidgets.QListWidgetItem):
         """Calls subclass of BatchRunInterface.show_output()"""
@@ -293,8 +296,8 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Error showing item output',
                                           'The following error occured while '
                                           'trying to load the output of the chosen item\n' + traceback.format_exc())
-        if hasattr(self, 'lwd'):
-            self.lwd.deleteLater()
+        if self.lwd is not None:
+            self.lwd.close()
             self.lwd = None
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
