@@ -257,7 +257,7 @@ class ViewerWorkEnv:
             #                   maxworkers=int(8))
 
             seq = tif.asarray(key=range(0, len(tif.series)),
-                              maxworkers=int(configuration.get_sys_config()['_MESMERIZE_N_THREADS']))
+                              maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
         else:
             raise ValueError("Must specify 'imread' or 'asarray' in method argument")
 
@@ -370,9 +370,9 @@ class ViewerWorkEnv:
         # This list is just used for gathering all new stims to add to the config file. This is just used for
         # populating the comboBoxes in the stimMapWidget GUI so that the widget doesn't need to access the DataFrame
         # for this simple task.
-        new_stimuli = []
+        # new_stimuli = []
         if self.stim_maps is None:
-            for stim_def in configuration.proj_cfg.options('STIM_DEFS'):
+            for stim_def in get_proj_config().options('STIM_DEFS'):
                 stimuli_unique_sets[stim_def] = ['untagged']
         else:
             for stim_def in self.stim_maps.keys():
@@ -386,12 +386,12 @@ class ViewerWorkEnv:
 
                 stimuli_unique_sets[stim_def] = list(set(stimuli))
 
-                for stim in stimuli_unique_sets[stim_def]:
-                    if stim not in configuration.proj_cfg['ALL_STIMS'].keys():
-                        new_stimuli.append(stim)
+                # for stim in stimuli_unique_sets[stim_def]:
+                #     if stim not in get_proj_config()['ALL_STIMS'].keys():
+                        # new_stimuli.append(stim)
 
-        configuration.proj_cfg['ALL_STIMS'] = {**configuration.proj_cfg['ALL_STIMS'], **dict.fromkeys(new_stimuli)}
-        configuration.save_proj_config()
+        # get_proj_config()['ALL_STIMS'] = {**get_proj_config()['ALL_STIMS'], **dict.fromkeys(new_stimuli)}
+        # configuration.save_proj_config()
 
         if self.imgdata.meta is not None:
             try:
