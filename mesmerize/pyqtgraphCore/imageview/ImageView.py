@@ -450,7 +450,7 @@ class ImageView(QtWidgets.QWidget):
         self.scene.clear()
         if self.workEnv is not None:
             self.workEnv.clear()
-            self.clear()
+            # self.clear()
         del self.image
         del self.imageDisp
         super(ImageView, self).close()

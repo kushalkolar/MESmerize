@@ -122,9 +122,6 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
         pikPath = os.path.join(configuration.proj_path, row['ImgInfoPath'])
         tiffPath = os.path.join(configuration.proj_path, row['ImgPath'])
 
-        if not vi.discard_workEnv():
-            return
-
         vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikPath, tiff_path=tiffPath)
         vi.update_workEnv()
         vi.viewer.workEnv.restore_rois_from_states()
