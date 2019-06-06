@@ -444,16 +444,20 @@ class ModuleGUI(QtWidgets.QWidget):
         QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
 
     def set_workdir(self, ev):
+        print(ev)
         if ev:
             workdir = get_sys_config()['_MESMERIZE_WORKDIR']
             if workdir == '':
                 self.working_dir = self.batch_path
+                self.ui.checkBoxUseWorkDir.setChecked(False)
+                return
 
             elif not os.access(workdir, os.W_OK):
                 self.working_dir = self.batch_path
                 QtWidgets.QMessageBox.warning(self, 'Insufficent permissions',
                                               'You do not have permission to write to the chosen working directory.')
                 self.ui.checkBoxUseWorkDir.setChecked(False)
+                return
 
             else:
                 self.working_dir = workdir
