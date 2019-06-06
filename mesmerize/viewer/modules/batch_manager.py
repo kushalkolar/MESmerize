@@ -409,7 +409,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.process.finished.connect(self.run_batch_item)
 
-        sh_file = self.create_runscript(r)
+        sh_file = self.create_runscript(r, cp=True, mv=False)
 
         self.process.setWorkingDirectory(self.working_dir)
         self.process.start(sh_file)
