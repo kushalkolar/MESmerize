@@ -21,6 +21,9 @@ from PyQt5.QtWidgets import QApplication
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
     if proj_path is None:
         proj_path = get_project_manager().root_dir
+        if proj_path is None:
+            raise NoProjectOpen
+
     proj_cfg = configparser.RawConfigParser(allow_no_value=True)
     proj_cfg.optionxform = str
     proj_cfg.read(proj_path + '/config.cfg')
@@ -54,7 +57,7 @@ def is_app() -> bool:
 
 def get_project_manager():
     if not is_app():
-        raise AttributeError("This can only be used in a full Mesmerize Application")
+        raise NotInApplicationError
 
     pm = getattr(QApplication.instance(), 'project_manager')
     return pm
@@ -62,14 +65,25 @@ def get_project_manager():
 
 def set_project_manager(project_manager):
     if not is_app():
-        raise AttributeError("This can only be used in a full Mesmerize Application")
+        raise NotInApplicationError
 
     setattr(QApplication.instance(), 'project_manager', project_manager)
 
 
 def get_window_manager():
-    try:
-        wm = getattr(QApplication.instance(), 'window_manager')
-    except AttributeError:
-        raise AttributeError("This can only be used in a full Mesmerize Application")
-    return wm
+    if not is_app():
+        raise NotInApplicationError
+    return getattr(QApplication.instance(), 'window_manager')
+    # try:
+    #     wm = getattr(QApplication.instance(), 'window_manager')
+    # except AttributeError:
+    #     raise AttributeError("This can only be used in a full Mesmerize Application")
+    # return wm
+
+
+class NoProjectOpen(BaseException):
+    """No Mesmerize project is open."""
+
+
+class NotInApplicationError(BaseException):
+    "This can only be used in a full Mesmerize Application"

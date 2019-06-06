@@ -314,16 +314,16 @@ class ViewerWorkEnv:
             UUID = uuid4()
 
         if filename is None:
-            filename = dir_path + '/' + self.sample_id + '-_-' + str(UUID)
+            filename = os.path.join(dir_path, f'{self.sample_id}-_-{UUID}')
         else:
-            filename = dir_path + '/' + filename
+            filename = os.path.join(dir_path, filename)
 
         work_env = self._make_dict()
 
         data = {**work_env, 'UUID': UUID}
 
         if save_img_seq:
-            tifffile.imsave(filename + '.tiff', self.imgdata.seq.T, bigtiff=True)
+            tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
         pickle.dump(data, open(filename + '.pik', 'wb'), protocol=4)
 
         self.saved = True
@@ -340,14 +340,14 @@ class ViewerWorkEnv:
             raise AttributeError('Work environment is empty')
 
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
-        imgdir = proj_path + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
+        imgdir = os.path.join(proj_path, 'images')  # + self.imgdata.SampleID + '_' + str(time.time())
 
         if self.UUID is None:
             UUID = uuid4()
         else:
             assert isinstance(self.UUID, UUID_type)
             UUID = self.UUID
-        curves_dir = proj_path + '/curves/' + self.sample_id + '-_-' + str(UUID)
+        curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{UUID}')
 
         if overwrite:
             rmtree(curves_dir)
@@ -421,8 +421,7 @@ class ViewerWorkEnv:
                     rois['states'][ix]['tags'][roi_def] = 'untagged'
 
             roi_tags = rois['states'][ix]['tags']
-
-            curve_path = curves_dir + '/' + str(ix).zfill(5) + '.npz'
+            curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
 
             np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
@@ -438,10 +437,10 @@ class ViewerWorkEnv:
             #                  }
 
             d = {'SampleID': self.sample_id,
-                 'CurvePath': curve_path.split(proj_path)[1],
+                 'CurvePath': os.path.relpath(curve_path, proj_path),
                  'ImgUUID': str(UUID),
-                 'ImgPath': img_path.split(proj_path)[1] + '.tiff',
-                 'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
+                 'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
+                 'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
                  'ROI_State': rois['states'][ix],
                  'date': date,
                  'uuid_curve': str(uuid4()),
