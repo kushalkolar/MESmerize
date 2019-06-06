@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb  5 13:17:26 2018
-
 @author: kushal
 
 Chatzigeorgiou Group
@@ -13,18 +11,11 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 A module that is globally accessible from all modules.
 """
 
-import configparser
 import numpy as np
 import os
 from psutil import cpu_count
-from ..common.window_manager import WindowManager
-from ..project_manager import ProjectManager
-# from .project_config_window import ProjectConfigUpdater
-
-
-window_manager = WindowManager()
-project_manager = ProjectManager(None)
-# proj_cfg_changed = ProjectConfigUpdater()
+import json
+from configparser import RawConfigParser
 
 #################################################################
 
@@ -37,40 +28,65 @@ if os.name == 'nt':
 else:
     IS_WINDOWS = False
 
-sys_cfg = configparser.RawConfigParser(allow_no_value=True)
-sys_cfg.optionxform = str
+sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]
 
+sys_cfg_dir = os.path.join(os.environ['HOME'], '.mesmerize')
+sys_cfg_file = os.path.join(sys_cfg_dir, 'config.json')
 
-def write_new_sys_config():
-    if not os.path.isdir(sys_cfg_path):
-        os.makedirs(sys_cfg_path)
-    sys_cfg['HARDWARE'] = {'n_processes': str(cpu_count() - 2),
-                           'USE_CUDA': str(False),
-                           'WORK': ''}
-    sys_cfg['PATHS'] = {'caiman': '', 'env': '', 'env_type': ''}
-    # sys_cfg['BATCH'] = {'anaconda_env': ''}
-    sys_cfg['ENV'] = dict.fromkeys(['MKL_NUM_THREADS=1', 'OPENBLAS_NUM_THREADS=1'])
-    write_sys_config()
+console_history_path = os.path.join(sys_cfg_dir, 'console_history')
+if not os.path.isdir(console_history_path):
+    os.makedirs(console_history_path)
+
+_prefix_comments = ['# For example if you are running in an anaconda environment',
+                    '# export PATH="/home/<user>/anaconda3:$PATH"',
+                    '# source activate my_environment',
+                    '# Or if you are using a python virtual environment',
+                    '# source /home/<>/python_envs/my_venv/bin/activate',
+                    '# Adjust these according to your hardware']
+
+_prefix_commands = _prefix_comments + ["export MKL_NUM_THREADS=1",
+                                       "export OPENBLAS_NUM_THREADS=1", '\n']
+
+default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
+                      '_MESMERIZE_USE_CUDA': False,
+                      '_MESMERIZE_PYTHON_CALL': 'python3',
+                      '_MESMERIZE_PREFIX_COMMANDS': '\n'.join(_prefix_commands),
+                      '_MESMERIZE_CUSTOM_MODULES_DIR': os.environ['HOME'] + '/mesmerize_custom_modules',
+                      '_MESMERIZE_WORKDIR': '',
+                      'recent_projects': []
+                      }
 
 
-def write_sys_config():
-    with open(sys_cfg_file, 'w') as cf:
-        sys_cfg.write(cf)
+def create_new_sys_config() -> dict:
+    if not os.path.isdir(sys_cfg_dir):
+        os.makedirs(sys_cfg_dir)
+
+    save_sys_config(default_sys_config)
+
+    return default_sys_config
 
 
-def open_sys_config():
-    sys_cfg.read(sys_cfg_file)
+def get_sys_config() -> dict:
+    if not os.path.isfile(sys_cfg_file):
+        return create_new_sys_config()
+
+    with open(sys_cfg_file, 'r') as f:
+        sys_cfg = json.load(f)
+
+    return sys_cfg
 
 
-if not IS_WINDOWS:
-    sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
-    sys_cfg_file = sys_cfg_path + '/config'
-    if os.path.isfile(sys_cfg_file):
-        open_sys_config()
-    else:
-        write_new_sys_config()
+def save_sys_config(cfg: dict):
+    if not set(cfg.keys()).issubset(default_sys_config.keys()):
+        raise KeyError('Required config fields are missing. The following fields must be present:\n' + str(cfg.keys()))
+
+    if not cfg['_MESMERIZE_PREFIX_COMMANDS'].endswith('\n'):
+        cfg['_MESMERIZE_PREFIX_COMMANDS'] += '\n'
+
+    with open(sys_cfg_file, 'w') as f:
+        json.dump(cfg, f, indent=4)
 
 
 #################################################################
@@ -80,7 +96,7 @@ if not IS_WINDOWS:
 #################################################################
 
 proj_path = None
-proj_cfg = configparser.RawConfigParser(allow_no_value=True)
+proj_cfg = RawConfigParser(allow_no_value=True)
 proj_cfg['ROI_DEFS'] = {}
 proj_cfg['STIM_DEFS'] = {}
 
@@ -95,7 +111,7 @@ def save_proj_config():
         proj_cfg.write(configfile)
 
 
-def new_proj_config():
+def create_new_proj_config():
     defaultInclude = ['SampleID', 'date', 'comments']
     proj_cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 

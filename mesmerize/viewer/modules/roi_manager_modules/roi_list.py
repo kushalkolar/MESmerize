@@ -7,7 +7,7 @@ from matplotlib import cm as matplotlib_color_map
 from .... import pyqtgraphCore as pg
 from ....viewer.core.common import ViewerInterface
 from ....viewer.modules.roi_manager_modules.roi_types import BaseROI, ManualROI
-from ....common import configuration
+from ....common import configuration, get_project_manager
 
 
 class ROIList(list):
@@ -27,7 +27,7 @@ class ROIList(list):
         # self._list_widget_context_menu.addAction(self.action_delete_roi)
         #
         # self.list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # self.list_widget.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
+        # self.list_widget.customContextMenuRequested.connect(self.bulid_delete_menu)
 
         assert isinstance(ui.listWidgetROITags, QtWidgets.QListWidget)
         self.list_widget_tags = ui.listWidgetROITags
@@ -64,7 +64,7 @@ class ROIList(list):
         self.current_index = -1
         self.previous_index = -1
 
-        configuration.project_manager.signal_project_config_changed.connect(self.update_roi_defs_from_configuration)
+        get_project_manager().signal_project_config_changed.connect(self.update_roi_defs_from_configuration)
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
@@ -144,7 +144,7 @@ class ROIList(list):
 
     def disconnect_all(self):
         self.list_widget.currentRowChanged.disconnect(self.set_current_index)
-        # self.list_widget.customContextMenuRequested.disconnect(self._list_widget_context_menu_requested)
+        # self.list_widget.customContextMenuRequested.disconnect(self.bulid_delete_menu)
         # self.action_delete_roi.triggered.disconnect(self.__delitem__)
         self.btn_plot.clicked.disconnect(self.plot_manual_roi_regions)
         self.show_all_checkbox.toggled.disconnect(self.slot_show_all_checkbox_clicked)

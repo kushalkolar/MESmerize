@@ -20,7 +20,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import os
-from ...common import configuration
+from ...common import configuration, get_project_manager
 from functools import partial
 
 
@@ -31,7 +31,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.project_browser = ProjectBrowserWidget(self, configuration.project_manager.dataframe)
+        self.project_browser = ProjectBrowserWidget(self, get_project_manager().dataframe)
         self.current_tab = 0
         self.project_browser.tab_widget.currentChanged.connect(self.set_current_tab)
         self.setCentralWidget(self.project_browser)
@@ -64,13 +64,9 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
               "self.window_manager as window_manager     \n" \
               "self as main         \n" \
 
-        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-            os.makedirs(configuration.sys_cfg_path + '/console_history/')
+        cmd_history_file = os.path.join(configuration.console_history_path, 'project_browser.pik')
 
-        cmd_history_file = configuration.sys_cfg_path + '/console_history/project_browser.pik'
-
-        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile=cmd_history_file))
+        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file))
         # self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
         self.ui.dockConsole.hide()
 
@@ -88,8 +84,8 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
     def set_current_tab(self, ix: int):
         self.current_tab = ix
 
-    def save_path_dialog(self, file_ext: int, save_root=False):
-        path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save Transmission as', '', '(*.' + file_ext + ')')
+    def save_path_dialog(self, file_ext: str, save_root=False):
+        path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save Transmission as', '', f'(*.{file_ext})')
         if path == '':
             return
         if path[0].endswith('.' + file_ext):
@@ -106,11 +102,11 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
 
     def get_current_dataframe(self, get_root=False) -> (pd.DataFrame, list):
         if self.current_tab == 0 or get_root:
-            dataframe = configuration.project_manager.dataframe
+            dataframe = get_project_manager().dataframe
             return dataframe, []
         else:
             tab_name = self.project_browser.tab_widget.widget(self.current_tab).tab_name
-            child = configuration.project_manager.child_dataframes[tab_name]
+            child = get_project_manager().child_dataframes[tab_name]
         return child['dataframe'], child['filter_history']
 
     def view_dataframe(self):
@@ -129,11 +125,11 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         # for child in configuration.project_manager.child_dataframes.keys():
         #     configuration.project_manager.child_dataframes.pop(child)
 
-        configuration.project_manager.create_child_dataframes()
+        get_project_manager().create_sub_dataframe()
 
-        for child in configuration.project_manager.child_dataframes.keys():
-            dataframe = configuration.project_manager.child_dataframes[child]['dataframe']
-            filter_history = configuration.project_manager.child_dataframes[child]['filter_history']
+        for child in get_project_manager().child_dataframes.keys():
+            dataframe = get_project_manager().child_dataframes[child]['dataframe']
+            filter_history = get_project_manager().child_dataframes[child]['filter_history']
             self.project_browser.add_tab(dataframe, filter_history, name=child)
         self.status_bar.showMessage('Finished loading tabs!')
 
@@ -141,7 +137,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         if tab_name is None:
             tab_name = self.project_browser.tab_widget.widget(self.current_tab).tab_name
 
-        child = configuration.project_manager.child_dataframes[tab_name]
+        child = get_project_manager().child_dataframes[tab_name]
         dataframe = child['dataframe']
         filter_history = child['filter_history']
         self.project_browser.tabs[tab_name].dataframe = dataframe

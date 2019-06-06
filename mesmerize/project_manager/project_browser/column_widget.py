@@ -16,7 +16,7 @@ from .pytemplates.column_pytemplate import Ui_column_template
 from functools import partial
 import pandas as pd
 from numpy import int64, float64
-from ...common import configuration
+from ...common import configuration, get_project_manager
 
 
 class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
@@ -122,7 +122,7 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
                                           QtWidgets.QMessageBox.Yes,
                                           QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
             return
-        configuration.project_manager.delete_sample_id_rows(sample_id)
+        get_project_manager().delete_sample_id_rows(sample_id)
 
     @property
     def series(self) -> pd.Series:

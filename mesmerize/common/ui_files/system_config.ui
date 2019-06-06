@@ -78,33 +78,38 @@ symbolic link to python3.</string>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
-      <widget class="QCheckBox" name="checkBoxUseCUDA">
-       <property name="text">
-        <string>Use CUDA cores when possible</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QCheckBox" name="checkBoxUseCUDA">
+         <property name="text">
+          <string>Use CUDA when possible</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonCUDAError">
+         <property name="text">
+          <string>See details</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonCUDAError">
-       <property name="text">
-        <string>See details</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Work dir</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditWorkDir"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -116,7 +121,7 @@ symbolic link to python3.</string>
     </widget>
    </item>
    <item>
-    <widget class="QPlainTextEdit" name="plainTextEditPreCommands">
+    <widget class="QPlainTextEdit" name="plainTextEditPrefixCommands">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -124,16 +129,23 @@ symbolic link to python3.</string>
       </sizepolicy>
      </property>
      <property name="plainText">
-      <string># For example if you are running in an anaconda environment
-# export PATH=&quot;/home/&lt;user&gt;/anaconda3:$PATH&quot;
-# source activate my_environment
-# Or if you are using a python virtual environment
-# source /home/&lt;user&gt;/python_envs/my_venv/bin/activate
-# Adjust these according to what's optimal for your hardware
-export MKL_NUM_THREADS=1
-export OPENBLAS_NUM_THREADS=1</string>
+      <string/>
      </property>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Custom modules dir</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEditCustomModulesDir"/>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">

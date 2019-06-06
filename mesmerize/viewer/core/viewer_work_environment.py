@@ -19,7 +19,7 @@ import pickle
 import tifffile
 import os
 from shutil import rmtree
-#from common import configuration
+from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
 import json
@@ -257,7 +257,7 @@ class ViewerWorkEnv:
             #                   maxworkers=int(8))
 
             seq = tif.asarray(key=range(0, len(tif.series)),
-                              maxworkers=int(configuration.sys_cfg['HARDWARE']['n_processes']))
+                              maxworkers=int(configuration.get_sys_config()['_MESMERIZE_N_THREADS']))
         else:
             raise ValueError("Must specify 'imread' or 'asarray' in method argument")
 

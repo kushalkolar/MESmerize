@@ -14,22 +14,24 @@ import os
 from stat import S_IEXEC
 from time import time
 from datetime import datetime
+from . import get_sys_config
 
 
-def make_workdir(suffix: str = '') -> str:
+def make_workdir(prefix: str = '') -> str:
     date = datetime.fromtimestamp(time())
-    time_str = date.strftime('%Y%m%d') + '_' + date.strftime('%H%M%S')
-    workdir = '/work/' + os.environ['USER'] + '/' + time_str + '_' + suffix
+    dirname = f'{prefix}_{date.strftime("%Y%m%d")}_{date.strftime("%H%M%S")}'
+    main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
+    workdir = os.path.join(main_workdir, dirname)
     os.makedirs(workdir)
     return workdir
 
 
-def make_runfile(module_path: str, workdir: str, args_str: str = None, filename: str = None,
-                 pre_run: str = '', post_run: str = '') -> str:
+def make_runfile(module_path: str, savedir: str, args_str: str = None, filename: str = None,
+                 pre_run: str = None, post_run: str = None) -> str:
     """
     :param module_path: absolute module path
     :param args_str:    str of args that is directly passed with the python command in the bash script
-    :param workdir:     working directory
+    :param savedir:     working directory
     :param filename:    optional, specific filename for the script
     :param pre_run:     optional, str to run before module is ran
     :param post_run:    optional, str to run after module has run
@@ -37,52 +39,40 @@ def make_runfile(module_path: str, workdir: str, args_str: str = None, filename:
     :return: path to the shell script that can be run
     """
     if filename is None:
-        sh_file = workdir + '/' + 'run.sh'
+        sh_file = os.path.join(savedir, 'run.sh')
     else:
-        sh_file = workdir + '/' + filename
+        sh_file = os.path.join(savedir, filename)
 
     sys_cfg = get_sys_config()
 
-    if sys_cfg['PATHS']['env_type'] == 'anaconda':
-        env_path = sys_cfg['PATHS']['env']
-        anaconda_dir = os.path.dirname(os.path.dirname(os.path.dirname(env_path)))
-        env_name = os.path.basename(os.path.normpath(env_path))
-        env_activation = 'export PATH=' + anaconda_dir + ':$PATH\nsource activate ' + env_name
-    elif sys_cfg['PATHS']['env_type'] == 'virtual':
-        env_path = sys_cfg['PATHS']['env']
-        env_activation = 'source ' + env_path + '/bin/activate'
-    else:
-        raise ValueError('Invalid configruation value for environment path. Please check the entry for "env" under'
-                         'section [PATH] in the config file.')
-    caiman_path = sys_cfg['PATHS']['caiman']
-    n_processes = sys_cfg['HARDWARE']['n_processes']
+    n_threads = sys_cfg['_MESMERIZE_N_THREADS']
+    use_cuda = sys_cfg['_MESMERIZE_USE_CUDA']
+    python_call = sys_cfg['_MESMERIZE_PYTHON_CALL']
 
-    if not os.path.isdir(workdir):
+    cmd_prefix = sys_cfg['_MESMERIZE_PREFIX_COMMANDS']
+
+    if not os.path.isdir(savedir):
         try:
-            os.makedirs(workdir)
+            os.makedirs(savedir)
         except PermissionError:
-            raise PermissionError('You do not appear to have permission to write to the chosen working directory.')
+            raise PermissionError('You do not have permission to write to the chosen working directory.')
 
-    elif os.path.isfile(workdir):
-            raise FileExistsError("Choose a different working dir path")
+    elif os.path.isfile(savedir):
+        raise FileExistsError("Choose a different working dir path")
 
     if args_str is None:
         args_str = ''
-    else:
-        args_str = ' ' + args_str
+
+    to_write = '\n'.join(['#!/bin/bash',
+                          f'{cmd_prefix}',
+                          f'export={n_threads}',
+                          f'export={use_cuda}',
+                          f'{pre_run}',
+                          f'{python_call} {module_path} {args_str}',
+                          f'{post_run}'])
 
     with open(sh_file, 'w') as sf:
-        sf.write('#!/bin/bash\n' +
-                 env_activation + '\n' +
-                 'export PYTHONPATH="' + caiman_path + '"\n' +
-                 'export MKL_NUM_THREADS=1\n' +
-                 'export OPENBLAS_NUM_THREADS=1\n'
-                 'export MESMERIZE_N_PROCESSES=' + str(n_processes) + '\n'
-                 'export USE_CUDA=' + sys_cfg['HARDWARE']['USE_CUDA'] + '\n' +
-                 pre_run +
-                 'python ' + module_path + args_str + '\n' +
-                 post_run
-                 )
+        sf.write(to_write)
 
     st = os.stat(sh_file)
     os.chmod(sh_file, st.st_mode | S_IEXEC)

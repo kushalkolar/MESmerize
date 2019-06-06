@@ -5,7 +5,7 @@ from .common import *
 import traceback
 from functools import partial
 from ....analysis import Transmission
-from ....common import configuration
+from ....common import get_project_manager
 from os.path import basename
 
 
@@ -24,7 +24,7 @@ class LoadProjDF(CtrlNode):
         CtrlNode.__init__(self, name, terminals={'Out': {'io': 'out'}})
         self._loadNode = True
         self.t = None
-        child_df_names = ['root'] + list(configuration.project_manager.child_dataframes.keys())
+        child_df_names = ['root'] + list(get_project_manager().child_dataframes.keys())
         self.ctrls['DF_Name'].addItems(child_df_names)
         self.ctrls['Update'].clicked.connect(self.changed)
         # print('Node Refs:')
@@ -48,12 +48,12 @@ class LoadProjDF(CtrlNode):
                 return
             child_df_name = self.ctrls['DF_Name'].currentText()
             if child_df_name == 'root':
-                df = configuration.project_manager.dataframe
+                df = get_project_manager().dataframe
                 filter_history = None
             else:
-                df = configuration.project_manager.child_dataframes[child_df_name]['dataframe']
-                filter_history = configuration.project_manager.child_dataframes[child_df_name]['filter_history']
-            proj_path = configuration.proj_path
+                df = get_project_manager().child_dataframes[child_df_name]['dataframe']
+                filter_history = get_project_manager().child_dataframes[child_df_name]['filter_history']
+            proj_path = get_project_manager().proj_path
             # print('*****************config df ref hex ID:*****************')
             # print(hex(id(df)))
             self.t = Transmission.from_proj(proj_path, df, sub_dataframe_name=child_df_name,

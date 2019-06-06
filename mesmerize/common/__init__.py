@@ -1,19 +1,21 @@
 import os
 from webbrowser import open_new_tab
-from functools import partial
 import configparser
 from datetime import datetime
 from time import time
+# from PyQt5 import QtWidgets
 from .. import docs
+from .configuration import get_sys_config
+from functools import partial
+from PyQt5.QtWidgets import QApplication
 
-
-def get_sys_config() -> configparser.RawConfigParser:
-    sys_cfg_path = os.environ['HOME'] + '/.mesmerize'
-    sys_cfg_file = sys_cfg_path + '/config'
-    sys_cfg = configparser.RawConfigParser(allow_no_value=True)
-    sys_cfg.optionxform = str
-    sys_cfg.read(sys_cfg_file)
-    return sys_cfg
+# def get_sys_config() -> configparser.RawConfigParser:
+#     sys_cfg_file = os.environ['HOME'] + '/.mesmerize'
+#     sys_cfg_file = sys_cfg_file + '/config'
+#     sys_cfg = configparser.RawConfigParser(allow_no_value=True)
+#     sys_cfg.optionxform = str
+#     sys_cfg.read(sys_cfg_file)
+#     return sys_cfg
 
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
@@ -42,3 +44,35 @@ def get_timestamp_str() -> str:
     date = datetime.fromtimestamp(time())
     time_str = date.strftime('%Y%m%d') + '_' + date.strftime('%H%M%S')
     return time_str
+
+
+def is_app() -> bool:
+    if hasattr(QApplication.instance(), 'window_manager') and hasattr(QApplication.instance(), 'project_manager'):
+        return True
+    return False
+
+
+def get_project_manager():
+    if not is_app():
+        raise AttributeError("This can only be used in a full Mesmerize Application")
+
+    pm = getattr(QApplication.instance(), 'project_manager')
+    return pm
+
+
+def set_project_manager(project_manager):
+    if not is_app():
+        raise AttributeError("This can only be used in a full Mesmerize Application")
+
+    # if not isinstance(project_manager, ProjectManager):
+    #     raise TypeError('Must pass an instance of ProjectManager')
+
+    setattr(QApplication.instance(), 'project_manager', project_manager)
+
+
+def get_window_manager():
+    try:
+        wm = getattr(QApplication.instance(), 'window_manager')
+    except AttributeError:
+        raise AttributeError("This can only be used in a full Mesmerize Application")
+    return wm
