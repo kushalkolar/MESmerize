@@ -64,9 +64,6 @@ def set_project_manager(project_manager):
     if not is_app():
         raise AttributeError("This can only be used in a full Mesmerize Application")
 
-    # if not isinstance(project_manager, ProjectManager):
-    #     raise TypeError('Must pass an instance of ProjectManager')
-
     setattr(QApplication.instance(), 'project_manager', project_manager)
 
 
