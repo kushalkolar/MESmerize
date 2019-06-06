@@ -330,9 +330,10 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QCheckBox" name="checkBoxWorDir">
+           <widget class="QCheckBox" name="checkBoxUseWorkDir">
             <property name="font">
              <font>
+              <pointsize>16</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -344,9 +345,6 @@
              <string>Use work dir</string>
             </property>
            </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEditWorkDir"/>
           </item>
          </layout>
         </item>
@@ -383,7 +381,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>646</width>
+          <width>666</width>
           <height>245</height>
          </rect>
         </property>
@@ -431,7 +429,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>343</width>
+          <width>323</width>
           <height>303</height>
          </rect>
         </property>
@@ -457,7 +455,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>343</width>
+          <width>323</width>
           <height>302</height>
          </rect>
         </property>

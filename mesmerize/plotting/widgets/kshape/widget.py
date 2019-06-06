@@ -193,7 +193,7 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         m = os.path.abspath(kshape_process.__file__)
         args = data_path + ' ' + params_path
-        sh_file_path = make_runfile(module_path=m, workdir=self.get_workdir(), args_str=args)
+        sh_file_path = make_runfile(module_path=m, savedir=self.get_workdir(), args_str=args)
 
         self.control_widget.ui.textBrowser.clear()
 

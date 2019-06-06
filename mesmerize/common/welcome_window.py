@@ -13,14 +13,13 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ..pyqtgraphCore.console import ConsoleWidget
 from .welcome_window_pytemplate import *
-from ..project_manager import ProjectManager
-from ..common import configuration, system_config_window, doc_pages
+# from ..project_manager import ProjectManager
+from ..common import configuration, system_config_window, doc_pages, get_project_manager, set_project_manager
+from ..common import get_window_manager
 # from viewer.modules import batch_manager
 import traceback
-import numpy as np; import tifffile; import pandas as pd;import pickle
 import os
 from ..common import start
-from functools import partial
 from ..viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 
 
@@ -32,7 +31,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.setWindowTitle('Mesmerize - Main Window')
 
-        self.window_manager = configuration.window_manager
+        self.window_manager = get_window_manager()
 
         self.ui.btnProjectBrowser.setVisible(False)
         self.ui.labelProjectBrowser.setVisible(False)
@@ -42,6 +41,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.btnProjectBrowser.setIcon(QtGui.QIcon(mdir + '/icons/noun_917603_cc.png'))
         self.ui.btnProjectBrowser.setIconSize(QtCore.QSize(100, 100))
+        self.ui.btnProjectBrowser.clicked.connect(self.show_project_browser)
 
         self.ui.btnNewProject.setIcon(QtGui.QIcon(mdir + '/icons/noun_1327089_cc.png'))
         self.ui.btnNewProject.setIconSize(QtCore.QSize(100, 100))
@@ -49,29 +49,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.btnOpenProject.setIcon(QtGui.QIcon(mdir + '/icons/noun_1327109_cc.png'))
         self.ui.btnOpenProject.setIconSize(QtCore.QSize(100, 100))
-        self.ui.btnOpenProject.clicked.connect(self.open_project)
+        self.ui.btnOpenProject.clicked.connect(self.open_project_dialog)
+
+        sys_cfg = configuration.get_sys_config()
+        self.ui.listWidgetRecentProjects.addItems(sys_cfg['recent_projects'])
+        self.ui.listWidgetRecentProjects.itemDoubleClicked.connect(lambda item: self.open_project(item.text()))
 
         self.ui.btnViewer.setIcon(QtGui.QIcon(mdir + '/icons/noun_38902_cc.png'))
         self.ui.btnViewer.setIconSize(QtCore.QSize(24,24))
         self.ui.btnViewer.setIconSize(QtCore.QSize(100, 100))
-        self.ui.btnViewer.clicked.connect(self.spawn_new_viewer)
-
-        self.ui.verticalLayoutViewersRunning.addWidget(self.window_manager.viewers.list_widget)
+        self.ui.btnViewer.clicked.connect(self.open_new_viewer)
 
         self.ui.btnFlowchart.setIcon(QtGui.QIcon(mdir + '/icons/noun_907242_cc.png'))
         self.ui.btnFlowchart.setIconSize(QtCore.QSize(100, 100))
-        self.ui.btnFlowchart.clicked.connect(self.spawn_new_flowchart)
-
-        self.ui.verticalLayoutFlowchartRunning.addWidget(self.window_manager.flowcharts.list_widget)
-
-        # self.ui.btnPlot.setIcon(QtGui.QIcon(mdir + '/icons/noun_635936_cc.png'))
-        # self.ui.btnPlot.setIconSize(QtCore.QSize(100, 100))
-        # # self.ui.btnPlot.clicked.connect(self.spawn_new_plot_gui)
-        #
-        # self.ui.verticalLayoutPlotsRunning.addWidget(self.window_manager.plots.list_widget)
-        #
-        # self.ui.btnClustering.setIcon(QtGui.QIcon(mdir + '/icons/noun_195949_cc.png'))
-        # self.ui.btnClustering.setIconSize(QtCore.QSize(100, 100))
+        self.ui.btnFlowchart.clicked.connect(self.open_new_flowchart)
 
         self.ui.actionDocs_homepage.triggered.connect(doc_pages['home'])
         self.ui.actionNew_Project_Docs.triggered.connect(doc_pages['new_project'])
@@ -81,36 +72,28 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.initialize_console_widget()
 
-        self.resize(800, 625)
+        self.resize(914, 900)
         # configuration.projPath = '/home/kushal/mesmerize_test_proj'
 
         self._batch_manager = None
 
     def initialize_console_widget(self):
-        ns = {'pd': pd,
-              'np': np,
-              'pickle': pickle,
-              'tifffile': tifffile,
-              'configuration': configuration,
-              'window_manager': self.window_manager,
-              'main': self
+        ns = {'configuration': configuration,
+              'get_window_manager': get_window_manager,
+              'this': self
               }
 
-        txt = "Namespaces:          \n" \
-              "numpy as np          \n" \
-              "pandas as pd         \n" \
-              "pickle as pickle    \n" \
-              "configuration as configuration\n" \
-              "tifffile as tifffile \n" \
-              "self.window_manager as window_manager     \n" \
-              "self as main         \n" \
+        txt = '\n'.join(["Namespaces:",
+                         "self as this",
+                         "callables:",
+                         "get_window_manager()"])
 
-        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-            os.makedirs(configuration.sys_cfg_path + '/console_history/')
-
-        cmd_history_file = configuration.sys_cfg_path + '/console_history/main.pik'
+        cmd_history_file = os.path.join(configuration.console_history_path, 'welcome_window.pik')
         console = ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
-        self.ui.dockConsole.setWidget(console)
+
+        self.ui.centralwidget.layout().addWidget(console)
+        # self.ui.centralwidget.layout().addWidget(spacer)
+        # self.ui.dockConsole.setWidget(console)
 
         # self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
         # console.resize(self.ui.dockConsole.width(), 100)
@@ -118,6 +101,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # console.input.resize(console.input.width(), 80)
 
         # self.ui.dockConsole.hide()
+
+    def append_recent_projects_list(self):
+        sys_cfg = configuration.get_sys_config()
+        if self.project_manager.root_dir in sys_cfg['recent_projects']:
+            sys_cfg['recent_projects'].remove(self.project_manager.root_dir)
+        sys_cfg['recent_projects'].insert(0, self.project_manager.root_dir)
+        if len(sys_cfg['recent_projects']) > 10:
+            sys_cfg['recent_projects'] = sys_cfg['recent_projects'][:10]
+
+        configuration.save_sys_config(sys_cfg)
 
     def create_new_project(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose location for a new project')
@@ -132,10 +125,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if start and name != '':
             try:
-                self.project_manager = ProjectManager(path + '/' + name)
-                configuration.project_manager = self.project_manager
+                proj_dir = os.path.join(path, name)
+                self.project_manager = get_project_manager()
+                self.project_manager.set(proj_dir)
                 self.project_manager.setup_new_project()
-            except Exception as e:
+            except Exception:
                 QtWidgets.QMessageBox.warning(self, 'Error!',
                                               'Could not create a new project.\n' +
                                               traceback.format_exc())
@@ -146,17 +140,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionProject_Configuration.triggered.connect(self.project_manager.show_config_window)
 
         self.set_proj_buttons_visible(False)
+        self.append_recent_projects_list()
 
         # self.initialize_project_browser()
 
-    def open_project(self):
+    def open_project_dialog(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
 
         if path == '':
             return
 
-        self.project_manager = ProjectManager(path)
-        configuration.project_manager = self.project_manager
+        self.open_project(path)
+
+    def open_project(self, path: str):
+        self.project_manager = get_project_manager()
+        self.project_manager.set(project_root_dir=path)
 
         try:
             self.project_manager.open_project()
@@ -171,9 +169,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.set_proj_buttons_visible(False)
 
-        start.project_browser()
-        self.ui.btnProjectBrowser.clicked.connect(partial(configuration.window_manager.show_project_browser, 0))
-        start.load_child_dataframes_gui()
+        pb = start.project_browser()
+        pb.reload_all_tabs()
+        self.append_recent_projects_list()
+
+    def show_project_browser(self):
+        get_window_manager().project_browser.show()
 
     def set_proj_buttons_visible(self, b: bool):
         self.ui.btnNewProject.setVisible(b)
@@ -186,24 +187,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btnProjectBrowser.setHidden(b)
         self.ui.labelProjectBrowser.setHidden(b)
 
-    def find_recent_projects(self):
-        pass
+    def open_new_viewer(self):
+        w = get_window_manager().get_new_viewer_window()
+        w.show()
+        # start.viewer()
 
-    def populate_recent_projects_list(self):
-        pass
-
-    # def start_batch_manager(self):
-    #     self.batch_manager = batch_manager.ModuleGUI(parent=self, self)
-    #     self.batch_manager.hide()
-
-    def spawn_new_viewer(self):
-        start.viewer()
-
-    def spawn_new_flowchart(self):
-        start.flowchart()
-
-    # def spawn_new_plot_gui(self):
-    #     start.plots()
+    def open_new_flowchart(self):
+        w = get_window_manager().get_new_flowchart()
+        w.show()
 
     def get_batch_manager(self, run_batch: list = None) -> BatchModuleGUI:
         if run_batch is not None:

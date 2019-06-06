@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .add_to_project_dialog_pytemplate import Ui_Form
-from ...common import configuration
+from ...common import configuration, get_project_manager
 from .viewer_work_environment import ViewerWorkEnv
 from numpy import int64, float64
 import traceback
@@ -57,7 +57,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
 
             if self.work_environment.sample_id != '' and self.work_environment.sample_id is not None:
                 try:
-                    sample_id_df = configuration.project_manager.get_sample_id_rows(self.work_environment.sample_id)
+                    sample_id_df = get_project_manager().get_sample_id_rows(self.work_environment.sample_id)
                     if not sample_id_df.empty:
                         val = sample_id_df[custom_column].iloc[0]
                 except:
@@ -166,7 +166,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
         trial_id = self.ui.lineEditTrialID.text()
         sample_id = animal_id + '-_-' + trial_id
 
-        if (sample_id in configuration.project_manager.dataframe['SampleID'].values) and not self.check_save_changes():
+        if (sample_id in get_project_manager().dataframe['SampleID'].values) and not self.check_save_changes():
             QtWidgets.QMessageBox.warning(self, 'SampleID exists in project',
                                           'The combination of animal ID and '
                                           'trial ID already exists in the project dataframe. '
@@ -194,7 +194,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
 
     def add_to_dataframe(self):
         dicts_to_append = self.work_environment.to_pandas(configuration.proj_path)
-        configuration.project_manager.append_to_dataframe(dicts_to_append)
+        get_project_manager().append_to_dataframe(dicts_to_append)
         self.work_environment.saved = True
         self.label_wait.setText('FINISHED!')
         # self.signal_finished.emit()
@@ -208,7 +208,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
                                           'work environment to overwrite the SampleID rows: ' + traceback.format_exc())
             return
 
-        configuration.project_manager.change_sample_rows(self.work_environment.sample_id, dicts_to_append)
+        get_project_manager().change_sample_rows(self.work_environment.sample_id, dicts_to_append)
         self.work_environment.saved = True
         self.label_wait.setText('FINISHED!')
         # self.signal_finished.emit()

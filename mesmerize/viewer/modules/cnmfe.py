@@ -14,7 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core.common import ViewerInterface
 from .pytemplates.cnmfe_pytemplate import *
 import json
-from ...common import configuration
+from ...common import get_window_manager
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -133,7 +133,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         d['do_corr_pnr'] = True
         d['do_cnmfe'] = False
 
-        batch_manager = configuration.window_manager.get_batch_manager()
+        batch_manager = get_window_manager().get_batch_manager()
         name = self.ui.lineEdCorrPNRName.text()
 
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding Corr PNR: ' + name + ' to batch...')
@@ -169,7 +169,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         name = self.ui.lineEdName.text()
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMFE: ' + name + ' to batch...')
 
-        batch_manager = configuration.window_manager.get_batch_manager()
+        batch_manager = get_window_manager().get_batch_manager()
         batch_manager.add_item(module='CNMFE',
                                viewer_reference=self.vi.viewer,
                                name=name,

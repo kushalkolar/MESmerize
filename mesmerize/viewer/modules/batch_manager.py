@@ -13,7 +13,8 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ..core.common import ViewerInterface
 from ..core.viewer_work_environment import ViewerWorkEnv
-from ...common import configuration, get_timestamp_str
+from ...common import get_sys_config, get_timestamp_str
+from ...common import get_window_manager
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
@@ -32,11 +33,11 @@ import psutil
 from signal import SIGKILL
 import traceback
 from ...misc_widgets.list_widget_dialog import ListWidgetDialog
-from ...common import window_manager
 from glob import glob
 from multiprocessing import Pool
 from uuid import UUID as UUIDType
 from ...common.process_utils import make_runfile
+from collections import UserList
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -48,10 +49,11 @@ class ModuleGUI(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
-        self.ui.lineEditWorkDir.setText('/work/' + os.environ['USER'] + '/' + get_timestamp_str())
-        self.ui.checkBoxWorDir.setChecked(True)
-        self.ui.lineEditWorkDir.setEnabled(True)
-        self.working_dir = self.ui.lineEditWorkDir.text()
+        self.ui.checkBoxUseWorkDir.setChecked(True)
+        self.ui.checkBoxUseWorkDir.toggled.connect(self.set_workdir)
+        # self.ui.lineEditWorkDir.setEnabled(True)
+        self.working_dir = None
+        self.batch_path = None
 
         self.ui.listwBatch.itemDoubleClicked.connect(self.list_widget_item_double_clicked_slot)
 
@@ -140,6 +142,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.btnStart.setEnabled(True)
         self.ui.btnStartAtSelection.setEnabled(True)
+        self.set_workdir(True)
 
         if run_batch is not None:
             print('Running from item ' + run_batch[1])
@@ -194,11 +197,11 @@ class ModuleGUI(QtWidgets.QWidget):
 
         r = self.df.loc[self.df['uuid'] == UUID]
 
-        viewers = configuration.window_manager.viewers
+        viewers = get_window_manager().viewers
 
-        if len(configuration.window_manager.viewers) > 1:
+        if len(viewers) > 1:
             self.lwd = ListWidgetDialog()
-            self.lwd.listWidget.addItems([str(i) for i in range(len(viewers))])
+            self.lwd.listWidget.addItems([str(i + 1) for i in range(len(viewers))])
             self.lwd.label.setText('Viewer to show input in:')
             self.lwd.btnOK.clicked.connect(partial(self.show_input_in_viewer, viewers, r, UUID))
         else:
@@ -208,13 +211,13 @@ class ModuleGUI(QtWidgets.QWidget):
         """
         :param  r:  Row of batch DataFrame corresponding to the selected item
         """
-        if not isinstance(viewers, window_manager.WindowClass):
+        if not isinstance(viewers, UserList):
             viewer = viewers.viewer_reference
         else:
             if self.lwd.listWidget.currentItem() is None:
                 QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
                 return
-            i = int(self.lwd.listWidget.currentItem().data(0))
+            i = int(self.lwd.listWidget.currentRow())
             viewer = viewers[i].viewer_reference
 
         vi = ViewerInterface(viewer_reference=viewer)
@@ -256,15 +259,14 @@ class ModuleGUI(QtWidgets.QWidget):
             return
 
         if output['status'] == 1:
-            if len(configuration.window_manager.viewers) > 1:
-                viewers = configuration.window_manager.viewers
-
+            viewers = get_window_manager().viewers
+            if len(get_window_manager().viewers) > 1:
                 self.lwd = ListWidgetDialog()
-                self.lwd.listWidget.addItems([str(i) for i in range(len(viewers))])
+                self.lwd.listWidget.addItems([str(i + 1) for i in range(len(viewers))])
                 self.lwd.label.setText('Viewer to use for output:')
                 self.lwd.btnOK.clicked.connect(partial(self.show_item_output, m, viewers, UUID))
             else:
-                self.show_item_output(m, configuration.window_manager.viewers[0], UUID)
+                self.show_item_output(m, viewers[0], UUID)
 
     def show_item_output(self, module, viewers, UUID: uuid.UUID):
         """
@@ -272,17 +274,18 @@ class ModuleGUI(QtWidgets.QWidget):
         """
         if len(self.output_widgets) > 3:
             try:
-                self.output_widgets[0].close()
+                w = self.output_widgets.pop(0)
+                w.deleteLater()
             except:
                 pass
 
-        if not isinstance(viewers, window_manager.WindowClass):
+        if not isinstance(viewers, UserList):
             viewer = viewers.viewer_reference
         else:
             if self.lwd.listWidget.currentItem() is None:
                 QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
                 return
-            i = int(self.lwd.listWidget.currentItem().data(0))
+            i = int(self.lwd.listWidget.currentRow())
             viewer = viewers[i].viewer_reference
         try:
             self.output_widgets.append(module.Output(self.batch_path, UUID, viewer))
@@ -292,6 +295,7 @@ class ModuleGUI(QtWidgets.QWidget):
                                           'trying to load the output of the chosen item\n' + traceback.format_exc())
         if hasattr(self, 'lwd'):
             self.lwd.deleteLater()
+            self.lwd = None
 
     def show_item_info(self, s: QtWidgets.QListWidgetItem):
         """Shows any info (such as the batch module's params) in the meta-info label"""
@@ -323,8 +327,7 @@ class ModuleGUI(QtWidgets.QWidget):
     def process_batch(self, start_ix=0, clear_viewers=False):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
 
-        self.ui.checkBoxWorDir.setDisabled(True)
-        self.ui.lineEditWorkDir.setDisabled(True)
+        self.ui.checkBoxUseWorkDir.setDisabled(True)
 
         if len(self.df.index) == 0:
             pass
@@ -332,17 +335,6 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Nothing to run', 'Nothing in the batch to run!')
             return
 
-        if configuration.sys_cfg['PATHS']['env'] == '':
-            QtWidgets.QMessageBox.warning(self, 'Environment not set', 'You must set the environment in System Configuration')
-            return
-
-        if configuration.sys_cfg['PATHS']['caiman'] == '':
-            if QtWidgets.QMessageBox.question(self, 'CaImAn dir not set', 'You have not set the CaImAn directory. '
-                                                                          'Without this CaImAn modules will not run. '
-                                                                          'Do you wish to continue anyways?',
-                                              QtWidgets.QMessageBox.Yes,
-                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-                return
         if not clear_viewers:
             if QtWidgets.QMessageBox.question(self, 'Clear all viewers?',
                                                   'Would you like to clear all viewer work '
@@ -372,7 +364,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.ui.listwBatch.item(ix).setBackground(QtGui.QBrush(QtGui.QColor('#85e3ff')))
 
     def _clear_viewers(self):
-        for viewer in configuration.window_manager.viewers:
+        for viewer in get_window_manager().viewers:
             vi = ViewerInterface(viewer.viewer_reference)
             vi.discard_workEnv()
 
@@ -386,28 +378,10 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
 
             elif output['status']:
-                if 'output_files' in output.keys() and self.ui.checkBoxWorDir.isChecked() and os.path.isdir(self.working_dir):
+                if 'output_files' in output.keys() and self.ui.checkBoxUseWorkDir.isChecked():# and os.path.isdir(self.working_dir):
                     output_files_list = output['output_files']
-                    shell_str = '#!/bin/bash\n'
 
-                    for of in output_files_list:
-                        src = self.working_dir + '/' + of
-                        dst = self.batch_path + '/' + of
-                        shell_str += 'mv ' + src + ' ' + dst + '\n'
-
-                    shell_str += 'rm ' + self.working_dir + '/*' + str(UUID) + '*'
-                    move_sh_path = self.working_dir + '/move.sh'
-
-                    with(open(move_sh_path, 'w')) as sh_mv_f:
-                        sh_mv_f.write(shell_str)
-
-                    mv_st = os.stat(move_sh_path)
-                    os.chmod(move_sh_path, mv_st.st_mode | S_IEXEC)
-
-                    self.move_process = QtCore.QProcess()
-                    self.move_process.setWorkingDirectory(self.working_dir)
-                    self.move_process.finished.connect(partial(self.set_list_widget_item_color, self.current_batch_item_index, 'green'))
-                    self.move_process.start(move_sh_path)
+                    self.move_files(output_files_list, UUID)
                     self.set_list_widget_item_color(ix=self.current_batch_item_index, color='blue')
 
                 else:
@@ -418,17 +392,12 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.current_batch_item_index += 1
         self.ui.progressBar.setValue(int(self.current_batch_item_index / len(self.df.index) * 100))
+
         if self.current_batch_item_index == len(self.df.index):
-            self.ui.progressBar.setValue(100)
-            self.disable_ui_buttons(False)
-            self.ui.checkBoxWorDir.setEnabled(True)
-            self.ui.lineEditWorkDir.setEnabled(True)
-            QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
+            self.batch_finished()
             return
 
         r = self.df.iloc[self.current_batch_item_index]
-        m = globals()[r['module']]
-        module_path = os.path.abspath(m.__file__)
 
         self.process = QtCore.QProcess()
         self.process.setProcessChannelMode(QtCore.QProcess.MergedChannels)
@@ -436,96 +405,105 @@ class ModuleGUI(QtWidgets.QWidget):
         self.process.readyReadStandardOutput.connect(partial(self.print_qprocess_std_out, self.process))
 
         self.process.finished.connect(self.run_batch_item)
-        sh_file = self.batch_path + '/' + 'run.sh'
 
-        if configuration.sys_cfg['PATHS']['env_type'] == 'anaconda':
-            env_path = configuration.sys_cfg['PATHS']['env']
-            anaconda_dir =  os.path.dirname(os.path.dirname(os.path.dirname(env_path)))
-            env_name = os.path.basename(os.path.normpath(env_path))
-            env_activation = 'export PATH=' + anaconda_dir +':$PATH\nsource activate ' + env_name
-        elif configuration.sys_cfg['PATHS']['env_type'] == 'virtual':
-            env_path = configuration.sys_cfg['PATHS']['env']
-            env_activation = 'source ' + env_path + '/bin/activate'
-        else:
-            raise ValueError('Invalid configruation value for environment path. Please check the entry for "env" under'
-                             'section [PATH] in the config file.')
-        caiman_path = configuration.sys_cfg['PATHS']['caiman']
+        sh_file = self.create_runscript(r)
 
-        cp_to_work_dir_str = self.get_copy_workdir_str(r['uuid'])
-
-        if not cp_to_work_dir_str:
-            return
-
-        with open(sh_file, 'w') as sf:
-            sf.write('#!/bin/bash\n' +
-                     env_activation + '\n' +
-                     'export PYTHONPATH="' + caiman_path + '"\n' +
-                     'export MKL_NUM_THREADS=1\n' +
-                     'export OPENBLAS_NUM_THREADS=1\n' +
-                     'export USE_CUDA=' + configuration.sys_cfg['HARDWARE']['USE_CUDA'] + '\n' +
-                     cp_to_work_dir_str +
-                     'python "' +
-                     module_path + '" "' +
-                     self.working_dir + '" "' +
-                     str(r['uuid']) + '" ' +
-                     configuration.sys_cfg['HARDWARE']['n_processes'] + '\n')
-
-        st = os.stat(sh_file)
-        os.chmod(sh_file, st.st_mode | S_IEXEC)
         self.process.setWorkingDirectory(self.working_dir)
         self.process.start(sh_file)
         self.ui.listwBatch.item(self.current_batch_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
-    def get_copy_workdir_str(self, u: uuid.UUID) -> str:
-        if self.ui.checkBoxWorDir.isChecked():
-            try:
-                self.working_dir = self.ui.lineEditWorkDir.text()
-                if not os.path.isdir(self.working_dir):
-                    os.makedirs(self.working_dir)
-                elif os.path.isfile(self.working_dir):
-                    QtWidgets.QMessageBox.warning(self, 'Choose different dir', 'Choose a different directory')
-            except PermissionError:
-                QtWidgets.QMessageBox.warning(self, 'Permission denied',
-                                              'You do not appear to have permission to write to the chosen work'
-                                              'directory.')
-                return False
+    def move_files(self, files: list, UUID):
+        shell_str = '#!/bin/bash\n'
 
-            cp_to_work_dir_str = 'cp ' + self.batch_path + '/*' + str(u) + '* ' + self.working_dir + '\n'
+        for f in files:
+            src = os.path.join(self.working_dir, f)
+            dst = os.path.join(self.batch_path, f)
+            shell_str += f'mv -n {src} {dst}\n'
+
+        shell_str += f'rm {os.path.join(self.working_dir, str(UUID))}'
+        move_file = os.path.join(self.working_dir, 'move.sh')
+
+        with(open(move_file, 'w')) as sh_mv_f:
+            sh_mv_f.write(shell_str)
+
+        mv_st = os.stat(move_file)
+        os.chmod(move_file, mv_st.st_mode | S_IEXEC)
+
+        self.move_process = QtCore.QProcess()
+        self.move_process.setWorkingDirectory(self.working_dir)
+        self.move_process.finished.connect(partial(self.set_list_widget_item_color, self.current_batch_item_index, 'green'))
+        self.move_process.start(move_file)
+
+    def batch_finished(self):
+        self.ui.progressBar.setValue(100)
+        self.disable_ui_buttons(False)
+        self.ui.checkBoxUseWorkDir.setEnabled(True)
+        QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
+
+    def set_workdir(self, ev):
+        if ev:
+            workdir = get_sys_config()['_MESMERIZE_WORKDIR']
+            if workdir == '':
+                self.working_dir = self.batch_path
+
+            elif not os.access(workdir, os.W_OK):
+                self.working_dir = self.batch_path
+                QtWidgets.QMessageBox.warning(self, 'Insufficent permissions',
+                                              'You do not have permission to write to the chosen working directory.')
+                self.ui.checkBoxUseWorkDir.setChecked(False)
+
+            else:
+                self.working_dir = workdir
+                return
 
         else:
             self.working_dir = self.batch_path
-            cp_to_work_dir_str = ''
 
-        return cp_to_work_dir_str
+    def create_runscript(self, r, cp: bool, mv: bool) -> str:
+        m = globals()[r['module']]
+        module_path = os.path.abspath(m.__file__)
+        u = r['uuid']
+
+        if cp:
+            files = os.path.join(self.batch_path, f"*{u}*")
+            cp_str = f'cp {files} {self.working_dir}\n'
+        else:
+            cp_str = None
+
+        if mv:
+            work_files = os.path.join(self.working_dir, f'*{u}*')
+            mv_str = f'mv -n {work_files} {self.batch_path}'
+        else:
+            mv_str = None
+
+        args = f'"{self.working_dir}" "{u}"'
+        savedir = os.path.join(self.batch_path, f'jobs_{get_timestamp_str()}')
+
+        return make_runfile(module_path=module_path,
+                            savedir=savedir,
+                            args_str=args,
+                            filename=str(u),
+                            pre_run=cp_str,
+                            post_run=mv_str)
 
     def export_submission_scripts(self):
+        to_copy = self.ui.checkBoxUseWorkDir.isChecked()
+        to_move = to_copy
         for ix, r in self.df.iterrows():
-            m = globals()[r['module']]
-            module_path = os.path.abspath(m.__file__)
-            u = r['uuid']
+            self.create_runscript(r, cp=to_copy, mv=to_move)
 
-            cp_str = self.get_copy_workdir_str(u)
-            if self.working_dir != self.batch_path:
-                mv_str = 'mv -n ' + self.working_dir + '/*' + str(u) + '* ' + self.batch_path
-            else:
-                mv_str = ''
-
-            args = '"' + self.working_dir + '" "' + str(u) + '" ' + configuration.sys_cfg['HARDWARE']['n_processes'] + '\n'
-            save_path = self.batch_path + '/jobs_' + get_timestamp_str()
-            make_runfile(module_path=module_path, workdir=save_path, args_str=args, filename=str(u), pre_run=cp_str, post_run=mv_str)
-
-        QtWidgets.QMessageBox.information(self, 'Exported', 'Submission scripts for this batch have been exported to:\n' + save_path)
-
-    def create_run_script(self, parent_dir):
-        pass
+        QtWidgets.QMessageBox.information(self, 'Exported',
+                                          'Submission scripts for this batch '
+                                          'have been exported to a jobs dir in your batch dir')
 
     def get_batch_item_output(self, UUID: uuid.UUID):
-        out_file = self.working_dir + '/' + str(UUID) + '.out'
-        if os.path.isfile(out_file):
-            output = json.load(open(out_file, 'r'))
-            return output
+        if self.working_dir is not None:
+            out_file = os.path.join(self.working_dir, f'{UUID}.out')
+            if os.path.isfile(out_file):
+                output = json.load(open(out_file, 'r'))
+                return output
 
-        out_file = self.batch_path + '/' + str(UUID) + '.out'
+        out_file = os.path.join(self.batch_path, f'{UUID}.out')
 
         if os.path.isfile(out_file):
             output = json.load(open(out_file, 'r'))
@@ -570,7 +548,7 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
                                                                               ' nothing to add to the batch!')
             return
-        vi = ViewerInterface(viewer_reference)
+        # vi = ViewerInterface(viewer_reference)
         UUID = uuid.uuid4()
 
         if module == 'CNMFE' or module == 'caiman_motion_correction' or module == 'CNMF':

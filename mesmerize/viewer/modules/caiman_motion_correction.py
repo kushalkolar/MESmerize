@@ -14,7 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core.common import ViewerInterface
 from .pytemplates.caiman_motion_correction_pytemplate import *
 import json
-from ...common import configuration
+from ...common import get_window_manager
 from ...pyqtgraphCore import LinearRegionItem
 
 
@@ -116,7 +116,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def add_elas_corr_to_batch(self):
         d = self._make_params_dict()
 
-        batch_manager = configuration.window_manager.get_batch_manager()
+        batch_manager = get_window_manager().get_batch_manager()
         name = self.ui.lineEditNameElastic.text()
 
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CaImAn motion correction: ' + name + ' to batch...')

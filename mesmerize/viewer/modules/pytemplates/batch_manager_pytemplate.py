@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/batch_manager_pytemplate.ui'
+# Form implementation generated from reading ui file './batch_manager_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -143,16 +143,14 @@ class Ui_Form(object):
         self.verticalLayout.addWidget(self.widget)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.checkBoxWorDir = QtWidgets.QCheckBox(self.layoutWidget)
+        self.checkBoxUseWorkDir = QtWidgets.QCheckBox(self.layoutWidget)
         font = QtGui.QFont()
+        font.setPointSize(16)
         font.setBold(True)
         font.setWeight(75)
-        self.checkBoxWorDir.setFont(font)
-        self.checkBoxWorDir.setObjectName("checkBoxWorDir")
-        self.horizontalLayout.addWidget(self.checkBoxWorDir)
-        self.lineEditWorkDir = QtWidgets.QLineEdit(self.layoutWidget)
-        self.lineEditWorkDir.setObjectName("lineEditWorkDir")
-        self.horizontalLayout.addWidget(self.lineEditWorkDir)
+        self.checkBoxUseWorkDir.setFont(font)
+        self.checkBoxUseWorkDir.setObjectName("checkBoxUseWorkDir")
+        self.horizontalLayout.addWidget(self.checkBoxUseWorkDir)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.progressBar = QtWidgets.QProgressBar(self.layoutWidget)
         self.progressBar.setMinimum(0)
@@ -170,7 +168,7 @@ class Ui_Form(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 646, 245))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 666, 245))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -192,7 +190,7 @@ class Ui_Form(object):
         self.scrollAreaStdOut.setWidgetResizable(True)
         self.scrollAreaStdOut.setObjectName("scrollAreaStdOut")
         self.scrollAreaWidgetContents_4 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 343, 303))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 323, 303))
         self.scrollAreaWidgetContents_4.setObjectName("scrollAreaWidgetContents_4")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -209,7 +207,7 @@ class Ui_Form(object):
         self.scrollAreaOutputInfo.setWidgetResizable(True)
         self.scrollAreaOutputInfo.setObjectName("scrollAreaOutputInfo")
         self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 343, 302))
+        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 323, 302))
         self.scrollAreaWidgetContents_6.setObjectName("scrollAreaWidgetContents_6")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_6)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -247,8 +245,8 @@ class Ui_Form(object):
         self.btnViewInput.setText(_translate("Form", "View Input"))
         self.btnCompress.setText(_translate("Form", "Compress"))
         self.btnExportShScripts.setText(_translate("Form", "Export shell scripts"))
-        self.checkBoxWorDir.setToolTip(_translate("Form", "Use a temporary working directory to process each batch item. Moves output back to batch directory when done. Useful if you have a very fast filesystem with limited capacity."))
-        self.checkBoxWorDir.setText(_translate("Form", "Use work dir"))
+        self.checkBoxUseWorkDir.setToolTip(_translate("Form", "Use a temporary working directory to process each batch item. Moves output back to batch directory when done. Useful if you have a very fast filesystem with limited capacity."))
+        self.checkBoxUseWorkDir.setText(_translate("Form", "Use work dir"))
         self.textBrowserItemInfo.setHtml(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"

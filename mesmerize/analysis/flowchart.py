@@ -51,13 +51,10 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
               "self as 'main'\n" \
               "'get_nodes()' to get a dict of all nodes\n"
 
-        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-            os.makedirs(configuration.sys_cfg_path + '/console_history')
-
-        cmd_history_file = configuration.sys_cfg_path + '/console_history/flowchart.pik'
+        cmd_history_path = os.path.join(configuration.console_history_path, 'flowchart.pik')
 
         self.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile=cmd_history_file))
+                                                 historyFile=cmd_history_path))
         # self.resizeDocks([self.dockConsole], [235], QtCore.Qt.Vertical)
 
         self.dockFcWidget.setWidget(self.fc_widget)

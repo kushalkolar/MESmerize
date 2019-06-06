@@ -12,16 +12,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 import sys
+from . import get_project_manager, get_window_manager
 from . import configuration
 from .pytemplates.project_config_pytemplate import *
 from numpy import int64, float64
-from functools import partial
 from glob import glob
 import pickle
 
 
 '''
-Just a simple GUI for modifying the project config.cfg file.
+Just a simple GUI for modifying the project config file.
 '''
 
 
@@ -46,39 +46,39 @@ class ColumnsPage(QtWidgets.QWidget):
         self.ui.radioButtonInt64.clicked.connect(self.set_custom_column_line_edit_validator)
         self.ui.radioButtonFloat64.clicked.connect(self.set_custom_column_line_edit_validator)
         
-        self.ui.btnAddNewROICol.clicked.connect(self._addROIDef)
-        self.ui.btnAddNewStimCol.clicked.connect(self._addStimDef)
+        self.ui.btnAddNewROICol.clicked.connect(self.add_roi_def)
+        self.ui.btnAddNewStimCol.clicked.connect(self.add_stim_def)
 
         self.ui.btnAddCustomColumn.clicked.connect(self.add_custom_column)
 
-        self.ui.btnSave.clicked.connect(self._saveConfig)
+        self.ui.btnSave.clicked.connect(self.save_config)
 
         self.custom_to_add = {}
 
         action_delete_column = QtWidgets.QWidgetAction(self)
         action_delete_column.setText('Delete column')
-        action_delete_column.triggered.connect(self.delete_column_requested)
+        action_delete_column.triggered.connect(self.delete_column)
 
         self.delete_column_menu = QtWidgets.QMenu(self)
         self.delete_column_menu.addAction(action_delete_column)
 
         self.ui.listwROIDefs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.listwROIDefs.customContextMenuRequested.connect(lambda p: self._list_widget_context_menu_requested(p, self.ui.listwROIDefs))
+        self.ui.listwROIDefs.customContextMenuRequested.connect(lambda p: self.bulid_delete_menu(p, self.ui.listwROIDefs))
 
         self.ui.listwStimDefs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.listwStimDefs.customContextMenuRequested.connect(lambda p: self._list_widget_context_menu_requested(p, self.ui.listwStimDefs))
+        self.ui.listwStimDefs.customContextMenuRequested.connect(lambda p: self.bulid_delete_menu(p, self.ui.listwStimDefs))
 
         self.ui.listwCustomColumns.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.listwCustomColumns.customContextMenuRequested.connect(lambda p: self._list_widget_context_menu_requested(p, self.ui.listwCustomColumns))
+        self.ui.listwCustomColumns.customContextMenuRequested.connect(lambda p: self.bulid_delete_menu(p, self.ui.listwCustomColumns))
 
         self.new_roi_defs = []
         # TODO: Deletable columns for ROI, Stim, and Custom columns.
 
-    def _list_widget_context_menu_requested(self, p, list_widget):
+    def bulid_delete_menu(self, p, list_widget):
         self._context_menu_selected_list_widget = list_widget
         self.delete_column_menu.exec_(list_widget.mapToGlobal(p))
 
-    def delete_column_requested(self):
+    def delete_column(self):
         if self._context_menu_selected_list_widget is None:
             return
         item = self._context_menu_selected_list_widget.takeItem(self._context_menu_selected_list_widget.currentRow())
@@ -93,11 +93,13 @@ class ColumnsPage(QtWidgets.QWidget):
         if item.text() in excludes:
             self.ui.listwExclude.takeItem(excludes.index(item.text()))
 
-    def _addROIDef(self):
+    def add_roi_def(self):
         if self.ui.lineEdNewROIDef.text() != '':
             text = self.ui.lineEdNewROIDef.text().replace(' ', '_')
 
-            if text in configuration.project_manager.dataframe.columns:
+
+
+            if text in get_project_manager().dataframe.columns:
                 QtWidgets.QMessageBox.warning(self, 'Name already exists',
                                               'The entered column name already exists in the dataframe. '
                                               'Enter a different name.')
@@ -108,11 +110,11 @@ class ColumnsPage(QtWidgets.QWidget):
             self.ui.lineEdNewROIDef.clear()
             self.new_roi_defs.append(text)
         
-    def _addStimDef(self):
+    def add_stim_def(self):
         if self.ui.lineEdNewStimCol.text() != '':
             text = self.ui.lineEdNewStimCol.text().replace(' ', '_')
 
-            if text in configuration.project_manager.dataframe.columns:
+            if text in get_project_manager().dataframe.columns:
                 QtWidgets.QMessageBox.warning(self, 'Name already exists',
                                               'The entered column name already exists in the dataframe. '
                                               'Enter a different name.')
@@ -120,15 +122,9 @@ class ColumnsPage(QtWidgets.QWidget):
             self.ui.listwStimDefs.addItem(text)
             self.ui.listwInclude.addItem(text)
             self.ui.lineEdNewStimCol.clear()
-    
-    def _delROIDef(self):
-        pass
-    
-    def _delStimDef(self):
-        pass
-    
-    def _saveConfig(self):
-        if len(configuration.window_manager.flowcharts) > 0:
+
+    def save_config(self):
+        if len(get_window_manager().flowcharts) > 0:
             if QtWidgets.QMessageBox.question(self,
                                               'Flowcharts are open',
                                               'Updating the project configuration while you are actively using a flowchart '
@@ -178,7 +174,7 @@ class ColumnsPage(QtWidgets.QWidget):
             configuration.proj_cfg.set('CUSTOM_COLUMNS', column, str(self.custom_to_add[column]['type']))
 
         configuration.save_proj_config()
-        configuration.project_manager.update_project_config_requested(self.custom_to_add)
+        get_project_manager().update_project_config_requested(self.custom_to_add)
         self.ui.btnClose.click()
 
     def set_custom_column_line_edit_validator(self):
@@ -195,7 +191,7 @@ class ColumnsPage(QtWidgets.QWidget):
         if name == '':
             return
 
-        if name in configuration.project_manager.dataframe.columns:
+        if name in get_project_manager().dataframe.columns:
             QtWidgets.QMessageBox.warning(self, 'Name already exists',
                                           'The entered column name already exists in the dataframe. '
                                           'Enter a different name.')
@@ -225,7 +221,7 @@ class ColumnsPage(QtWidgets.QWidget):
         elif self.ui.radioButtonBoolean.isChecked():
             column_type = 'bool'
 
-            if replacement_value not in ['True', 'False'] and not configuration.project_manager.dataframe.empty:
+            if replacement_value not in ['True', 'False'] and not get_project_manager().dataframe.empty:
                 QtWidgets.QMessageBox.warning(self, 'Invalid replacement value',
                                               'You can enter only True or False for boolean data types')
             else:
@@ -259,25 +255,3 @@ class Window(QtWidgets.QWidget):
         self.tabs.widget(self.tabs.count() - 1).setupGUI()
 
         self.tabs.widget(0).ui.btnClose.clicked.connect(self.close)
-
-
-# class ProjectConfigUpdater(QtCore.QObject):
-#     signal_project_config_
-#     def __init__(self):
-#         self._funcs = []
-#
-#     def register(self, func: callable):
-#         self._funcs.append(func)
-#
-#     def notify_all(self):
-#         for func in self._funcs:
-#             func()
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-    win = Window('/home/kushal/Sars_stuff/github-repos/MESmerize/MesmerizeCore/test-config.cfg')
-    win.resize(593, 617)
-    win.show()
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtWidgets.QApplication.instance().exec_()

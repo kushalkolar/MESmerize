@@ -23,6 +23,8 @@ from ....pyqtgraphCore.console import ConsoleWidget
 from matplotlib import cm as matplotlib_color_map
 import numpy as np
 from ....analysis.data_types import Transmission
+from ....common import configuration
+import os
 
 
 class PlotWindow(QtWidgets.QMainWindow):
@@ -67,12 +69,9 @@ class PlotWindow(QtWidgets.QMainWindow):
               "graphicsViews (plot tabs) as graphicsViews\n" \
               "self as 'main'\n\n" \
 
-        # if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-        #     os.makedirs(configuration.sys_cfg_path + '/console_history')
-        #
-        # cmd_history_file = configuration.sys_cfg_path + '/console_history/plot_window.pik'
+        cmd_history_file = os.path.join(configuration.console_history_path, 'plot_window.pik')
 
-        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt)) #,historyFile=cmd_history_file))
+        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt), historyFile=cmd_history_file)
 
         self.ui.dockConsole.hide()
 

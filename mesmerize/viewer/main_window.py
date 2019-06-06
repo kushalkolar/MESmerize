@@ -20,6 +20,7 @@ from .core.common import ViewerInterface
 import numpy as np
 from .core.viewer_work_environment import ViewerWorkEnv
 from ..common import configuration, doc_pages
+from ..common import get_window_manager
 from .image_menu.main import ImageMenu
 from spyder.widgets.variableexplorer import objecteditor
 import traceback
@@ -28,6 +29,7 @@ import os
 from . import image_utils
 import importlib
 from .modules import custom_modules
+from functools import partial
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -41,8 +43,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         'script_editor': script_editor.ModuleGUI
                         }
 
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self, parent=None)
+    def __init__(self, parent=None):
+        QtWidgets.QMainWindow.__init__(self, parent=parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.running_modules = []
@@ -84,7 +86,7 @@ class MainWindow(QtWidgets.QMainWindow):
             action.setObjectName("custom_module" + name)
             action.setText(name)
 
-            action.triggered.connect(lambda: self.run_module(c))
+            action.triggered.connect(partial(self.run_module, c))
 
             self._cms_actions.append(action)
             self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
@@ -141,10 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
               "update_workEnv, clear_workEnv, get_module, get_batch_manager\n" \
               "For useful image utility functions: image_utils"
 
-        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-            os.makedirs(configuration.sys_cfg_path + '/console_history/')
-
-        cmd_history_file = configuration.sys_cfg_path + '/console_history/viewer.pik'
+        cmd_history_file = os.path.join(configuration.console_history_path, 'viewer.pik')
 
         self.console = ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
 
@@ -200,8 +199,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionStandard_Deviation.triggered.connect(self.image_menu.std_projection)
         self.ui.actionClose_all_projection_windows.triggered.connect(self.image_menu.close_projection_windows)
 
-    def get_batch_manager(self) -> object:
-        return configuration.window_manager.get_batch_manager()
+    def get_batch_manager(self) -> QtWidgets.QWidget:
+        return get_window_manager().get_batch_manager()
 
     def start_batch_manager(self):
         batch_manager = self.get_batch_manager()
@@ -266,18 +265,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
 
         if configuration.proj_path is None:
-            if QtWidgets.QMessageBox.question(self, 'No project open',
-                                              'Would you like to switch to project mode?',
-                                              QtWidgets.QMessageBox.No,
-                                              QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
-                return
-            else:
-                import common.start
-                common.start.main()
+            QtWidgets.QMessageBox.question(self, 'No project open', 'You must have a project open to add to it')
+            return
 
         if len(self.viewer_reference.workEnv.roi_manager.roi_list) == 0:
-            QtWidgets.QMessageBox.warning(self, 'No curves',
-                                          'You do not have any curves in your work environment')
+            QtWidgets.QMessageBox.warning(self, 'No curves', 'You do not have any curves in your work environment')
             return
 
         else:
