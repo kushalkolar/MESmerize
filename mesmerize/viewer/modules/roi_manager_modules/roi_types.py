@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import abc
 import numpy as np
 from PyQt5 import QtWidgets
-from  .... import pyqtgraphCore as pg
+from .... import pyqtgraphCore as pg
 # from typing import Type, TypeVar
 from ....common import get_proj_config
 from copy import deepcopy
