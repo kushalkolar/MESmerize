@@ -215,7 +215,7 @@
   </action>
   <action name="actionDump_Work_Environment">
    <property name="text">
-    <string>&amp;Dump Work Environment</string>
+    <string>Clear Work Environment</string>
    </property>
   </action>
   <action name="actionAdd_to_project">
@@ -298,7 +298,7 @@
   </action>
   <action name="actionOpen_docs">
    <property name="text">
-    <string>Open docs</string>
+    <string>&amp;Open docs</string>
    </property>
   </action>
  </widget>

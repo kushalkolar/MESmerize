@@ -72,7 +72,7 @@ class ViewerInterface:
         if self.viewer.workEnv.roi_manager is not None:
             self.viewer.workEnv.roi_manager.clear()
         # re-initialize ROI and curve lists
-        self.viewer.workEnv.dump()
+        self.viewer.workEnv.clear()
         self.viewer.clear()
         self.viewer.workEnv.saved = True
         self.viewer.ui.label_curr_img_seq_name.setText('EMPTY')

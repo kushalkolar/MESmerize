@@ -193,7 +193,7 @@ class Ui_MainWindow(object):
         self.actionReload_list.setText(_translate("MainWindow", "&Reload list"))
         self.actionCNMF_E.setText(_translate("MainWindow", "CNMF-&E"))
         self.actionBatch_Manager.setText(_translate("MainWindow", "&Batch Manager"))
-        self.actionDump_Work_Environment.setText(_translate("MainWindow", "&Dump Work Environment"))
+        self.actionDump_Work_Environment.setText(_translate("MainWindow", "Clear Work Environment"))
         self.actionAdd_to_project.setText(_translate("MainWindow", "&Add to project"))
         self.actionResize.setText(_translate("MainWindow", "R&esize"))
         self.actionCrop.setText(_translate("MainWindow", "&Crop"))
@@ -209,5 +209,5 @@ class Ui_MainWindow(object):
         self.actionMax.setText(_translate("MainWindow", "Ma&x"))
         self.actionStandard_Deviation.setText(_translate("MainWindow", "&Standard Deviation"))
         self.actionClose_all_projection_windows.setText(_translate("MainWindow", "&Close all projection windows"))
-        self.actionOpen_docs.setText(_translate("MainWindow", "Open docs"))
+        self.actionOpen_docs.setText(_translate("MainWindow", "&Open docs"))
 

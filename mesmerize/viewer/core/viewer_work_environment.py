@@ -113,7 +113,7 @@ class ViewerWorkEnv:
     # def get_roi_manager(self):
     #     return self.roi_manager
 
-    def dump(self):
+    def clear(self):
         self.isEmpty = True
         del self.imgdata.seq
         self.imgdata = None
