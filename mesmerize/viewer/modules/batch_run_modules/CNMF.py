@@ -236,4 +236,4 @@ class Output(QtWidgets.QWidget):
 
 
 if sys.argv[0] == __file__:
-    run(sys.argv[1], sys.argv[2], sys.argv[3])
+    run(sys.argv[1], sys.argv[2])

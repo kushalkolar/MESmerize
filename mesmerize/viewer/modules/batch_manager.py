@@ -36,7 +36,7 @@ from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from glob import glob
 from multiprocessing import Pool
 from uuid import UUID as UUIDType
-from ...common.process_utils import make_runfile
+from ...common.process_utils import make_runfile, make_workdir
 from collections import UserList
 
 
@@ -52,6 +52,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.checkBoxUseWorkDir.setChecked(True)
         self.ui.checkBoxUseWorkDir.toggled.connect(self.set_workdir)
         # self.ui.lineEditWorkDir.setEnabled(True)
+        self._use_workdir = False
         self.working_dir = None
         self.batch_path = None
 
@@ -379,19 +380,23 @@ class ModuleGUI(QtWidgets.QWidget):
 
             if output is None:
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
+                mp = self.move_files([], UUID)
+
 
             elif output['status']:
-                if 'output_files' in output.keys() and self.ui.checkBoxUseWorkDir.isChecked():# and os.path.isdir(self.working_dir):
+                if 'output_files' in output.keys() and self._use_workdir:# and os.path.isdir(self.working_dir):
                     output_files_list = output['output_files']
 
-                    self.move_files(output_files_list, UUID)
+                    mp = self.move_files(output_files_list, UUID)
                     self.set_list_widget_item_color(ix=self.current_batch_item_index, color='blue')
+                    mp.finished.connect(partial(self.set_list_widget_item_color, self.current_batch_item_index, 'green'))
 
                 else:
                     self.set_list_widget_item_color(ix=self.current_batch_item_index, color='green')
 
             else:
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='red')
+                mp = self.move_files([], UUID)
 
         self.current_batch_item_index += 1
         self.ui.progressBar.setValue(int(self.current_batch_item_index / len(self.df.index) * 100))
@@ -415,7 +420,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.process.start(sh_file)
         self.ui.listwBatch.item(self.current_batch_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
-    def move_files(self, files: list, UUID):
+    def move_files(self, files: list, UUID) -> QtCore.QProcess:
         shell_str = '#!/bin/bash\n'
 
         for f in files:
@@ -432,10 +437,10 @@ class ModuleGUI(QtWidgets.QWidget):
         mv_st = os.stat(move_file)
         os.chmod(move_file, mv_st.st_mode | S_IEXEC)
 
-        self.move_process = QtCore.QProcess()
-        self.move_process.setWorkingDirectory(self.working_dir)
-        self.move_process.finished.connect(partial(self.set_list_widget_item_color, self.current_batch_item_index, 'green'))
-        self.move_process.start(move_file)
+        move_process = QtCore.QProcess()
+        move_process.setWorkingDirectory(self.working_dir)
+        move_process.start(move_file)
+        return move_process
 
     def batch_finished(self):
         self.ui.progressBar.setValue(100)
@@ -445,20 +450,19 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def set_workdir(self, ev):
         if ev:
-            workdir = get_sys_config()['_MESMERIZE_WORKDIR']
-            if workdir == '' or not os.access(workdir, os.W_OK):
-                self.working_dir = self.batch_path
-                QtWidgets.QMessageBox.warning(self, 'Insufficent permissions',
-                                              'You do not have permission to write to the chosen working directory.')
+            try:
+                self.working_dir = make_workdir()
+            except Exception as e:
+                QtWidgets.QMessageBox.warning(self, 'Cannot create Work Dir',
+                                              f'Could not create a work directory. {e}')
                 self.ui.checkBoxUseWorkDir.setChecked(False)
-                return
-
+                self.working_dir = self.batch_path
             else:
-                self.working_dir = workdir
-                return
+                self._use_workdir = True
 
         else:
             self.working_dir = self.batch_path
+            self._use_workdir = False
 
     def create_runscript(self, r, cp: bool, mv: bool, use_subdir: bool = True) -> str:
         m = globals()[r['module']]
@@ -486,7 +490,7 @@ class ModuleGUI(QtWidgets.QWidget):
         return make_runfile(module_path=module_path,
                             savedir=savedir,
                             args_str=args,
-                            filename=str(u),
+                            filename=f'{u}.sh',
                             pre_run=cp_str,
                             post_run=mv_str)
 
