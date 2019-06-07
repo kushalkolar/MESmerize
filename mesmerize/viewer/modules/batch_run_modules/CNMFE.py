@@ -51,10 +51,11 @@ if not sys.argv[0] == __file__:
     from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 
-def run(batch_dir: str, UUID: str, n_processes: str):
+def run(batch_dir: str, UUID: str):
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
     file_path = batch_dir + '/' + UUID
 

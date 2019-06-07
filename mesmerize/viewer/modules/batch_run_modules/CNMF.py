@@ -40,9 +40,10 @@ if not sys.argv[0] == __file__:
     from ...core.common import ViewerInterface, ViewerWorkEnv
 
 
-def run(batch_dir, UUID, n_processes):
+def run(batch_dir: str, UUID: str):
 
     output = {'status': 0, 'output_info': ''}
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
     file_path = batch_dir + '/' + UUID
 
