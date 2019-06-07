@@ -1,5 +1,11 @@
-from os.path import dirname, basename, isfile
+# from os.path import dirname, basename, isfile
+import os
 import glob
+import importlib.util
 
-fname = glob.glob(dirname(__file__)+"/*.py")
-__all__ = [basename(f)[:-3] for f in fname if isfile(f) and not f.endswith('__init__.py')]
+dirname = os.path.dirname(__file__)
+fname = glob.glob(os.path.dirname(__file__)+"/*.py")
+__all__ = [os.path.basename(f)[:-3] for f in fname if os.path.isfile(f) and not f.endswith('__init__.py')]
+
+for m in __all__:
+    spec = importlib.util.spec_from_file_location(m, )

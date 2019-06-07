@@ -196,17 +196,17 @@ class MainWindow(QtWidgets.QMainWindow):
         w = get_window_manager().get_new_flowchart()
         w.show()
 
-    def get_batch_manager(self, run_batch: list = None) -> BatchModuleGUI:
+    def get_batch_manager(self, run_batch: list = None, testing=False) -> BatchModuleGUI:
         if run_batch is not None:
             self._batch_manager = BatchModuleGUI(parent=None, run_batch=run_batch)
             self._batch_manager.show()
             return self._batch_manager
 
         elif self._batch_manager is None:
-            QtWidgets.QMessageBox.information(None, 'No batch manager open',
-                                              'Choose a location for a new batch or create a new batch')
+            if not testing:
+                 QtWidgets.QMessageBox.information(None, 'No batch manager open', 'Choose a location for a new batch or create a new batch')
 
-            self._batch_manager = BatchModuleGUI(parent=None)
+            self._batch_manager = BatchModuleGUI(parent=None, testing=testing)
             # self._batch_manager.show()
             return self._batch_manager
         else:

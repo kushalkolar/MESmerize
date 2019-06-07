@@ -23,7 +23,7 @@ from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
 import json
-
+from typing import Optional
 
 class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
@@ -244,7 +244,7 @@ class ViewerWorkEnv:
         return cls(imdata, meta=meta_data)
 
     @classmethod
-    def from_tiff(cls, path: str, method: str, meta_path: str = ''):
+    def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = ''):
         """
         Return instance of work environment with ImgData.seq set from tifffile.imread.
         """

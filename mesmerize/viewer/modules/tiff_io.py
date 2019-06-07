@@ -29,21 +29,33 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnSelectMetaFile.clicked.connect(self.select_meta_file)
         self.ui.btnLoadIntoWorkEnv.clicked.connect(self.load_tiff_file)
 
+        self._tiff_file_path = ''
+        self._meta_file_path = ''
+
     def select_tiff_file(self):
         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose tiff file', '', '(*.tiff)')
         if path == '':
             return
         if path[0] == '':
             return
-        self.ui.labelFileTiff.setText(path[0])
+        self._tiff_file_path = path[0]
+        self.ui.labelFileTiff.setText(self._tiff_file_path)
         self.check_meta_path()
 
     def check_meta_path(self):
-        meta_path = self.ui.labelFileTiff.text()[:-5] + '.json'
+        bn = os.path.basename(self._tiff_file_path)
+        dir_path = os.path.dirname(self._tiff_file_path)
+        filename = os.path.join(dir_path, os.path.splitext(bn)[0])
+
+        meta_path = f'{filename}.json'
+
         if os.path.isfile(meta_path):
+            self._meta_file_path = meta_path
             self.ui.labelFileMeta.setText(meta_path)
             return True
-        return False
+        else:
+            self._meta_file_path = ''
+            return False
 
     def select_meta_file(self):
         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose meta data file', '', '(*.json)')
@@ -52,10 +64,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.labelFileMeta.setText(path[0])
 
     def load_tiff_file(self):
-        tiff_path = self.ui.labelFileTiff.text()
+        tiff_path = self._tiff_file_path
 
         if tiff_path == '':
             QtWidgets.QMessageBox.warning(self, 'Nothing to load!', 'You must choose a file to load.')
+            return
 
         if self.ui.radioButtonImread.isChecked():
             method = 'imread'
@@ -64,6 +77,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         else:
             QtWidgets.QMessageBox.warning(self, 'No method selected!', 'You must select a method.')
             return
+
         self.vi.viewer.status_bar_label.showMessage('Please wait, loading tiff file, this may take a few minutes...')
 
         if not self.vi.discard_workEnv():
@@ -72,7 +86,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         try:
             self.vi.viewer.workEnv = ViewerWorkEnv.from_tiff(path=tiff_path,
                                                              method=method,
-                                                             meta_path=self.ui.labelFileMeta.text())
+                                                             meta_path=self._meta_file_path)
             self.vi.update_workEnv()
             self.vi.enable_ui(True)
             self.vi.viewer.ui.label_curr_img_seq_name.setText(os.path.basename(tiff_path))
