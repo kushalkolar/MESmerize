@@ -28,9 +28,23 @@ from .core.add_to_project import AddToProjectDialog
 import os
 from . import image_utils
 import importlib
-from .modules import custom_modules
+import importlib.util
+# from .modules import custom_modules
 from functools import partial
+import sys
 
+_custom_modules_dir = configuration.get_sys_config()['_MESMERIZE_CUSTOM_MODULES_DIR']
+_custom_modules_package_name = os.path.basename(os.path.dirname(_custom_modules_dir))
+_cmi = os.path.join(_custom_modules_dir, '__init__.py')
+
+if os.path.isfile(_cmi):
+    sys.path.append('/share/data/temp/kushal')
+    _spec = importlib.util.spec_from_file_location('custom_modules', _cmi)
+    custom_modules = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(custom_modules)
+    _import_custom_modules = True
+else:
+    _import_custom_modules = False
 
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
@@ -67,29 +81,38 @@ class MainWindow(QtWidgets.QMainWindow):
         self.custom_modules = None
         self._cms = []
         self._cms_actions = []
-        self.set_custom_module_triggers()
+
+        if _import_custom_modules:
+            self.set_custom_module_triggers()
 
         self.ui.dockConsole.hide()
 
     def set_custom_module_triggers(self):
         self.custom_modules = dict()
 
+        failed_imports = []
         for mstr in custom_modules.__all__:
-            mstr = '.' + mstr
-            mod = importlib.import_module(mstr, package='mesmerize.viewer.modules.custom_modules')
-            c = getattr(mod, 'ModuleGUI')
-            self.custom_modules[mod.module_name] = c
+            try:
+                mstr = '.' + mstr
+                mod = importlib.import_module(mstr, package=_custom_modules_package_name)
+                c = getattr(mod, 'ModuleGUI')
+                self.custom_modules[mod.module_name] = c
 
-            name = mod.module_name
-            action = QtWidgets.QAction(self)
-            action.setCheckable(False)
-            action.setObjectName("custom_module" + name)
-            action.setText(name)
+                name = mod.module_name
+                action = QtWidgets.QAction(self)
+                action.setCheckable(False)
+                action.setObjectName("custom_module" + name)
+                action.setText(name)
 
-            action.triggered.connect(partial(self.run_module, c))
+                action.triggered.connect(partial(self.run_module, c))
 
-            self._cms_actions.append(action)
-            self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
+                self._cms_actions.append(action)
+                self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
+            except ImportError:
+                failed_imports.append(mstr)
+        if len(failed_imports) > 0:
+            names = '\n'.join(failed_imports)
+            QtWidgets.QMessageBox.warning(self, 'Failed to load plugings', f'The following plugins failed to load:\n{names}')
 
     @property
     def viewer_reference(self):

@@ -44,9 +44,10 @@ class ModuleGUI(QtWidgets.QWidget):
     """GUI for the Batch Manager"""
     listwchanged = QtCore.pyqtSignal()
 
-    def __init__(self, parent, run_batch: list = None):
+    def __init__(self, parent, run_batch: list = None, testing: bool = False):
         print('starting batch mananger')
         QtWidgets.QWidget.__init__(self, parent)
+        self._testing = testing
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.ui.checkBoxUseWorkDir.setChecked(True)
@@ -69,7 +70,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnOpen.clicked.connect(self.open_batch)
         self.ui.btnDelete.clicked.connect(self.del_item)
         self.ui.btnViewInput.clicked.connect(self.btn_view_input_slot)
-        self.ui.btnNew.clicked.connect(self.create_new_batch)
+        self.ui.btnNew.clicked.connect(self.ask_create_new_batch)
 
         listwmodel = self.ui.listwBatch.model()
         listwmodel.rowsInserted.connect(self.listwchanged.emit)
@@ -127,21 +128,22 @@ class ModuleGUI(QtWidgets.QWidget):
         os.remove(backup_path)
 
     def init_batch(self, run_batch):
-        if run_batch is None:
-            path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '
-                                                                    'or a location for a new batch folder')
-            if path == '':
-                return
-        else:
-            path = run_batch[0]
-            print('Opening batch: ' + path)
+        if not self._testing:
+            if run_batch is None:
+                path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '
+                                                                        'or a location for a new batch folder')
+                if path == '':
+                    return
+            else:
+                path = run_batch[0]
+                print('Opening batch: ' + path)
 
-        dfpath = path + '/dataframe.batch'
-        if os.path.isfile(dfpath):
-            self.open_batch_dir(path)
+            dfpath = os.path.join(path, 'dataframe.batch')
+            if os.path.isfile(dfpath):
+                self.open_batch_dir(path)
 
-        else:
-            self.create_new_batch_dir(path)
+            else:
+                self.create_new_batch_dialog(path)
 
         self.ui.btnStart.setEnabled(True)
         self.ui.btnStartAtSelection.setEnabled(True)
@@ -153,7 +155,7 @@ class ModuleGUI(QtWidgets.QWidget):
             i = int(ix.to_native_types()[0])
             self.process_batch(start_ix=i, clear_viewers=True)
 
-    def create_new_batch(self):
+    def ask_create_new_batch(self):
         if self.ui.listwBatch.count() > 0:
             if QtWidgets.QMessageBox.warning(self, 'Create Batch?', 'Close the current batch and open another one?',
                                              QtWidgets.QMessageBox.Yes,
@@ -168,9 +170,9 @@ class ModuleGUI(QtWidgets.QWidget):
                                           'Batch path cannot contain spaces or special characters')
             return
 
-        self.create_new_batch_dir(path)
+        self.create_new_batch_dialog(path)
 
-    def create_new_batch_dir(self, path: str):
+    def create_new_batch_dialog(self, path: str):
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
 
         if any(s in name for s in [' ', '(', ')', '?']):
@@ -179,15 +181,16 @@ class ModuleGUI(QtWidgets.QWidget):
             return
 
         if start and name != '':
-            batch_path = path + '/' + name
-            os.makedirs(batch_path)
-            self.batch_path = batch_path
-        else:
-            return
+            batch_path = os.path.join(path, name)
+            self.create_new_batch(batch_path)
+
+    def create_new_batch(self, full_path: str):
+        self.batch_path = full_path
+        os.makedirs(self.batch_path)
         self.ui.listwBatch.clear()
 
         self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid', 'compressed'])
-        self.df.to_pickle(self.batch_path + '/dataframe.batch')
+        self.df.to_pickle(os.path.join(self.batch_path, 'dataframe.batch'))
 
         self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
         self.ui.labelBatchPath.setText(os.path.dirname(self.batch_path))
@@ -451,7 +454,7 @@ class ModuleGUI(QtWidgets.QWidget):
     def set_workdir(self, ev):
         if ev:
             try:
-                self.working_dir = make_workdir()
+                self.working_dir = make_workdir('batch_manager')
             except Exception as e:
                 QtWidgets.QMessageBox.warning(self, 'Cannot create Work Dir',
                                               f'Could not create a work directory. {e}')
