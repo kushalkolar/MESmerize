@@ -19,11 +19,18 @@ from typing import Optional
 
 
 def make_workdir(prefix: str = '') -> str:
+    main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
+
+    if main_workdir == '':
+        raise ValueError('You have not set the working directory in the System Configuration')
+    if not os.access(main_workdir, os.W_OK):
+        raise PermissionError(f'You do not have write permissions for the chosen work folder:\n{main_workdir}')
+
     date = datetime.fromtimestamp(time())
     dirname = f'{prefix}_{date.strftime("%Y%m%d")}_{date.strftime("%H%M%S")}'
-    main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
     workdir = os.path.join(main_workdir, dirname)
     os.makedirs(workdir)
+
     return workdir
 
 
@@ -45,6 +52,11 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
         sh_file = os.path.join(savedir, filename)
 
     sys_cfg = get_sys_config()
+
+    if pre_run is None:
+        pre_run = ''
+    if post_run is None:
+        post_run = ''
 
     n_threads = sys_cfg['_MESMERIZE_N_THREADS']
     use_cuda = sys_cfg['_MESMERIZE_USE_CUDA']

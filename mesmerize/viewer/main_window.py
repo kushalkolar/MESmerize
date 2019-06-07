@@ -175,6 +175,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.running_modules[-1].hide()
         return self.running_modules[-1]
 
+    def get_module(self, module_name: str, hide=False):
+        self.run_module(module_name, hide)
+
     def update_available_inputs(self):
         for m in self.running_modules:
             if hasattr(m, 'update_available_inputs'):
