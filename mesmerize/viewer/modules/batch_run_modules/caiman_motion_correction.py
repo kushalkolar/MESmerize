@@ -38,11 +38,12 @@ if not sys.argv[0] == __file__:
     from ...core.viewer_work_environment import ViewerWorkEnv
 
 
-def run(batch_dir, UUID, n_processes):
+def run(batch_dir: str, UUID: str):
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
     file_path = batch_dir + '/' + UUID
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
 
     c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
@@ -64,7 +65,7 @@ def run(batch_dir, UUID, n_processes):
         upsample_factor_grid = input_params['upsample']
         max_deviation_rigid = input_params['max_dev']
 
-        if os.environ['USE_CUDA'] == 'True':
+        if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
             USE_CUDA = True
         else:
             USE_CUDA = False

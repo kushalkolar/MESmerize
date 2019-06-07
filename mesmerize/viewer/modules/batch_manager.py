@@ -409,7 +409,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.process.finished.connect(self.run_batch_item)
 
-        sh_file = self.create_runscript(r, cp=True, mv=False)
+        sh_file = self.create_runscript(r, cp=True, mv=False, use_subdir=False)
 
         self.process.setWorkingDirectory(self.working_dir)
         self.process.start(sh_file)
@@ -422,8 +422,8 @@ class ModuleGUI(QtWidgets.QWidget):
             src = os.path.join(self.working_dir, f)
             dst = os.path.join(self.batch_path, f)
             shell_str += f'mv -n {src} {dst}\n'
-
-        shell_str += f'rm {os.path.join(self.working_dir, str(UUID))}'
+        u = f'*{UUID}*'
+        shell_str += f'rm {os.path.join(self.working_dir, u)}'
         move_file = os.path.join(self.working_dir, 'move.sh')
 
         with(open(move_file, 'w')) as sh_mv_f:
@@ -444,7 +444,6 @@ class ModuleGUI(QtWidgets.QWidget):
         QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
 
     def set_workdir(self, ev):
-        print(ev)
         if ev:
             workdir = get_sys_config()['_MESMERIZE_WORKDIR']
             if workdir == '' or not os.access(workdir, os.W_OK):
@@ -461,7 +460,7 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             self.working_dir = self.batch_path
 
-    def create_runscript(self, r, cp: bool, mv: bool) -> str:
+    def create_runscript(self, r, cp: bool, mv: bool, use_subdir: bool = True) -> str:
         m = globals()[r['module']]
         module_path = os.path.abspath(m.__file__)
         u = r['uuid']
@@ -474,12 +473,15 @@ class ModuleGUI(QtWidgets.QWidget):
 
         if mv:
             work_files = os.path.join(self.working_dir, f'*{u}*')
-            mv_str = f'mv -n {work_files} {self.batch_path}'
+            mv_str = '\n'.join([f'mv -n {work_files} {self.batch_path}', f'rm *{u}*'])
         else:
             mv_str = None
 
         args = f'"{self.working_dir}" "{u}"'
-        savedir = os.path.join(self.batch_path, f'jobs_{get_timestamp_str()}')
+        if use_subdir:
+            savedir = os.path.join(self.batch_path, f'jobs_{get_timestamp_str()}')
+        else:
+            savedir = self.batch_path
 
         return make_runfile(module_path=module_path,
                             savedir=savedir,

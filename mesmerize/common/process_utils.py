@@ -15,6 +15,7 @@ from stat import S_IEXEC
 from time import time
 from datetime import datetime
 from . import get_sys_config
+from typing import Optional
 
 
 def make_workdir(prefix: str = '') -> str:
@@ -26,8 +27,8 @@ def make_workdir(prefix: str = '') -> str:
     return workdir
 
 
-def make_runfile(module_path: str, savedir: str, args_str: str = None, filename: str = None,
-                 pre_run: str = None, post_run: str = None) -> str:
+def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None, filename: Optional[str] = None,
+                 pre_run: Optional[str] = None, post_run: Optional[str] = None) -> str:
     """
     :param module_path: absolute module path
     :param args_str:    str of args that is directly passed with the python command in the bash script
@@ -65,8 +66,8 @@ def make_runfile(module_path: str, savedir: str, args_str: str = None, filename:
 
     to_write = '\n'.join(['#!/bin/bash',
                           f'{cmd_prefix}',
-                          f'export={n_threads}',
-                          f'export={use_cuda}',
+                          f'export _MESMERIZE_N_THREADS={n_threads}',
+                          f'export _MESMERIZE_USE_CUDA={use_cuda}',
                           f'{pre_run}',
                           f'{python_call} {module_path} {args_str}',
                           f'{post_run}'])
