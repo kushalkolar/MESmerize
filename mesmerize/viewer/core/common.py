@@ -13,7 +13,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ...pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from ...pyqtgraphCore.imageview import ImageView
-from ..core.viewer_work_environment import ViewerWorkEnv
 import numpy as np
 # import abc
 # import multiprocessing

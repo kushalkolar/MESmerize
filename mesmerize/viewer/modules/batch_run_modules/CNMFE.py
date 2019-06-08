@@ -47,7 +47,7 @@ from time import time
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
-    from ...core.common import ViewerInterface, ViewerWorkEnv
+    from ...core import ViewerInterface, ViewerWorkEnv
     from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 

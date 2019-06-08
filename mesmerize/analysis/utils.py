@@ -10,11 +10,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import numpy as np
 import pandas as pd
-
+from typing import Union, Optional
 from . import Transmission
 
 
-def get_cluster_proportions(cluster_labels: iter, group_labels: iter) -> pd.DataFrame:
+def get_cluster_proportions(cluster_labels: Union[pd.Series, list, set],
+                            group_labels: Union[pd.Series, list, set]) -> pd.DataFrame:
     if isinstance(cluster_labels, pd.Series):
         clusters = cluster_labels.unique().tolist()
     else:
@@ -48,7 +49,7 @@ def get_cluster_proportions(cluster_labels: iter, group_labels: iter) -> pd.Data
     return pd.DataFrame(group_proportions)
 
 
-def get_sampling_rate(transmission: Transmission, tolerance: float = 0.1) -> float:
+def get_sampling_rate(transmission: Transmission, tolerance: Optional[float] = 0.1) -> float:
     """
     Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.
 

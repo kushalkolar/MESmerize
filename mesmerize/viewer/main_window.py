@@ -15,6 +15,7 @@ from .main_window_pytemplate import *
 from ..pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from ..pyqtgraphCore.console import ConsoleWidget
 from ..pyqtgraphCore.imageview import ImageView
+from ..pyqtgraphCore import setConfigOptions
 from .modules import *
 from .core.common import ViewerInterface
 import numpy as np
@@ -32,19 +33,24 @@ import importlib.util
 # from .modules import custom_modules
 from functools import partial
 import sys
+import pandas as pd
+from typing import Optional, Union
+from uuid import UUID as UUID_type
 
 _custom_modules_dir = configuration.get_sys_config()['_MESMERIZE_CUSTOM_MODULES_DIR']
 _custom_modules_package_name = os.path.basename(os.path.dirname(_custom_modules_dir))
 _cmi = os.path.join(_custom_modules_dir, '__init__.py')
 
 if os.path.isfile(_cmi):
-    sys.path.append('/share/data/temp/kushal')
+    _parent_dir = os.path.abspath(os.path.join(_custom_modules_dir, os.path.pardir))
+    sys.path.append(_parent_dir)
     _spec = importlib.util.spec_from_file_location('custom_modules', _cmi)
     custom_modules = importlib.util.module_from_spec(_spec)
     _spec.loader.exec_module(custom_modules)
     _import_custom_modules = True
 else:
     _import_custom_modules = False
+
 
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
@@ -326,3 +332,50 @@ class MainWindow(QtWidgets.QMainWindow):
             QCloseEvent.ignore()
         else:
             QCloseEvent.accept()
+
+    # TODO: If UUID or a single row is specified it will mark that specific ROI in the ROI Manager
+    def open_from_dataframe(self, proj_path: str,
+                            df: pd.DataFrame = None,
+                            row: pd.Series = None,
+                            sample_id: str = None,
+                            uuid_curve: Union[str, UUID_type] = None):
+
+        if df is not None:
+            if uuid_curve is not None:
+                row = df[df.uuid_curve == uuid_curve]
+
+            elif sample_id is not None:
+                rows = df[df.SampleID == sample_id]
+                row = rows.iloc[0]
+
+        if row is not None:
+
+            tp = row['ImgPath']
+            if isinstance(tp, pd.Series):
+                tp = tp.item()
+
+            tiff_path = os.path.join(proj_path, tp)
+
+            pp = row['ImgInfoPath']
+            if isinstance(pp, pd.Series):
+                pp = pp.item()
+
+            pik_path = os.path.join(proj_path, pp)
+
+            s = row['SampleID']
+            if isinstance(s, pd.Series):
+                s = s.item()
+
+            self._open_from_dataframe(tiff_path, pik_path, sample_id=s)
+            return
+
+        else:
+            raise ValueError('Must specify either df and sample_id/uuid_curve or supply the row (pd.Series)')
+
+    def _open_from_dataframe(self, tiff_path: str, pik_path: str, sample_id: Optional[str]=None):
+        setConfigOptions(imageAxisOrder='row-major')
+        self.vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pik_path, tiff_path=tiff_path)
+        self.vi.update_workEnv()
+        self.vi.viewer.workEnv.restore_rois_from_states()
+        if sample_id is not None:
+            self.vi.viewer.ui.label_curr_img_seq_name.setText(sample_id)

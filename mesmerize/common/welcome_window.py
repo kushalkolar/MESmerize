@@ -21,6 +21,7 @@ import traceback
 import os
 from ..common import start
 from ..viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
+from glob import glob
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -181,19 +182,39 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.labelNewProj.setVisible(b)
         self.ui.btnOpenProject.setVisible(b)
         self.ui.labelOpenProject.setVisible(b)
-        self.ui.listWidgetRecentProjects.setVisible(b)
-        self.ui.labelRecentProjects.setVisible(b)
+
+        # self.ui.listWidgetRecentProjects.setVisible(b)
+        # self.ui.labelRecentProjects.setVisible(b)
 
         self.ui.btnProjectBrowser.setHidden(b)
         self.ui.labelProjectBrowser.setHidden(b)
+
+        self.set_flowcharts_list()
+
+    def set_flowcharts_list(self):
+        self.ui.labelRecentProjects.setText('Project flowcharts')
+        self.ui.listWidgetRecentProjects.clear()
+
+        path = os.path.join(self.project_manager.root_dir, 'flowcharts', '*.fc')
+
+        fcs = glob(path)
+
+        for f in fcs:
+            os.path.abspath(f)
+
+        self.ui.listWidgetRecentProjects.addItems(fcs)
+        self.ui.listWidgetRecentProjects.itemDoubleClicked.disconnect()
+        self.ui.listWidgetRecentProjects.itemDoubleClicked.connect(lambda item: self.open_new_flowchart(item.text()))
 
     def open_new_viewer(self):
         w = get_window_manager().get_new_viewer_window()
         w.show()
         # start.viewer()
 
-    def open_new_flowchart(self):
-        w = get_window_manager().get_new_flowchart()
+    def open_new_flowchart(self, filename: str = None):
+        if filename is not None and not isinstance(filename, str):
+            filename = None
+        w = get_window_manager().get_new_flowchart(filename)
         w.show()
 
     def get_batch_manager(self, run_batch: list = None, testing=False) -> BatchModuleGUI:

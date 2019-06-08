@@ -28,7 +28,7 @@ import os
 
 
 class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
-    def __init__(self, parent=None, *args):
+    def __init__(self, parent=None, filename: str = None):
         super().__init__()
         self.setupUi(self)
 
@@ -60,6 +60,9 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
         self.dockFcWidget.setWidget(self.fc_widget)
 
         self.setCentralWidget(self.fc_widget.chartWidget)
+
+        if filename is not None:
+            self.fc.loadFile(filename)
 
 
 if __name__ == '__main__':
