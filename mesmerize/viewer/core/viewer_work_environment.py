@@ -300,7 +300,7 @@ class ViewerWorkEnv:
 
         return d
 
-    def to_pickle(self, dir_path: str, filename: str = None, save_img_seq=True, UUID=None) -> str:
+    def to_pickle(self, dir_path: str, filename: Optional[str] = None, save_img_seq=True, UUID=None) -> str:
         """
         Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
         for motion correction and package them into a pickle & image seq array. Used for batch motion correction and

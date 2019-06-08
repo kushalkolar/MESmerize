@@ -13,13 +13,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from .datapoint_tracer_pytemplate import *
 from ...analysis.history_widget import HistoryTreeWidget
-from ...pyqtgraphCore import ImageView, LinearRegionItem, mkColor
+from ...pyqtgraphCore import ImageView, LinearRegionItem, mkColor, setConfigOption
 from uuid import UUID
 import pandas as pd
 import tifffile
 import numpy as np
 from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
+# from ...viewer.core import ViewerWorkEnv, ViewerInterface
+from ...common import get_window_manager, get_project_manager
 # from common import configuration
+import os
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):
@@ -45,6 +48,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         self.ui.groupBoxInfo.layout().addWidget(self.pandas_series_widget)
         self.image_view = ImageView()
+        self.image_view.tVals = np.arange(0, 100)
         self.image_item = self.image_view.getImageItem()
         self.view = self.ui.graphicsViewImage.addViewBox()
         self.view.setAspectLocked(True)
@@ -55,6 +59,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         self.ui.radioButtonMaxProjection.clicked.connect(lambda x: self.set_image('max'))
         self.ui.radioButtonSTDProjection.clicked.connect(lambda x: self.set_image('std'))
+
+        self.ui.pushButtonOpenInViewer.clicked.connect(self.open_in_viewer)
 
     def set_widget(self, datapoint_uuid: UUID,
                    data_column_curve: str,
@@ -141,12 +147,21 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         else:
             raise ValueError('Can only accept "max" and "std" arguments')
 
-        img_path = self.proj_path + '/images/' + self.sample_id + '-_-' + img_uuid + suffix
+        img_path = os.path.join(self.proj_path, 'images', f'{self.sample_id}-_-{img_uuid}{suffix}')
 
         img = tifffile.imread(img_path)
 
-        self.image_item.setImage(img.astype(np.uint16))
-        self.image_item.resetTransform()
+        # z = np.zeros(img.shape)
+
+        # img = np.dstack((img, z))
+
+        self.image_view.setImage(img)
+        # self.image_item.setImage(img.T.astype(np.uint16))
+        # self.image_item.resetTransform()
+
+    def open_in_viewer(self):
+        w = get_window_manager().get_new_viewer_window()
+        w.open_from_dataframe(proj_path=self.proj_path, row=self.row)
 
 
 class TimelineLinearRegion:

@@ -6,8 +6,7 @@ import traceback
 from functools import partial
 from ....analysis import Transmission
 from ....common import get_project_manager
-from os.path import basename
-
+import os
 
 class LoadProjDF(CtrlNode):
     """Load raw project DataFrames as Transmission"""
@@ -86,17 +85,26 @@ class LoadFile(CtrlNode):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
         if path == '':
             return
-        print(path)
         try:
             self.transmission = Transmission.from_hickle(path[0])
         except:
             QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
 
-        self.ctrls['fname'].setText(basename(path[0])[:-4])
+        self.ctrls['fname'].setText(os.path.basename(path[0]))
+
+        proj_path = get_project_manager().root_dir
+        if proj_path is not None:
+            self._set_proj_path(proj_path)
+
         # print(self.transmission)
         # self.update()
         self.changed()
+
+    def _set_proj_path(self, path: str):
+        self.ctrls['proj_path_label'].setText(os.path.basename(path))
+        self.transmission.set_proj_path(path)
+        self.transmission.set_proj_config()
 
     def dir_dialog_proj_path(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Project Folder')
@@ -105,13 +113,14 @@ class LoadFile(CtrlNode):
             return
 
         try:
-            self.transmission.set_proj_path(path)
-            self.transmission.set_proj_config()
+            self._set_proj_path(path)
+            self.changed()
         except (FileNotFoundError, NotADirectoryError) as e:
             QtWidgets.QMessageBox.warning(None, 'Invalid Project Folder', 'This is not a valid Mesmerize project\n' + e)
             return
 
     def process(self):
+        self.transmission.get_proj_path()
         return {'Out': self.transmission}
 
 

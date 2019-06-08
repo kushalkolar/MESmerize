@@ -86,16 +86,7 @@ def viewer(file: str = None, sample_id: str = None, uuid: UUID = None):
 
 
 def flowchart(file=None) -> FlowchartWindow:
-    w = FlowchartWindow()
-
-    if file is None:
-        pass
-
-    elif file.endswith('.fc'):
-        pass
-
-    elif file.endswith('.fcd.'):
-        pass
+    w = FlowchartWindow(filename=file)
 
     return w
 
