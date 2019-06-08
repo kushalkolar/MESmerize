@@ -347,7 +347,7 @@ class ViewerWorkEnv:
         else:
             assert isinstance(self.UUID, UUID_type)
             UUID = self.UUID
-        curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{UUID}')
+        curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{str(UUID)}')
 
         if overwrite:
             rmtree(curves_dir)
