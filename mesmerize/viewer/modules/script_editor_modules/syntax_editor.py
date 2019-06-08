@@ -59,8 +59,9 @@ def hex2QColor(c):
 
 
 class ViewerLexer(Python3Lexer):
-    extra_vars = {'viewer', 'running_modules', 'roi_manager'}
-    extra_callables = {'update_workEnv', 'clear_workEnv', 'get_module', 'get_batch_manager', 'get_workEnv'}
+    extra_vars = {'vi', 'all_modules', 'image_utils', 'viewer'}
+    extra_callables = {'update_workEnv', 'clear_workEnv', 'get_module', 'get_batch_manager', 'get_workEnv', 'get_image, get_meta'}
+    extra_classes = {'ViewerWorkEnv'}
 
     def get_tokens_unprocessed(self, text):
         for index, token, value in Python3Lexer.get_tokens_unprocessed(self, text):
@@ -68,6 +69,8 @@ class ViewerLexer(Python3Lexer):
                 yield index, Name.Namespace, value
             elif token is Name and value in self.extra_callables:
                 yield index, Name.Function, value
+            elif token is Name and value in self.extra_classes:
+                yield index, Name.Class, value
             else:
                 yield index, token, value
 

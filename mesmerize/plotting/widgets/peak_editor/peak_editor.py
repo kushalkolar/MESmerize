@@ -20,7 +20,7 @@ from ....analysis.data_types import Transmission
 from ....analysis.history_widget import HistoryTreeWidget
 import traceback
 from functools import partial
-
+from ....common import get_window_manager
 
 class PeaksItemGraph(pg.GraphItem):
     """
@@ -241,6 +241,8 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btnDisconnectFromFlowchart.clicked.connect(self._disconnect_flowchart)
         self.btnSendToFlowchart.clicked.connect(self._send_data_to_flowchart)
 
+        self.pushButtonOpenInViewer.clicked.connect(self.open_current_curve_in_viewer)
+
     def _disconnect_flowchart(self):
         self.connected = False
         self.btnDisconnectFromFlowchart.setText('Re-connect to flowchart')
@@ -262,12 +264,15 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sig_reconnect_flowchart.emit()
     
     def _send_data_to_flowchart(self):
-        if self.tpb is None:
+        if self.get_data() is None:
             QtWidgets.QMessageBox.warning(self, 'Nothing to send', 'No data has been loaded that can be transmitted')
             return
 
         self.save_current_curve()
-        self.sig_send_data.emit(self.get_data())
+
+        to_send = self.get_data().copy()
+        to_send.df = to_send.df[~to_send.df.apply(lambda r: r.peaks_bases.empty, axis=1)]
+        self.sig_send_data.emit(to_send)
         
     def connect_mode_buttons(self):
         for k in self.mode_buttons.keys():
@@ -356,13 +361,13 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         curve = self.tc.df['curve'].iloc[ix]
 
-        uuid_curve = self.tc.df['uuid_curve'].iloc[ix]
-        if not isinstance(uuid_curve, str):
+        sample_id = self.tc.df['SampleID'].iloc[ix]
+        if not isinstance(sample_id, str):
             try:
-                uuid_curve = str(uuid_curve)
+                sample_id = str(sample_id)
             except:
-                print("Could not display UUID for curve at index: " + str(ix))
-        self.lineEditUUID.setText(uuid_curve)
+                print("Could not display SampleID for curve at index: " + str(ix))
+        self.lineEditSampleID.setText(sample_id)
         # print('curve: ')
         # print(curve)
         # if curve is None:
@@ -444,6 +449,12 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 #        for p in points:
 #            p.setPen('b', width=3)
 #        self.lastClicked = points
+    def open_current_curve_in_viewer(self):
+        w = get_window_manager().get_new_viewer_window()
+
+        row = self.tc.df.iloc[self.current_ix]
+        proj_path = self.tc.get_proj_path()
+        w.open_from_dataframe(proj_path, row=row)
 
     def _set_pens(self, n):
         self.current_peak_scatter_plot.set_brush_size(n)

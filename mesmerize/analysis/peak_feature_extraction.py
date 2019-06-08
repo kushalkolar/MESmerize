@@ -158,8 +158,6 @@ class PeakFeaturesIter(PeakFeatures):
 
         self.t.df = newdf
 
-
-
         self.t.history_trace.add_operation('all', operation='peak_features', parameters={})
         return self.t
 

@@ -471,10 +471,10 @@ class PeakDetect(CtrlNode):
     def _peak_editor(self):
         if self.pbw is None:
             self.pbw = peak_editor.PBWindow(self.t, self.t)
+            self.pbw.sig_send_data.connect(self._set_editor_output)
+            self.pbw.sig_reconnect_flowchart.connect(self.changed)
 
         self.pbw.show()
-        self.pbw.sig_send_data.connect(self._set_editor_output)
-        self.pbw.sig_reconnect_flowchart.connect(self.changed)
 
 
 # class DeltaFoF(CtrlNode):

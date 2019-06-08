@@ -161,7 +161,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
     def open_in_viewer(self):
         w = get_window_manager().get_new_viewer_window()
-        w.open_from_dataframe(proj_path=self.proj_path, row=self.row)
+        w.open_from_dataframe(proj_path=self.proj_path, row=self.row)#, roi_index=('cnmf_idx', self.roi.cnmf_idx))
 
 
 class TimelineLinearRegion:

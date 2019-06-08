@@ -60,8 +60,9 @@ class MainWindow(QtWidgets.QMainWindow):
                         'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
                         'roi_manager': roi_manager.ModuleGUI,
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
-                        'script_editor': script_editor.ModuleGUI
+                        'script_editor': script_editor.ModuleGUI,
                         }
+    available_modules = list(standard_modules.keys())
 
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent=parent)
@@ -120,6 +121,8 @@ class MainWindow(QtWidgets.QMainWindow):
             names = '\n'.join(failed_imports)
             QtWidgets.QMessageBox.warning(self, 'Failed to load plugings', f'The following plugins failed to load:\n{names}')
 
+        self.available_modules += list(self.custom_modules.keys())
+
     @property
     def viewer_reference(self):
         return self._viewer
@@ -140,37 +143,32 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.initialize_menubar_triggers()
 
-        ns = {'np': np,
-              'vi': self.vi,
-              'viewer': self.vi.viewer,
-              'ViewerWorkEnv': ViewerWorkEnv,
-              'get_workEnv': self.vi.viewer.get_workEnv,
-              # 'get_seq': self.vi.viewer.workEnv.get_seq,
-              # 'get_meta': self.vi.viewer.workEnv.get_meta,
-              # 'get_imgdata': self.vi.viewer.workEnv.get_imgdata,
-              'update_workEnv': self.vi.update_workEnv,
-              'clear_workEnv': self.vi._clear_workEnv,
-              'running_modules': self.running_modules,
-              'get_module': self.run_module,
-              'get_batch_manager': self.get_batch_manager,
-              'roi_manager': self.vi.viewer.workEnv.roi_manager,
-              'objecteditor': objecteditor,
-              'image_utils': image_utils,
-              'main': self
+        ns = {'np':                 np,
+              'vi':                 self.vi,
+              'viewer':             self.vi.viewer,
+              'ViewerWorkEnv':      ViewerWorkEnv,
+              'get_workEnv':        self.vi.viewer.get_workEnv,
+              'get_image':          lambda: self.vi.viewer.get_workEnv().imgdata.seq,
+              'get_meta':           lambda: self.vi.viewer.get_workEnv().imgdata.meta,
+              'update_workEnv':     self.vi.update_workEnv,
+              'clear_workEnv':      self.vi._clear_workEnv,
+              'get_module':         self.get_module,
+              'get_batch_manager':  self.get_batch_manager,
+              'all_modules':        self.available_modules,
+              'image_utils':        image_utils,
+              'this': self
               }
 
         txt = "Namespaces:          \n" \
               "numpy as np          \n" \
               "ViewerInterface as vi \n" \
-              "self as main         \n" \
-              "objecteditor as objecteditor\n" \
-              "ViewerWorkEnv class: workEnv\n" \
-              "useful shorcuts for scripting, see docs:\n" \
-              "viewer, get_workEnv(), running_modules\n" \
-              "get_workEnv().imgdata, get_workEnv().imgdata.seq, get_workEnv().meta, get_workEnv().roi_manager\n" \
-              "useful functions for scripting:\n" \
-              "update_workEnv, clear_workEnv, get_module, get_batch_manager\n" \
-              "For useful image utility functions: image_utils"
+              "self as this \n" \
+              "ViewerWorkEnv (for factory purposes): workEnv\n" \
+              "useful callables for scripting, see docs for examples:\n" \
+              "get_workEnv(), get_image(), get_meta(), get_module(<module name>), get_batch_manager()\n" \
+              "update_workEnv(), clear_workEnv()\n" \
+              "'all_modules' will list all available modules\n" \
+              "Some basic image utility functions: image_utils"
 
         cmd_history_file = os.path.join(configuration.console_history_path, 'viewer.pik')
 
@@ -186,7 +184,11 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         # Show the QDockableWidget if it's already running
         if type(module_class) is str:
-            module_class = {**self.standard_modules, **self.custom_modules}[module_class]
+            if self.custom_modules is None:
+                cms = {}
+            else:
+                cms = self.custom_modules
+            module_class = {**self.standard_modules, **cms}[module_class]
 
         for m in self.running_modules:
             if isinstance(m, module_class):
@@ -205,7 +207,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return self.running_modules[-1]
 
     def get_module(self, module_name: str, hide=False):
-        self.run_module(module_name, hide)
+        return self.run_module(module_name, hide)
 
     def update_available_inputs(self):
         for m in self.running_modules:
@@ -366,16 +368,44 @@ class MainWindow(QtWidgets.QMainWindow):
             if isinstance(s, pd.Series):
                 s = s.item()
 
-            self._open_from_dataframe(tiff_path, pik_path, sample_id=s)
+            roi_state = row['ROI_State']
+            if isinstance(roi_state, pd.Series):
+                roi_state = roi_state.item()
+
+            if roi_state['roi_type'] == 'CNMFROI':
+                cnmf_idx = roi_state['cnmf_idx']
+                roi_index = ('cnmf_idx', cnmf_idx)
+            else:
+                roi_index = None
+
+            self._open_from_dataframe(tiff_path, pik_path, roi_index=roi_index, sample_id=s)
             return
 
         else:
             raise ValueError('Must specify either df and sample_id/uuid_curve or supply the row (pd.Series)')
 
-    def _open_from_dataframe(self, tiff_path: str, pik_path: str, sample_id: Optional[str]=None):
+    def _open_from_dataframe(self, tiff_path: str, pik_path: str, roi_index: Optional[tuple] = None,
+                             sample_id: Optional[str] = None):
         setConfigOptions(imageAxisOrder='row-major')
         self.vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pik_path, tiff_path=tiff_path)
         self.vi.update_workEnv()
+
         self.vi.viewer.workEnv.restore_rois_from_states()
+
+        if roi_index is not None:
+            roi_list = self.vi.viewer.workEnv.roi_manager.roi_list
+            if roi_index[0] == 'cnmf_idx':
+                c_idx = roi_index[1]
+                list_index = [r.cnmf_idx for r in roi_list].index(c_idx)
+            elif roi_index[0] == 'list_index':
+                list_index = roi_index[1]
+            else:
+                raise ValueError('roi_index must be either a cnmf index or the direct list index of the ROI_List object')
+
+            roi_list.list_widget.setCurrentRow(list_index)
+            rm = self.get_module('roi_manager')
+            if rm.ui.checkBoxShowAll.isChecked():
+                rm.ui.checkBoxShowAll.click()
+
         if sample_id is not None:
             self.vi.viewer.ui.label_curr_img_seq_name.setText(sample_id)

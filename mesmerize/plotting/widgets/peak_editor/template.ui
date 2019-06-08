@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1143</width>
+    <width>1146</width>
     <height>661</height>
    </rect>
   </property>
@@ -399,6 +399,13 @@ relative maxima</string>
          </layout>
         </item>
         <item>
+         <widget class="QPushButton" name="pushButtonOpenInViewer">
+          <property name="text">
+           <string>Open in Viewer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
            <widget class="QLabel" name="label_2">
@@ -410,12 +417,12 @@ relative maxima</string>
              </font>
             </property>
             <property name="text">
-             <string>UUID:</string>
+             <string>SampleID:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEditUUID">
+           <widget class="QLineEdit" name="lineEditSampleID">
             <property name="font">
              <font>
               <weight>75</weight>
@@ -477,8 +484,8 @@ relative maxima</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1143</width>
-     <height>30</height>
+     <width>1146</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuView">
@@ -541,7 +548,7 @@ relative maxima</string>
   <tabstop>btnSetPeaksAtRelativeMaxima</tabstop>
   <tabstop>btnSaveCurve</tabstop>
   <tabstop>btnDisconnectFromFlowchart</tabstop>
-  <tabstop>lineEditUUID</tabstop>
+  <tabstop>lineEditSampleID</tabstop>
   <tabstop>graphicsView</tabstop>
   <tabstop>listwIndices</tabstop>
  </tabstops>
