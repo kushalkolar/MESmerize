@@ -213,7 +213,8 @@ class HistoryTrace:
         else:
             return True
 
-    def _to_uuid(self, u) -> UUID:
+    @staticmethod
+    def _to_uuid(u) -> UUID:
         """If input is a <str> that can be formatted as a UUID, return it as UUID type.
         If input is a UUID, just returns it."""
         if isinstance(u, UUID):
@@ -224,7 +225,15 @@ class HistoryTrace:
             raise TypeError('Must pass str or UUID')
 
     def to_dict(self):
-        return {'history': self.history, 'data_blocks': self.data_blocks}
+        dbs_str = [str(db) for db in self.data_blocks]
+        hist_str = {str(k): v for k, v in self.history.items()}
+        return {'history': hist_str, 'data_blocks': dbs_str}
+
+    @staticmethod
+    def from_dict(d: dict) -> dict:
+        hist = {HistoryTrace._to_uuid(k): v for k, v in d['history'].items()}
+        dbs = [HistoryTrace._to_uuid(u) for u in d['data_blocks']]
+        return {'history': hist, 'data_blocks': dbs}
 
     def to_json(self, path: str):
         """Save to json file"""
@@ -234,6 +243,7 @@ class HistoryTrace:
     def from_json(cls, path: str):
         """Load from json file"""
         j = json.load(open(path, 'r'))
+        j = HistoryTrace.from_dict(j)
         return cls(history=j['history'], data_blocks=['data_blocks'])
 
     def to_pickle(self, path):
@@ -244,6 +254,7 @@ class HistoryTrace:
     def from_pickle(cls, path: str):
         """Load from pickle"""
         p = pickle.load(open(path, 'r'))
+        p = HistoryTrace.from_dict(p)
         return cls(history=p['history'], data_blocks=p['data_blocks'])
 
     @classmethod

@@ -5,6 +5,7 @@ from .common import *
 from ....analysis.data_types import *
 from ....plotting.widgets.peak_editor import peak_editor
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
+from warnings import warn
 
 
 def _static_dfof(F: np.ndarray) -> np.ndarray:
@@ -284,10 +285,15 @@ class PeakDetect(CtrlNode):
         # print('ix_below_slope_thr: ' + str(ix_below_slope_thr))
         peaks = np.delete(peaks_ampl_thr, ix_below_slope_thr)
 
-        ## TODO; DEBATE ABOUT HOW TO PROPERLY DEAL WITH TRACES THAT HAVE NO PEAKS !!!!
+        ## TODO; DEBATE ABOUT HOW TO PROPERLY DEAL WITH TRACES THAT HAVE NO PEAKS
         if peaks.size == 0:
-            peaks = np.array([0])
-            bases = np.array([0, 1])
+            # abort = True
+            # peaks = np.array([1])
+            # bases = np.array([0, 2])
+            return pd.DataFrame()
+        # else:
+        #     self.row_ix += 1
+        #     return pd.DataFrame()
 
         # Add bases to beginning and end of sequence if first or last peak is lonely
         if fictional_bases:
@@ -310,9 +316,13 @@ class PeakDetect(CtrlNode):
         bases_df['label'] = 'base'
 
         peaks_bases_df = pd.concat([peaks_df, bases_df])
-        assert isinstance(peaks_bases_df, pd.DataFrame)
         peaks_bases_df = peaks_bases_df.sort_values('event')
         peaks_bases_df.reset_index(drop=True, inplace=True)
+
+        # if abort:
+        #     self.row_ix += 1
+        #     warn(f'No peaks detected at index: {self.row_ix}')
+        #     return peaks_bases_df
 
         # peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
         # peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
@@ -342,8 +352,8 @@ class PeakDetect(CtrlNode):
                     else:
                         rows_drop.append(ix)
 
-        peaks_bases_df.drop(peaks_bases_df.index[rows_drop], inplace=True)
-        peaks_bases_df.reset_index(drop=True, inplace=True)
+        peaks_bases_df = peaks_bases_df.drop(peaks_bases_df.index[rows_drop])
+        peaks_bases_df = peaks_bases_df.reset_index(drop=True)
 
         # remove bases that aren't around any peak
         for ix, r in peaks_bases_df.iterrows():
@@ -351,8 +361,12 @@ class PeakDetect(CtrlNode):
                 if peaks_bases_df.iloc[ix - 1]['label'] != 'peak' and peaks_bases_df.iloc[ix + 1]['label'] != 'peak':
                     rows_drop.append(ix)
 
-        peaks_bases_df.drop(peaks_bases_df.index[rows_drop], inplace=True)
-        peaks_bases_df.reset_index(drop=True, inplace=True)
+        # Weird behavior dealing with bases at the end of a curve
+        try:
+            peaks_bases_df = peaks_bases_df.drop(peaks_bases_df.index[rows_drop])
+            peaks_bases_df = peaks_bases_df.reset_index(drop=True)
+        except:
+            pass
 
         self.row_ix += 1
         # print(peaks_bases_df)
@@ -440,7 +454,7 @@ class PeakDetect(CtrlNode):
         self.t.df.drop(columns=['_NORM_PD'], inplace=True)
         # self.t.df.drop(columns=['raw_curve'])
 
-        if hasattr(self, 'pbw'):
+        if self.pbw is not None:
             # self.pbw.curve_column = data_column
             self.pbw.update_transmission(self.t, self.t)
 
