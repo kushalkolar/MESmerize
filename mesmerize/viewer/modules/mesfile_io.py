@@ -51,7 +51,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.listwMesfile.setEnabled(True)
             self.ui.listwMesfile.clear()
             # Get the references of the images, their descriptions, and add them to the list
-            for i in self.mesfile.images:
+            for i in self.mesfile.get_image_references():
                 j = self.mesfile.image_descriptions[i]
                 self.ui.listwMesfile.addItem(i + ': ' + j)
 

@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 from .. import DatapointTracerWidget
 from ....analysis.data_types import HistoryTrace, Transmission
+from typing import Optional, Union
 
 
 class HeatmapWidget(QtWidgets.QWidget):
@@ -106,19 +107,24 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         else:
             dataframe = dataframes
 
-        assert isinstance(dataframe, pd.DataFrame)
+        if not isinstance(dataframe, pd.DataFrame):
+            raise TypeError('Must pass a dataframe or list of dataframes')
         return dataframe
 
-    def set_data(self, dataframes,
+    def set_data(self, dataframes: Union[pd.DataFrame, list],
                  data_column: str,
                  labels_column: str,
                  cmap: str = 'jet',
-                 transmission: Transmission = None,
-                 reset_data: bool = True,
+                 transmission: Optional[Transmission] = None,
+                 reset_sorting: bool = True,
                  **kwargs):
         """
         :param dataframes:      list of dataframes or a single DataFrame
-        :type dataframes:       list or pd.DataFrame
+        :param data_column:     data column of the dataframe that is plotted in the heatmap
+        :param labels_column:   dataframe column (usually categorical labels) used to generate the y-labels and legend.
+        :param cmap:            colormap choice
+        :param transmission:    transmission object that dataframe originates, used to calculate data units if passed
+        :param reset_sorting:   reset the order of the rows in the heatmap
         """
         dataframe = self.merge_dataframes(dataframes)
         self.data_column = data_column
@@ -132,12 +138,13 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         self.has_history_trace = False
 
         if transmission is not None:
-            assert isinstance(transmission, Transmission)
+            if not isinstance(transmission, Transmission):
+                raise TypeError("Argument 'transmission' must be of type mesmerize.analysis.data_types.Transmission")
             self.set_transmission(transmission)
 
         self._disconnect_comboBoxSort()
 
-        if reset_data:
+        if reset_sorting:
             self.comboBoxSortColumn.clear()
             self.comboBoxSortColumn.addItems(self.dataframe.columns.to_list())
 
@@ -161,17 +168,17 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         self.previous_sort_column = column
         self._set_plot(a)
 
-    def set_transmission(self, transmission):
+    def set_transmission(self, transmission: Transmission):
         self._transmission = transmission
         self.set_history_trace(transmission.history_trace)
 
     def get_transmission(self) -> Transmission:
         if self._transmission is None:
-            raise ValueError('No tranmission is set')
+            raise ValueError('No tranmission has been set')
         else:
             return self._transmission
 
-    def highlight_row(self, ix):
+    def highlight_row(self, ix: int):
         self.plot_widget.highlight_row(ix)
 
     def set_history_trace(self, history_trace: HistoryTrace):

@@ -18,7 +18,7 @@ import hickle
 import json
 from copy import deepcopy
 from uuid import uuid4, UUID
-from typing import Tuple
+from typing import Tuple, List, Dict, Union
 from itertools import chain
 import os
 import traceback
@@ -87,7 +87,7 @@ class HistoryTrace:
     :ivar _data_blocks: List of all data blocks. Should not be called directly, use the property `data_blocks` instead.
 
     """
-    def __init__(self, history: dict = None, data_blocks: list = None):
+    def __init__(self, history: Dict[List[Dict]] = None, data_blocks: Union[List[UUID]] = None):
         self._history = None
         self._data_blocks = None
 
@@ -214,7 +214,7 @@ class HistoryTrace:
             return True
 
     @staticmethod
-    def _to_uuid(u) -> UUID:
+    def _to_uuid(u: Union[str, UUID]) -> UUID:
         """If input is a <str> that can be formatted as a UUID, return it as UUID type.
         If input is a UUID, just returns it."""
         if isinstance(u, UUID):

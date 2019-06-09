@@ -6,8 +6,9 @@ from matplotlib import cm as matplotlib_color_map
 
 from .... import pyqtgraphCore as pg
 from ....viewer.core.common import ViewerInterface
-from ....viewer.modules.roi_manager_modules.roi_types import BaseROI, ManualROI
+from ....viewer.modules.roi_manager_modules.roi_types import ManualROI, CNMFROI
 from ....common import configuration, get_project_manager
+from typing import Union
 
 
 class ROIList(list):
@@ -68,7 +69,7 @@ class ROIList(list):
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
-    def append(self, roi: BaseROI):
+    def append(self, roi: Union[CNMFROI, ManualROI]):
         roi.add_to_viewer()
 
         roi_graphics_object = roi.get_roi_graphics_object()
@@ -174,10 +175,10 @@ class ROIList(list):
             roi.set_original_color(c)
             roi.set_color(c)
 
-    def __getitem__(self, item) -> BaseROI:
+    def __getitem__(self, item) -> Union[ManualROI, CNMFROI]:
         return super(ROIList, self).__getitem__(item)
 
-    def set_current_index(self, ix):
+    def set_current_index(self, ix: int):
         if ix < 0:
             return
         if ix > self.__len__():
@@ -194,7 +195,7 @@ class ROIList(list):
         self._show_graphics_object(ix)
         self.set_list_widget_tags()
 
-    def highlight_roi(self, roi: QtWidgets.QGraphicsObject):
+    def highlight_roi(self, roi: Union[ManualROI, CNMFROI]):
         ix = self.index(roi)
         self.highlight_curve(ix)
         self.list_widget.setCurrentRow(ix)
@@ -246,7 +247,7 @@ class ROIList(list):
         for ix in range(self.__len__()):
             self._hide_graphics_object(ix)
 
-    def _live_update_requested(self, roi: BaseROI):
+    def _live_update_requested(self, roi: Union[ManualROI, CNMFROI]):
         ix = self.index(roi)
         if self.roi_types == 'CNMFROI':
             raise TypeError('Can only live update Manually drawn ROIs when they are moved')
