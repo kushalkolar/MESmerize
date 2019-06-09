@@ -68,7 +68,7 @@ class Row(QtWidgets.QWidget):
         d = {'name': self.name.text(),
              'start': float(self.start.text()),
              'end': float(self.end.text()),
-             'color': self.color_btn.color()
+             'color': self.color_btn.color(mode='float')
              }
         return d
 
