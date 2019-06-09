@@ -16,10 +16,12 @@ import numpy as np
 class CC_Data:
     def __init__(self, ccs: np.ndarray = None,
                  lag_matrix: np.ndarray = None,
-                 epsilon_matrix: np.ndarray = None):
+                 epsilon_matrix: np.ndarray = None,
+                 curve_uuids: list = None):
         self.ccs = ccs
         self.lag_matrix = lag_matrix
         self.epsilon_matrix = epsilon_matrix
+        self.curve_uuids = curve_uuids
 
     def get_threshold_matrix(self, matrix_type: str, lag_thr: float, max_thr: float, lag_thr_abs: bool = True) -> np.ndarray:
         # Get lag and maxima matrices

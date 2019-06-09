@@ -14,7 +14,7 @@ from . import kshape_process
 import psutil
 import os
 from signal import SIGKILL
-from ....common.process_utils import make_workdir, make_runfile
+from ....common.utils import make_workdir, make_runfile
 import pickle
 from ....analysis.data_types import Transmission
 import numpy as np
