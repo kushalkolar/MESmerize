@@ -150,11 +150,11 @@ class MES:
     def load_img(self, img_reference: str) -> (np.ndarray, dict):
         """
         :param img_reference: The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx
-        :return: numpy array of the image sequence, dict of metadata
+        :return: (image sequence array, meta data dict)
         """
 
         if img_reference not in self._images:
-            raise KeyError('Image reference: ' + img_reference + ' not found.\nCall get_image_references for a '
+            raise KeyError('fImage reference: {img_reference} not found.\nCall get_image_references for a '
                            'list of all available references to images that can be loaded.')
 
         meta = self.main_dict["D" + img_reference[1:6]].tolist()

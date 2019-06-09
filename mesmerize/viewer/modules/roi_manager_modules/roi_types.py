@@ -18,6 +18,7 @@ from .... import pyqtgraphCore as pg
 from ....common import get_proj_config, NoProjectOpen
 from warnings import warn
 from copy import deepcopy
+from typing import Union
 
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
@@ -59,7 +60,7 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def set_color(self, color: np.ndarray, *args, **kwargs):
+    def set_color(self, color, *args, **kwargs):
         pass
 
     @abc.abstractmethod
@@ -159,7 +160,7 @@ class BaseROI(AbstractBaseROI):
     def get_color(self):
         return self._color
 
-    def set_color(self, color: np.ndarray, *args, **kwargs):
+    def set_color(self, color: Union[np.ndarray, str], *args, **kwargs):
         pen = pg.mkPen(color, *args, **kwargs)
         self.roi_graphics_object.setPen(pen)
         self.curve_plot_item.setPen(pen)
