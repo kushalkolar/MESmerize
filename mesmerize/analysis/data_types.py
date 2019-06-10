@@ -164,10 +164,8 @@ class HistoryTrace:
         for _id in _ids:
             self.history[_id].append({operation: parameters})
 
-    def get_data_block_history(self, data_block_id: Union[UUID, str]) -> Union[list, dict]:
-        """Get the full history trace of the one requested data block"""
-        if data_block_id == 'all':
-            return self.get_all_data_blocks_history()
+    def get_data_block_history(self, data_block_id: UUID) -> list:
+        """Get the full history trace of a single data block"""
 
         data_block_id = self._to_uuid(data_block_id)
 
@@ -351,6 +349,16 @@ class BaseTransmission:
 
     def to_hickle(self, path):
         hickle.dump(self.to_dict(), path)
+
+    def to_hdf5(self, path: str):
+        d = self.to_dict()
+        df = d.pop('df')
+        HdfTools.save_dataframe(savepath=path, dataframe=df, metadata=d, metadata_method='json')
+
+    @classmethod
+    def from_hdf5(cls, path: str):
+        df, meta = HdfTools.load_dataframe(path)
+        return cls(df, **meta)
 
     @classmethod
     def from_hickle(cls, path):

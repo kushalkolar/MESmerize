@@ -131,7 +131,7 @@ class HdfTools:
                     ks = f['META'].keys()
                     metadata = dict.fromkeys(ks)
                     for k in ks:
-                        metadata[k] = json.laods(f['META'][k][()])
+                        metadata[k] = json.loads(f['META'][k][()])
 
                 elif f['META'].attrs['method'] == 'recursive':
                     metadata = HdfTools._recurve_dict_from_group(f, 'META/')
