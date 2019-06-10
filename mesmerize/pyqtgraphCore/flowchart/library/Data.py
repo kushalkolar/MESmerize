@@ -86,7 +86,7 @@ class LoadFile(CtrlNode):
         if path == '':
             return
         try:
-            self.transmission = Transmission.from_hickle(path[0])
+            self.transmission = Transmission.from_hdf5(path[0])
         except:
             QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
@@ -165,7 +165,7 @@ class Save(CtrlNode):
 
         if self.ctrls['path'].text() != '':
             try:
-                transmission.to_hickle(self.ctrls['path'].text())
+                transmission.to_hdf5(self.ctrls['path'].text())
             except Exception as e:
                 QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the transmission to file.\n'
                                           + str(e))
