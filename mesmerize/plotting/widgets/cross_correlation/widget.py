@@ -17,6 +17,8 @@ from ...variants import TimeseriesPlot
 from ....analysis import Transmission, get_sampling_rate, get_array_size
 import numpy as np
 from ....pyqtgraphCore import PlotDataItem
+from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColor
+import pandas as pd
 
 
 class ControlWidget(QtWidgets.QWidget):
@@ -58,6 +60,9 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.radioButtonLag.clicked.connect(self.set_heatmap)
         self.control_widget.ui.doubleSpinBoxMaximaThreshold.valueChanged.connect(self.set_heatmap)
         self.control_widget.ui.doubleSpinBoxLagThreshold.valueChanged.connect(self.set_heatmap)
+        self.datapoint_tracer = DatapointTracerWidget()
+
+        self.roi_2 = None
 
     def set_heatmap(self):
         if self.cc_data is None:
@@ -117,6 +122,18 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             sub_df = self.transmission.df[self.transmission.df.SampleID == self.current_sample_id].reset_index(drop=True)
             ux = sub_df.uuid_curve.iloc[i]
             uy = sub_df.uuid_curve.iloc[j]
+
+            r = sub_df[sub_df.uuid_curve == ux]
+            db_id = r._BLOCK_
+            r2 = sub_df[sub_df.uuid_curve == uy]
+
+            self.datapoint_tracer.set_widget(datapoint_uuid=ux, data_column_curve=self.data_column,
+                                             row=r, proj_path=self.transmission.get_proj_path(),
+                                             history_trace=self.transmission.history_trace.get_data_block_history(db_id))
+            self.datapoint_tracer.ui.graphicsViewPlot.clear()
+            self.add_second_roi_to_datapoint_tracer(r2)
+            self.datapoint_tracer.show()
+
             self.control_widget.ui.lineEditCurve1UUID.setText(ux)
             self.control_widget.ui.lineEditCurve2UUID.setText(uy)
 
@@ -130,11 +147,30 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.cross_corr_plot.set_single_line(x=xticks, y=ncc)
         self.cross_corr_plot.ax.set_xlabel("lag (seconds)")
 
+    # TODO: Just simplify the datapoint_tracer to take in multiple ROIs
+    def add_second_roi_to_datapoint_tracer(self, r: pd.Series):
+        if isinstance(self.roi_2, (CNMFROI, ManualROI)):
+            self.roi_2.remove_from_viewer()
+
+        roi_state = r['ROI_State'].item()
+        if isinstance(roi_state, pd.Series):
+            roi_state = roi_state.item()
+
+        if roi_state['roi_type'] == 'CNMFROI':
+            self.roi_2 = CNMFROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
+            self.roi_2.get_roi_graphics_object().setBrush(mkColor('b'))
+
+        elif roi_state['roi_type'] == 'ManualROI':
+            self.roi_2 = ManualROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
+
+        self.roi_2.get_roi_graphics_object().setPen(mkColor('b'))
+        self.roi_2.add_to_viewer()
+
     def _get_xticks_linspace(self, ncc) -> np.ndarray:
-        m = ncc.size
-        stop = ((m / 2) / self.sampling_rate)
-        start = -stop
-        return np.linspace(start, stop, m)
+            m = ncc.size
+            stop = ((m / 2) / self.sampling_rate)
+            start = -stop
+            return np.linspace(start, stop, m)
 
     def set_input(self, transmission: Transmission = None):
         self.transmission = transmission
@@ -167,6 +203,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         for sample_id in self.sample_list:
             sub_df = self.transmission.df[self.transmission.df.SampleID == sample_id]
+
             data = np.vstack(sub_df[self.data_column].values)
             r = get_sampling_rate(self.transmission)
             self.sampling_rate = r
@@ -175,3 +212,4 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
 
         self.set_current_sample()
+        
