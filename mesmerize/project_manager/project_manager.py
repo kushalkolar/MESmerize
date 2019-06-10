@@ -90,7 +90,7 @@ class ProjectManager(QtCore.QObject):
 
         df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
         self.dataframe = pd.read_hdf(df_path, key='project_dataframe', mode='r')
-        
+
         self._initialize_config_window()
 
         configuration.open_proj_config()
