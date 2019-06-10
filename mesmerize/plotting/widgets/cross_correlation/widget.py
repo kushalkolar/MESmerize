@@ -16,7 +16,7 @@ from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
 from ....analysis import Transmission, get_sampling_rate, get_array_size
 import numpy as np
-from ....pyqtgraphCore import PlotDataItem
+from ....pyqtgraphCore import PlotDataItem, mkPen
 from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColor
 import pandas as pd
 
@@ -47,6 +47,9 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.cc_data = None
 
         self.plot_widget.sig_selection_changed.connect(self.set_lineplots)
+
+        self.plot_widget.ax_ylabel_bar.set_axis_on()
+        self.plot_widget.ax_heatmap.get_yaxis().set_visible(True)
 
         self.curve_plot_1 = PlotDataItem()
         self.curve_plot_2 = PlotDataItem()
@@ -88,6 +91,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         plot_data = self.cc_data[sample_id].get_threshold_matrix(matrix_type=opt, lag_thr=lt, max_thr=mt, lag_thr_abs=abs_val)
 
         self.plot_widget.set(plot_data, cmap=cmap)
+        self.plot_widget.ax_ylabel_bar.set_axis_off()
+
+        self.plot_widget.ax_heatmap.set_xlabel('Curve 1, magenta')
+        self.plot_widget.ax_heatmap.set_ylabel('Curve 2, cyan')
+
+        self.plot_widget.draw()
 
     def set_lineplots(self, indices):
         if self.plot_widget.selector.multi_select_mode:
@@ -124,12 +133,13 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             uy = sub_df.uuid_curve.iloc[j]
 
             r = sub_df[sub_df.uuid_curve == ux]
-            db_id = r._BLOCK_
+            db_id = r._BLOCK_.item()
             r2 = sub_df[sub_df.uuid_curve == uy]
 
             self.datapoint_tracer.set_widget(datapoint_uuid=ux, data_column_curve=self.data_column,
                                              row=r, proj_path=self.transmission.get_proj_path(),
-                                             history_trace=self.transmission.history_trace.get_data_block_history(db_id))
+                                             history_trace=self.transmission.history_trace.get_data_block_history(db_id),
+                                             roi_color='m')
             self.datapoint_tracer.ui.graphicsViewPlot.clear()
             self.add_second_roi_to_datapoint_tracer(r2)
             self.datapoint_tracer.show()
@@ -137,8 +147,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.control_widget.ui.lineEditCurve1UUID.setText(ux)
             self.control_widget.ui.lineEditCurve2UUID.setText(uy)
 
-            self.curve_plot_1.setData(x)
-            self.curve_plot_2.setData(y)
+            self.curve_plot_1.setData(x, pen=mkPen(color='m', width=2))
+            self.curve_plot_2.setData(y, pen=mkPen(color='c', width=2))
 
             ncc = self.cc_data[self.current_sample_id].ccs[i, j, :]
 
@@ -158,12 +168,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         if roi_state['roi_type'] == 'CNMFROI':
             self.roi_2 = CNMFROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
-            self.roi_2.get_roi_graphics_object().setBrush(mkColor('b'))
+            self.roi_2.get_roi_graphics_object().setBrush(mkColor('c'))
 
         elif roi_state['roi_type'] == 'ManualROI':
             self.roi_2 = ManualROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
 
-        self.roi_2.get_roi_graphics_object().setPen(mkColor('b'))
+        self.roi_2.get_roi_graphics_object().setPen(mkColor('c'))
         self.roi_2.add_to_viewer()
 
     def _get_xticks_linspace(self, ncc) -> np.ndarray:
@@ -212,4 +222,3 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
 
         self.set_current_sample()
-        
