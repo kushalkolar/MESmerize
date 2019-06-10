@@ -73,9 +73,9 @@ s = dict(
 if is_building():
     try:
         from Cython.Distutils import build_ext as _build_ext
-        #list_pyx = ['cydtw', 'cygak', 'cysax', 'cycc', 'soft_dtw_fast']
+        list_pyx = ['cydtw', 'cygak', 'cysax', 'cycc', 'soft_dtw_fast']
         numpy_include = pkg_resources.resource_filename('numpy', 'core/include')
-        #ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
+        ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
 
         ext = [Extension("caiman.source_extraction.cnmf.oasis",
                                  sources=["caiman/source_extraction/cnmf/oasis.pyx"],
