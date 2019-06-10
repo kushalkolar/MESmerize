@@ -34,7 +34,7 @@ def is_building():
 s = dict(
     name='mesmerize',
     version='0.1',
-    packages=find_packages(exclude=['use_cases', 'use_cases.*']), #+ ['tests', 'tslearn', 'mesmerize.common', 'mesmerize.common.pytemplates', 'mesmerize.viewer',
+    packages=find_packages(exclude=['use_cases', 'use_cases.*', 'tests']), #+ ['tests', 'tslearn', 'mesmerize.common', 'mesmerize.common.pytemplates', 'mesmerize.viewer',
               # 'mesmerize.viewer.core', 'mesmerize.viewer.modules', 'mesmerize.viewer.modules.pytemplates',
               # 'mesmerize.viewer.modules.custom_modules', 'mesmerize.viewer.modules.stimmap_modules',
               # 'mesmerize.viewer.modules.batch_run_modules', 'mesmerize.viewer.modules.roi_manager_modules',
@@ -73,11 +73,11 @@ s = dict(
 if is_building():
     try:
         from Cython.Distutils import build_ext as _build_ext
-        list_pyx = ['cydtw', 'cygak', 'cysax', 'cycc', 'soft_dtw_fast']
+        #list_pyx = ['cydtw', 'cygak', 'cysax', 'cycc', 'soft_dtw_fast']
         numpy_include = pkg_resources.resource_filename('numpy', 'core/include')
-        ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
+        #ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
 
-        ext += [Extension("caiman.source_extraction.cnmf.oasis",
+        ext = [Extension("caiman.source_extraction.cnmf.oasis",
                                  sources=["caiman/source_extraction/cnmf/oasis.pyx"],
                                  include_dirs=[numpy_include],
                                  language="c++")]
