@@ -1,4 +1,5 @@
 name: mesmerize
+base: core18
 version: 0.1.0
 summary: Platform for Calcium Imaging analysis
 description: >
@@ -9,6 +10,7 @@ confinement: devmode
 # When snapcraft performs the build it will try to build the wheels for all pip requirements and try to perform the mesmerize setup.py before those dependencies are actually installed. To workaround this the setup.py catches the imports of the Cython dependencies to allow snap to continue the build. Therefore by having performing the <setup> part before the <mesmerize> pip will build and install all dependencies, and when snapcraft tries to build the <mesmerize> part it will go through the same seutp.py but this time it can actually build the Cython extensions since Cython was installed in the <setup> step.
 parts:
   setup:
+    # Should try including desktop-gtk3 at some time to see if it fixes warnings on Fedora?
     after: [desktop-qt5]
     plugin: python
     python-version: python3
@@ -20,6 +22,7 @@ parts:
     requirements: requirements.txt
     python-version: python3
     source: .
+    source-type: git
     build-packages:
       - python3
       - python3-tk
@@ -31,6 +34,9 @@ parts:
       - libopenblas-dev
       - liblapack-dev
       - cython3
+#      - qtbase5-dev
+#      - libqt5gui5
+#      - libqt5svg5
 
     stage-packages:
       - python3
@@ -40,6 +46,9 @@ parts:
       - locales
       - cython3
       - qtwayland5
+#      - libqt5gui5
+#      - libqt5svg5
+#      - qtbase5-dev
 
 apps:
   mesmerize:
@@ -54,4 +63,5 @@ apps:
       - wayland
       - x11
       - opengl
+      - home
 
