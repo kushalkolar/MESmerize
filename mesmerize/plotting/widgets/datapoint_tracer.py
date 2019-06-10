@@ -23,6 +23,7 @@ from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
 from ...common import get_window_manager, get_project_manager
 # from common import configuration
 import os
+from typing import Union, Optional
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):
@@ -34,6 +35,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.row = None
         self.proj_path = None
         self.sample_id = None
+        self.previous_sample_id_projection = None
         self.history_trace = None
         self.peak_ix = None
         self.tstart = None
@@ -62,14 +64,9 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         self.ui.pushButtonOpenInViewer.clicked.connect(self.open_in_viewer)
 
-    def set_widget(self, datapoint_uuid: UUID,
-                   data_column_curve: str,
-                   row: pd.Series,
-                   proj_path: str,
-                   history_trace: list = None,
-                   peak_ix: int = None,
-                   tstart: int = None,
-                   tend: int = None):
+    def set_widget(self, datapoint_uuid: UUID, data_column_curve: str, row: pd.Series, proj_path: str,
+                   history_trace: Optional[list] = None, peak_ix: Optional[int] = None, tstart: Optional[int] = None,
+                   tend: Optional[int] = None, roi_color: Optional[Union[str, float, int, tuple]] = 'ff0000'):
 
         self.uuid = datapoint_uuid
         self.row = row
@@ -121,16 +118,19 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         if roi_state['roi_type'] == 'CNMFROI':
             self.roi = CNMFROI.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
-            self.roi.get_roi_graphics_object().setBrush(mkColor('#ff0000'))
+            self.roi.get_roi_graphics_object().setBrush(mkColor(roi_color))
         elif roi_state['roi_type'] == 'ManualROI':
             self.roi = ManualROI.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
-        self.roi.get_roi_graphics_object().setPen(mkColor('#ff0000'))
+        self.roi.get_roi_graphics_object().setPen(mkColor(roi_color))
         self.roi.add_to_viewer()
 
         if peak_ix is not None:
             pass
 
     def set_image(self, projection: str):
+        if f'{self.sample_id}{projection}' == self.previous_sample_id_projection:
+            return
+
         img_uuid = self.row['ImgUUID']
 
         if isinstance(img_uuid, pd.Series):
@@ -156,6 +156,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         # img = np.dstack((img, z))
 
         self.image_view.setImage(img)
+
+        self.previous_sample_id_projection = f'{self.sample_id}{projection}'
         # self.image_item.setImage(img.T.astype(np.uint16))
         # self.image_item.resetTransform()
 
