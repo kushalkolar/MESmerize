@@ -300,16 +300,8 @@ class ViewerWorkEnv:
 
         return d
 
-    def to_pickle(self, dir_path: str, filename: Optional[str] = None, save_img_seq=True, UUID=None) -> str:
-        """
-        Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
-        for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
-        for saving current sample to the project. Image sequence is saved as a tiff and other information about the
-        image is saved in a pickle.
-        """
-        if self.isEmpty:
-            raise AttributeError('Work environment is empty!')
 
+    def _prepare_export(self, dir_path: str, filename: Optional[str] = None, save_img_seq: bool = True, UUID: Optional[UUID_type] = None) -> dict:
         if UUID is None:
             UUID = uuid4()
 
@@ -324,11 +316,23 @@ class ViewerWorkEnv:
 
         if save_img_seq:
             tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
+
+        return data
+
+    def to_pickle(self, dir_path: str, filename: Optional[str] = None, save_img_seq=True, UUID=None) -> str:
+        """
+        Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
+        for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
+        for saving current sample to the project. Image sequence is saved as a tiff and other information about the
+        image is saved in a pickle.
+        """
+        data = self._prepare_export(dir_path, filename, save_img_seq, UUID)
         pickle.dump(data, open(filename + '.pik', 'wb'), protocol=4)
 
         self.saved = True
 
         return filename
+
 
     def to_pandas(self, proj_path: str, overwrite: bool = False) -> list:
         """

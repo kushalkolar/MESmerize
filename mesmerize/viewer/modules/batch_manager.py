@@ -36,7 +36,7 @@ from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from glob import glob
 from multiprocessing import Pool
 from uuid import UUID as UUIDType
-from ...common.process_utils import make_runfile, make_workdir
+from ...common.utils import make_runfile, make_workdir
 from collections import UserList
 
 
