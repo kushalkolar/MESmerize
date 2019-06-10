@@ -20,7 +20,8 @@ from ..common import get_window_manager
 import os
 import pandas as pd
 from time import time
-from shutil import copyfile
+from shutil import move as move_file
+from warnings import warn
 
 
 class ProjectManager(QtCore.QObject):
@@ -30,7 +31,7 @@ class ProjectManager(QtCore.QObject):
     def __init__(self):
         QtCore.QObject.__init__(self)
         self.root_dir = None
-        self.dataframe = None
+        self.dataframe = pd.DataFrame(data=None)
         self.child_dataframes = None
 
     def set(self, project_root_dir: str):
@@ -87,8 +88,9 @@ class ProjectManager(QtCore.QObject):
         if not os.path.isdir(self.root_dir + '/curves'):
             raise NotADirectoryError('curves directory not found')
 
-        self.dataframe = pd.read_pickle(self.root_dir + '/dataframes/root.dfr')
-
+        df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
+        self.dataframe = pd.read_hdf(df_path, key='project_dataframe', mode='r')
+        
         self._initialize_config_window()
 
         configuration.open_proj_config()
@@ -121,7 +123,12 @@ class ProjectManager(QtCore.QObject):
         start.project_browser()
 
     def save_dataframe(self):
-        self.dataframe.to_pickle(self.root_dir + '/dataframes/root.dfr')
+        df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
+        if os.path.isfile(df_path):
+            warn('root.dfr already exists, renaming file...')
+            self.backup_project_dataframe()
+
+        self.dataframe.to_hdf(df_path, key='project_dataframe', mode='w')
 
     def update_project_config_requested(self, custom_to_add: dict):
         if self.dataframe.empty:
@@ -178,7 +185,7 @@ class ProjectManager(QtCore.QObject):
         widget.children()
 
     def backup_project_dataframe(self):
-        copyfile(self.root_dir + '/dataframes/root.dfr', self.root_dir + '/dataframes/root_bak' + str(time()) + '.dfr')
+        move_file(os.path.join(self.root_dir, 'dataframes', 'root.dfr'), os.path.join(self.root_dir, 'dataframes', f'root_bak_{time()}.dfr'))
 
     def append_to_dataframe(self, dicts_to_append: list):
         self.backup_project_dataframe()
