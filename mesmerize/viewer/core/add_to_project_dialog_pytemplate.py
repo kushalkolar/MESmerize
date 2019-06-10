@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'add_to_project_dialog_pytemplate.ui'
+# Form implementation generated from reading ui file './add_to_project_dialog_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(311, 450)
+        Form.resize(311, 446)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
         self.lineEditAnimalID = QtWidgets.QLineEdit(Form)
@@ -39,6 +39,11 @@ class Ui_Form(object):
         self.checkBoxSaveChanges.setEnabled(False)
         self.checkBoxSaveChanges.setObjectName("checkBoxSaveChanges")
         self.verticalLayout.addWidget(self.checkBoxSaveChanges)
+        self.checkBoxOverwriteImage = QtWidgets.QCheckBox(Form)
+        self.checkBoxOverwriteImage.setEnabled(False)
+        self.checkBoxOverwriteImage.setChecked(True)
+        self.checkBoxOverwriteImage.setObjectName("checkBoxOverwriteImage")
+        self.verticalLayout.addWidget(self.checkBoxOverwriteImage)
         self.btnProceed = QtWidgets.QPushButton(Form)
         self.btnProceed.setObjectName("btnProceed")
         self.verticalLayout.addWidget(self.btnProceed)
@@ -46,6 +51,8 @@ class Ui_Form(object):
         self.retranslateUi(Form)
         self.radioButtonSaveChanges.toggled['bool'].connect(self.checkBoxSaveChanges.setEnabled)
         self.radioButtonSaveChanges.toggled['bool'].connect(self.checkBoxSaveChanges.setVisible)
+        self.radioButtonSaveChanges.toggled['bool'].connect(self.checkBoxOverwriteImage.setEnabled)
+        self.radioButtonSaveChanges.toggled['bool'].connect(self.checkBoxOverwriteImage.setVisible)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -57,5 +64,7 @@ class Ui_Form(object):
         self.radioButtonAddToDataFrame.setText(_translate("Form", "Add to dataframe"))
         self.radioButtonSaveChanges.setText(_translate("Form", "Save changes (overwrite)"))
         self.checkBoxSaveChanges.setText(_translate("Form", "I\'m sure!"))
+        self.checkBoxOverwriteImage.setToolTip(_translate("Form", "If you have not changed the actual image sequence you can save time by selecting this option."))
+        self.checkBoxOverwriteImage.setText(_translate("Form", "Overwrite image data"))
         self.btnProceed.setText(_translate("Form", "Proceed"))
 

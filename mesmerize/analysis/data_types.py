@@ -25,7 +25,7 @@ import traceback
 from configparser import RawConfigParser
 import h5py
 from ..common.utils import HdfTools
-
+from ..common import get_proj_config
 
 class _HistoryTraceExceptions(BaseException):
     def __init__(self, msg):
@@ -462,11 +462,12 @@ class Transmission(BaseTransmission):
         params = {'sub_dataframe_name': sub_dataframe_name, 'dataframe_filter_history': dataframe_filter_history}
         h.add_operation(data_block_id=block_id, operation='spawn_transmission', parameters=params)
 
+        proj_config = get_proj_config(proj_path)
+
         try:
-            from common import configuration
-            roi_type_defs = configuration.proj_cfg.options('ROI_DEFS')
-            stim_type_defs = configuration.proj_cfg.options('STIM_DEFS')
-            custom_columns = configuration.proj_cfg.options('CUSTOM_COLUMNS')
+            roi_type_defs = proj_config.options('ROI_DEFS')
+            stim_type_defs = proj_config.options('STIM_DEFS')
+            custom_columns = proj_config.options('CUSTOM_COLUMNS')
         except:
             raise ValueError('Could not read project configuration when creating Transmission'
                              '\n' + traceback.format_exc())
@@ -479,10 +480,10 @@ class Transmission(BaseTransmission):
         """Loads npz of curve data and pickle files containing metadata using the paths specified in each row of the
         chosen sub-dataframe of the project"""
 
-        path = proj_path + row['CurvePath']
+        path = os.path.join(proj_path, row['CurvePath'])
         npz = np.load(path)
 
-        pik_path = proj_path + row['ImgInfoPath']
+        pik_path = os.path.join(proj_path, row['ImgInfoPath'])
         pik = pickle.load(open(pik_path, 'rb'))
         meta = pik['meta']
         stim_maps = pik['stim_maps']

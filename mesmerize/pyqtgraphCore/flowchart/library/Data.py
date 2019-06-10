@@ -52,7 +52,7 @@ class LoadProjDF(CtrlNode):
             else:
                 df = get_project_manager().child_dataframes[child_df_name]['dataframe']
                 filter_history = get_project_manager().child_dataframes[child_df_name]['filter_history']
-            proj_path = get_project_manager().proj_path
+            proj_path = get_project_manager().root_dir
             # print('*****************config df ref hex ID:*****************')
             # print(hex(id(df)))
             self.t = Transmission.from_proj(proj_path, df, sub_dataframe_name=child_df_name,

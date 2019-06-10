@@ -27,6 +27,7 @@ from functools import partial
 class ProjectBrowserWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
+        self.setWindowTitle('Project Browser')
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -36,9 +37,9 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.project_browser.tab_widget.currentChanged.connect(self.set_current_tab)
         self.setCentralWidget(self.project_browser)
 
-        self.ui.actionto_pickle.triggered.connect(partial(self.save_path_dialog, file_ext='pikl', save_root=False))
-        self.ui.actionto_csv.triggered.connect(partial(self.save_path_dialog, file_ext='csv', save_root=False))
-        self.ui.actionto_excel.triggered.connect(partial(self.save_path_dialog, file_ext='xlsx', save_root=False))
+        self.ui.actionto_pickle.triggered.connect(partial(self.save_path_dialog, file_ext='pikl', save_root=True))
+        self.ui.actionto_csv.triggered.connect(partial(self.save_path_dialog, file_ext='csv', save_root=True))
+        self.ui.actionto_excel.triggered.connect(partial(self.save_path_dialog, file_ext='xlsx', save_root=True))
 
         self.ui.actionto_pickle_tab.triggered.connect(partial(self.save_path_dialog, file_ext='pikl', save_root=False))
         self.ui.actionto_csv_tab.triggered.connect(partial(self.save_path_dialog, file_ext='csv', save_root=False))
@@ -51,18 +52,18 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.ui.actionUpdate_all_tabs.triggered.connect(self.update_tabs_from_child_dataframes)
 
         ns = {'pd': pd,
-              'np': np,
-              'pickle': pickle,
               'project_browser': self.project_browser,
-              'main': self
+              'this': self,
+              'get_dataframe': lambda: self.get_current_dataframe()[0],
+              'get_root_dataframe': lambda: self.get_current_dataframe(get_root=True)[0]
               }
 
         txt = "Namespaces:          \n" \
-              "numpy as np          \n" \
               "pandas as pd         \n" \
-              "pickle as pickle    \n" \
-              "self.window_manager as window_manager     \n" \
-              "self as main         \n" \
+              "Useful callables:\n" \
+              "get_dataframe() - returns dataframe of the current tab\n" \
+              "get_root_dataframe() - always return dataframe of root tab (i.e. entire dataframe)\n" \
+              "self as this         \n" \
 
         cmd_history_file = os.path.join(configuration.console_history_path, 'project_browser.pik')
 
@@ -85,7 +86,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.current_tab = ix
 
     def save_path_dialog(self, file_ext: str, save_root=False):
-        path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save Transmission as', '', f'(*.{file_ext})')
+        path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save DataFrame as', '', f'(*.{file_ext})')
         if path == '':
             return
         if path[0].endswith('.' + file_ext):

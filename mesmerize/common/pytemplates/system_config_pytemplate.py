@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/system_config.ui'
+# Form implementation generated from reading ui file './system_config.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(663, 531)
+        Form.resize(675, 531)
         Form.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -127,7 +127,7 @@ class Ui_Form(object):
         self.pushButtonCUDAError.setText(_translate("Form", "See details"))
         self.label_5.setText(_translate("Form", "Work dir"))
         self.label_2.setText(_translate("Form", "Any prior commands to run for computations performed in separate processes (such as batch items)"))
-        self.label_4.setText(_translate("Form", "Custom modules dir"))
+        self.label_4.setText(_translate("Form", "Plugins directory (Optional):"))
         self.pushButtonResetDefaults.setText(_translate("Form", "Reset defaults"))
         self.btnReloadConfigFile.setText(_translate("Form", "Reload Config File"))
         self.btnClose.setText(_translate("Form", "Close"))

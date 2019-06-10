@@ -23,7 +23,7 @@ from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
 import json
-from typing import Optional
+from typing import Optional, Tuple
 
 class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
@@ -301,7 +301,7 @@ class ViewerWorkEnv:
         return d
 
 
-    def _prepare_export(self, dir_path: str, filename: Optional[str] = None, save_img_seq: bool = True, UUID: Optional[UUID_type] = None) -> dict:
+    def _prepare_export(self, dir_path: str, filename: Optional[str] = None, save_img_seq: bool = True, UUID: Optional[UUID_type] = None) -> Tuple[str, dict]:
         if UUID is None:
             UUID = uuid4()
 
@@ -317,7 +317,7 @@ class ViewerWorkEnv:
         if save_img_seq:
             tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
 
-        return data
+        return (filename, data)
 
     def to_pickle(self, dir_path: str, filename: Optional[str] = None, save_img_seq=True, UUID=None) -> str:
         """
@@ -326,25 +326,30 @@ class ViewerWorkEnv:
         for saving current sample to the project. Image sequence is saved as a tiff and other information about the
         image is saved in a pickle.
         """
-        data = self._prepare_export(dir_path, filename, save_img_seq, UUID)
-        pickle.dump(data, open(filename + '.pik', 'wb'), protocol=4)
+        filename, data = self._prepare_export(dir_path, filename, save_img_seq, UUID)
+        
+        pickle.dump(data, open(f'{filename}.pik', 'wb'), protocol=4)
 
         self.saved = True
 
         return filename
 
 
-    def to_pandas(self, proj_path: str, overwrite: bool = False) -> list:
+    def to_pandas(self, proj_path: str, overwrite: bool = False, overwrite_image_seq: bool = True) -> list:
         """
         :param      proj_path: Root path of the current project
         :return:    list of dicts that each correspond to a single curve that can be appended
                     as rows to the project dataframe
         """
         if self.isEmpty:
-            raise AttributeError('Work environment is empty')
+            raise ValueError('Work environment is empty')
 
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = os.path.join(proj_path, 'images')  # + self.imgdata.SampleID + '_' + str(time.time())
+
+        if overwrite and self.UUID is None:
+            raise ValueError('Error overwriting Sample. Current Work Environment does not have a UUID.\n'
+                             'Samples always have a UUID, something went wrong. Reload the sample from the project.')
 
         if self.UUID is None:
             UUID = uuid4()
@@ -355,9 +360,12 @@ class ViewerWorkEnv:
 
         if overwrite:
             rmtree(curves_dir)
+        else:
+            overwrite_image_seq = False
 
-        img_path = self.to_pickle(imgdir, UUID=UUID)
-        
+        img_path = self.to_pickle(imgdir, UUID=UUID, save_img_seq=overwrite_image_seq)
+
+        # if overwrite_image_seq:
         max_proj = np.amax(self.imgdata.seq, axis=2)
         max_proj_path = img_path + '_max_proj.tiff'
         tifffile.imsave(max_proj_path, max_proj)

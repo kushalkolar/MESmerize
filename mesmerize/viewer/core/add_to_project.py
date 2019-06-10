@@ -47,6 +47,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
             self.ui.radioButtonSaveChanges.setVisible(False)
             self.ui.radioButtonSaveChanges.setChecked(False)
             self.ui.checkBoxSaveChanges.setChecked(False)
+            self.ui.checkBoxOverwriteImage.setChecked(False)
 
         self.custom_column_entries = []
 
@@ -201,7 +202,8 @@ class AddToProjectDialog(QtWidgets.QWidget):
 
     def save_changes_to_sample(self):
         try:
-            dicts_to_append = self.work_environment.to_pandas(configuration.proj_path, overwrite=True)
+            save_tiff = self.ui.checkBoxOverwriteImage.isChecked()
+            dicts_to_append = self.work_environment.to_pandas(configuration.proj_path, overwrite=True, overwrite_image_seq=save_tiff)
         except:
             QtWidgets.QMessageBox.warning(self, 'Exception while trying to overwrite',
                                           'The following exception was raised while trying to package the current'

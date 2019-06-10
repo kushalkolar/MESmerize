@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>311</width>
-    <height>450</height>
+    <height>446</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,6 +69,22 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="checkBoxOverwriteImage">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>If you have not changed the actual image sequence you can save time by selecting this option.</string>
+     </property>
+     <property name="text">
+      <string>Overwrite image data</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="btnProceed">
      <property name="text">
       <string>Proceed</string>
@@ -86,12 +102,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>300</x>
-     <y>51</y>
+     <x>301</x>
+     <y>347</y>
     </hint>
     <hint type="destinationlabel">
-     <x>280</x>
-     <y>81</y>
+     <x>289</x>
+     <y>376</y>
     </hint>
    </hints>
   </connection>
@@ -102,12 +118,44 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>312</x>
-     <y>61</y>
+     <x>301</x>
+     <y>347</y>
     </hint>
     <hint type="destinationlabel">
-     <x>309</x>
-     <y>72</y>
+     <x>301</x>
+     <y>376</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonSaveChanges</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxOverwriteImage</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>131</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>120</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonSaveChanges</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxOverwriteImage</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>164</x>
+     <y>401</y>
     </hint>
    </hints>
   </connection>

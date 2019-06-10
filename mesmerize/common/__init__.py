@@ -19,6 +19,9 @@ from PyQt5.QtWidgets import QApplication
 
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
+    """
+    :param proj_path: Full project path
+    """
     if proj_path is None:
         proj_path = get_project_manager().root_dir
         if proj_path is None:
