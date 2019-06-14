@@ -49,7 +49,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.ui.actionUpdate_current_tab.triggered.connect(self.update_tab_from_child_dataframe)
         self.ui.actionUpdate_all_tabs.triggered.connect(self.update_tabs_from_child_dataframes)
 
-        self.ui.actionSave_to_project.clicked.connect(get_project_manager().save_dataframe())
+        self.ui.actionSave_to_project.triggered.connect(get_project_manager().save_dataframe())
 
         ns = {'pd': pd,
               'project_browser': self.project_browser,
