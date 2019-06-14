@@ -17,7 +17,7 @@ import numpy as np
 from ..core.common import ViewerInterface
 from functools import partial
 from multiprocessing.pool import ThreadPool as Pool
-from ...common.configuration import sys_cfg
+from ...common import get_sys_config
 import traceback
 
 
@@ -62,7 +62,7 @@ class ResizeDialogBox(QtWidgets.QWidget):
             self.hide()
             return
         self.vi.viewer.status_bar_label.showMessage('Resizing, please wait...')
-        n_processes = int(sys_cfg['HARDWARE']['n_processes'])
+        n_processes = int(get_sys_config()['_MESMERIZE_N_THREADS'])
 
         seq = self.vi.viewer.workEnv.imgdata.seq
         self.num_frames_to_process = seq.shape[2]

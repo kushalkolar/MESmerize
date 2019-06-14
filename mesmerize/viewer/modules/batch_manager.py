@@ -383,8 +383,9 @@ class ModuleGUI(QtWidgets.QWidget):
 
             if output is None:
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
-                mp = self.move_files([], UUID)
-
+                if self._use_workdir:
+                    # cleanup workdir
+                    self.move_files([], UUID)
 
             elif output['status']:
                 if 'output_files' in output.keys() and self._use_workdir:# and os.path.isdir(self.working_dir):
@@ -396,10 +397,11 @@ class ModuleGUI(QtWidgets.QWidget):
 
                 else:
                     self.set_list_widget_item_color(ix=self.current_batch_item_index, color='green')
-
             else:
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='red')
-                mp = self.move_files([], UUID)
+                if self._use_workdir:
+                    # cleanup workdir
+                    self.move_files([], UUID)
 
         self.current_batch_item_index += 1
         self.ui.progressBar.setValue(int(self.current_batch_item_index / len(self.df.index) * 100))
