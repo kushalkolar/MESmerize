@@ -26,5 +26,4 @@ spyder==3.3.3
 tifffile==0.15.1
 tqdm==4.31.1
 PeakUtils
-tslearn==0.1.28.2
 

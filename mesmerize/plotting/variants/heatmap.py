@@ -109,21 +109,6 @@ class Heatmap(MatplotlibWidget):
         ps = [MPatch(color=colors[i], label=labels_unique[i]) for i in range(len(cs))]
         self.ax_ylabel_bar.legend(handles=ps, bbox_to_anchor=(1,1))
 
-    # def highlight_row(self, ev):
-    #     if type(ev) is int:
-    #         ix = ev
-    #     else:
-    #         ix = ev.ydata
-    #         ix = int(ix)
-    #         if ix is None:
-    #             return
-    #     self.highlighted_index = ix
-    #     self.signal_row_selection_changed.emit((0, ix))
-    #     if self._highlight is not None:
-    #         self._highlight.remove()
-    #     self._highlight = self.plot.add_patch(RectangularPatch((0, ix), self.data.shape[1], 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
-    #     self.draw()
-
     def add_stimulus_indicator(self, start: int, end: int, color: str):
         for t in [start, end]:
             x = np.array([t, t])
@@ -226,7 +211,8 @@ class Selection(QtCore.QObject):
         self._draw_row_selection(y)
     
     def _draw_row_selection(self, y):
-        self._highlight = self.plot.add_patch(RectangularPatch((0, y), self.heatmap.data.shape[1], 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
+        self._highlight = self.plot.add_patch(RectangularPatch((0, y), self.heatmap.data.shape[1], 1,
+                                                               facecolor='w', edgecolor='k', lw=3, alpha=0.5))
         self.canvas.draw()
 
     def set_multi_select_mode_on(self, ev):
