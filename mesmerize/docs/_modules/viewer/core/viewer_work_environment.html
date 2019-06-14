@@ -1,0 +1,691 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>viewer.core.viewer_work_environment &mdash; Mesmerize 1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/faq.html">FAQs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>viewer.core.viewer_work_environment</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for viewer.core.viewer_work_environment</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon Jan 29 21:08:09 2018</span>
+
+<span class="sd">@author: kushal</span>
+
+<span class="sd">Chatzigeorgiou Group</span>
+<span class="sd">Sars International Centre for Marine Molecular Biology</span>
+
+<span class="sd">GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.mesfile</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.DataTypes</span> <span class="k">import</span> <span class="n">ImgData</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">tifffile</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">rmtree</span>
+<span class="c1">#from common import configuration</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">UUID</span> <span class="k">as</span> <span class="n">UUID_type</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<div class="viewcode-block" id="ViewerWorkEnv"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv">[docs]</a><span class="k">class</span> <span class="nc">ViewerWorkEnv</span><span class="p">:</span>
+<div class="viewcode-block" id="ViewerWorkEnv.__init__"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgdata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stim_maps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">roi_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">roi_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">origin_file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">custom_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">history_trace</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">additional_data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">misc</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of</span>
+<span class="sd">        the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for</span>
+<span class="sd">        a work environment to be easily saved in different ways regardless of the type of original data source.</span>
+
+<span class="sd">        :param roi_states:  roi states from ROI Manager module</span>
+<span class="sd">        :param stim_maps:   {&#39;units&#39;: str, &#39;dataframe&#39;: pd.DataFrame}</span>
+<span class="sd">        :param history_trace: list of dicts containing a traceable history of what what done with the work environment,</span>
+<span class="sd">                              such as params used from modules to process the data</span>
+
+<span class="sd">        :type imgdata:      ImgData</span>
+<span class="sd">        :type sample_id:    str</span>
+<span class="sd">        :type UUID:         uuid.UUID</span>
+<span class="sd">        :type meta:         dict</span>
+<span class="sd">        :type stim_maps:    dict</span>
+<span class="sd">        :type comments:     str</span>
+<span class="sd">        :type cust_col_dict: dict</span>
+<span class="sd">        :type roi_states:   dict</span>
+<span class="sd">        :type history_trace: list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">imgdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span> <span class="o">=</span> <span class="n">imgdata</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="p">,</span> <span class="n">ImgData</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span>
+
+        <span class="k">if</span> <span class="n">history_trace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history_trace</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history_trace</span> <span class="o">=</span> <span class="n">history_trace</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span> <span class="o">=</span> <span class="n">stim_maps</span>
+
+        <span class="k">if</span> <span class="s1">&#39;stimMaps&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;stimMaps&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_id</span> <span class="o">=</span> <span class="n">sample_id</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="o">=</span> <span class="n">roi_manager</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saved</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed_items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span> <span class="o">=</span> <span class="n">roi_states</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">=</span> <span class="n">comments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin_file</span> <span class="o">=</span> <span class="n">origin_file</span>
+
+        <span class="k">if</span> <span class="n">custom_cols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_cols</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">additional_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">additional_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">additional_data</span> <span class="o">=</span> <span class="n">additional_data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">additional_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">misc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">misc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">misc</span> <span class="o">=</span> <span class="n">misc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">misc</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">UUID</span></div>
+
+    <span class="c1"># def get_imgdata(self):</span>
+    <span class="c1">#     return self.imgdata</span>
+    <span class="c1">#</span>
+    <span class="c1"># def get_seq(self):</span>
+    <span class="c1">#     return self.imgdata.seq</span>
+    <span class="c1">#</span>
+    <span class="c1"># def get_meta(self):</span>
+    <span class="c1">#     return self.meta</span>
+    <span class="c1">#</span>
+    <span class="c1"># def get_roi_manager(self):</span>
+    <span class="c1">#     return self.roi_manager</span>
+
+    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="c1"># self.roi_manager.parent.start_manual_mode()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin_file</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saved</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed_items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Work environment dumped!&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">restore_rois_from_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">set_all_from_states</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ViewerWorkEnv.from_pickle"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_pickle">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_pickle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pickle_file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tiff_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get pickled image data from a pickle file &amp; image sequence from a npz or tiff. Used after motion correction</span>
+<span class="sd">        &amp; to view a sample from a project DataFrame. Create ImgData class object (See MesmerizeCore.DataTypes) and</span>
+<span class="sd">        return instance of the work environment.</span>
+
+<span class="sd">        :param: pickle_file_path:   full path to the pickle containing image metadata, stim maps, and roi_states</span>
+<span class="sd">        :param: tiff_path:          str of the full path to a tiff file containing the image sequence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">tiff_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">tiff_path</span><span class="p">)</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+
+        <span class="c1"># compatibility for older pickle files from older mesmerize</span>
+        <span class="k">if</span> <span class="s1">&#39;imdata&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sample_id</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;imdata&#39;</span><span class="p">][</span><span class="s1">&#39;sample_id&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">sample_id</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;imdata&#39;</span><span class="p">][</span><span class="s1">&#39;SampleID&#39;</span><span class="p">]</span>
+
+            <span class="n">imdata</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;imdata&#39;</span><span class="p">][</span><span class="s1">&#39;meta&#39;</span><span class="p">])</span>
+
+            <span class="n">comments</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;imdata&#39;</span><span class="p">][</span><span class="s1">&#39;comments&#39;</span><span class="p">]</span>
+
+            <span class="n">roi_states</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="s1">&#39;roi_states&#39;</span> <span class="ow">in</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;imdata&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;imdata&#39;</span><span class="p">][</span><span class="s1">&#39;roi_states&#39;</span><span class="p">])):</span>
+                    <span class="n">roi_states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;imdata&#39;</span><span class="p">][</span><span class="s1">&#39;roi_states&#39;</span><span class="p">][</span><span class="n">ID</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">imdata</span><span class="p">,</span> <span class="n">roi_states</span><span class="o">=</span><span class="n">roi_states</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">,</span> <span class="n">sample_id</span><span class="o">=</span><span class="n">sample_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use with output of new to_pickle() method</span>
+            <span class="n">img_data</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">img_data</span><span class="p">,</span> <span class="o">**</span><span class="n">p</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">saved</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved</span><span class="p">)</span>
+
+    <span class="nd">@saved</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">saved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saved</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">changed_items</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ViewerWorkEnv.load_mesfile"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.load_mesfile">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_mesfile</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MES</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Just passes the path of a .mes file to the constructor of class MES in MesmerizeCore.FileInput.</span>
+<span class="sd">        Loads .mes file &amp; constructs MES obj from which individual images &amp; their respective metadata can be loaded</span>
+<span class="sd">        to construct viewer work environments using the classmethod viewerWorkEnv.from_mesfile.</span>
+
+<span class="sd">        :param path: full path to a single .mes file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MES</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_organize_meta</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">origin</span> <span class="o">==</span> <span class="s1">&#39;mes&#39;</span><span class="p">:</span>
+            <span class="n">fps</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mi">1000</span><span class="o">/</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;FoldedFrameInfo&#39;</span><span class="p">][</span><span class="s1">&#39;frameTimeLength&#39;</span><span class="p">])</span>
+
+            <span class="n">date_meta</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;MeasurementDate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">ymd</span> <span class="o">=</span> <span class="n">date_meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">date_meta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">date_meta</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">hms_</span> <span class="o">=</span> <span class="n">date_meta</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+            <span class="n">hms</span> <span class="o">=</span> <span class="n">hms_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">hms_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">hms_</span><span class="p">[</span><span class="mi">2</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">ymd</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">hms</span>
+
+            <span class="n">vmin</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;LUTstruct&#39;</span><span class="p">][</span><span class="s1">&#39;lower&#39;</span><span class="p">]</span>
+            <span class="n">vmax</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;LUTstruct&#39;</span><span class="p">][</span><span class="s1">&#39;upper&#39;</span><span class="p">]</span>
+
+            <span class="n">meta_d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;origin&#39;</span><span class="p">:</span>    <span class="n">origin</span><span class="p">,</span>
+                      <span class="s1">&#39;fps&#39;</span><span class="p">:</span>       <span class="n">fps</span><span class="p">,</span>
+                      <span class="s1">&#39;date&#39;</span><span class="p">:</span>      <span class="n">date</span><span class="p">,</span>
+                      <span class="s1">&#39;vmin&#39;</span><span class="p">:</span>      <span class="n">vmin</span><span class="p">,</span>
+                      <span class="s1">&#39;vmax&#39;</span><span class="p">:</span>      <span class="n">vmax</span><span class="p">,</span>
+                      <span class="s1">&#39;orig_meta&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">meta_d</span>
+
+        <span class="k">elif</span> <span class="n">origin</span> <span class="o">==</span> <span class="s1">&#39;AwesomeImager&#39;</span> <span class="ow">or</span> <span class="n">origin</span> <span class="o">==</span> <span class="s1">&#39;DeepEyes&#39;</span><span class="p">:</span>
+            <span class="n">meta_d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;origin&#39;</span><span class="p">:</span>     <span class="n">origin</span><span class="p">,</span>
+                      <span class="s1">&#39;version&#39;</span><span class="p">:</span>    <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;fps&#39;</span><span class="p">:</span>        <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;framerate&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;date&#39;</span><span class="p">:</span>       <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;vmin&#39;</span><span class="p">:</span>       <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;level_min&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;vmax&#39;</span><span class="p">:</span>       <span class="n">meta</span><span class="p">[</span><span class="s1">&#39;level_max&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;orig_meta&#39;</span><span class="p">:</span>  <span class="n">meta</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">meta_d</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unrecognized meta data source.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ViewerWorkEnv.from_mesfile"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_mesfile">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_mesfile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesfile_object</span><span class="p">:</span> <span class="n">MES</span><span class="p">,</span> <span class="n">img_reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from</span>
+<span class="sd">        MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">imgseq</span><span class="p">,</span> <span class="n">raw_meta</span> <span class="o">=</span> <span class="n">mesfile_object</span><span class="o">.</span><span class="n">load_img</span><span class="p">(</span><span class="n">img_reference</span><span class="p">)</span>
+
+        <span class="n">meta_data</span> <span class="o">=</span> <span class="n">ViewerWorkEnv</span><span class="o">.</span><span class="n">_organize_meta</span><span class="p">(</span><span class="n">raw_meta</span><span class="p">,</span> <span class="s1">&#39;mes&#39;</span><span class="p">)</span>
+        <span class="n">imdata</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">(</span><span class="n">imgseq</span><span class="p">,</span> <span class="n">meta_data</span><span class="p">)</span>
+        <span class="c1"># imdata.stimMaps = (mesfileMaps, &#39;mesfile&#39;)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">imdata</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="n">meta_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ViewerWorkEnv.from_tiff"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_tiff">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_tiff</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">meta_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return instance of work environment with ImgData.seq set from tifffile.imread.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;imread&#39;</span><span class="p">:</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;asarray&#39;</span><span class="p">:</span>
+            <span class="n">tif</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">TiffFile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">is_nih</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># seq = tif.asarray(key=range(0, len(tif.series)),</span>
+            <span class="c1">#                   maxworkers=int(8))</span>
+
+            <span class="n">seq</span> <span class="o">=</span> <span class="n">tif</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tif</span><span class="o">.</span><span class="n">series</span><span class="p">)),</span>
+                              <span class="n">maxworkers</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;HARDWARE&#39;</span><span class="p">][</span><span class="s1">&#39;n_processes&#39;</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must specify &#39;imread&#39; or &#39;asarray&#39; in method argument&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">meta_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+            <span class="n">jmd</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="s1">&#39;source&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">jmd</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Invalid meta data file. Json meta data file must have a &quot;source&quot; entry.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">meta</span> <span class="o">=</span> <span class="n">ViewerWorkEnv</span><span class="o">.</span><span class="n">_organize_meta</span><span class="p">(</span><span class="n">meta</span><span class="o">=</span><span class="n">jmd</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">jmd</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">meta</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">imdata</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">meta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">imdata</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_splits</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_make_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="c1"># Dict that&#39;s later used for pickling</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sample_id&#39;</span><span class="p">:</span>   <span class="bp">self</span><span class="o">.</span><span class="n">sample_id</span><span class="p">,</span>
+             <span class="s1">&#39;meta&#39;</span><span class="p">:</span>        <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span>
+             <span class="s1">&#39;stim_maps&#39;</span><span class="p">:</span>   <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span><span class="p">,</span>
+             <span class="s1">&#39;comments&#39;</span><span class="p">:</span>    <span class="bp">self</span><span class="o">.</span><span class="n">comments</span><span class="p">,</span>
+             <span class="s1">&#39;history_trace&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_trace</span><span class="p">,</span>
+             <span class="s1">&#39;additional_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_data</span>
+             <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+                <span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">get_all_states</span><span class="p">()</span>
+
+                <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">])):</span>
+                    <span class="k">for</span> <span class="n">roi_def</span> <span class="ow">in</span> <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;tags&#39;</span><span class="p">][</span><span class="n">roi_def</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                            <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;tags&#39;</span><span class="p">][</span><span class="n">roi_def</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;untagged&#39;</span>
+
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;roi_states&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rois</span>
+
+        <span class="k">return</span> <span class="n">d</span>
+
+<div class="viewcode-block" id="ViewerWorkEnv.to_pickle"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pickle">[docs]</a>    <span class="k">def</span> <span class="nf">to_pickle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_img_seq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as</span>
+<span class="sd">        for motion correction and package them into a pickle &amp; image seq array. Used for batch motion correction and</span>
+<span class="sd">        for saving current sample to the project. Image sequence is saved as a tiff and other information about the</span>
+<span class="sd">        image is saved in a pickle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Work environment is empty!&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">UUID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">UUID</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">dir_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id</span> <span class="o">+</span> <span class="s1">&#39;-_-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">UUID</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">dir_path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">filename</span>
+
+        <span class="n">work_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_dict</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">work_env</span><span class="p">,</span> <span class="s1">&#39;UUID&#39;</span><span class="p">:</span> <span class="n">UUID</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">save_img_seq</span><span class="p">:</span>
+            <span class="n">tifffile</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.tiff&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">bigtiff</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.pik&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">saved</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="ViewerWorkEnv.to_pandas"><a class="viewcode-back" href="../../../api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param      proj_path: Root path of the current project</span>
+<span class="sd">        :return:    list of dicts that each correspond to a single curve that can be appended</span>
+<span class="sd">                    as rows to the project dataframe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Work environment is empty&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored</span>
+        <span class="n">imgdir</span> <span class="o">=</span> <span class="n">proj_path</span> <span class="o">+</span> <span class="s1">&#39;/images&#39;</span>  <span class="c1"># + self.imgdata.SampleID + &#39;_&#39; + str(time.time())</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">UUID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">UUID</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">UUID_type</span><span class="p">)</span>
+            <span class="n">UUID</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UUID</span>
+        <span class="n">curves_dir</span> <span class="o">=</span> <span class="n">proj_path</span> <span class="o">+</span> <span class="s1">&#39;/curves/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id</span> <span class="o">+</span> <span class="s1">&#39;-_-&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">UUID</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">rmtree</span><span class="p">(</span><span class="n">curves_dir</span><span class="p">)</span>
+
+        <span class="n">img_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">imgdir</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="n">UUID</span><span class="p">)</span>
+        
+        <span class="n">max_proj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">max_proj_path</span> <span class="o">=</span> <span class="n">img_path</span> <span class="o">+</span> <span class="s1">&#39;_max_proj.tiff&#39;</span>
+        <span class="n">tifffile</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="n">max_proj_path</span><span class="p">,</span> <span class="n">max_proj</span><span class="p">)</span>
+
+        <span class="n">std_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">std_proj_path</span> <span class="o">=</span> <span class="n">img_path</span> <span class="o">+</span> <span class="s1">&#39;_std_proj.tiff&#39;</span>
+        <span class="n">tifffile</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="n">std_proj_path</span><span class="p">,</span> <span class="n">std_proj</span><span class="p">)</span>
+
+        <span class="c1"># Since viewerWorkEnv.to_pickle sets the saved property to True, and we&#39;re not done saving the dict yet.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saved</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Create a dict that contains all stim definitions as keys that refer to a list of all the stims for that sample</span>
+        <span class="n">stimuli_unique_sets</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># This list is just used for gathering all new stims to add to the config file. This is just used for</span>
+        <span class="c1"># populating the comboBoxes in the stimMapWidget GUI so that the widget doesn&#39;t need to access the DataFrame</span>
+        <span class="c1"># for this simple task.</span>
+        <span class="n">new_stimuli</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">stim_def</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;STIM_DEFS&#39;</span><span class="p">):</span>
+                <span class="n">stimuli_unique_sets</span><span class="p">[</span><span class="n">stim_def</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;untagged&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">stim_def</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">stimuli</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span><span class="p">[</span><span class="n">stim_def</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">stimuli_unique_sets</span><span class="p">[</span><span class="n">stim_def</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;untagged&#39;</span><span class="p">]</span>
+                    <span class="k">continue</span>
+
+                <span class="n">stimuli</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span><span class="p">[</span><span class="n">stim_def</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+                <span class="n">stimuli_unique_sets</span><span class="p">[</span><span class="n">stim_def</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">stimuli</span><span class="p">))</span>
+
+                <span class="k">for</span> <span class="n">stim</span> <span class="ow">in</span> <span class="n">stimuli_unique_sets</span><span class="p">[</span><span class="n">stim_def</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">stim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="p">[</span><span class="s1">&#39;ALL_STIMS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">new_stimuli</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stim</span><span class="p">)</span>
+
+        <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="p">[</span><span class="s1">&#39;ALL_STIMS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="p">[</span><span class="s1">&#39;ALL_STIMS&#39;</span><span class="p">],</span> <span class="o">**</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">new_stimuli</span><span class="p">)}</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="n">save_proj_config</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">comments</span> <span class="o">=</span> <span class="s1">&#39;untagged&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">comments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comments</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">curves_dir</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">curves_dir</span><span class="p">)</span>
+
+        <span class="n">dicts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">get_all_states</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">])):</span>
+            <span class="n">curve_data</span> <span class="o">=</span> <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;curve_data&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">roi_def</span> <span class="ow">in</span> <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;tags&#39;</span><span class="p">][</span><span class="n">roi_def</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;tags&#39;</span><span class="p">][</span><span class="n">roi_def</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;untagged&#39;</span>
+
+            <span class="n">roi_tags</span> <span class="o">=</span> <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span>
+
+            <span class="n">curve_path</span> <span class="o">=</span> <span class="n">curves_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.npz&#39;</span>
+
+            <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">curve_path</span><span class="p">,</span> <span class="n">curve</span><span class="o">=</span><span class="n">curve_data</span><span class="p">)</span><span class="c1">#, stimMaps=self.imgdata.stimMaps)</span>
+
+            <span class="c1"># if rois[&#39;states&#39;][ix][&#39;roi_type&#39;] == &#39;ManualROI&#39;:</span>
+            <span class="c1">#     roi_state = {&#39;type&#39;: &#39;ManualROI&#39;,</span>
+            <span class="c1">#                  &#39;graphics_object&#39;: rois[&#39;states&#39;][ix][&#39;roi_graphics_object_state&#39;],</span>
+            <span class="c1">#                  &#39;shape&#39;: rois[&#39;states&#39;][ix][&#39;shape&#39;]</span>
+            <span class="c1">#                  }</span>
+            <span class="c1"># elif rois[&#39;states&#39;][ix][&#39;roi_type&#39;] == &#39;CNMFROI&#39;:</span>
+            <span class="c1">#     roi_state = {&#39;type&#39;: &#39;CNMFROI&#39;,</span>
+            <span class="c1">#                  &#39;roi_xs&#39;: rois[&#39;states&#39;][ix][&#39;roi_xs&#39;],</span>
+            <span class="c1">#                  &#39;roi_ys&#39;: rois[&#39;states&#39;][ix][&#39;roi_ys&#39;]</span>
+            <span class="c1">#                  }</span>
+
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;SampleID&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_id</span><span class="p">,</span>
+                 <span class="s1">&#39;CurvePath&#39;</span><span class="p">:</span> <span class="n">curve_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">proj_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
+                 <span class="s1">&#39;ImgUUID&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">UUID</span><span class="p">),</span>
+                 <span class="s1">&#39;ImgPath&#39;</span><span class="p">:</span> <span class="n">img_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">proj_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.tiff&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;ImgInfoPath&#39;</span><span class="p">:</span> <span class="n">img_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">proj_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.pik&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;ROI_State&#39;</span><span class="p">:</span> <span class="n">rois</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">ix</span><span class="p">],</span>
+                 <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+                 <span class="s1">&#39;uuid_curve&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">()),</span>
+                 <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="n">comments</span><span class="p">,</span>
+                 <span class="s1">&#39;misc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">misc</span>
+                 <span class="p">}</span>
+
+            <span class="n">dicts</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="o">**</span><span class="n">d</span><span class="p">,</span>
+                          <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_cols</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">stimuli_unique_sets</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">roi_tags</span><span class="p">})</span>
+
+        <span class="c1"># for ix in range(0, len(self.CurvesList)):</span>
+        <span class="c1">#     curvePath = curvesDir + &#39;/CURVE_&#39; + str(ix).zfill(3) + &#39;.npz&#39;</span>
+        <span class="c1">#</span>
+        <span class="c1">#     if self.rois[&#39;origin&#39;] == &#39;manual&#39;:</span>
+        <span class="c1">#         if isinstance(self.CurvesList[ix], np.ndarray):</span>
+        <span class="c1">#             curve = self.CurvesList[ix]</span>
+        <span class="c1">#         else:</span>
+        <span class="c1">#             curve = self.CurvesList[ix].getData()</span>
+        <span class="c1">#</span>
+        <span class="c1">#         np.savez(curvePath, curve=curve,</span>
+        <span class="c1">#                  roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)</span>
+        <span class="c1">#</span>
+        <span class="c1">#     elif self.rois[&#39;origin&#39;] == &#39;CNMFE&#39;:</span>
+        <span class="c1">#         pass</span>
+        <span class="c1">#</span>
+        <span class="c1">#     d = {&#39;SampleID&#39;:    self.sample_id,</span>
+        <span class="c1">#          &#39;CurvePath&#39;:   curvePath.split(proj_path)[1],</span>
+        <span class="c1">#          &#39;ImgPath&#39;:     img_path.split(proj_path)[1] + &#39;.tiff&#39;,</span>
+        <span class="c1">#          &#39;ImgInfoPath&#39;: img_path.split(proj_path)[1] + &#39;.pik&#39;,</span>
+        <span class="c1">#          }</span>
+        <span class="c1">#</span>
+        <span class="c1">#     # Final list of dicts that are each appended as rows to the project DataFrame</span>
+        <span class="c1">#     dicts.append({**d,</span>
+        <span class="c1">#                   **self.custom_columns_dict,</span>
+        <span class="c1">#                   **stimMapsSet,</span>
+        <span class="c1">#                   **self.ROIList[ix].tags,</span>
+        <span class="c1">#                   &#39;Date&#39;:       date,</span>
+        <span class="c1">#                   &#39;uuid_curve&#39;: UUID,</span>
+        <span class="c1">#                   &#39;comments&#39;:   comments</span>
+        <span class="c1">#                   })</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">saved</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">dicts</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

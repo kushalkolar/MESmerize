@@ -1,0 +1,12 @@
+{
+  "rectangle": {
+    "type": "rectangle",
+    "left": 43,
+    "top": 19,
+    "width": 43,
+    "height": 36,
+    "arc_size": 0,
+    "name": "rectangle",
+    "position": 0
+  }
+}

@@ -1,0 +1,1 @@
+from .scatter_plot import ScatterPlotWidget
