@@ -49,7 +49,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.ui.actionUpdate_current_tab.triggered.connect(self.update_tab_from_child_dataframe)
         self.ui.actionUpdate_all_tabs.triggered.connect(self.update_tabs_from_child_dataframes)
 
-        self.ui.actionSave_to_project.triggered.connect(get_project_manager().save_dataframe())
+        self.ui.actionSave_to_project.triggered.connect(self._save_dataframe)
 
         ns = {'pd': pd,
               'project_browser': self.project_browser,
@@ -109,6 +109,9 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
             tab_name = self.project_browser.tab_widget.widget(self.current_tab).tab_name
             child = get_project_manager().child_dataframes[tab_name]
         return child['dataframe'], child['filter_history']
+
+    def _save_dataframe(self):
+        get_project_manager().save_dataframe()
 
     def view_dataframe(self):
         objecteditor.oedit(self.get_current_dataframe()[0])
