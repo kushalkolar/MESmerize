@@ -20,16 +20,16 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDataframe">
     <property name="title">
-     <string>Dataframe</string>
+     <string>Dataf&amp;rame</string>
     </property>
     <widget class="QMenu" name="menuSave_current_tab">
      <property name="title">
-      <string>Save current tab</string>
+      <string>&amp;Save current tab</string>
      </property>
      <addaction name="separator"/>
      <addaction name="actionto_pickle_tab"/>
@@ -38,7 +38,7 @@
     </widget>
     <widget class="QMenu" name="menuSave_all_tabs">
      <property name="title">
-      <string>Save root</string>
+      <string>Export root</string>
      </property>
      <addaction name="actionto_pickle"/>
      <addaction name="actionto_csv"/>
@@ -51,10 +51,12 @@
     <addaction name="separator"/>
     <addaction name="menuSave_current_tab"/>
     <addaction name="menuSave_all_tabs"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_to_project"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>&amp;View</string>
     </property>
     <addaction name="actionCurrent_tab_filter_history"/>
     <addaction name="separator"/>
@@ -62,7 +64,7 @@
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
-     <string>Tools</string>
+     <string>Too&amp;ls</string>
     </property>
     <addaction name="actionLink_viewers"/>
    </widget>
@@ -74,7 +76,7 @@
   <widget class="QDockWidget" name="dockConsole">
    <property name="minimumSize">
     <size>
-     <width>42</width>
+     <width>68</width>
      <height>200</height>
     </size>
    </property>
@@ -82,7 +84,7 @@
     <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="windowTitle">
-    <string>Console: Project Browser</string>
+    <string>&amp;Console: Project Browser</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
@@ -91,7 +93,7 @@
   </widget>
   <action name="actionDataframe_editor">
    <property name="text">
-    <string>Dataframe editor</string>
+    <string>&amp;Dataframe editor</string>
    </property>
   </action>
   <action name="actionConsole">
@@ -99,27 +101,27 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Console</string>
+    <string>C&amp;onsole</string>
    </property>
   </action>
   <action name="actionCurrent_tab_filter_history">
    <property name="text">
-    <string>Current tab filter history</string>
+    <string>&amp;Current tab filter history</string>
    </property>
   </action>
   <action name="actionUpdate_current_tab">
    <property name="text">
-    <string>Update current tab</string>
+    <string>Update &amp;current tab</string>
    </property>
   </action>
   <action name="actionUpdate_all_tabs">
    <property name="text">
-    <string>Update all tabs</string>
+    <string>&amp;Update all tabs</string>
    </property>
   </action>
   <action name="actionto_pickle_tab">
    <property name="text">
-    <string>to pickle</string>
+    <string>&amp;to pickle</string>
    </property>
    <property name="toolTip">
     <string>Save current tab as a python pickle</string>
@@ -127,32 +129,37 @@
   </action>
   <action name="actionto_csv_tab">
    <property name="text">
-    <string>to csv</string>
+    <string>to &amp;csv</string>
    </property>
   </action>
   <action name="actionto_excel_tab">
    <property name="text">
-    <string>to excel</string>
+    <string>to &amp;excel</string>
    </property>
   </action>
   <action name="actionto_pickle">
    <property name="text">
-    <string>to pickle</string>
+    <string>&amp;to pickle</string>
    </property>
   </action>
   <action name="actionto_excel">
    <property name="text">
-    <string>to excel</string>
+    <string>to &amp;excel</string>
    </property>
   </action>
   <action name="actionto_csv">
    <property name="text">
-    <string>to csv</string>
+    <string>to &amp;csv</string>
    </property>
   </action>
   <action name="actionLink_viewers">
    <property name="text">
-    <string>Link viewers</string>
+    <string>&amp;Link viewers</string>
+   </property>
+  </action>
+  <action name="actionSave_to_project">
+   <property name="text">
+    <string>Save to project</string>
    </property>
   </action>
  </widget>
