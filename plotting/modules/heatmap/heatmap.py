@@ -250,16 +250,16 @@ class Clustermap(Heatmap):
 if __name__ == '__main__':
     import pickle
     from sklearn.metrics import pairwise_distances
-    t = pickle.load(open('/home/kushal/Sars_stuff/mesmerize_toy_datasets/cesa_hnk1_raw_data.trn', 'rb'))
+    t = pickle.load(open('/home/daniel/Documents/jupyter notebooks/Getting units from Transmission object/cell_types_rfft_spliced_500_test_units.trn', 'rb'))
     df = t['df']
     
-    data = np.vstack(df._RAW_CURVE.apply(lambda x: x[:2998]).values)
+    data = np.vstack(df._SPLICE_ARRAYS)
     
-    dists = pairwise_distances(data)
+#    dists = pairwise_distances(data)
     
     app = QtWidgets.QApplication([])
-    w = Heatmap(highlight_mode='item')
-    w.set(dists, cmap='jet', ylabels_bar=df.promoter)
+    w = Heatmap(highlight_mode='row')
+    w.set(data, cmap='jet', ylabels_bar=df.promoter)
     
     w.show()
     app.exec_()

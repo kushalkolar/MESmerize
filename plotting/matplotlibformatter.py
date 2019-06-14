@@ -1,5 +1,6 @@
 from plotting.matplotlibformatter_window import Ui_Form
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 import seaborn as sns
 from variants.violins import ViolinsPlot
 import sys 
@@ -11,7 +12,7 @@ class MatplotFormatter(QtWidgets.QWidget):
         self._plot_object = plot_object
         self._formatter_ui = Ui_Form() # A simple widget for doing all the things
         self._formatter_ui.setupUi(self)
-        
+        self.setWindowTitle("Plot Layout Settings")
         self._connect_gui()
         
         self.fig = None
@@ -21,7 +22,8 @@ class MatplotFormatter(QtWidgets.QWidget):
         self._ylabels_orig = None
         self._xlabels_edit = None
         self._ylabels_edit = None
-             
+        
+        #Move stuff to seperate method out of __init__
         if isinstance(self._plot_object, ViolinsPlot):
             self.ax = self._plot_object.axes
         else:
@@ -45,6 +47,7 @@ class MatplotFormatter(QtWidgets.QWidget):
         self._formatter_ui.pushButton_xylabelfont.clicked.connect(self._set_xylabelfont)
         
         
+        
     def _set_formatter(self):
         self._get_xticklabels()
         self._get_xylabels()
@@ -61,6 +64,9 @@ class MatplotFormatter(QtWidgets.QWidget):
             self._update_editted_labels()
             
     def _set_xylabelfont(self):
+        """
+        Sets the label font for the x and y axes labels.
+        """
         self._xylabel_font = self._select_font()
         self._formatter_ui.label_currentxylabelfont.setText(f"Current font: {self._xylabel_font}")
                    
@@ -136,12 +142,32 @@ class MatplotFormatter(QtWidgets.QWidget):
         if okPressed:
             return font_name
     
+    def _set_widget_color(self, widget, active=True):
+        """
+        Sets the background color of the widget according to wether or not it is set to active
+        """
+        if active:
+            widget.setStyleSheet("background-color: white")
+        else:
+            widget.setStyleSheet("background-color: grey")
+    
+    def _change_active_widget(sel):
+        print("YAAAY")
+#        self._set_widget_color(widget, active = False)
+    
     def _apply_changes(self):
         """
         Set all user defined parameters on the passed axes instance
         """
         self._set_xticklabels()
         self._set_xylabels()
+        
+        
+class PlotParameters:
+    def __init__(self):
+        pass
+        #Use to store all parameters for plots. Both original and user-defined.
+        #Track changes? Keep History?
 
 if __name__ == "__main__":
 #    app = QtWidgets.QApplication([])
