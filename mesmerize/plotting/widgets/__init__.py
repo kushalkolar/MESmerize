@@ -10,6 +10,8 @@ from .beeswarms import BeeswarmPlotWindow
 from .curve_plot_window import CurvePlotWindow
 from .lda import LDAPlot
 
+from .sosd_fourier import SOSD_Widget
+
 __all__ = ['DatapointTracerWidget', 'ColormapListWidget', 'KShapeWidget', 'HeatmapWidget', 'HeatmapSplitterWidget',
            'HeatmapTracerWidget', 'CrossCorrelationWidget', 'ScatterPlotWidget', 'BeeswarmPlotWindow',
-           'CurvePlotWindow', 'LDAPlot']
+           'CurvePlotWindow', 'LDAPlot', 'SOSD_Widget']

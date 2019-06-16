@@ -106,7 +106,8 @@ class KShapeWidget(QtWidgets.QMainWindow):
         self.setCentralWidget(self.plot)
 
     def set_input(self, transmission: Transmission):
-        assert isinstance(transmission, Transmission)
+        if not isinstance(transmission, Transmission):
+            raise TypeError('Input must be an instance of Transmission')
         self.transmission = transmission
         self.transmission.df.reset_index(drop=True, inplace=True)
 
