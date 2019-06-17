@@ -8,6 +8,7 @@ from ....analysis import Transmission
 from ....common import get_project_manager
 import os
 
+
 class LoadProjDF(CtrlNode):
     """Load raw project DataFrames as Transmission"""
     nodeName = 'Load_Proj_DF'
@@ -166,9 +167,8 @@ class Save(CtrlNode):
         if self.ctrls['path'].text() != '':
             try:
                 transmission.to_hdf5(self.ctrls['path'].text())
-            except Exception as e:
-                QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the transmission to file.\n'
-                                          + str(e))
+            except:
+                QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the transmission to file.\n' + traceback.format_exc())
 
 
 class Merge(CtrlNode):
