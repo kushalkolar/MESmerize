@@ -143,7 +143,9 @@ class ViewerWorkEnv:
         """
 
         if tiff_path is not None:
-            seq = tifffile.imread(tiff_path)
+            # seq = tifffile.imread(tiff_path)
+            tif = tifffile.TiffFile(tiff_path, is_nih=True)
+            seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
             seq = seq.T
         else:
             seq = None
@@ -251,10 +253,13 @@ class ViewerWorkEnv:
 
         if method == 'imread':
             seq = tifffile.imread(path)
+
         elif method == 'asarray':
             tif = tifffile.TiffFile(path, is_nih=True)
-            # seq = tif.asarray(key=range(0, len(tif.series)),
-            #                   maxworkers=int(8))
+            seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
+
+        elif method == 'asarray-multi':
+            tif = tifffile.TiffFile(path, is_nih=True)
 
             seq = tif.asarray(key=range(0, len(tif.series)),
                               maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))

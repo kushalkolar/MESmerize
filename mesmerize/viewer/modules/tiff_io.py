@@ -72,8 +72,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         if self.ui.radioButtonImread.isChecked():
             method = 'imread'
-        elif self.ui.radioButtonAsarray.isChecked():
+        elif self.ui.radioButtonAsArray.isChecked():
             method = 'asarray'
+        elif self.ui.radioButtonAsArrayMulti.isChecked():
+            method = 'asarray-multi'
         else:
             QtWidgets.QMessageBox.warning(self, 'No method selected!', 'You must select a method.')
             return
@@ -91,8 +93,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.vi.enable_ui(True)
             self.vi.viewer.ui.label_curr_img_seq_name.setText(os.path.basename(tiff_path))
             self.vi.viewer.status_bar_label.showMessage('File loaded into work environment!')
-        except Exception as e:
+        except:
             QtWidgets.QMessageBox.warning(self, 'File open Error!',
                                           'Could not open the chosen file.\n' + traceback.format_exc())
-            self.vi.viewer.status_bar.clearMessage()
+            self.vi.viewer.status_bar.showMessage('Could not load tiff file')
             return
