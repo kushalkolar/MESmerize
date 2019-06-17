@@ -11,8 +11,10 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from ..core.common import ViewerInterface
-from ..core.viewer_work_environment import ViewerWorkEnv
+# from ..core.common import ViewerInterface
+# from ..core.viewer_work_environment import ViewerWorkEnv
+from ..core import ViewerInterface, ViewerWorkEnv
+from ..core.background_tiff_compressor import Compressor as TiffCompressor
 from ...common import get_sys_config, get_timestamp_str
 from ...common import get_window_manager
 from .pytemplates.batch_manager_pytemplate import *
@@ -86,6 +88,8 @@ class ModuleGUI(QtWidgets.QWidget):
         self.output_widgets = []
         self.df = pandas.DataFrame()
         self.init_batch(run_batch)
+
+        self.move_processes = []
 
         self.ui.btnCompress.clicked.connect(self.compress_all)
         self.ui.btnExportShScripts.clicked.connect(self.export_submission_scripts)
@@ -401,7 +405,7 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='red')
                 if self._use_workdir:
                     # cleanup workdir
-                    self.move_files([], UUID)
+                    self.move_files([f'{UUID}.out'], UUID)
 
         self.current_batch_item_index += 1
         self.ui.progressBar.setValue(int(self.current_batch_item_index / len(self.df.index) * 100))
@@ -445,6 +449,9 @@ class ModuleGUI(QtWidgets.QWidget):
         move_process = QtCore.QProcess()
         move_process.setWorkingDirectory(self.working_dir)
         move_process.start(move_file)
+        self.move_processes.append(move_process)
+        move_process.finished.connect(partial(self.move_processes.remove, move_process))
+
         return move_process
 
     def batch_finished(self):
@@ -565,11 +572,11 @@ class ModuleGUI(QtWidgets.QWidget):
         UUID = uuid.uuid4()
 
         if module == 'CNMFE' or module == 'caiman_motion_correction' or module == 'CNMF':
-            filename = self.batch_path + '/' + str(UUID) + '.tiff'
+            filename = os.path.join(self.batch_path, str(UUID) + '.tiff')
             tifffile.imsave(filename, data=input_workEnv.imgdata.seq.T, bigtiff=True)
             input_workEnv.to_pickle(self.batch_path, filename=str(UUID) + '_workEnv', save_img_seq=False)
 
-        pickle.dump(input_params, open(self.batch_path + '/' + str(UUID) + '.params', 'wb'), protocol=4)
+        pickle.dump(input_params, open(os.path.join(self.batch_path, str(UUID) + '.params'), 'wb'), protocol=4)
 
         input_params = np.array(input_params, dtype=object)
         meta = np.array(info, dtype=object)
@@ -707,3 +714,8 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'File open Error!',
                                           'Could not open the dataframe file.\n' + traceback.format_exc())
             return
+
+    def init_compressor(self):
+        self.thread_pool_compressor = QtCore.QThreadPool()
+        self.thread_pool_compressor.setMaxThreadCount(10)
+        self.thread_pool_compressor.start()
