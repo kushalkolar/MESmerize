@@ -12,6 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
+print('Loading, please wait... ')
 from PyQt5.QtWidgets import QApplication
 from mesmerize.common.window_manager import WindowManager
 from mesmerize.project_manager import ProjectManager

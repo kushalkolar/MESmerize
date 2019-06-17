@@ -51,7 +51,7 @@ class SOSD_Widget(QtWidgets.QWidget):
         compute_run = Compute(data)
 
         compute_run.signals.update_progress.connect(self.update_progress_bar)
-        compute_run.signals.result.connect(self.set_plot)
+        compute_run.signals.result.connect(self.set_residuals)
         compute_run.signals.finished.connect(self.show_finished_message)
         compute_run.signals.error.connect(self.show_error_message)
 
@@ -64,13 +64,36 @@ class SOSD_Widget(QtWidgets.QWidget):
         self.ui.progressBar.setValue(p)
 
     @QtCore.pyqtSlot(np.ndarray)
-    def set_plot(self, data: np.ndarray):
+    def set_residuals(self, data: np.ndarray):
         self.residuals = data
-        self.plot.set(data=self.residuals)
+        self.set_plot()
+
+    def set_plot(self):
+        self.plot.clear_all()
+        if self.ui.radioButtonSqrtResiduals.isChecked():
+            data = np.sqrt(self.residuals)
+        else:
+            data = self.residuals
+
+        if self.ui.checkBoxMean.isChecked():
+            data = np.mean(data, axis=0)
+            self.plot.set_single_line(data)
+
+            if self.ui.checkBoxD1Mean.isChecked():
+                d1 = np.gradient(data)
+                self.plot.add_line(d1, color='g')
+
+            if self.ui.checkBoxD2Mean.isChecked():
+                d2 = np.gradient(np.gradient(data))
+                self.plot.add_line(d2, color='r')
+
+        else:
+            self.plot.set(data=data)
 
     @QtCore.pyqtSlot()
     def show_finished_message(self):
-        QtWidgets.QMessageBox.info(self, 'Finished', 'Finished computing residuals')
+        QtWidgets.QMessageBox.information(self, 'Finished', 'Finished computing residuals. \n'
+                                                            'Wait a minute for the plot to be drawn.')
 
     @QtCore.pyqtSlot(str)
     def show_error_message(self, msg: str):
@@ -97,10 +120,11 @@ class Compute(QtCore.QRunnable):
             r = np.zeros(shape=(a.shape[0], a.shape[1] - 1), dtype=np.float64)
             for i in range(a.shape[0]):
                 r[i, :] = get_residuals(a[i, :])
-                self.signals.update_progress.emit(int(i / (a.shape[0] - 1)))
+                self.signals.update_progress.emit(int((i / (a.shape[0] - 1)) * 100))
+            self.signals.finished.emit()
         except:
             self.signals.error.emit(str(traceback.format_exc()))
         else:
             self.signals.result.emit(r)
         finally:
-            self.signals.finished.emit()
+            pass
