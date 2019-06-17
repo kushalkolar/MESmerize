@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
-    <height>230</height>
+    <width>389</width>
+    <height>276</height>
    </rect>
   </property>
   <property name="floating">
@@ -17,73 +17,15 @@
    <string>Tiff file &amp;I/O</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="5" column="0">
-     <widget class="QPushButton" name="btnLoadIntoWorkEnv">
-      <property name="text">
-       <string>Load into workEnv</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QRadioButton" name="radioButtonImread">
-      <property name="text">
-       <string>i&amp;mread</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Load method:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QRadioButton" name="radioButtonAsarray">
-        <property name="text">
-         <string>asarray</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>is_nih</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="btnSelectTiff">
         <property name="maximumSize">
          <size>
-          <width>70</width>
-          <height>26</height>
+          <width>90</width>
+          <height>32</height>
          </size>
         </property>
         <property name="text">
@@ -103,14 +45,14 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QPushButton" name="btnSelectMetaFile">
         <property name="maximumSize">
          <size>
-          <width>110</width>
-          <height>26</height>
+          <width>130</width>
+          <height>32</height>
          </size>
         </property>
         <property name="text">
@@ -130,34 +72,59 @@
       </item>
      </layout>
     </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Load method:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="radioButtonAsArray">
+      <property name="toolTip">
+       <string>Usually faster alternative to imread</string>
+      </property>
+      <property name="text">
+       <string>asarray</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="radioButtonAsArrayMulti">
+      <property name="toolTip">
+       <string>Use if tiff was created in append mode</string>
+      </property>
+      <property name="text">
+       <string>asarray - multi series</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QRadioButton" name="radioButtonImread">
+      <property name="toolTip">
+       <string>Should work for most tiffs if they were not created in append mode.</string>
+      </property>
+      <property name="text">
+       <string>i&amp;mread</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btnLoadIntoWorkEnv">
+      <property name="text">
+       <string>Load into workEnv</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
  <tabstops>
   <tabstop>btnSelectTiff</tabstop>
   <tabstop>btnSelectMetaFile</tabstop>
-  <tabstop>radioButtonImread</tabstop>
-  <tabstop>radioButtonAsarray</tabstop>
-  <tabstop>checkBox</tabstop>
+  <tabstop>radioButtonAsArrayMulti</tabstop>
   <tabstop>btnLoadIntoWorkEnv</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>radioButtonAsarray</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>checkBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>78</x>
-     <y>126</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>238</x>
-     <y>131</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
