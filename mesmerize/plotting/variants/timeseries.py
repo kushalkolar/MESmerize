@@ -21,6 +21,8 @@ class TimeseriesPlot(MatplotlibWidget):
         self.ax = self.fig.add_subplot(111)
         self.plot = None
 
+        self.axs = []
+
     def set(self, data: np.ndarray, xticks: np.ndarray = None, **kwargs):
         """
 
@@ -55,6 +57,21 @@ class TimeseriesPlot(MatplotlibWidget):
         self.plot = sns.lineplot(x=x, y=y, ax=self.ax, **kwargs)
         self.draw()
 
+    def add_line(self, y: np.ndarray, x: np.ndarray = None, **kwargs):
+        if x is None:
+            x = np.linspace(0, len(y), len(y))
+
+        self.axs.append(self.ax.twinx())
+        sns.lineplot(x=x, y=y, ax=self.axs[-1], **kwargs)
+
+        if 'color' in kwargs.keys():
+            c = kwargs['color']
+            self.axs[-1].tick_params(axis='y', colors=c)
+
     def clear(self):
         self.ax.cla()
 
+    def clear_all(self):
+        self.ax.cla()
+        for ax in self.axs:
+            ax.cla()

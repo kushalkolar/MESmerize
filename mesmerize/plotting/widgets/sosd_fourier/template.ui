@@ -45,6 +45,84 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Plot options:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QRadioButton" name="radioButtonSqrtResiduals">
+           <property name="toolTip">
+            <string>Plot the sqaure root of the sum of sqaured differences</string>
+           </property>
+           <property name="text">
+            <string>sqrt of residuals</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioButtonRawResiduals">
+           <property name="toolTip">
+            <string>Plot the sum of sqaured differences</string>
+           </property>
+           <property name="text">
+            <string>raw residuals</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_2" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QCheckBox" name="checkBoxMean">
+           <property name="toolTip">
+            <string>Plot just the mean without confidence intervals</string>
+           </property>
+           <property name="text">
+            <string>mean</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxD1Mean">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>Plot the first derivative of the mean</string>
+           </property>
+           <property name="text">
+            <string>D1 mean</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxD2Mean">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="toolTip">
+            <string>Plot the second derivative of the mean</string>
+           </property>
+           <property name="text">
+            <string>D2 mean</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -52,7 +130,7 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>336</height>
+          <height>40</height>
          </size>
         </property>
        </spacer>
@@ -70,5 +148,38 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>checkBoxMean</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxD1Mean</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>442</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>458</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxMean</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxD2Mean</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>441</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>484</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
