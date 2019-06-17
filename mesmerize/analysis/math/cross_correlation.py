@@ -11,6 +11,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import numpy as np
 from tslearn.cycc import normalized_cc
+from itertools import product
 # from tslearn.preprocessing import TimeSeriesScalerMeanVariance, TimeSeriesScalerMinMax
 # from sklearn.metrics import pairwise_distances
 
@@ -104,7 +105,7 @@ def get_epsilon_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.
     return _compute_from_ccs(ccs, get_epsilon)
 
 
-def _compute_from_ccs(ccs: np.ndarray, func: callable):
+def _compute_from_ccs(ccs: np.ndarray, func: callable) -> np.ndarray:
     m = ccs.shape[0]
     a = np.zeros(shape=(m, m))
     for i in range(m):
