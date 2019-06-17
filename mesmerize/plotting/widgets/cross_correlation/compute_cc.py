@@ -51,10 +51,7 @@ class CC_Data:
 
 
 def compute_cc_data(curves: np.ndarray) -> CC_Data:
-    n_curves = curves.shape[0]
-    m = curves.shape[1]
-    ccs = np.zeros(shape=(n_curves, n_curves, (2 * m) - 1))
-    ccs = compute_ccs(curves, ccs)
+    ccs = compute_ccs(curves)
     
     l = get_lag_matrix(ccs=ccs)
     e = get_epsilon_matrix(ccs=ccs)
@@ -62,8 +59,11 @@ def compute_cc_data(curves: np.ndarray) -> CC_Data:
     return CC_Data(ccs, l, e)
 
 
-def compute_ccs(a: np.ndarray, out: np.ndarray):
+def compute_ccs(a: np.ndarray):
     n = a.shape[0]
+    m = a.shape[1]
+    out = np.zeros(shape=(n, n, (2 * m) - 1))
+
     for i in range(n):
         for j in range(n):
             out[i, j, :] = ncc_c(a[i], a[j])
