@@ -102,7 +102,7 @@ def run(batch_dir: str, UUID: str):
         elif input_params['output_bit_depth'] == '16':
             m_els = m_els.astype(np.uint16)
 
-        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True)
+        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True, compress=1)
 
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
