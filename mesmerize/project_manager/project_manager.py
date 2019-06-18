@@ -122,6 +122,15 @@ class ProjectManager(QtCore.QObject):
 
         start.project_browser()
 
+    def get_dataframe(self) -> pd.DataFrame:
+        return self.dataframe
+
+    def set_dataframe(self, dataframe: pd.DataFrame):
+        if not isinstance(dataframe, pd.DataFrame):
+            raise TypeError('Must pass an instance of pandas.DataFrame')
+        self.dataframe = dataframe.copy(deep=True)
+        self.emit_signal_dataframe_changed()
+
     def save_dataframe(self):
         df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
         if os.path.isfile(df_path):

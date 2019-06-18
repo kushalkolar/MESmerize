@@ -20,16 +20,16 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDataframe">
     <property name="title">
-     <string>Dataf&amp;rame</string>
+     <string>&amp;Dataframe</string>
     </property>
     <widget class="QMenu" name="menuSave_current_tab">
      <property name="title">
-      <string>&amp;Save current tab</string>
+      <string>Save current tab</string>
      </property>
      <addaction name="separator"/>
      <addaction name="actionto_pickle_tab"/>
@@ -59,12 +59,13 @@
      <string>&amp;View</string>
     </property>
     <addaction name="actionCurrent_tab_filter_history"/>
+    <addaction name="actionViewCurrent_dataframe"/>
     <addaction name="separator"/>
     <addaction name="actionConsole"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
-     <string>Too&amp;ls</string>
+     <string>&amp;Tools</string>
     </property>
     <addaction name="actionLink_viewers"/>
    </widget>
@@ -93,7 +94,7 @@
   </widget>
   <action name="actionDataframe_editor">
    <property name="text">
-    <string>&amp;Dataframe editor</string>
+    <string>Dataframe editor</string>
    </property>
   </action>
   <action name="actionConsole">
@@ -101,22 +102,22 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>C&amp;onsole</string>
+    <string>&amp;Console</string>
    </property>
   </action>
   <action name="actionCurrent_tab_filter_history">
    <property name="text">
-    <string>&amp;Current tab filter history</string>
+    <string>Current tab &amp;filter history</string>
    </property>
   </action>
   <action name="actionUpdate_current_tab">
    <property name="text">
-    <string>Update &amp;current tab</string>
+    <string>Update current tab</string>
    </property>
   </action>
   <action name="actionUpdate_all_tabs">
    <property name="text">
-    <string>&amp;Update all tabs</string>
+    <string>Update all tabs</string>
    </property>
   </action>
   <action name="actionto_pickle_tab">
@@ -160,6 +161,11 @@
   <action name="actionSave_to_project">
    <property name="text">
     <string>Save to project</string>
+   </property>
+  </action>
+  <action name="actionViewCurrent_dataframe">
+   <property name="text">
+    <string>Current dataframe</string>
    </property>
   </action>
  </widget>
