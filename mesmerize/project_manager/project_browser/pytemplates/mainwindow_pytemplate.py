@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/mainwindow.ui'
+# Form implementation generated from reading ui file './mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -16,7 +16,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 30))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
         self.menubar.setObjectName("menubar")
         self.menuDataframe = QtWidgets.QMenu(self.menubar)
         self.menuDataframe.setObjectName("menuDataframe")
@@ -67,6 +67,8 @@ class Ui_MainWindow(object):
         self.actionLink_viewers.setObjectName("actionLink_viewers")
         self.actionSave_to_project = QtWidgets.QAction(MainWindow)
         self.actionSave_to_project.setObjectName("actionSave_to_project")
+        self.actionViewCurrent_dataframe = QtWidgets.QAction(MainWindow)
+        self.actionViewCurrent_dataframe.setObjectName("actionViewCurrent_dataframe")
         self.menuSave_current_tab.addSeparator()
         self.menuSave_current_tab.addAction(self.actionto_pickle_tab)
         self.menuSave_current_tab.addAction(self.actionto_csv_tab)
@@ -84,6 +86,7 @@ class Ui_MainWindow(object):
         self.menuDataframe.addSeparator()
         self.menuDataframe.addAction(self.actionSave_to_project)
         self.menuView.addAction(self.actionCurrent_tab_filter_history)
+        self.menuView.addAction(self.actionViewCurrent_dataframe)
         self.menuView.addSeparator()
         self.menuView.addAction(self.actionConsole)
         self.menuTools.addAction(self.actionLink_viewers)
@@ -98,17 +101,17 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.menuDataframe.setTitle(_translate("MainWindow", "Dataf&rame"))
-        self.menuSave_current_tab.setTitle(_translate("MainWindow", "&Save current tab"))
+        self.menuDataframe.setTitle(_translate("MainWindow", "&Dataframe"))
+        self.menuSave_current_tab.setTitle(_translate("MainWindow", "Save current tab"))
         self.menuSave_all_tabs.setTitle(_translate("MainWindow", "Export root"))
         self.menuView.setTitle(_translate("MainWindow", "&View"))
-        self.menuTools.setTitle(_translate("MainWindow", "Too&ls"))
+        self.menuTools.setTitle(_translate("MainWindow", "&Tools"))
         self.dockConsole.setWindowTitle(_translate("MainWindow", "&Console: Project Browser"))
-        self.actionDataframe_editor.setText(_translate("MainWindow", "&Dataframe editor"))
-        self.actionConsole.setText(_translate("MainWindow", "C&onsole"))
-        self.actionCurrent_tab_filter_history.setText(_translate("MainWindow", "&Current tab filter history"))
-        self.actionUpdate_current_tab.setText(_translate("MainWindow", "Update &current tab"))
-        self.actionUpdate_all_tabs.setText(_translate("MainWindow", "&Update all tabs"))
+        self.actionDataframe_editor.setText(_translate("MainWindow", "Dataframe editor"))
+        self.actionConsole.setText(_translate("MainWindow", "&Console"))
+        self.actionCurrent_tab_filter_history.setText(_translate("MainWindow", "Current tab &filter history"))
+        self.actionUpdate_current_tab.setText(_translate("MainWindow", "Update current tab"))
+        self.actionUpdate_all_tabs.setText(_translate("MainWindow", "Update all tabs"))
         self.actionto_pickle_tab.setText(_translate("MainWindow", "&to pickle"))
         self.actionto_pickle_tab.setToolTip(_translate("MainWindow", "Save current tab as a python pickle"))
         self.actionto_csv_tab.setText(_translate("MainWindow", "to &csv"))
@@ -118,4 +121,5 @@ class Ui_MainWindow(object):
         self.actionto_csv.setText(_translate("MainWindow", "to &csv"))
         self.actionLink_viewers.setText(_translate("MainWindow", "&Link viewers"))
         self.actionSave_to_project.setText(_translate("MainWindow", "Save to project"))
+        self.actionViewCurrent_dataframe.setText(_translate("MainWindow", "Current dataframe"))
 

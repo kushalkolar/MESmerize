@@ -43,7 +43,9 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.ui.actionto_csv_tab.triggered.connect(partial(self.save_path_dialog, file_ext='csv', save_root=False))
         self.ui.actionto_excel_tab.triggered.connect(partial(self.save_path_dialog, file_ext='xlsx', save_root=False))
 
-        self.ui.actionDataframe_editor.triggered.connect(self.view_dataframe)
+        self.ui.actionDataframe_editor.triggered.connect(self.edit_root_dataframe)
+
+        self.ui.actionViewCurrent_dataframe.triggered.connect(self.view_current_dataframe)
         self.ui.actionCurrent_tab_filter_history.triggered.connect(self.view_filters)
 
         self.ui.actionUpdate_current_tab.triggered.connect(self.update_tab_from_child_dataframe)
@@ -55,7 +57,8 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
               'project_browser': self.project_browser,
               'this': self,
               'get_dataframe': lambda: self.get_current_dataframe()[0],
-              'get_root_dataframe': lambda: self.get_current_dataframe(get_root=True)[0]
+              'get_root_dataframe': lambda: self.get_current_dataframe(get_root=True)[0],
+              'set_root_dataframe': lambda df: get_project_manager().set_dataframe(df)
               }
 
         txt = "Namespaces:          \n" \
@@ -63,6 +66,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
               "Useful callables:\n" \
               "get_dataframe() - returns dataframe of the current tab\n" \
               "get_root_dataframe() - always return dataframe of root tab (i.e. entire dataframe)\n" \
+              "set_root_dataframe() - save the root dataframe\n" \
               "self as this         \n" \
 
         cmd_history_file = os.path.join(configuration.console_history_path, 'project_browser.pik')
@@ -103,7 +107,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
 
     def get_current_dataframe(self, get_root=False) -> (pd.DataFrame, list):
         if self.current_tab == 0 or get_root:
-            dataframe = get_project_manager().dataframe
+            dataframe = get_project_manager().get_dataframe()
             return dataframe, []
         else:
             tab_name = self.project_browser.tab_widget.widget(self.current_tab).tab_name
@@ -113,7 +117,16 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
     def _save_dataframe(self):
         get_project_manager().save_dataframe()
 
-    def view_dataframe(self):
+    def edit_root_dataframe(self):
+        QtWidgets.QMessageBox.warning(self, 'Proceed with caution!',
+                                      'You are about to edit the project DataFrame, be careful!\n'
+                                      'If you make a mistake press "Close"')
+
+        df = objecteditor.oedit(get_project_manager().get_dataframe())
+        if df is not None:
+            get_project_manager().set_dataframe(df)
+
+    def view_current_dataframe(self):
         objecteditor.oedit(self.get_current_dataframe()[0])
 
     def view_filters(self):
