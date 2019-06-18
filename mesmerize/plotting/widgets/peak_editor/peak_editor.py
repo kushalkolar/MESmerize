@@ -22,6 +22,7 @@ import traceback
 from functools import partial
 from ....common import get_window_manager
 
+
 class PeaksItemGraph(pg.GraphItem):
     """
     Scatter plot to display the peaks and bases as dots which are editable.
@@ -136,6 +137,13 @@ class PeaksItemGraph(pg.GraphItem):
 #        self.updateGraph()
         self.setData(**data)
         self.changed = True
+
+    def delete_all_items(self):
+        # while self.scatter.points().size > 1:
+        #     self.delete_item(self.scatter.points()[0])
+        self.scatter.clear()
+        for ix in range(len(self.events)):
+            del self.events[0]
     
     def add_item(self, pos):
         x_pos = pos[0]
@@ -187,14 +195,14 @@ class PeaksItemGraph(pg.GraphItem):
         self.scatter.setSize(size)
             
 
-class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+class PeakEditorWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     sig_disconnect_flowchart = QtCore.pyqtSignal()
     sig_reconnect_flowchart = QtCore.pyqtSignal()
     sig_send_data = QtCore.pyqtSignal(Transmission)
     
     def __init__(self, trans_curves, trans_peaks_bases):
         # super().__init__()
-        super(PBWindow, self).__init__()
+        super(PeakEditorWindow, self).__init__()
         # Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.setWindowTitle('Mesmerize - Peak-Base editor')
@@ -237,6 +245,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.graphicsView.sigMouseClicked.connect(lambda gv, coors: self._add_event(self.current_curve.getViewBox().mapSceneToView(coors).toPoint()))
         
         self.btnSaveCurve.clicked.connect(self.save_current_curve)
+        # self.btnClearCurve.clicked.connect(self.clear_current_curve)
 
         self.btnDisconnectFromFlowchart.clicked.connect(self._disconnect_flowchart)
         self.btnSendToFlowchart.clicked.connect(self._send_data_to_flowchart)
@@ -339,6 +348,10 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ix = self.current_ix
         self.tpb.df.at[ix, 'peaks_bases'] = self.current_peak_scatter_plot.get_edited_dataframe()
         self.current_peak_scatter_plot.changed = False
+
+    def clear_current_curve(self):
+        self.current_peak_scatter_plot.delete_all_items()
+        self.save_current_curve()
 
     def _set_row(self):
         if self.current_peak_scatter_plot is not None:
@@ -477,7 +490,7 @@ if __name__ == '__main__':
 #    t = Transmission.from_pickle('/home/kushal/Sars_stuff/all_data_jorgen_wt_PEAK_DETECT_TRANSMISSION.trn')
     t = Transmission.from_pickle('/share/data/temp/kushal/post_edit.trn')
 
-    pbw = PBWindow(t, t)#.df['_RAW_CURVE'], t.df['_RAW_CURVE'])
+    pbw = PeakEditorWindow(t, t)#.df['_RAW_CURVE'], t.df['_RAW_CURVE'])
     pbw.show()
 
     import sys
