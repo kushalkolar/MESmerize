@@ -71,7 +71,7 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         cmd_history_file = os.path.join(configuration.console_history_path, 'plot_window.pik')
 
-        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
+        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file))
 
         self.ui.dockConsole.hide()
 

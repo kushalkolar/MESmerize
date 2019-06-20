@@ -309,10 +309,13 @@ class TextFilter(CtrlNode):
 
     def processData(self, transmission):
         self.ctrls['Column'].setItems(transmission.df.columns.to_list())
+        col = self.ctrls['Column'].currentText()
+        completer = QtWidgets.QCompleter(list(map(str, transmission.df[col].unique())))
+        self.ctrls['filter'].setCompleter(completer)
+
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        col = self.ctrls['Column'].currentText()
         filt = self.ctrls['filter'].text()
 
         self.t = transmission.copy()
@@ -327,9 +330,9 @@ class TextFilter(CtrlNode):
                   }
 
         if include:
-            self.t.df = self.t.df[self.t.df[col] == filt]
+            self.t.df = self.t.df[self.t.df[col].astype(str) == filt]
         elif exclude:
-            self.t.df = self.t.df[self.t.df[col] != filt]
+            self.t.df = self.t.df[self.t.df[col].astype(str) != filt]
 
         self.t.df = self.t.df.reset_index(drop=True)
 
