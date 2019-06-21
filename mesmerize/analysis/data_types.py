@@ -23,7 +23,6 @@ from itertools import chain
 import os
 import traceback
 from configparser import RawConfigParser
-import h5py
 from ..common.utils import HdfTools
 from ..common import get_proj_config
 
