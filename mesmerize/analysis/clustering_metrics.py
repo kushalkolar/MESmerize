@@ -22,7 +22,7 @@ def get_centerlike(cluster_members: np.ndarray, metric: Optional[Union[str, call
     return c, c_ix
 
 
-def get_cluster_radius(cluster_members: np.ndarray, metric: Optional[Union[str, callable]],
+def get_cluster_radius(cluster_members: np.ndarray, metric: Optional[Union[str, callable]] = None,
                        dist_matrix: Optional[np.ndarray] = None, centerlike_index: Optional[int] = None) -> float:
     """
     Returns the cluster radius according to chosen distance metric
@@ -56,16 +56,15 @@ def davies_bouldin_score(data: np.ndarray, cluster_labels: np.ndarray, metric: U
 
     :return:                Davies Bouldin Score using EMD
     """
-
     radii = np.zeros(cluster_labels.size)
-    centroids = np.zeros(cluster_labels.size)
+    centroids = np.zeros((cluster_labels.size, data.shape[1]))
 
     for i, c in enumerate(np.unique(cluster_labels)):
         members = np.take(data, np.where(cluster_labels == c)[0], axis=0)
         dist_m = pairwise_distances(members, metric=metric)
 
-        centroids[i], c_ix = get_centerlike(members, dist_m)
-        radii[i] = get_cluster_radius(members, dist_m, centerlike_index=c_ix)
+        centroids[i, :], c_ix = get_centerlike(members, dist_matrix=dist_m)
+        radii[i] = get_cluster_radius(members, dist_matrix=dist_m, centerlike_index=c_ix)
 
     centroid_distances = pairwise_distances(centroids, metric=metric)
 
@@ -75,4 +74,6 @@ def davies_bouldin_score(data: np.ndarray, cluster_labels: np.ndarray, metric: U
     centroid_distances[centroid_distances == 0] = np.inf
     combined_intra_dists = radii[:, None] + radii
     scores = np.max(combined_intra_dists / centroid_distances, axis=1)
+
     return np.mean(scores)
+

@@ -13,7 +13,9 @@ from copy import deepcopy
 from scipy.fftpack import rfft
 
 
-def dict_product(d: OrderedDict[str, Iterable]) -> Generator[OrderedDict[str, object]]:
+def dict_product(d: Dict[str, Iterable]) -> Generator:#[Dict[str, Iterable]]:
+    if isinstance(d, dict):
+        d = OrderedDict(d)
     for i in itertools.product(*d.values()):
         yield OrderedDict(zip(d.keys(), i))
 
@@ -44,20 +46,21 @@ class BaseMetaClustering(metaclass=abc.ABCMeta):
     def run(self, num_threads, *args, **kwargs) -> None:
         pass
 
-    @abc.abstractmethod
-    @property
-    def param_iters(self) -> list:
-        pass
-
-    @abc.abstractmethod
-    @property
-    def result(self) -> list:
-        pass
+    # @abc.abstractmethod
+    # @property
+    # def param_iters(self) -> list:
+    #     pass
+    #
+    # @abc.abstractmethod
+    # @property
+    # def result(self) -> list:
+    #     pass
 
 
 class MetaClustering(BaseMetaClustering):
-    def __init__(self, data: np.ndarray, param_iters: OrderedDict[str, Iterable[Any]], metric: Union[str, callable],
-                 score_metric: Union[str, callable], *args, clustering_func: Optional[callable] = None, **kwargs):
+    def __init__(self, data: np.ndarray, param_iters: Dict[str, Iterable[Any]], metric: Union[str, callable],
+                 score_metric: Union[str, callable], *args, clustering_func: Optional[callable] = None,
+                 preprocess_func: Optional[callable] = None, **kwargs):
         """
 
         :param data:    Input data used for clustering
@@ -70,10 +73,11 @@ class MetaClustering(BaseMetaClustering):
         self._metric = metric
         self._score_metric = score_metric
 
-        self.product = dict_product(param_iters)
-        self._param_iters = list(deepcopy(self.product))
+        # self.product = dict_product(param_iters)
+        self._param_iters = list(dict_product(param_iters))
 
         self.clustering_func = clustering_func
+        self.preprocess_func = preprocess_func
 
     @property
     def param_iters(self) -> list:
@@ -86,48 +90,53 @@ class MetaClustering(BaseMetaClustering):
         else:
             return self._result
 
-    def run_clustering(self, data: np.ndarray, params: dict) -> Tuple[np.ndarray, Optional[tuple], Optional[dict]]:
+    def preprocess(self, data: np.ndarray, params: dict) -> np.ndarray:
+        if self.preprocess_func is None:
+            return data
+
+        return self.preprocess_func(data, params)
+
+    def run_clustering(self, data, params: dict) -> Tuple[np.ndarray, Optional[tuple], Optional[dict]]:
         """
         :return: cluster labels, and any args or kwargs that are passed to score_cluster() method
         """
         if self.clustering_func is not None:
-            return self.clustering_func(params)
+            return self.clustering_func(data=data, params=params, metric=self._metric)
         else:
             raise NotImplementedError('Must pass callable to "clustering_func" '
                                       'of constructor or subclass MetaClustering')
 
-    def score_cluster(self, params: dict, cluster_labels: np.ndarray, *args, **kwargs):
+    def score_cluster(self, data, params: dict, cluster_labels: np.ndarray, *args, **kwargs):
         if self._score_metric == 'davies_bouldin':
             return davies_bouldin_score(data=self.data, metric=self._metric, cluster_labels=cluster_labels)
         elif callable(self._score_metric):
-            return self._score_metric(data=self.data, metric=self._metric, cluster_labels=cluster_labels, *args,
-                                      **kwargs)
+            return self._score_metric(data=self.data, params=params, metric=self._metric, cluster_labels=cluster_labels)
         # raise NotImplementedError
 
-    def run_iter(self, params: OrderedDict) -> float:
-        cluster_labels, args, kwargs = self.run_clustering(data, params)
-        scores = self.score_cluster(params, cluster_labels, *args, **kwargs)
+    def run_iter(self, params) -> float:
+        data = self.preprocess(self.data, params)
+        cluster_labels = self.run_clustering(data, params)
+        scores = self.score_cluster(data, params, cluster_labels)
         return np.mean(scores)
 
     def run(self, num_threads: int, *args, **kwargs):
         p = Pool(num_threads)
-        self._result = p.map(self.run_iter, self.product)
+        self._result = p.map(self.run_iter, self.param_iters)
 
 
 class MetaAgglomerative(MetaClustering):
-    def __init__(self, data: np.ndarray, param_iters: OrderedDict[str, Iterable[Any]], metric: Union[str, callable],
+    def __init__(self, data: np.ndarray, param_iters: Dict[str, Iterable[Any]], metric: Union[str, callable],
                  score_metric: Union[str, callable], *args, **kwargs):
-
         super().__init__(data, param_iters, metric, score_metric, *args, **kwargs)
 
         log_values = ['raw', 'ln_abs', 'log10_abs', 'modln', 'modlog10']
-        if 'log_type' in params.keys():
-            if not set(params['log_type']).issubset(log_values):
+        if 'log_type' in param_iters.keys():
+            if not set(param_iters['log_type']).issubset(log_values):
                 raise ValueError(f'Allowed log_type param values are: {log_values}')
 
         linkage_values = ['complete', 'average', 'single']
-        if 'linkage' in params.keys():
-            if not set(params['linkage']).issubset(linkage_values):
+        if 'linkage' in param_iters.keys():
+            if not set(param_iters['linkage']).issubset(linkage_values):
                 raise ValueError(f'Allowed linkage param values are: {linkage_values}')
 
     def _get_log(self, data, method: int) -> np.ndarray:
@@ -142,7 +151,7 @@ class MetaAgglomerative(MetaClustering):
         elif method == 'modlog10':
             return modlog10(data)
 
-    def _preprocess(self, params: dict) -> np.ndarray:
+    def preprocess(self, data, params: dict) -> np.ndarray:
         data = rfft(self.data)
 
         if 'freq_cutoff' in params.keys():
@@ -163,17 +172,7 @@ class MetaAgglomerative(MetaClustering):
         return agg.labels_
 
     def run_iter(self, params: dict) -> float:
-        data = self._preprocess(params)
+        data = self.preprocess(self.data, params)
         cluster_labels = self.run_clustering(data, params)
-        scores = self.score_cluster(params, cluster_labels)
+        scores = self.score_cluster(data, params, cluster_labels)
         return np.mean(scores)
-
-
-if __name__ == '__main__':
-    data = np.random.random((100, 100))
-    params = OrderedDict(n_clusters=    range(2, 20),
-                         linkage=       ['complete', 'average', 'single'],
-                         freq_cutoff=   range(100, 801, 50),
-                         log_type=      ['raw', 'ln_abs', 'log10_abs', 'modln', 'modlog10'])
-
-    meta_agg = MetaAgglomerative(data, params, metric=wasserstein_distance, score_metric='davies_bouldin')
