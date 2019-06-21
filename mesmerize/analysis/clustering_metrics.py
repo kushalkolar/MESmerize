@@ -1,5 +1,4 @@
 from sklearn.metrics import pairwise_distances
-from scipy.stats import wasserstein_distance
 from typing import Tuple, Optional, Union
 import numpy as np
 
