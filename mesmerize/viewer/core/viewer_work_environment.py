@@ -339,20 +339,22 @@ class ViewerWorkEnv:
 
         return filename
 
-
-    def to_pandas(self, proj_path: str, overwrite: bool = False, overwrite_image_seq: bool = True) -> list:
+    def to_pandas(self, proj_path: str, modify_options: Optional[dict] = None) -> list:
         """
-        :param      proj_path: Root path of the current project
+        :param      proj_path:      Root path of the current project
+        :param      modify_options:
         :return:    list of dicts that each correspond to a single curve that can be appended
                     as rows to the project dataframe
         """
         if self.isEmpty:
             raise ValueError('Work environment is empty')
 
+        save_img_seq = True
+
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = os.path.join(proj_path, 'images')  # + self.imgdata.SampleID + '_' + str(time.time())
 
-        if overwrite and self.UUID is None:
+        if (modify_options is dict) and (self.UUID is None):
             raise ValueError('Error overwriting Sample. Current Work Environment does not have a UUID.\n'
                              'Samples always have a UUID, something went wrong. Reload the sample from the project.')
 
@@ -363,21 +365,23 @@ class ViewerWorkEnv:
             UUID = self.UUID
         curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{str(UUID)}')
 
-        if overwrite:
+        if modify_options is not None:
             rmtree(curves_dir)
-        else:
-            overwrite_image_seq = False
+            if modify_options['overwrite_img_seq']:
+                save_img_seq = True
+            else:
+                save_img_seq = False
 
-        img_path = self.to_pickle(imgdir, UUID=UUID, save_img_seq=overwrite_image_seq)
+        img_path = self.to_pickle(imgdir, UUID=UUID, save_img_seq=save_img_seq)
 
-        # if overwrite_image_seq:
-        max_proj = np.amax(self.imgdata.seq, axis=2)
-        max_proj_path = img_path + '_max_proj.tiff'
-        tifffile.imsave(max_proj_path, max_proj)
+        if save_img_seq:
+            max_proj = np.amax(self.imgdata.seq, axis=2)
+            max_proj_path = img_path + '_max_proj.tiff'
+            tifffile.imsave(max_proj_path, max_proj)
 
-        std_proj = self.imgdata.seq.std(axis=2)
-        std_proj_path = img_path + '_std_proj.tiff'
-        tifffile.imsave(std_proj_path, std_proj)
+            std_proj = self.imgdata.seq.std(axis=2)
+            std_proj_path = img_path + '_std_proj.tiff'
+            tifffile.imsave(std_proj_path, std_proj)
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False

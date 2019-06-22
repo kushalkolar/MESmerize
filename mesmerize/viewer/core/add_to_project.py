@@ -203,7 +203,7 @@ class AddToProjectDialog(QtWidgets.QWidget):
     def save_changes_to_sample(self):
         try:
             save_tiff = self.ui.checkBoxOverwriteImage.isChecked()
-            dicts_to_append = self.work_environment.to_pandas(configuration.proj_path, overwrite=True, overwrite_image_seq=save_tiff)
+            dicts_to_append = self.work_environment.to_pandas(configuration.proj_path, modify_options={'overwrite_img_seq': save_tiff})
         except:
             QtWidgets.QMessageBox.warning(self, 'Exception while trying to overwrite',
                                           'The following exception was raised while trying to package the current'
