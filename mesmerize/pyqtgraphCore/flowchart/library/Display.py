@@ -129,21 +129,12 @@ class Timeseries(CtrlNode):
 class Heatmap(CtrlNode):
     """Stack 1-D arrays and plot visually like a heatmap"""
     nodeName = "Heatmap"
-    uiTemplate = [('Show', 'button', {'text': 'Show'}),
-                  ('data_column', 'combo', {}),
-                  ('labels', 'combo', {}),
-                  ('colormap', 'cmaplist', {}),
-                  ('DPT_curve', 'combo', {}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True})
-                  ]
+    uiTemplate = [('Show', 'button', {'text': 'Show GUI'})]
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out'}})
-        self.trans_ids = []
-        self.ctrls['Apply'].clicked.connect(self.update)
         self.heatmap_widget = HeatmapTracerWidget()
         self.ctrls['Show'].clicked.connect(self.heatmap_widget.show)
-        self.ctrls['colormap'].signal_colormap_changed.connect(self.set_cmap)
 
     def process(self, **kwargs):
         self.transmissions = kwargs['In']
@@ -151,40 +142,7 @@ class Heatmap(CtrlNode):
 
         self.t = Transmission.merge(self.transmissions_list)
 
-        # self.dfs = [t.df for t in self.transmissions_list]
-
-        # columns = pd.concat(self.dfs).columns
-
-        columns = self.t.df.columns
-
-        self.ctrls['data_column'].setItems(columns.to_list())
-        self.ctrls['labels'].setItems(columns.to_list())
-        self.ctrls['DPT_curve'].setItems(columns.to_list())
-
-        self.labels_column = self.ctrls['labels'].currentText()
-
-        self.dpt_curve_curve = self.ctrls['DPT_curve'].currentText()
-
-        cmap = self.ctrls['colormap'].current_cmap
-
-        self.set_data_column_combo_box()
-
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
-                                     labels_column=self.labels_column,
-                                     datapoint_tracer_curve_column=self.dpt_curve_curve,
-                                     cmap=cmap, transmission=self.t)
-        
-    def set_cmap(self, cmap: str):
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        self.heatmap_widget.set_data(dataframes=self.t.df, data_column=self.data_column,
-                                     labels_column=self.labels_column,
-                                     datapoint_tracer_curve_column=self.dpt_curve_curve,
-                                     cmap=cmap, transmission=self.t, reset_data=False)
+        self.heatmap_widget.set_input(self.t)
 
 
 class ScatterPlot(CtrlNode):
