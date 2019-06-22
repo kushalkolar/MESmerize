@@ -278,7 +278,8 @@ class HistoryTrace:
 
 class BaseTransmission:
     def __init__(self, df: pd.DataFrame, history_trace: HistoryTrace, proj_path: str = None, last_output: str = None,
-                 last_unit: str = None, ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None):
+                 last_unit: str = None, ROI_DEFS: list = None, STIM_DEFS: list = None, CUSTOM_COLUMNS: list = None,
+                 plot_state: dict = None):
         """
         Base class for common Transmission functions
 
@@ -292,6 +293,8 @@ class BaseTransmission:
         :param  last_output:    Last data column that was appended via a node's operation
 
         :param  last_unit:      Current units of the data. Refers to the units of column in last_output
+
+        :param plot_state:      State of a plot, such as data and label columns. Used when saving plots.
 
         :ivar df:               Dataframe instance belonging to a Transmission instance
         :ivar history_trace:    :class: `HistoryTrace` instance
@@ -334,6 +337,8 @@ class BaseTransmission:
             assert isinstance(CUSTOM_COLUMNS, list)
             self.CUSTOM_COLUMNS = CUSTOM_COLUMNS
 
+        self.plot_state = plot_state
+
     def to_dict(self) -> dict:
         """
         Package Transmission as a dict, useful for pickling
@@ -341,7 +346,8 @@ class BaseTransmission:
         d = {'df':              self.df,
              'history_trace':   self.history_trace.to_dict(),
              'last_output':     self.last_output,
-             'last_unit':       self.last_unit
+             'last_unit':       self.last_unit,
+             'plot_state':      self.plot_state
              }
 
         return d

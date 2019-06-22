@@ -1,57 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DockWidget</class>
- <widget class="QDockWidget" name="DockWidget">
+ <class>ControlWidget</class>
+ <widget class="QWidget" name="ControlWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>295</width>
-    <height>332</height>
+    <width>301</width>
+    <height>679</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Heat&amp;map Controls</string>
+   <string>Form</string>
   </property>
-  <widget class="QWidget" name="dockWidgetContents">
-   <widget class="QListWidget" name="listWidgetColorMaps">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>81</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Colormap:</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBoxShowStimuli">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>250</y>
-      <width>121</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Show Stimuli</string>
-    </property>
-   </widget>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Data columns</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBoxDataColumn"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Labels column</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBoxLabelsColumn"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>DPT curve column</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBoxDPTCurveColumn"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Colormap:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="ColormapListWidget" name="listWidgetColorMaps"/>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonPlot">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>46</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>15</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Plot with live updates</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButtonSave">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>46</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>15</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonLoad">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>46</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>15</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBoxShowStimuli">
+     <property name="text">
+      <string>Show Stimuli</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ColormapListWidget</class>
+   <extends>QListWidget</extends>
+   <header>..colormap_list</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

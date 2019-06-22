@@ -17,23 +17,21 @@ class ColormapListWidget(QtWidgets.QListWidget):
     def current_cmap(self) -> str:
         return self.currentItem().text()
 
-    @current_cmap.setter
-    def current_cmap(self):
-        pass
-
     def emit_colormap_changed(self, item: QtWidgets.QListWidgetItem):
         self.signal_colormap_changed.emit(item.text())
 
     def populate_colormaps(self):
         mpath = os.path.abspath(__file__)
         mdir = os.path.dirname(mpath)
+        cmap_img_files = glob(mdir + '/colormaps/*.png')
+        cmap_img_files.sort()
 
-        for path in glob(mdir + '/colormaps/*.png'):
+        for path in cmap_img_files:
             img = QtGui.QIcon(path)
             item = QtWidgets.QListWidgetItem(os.path.basename(path)[:-4])
             item.setIcon(img)
             self.addItem(item)
-        self.setIconSize(QtCore.QSize(100, 50))
+        self.setIconSize(QtCore.QSize(120, 25))
 
 
 if __name__ == '__main__':
