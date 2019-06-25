@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from ..pyqtgraphCore.console import ConsoleWidget
-from .welcome_window_pytemplate import *
+from .pytemplates.welcome_window_pytemplate import *
 # from ..project_manager import ProjectManager
 from ..common import configuration, system_config_window, doc_pages, get_project_manager, set_project_manager
 from ..common import get_window_manager
@@ -22,6 +22,8 @@ import os
 from ..common import start
 from ..viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 from glob import glob
+from ..plotting import open_plot_file
+from functools import partial
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -77,6 +79,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # configuration.projPath = '/home/kushal/mesmerize_test_proj'
 
         self._batch_manager = None
+
+        self.ui.listWidgetProjectPlots.setVisible(False)
+        self.ui.labelProjectPlots.setVisible(False)
+
+        self.plot_windows = []
 
     def initialize_console_widget(self):
         ns = {'configuration': configuration,
@@ -195,16 +202,37 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.labelRecentProjects.setText('Project flowcharts')
         self.ui.listWidgetRecentProjects.clear()
 
-        path = os.path.join(self.project_manager.root_dir, 'flowcharts', '*.fc')
+        flowcharts_dir = os.path.join(self.project_manager.root_dir, 'flowcharts')
+        path = os.path.join(flowcharts_dir, '*.fc')
 
         fcs = glob(path)
+        fc_files = []
 
-        for f in fcs:
-            os.path.abspath(f)
+        for i in range(len(fcs)):
+            fc_files.append(os.path.relpath(flowcharts_dir, fcs[i]))
 
-        self.ui.listWidgetRecentProjects.addItems(fcs)
+        self.ui.listWidgetRecentProjects.addItems(fc_files)
         self.ui.listWidgetRecentProjects.itemDoubleClicked.disconnect()
         self.ui.listWidgetRecentProjects.itemDoubleClicked.connect(lambda item: self.open_new_flowchart(item.text()))
+
+    def set_plots_list(self):
+        self.ui.listWidgetProjectPlots.setVisible(True)
+        self.ui.labelProjectPlots.setVisible(True)
+
+        plots_dir = os.path.join(self.project_manager.root_dir, 'plots')
+        plot_files = []
+
+        for f in glob(os.path.join(plots_dir, '*.ptrn')):
+            plot_files.append(os.path.relpath(self.project_manager.root_dir, f))
+
+        self.ui.listWidgetProjectPlots.addItems(plot_files)
+        self.ui.listWidgetProjectPlots.itemDoubleClicked.connect(lambda item: self.open_plot(item.text()))
+
+    def open_plot(self, filename: str):
+        plot = open_plot_file(filename)
+        self.plot_windows.append(plot)
+        plot.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        plot.destroyed.connect(partial(self.plot_windows.remove, plot))
 
     def open_new_viewer(self):
         w = get_window_manager().get_new_viewer_window()
@@ -214,6 +242,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def open_new_flowchart(self, filename: str = None):
         if filename is not None and not isinstance(filename, str):
             filename = None
+        else:
+            filename = os.path.join(self.project_manager.root_dir, 'flowcharts', filename)
+
         w = get_window_manager().get_new_flowchart(filename)
         w.show()
 
