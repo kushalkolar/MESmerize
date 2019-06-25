@@ -1,5 +1,4 @@
 from .datapoint_tracer import DatapointTracerWidget
-from .colormap_list import ColormapListWidget
 
 from .kshape import KShapeWidget
 from .heatmap import HeatmapWidget, HeatmapSplitterWidget, HeatmapTracerWidget
@@ -12,6 +11,6 @@ from .lda import LDAPlot
 
 from .sosd_fourier import SOSD_Widget
 
-__all__ = ['DatapointTracerWidget', 'ColormapListWidget', 'KShapeWidget', 'HeatmapWidget', 'HeatmapSplitterWidget',
+__all__ = ['DatapointTracerWidget', 'KShapeWidget', 'HeatmapWidget', 'HeatmapSplitterWidget',
            'HeatmapTracerWidget', 'CrossCorrelationWidget', 'ScatterPlotWidget', 'BeeswarmPlotWindow',
            'CurvePlotWindow', 'LDAPlot', 'SOSD_Widget']
