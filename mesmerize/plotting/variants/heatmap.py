@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtWidgets
 from ...pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import numpy as np
-from seaborn import heatmap as seaborn_heatmap
+from seaborn import clustermap as sns_clustermap
 from matplotlib.patches import Rectangle as RectangularPatch
 from matplotlib.lines import Line2D
 from matplotlib.transforms import Bbox
@@ -20,6 +20,7 @@ from matplotlib.patches import Patch as MPatch
 from matplotlib import rcParams
 from matplotlib.widgets import RectangleSelector
 from pandas import Series
+from ..utils import map_labels_to_colors
 
 
 class Heatmap(MatplotlibWidget):
@@ -29,20 +30,17 @@ class Heatmap(MatplotlibWidget):
     def __init__(self, highlight_mode='row'):
         MatplotlibWidget.__init__(self)
         rcParams['image.interpolation'] = None
-        self.ax_heatmap = self.fig.add_subplot(111)
-        self.ax_heatmap.get_yaxis().set_visible(False)
+        self.ax_heatmap_ = self.fig.add_subplot(111)
+        self.ax_heatmap_.get_yaxis().set_visible(False)
 
-#        self.ax_ylabel_bar = self.ax_heatmap.twiny()
-        [[x1, y1], [x2, y2]] = self.ax_heatmap.get_position().get_points()
-        bb = Bbox.from_extents([[0.1, y1], [0.11, y2]])
-        self.ax_ylabel_bar = self.fig.add_axes(bb.bounds)
-#        self.ax_ylabel_bar.axis('off')
+        # [[x1, y1], [x2, y2]] = self.ax_heatmap_.get_position().get_points()
+        # bb = Bbox.from_extents([[0.1, y1], [0.11, y2]])
+        # self.ax_ylabel_bar = self.fig.add_axes(bb.bounds)
 
         self.fig.subplots_adjust(right=0.8)
         self.cbar_ax = self.fig.add_axes([0.85, 0.15, 0.05, 0.7])
         self.data = None
-        # self._highlight = None
-        # self.highlighted_index = None
+
         self.selector = Selection()
         self.selector.sig_selection_changed.connect(self.sig_selection_changed.emit)
 
@@ -52,21 +50,40 @@ class Heatmap(MatplotlibWidget):
 
         self.plot = None
         
-    def set(self, data: np.ndarray, *args, ylabels_bar: Series = None, cmap_ylabels_bar: str = 'tab20', **kwargs):
+    def set(self, data: np.ndarray, *args, ylabels: iter = None, ylabels_cmap: str = 'tab20', cluster_kwargs = None,
+            **kwargs):
         """
         :param data:    2D numpy array
         :param args:    Additional args that are passed to sns.heatmap()
         :param kwargs:  Additional kwargs that are passed to sns.heatmap()
         """
-        self.ax_heatmap.cla()
+        self.ax_heatmap_.cla()
         # self._highlight = None
         self.cbar_ax.cla()
         self.data = data
 
-        # labels = kwargs.pop('ylabels_bar')
-        # cmap_ylabels_bar = kwargs.pop('cmap_ylabels_bar')
+        if cluster_kwargs is None:
+            cluster_kwargs = {}
+            row_cluster=None
+            col_coluster=None
 
-        self.plot = seaborn_heatmap(data, *args, ax=self.ax_heatmap, cbar_ax=self.cbar_ax, **kwargs)
+
+
+        # labels = kwargs.pop('ylabels')
+        # ylabels_cmap = kwargs.pop('ylabels_cmap')
+
+        # self.plot = seaborn_heatmap(data, *args, ax=self.ax_heatmap_, cbar_ax=self.cbar_ax, **kwargs)
+
+        if isinstance(ylabels, Series):
+            ylabels = ylabels.values
+
+        row_colors = map_labels_to_colors(ylabels, ylabels_cmap)
+
+        self.plot = sns_clustermap(*args, data=data, row_colors=row_colors, row_cluster=None, col_cluster=None, **cluster_kwargs, **kwargs)
+
+        self.plot.ax_heatmap.callbacks.connect('ylim_changed', lambda ax: self.plot.ax_row_colors.set_ylim(ax.get_ylim()))
+        self.plot.ax_row_colors.callbacks.connect('ylim_changed', lambda ax: self.plot.ax_heatmap.set_ylim(ax.get_ylim()))
+
 
         self.selector.set(self, mode=self.highlight_mode)
         # if isinstance(self.selector, Selection):
@@ -75,39 +92,39 @@ class Heatmap(MatplotlibWidget):
 
         # self.selector = Selection(self, mode=self.highlight_mode)
 
-        if ylabels_bar is not None:
-            self._set_ylabel_bar(ylabels_bar, cmap=cmap_ylabels_bar)
+        # if ylabels is not None:
+        #     self._set_ylabel_bar(ylabels, cmap=ylabels_cmap)
 
         self.draw()
 
-    def _set_ylabel_bar(self, labels : Series, cmap: str = 'tab20'):
-        assert isinstance(labels, Series)
-
-        self.ax_ylabel_bar.cla()
-
-        [[x1, y1], [x2, y2]] = self.ax_heatmap.get_position().get_points()
-        bb = Bbox.from_extents([[0.123, y1], [0.11, y2]])
-        self.ax_ylabel_bar.set_position(bb)
-
-        # self.ax_ylabel_bar.get_xaxis().set_visible(False)s
-        # self.ax_ylabel_bar.get_yaxis().set_visible(False)
-        self.ax_ylabel_bar.axis('off')
-
-        labels_unique = labels.unique()
-        colors_map = {}
-
-        for ix, c in enumerate(labels_unique):
-            colors_map.update({labels_unique[ix]: ix})
-
-        colors = labels.map(colors_map)
-        color_labels_array = np.expand_dims(colors.values, axis=1)
-
-        ylabel_bar = self.ax_ylabel_bar.imshow(color_labels_array, aspect='auto', cmap=cmap)
-
-        cs = np.unique(color_labels_array.ravel())
-        colors = [ylabel_bar.cmap(ylabel_bar.norm(c)) for c in cs]
-        ps = [MPatch(color=colors[i], label=labels_unique[i]) for i in range(len(cs))]
-        self.ax_ylabel_bar.legend(handles=ps, bbox_to_anchor=(1,1))
+    # def _set_ylabel_bar(self, labels : Series, cmap: str = 'tab20'):
+    #     assert isinstance(labels, Series)
+    #
+    #     self.ax_ylabel_bar.cla()
+    #
+    #     [[x1, y1], [x2, y2]] = self.ax_heatmap_.get_position().get_points()
+    #     bb = Bbox.from_extents([[0.123, y1], [0.11, y2]])
+    #     self.ax_ylabel_bar.set_position(bb)
+    #
+    #     # self.ax_ylabel_bar.get_xaxis().set_visible(False)s
+    #     # self.ax_ylabel_bar.get_yaxis().set_visible(False)
+    #     self.ax_ylabel_bar.axis('off')
+    #
+    #     labels_unique = labels.unique()
+    #     colors_map = {}
+    #
+    #     for ix, c in enumerate(labels_unique):
+    #         colors_map.update({labels_unique[ix]: ix})
+    #
+    #     colors = labels.map(colors_map)
+    #     color_labels_array = np.expand_dims(colors.values, axis=1)
+    #
+    #     ylabel_bar = self.ax_ylabel_bar.imshow(color_labels_array, aspect='auto', cmap=cmap)
+    #
+    #     cs = np.unique(color_labels_array.ravel())
+    #     colors = [ylabel_bar.cmap(ylabel_bar.norm(c)) for c in cs]
+    #     ps = [MPatch(color=colors[i], label=labels_unique[i]) for i in range(len(cs))]
+    #     self.ax_ylabel_bar.legend(handles=ps, bbox_to_anchor=(1,1))
 
     def add_stimulus_indicator(self, start: int, end: int, color: str):
         for t in [start, end]:
@@ -153,8 +170,8 @@ class Selection(QtCore.QObject):
         self._highlight = None
         self.current_ix = None
 
-        self.canvas = heatmap_obj.canvas
-        self.plot = heatmap_obj.plot
+        self.canvas = heatmap_obj.plot.fig.canvas
+        self.plot = heatmap_obj.plot.ax_heatmap
         self.heatmap = heatmap_obj
 
         self.mode = mode
@@ -167,21 +184,22 @@ class Selection(QtCore.QObject):
             self.canvas.setFocus()
             self.canvas.mpl_connect('key_press_event', self.set_multi_select_mode_on)
             self.canvas.mpl_connect('key_release_event', self.set_multi_select_mode_off)
-        elif mode == 'span':
-            rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
-            self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
-                                        drawtype='box', useblit=True,
-                                        button=[1, 3],  # don't use middle button
-                                        minspanx=1, minspany=1,
-                                        spancoords='data',
-                                        interactive=True, rectprops=rp)
-            self.RS.set_active(True)
+        # elif mode == 'span':
+        #     rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
+        #     self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
+        #                                 drawtype='box', useblit=True,
+        #                                 button=[1, 3],  # don't use middle button
+        #                                 minspanx=1, minspany=1,
+        #                                 spancoords='data',
+        #                                 interactive=True, rectprops=rp)
+        #     self.RS.set_active(True)
         else:
             raise ValueError("Invalid selection mode: '" + str(mode) + "' Valid modes are: 'row', 'item' or 'span'.")
 
     def _clear_highlight(self):
         if self._highlight is not None:
             self._highlight.remove()
+        self._highlight = None
     
     def update_selection(self, ix: tuple):
         if not self.multi_select_mode:
@@ -199,6 +217,11 @@ class Selection(QtCore.QObject):
         if type(ev) is int:
             y = ev
         else:
+            if ev.button == 3:
+                self._clear_highlight()
+                self.canvas.draw()
+                return
+
             y = ev.ydata
             
             if y is None:
@@ -235,9 +258,6 @@ class Selection(QtCore.QObject):
         self.canvas.draw()
 
     def toggle_selector(self, event):
-        print('bah')
-
-        print('Key pressed.')
         if event.key in ['Q', 'q'] and self.RS.active:
             print('RectangleSelector deactivated.')
             self.RS.set_active(False)
@@ -254,22 +274,6 @@ class Selection(QtCore.QObject):
         print(" The button you used were: %s %s" % (eclick.button, erelease.button))
             
 
-class Clustermap(Heatmap):
-    def __init__(self):
-        Heatmap.__init__(self)
-
-    def set(self, data: np.ndarray, *args, **kwargs):
-        """
-        :param data:    2D numpy array
-        :param args:    Additional args that are passed to sns.heatmap()
-        :param kwargs:  Additional kwargs that are passed to sns.heatmap()
-        """
-        self.ax_heatmap.cla()
-        self.cbar_ax.cla()
-        self.data = data
-        self.plot = sns.clustermap(data, *args, ax=self.ax_heatmap, cbar_ax=self.cbar_ax, **kwargs)
-        self.draw()
-
 if __name__ == '__main__':
     import pickle
     from sklearn.metrics import pairwise_distances
@@ -282,7 +286,7 @@ if __name__ == '__main__':
     
     app = QtWidgets.QApplication([])
     w = Heatmap(highlight_mode='item')
-    w.set(dists, cmap='jet', ylabels_bar=df.promoter)
+    w.set(dists, cmap='jet', ylabels=df.promoter)
     
     w.show()
     app.exec_()
