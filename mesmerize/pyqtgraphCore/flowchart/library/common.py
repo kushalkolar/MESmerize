@@ -16,7 +16,6 @@ except:
 
 from ...widgets.ComboBox import ComboBox as QComboBox
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
-from ....plotting.widgets import ColormapListWidget
 
 
 def generateUi(opts):
@@ -114,9 +113,6 @@ def generateUi(opts):
                 w.setText(o['text'])
             if 'checkable' in o:
                 w.setChecked(o['checkable'])
-
-        elif t == 'cmaplist' :
-            w = ColormapListWidget()
 
         elif t == 'color':
             w = ColorButton()
