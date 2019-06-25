@@ -140,7 +140,7 @@
   <customwidget>
    <class>ColormapListWidget</class>
    <extends>QListWidget</extends>
-   <header>..colormap_list</header>
+   <header>...utils</header>
   </customwidget>
  </customwidgets>
  <resources/>

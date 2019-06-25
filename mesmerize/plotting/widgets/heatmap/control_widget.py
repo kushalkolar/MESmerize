@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './control_widget.ui'
+# Form implementation generated from reading ui file 'control_widget.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -90,4 +90,4 @@ class Ui_ControlWidget(object):
         self.pushButtonLoad.setText(_translate("ControlWidget", "Load"))
         self.checkBoxShowStimuli.setText(_translate("ControlWidget", "Show Stimuli"))
 
-from ..colormap_list import ColormapListWidget
+from ...utils import ColormapListWidget

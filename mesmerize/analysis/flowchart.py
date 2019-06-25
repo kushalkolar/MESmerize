@@ -14,15 +14,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import sys
 
 sys.setrecursionlimit(10000)
+from PyQt5 import QtWidgets
 from ..pyqtgraphCore.flowchart import Flowchart
-# import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
-from ..pyqtgraphCore.Qt import QtCore, QtWidgets
-
 from .pytemplates import mainwindow_pytemplate as uiWin
 from ..pyqtgraphCore.console import ConsoleWidget
-import pickle
 from ..common import configuration
 import os
 
@@ -40,13 +37,12 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
 
         ns = {'np': np,
               'pd': pd,
-              'pickle': pickle,
               'get_nodes': self.fc.nodes,
               'main': self
               }
 
         txt = "Namespaces:\n" \
-              "pickle as 'pickle'\n" \
+              "pandas as 'pd'\n" \
               "numpy as 'np'\n" \
               "self as 'main'\n" \
               "'get_nodes()' to get a dict of all nodes\n"
@@ -63,11 +59,3 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
 
         if filename is not None:
             self.fc.loadFile(filename)
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-    analyzer_gui = Window()
-    analyzer_gui.show()
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        app.exec_()
