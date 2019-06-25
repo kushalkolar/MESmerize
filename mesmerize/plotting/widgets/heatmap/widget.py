@@ -162,7 +162,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
 
     def _set_plot(self, data_array: np.ndarray):
         ylabels = self.dataframe[self.labels_column]
-        self.plot_widget.set(data_array, cmap=self.cmap, ylabels_bar=ylabels)
+        self.plot_widget.set(data_array, cmap=self.cmap, ylabels=ylabels)
 
     def _set_sort_order(self, column: str):
         self.dataframe.sort_values(by=[column], inplace=True)
@@ -207,7 +207,7 @@ class ControlWidget(QtWidgets.QWidget):
 class HeatmapTracerWidget(HeatmapSplitterWidget):
     def __init__(self):
         HeatmapSplitterWidget.__init__(self)
-
+        self.setWindowTitle('Heatmap Tracer Widget')
         self.control_widget = ControlWidget()
         self.add_to_splitter(self.control_widget)
 
@@ -309,7 +309,7 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
         plot_state.pop('dataframes')
         plot_state.pop('transmission')
 
-        plot_state['type'] = 'HeatmapTracerWidget'
+        plot_state['type'] = self.__class__.__name__
         self._input_transmission.plot_state = plot_state
         self._input_transmission.to_hdf5(path)
 
@@ -333,12 +333,10 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
                                           f'Could not open the chosen file\n{traceback.format_exc()}')
             return
 
-
-
         plot_state = ptrn.plot_state
         plot_type = plot_state['type']
 
-        if not plot_type == 'HeatmapTracerWidget':
+        if not plot_type == self.__class__.__name__:
             QtWidgets.QMessageBox.warning(self, 'Wrong plot type', f'The chosen file is not for this type of '
             f'plot\nThis file is for the following plot type: {plot_type}')
             return
@@ -355,3 +353,4 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
         self.set_plot_opts(plot_state)
         self.control_widget.ui.pushButtonSave.setChecked(True)
         self.update_plot()
+
