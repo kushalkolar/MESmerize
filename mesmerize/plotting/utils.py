@@ -1,6 +1,37 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from glob import glob
 import os
+from matplotlib import cm as matplotlib_color_map
+from typing import List, Union, Any
+from ...pyqtgraphCore import mkColor
+import numpy as np
+
+
+def auto_colormap(number_of_colors: int, color_map: str = 'hsv') -> List[Union[QtGui.QColor, Any]]:
+    cm = matplotlib_color_map.get_cmap(color_map)
+    cm._init()
+    lut = (cm._lut * 255).view(np.ndarray)
+    cm_ixs = np.linspace(0, 210, number_of_colors, dtype=int)
+
+    colors = []
+    for ix in range(number_of_colors):
+        c = lut[cm_ixs[ix]]
+        colors.append(mkColor(c))
+
+    return colors
+
+
+def get_colormap(labels: iter, cmap: str) -> dict:
+    """
+    Maps labels onto colors
+    :param labels:
+    :param cmap:    name of colormap
+    :return:        dict of labels as keys and colors as values
+    """
+    labels = set(labels)
+    colors = auto_colormap(len(labels), cmap)
+
+    return dict(zip(labels, colors))
 
 
 class ColormapListWidget(QtWidgets.QListWidget):
@@ -34,9 +65,3 @@ class ColormapListWidget(QtWidgets.QListWidget):
         self.setIconSize(QtCore.QSize(120, 25))
 
 
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-    w = ColormapListWidget()
-    w.signal_colormap_changed.connect(lambda c: print(w.current_cmap))
-    w.show()
-    app.exec_()
