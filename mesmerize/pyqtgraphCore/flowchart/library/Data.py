@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from ...Qt import QtGui, QtCore, QtWidgets
-import numpy as np
+from spyder.widgets.variableexplorer.objecteditor import oedit
 from .common import *
 import traceback
 from functools import partial
@@ -79,7 +79,7 @@ class LoadFile(CtrlNode):
         self.ctrls['load_trn'].clicked.connect(self.file_dialog_trn_file)
         self.ctrls['proj_path'].clicked.connect(self.dir_dialog_proj_path)
 
-        self.transmission = None
+        self.t = None
         self._loadNode = True
 
     def file_dialog_trn_file(self):
@@ -87,7 +87,7 @@ class LoadFile(CtrlNode):
         if path == '':
             return
         try:
-            self.transmission = Transmission.from_hdf5(path[0])
+            self.t = Transmission.from_hdf5(path[0])
         except:
             QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
@@ -104,8 +104,8 @@ class LoadFile(CtrlNode):
 
     def _set_proj_path(self, path: str):
         self.ctrls['proj_path_label'].setText(os.path.basename(path))
-        self.transmission.set_proj_path(path)
-        self.transmission.set_proj_config()
+        self.t.set_proj_path(path)
+        self.t.set_proj_config()
 
     def dir_dialog_proj_path(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Project Folder')
@@ -121,8 +121,8 @@ class LoadFile(CtrlNode):
             return
 
     def process(self):
-        self.transmission.get_proj_path()
-        return {'Out': self.transmission}
+        self.t.get_proj_path()
+        return {'Out': self.t}
 
 
 class Save(CtrlNode):
@@ -183,6 +183,51 @@ class Merge(CtrlNode):
         self.t = Transmission.merge(self.transmissions_list)
 
         return {'Out': self.t}
+
+
+class ViewTransmission(CtrlNode):
+    """View/Edit transmission using the spyder object editor"""
+    nodeName = 'ViewData'
+    uiTemplate = [('No controls', 'label')]
+
+    # def __init__(self, name):
+    #     CtrlNode.__init__(self, name, terminals={'In':})
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission.copy()
+        edited = oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace})
+        if edited is not None:
+            self.t.df = edited['dataframe']
+            self.t.history_trace.add_operation('all', 'object_editor', {})
+
+        return self.t
+
+
+class DropNa(CtrlNode):
+    """Drop NaNs from the DataFrame"""
+    nodeName = 'DropNaNs'
+    uiTemplate = [('axis', 'combo', {'values': ['row', 'columns'], 'toolTip': 'Choose to drop NaNs from rows or columns'}),
+                  ('how', 'combo', {'values': ['any', 'all'], 'toolTip': 'any: drop from chosen axis if any element is NaN\n'
+                                                                         'all: drop from chosen axis if all elements are NaN'}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+
+    def processData(self, transmission: Transmission):
+        if not self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+        axis = self.ctrls['axis'].currentText()
+        if axis == 'row':
+            axis = 0
+
+        how = self.ctrls['how'].currentText()
+
+        self.t.df.dropna(axis=axis, how=how, inplace=True)
+        self.t.history_trace.add_operation('all', 'dropna', parameters={'axis': axis, 'how': how})
+
+        return self.t
+
 
 
 # class RunScript(CtrlNode):

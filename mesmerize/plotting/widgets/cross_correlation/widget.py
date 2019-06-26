@@ -14,7 +14,7 @@ from .compute_cc import compute_cc_data, CC_Data
 from .control_widget import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
-from ....analysis import Transmission, get_sampling_rate, get_array_size
+from ....analysis import Transmission, get_sampling_rate, get_array_size, organize_dataframe_columns
 import numpy as np
 from ....pyqtgraphCore import PlotDataItem, mkPen
 from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColor
@@ -185,10 +185,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
     def set_input(self, transmission: Transmission = None):
         self.transmission = transmission
         self.transmission.df.reset_index(drop=True, inplace=True)
-        # self.main_dataframe = self.transmission.df
+
+        cols = self.transmission.df.columns
+        dcols, ccols, ucols = organize_dataframe_columns(cols)
 
         self.control_widget.ui.comboBoxDataColumn.clear()
-        self.control_widget.ui.comboBoxDataColumn.addItems(self.transmission.df.columns)
+        self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
 
         self.reset_sample_id_list_widget()
         self.control_widget.ui.listWidgetSampleID.setCurrentRow(0)
