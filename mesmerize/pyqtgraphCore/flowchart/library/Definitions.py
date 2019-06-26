@@ -383,6 +383,7 @@ class PeakDetect(CtrlNode):
         pb_input = inputs['PB_Input']
         if isinstance(pb_input, Transmission):
             self.t = pb_input
+            self.t.df.reset_index(drop=True, inplace=True)
             if self.pbw is None:
                 self._peak_editor()
             else:
@@ -452,6 +453,7 @@ class PeakDetect(CtrlNode):
 
         self.t.df['curve'] = self.t.df[data_column]
         self.t.df.drop(columns=['_NORM_PD'], inplace=True)
+        self.t.df.reset_index(inplace=True, drop=True)
         # self.t.df.drop(columns=['raw_curve'])
 
         if self.pbw is not None:
