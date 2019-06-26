@@ -82,6 +82,11 @@ class ColormapListWidget(QtWidgets.QListWidget):
     def current_cmap(self) -> str:
         return self.currentItem().text()
 
+    def set_cmap(self, cmap: str):
+        item = self.findItems(cmap, QtCore.Qt.MatchExactly)[0]
+        ix = self.indexFromItem(item)
+        self.setCurrentIndex(ix)
+
     def emit_colormap_changed(self, item: QtWidgets.QListWidgetItem):
         self.signal_colormap_changed.emit(item.text())
 

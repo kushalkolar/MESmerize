@@ -237,6 +237,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.plot_windows.append(plot)
         plot.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         plot.destroyed.connect(partial(self.plot_windows.remove, plot))
+        plot.show()
 
     def open_new_viewer(self):
         w = get_window_manager().get_new_viewer_window()
