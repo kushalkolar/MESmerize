@@ -48,8 +48,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         self.plot_widget.sig_selection_changed.connect(self.set_lineplots)
 
-        self.plot_widget.ax_ylabel_bar.set_axis_on()
-        self.plot_widget.ax_heatmap.get_yaxis().set_visible(True)
+        # self.plot_widget.ax_ylabel_bar.set_axis_on()
+        # self.plot_widget.ax_heatmap.get_yaxis().set_visible(True)
 
         self.curve_plot_1 = PlotDataItem()
         self.curve_plot_2 = PlotDataItem()
@@ -90,11 +90,14 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         plot_data = self.cc_data[sample_id].get_threshold_matrix(matrix_type=opt, lag_thr=lt, max_thr=mt, lag_thr_abs=abs_val)
 
-        self.plot_widget.set(plot_data, cmap=cmap)
-        self.plot_widget.ax_ylabel_bar.set_axis_off()
+        labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
+        ylabels = self.transmission.df[labels_col]
 
-        self.plot_widget.ax_heatmap.set_xlabel('Curve 1, magenta')
-        self.plot_widget.ax_heatmap.set_ylabel('Curve 2, cyan')
+        self.plot_widget.set(plot_data, cmap=cmap, ylabels=ylabels)
+        # self.plot_widget.ax_ylabel_bar.set_axis_off()
+
+        self.plot_widget.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
+        self.plot_widget.plot.ax_heatmap.set_ylabel('Curve 2, cyan')
 
         self.plot_widget.draw()
 
@@ -191,6 +194,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         self.control_widget.ui.comboBoxDataColumn.clear()
         self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
+
+        self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
 
         self.reset_sample_id_list_widget()
         self.control_widget.ui.listWidgetSampleID.setCurrentRow(0)
