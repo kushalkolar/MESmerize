@@ -13,12 +13,14 @@ from PyQt5 import QtCore, QtWidgets
 from ...variants import Heatmap
 from .. import DatapointTracerWidget
 from ....analysis.data_types import HistoryTrace, Transmission
+from ....analysis import organize_dataframe_columns
 from .control_widget import Ui_ControlWidget
 import numpy as np
 import pandas as pd
 from typing import Optional, Union
 import traceback
 import os
+from warnings import warn
 
 
 class HeatmapWidget(QtWidgets.QWidget):
@@ -135,6 +137,9 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
 
         self.dataframe = dataframe.reset_index(drop=True)
 
+        self.kwargs = kwargs
+        # print(kwargs)
+
         self._transmission = None
         self._history_trace = None
         self.has_history_trace = False
@@ -162,7 +167,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
 
     def _set_plot(self, data_array: np.ndarray):
         ylabels = self.dataframe[self.labels_column]
-        self.plot_widget.set(data_array, cmap=self.cmap, ylabels=ylabels)
+        self.plot_widget.set(data_array, cmap=self.cmap, ylabels=ylabels, **self.kwargs)
 
     def _set_sort_order(self, column: str):
         self.dataframe.sort_values(by=[column], inplace=True)
@@ -227,7 +232,11 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
 
     @QtCore.pyqtSlot(tuple)
     def set_current_datapoint(self, ix: tuple):
-        identifier = self.dataframe.iloc[ix[1]]['uuid_curve']
+        try:
+            identifier = self.dataframe.iloc[ix[1]]['uuid_curve']
+        except IndexError:
+            warn('Datapoint index out of bounds. Probably clicked a plot point outside of the data')
+            return
         r = self.dataframe[self.dataframe['uuid_curve'] == identifier]
 
         if self.has_history_trace:
@@ -247,14 +256,16 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
     def set_input(self, transmission: Transmission):
         cols = transmission.df.columns
         if set(self._previous_df_columns) != set(cols):
+            dcols, ccols, ucols = organize_dataframe_columns(cols)
+
             self.control_widget.ui.comboBoxDataColumn.clear()
-            self.control_widget.ui.comboBoxDataColumn.addItems(cols)
+            self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
 
             self.control_widget.ui.comboBoxLabelsColumn.clear()
-            self.control_widget.ui.comboBoxLabelsColumn.addItems(cols)
+            self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
 
             self.control_widget.ui.comboBoxDPTCurveColumn.clear()
-            self.control_widget.ui.comboBoxDPTCurveColumn.addItems(cols)
+            self.control_widget.ui.comboBoxDPTCurveColumn.addItems(dcols)
 
         self._input_transmission = transmission
         self._previous_df_columns = cols
@@ -287,8 +298,24 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
 
         self.set_data(**self.get_plot_opts())
 
+    def get_cluster_kwargs(self) -> dict:
+        # Just get the first datablock ID since Agglomerative clustering would have been done on all data blocks
+        db_id = self._input_transmission.history_trace.data_blocks[0]
+        children = np.array(self._input_transmission.history_trace.get_operation_params(data_block_id=db_id, operation='agglomerative_clustering')['children'])
+        distance = np.arange(children.shape[0])
+        obs = no_of_observations = np.arange(2, children.shape[0] + 2)
+        lkg = np.column_stack([children, distance, obs]).astype(np.float64)
+
+        ck = dict(row_linkage=lkg, row_cluster=True, col_cluster=False)
+        return ck
+
     def set_data(self, *args, datapoint_tracer_curve_column: str = None, **kwargs):
-        super(HeatmapTracerWidget, self).set_data(*args, **kwargs)
+        if self._input_transmission.last_output == 'AGG_CLUSTER_LABEL':
+            cluster_kwargs = self.get_cluster_kwargs()
+            self.comboBoxSortColumn.setDisabled(True)
+        else:
+            cluster_kwargs = None
+        super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=cluster_kwargs, **kwargs)
         self.datapoint_tracer_curve_column = datapoint_tracer_curve_column
 
     def save_plot(self):

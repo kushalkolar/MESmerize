@@ -2,6 +2,8 @@ from .common import *
 from sklearn import cluster as skcluster
 from ....plotting.widgets import LDAPlot
 from ....plotting.widgets import KShapeWidget
+from scipy.stats import wasserstein_distance
+from sklearn.metrics import pairwise_distances
 
 
 class KShape(CtrlNode):
@@ -30,9 +32,10 @@ class KShape(CtrlNode):
         self.kshape_widget.set_input(self.t)
         return None
 
+
 class KMeans(CtrlNode):
     """KMeans clustering\nhttps://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html\n
-    Output column -> _KMEANS_CLUSTER_<data_column>"""
+    Output column -> KMEANS_CLUSTER_<data_column>"""
     nodeName = "KMeans"
     uiTemplate = [('data_column', 'combo', {}),
 
@@ -82,7 +85,7 @@ class KMeans(CtrlNode):
 
         self.data = np.vstack(self.t.df[self.data_column].values)
 
-        output_column = '_KMEANS_CLUSTER_LABEL'
+        output_column = 'KMEANS_CLUSTER_LABEL'
 
         self.kmeans = skcluster.KMeans(n_clusters=n_clusters, n_init=n_init, max_iter=max_iter, tol=tol,
                                        precompute_distances=precompute_distances)
@@ -105,7 +108,7 @@ class KMeans(CtrlNode):
 class Agglomerative(CtrlNode):
     """Recursively merges the pair of clusters that minimally increases a given linkage distance.\n
     https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html\n
-    Output column -> _AGG_CLUSTER_<data_column>"""
+    Output column -> AGG_CLUSTER_<data_column>"""
     nodeName = 'Agglomerative'
     uiTemplate = [('data_column', 'combo', {}),
 
@@ -114,7 +117,7 @@ class Agglomerative(CtrlNode):
                     'toolTip': 'The number of clusters to find.'}),
 
                   ('affinity', 'combo',
-                   {'items': ['euclidean', 'l1', 'l2', 'manhattan', 'cosine', 'precomputed'],
+                   {'items': ['wasserstein', 'euclidean', 'l1', 'l2', 'manhattan', 'cosine'],
                     'tooltip': 'Metric used to compute the linkage.\n'
                                'Can be “euclidean”, “l1”, “l2”, “manhattan”, “cosine”, or ‘precomputed’.'
                                '\nIf linkage is “ward”, only “euclidean” is accepted'}),
@@ -134,7 +137,7 @@ class Agglomerative(CtrlNode):
                                'Note also that when varying the number of clusters and using caching, it may be advantageous to compute the full tree.'}),
 
                   ('linkage', 'combo',
-                   {'items': ['ward', 'complete', 'average', 'single'],
+                   {'items': ['complete', 'average', 'single', 'ward'],
                     'toolTIp': 'The linkage criterion determines which distance to use between sets of observation.'
                                '\nThe algorithm will merge the pairs of cluster that minimize this criterion.'
                                '\nward minimizes the variance of the clusters being merged.\n'
@@ -175,9 +178,16 @@ class Agglomerative(CtrlNode):
 
         linkage = self.ctrls['linkage'].currentText()
 
-        output_column = '_AGG_CLUSTER_LABEL'
+        output_column = 'AGG_CLUSTER_LABEL'
 
         data = np.vstack(self.t.df[self.data_column].values)
+
+        if affinity == 'wasserstein':
+            data = pairwise_distances(data, metric=wasserstein_distance)
+            distance_metric = 'wasserstein'
+            affinity = 'precomputed'
+        else:
+            distance_metric = affinity
 
         self.clustering = skcluster.AgglomerativeClustering(n_clusters=n_clusters, affinity=affinity,
                                                             connectivity=connectivity_matrix,
@@ -187,13 +197,16 @@ class Agglomerative(CtrlNode):
 
         self.t.df[output_column] = self.clustering.labels_
 
-        params = {'data_column': self.data_column,
-                  'n_clusters': n_clusters,
-                  'affinity': affinity,
-                  'connectivity_matrix_column': connectivity_matrix_col,
-                  'compute_full_tree': compute_full_tree,
-                  'linkage': linkage
+        params = {'data_column':                    self.data_column,
+                  'n_clusters':                     n_clusters,
+                  'affinity':                       affinity,
+                  'distance_metric':                distance_metric,
+                  'connectivity_matrix_column':     connectivity_matrix_col,
+                  'compute_full_tree':              compute_full_tree,
+                  'linkage':                        linkage,
+                  'children':                       self.clustering.children_.tolist()
                   }
+
         self.t.history_trace.add_operation(data_block_id='all', operation='agglomerative_clustering', parameters=params)
         self.t.last_output = output_column
 
