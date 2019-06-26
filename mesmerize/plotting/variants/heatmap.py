@@ -12,15 +12,87 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtWidgets
 from ...pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import numpy as np
-from seaborn import clustermap as sns_clustermap
+# from seaborn import clustermap as sns_clustermap
+from seaborn.matrix import ClusterGrid, _matrix_mask
 from matplotlib.patches import Rectangle as RectangularPatch
 from matplotlib.lines import Line2D
 from matplotlib.transforms import Bbox
 from matplotlib.patches import Patch as MPatch
 from matplotlib import rcParams
+from matplotlib import pyplot as plt
 from matplotlib.widgets import RectangleSelector
 from pandas import Series
-from ..utils import map_labels_to_colors
+from ..utils import get_colormap, map_labels_to_colors
+from typing import Union
+import pandas as pd
+from matplotlib import gridspec
+from functools import partial
+
+
+class CustomClusterGrid(ClusterGrid):
+    def __init__(self, data, fig, pivot_kws=None, z_score=None, standard_scale=None,
+                 figsize=None, row_colors=None, col_colors=None, mask=None):
+        """Grid object for organizing clustered heatmap input on to axes"""
+
+        if isinstance(data, pd.DataFrame):
+            self.data = data
+        else:
+            self.data = pd.DataFrame(data)
+
+        self.data2d = self.format_data(self.data, pivot_kws, z_score,
+                                       standard_scale)
+
+        self.mask = _matrix_mask(self.data2d, mask)
+
+        if figsize is None:
+            width, height = 10, 10
+            figsize = (width, height)
+        if fig is None:
+            self.fig = plt.figure(figsize=figsize)
+        else:
+            self.fig = fig
+
+        self.row_colors, self.row_color_labels = \
+            self._preprocess_colors(data, row_colors, axis=0)
+        self.col_colors, self.col_color_labels = \
+            self._preprocess_colors(data, col_colors, axis=1)
+
+        width_ratios = self.dim_ratios(self.row_colors,
+                                       figsize=figsize,
+                                       axis=1)
+
+        height_ratios = self.dim_ratios(self.col_colors,
+                                        figsize=figsize,
+                                        axis=0)
+        nrows = 3 if self.col_colors is None else 4
+        ncols = 3 if self.row_colors is None else 4
+
+        self.gs = gridspec.GridSpec(nrows, ncols, wspace=0.01, hspace=0.01,
+                                    width_ratios=width_ratios,
+                                    height_ratios=height_ratios)
+
+        self.ax_row_dendrogram = self.fig.add_subplot(self.gs[nrows - 1, 0:2])
+        self.ax_col_dendrogram = self.fig.add_subplot(self.gs[0:2, ncols - 1])
+        self.ax_row_dendrogram.set_axis_off()
+        self.ax_col_dendrogram.set_axis_off()
+
+        self.ax_row_colors = None
+        self.ax_col_colors = None
+
+        if self.row_colors is not None:
+            self.ax_row_colors = self.fig.add_subplot(
+                self.gs[nrows - 1, ncols - 2])
+        if self.col_colors is not None:
+            self.ax_col_colors = self.fig.add_subplot(
+                self.gs[nrows - 2, ncols - 1])
+
+        self.ax_heatmap = self.fig.add_subplot(self.gs[nrows - 1, ncols - 1])
+
+        # colorbar for scale to left corner
+        self.cax = self.fig.add_subplot(self.gs[0, 0])
+
+        self.dendrogram_row = None
+        self.dendrogram_col = None
 
 
 class Heatmap(MatplotlibWidget):
@@ -28,17 +100,18 @@ class Heatmap(MatplotlibWidget):
     sig_selection_changed = QtCore.pyqtSignal(tuple)
 
     def __init__(self, highlight_mode='row'):
+        # QtCore.QObject.__init__(self)
         MatplotlibWidget.__init__(self)
         rcParams['image.interpolation'] = None
-        self.ax_heatmap_ = self.fig.add_subplot(111)
-        self.ax_heatmap_.get_yaxis().set_visible(False)
+        # self.ax_heatmap_ = self.fig.add_subplot(111)
+        # self.ax_heatmap_.get_yaxis().set_visible(False)
 
         # [[x1, y1], [x2, y2]] = self.ax_heatmap_.get_position().get_points()
         # bb = Bbox.from_extents([[0.1, y1], [0.11, y2]])
         # self.ax_ylabel_bar = self.fig.add_axes(bb.bounds)
 
-        self.fig.subplots_adjust(right=0.8)
-        self.cbar_ax = self.fig.add_axes([0.85, 0.15, 0.05, 0.7])
+        # self.fig.subplots_adjust(right=0.8)
+        # self.cbar_ax = self.fig.add_axes([0.85, 0.15, 0.05, 0.7])
         self.data = None
 
         self.selector = Selection()
@@ -49,7 +122,16 @@ class Heatmap(MatplotlibWidget):
         self.highlight_mode = highlight_mode
 
         self.plot = None
-        
+
+        self.cid_heatmap = None
+        self.cid_ax_row_colors = None
+        self.cid_ax_row_dendrogram = None
+
+        self._previous_ylims = None
+        self.max_ylim = None
+        self.min_ylim = None
+        self.xlims = None
+
     def set(self, data: np.ndarray, *args, ylabels: iter = None, ylabels_cmap: str = 'tab20', cluster_kwargs = None,
             **kwargs):
         """
@@ -57,17 +139,19 @@ class Heatmap(MatplotlibWidget):
         :param args:    Additional args that are passed to sns.heatmap()
         :param kwargs:  Additional kwargs that are passed to sns.heatmap()
         """
-        self.ax_heatmap_.cla()
+        # self.ax_heatmap_.cla()
         # self._highlight = None
-        self.cbar_ax.cla()
+        # self.cbar_ax.cla()
         self.data = data
 
+        cluster_kwarg_keys = ['row_cluster', 'row_linkage', 'col_cluster', 'col_linkage', 'colorbar_kws', 'metric', 'method']
+
         if cluster_kwargs is None:
-            cluster_kwargs = {}
-            row_cluster=None
-            col_coluster=None
-
-
+            cluster_kwargs = dict.fromkeys(cluster_kwarg_keys)
+        else:
+            for key in cluster_kwarg_keys:
+                if key not in cluster_kwargs.keys():
+                    cluster_kwargs[key] = None
 
         # labels = kwargs.pop('ylabels')
         # ylabels_cmap = kwargs.pop('ylabels_cmap')
@@ -77,13 +161,43 @@ class Heatmap(MatplotlibWidget):
         if isinstance(ylabels, Series):
             ylabels = ylabels.values
 
-        row_colors = map_labels_to_colors(ylabels, ylabels_cmap)
+        if ylabels is not None:
+            mapper = get_colormap(ylabels, ylabels_cmap)
+            row_colors = list(map(mapper.get, ylabels))
 
-        self.plot = sns_clustermap(*args, data=data, row_colors=row_colors, row_cluster=None, col_cluster=None, **cluster_kwargs, **kwargs)
+        else:
+            row_colors = None
 
-        self.plot.ax_heatmap.callbacks.connect('ylim_changed', lambda ax: self.plot.ax_row_colors.set_ylim(ax.get_ylim()))
-        self.plot.ax_row_colors.callbacks.connect('ylim_changed', lambda ax: self.plot.ax_heatmap.set_ylim(ax.get_ylim()))
+        if self.fig is not None:
+            self.fig.clear()
+        # self.plot = sns_clustermap(*args, data=data, row_colors=row_colors, row_cluster=None, col_cluster=None, **cluster_kwargs, **kwargs)
+        self.plot = CustomClusterGrid(data=data, fig=self.fig, figsize=None, row_colors=row_colors, col_colors=None,
+                                      z_score=None, standard_scale=None, mask=None)
+        self.plot.plot(*args, **cluster_kwargs, **kwargs)
 
+        if ylabels is not None:
+            self.create_ylabels_legend(mapper)
+
+        # self.ax_heatmap_xlim = self.plot.ax_heatmap.get_xlim()
+
+        self._previous_ylims = self.plot.ax_heatmap.get_ylim()
+
+        self.xlims = {self.plot.ax_heatmap: self.plot.ax_heatmap.get_xlim(),
+                      self.plot.ax_row_colors: self.plot.ax_row_colors.get_xlim(),
+                      self.plot.ax_row_dendrogram: self.plot.ax_row_dendrogram.get_xlim()
+                      }
+
+        self.max_ylim = self.plot.ax_heatmap.get_ylim()[0]
+        self.min_ylim = self.plot.ax_heatmap.get_ylim()[1]
+
+        self.draw()
+        # self.toolbar._views.clear()
+        # self.toolbar._positions.clear()
+        self.toolbar.update()
+        # self.toolbar._update_view()
+
+        self._connect_ylim_callbacks()
+        self._connect_xlim_callbacks()
 
         self.selector.set(self, mode=self.highlight_mode)
         # if isinstance(self.selector, Selection):
@@ -95,7 +209,87 @@ class Heatmap(MatplotlibWidget):
         # if ylabels is not None:
         #     self._set_ylabel_bar(ylabels, cmap=ylabels_cmap)
 
-        self.draw()
+    def _connect_xlim_callbacks(self):
+        self.xcid_heatmap = self.plot.ax_heatmap.callbacks.connect('xlim_changed', self.on_xlim_changed)
+        self.xcid_ax_row_colors = self.plot.ax_row_colors.callbacks.connect('xlim_changed', self.on_xlim_changed)
+        self.xcid_ax_row_dendrogram = self.plot.ax_row_dendrogram.callbacks.connect('xlim_changed', self.on_xlim_changed)
+
+    def _disconnect_xlim_callbacks(self):
+        self.plot.ax_heatmap.callbacks.disconnect(self.xcid_heatmap)
+        self.plot.ax_row_colors.callbacks.disconnect(self.xcid_ax_row_colors)
+        self.plot.ax_row_dendrogram.callbacks.disconnect(self.xcid_ax_row_dendrogram)
+
+    def on_xlim_changed(self, ax):
+        """Reset the x limits"""
+        self._disconnect_xlim_callbacks()
+        ax.set_xlim(self.xlims[ax])
+        self._connect_xlim_callbacks()
+
+    def _connect_ylim_callbacks(self):
+        self.cid_heatmap = self.plot.ax_heatmap.callbacks.connect('ylim_changed', self.on_ylim_changed)
+        self.cid_ax_row_colors = self.plot.ax_row_colors.callbacks.connect('ylim_changed', self.on_ylim_changed)
+        self.cid_ax_row_dendrogram = self.plot.ax_row_dendrogram.callbacks.connect('ylim_changed', self.on_ylim_changed)
+
+    def _disconnect_ylim_callbacks(self):
+        self.plot.ax_heatmap.callbacks.disconnect(self.cid_heatmap)#, self.on_ylim_changed)
+        self.plot.ax_row_colors.callbacks.disconnect(self.cid_ax_row_colors)#, self.on_ylim_changed)
+        self.plot.ax_row_dendrogram.callbacks.disconnect(self.cid_ax_row_dendrogram)#, self.on_ylim_changed)
+
+    def on_ylim_changed(self, ax):
+        if ax is self.plot.ax_row_dendrogram:
+            # divide by 10
+            lims = tuple(map(lambda x: x / 10, ax.get_ylim()))
+        else:
+            lims = ax.get_ylim()
+
+        if lims[0] > self.max_ylim or lims[1] < self.min_ylim:
+            self.y_lims_exceeded()
+            return
+
+        self._disconnect_ylim_callbacks()
+
+        if ax is not self.plot.ax_heatmap:
+            self.plot.ax_heatmap.set_ylim(lims)
+
+        if ax is not self.plot.ax_row_colors:
+            self.plot.ax_row_colors.set_ylim(lims)
+
+        if ax is not self.plot.ax_row_dendrogram:
+            # scale up by 10 for this ax
+            lims_ = tuple(map(lambda x: x * 10, lims))
+            self.plot.ax_row_dendrogram.set_ylim(lims_)
+
+        self._previous_ylims = lims
+
+        self._connect_ylim_callbacks()
+
+    def y_lims_exceeded(self):
+        # if lims[0] > self.max_ylim:
+        #     upper = self.max_ylim
+        # else:
+        #     upper = lims[0]
+        #
+        # if lims[1] < self.min_ylim:
+        #     lower = self.min_ylim
+        # else:
+        #     lower = lims[1]
+
+        lims = self._previous_ylims
+
+        self._disconnect_ylim_callbacks()
+
+        self.plot.ax_heatmap.set_ylim(lims)
+        self.plot.ax_row_colors.set_ylim(lims)
+        self.plot.ax_row_dendrogram.set_ylim(tuple(map(lambda x: x*10, lims)))
+
+        self._connect_ylim_callbacks()
+
+    def create_ylabels_legend(self, ylabels_mapper):
+        self.plot.ax_col_dendrogram.cla()
+        handles = [MPatch(color=ylabels_mapper[k], label=k) for k in ylabels_mapper.keys()]
+        self.plot.ax_col_dendrogram.legend(handles=handles, ncol=int(np.sqrt(len(handles))))
+        self.plot.ax_col_dendrogram.get_xaxis().set_visible(False)
+        self.plot.ax_col_dendrogram.get_yaxis().set_visible(False)
 
     # def _set_ylabel_bar(self, labels : Series, cmap: str = 'tab20'):
     #     assert isinstance(labels, Series)
