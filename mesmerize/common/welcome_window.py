@@ -85,6 +85,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.plot_windows = []
 
+        self.flowcharts_dir = None
+        self.plots_dir = None
+
     def initialize_console_widget(self):
         ns = {'configuration': configuration,
               'get_window_manager': get_window_manager,
@@ -197,36 +200,37 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.labelProjectBrowser.setHidden(b)
 
         self.set_flowcharts_list()
+        self.set_plots_list()
 
     def set_flowcharts_list(self):
         self.ui.labelRecentProjects.setText('Project flowcharts')
         self.ui.listWidgetRecentProjects.clear()
 
-        flowcharts_dir = os.path.join(self.project_manager.root_dir, 'flowcharts')
-        path = os.path.join(flowcharts_dir, '*.fc')
+        self.flowcharts_dir = os.path.join(self.project_manager.root_dir, 'flowcharts')
+        path = os.path.join(self.flowcharts_dir, '*.fc')
 
         fcs = glob(path)
         fc_files = []
 
-        for i in range(len(fcs)):
-            fc_files.append(os.path.relpath(flowcharts_dir, fcs[i]))
+        for f in fcs:
+            fc_files.append(os.path.basename(f))
 
         self.ui.listWidgetRecentProjects.addItems(fc_files)
         self.ui.listWidgetRecentProjects.itemDoubleClicked.disconnect()
-        self.ui.listWidgetRecentProjects.itemDoubleClicked.connect(lambda item: self.open_new_flowchart(item.text()))
+        self.ui.listWidgetRecentProjects.itemDoubleClicked.connect(lambda item: self.open_new_flowchart(os.path.join(self.flowcharts_dir, item.text())))
 
     def set_plots_list(self):
         self.ui.listWidgetProjectPlots.setVisible(True)
         self.ui.labelProjectPlots.setVisible(True)
 
-        plots_dir = os.path.join(self.project_manager.root_dir, 'plots')
+        self.plots_dir = os.path.join(self.project_manager.root_dir, 'plots')
         plot_files = []
 
-        for f in glob(os.path.join(plots_dir, '*.ptrn')):
-            plot_files.append(os.path.relpath(self.project_manager.root_dir, f))
+        for f in glob(os.path.join(self.plots_dir, '*.ptrn')):
+            plot_files.append(os.path.basename(f))
 
         self.ui.listWidgetProjectPlots.addItems(plot_files)
-        self.ui.listWidgetProjectPlots.itemDoubleClicked.connect(lambda item: self.open_plot(item.text()))
+        self.ui.listWidgetProjectPlots.itemDoubleClicked.connect(lambda item: self.open_plot(os.path.join(self.plots_dir, item.text())))
 
     def open_plot(self, filename: str):
         plot = open_plot_file(filename)
