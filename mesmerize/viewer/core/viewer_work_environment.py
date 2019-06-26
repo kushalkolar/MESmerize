@@ -99,7 +99,7 @@ class ViewerWorkEnv:
         else:
             self.misc = {}
 
-        self.UUID = UUID
+        self._UUID = UUID
 
     # def get_imgdata(self):
     #     return self.imgdata
@@ -112,6 +112,14 @@ class ViewerWorkEnv:
     #
     # def get_roi_manager(self):
     #     return self.roi_manager
+
+    @property
+    def UUID(self) -> UUID_type:
+        if self._UUID is None:
+            raise ValueError('UUID is not set. UUID can only be set at instantiation')
+        if not isinstance(self._UUID, UUID_type):
+            raise TypeError('UUID is not of type uuid.UUID. Something went wrong. You should not modify the UUID')
+        return self._UUID
 
     def clear(self):
         self.isEmpty = True
@@ -354,14 +362,13 @@ class ViewerWorkEnv:
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
         imgdir = os.path.join(proj_path, 'images')  # + self.imgdata.SampleID + '_' + str(time.time())
 
-        if (modify_options is dict) and (self.UUID is None):
+        if (modify_options is dict) and (self._UUID is None):
             raise ValueError('Error overwriting Sample. Current Work Environment does not have a UUID.\n'
                              'Samples always have a UUID, something went wrong. Reload the sample from the project.')
 
-        if self.UUID is None:
+        if self._UUID is None:
             UUID = uuid4()
         else:
-            assert isinstance(self.UUID, UUID_type)
             UUID = self.UUID
         curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{str(UUID)}')
 
