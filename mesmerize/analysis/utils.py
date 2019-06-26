@@ -10,7 +10,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 import numpy as np
 import pandas as pd
-from typing import Union, Optional
+from typing import *
 from . import Transmission
 
 
@@ -104,3 +104,24 @@ def get_array_size(transmission: Transmission, data_column: str) -> int:
         raise ValueError("Size of all arrays in data column must match exactly.")
 
     return array_size[0]
+
+
+def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[str], List[str]]:
+    """
+    Organizes DataFrame columns into data column, categorical label columns, and uuid columns.
+    :param columns: DataFrame columns
+    :return:        (data_columns, categorical_columns, uuid_columns)
+    """
+    columns = list(columns)
+    columns.remove('_BLOCK_')
+    dcols = [c for c in columns if c.startswith('_')]
+
+    ucols = [c for c in columns if ('uuid' in c) or ('UUID' in c)]
+
+    ccols = [c for c in columns if (not c.startswith('_')) and
+             (c not in ['CurvePath', 'ImgPath', 'ImgUUID', 'ROI_State', 'meta', 'ImgInfoPath', 'misc']) and
+             (c not in ucols)]
+
+    dcols.sort();ccols.sort();ucols.sort()
+
+    return dcols, ccols, ucols
