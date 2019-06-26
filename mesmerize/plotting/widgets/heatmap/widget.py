@@ -292,6 +292,8 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
         ix = self.control_widget.ui.comboBoxDataColumn.findText(opts['datapoint_tracer_curve_column'])
         self.control_widget.ui.comboBoxDPTCurveColumn.setCurrentIndex(ix)
 
+        self.control_widget.ui.listWidgetColorMaps.set_cmap(opts['cmap'])
+
     def update_plot(self):
         if not self.control_widget.ui.pushButtonPlot.isChecked():
             return
@@ -378,6 +380,6 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
 
         self.set_input(ptrn)
         self.set_plot_opts(plot_state)
-        self.control_widget.ui.pushButtonSave.setChecked(True)
+        self.control_widget.ui.pushButtonPlot.setChecked(True)
         self.update_plot()
 
