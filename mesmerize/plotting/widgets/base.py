@@ -9,9 +9,10 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 import abc
 from ...analysis import Transmission
+from ...common import error_window
 import traceback
 import os
 from typing import *
@@ -138,13 +139,14 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
 
         return fn
 
+    @error_window('Plot open error', 'The following error occured while trying to open the plot')
     def open_plot(self, ptrn_path: str, proj_path: str) -> Union[Tuple[str, str], None]:
-        try:
-            ptrn = Transmission.from_hdf5(ptrn_path)
-        except:
-            QtWidgets.QMessageBox.warning(self, 'File open error',
-                                          f'Could not open the chosen file\n{traceback.format_exc()}')
-            return
+        # try:
+        ptrn = Transmission.from_hdf5(ptrn_path)
+        # except:
+        #     QtWidgets.QMessageBox.warning(self, 'File open error',
+        #                                   f'Could not open the chosen file\n{traceback.format_exc()}')
+            # return
 
         plot_state = ptrn.plot_state
         plot_type = plot_state['type']
@@ -154,13 +156,13 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
             f'plot\nThis file is for the following plot type: {plot_type}')
             return
 
-        try:
-            ptrn.set_proj_path(proj_path)
-            ptrn.set_proj_config()
+        # try:
+        ptrn.set_proj_path(proj_path)
+        ptrn.set_proj_config()
 
-        except (FileNotFoundError, NotADirectoryError) as e:
-            QtWidgets.QMessageBox.warning(self, 'Invalid Project Folder', 'This is not a valid Mesmerize project\n' + e)
-            return
+        # except (FileNotFoundError, NotADirectoryError) as e:
+        #     QtWidgets.QMessageBox.warning(self, 'Invalid Project Folder', 'This is not a valid Mesmerize project\n' + e)
+        #     return
 
         self.set_input(ptrn)
         self.set_plot_opts(plot_state)
