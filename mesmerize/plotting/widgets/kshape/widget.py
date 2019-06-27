@@ -24,7 +24,8 @@ from collections import deque
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from matplotlib.gridspec import GridSpec
-from ....analysis.utils import get_cluster_proportions
+from ....analysis.utils import get_proportions
+from seaborn import lineplot
 
 
 class KShapeControlDock(QtWidgets.QDockWidget):
@@ -67,6 +68,19 @@ class KShapePlot(MatplotlibWidget):
         self.ax_prop.set_title('Proportions')
 
 
+class KShapeMeanPlots(MatplotlibWidget):
+    def __init__(self):
+        MatplotlibWidget.__init__(self)
+        self.axs = []
+        self.plots = []
+
+    def set_plots(self, data, cluster_labels):
+        for cluster_data in data:
+            pass
+
+    def _add_cluster(self, data, row: int, column: int, title: str):
+        plot = lineplot(ax=self.axs[row, column])
+
 class KShapeWidget(QtWidgets.QMainWindow):
     sig_output_changed = QtCore.pyqtSignal(Transmission)
 
@@ -102,6 +116,7 @@ class KShapeWidget(QtWidgets.QMainWindow):
         self.control_widget.ui.comboBoxGroups.currentTextChanged.connect(self.plot_proportions)
 
         self.plot = KShapePlot()
+        self.means_plot = KShapeMeanPlots()
 
         self.setCentralWidget(self.plot)
 
@@ -125,15 +140,18 @@ class KShapeWidget(QtWidgets.QMainWindow):
         return d
 
     def pad_input_data(self, a: np.ndarray) -> np.ndarray:
-        l = 0
+        l = 0 # size of largest time series
 
+        # Get size of largest time series
         for c in a:
             s = c.size
             if s > l:
                 l = s
 
+        # pre-allocate output array
         p = np.zeros(shape=(a.size, l))
 
+        # pad each 1D time series
         for i in range(p.shape[0]):
             s = a[i].size
 
@@ -229,9 +247,11 @@ class KShapeWidget(QtWidgets.QMainWindow):
                                          'Confirm abort',
                                          QtWidgets.QMessageBox.Yes,
                                          QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-            return
+            return False
+        self.process.finished.disconnect(self.process_finished)
         self.terminate_qprocess()
         self.control_widget.set_inactive()
+        return True
 
     def terminate_qprocess(self):
         try:
@@ -267,7 +287,7 @@ class KShapeWidget(QtWidgets.QMainWindow):
         self.send_output_transmission()
 
     def send_output_transmission(self):
-        self.transmission.df['_KSHAPE'] = self.y_pred
+        self.transmission.df['KSHAPE_CLUSTER'] = self.y_pred
         params = self.params['kwargs']
         self.transmission.history_trace.add_operation('all', operation='kshape', parameters=params)
         self.sig_output_changed.emit(self.transmission)
@@ -308,7 +328,7 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         try:
             self.plot.ax_prop.cla()
-            props = get_cluster_proportions(self.y_pred, group_labels)
+            props = get_proportions(self.y_pred, group_labels)
             props.plot(kind='bar', stacked=True, ax=self.plot.ax_prop)
             self.plot.ax_prop.legend(loc='best', bbox_to_anchor=(1.0, 0.5))
             self.plot.draw()
@@ -316,3 +336,12 @@ class KShapeWidget(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.warning(self, 'Error showing proportions',
                                           'You probably did not select an '
                                           'appropriate grouping column\n' + traceback.format_exc())
+
+    def set_means_plot(self):
+        self.means_plot.set_clusters(self.input_data, self.y_pred)
+
+    def closeEvent(self, QCloseEvent):
+        if self.abort_process():
+            QCloseEvent.accept()
+        else:
+            QCloseEvent.ignore()

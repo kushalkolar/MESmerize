@@ -4,9 +4,7 @@ from ....analysis import simple_plot_window
 from .common import *
 import numpy as np
 import pandas as pd
-from ....plotting.widgets import HeatmapTracerWidget
-from ....plotting.widgets import ScatterPlotWidget
-from ....plotting.widgets import BeeswarmPlotWindow
+from ....plotting.widgets import HeatmapTracerWidget, ScatterPlotWidget, BeeswarmPlotWindow, ProportionsWidget
 from ....plotting.variants.timeseries import TimeseriesPlot
 
 
@@ -220,6 +218,23 @@ class BeeswarmPlots(CtrlNode):
         self.plot_gui.show()
 
 
+class Proportions(CtrlNode):
+    """Plot proportions of one categorical column vs another"""
+    nodeName = 'Proportions'
+    uiTemplate = [('show gui', 'button', {'text': 'Show Gui'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_widget = ProportionsWidget()
+        self.ctrls['show gui'].clicked.connect(self.plot_widget.show)
+
+    def process(self, **kwargs):
+        self.transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(self.transmissions)
+
+        self.t = Transmission.merge(self.transmissions_list)
+
+        self.plot_widget.set_input(self.t)
 
 # class PlotWidgetNode(Node):
 #     """Connection to PlotWidget. Will plot arrays, metaarrays, and display event lists."""
