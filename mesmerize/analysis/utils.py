@@ -14,39 +14,71 @@ from typing import *
 from . import Transmission
 
 
-def get_cluster_proportions(cluster_labels: Union[pd.Series, list, set],
-                            group_labels: Union[pd.Series, list, set]) -> pd.DataFrame:
-    if isinstance(cluster_labels, pd.Series):
-        clusters = cluster_labels.unique().tolist()
+def get_proportions(xs: Union[pd.Series, np.ndarray, list], ys: Union[pd.Series, np.ndarray, pd.Series],
+                    xs_name: str = 'xs', ys_name: str = 'ys', swap = False, percentages: bool = True) -> pd.DataFrame:
+    """
+    Get the proportions of xs vs ys
+    :param xs: data plotted on the x axis
+    :param ys: proportions of unique elements in ys are calculated per xs
+    :param invert: swap x and y
+    :return:   DataFrame that can be plotted in a proportions bar graph
+    """
+
+    if len(xs) != len(ys):
+        raise ValueError('Length of xs and ys must match exactly')
+
+    if isinstance(xs, np.ndarray):
+        if xs.ndim > 1:
+            raise ValueError('Can only accept 1D numpy array')
+
+    if isinstance(ys, np.ndarray):
+        if ys.ndim > 1:
+            raise ValueError('Can only accept 1D numpy array')
+
+    if swap:
+        xs, ys = ys, xs
+        xs_name, ys_name = ys_name, xs_name
+
+    df = pd.DataFrame({xs_name: xs, ys_name: ys})
+    if percentages:
+        return df.groupby([xs_name, ys_name]).agg({ys_name: 'count'}).groupby(by=xs_name).apply(lambda x: (x / x.sum()) * 100).unstack()
     else:
-        clusters = list(set(cluster_labels))
+        return df.groupby([xs_name, ys_name]).agg({ys_name: 'count'}).unstack()
 
-    if isinstance(group_labels, pd.Series):
-        groups = group_labels.unique().tolist()
-    else:
-        groups = list(set(group_labels))
 
-    cluster_dict = dict.fromkeys(clusters)
-
-    for k in cluster_dict.keys():
-        cluster_dict[k] = []
-
-    for ix, cluster in enumerate(cluster_labels):
-        cluster_dict[cluster].append(group_labels[ix])
-
-    group_proportions = dict.fromkeys(groups)
-
-    groups_order = []
-
-    for g in group_proportions.keys():
-        groups_order.append(g)
-        group_proportions[g] = []
-        for cl in clusters:
-            count = cluster_dict[cl].count(g)
-            percentage = count / len(cluster_dict[cl])
-            group_proportions[g].append(percentage)
-
-    return pd.DataFrame(group_proportions)
+# def get_cluster_proportions(cluster_labels: Union[pd.Series, list, set],
+#                             group_labels: Union[pd.Series, list, set]) -> pd.DataFrame:
+#     if isinstance(cluster_labels, pd.Series):
+#         clusters = cluster_labels.unique().tolist()
+#     else:
+#         clusters = list(set(cluster_labels))
+#
+#     if isinstance(group_labels, pd.Series):
+#         groups = group_labels.unique().tolist()
+#     else:
+#         groups = list(set(group_labels))
+#
+#     cluster_dict = dict.fromkeys(clusters)
+#
+#     for k in cluster_dict.keys():
+#         cluster_dict[k] = []
+#
+#     for ix, cluster in enumerate(cluster_labels):
+#         cluster_dict[cluster].append(group_labels[ix])
+#
+#     group_proportions = dict.fromkeys(groups)
+#
+#     groups_order = []
+#
+#     for g in group_proportions.keys():
+#         groups_order.append(g)
+#         group_proportions[g] = []
+#         for cl in clusters:
+#             count = cluster_dict[cl].count(g)
+#             percentage = count / len(cluster_dict[cl])
+#             group_proportions[g].append(percentage)
+#
+#     return pd.DataFrame(group_proportions)
 
 
 def get_sampling_rate(transmission: Transmission, tolerance: Optional[float] = 0.1) -> float:

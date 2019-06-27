@@ -13,30 +13,33 @@ import sys
 from tslearn.clustering import KShape
 import numpy as np
 import pickle
+import os
 
 
 def run(data_path: str, params_path: str):
     X = np.load(data_path)
 
     params = pickle.load(open(params_path, 'rb'))
+    workdir = params['workdir']
 
-    out = params['workdir'] + '/out'
+    out = os.path.join(workdir, 'out')
     with open(out, 'w') as f:
         f.write('0')
 
+    print(f'Using work dir: {workdir}')
     print('** Fitting input data **')
 
     kwargs = params['kwargs']
     ks = KShape(**kwargs)
     ks.fit(X)
 
-    ks_path = params['workdir'] + '/ks.pickle'
+    ks_path = os.path.join(workdir, 'ks.pickle')
     pickle.dump(ks, open(ks_path, 'wb'))
 
     print('** Fitting predictions **')
     y_pred = ks.fit_predict(X)
 
-    y_pred_path = params['workdir'] + '/y_pred.pickle'
+    y_pred_path = os.path.join(workdir, 'y_pred.pickle')
     pickle.dump(y_pred, open(y_pred_path, 'wb'))
 
     with open(out, 'w') as f:

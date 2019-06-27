@@ -14,7 +14,7 @@ class KShape(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
         self.kshape_widget = KShapeWidget()
-        self.kshape_widget.sig_output_changed.connect(self.process)
+        self.kshape_widget.sig_output_changed.connect(lambda: self.process(output_transmission=True))
         self.ctrls['ShowGUI'].clicked.connect(self.kshape_widget.show)
 
     def process(self, output_transmission=False, **kwargs):
