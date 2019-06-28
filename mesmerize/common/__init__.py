@@ -3,13 +3,10 @@ from webbrowser import open_new_tab as open_new_web_browser_tab
 import configparser
 from datetime import datetime
 from time import time
-# from PyQt5 import QtWidgets
 from .. import docs
 from .configuration import get_sys_config
 from functools import partial
-from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog
-from functools import wraps
-import traceback
+from PyQt5.QtWidgets import QApplication
 
 
 # def get_sys_config() -> configparser.RawConfigParser:
@@ -87,31 +84,17 @@ def get_window_manager():
     # return wm
 
 
-def error_window(title: str = 'error', message: str = 'The following error occurred.'):
-    def catcher(func):
-        @wraps(func)
-        def fn(self, *args, **kwargs):
-            try:
-                func(self, *args, **kwargs)
-            except:
-                QMessageBox.warning(self, title, message + f'\n\n{traceback.format_exc()}')
-                # raise
-        return fn
-    return catcher
+def is_mesmerize_project(proj_dir: str) -> bool:
+    if not os.path.isdir(proj_dir + '/dataframes'):
+        raise NotAMesmerizeProject('dataframes directory not found')
 
+    if not os.path.isdir(proj_dir + '/images'):
+        raise NotAMesmerizeProject('images directory not found')
 
-def get_file_dialog(title: str = 'Choose file', start_dir: str = '', exts: list = []):
-    def wrapper(func):
-        @wraps(func)
-        def fn(self, *args, **kwargs):
-            path = QFileDialog.getOpenFileName(self, title, start_dir, f'{" ".join(exts)}')
-            if path == '':
-                return
-            if path[0] == '':
-                return
-            func(self, path[0])#, *args, **kwargs)
-        return fn
-    return wrapper
+    if not os.path.isdir(proj_dir + '/curves'):
+        raise NotAMesmerizeProject('curves directory not found')
+
+    return True
 
 
 class NoProjectOpen(BaseException):
@@ -119,4 +102,15 @@ class NoProjectOpen(BaseException):
 
 
 class NotInApplicationError(BaseException):
-    "This can only be used in a full Mesmerize Application"
+    """This can only be used in a full Mesmerize Application"""
+
+
+class NotAMesmerizeProject(BaseException):
+    """Not a valid Mesmerize Project"""
+
+    def __init__(self, msg):
+        assert isinstance(msg, str)
+        self.msg = msg
+
+    def __str__(self):
+        return str(self.__doc__) + '\n' + self.msg

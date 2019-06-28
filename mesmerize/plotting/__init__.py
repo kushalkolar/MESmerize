@@ -13,7 +13,7 @@ def open_plot_file(file_path: str) -> QWidget:
         raise ValueError('The chosen Transmission file does not have the required "plot_state" attribute')
 
     if t.plot_state['type'] not in widgets.__all__:
-        raise ValueError('Plot type not found.')
+        raise TypeError(f'Plot type not found: {t.plot_state["type"]}.\nSupported plot types are:\n{widgets.__all__}')
 
     plot_widget = getattr(widgets, t.plot_state['type'])()
     plot_widget.open_plot(file_path, get_project_manager().root_dir)
