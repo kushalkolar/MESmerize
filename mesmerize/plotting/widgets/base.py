@@ -86,20 +86,6 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
     def set_plot_opts(self, opts: dict):
         raise NotImplementedError('Must be implemented in subclass')
 
-    @present_exceptions('Plot Save Error', 'The following error occurred while trying to save the plot.')
-    def save_plot(self, path):
-        plot_state = self.get_plot_opts()
-        for k in self.drop_opts:
-            plot_state.pop(k)
-
-        plot_state['type'] = self.__class__.__name__
-        self.transmission.plot_state = plot_state
-        self.transmission.to_hdf5(path)
-
-    @use_save_file_dialog('Save plot as', None, '.ptrn')
-    def save_plot_dialog(self, path, *args):
-        self.save_plot(path)
-
     @classmethod
     def signal_blocker(cls, func):
         def fn(self, *args, **kwds):
@@ -119,6 +105,20 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
 
         return fn
 
+    @use_save_file_dialog('Save plot as', None, '.ptrn')
+    def save_plot_dialog(self, path, *args):
+        self.save_plot(path)
+
+    @present_exceptions('Plot Save Error', 'The following error occurred while trying to save the plot.')
+    def save_plot(self, path):
+        plot_state = self.get_plot_opts()
+        for k in self.drop_opts:
+            plot_state.pop(k)
+
+        plot_state['type'] = self.__class__.__name__
+        self.transmission.plot_state = plot_state
+        self.transmission.to_hdf5(path)
+
     @use_open_dir_dialog('Select Project Folder', None)
     @use_open_file_dialog('Choose plot file', None, ['*.ptrn'])
     def open_plot_dialog(self, filepath, dirpath, *args, **kwargs):
@@ -132,7 +132,9 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
         plot_type = plot_state['type']
 
         if not plot_type == self.__class__.__name__:
-            raise TypeError(f'Wrong plot type\n\nThe chosen file is not for this type of plot\nThis file is for the following plot type: {plot_type}')
+            raise TypeError(f'Wrong plot type\n\n'
+                            f'The chosen file is not for this type of plot\n'
+                            f'This file is for the following plot type: {plot_type}')
 
         ptrn.set_proj_path(proj_path)
         ptrn.set_proj_config()

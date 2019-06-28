@@ -16,7 +16,6 @@ from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from ....analysis import Transmission, organize_dataframe_columns, get_proportions
 from math import sqrt
 from ..base import BasePlotWidget
-from typing import List
 
 
 class ProportionsWidget(BasePlotWidget, MatplotlibWidget):

@@ -335,7 +335,6 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             QCloseEvent.accept()
 
-    # TODO: If UUID or a single row is specified it will mark that specific ROI in the ROI Manager
     def open_from_dataframe(self, proj_path: str,
                             df: pd.DataFrame = None,
                             row: pd.Series = None,

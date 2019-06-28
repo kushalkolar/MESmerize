@@ -24,14 +24,18 @@ from warnings import warn
 
 
 def help_func(e, tb):
+    def show_info(info):
+        QtWidgets.QMessageBox.information(None, 'Help info', info)
+        return
+
     if str(e).startswith('all the input array dimensions for the concatenation axis must match exactly'):
-        QtWidgets.QMessageBox.information(None, 'Help info', 'Make sure that the data under the "Data column" has been spliced.')
+        show_info('Make sure that the data under the "Data column" has been spliced.')
 
     elif str(e).startswith('Too many colors requested for the chosen cmap'):
-        QtWidgets.QMessageBox.information(None, 'Help info', 'The chosen categorical labels column can only have a maximum of 20 unique labels.')
+        show_info('The chosen categorical labels column can only have a maximum of 20 unique labels.')
 
     elif 'unhashable type' in str(e):
-        QtWidgets.QMessageBox.information(None, 'Help info', 'One of your selected columns has data type that is incompatible with what you have selected it for')
+        show_info('One of your selected columns has data type that is incompatible with what you have selected it for')
 
 
 class HeatmapWidget(QtWidgets.QWidget):

@@ -26,7 +26,8 @@ from configparser import RawConfigParser
 from ..common.utils import HdfTools
 from ..common import get_proj_config
 
-class _HistoryTraceExceptions(BaseException):
+
+class _HistoryTraceExceptions(Exception):
     def __init__(self, msg):
         assert isinstance(msg, str)
         self.msg = msg

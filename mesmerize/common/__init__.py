@@ -97,15 +97,15 @@ def is_mesmerize_project(proj_dir: str) -> bool:
     return True
 
 
-class NoProjectOpen(BaseException):
+class NoProjectOpen(Exception):
     """No Mesmerize project is open."""
 
 
-class NotInApplicationError(BaseException):
+class NotInApplicationError(Exception):
     """This can only be used in a full Mesmerize Application"""
 
 
-class NotAMesmerizeProject(BaseException):
+class NotAMesmerizeProject(Exception):
     """Not a valid Mesmerize Project"""
 
     def __init__(self, msg):

@@ -25,11 +25,11 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
                 return func(self, *args, **kwargs)
             except Exception as e:
                 tb = traceback.format_exc()
-                if QMessageBox.warning(self, title, msg + f'\n\n{e.__class__.__name__}: {e}\n\n{tb}',
-                                       QMessageBox.Ok, QMessageBox.Help) == QMessageBox.Help:
-                    if help_func is not None:
-                        help_func(e, tb)
-                # raise
+                args = (self, title, msg + f'\n\n{e.__class__.__name__}: {e}\n\n{tb}', QMessageBox.Ok)
+                if help_func is not None and QMessageBox.warning(*args, QMessageBox.Help) == QMessageBox.Help:
+                    help_func(e, tb)
+                else:
+                    QMessageBox.warning(*args)
         return fn
     return catcher
 

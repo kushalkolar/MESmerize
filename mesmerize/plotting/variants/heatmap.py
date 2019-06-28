@@ -126,8 +126,8 @@ class Heatmap(MatplotlibWidget):
         self.min_ylim = None
         self.xlims = None
 
-    def set(self, data: np.ndarray, *args, ylabels: iter = None, ylabels_cmap: str = 'tab20', cluster_kwargs = None,
-            **kwargs):
+    def set(self, data: np.ndarray, *args, ylabels: Union[Series, np.ndarray, list] = None, ylabels_cmap: str = 'tab20',
+            cluster_kwargs: dict = None, **kwargs):
         """
         :param data:    2D numpy array
         :param args:    Additional args that are passed to sns.heatmap()
@@ -290,6 +290,7 @@ class Selection(QtCore.QObject):
 
         self._multiselect = False
         self.multi_selection_list = list()
+        self.mode = None
 
     def set(self, heatmap_obj, mode: str = 'row'):
         self._highlight = None
@@ -373,21 +374,21 @@ class Selection(QtCore.QObject):
         self._highlight = self.plot.add_patch(RectangularPatch(ix, 1, 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
         self.canvas.draw()
 
-    def toggle_selector(self, event):
-        if event.key in ['Q', 'q'] and self.RS.active:
-            print('RectangleSelector deactivated.')
-            self.RS.set_active(False)
-        if event.key in ['A', 'a'] and not self.RS.active:
-            print('RectangleSelector activated.')
-            self.RS.set_active(True)
+    # def toggle_selector(self, event):
+    #     if event.key in ['Q', 'q'] and self.RS.active:
+    #         print('RectangleSelector deactivated.')
+    #         self.RS.set_active(False)
+    #     if event.key in ['A', 'a'] and not self.RS.active:
+    #         print('RectangleSelector activated.')
+    #         self.RS.set_active(True)
     
-    def line_select_callback(self, eclick, erelease):
-        'eclick and erelease are the press and release events'
-        x1, y1 = int(eclick.xdata), int(eclick.ydata)
-        x2, y2 = int(erelease.xdata), int(erelease.ydata)
-        self.signal_selection_changed.emit((x1, y1, x2, y2))
-        print("(%3.2f, %3.2f) --> (%3.2f, %3.2f)" % (x1, y1, x2, y2))
-        print(" The button you used were: %s %s" % (eclick.button, erelease.button))
+    # def line_select_callback(self, eclick, erelease):
+    #     'eclick and erelease are the press and release events'
+    #     x1, y1 = int(eclick.xdata), int(eclick.ydata)
+    #     x2, y2 = int(erelease.xdata), int(erelease.ydata)
+    #     self.signal_selection_changed.emit((x1, y1, x2, y2))
+    #     print("(%3.2f, %3.2f) --> (%3.2f, %3.2f)" % (x1, y1, x2, y2))
+    #     print(" The button you used were: %s %s" % (eclick.button, erelease.button))
             
 
 if __name__ == '__main__':
