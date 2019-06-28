@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'control_widget.ui'
+# Form implementation generated from reading ui file './control_widget.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -38,6 +38,13 @@ class Ui_ControlWidget(object):
         self.listWidgetColorMaps = ColormapListWidget(ControlWidget)
         self.listWidgetColorMaps.setObjectName("listWidgetColorMaps")
         self.verticalLayout.addWidget(self.listWidgetColorMaps)
+        self.checkBoxLiveUpdate = QtWidgets.QCheckBox(ControlWidget)
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.checkBoxLiveUpdate.setFont(font)
+        self.checkBoxLiveUpdate.setObjectName("checkBoxLiveUpdate")
+        self.verticalLayout.addWidget(self.checkBoxLiveUpdate)
         self.pushButtonPlot = QtWidgets.QPushButton(ControlWidget)
         self.pushButtonPlot.setMinimumSize(QtCore.QSize(0, 46))
         font = QtGui.QFont()
@@ -45,7 +52,7 @@ class Ui_ControlWidget(object):
         font.setBold(True)
         font.setWeight(75)
         self.pushButtonPlot.setFont(font)
-        self.pushButtonPlot.setCheckable(True)
+        self.pushButtonPlot.setCheckable(False)
         self.pushButtonPlot.setObjectName("pushButtonPlot")
         self.verticalLayout.addWidget(self.pushButtonPlot)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -85,7 +92,8 @@ class Ui_ControlWidget(object):
         self.label_3.setText(_translate("ControlWidget", "Labels column"))
         self.label_5.setText(_translate("ControlWidget", "DPT curve column"))
         self.label.setText(_translate("ControlWidget", "Colormap:"))
-        self.pushButtonPlot.setText(_translate("ControlWidget", "Plot with live updates"))
+        self.checkBoxLiveUpdate.setText(_translate("ControlWidget", "Live update from input transmission"))
+        self.pushButtonPlot.setText(_translate("ControlWidget", "Plot"))
         self.pushButtonSave.setText(_translate("ControlWidget", "Save"))
         self.pushButtonLoad.setText(_translate("ControlWidget", "Load"))
         self.checkBoxShowStimuli.setText(_translate("ControlWidget", "Show Stimuli"))

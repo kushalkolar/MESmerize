@@ -12,9 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtWidgets
 import abc
 from ...analysis import Transmission
-from ...common import error_window
-import traceback
-import os
+from ...common.qdialogs import *
 from typing import *
 
 #TODO: Implement base for all plot widgets
@@ -65,10 +63,11 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
         super(BasePlotWidget, self).__init__()
         QtWidgets.QWidget.__init__(self)
         self.transmission = None
-        self.block_siganls_list = []
 
     @property
     def transmission(self) -> Transmission:
+        if self._transmission is None:
+            raise AttributeError("No input transmission has been set")
         return self._transmission
 
     @transmission.setter
@@ -87,41 +86,22 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
     def set_plot_opts(self, opts: dict):
         raise NotImplementedError('Must be implemented in subclass')
 
-    def save_plot(self, drop_opts: List[str] = None):
-        """
-        :param drop_opts: List of keys to drop from dict returned by get_plot_opts()
-        """
-        if self.transmission is None:
-            QtWidgets.QMessageBox.warning(self, 'Nothing to save', 'No input transmission, nothing to save')
-            return
-
-        try:
-            proj_path = self.transmission.get_proj_path()
-            plots_path = os.path.join(proj_path, 'plots')
-        except ValueError:
-            plots_path = ''
-
-        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save plot as', plots_path, '(*.ptrn)')
-        if path == '':
-            return
-        path = path[0]
-
-        if not path.endswith('.ptrn'):
-            path = f'{path}.ptrn'
-
+    @present_exceptions('Plot Save Error', 'The following error occurred while trying to save the plot.')
+    def save_plot(self, path):
         plot_state = self.get_plot_opts()
-        if drop_opts is not None:
-            for k in drop_opts:
-                plot_state.pop(k)
-        # plot_state.pop('dataframes')
-        # plot_state.pop('transmission')
+        for k in self.drop_opts:
+            plot_state.pop(k)
 
         plot_state['type'] = self.__class__.__name__
         self.transmission.plot_state = plot_state
         self.transmission.to_hdf5(path)
 
+    @use_save_file_dialog('Save plot as', None, '.ptrn')
+    def save_plot_dialog(self, path, *args):
+        self.save_plot(path)
+
     @classmethod
-    def block_signals(cls, func):
+    def signal_blocker(cls, func):
         def fn(self, *args, **kwds):
             restore_dict = dict.fromkeys(self.block_signals_list)
 
@@ -139,44 +119,26 @@ class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQ
 
         return fn
 
-    @error_window('Plot open error', 'The following error occured while trying to open the plot')
+    @use_open_dir_dialog('Select Project Folder', None)
+    @use_open_file_dialog('Choose plot file', None, ['*.ptrn'])
+    def open_plot_dialog(self, filepath, dirpath, *args, **kwargs):
+        self.open_plot(filepath, dirpath)
+
+    @present_exceptions('Plot open error', 'The following error occurred while trying to open the plot')
     def open_plot(self, ptrn_path: str, proj_path: str) -> Union[Tuple[str, str], None]:
-        # try:
         ptrn = Transmission.from_hdf5(ptrn_path)
-        # except:
-        #     QtWidgets.QMessageBox.warning(self, 'File open error',
-        #                                   f'Could not open the chosen file\n{traceback.format_exc()}')
-            # return
 
         plot_state = ptrn.plot_state
         plot_type = plot_state['type']
 
         if not plot_type == self.__class__.__name__:
-            QtWidgets.QMessageBox.warning(self, 'Wrong plot type', f'The chosen file is not for this type of '
-            f'plot\nThis file is for the following plot type: {plot_type}')
-            return
+            raise TypeError(f'Wrong plot type\n\nThe chosen file is not for this type of plot\nThis file is for the following plot type: {plot_type}')
 
-        # try:
         ptrn.set_proj_path(proj_path)
         ptrn.set_proj_config()
 
-        # except (FileNotFoundError, NotADirectoryError) as e:
-        #     QtWidgets.QMessageBox.warning(self, 'Invalid Project Folder', 'This is not a valid Mesmerize project\n' + e)
-        #     return
-
         self.set_input(ptrn)
         self.set_plot_opts(plot_state)
+        self.update_plot()
 
         return ptrn_path, proj_path
-
-    def open_plot_dialog(self):
-        ptrn_path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose plot file', '', '(*.ptrn)')
-        if ptrn_path == '':
-            return
-
-        proj_path = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Project Folder')
-
-        if proj_path == '':
-            return
-
-        self.open_plot(ptrn_path[0], proj_path)

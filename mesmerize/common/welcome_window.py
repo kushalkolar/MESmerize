@@ -15,7 +15,7 @@ from ..pyqtgraphCore.console import ConsoleWidget
 from .pytemplates.welcome_window_pytemplate import *
 # from ..project_manager import ProjectManager
 from ..common import configuration, system_config_window, doc_pages, get_project_manager, set_project_manager
-from ..common import get_window_manager
+from ..common import get_window_manager, is_mesmerize_project
 # from viewer.modules import batch_manager
 import os
 from ..common import start
@@ -23,7 +23,7 @@ from ..viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 from glob import glob
 from ..plotting import open_plot_file
 from functools import partial
-from . import error_window
+from .qdialogs import *
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -123,11 +123,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         configuration.save_sys_config(sys_cfg)
 
-    @error_window('Could not create new project', 'The following error occurred while creating a new project')
-    def create_new_project(self):
-        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose location for a new project')
-        if path == '':
-            return
+    @use_open_dir_dialog('Choose location for a new project')
+    @present_exceptions('Could not create new project', 'The following error occurred while creating a new project')
+    def create_new_project(self, path, *args):
+        # path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose location for a new project')
+        # if path == '':
+        #     return
 
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Project Name:', QtWidgets.QLineEdit.Normal, '')
 
@@ -156,16 +157,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # self.initialize_project_browser()
 
-    def open_project_dialog(self):
-        path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Project Folder')
-
-        if path == '':
-            return
-
+    @use_open_dir_dialog('Select Project Directory', '')
+    def open_project_dialog(self, path, *args):
         self.open_project(path)
 
-    @error_window('Cannot open project', 'The selected directory is probably not a valid Mesmerize Project.')
+    @present_exceptions('Cannot open project', 'The selected directory is probably not a valid Mesmerize Project.')
     def open_project(self, path: str):
+        is_mesmerize_project(path)
         self.project_manager = get_project_manager()
         self.project_manager.set(project_root_dir=path)
 
@@ -228,7 +226,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.listWidgetProjectPlots.addItems(plot_files)
         self.ui.listWidgetProjectPlots.itemDoubleClicked.connect(lambda item: self.open_plot(os.path.join(self.plots_dir, item.text())))
 
-    @error_window('Could not open plot', 'The following error occurred when trying to open the plot')
+    @present_exceptions('Could not open plot', 'The following error occurred when trying to open the plot')
     def open_plot(self, filename: str):
         plot = open_plot_file(filename)
         self.plot_windows.append(plot)

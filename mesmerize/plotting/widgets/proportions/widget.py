@@ -20,6 +20,8 @@ from typing import List
 
 
 class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
+    drop_opts = ['xs', 'ys']
+
     def __init__(self):
         super(ProportionsWidget, self).__init__()
         MatplotlibWidget.__init__(self)
@@ -67,7 +69,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         btn_save = QtWidgets.QPushButton(self)
         btn_save.setText('Save')
-        btn_save.clicked.connect(lambda: self.save_plot())
+        btn_save.clicked.connect(self.save_plot_dialog)
         btn_save.setMaximumHeight(30)
         hlayout.addWidget(btn_save)
 
@@ -93,7 +95,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.block_signals_list = [self.xs_combo, self.ys_combo, self.checkbox_percent]
 
-    @BasePlotWidget.block_signals
+    @BasePlotWidget.signal_blocker
     def swap_x_y(self, *args, **kwargs):
         xs_opt = self.xs_combo.currentText()
         ys_opt = self.ys_combo.currentText()
@@ -107,7 +109,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.update_plot()
 
-    @BasePlotWidget.block_signals
+    @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         super(ProportionsWidget, self).set_input(transmission)
         cols = self.transmission.df
@@ -131,7 +133,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         return opts
 
-    @BasePlotWidget.block_signals
+    @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
         ix_x = self.xs_combo.findText(opts['xs_name'])
         self.xs_combo.setCurrentIndex(ix_x)
@@ -171,14 +173,6 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.draw()
         self.toolbar.update()
-
-    def save_plot(self, drop_opts: List[str] = None):
-        super(ProportionsWidget, self).save_plot(drop_opts=['xs', 'ys'])
-
-    def open_plot(self, ptrn_path: str, proj_path: str):
-        r = super(ProportionsWidget, self).open_plot(ptrn_path, proj_path)
-        if r is not None:
-            self.update_plot()
 
     def export(self):
         if self.props_df is None:

@@ -137,8 +137,10 @@ class Heatmap(CtrlNode):
     def process(self, **kwargs):
         self.transmissions = kwargs['In']
         self.transmissions_list = merge_transmissions(self.transmissions)
-
-        self.t = Transmission.merge(self.transmissions_list)
+        if len(self.transmissions_list) == 1:
+            self.t = self.transmissions_list[0]
+        else:
+            self.t = Transmission.merge(self.transmissions_list)
 
         self.heatmap_widget.set_input(self.t)
 
@@ -188,27 +190,6 @@ class BeeswarmPlots(CtrlNode):
         transmissions = kwargs['In']
         transmissions_list = merge_transmissions(transmissions)
 
-        # transmissions = kwargs['In']
-        #
-        # if not len(transmissions) > 0:
-        #     raise Exception('No incoming transmissions')
-        #
-        # transmissions_list = []
-        #
-        # for t in transmissions.items():
-        #     t = t[1]
-        #     if t is None:
-        #         QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-        #         continue
-        #     if type(t) is list:
-        #         for i in range(len(t)):
-        #             if t[i] is None:
-        #                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-        #                 continue
-        #             transmissions_list.append(t[i].copy())
-        #         continue
-        #
-        #     transmissions_list.append(t.copy())
 
         self.plot_gui.update_input_transmissions(transmissions_list)
 

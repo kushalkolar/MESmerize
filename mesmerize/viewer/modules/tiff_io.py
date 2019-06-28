@@ -11,12 +11,11 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from ...common import get_file_dialog, error_window
+from ...common.qdialogs import *
 from ..core.common import ViewerInterface
 from .pytemplates.tiff_io_pytemplate import *
 from ..core.viewer_work_environment import ViewerWorkEnv
 import os
-import traceback
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -33,7 +32,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self._tiff_file_path = ''
         self._meta_file_path = ''
 
-    @get_file_dialog('Choose tiff file', '', ['*.tiff', '*.tif'])
+    @use_open_file_dialog('Choose tiff file', '', ['*.tiff', '*.tif'])
     def select_tiff_file(self, path):
         # path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose tiff file', '', '(*.tiff *.tif)')
         # if path == '':
@@ -59,13 +58,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self._meta_file_path = ''
             return False
 
-    def select_meta_file(self):
-        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose meta data file', '', '(*.json)')
-        if path == '':
-            return
-        self.ui.labelFileMeta.setText(path[0])
+    @use_open_file_dialog('Choose meta data file', '', ['*.json'])
+    def select_meta_file(self, path):
+        self._meta_file_path = path
+        self.ui.labelFileMeta.setText(self._meta_file_path)
 
-    @error_window('Could not open file(s)', 'The following error occured while trying to open the image file.')
+    @present_exceptions('Could not open file(s)', 'The following error occured while trying to open the image file.')
     def load_tiff_file(self):
         tiff_path = self._tiff_file_path
 
@@ -100,4 +98,4 @@ class ModuleGUI(QtWidgets.QDockWidget):
         #     QtWidgets.QMessageBox.warning(self, 'File open Error!',
         #                                   'Could not open the chosen file.\n' + traceback.format_exc())
         #     self.vi.viewer.status_bar.showMessage('Could not load tiff file')
-            return
+        #     return

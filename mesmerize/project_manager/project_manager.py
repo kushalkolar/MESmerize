@@ -15,8 +15,8 @@ adding rows to the root dataframe, updating child dataframes, and updating the p
 """
 
 from PyQt5 import QtCore
-from ..common import configuration, project_config_window, start
-from ..common import get_window_manager
+from ..common import configuration, project_config_window, start, get_window_manager, is_mesmerize_project
+# from ..common import get_window_manager
 import os
 import pandas as pd
 from time import time
@@ -79,14 +79,15 @@ class ProjectManager(QtCore.QObject):
         self.config_window.show()
 
     def open_project(self):
-        if not os.path.isdir(self.root_dir + '/dataframes'):
-            raise NotADirectoryError('dataframes directory not found')
-
-        if not os.path.isdir(self.root_dir + '/images'):
-            raise NotADirectoryError('images directory not found')
-
-        if not os.path.isdir(self.root_dir + '/curves'):
-            raise NotADirectoryError('curves directory not found')
+        is_mesmerize_project(self.root_dir)
+        # if not os.path.isdir(self.root_dir + '/dataframes'):
+        #     raise NotADirectoryError('dataframes directory not found')
+        #
+        # if not os.path.isdir(self.root_dir + '/images'):
+        #     raise NotADirectoryError('images directory not found')
+        #
+        # if not os.path.isdir(self.root_dir + '/curves'):
+        #     raise NotADirectoryError('curves directory not found')
 
         df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
         self.dataframe = pd.read_hdf(df_path, key='project_dataframe', mode='r')

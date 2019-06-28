@@ -19,9 +19,19 @@ from .control_widget import Ui_ControlWidget
 import numpy as np
 import pandas as pd
 from typing import Optional, Union
-import traceback
-import os
+from ....common.qdialogs import present_exceptions
 from warnings import warn
+
+
+def help_func(e, tb):
+    if str(e).startswith('all the input array dimensions for the concatenation axis must match exactly'):
+        QtWidgets.QMessageBox.information(None, 'Help info', 'Make sure that the data under the "Data column" has been spliced.')
+
+    elif str(e).startswith('Too many colors requested for the chosen cmap'):
+        QtWidgets.QMessageBox.information(None, 'Help info', 'The chosen categorical labels column can only have a maximum of 20 unique labels.')
+
+    elif 'unhashable type' in str(e):
+        QtWidgets.QMessageBox.information(None, 'Help info', 'One of your selected columns has data type that is incompatible with what you have selected it for')
 
 
 class HeatmapWidget(QtWidgets.QWidget):
@@ -154,15 +164,17 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
 
         if reset_sorting:
             self.comboBoxSortColumn.clear()
-            self.comboBoxSortColumn.addItems(self.dataframe.columns.to_list())
+            self.comboBoxSortColumn.addItems(organize_dataframe_columns(self.dataframe.columns)[1])
 
         ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
         if (ix != -1) and (self.previous_sort_column != ''):
             self.comboBoxSortColumn.setCurrentIndex(ix)
-            self._set_sort_order(self.previous_sort_column)
+            self.dataframe.sort_values(by=[self.previous_sort_column], inplace=True)
+            data = np.vstack(self.dataframe[self.data_column].values)
         else:
             data = np.vstack(self.dataframe[self.data_column].values)
-            self._set_plot(data)
+
+        self._set_plot(data)
 
         self._connect_comboBoxSort()
 
@@ -170,6 +182,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         ylabels = self.dataframe[self.labels_column]
         self.plot_widget.set(data_array, cmap=self.cmap, ylabels=ylabels, **self.kwargs)
 
+    @present_exceptions('Cannot sort', 'Make sure you choose an appropriate categorical column for sorting')
     def _set_sort_order(self, column: str):
         self.dataframe.sort_values(by=[column], inplace=True)
         a = np.vstack(self.dataframe[self.data_column].values)
@@ -211,6 +224,8 @@ class ControlWidget(QtWidgets.QWidget):
 
 
 class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
+    drop_opts = ['dataframes', 'transmission']
+
     def __init__(self):
         super(HeatmapTracerWidget, self).__init__()
         HeatmapSplitterWidget.__init__(self)
@@ -229,8 +244,18 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.pushButtonPlot.clicked.connect(self.update_plot)
         self.control_widget.sig_changed.connect(self.update_plot)
 
-        self.control_widget.ui.pushButtonSave.clicked.connect(lambda: self.save_plot())
+        self.control_widget.ui.checkBoxLiveUpdate.toggled.connect(self.set_update_live)
+
+        self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
         self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
+
+        self._update_live = False
+        self.block_signals_list = [self.control_widget]
+
+    def set_update_live(self, b: bool):
+        self._update_live = b
+        if b:
+            self.update_plot()
 
     @QtCore.pyqtSlot(tuple)
     def set_current_datapoint(self, ix: tuple):
@@ -255,6 +280,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
                                               proj_path=self.get_transmission().get_proj_path(),
                                               history_trace=h)
 
+    @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         super(HeatmapTracerWidget, self).set_input(transmission)
         cols = self.transmission.df.columns
@@ -273,7 +299,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         # self.transmission = transmission
         self._previous_df_columns = cols
 
-        if self.control_widget.ui.pushButtonPlot.isChecked():
+        if self._update_live:
             self.update_plot()
 
     def get_plot_opts(self) -> dict:
@@ -285,6 +311,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
                  transmission=self.transmission)
         return d
 
+    @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
         ix = self.control_widget.ui.comboBoxDataColumn.findText(opts['data_column'])
         self.control_widget.ui.comboBoxDataColumn.setCurrentIndex(ix)
@@ -298,9 +325,6 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.listWidgetColorMaps.set_cmap(opts['cmap'])
 
     def update_plot(self):
-        if not self.control_widget.ui.pushButtonPlot.isChecked():
-            return
-
         self.set_data(**self.get_plot_opts())
 
     def get_cluster_kwargs(self) -> dict:
@@ -308,85 +332,21 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         db_id = self.transmission.history_trace.data_blocks[0]
         children = np.array(self.transmission.history_trace.get_operation_params(data_block_id=db_id, operation='agglomerative_clustering')['children'])
         distance = np.arange(children.shape[0])
-        obs = no_of_observations = np.arange(2, children.shape[0] + 2)
+        obs = np.arange(2, children.shape[0] + 2)
         lkg = np.column_stack([children, distance, obs]).astype(np.float64)
 
         ck = dict(row_linkage=lkg, row_cluster=True, col_cluster=False)
         return ck
 
+    @present_exceptions('Error while setting data', 'Make sure you have selected appropriate columns.', help_func)
     def set_data(self, *args, datapoint_tracer_curve_column: str = None, **kwargs):
         if self.transmission.last_output == 'AGG_CLUSTER_LABEL':
             cluster_kwargs = self.get_cluster_kwargs()
             self.comboBoxSortColumn.setDisabled(True)
         else:
             cluster_kwargs = None
+
         super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=cluster_kwargs, **kwargs)
         self.datapoint_tracer_curve_column = datapoint_tracer_curve_column
 
-    def save_plot(self, *args):
-        super(HeatmapTracerWidget, self).save_plot(drop_opts=['dataframes', 'transmission'])
-        # try:
-        #     proj_path = self.transmission.get_proj_path()
-        #     plots_path = os.path.join(proj_path, 'plots')
-        # except ValueError:
-        #     plots_path = ''
-        # 
-        # path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save plot as', plots_path, '(*.ptrn)')
-        # if path == '':
-        #     return
-        # path = path[0]
-        # 
-        # if not path.endswith('.ptrn'):
-        #     path = f'{path}.ptrn'
-        # 
-        # plot_state = self.get_plot_opts()
-        # plot_state.pop('dataframes')
-        # plot_state.pop('transmission')
-        # 
-        # plot_state['type'] = self.__class__.__name__
-        # self.transmission.plot_state = plot_state
-        # self.transmission.to_hdf5(path)
-
-    # def open_plot_dialog(self):
-    #     ptrn_path = QtWidgets.QFileDialog.getOpenFileName(self, 'Choose plot file', '', '(*.ptrn)')
-    #     if ptrn_path == '':
-    #         return
-    # 
-    #     proj_path = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Project Folder')
-    # 
-    #     if proj_path == '':
-    #         return
-    # 
-    #     self.open_plot(ptrn_path[0], proj_path)
-
-    def open_plot(self, ptrn_path: str, proj_path: str):
-        # try:
-        #     ptrn = Transmission.from_hdf5(ptrn_path)
-        # except:
-        #     QtWidgets.QMessageBox.warning(self, 'File open error',
-        #                                   f'Could not open the chosen file\n{traceback.format_exc()}')
-        #     return
-        #
-        # plot_state = ptrn.plot_state
-        # plot_type = plot_state['type']
-        #
-        # if not plot_type == self.__class__.__name__:
-        #     QtWidgets.QMessageBox.warning(self, 'Wrong plot type', f'The chosen file is not for this type of '
-        #     f'plot\nThis file is for the following plot type: {plot_type}')
-        #     return
-        #
-        # try:
-        #     ptrn.set_proj_path(proj_path)
-        #     ptrn.set_proj_config()
-        #
-        # except (FileNotFoundError, NotADirectoryError) as e:
-        #     QtWidgets.QMessageBox.warning(None, 'Invalid Project Folder', 'This is not a valid Mesmerize project\n' + e)
-        #     return
-        #
-        # self.set_input(ptrn)
-        # self.set_plot_opts(plot_state)
-        r = super(HeatmapTracerWidget, self).open_plot(ptrn_path, proj_path)
-        if r is not None:
-            self.control_widget.ui.pushButtonPlot.setChecked(True)
-            self.update_plot()
 
