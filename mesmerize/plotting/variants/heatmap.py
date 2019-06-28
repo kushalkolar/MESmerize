@@ -100,23 +100,13 @@ class Heatmap(MatplotlibWidget):
     sig_selection_changed = QtCore.pyqtSignal(tuple)
 
     def __init__(self, highlight_mode='row'):
-        # QtCore.QObject.__init__(self)
         MatplotlibWidget.__init__(self)
         rcParams['image.interpolation'] = None
-        # self.ax_heatmap_ = self.fig.add_subplot(111)
-        # self.ax_heatmap_.get_yaxis().set_visible(False)
 
-        # [[x1, y1], [x2, y2]] = self.ax_heatmap_.get_position().get_points()
-        # bb = Bbox.from_extents([[0.1, y1], [0.11, y2]])
-        # self.ax_ylabel_bar = self.fig.add_axes(bb.bounds)
-
-        # self.fig.subplots_adjust(right=0.8)
-        # self.cbar_ax = self.fig.add_axes([0.85, 0.15, 0.05, 0.7])
         self.data = None
 
         self.selector = Selection()
         self.selector.sig_selection_changed.connect(self.sig_selection_changed.emit)
-
 
         self.stimulus_indicators = []
         self.highlight_mode = highlight_mode
@@ -126,6 +116,10 @@ class Heatmap(MatplotlibWidget):
         self.cid_heatmap = None
         self.cid_ax_row_colors = None
         self.cid_ax_row_dendrogram = None
+
+        self.xcid_heatmap = None
+        self.xcid_ax_row_colors = None
+        self.xcid_ax_row_dendrogram = None
 
         self._previous_ylims = None
         self.max_ylim = None
@@ -139,9 +133,6 @@ class Heatmap(MatplotlibWidget):
         :param args:    Additional args that are passed to sns.heatmap()
         :param kwargs:  Additional kwargs that are passed to sns.heatmap()
         """
-        # self.ax_heatmap_.cla()
-        # self._highlight = None
-        # self.cbar_ax.cla()
         self.data = data
 
         cluster_kwarg_keys = ['row_cluster', 'row_linkage', 'col_cluster', 'col_linkage', 'colorbar_kws', 'metric', 'method']
@@ -152,11 +143,6 @@ class Heatmap(MatplotlibWidget):
             for key in cluster_kwarg_keys:
                 if key not in cluster_kwargs.keys():
                     cluster_kwargs[key] = None
-
-        # labels = kwargs.pop('ylabels')
-        # ylabels_cmap = kwargs.pop('ylabels_cmap')
-
-        # self.plot = seaborn_heatmap(data, *args, ax=self.ax_heatmap_, cbar_ax=self.cbar_ax, **kwargs)
 
         if isinstance(ylabels, Series):
             ylabels = ylabels.values
@@ -170,15 +156,13 @@ class Heatmap(MatplotlibWidget):
 
         if self.fig is not None:
             self.fig.clear()
-        # self.plot = sns_clustermap(*args, data=data, row_colors=row_colors, row_cluster=None, col_cluster=None, **cluster_kwargs, **kwargs)
+
         self.plot = CustomClusterGrid(data=data, fig=self.fig, figsize=None, row_colors=row_colors, col_colors=None,
                                       z_score=None, standard_scale=None, mask=None)
         self.plot.plot(*args, **cluster_kwargs, **kwargs)
 
         if ylabels is not None:
             self.create_ylabels_legend(mapper)
-
-        # self.ax_heatmap_xlim = self.plot.ax_heatmap.get_xlim()
 
         self._previous_ylims = self.plot.ax_heatmap.get_ylim()
 
@@ -191,13 +175,10 @@ class Heatmap(MatplotlibWidget):
         self.min_ylim = self.plot.ax_heatmap.get_ylim()[1]
 
         self.draw()
-        # self.toolbar._views.clear()
-        # self.toolbar._positions.clear()
         self.toolbar.update()
-        # self.toolbar._update_view()
 
-        self._connect_ylim_callbacks()
-        self._connect_xlim_callbacks()
+        self.connect_ylim_callbacks()
+        self.connect_xlim_callbacks()
 
         self.selector.set(self, mode=self.highlight_mode)
         # if isinstance(self.selector, Selection):
@@ -206,35 +187,44 @@ class Heatmap(MatplotlibWidget):
 
         # self.selector = Selection(self, mode=self.highlight_mode)
 
-        # if ylabels is not None:
-        #     self._set_ylabel_bar(ylabels, cmap=ylabels_cmap)
+    def block_callbacks(func):
+        def fn(self, *args, **kwargs):
+            self.disconnect_xlim_callbacks()
+            self.disconnect_ylim_callbacks()
+            try:
+                ret = func(self, *args, **kwargs)
+            finally:
+                self.connect_xlim_callbacks()
+                self.connect_ylim_callbacks()
+            return ret
+        return fn
 
-    def _connect_xlim_callbacks(self):
+    def connect_xlim_callbacks(self):
         self.xcid_heatmap = self.plot.ax_heatmap.callbacks.connect('xlim_changed', self.on_xlim_changed)
         self.xcid_ax_row_colors = self.plot.ax_row_colors.callbacks.connect('xlim_changed', self.on_xlim_changed)
         self.xcid_ax_row_dendrogram = self.plot.ax_row_dendrogram.callbacks.connect('xlim_changed', self.on_xlim_changed)
 
-    def _disconnect_xlim_callbacks(self):
+    def disconnect_xlim_callbacks(self):
         self.plot.ax_heatmap.callbacks.disconnect(self.xcid_heatmap)
         self.plot.ax_row_colors.callbacks.disconnect(self.xcid_ax_row_colors)
         self.plot.ax_row_dendrogram.callbacks.disconnect(self.xcid_ax_row_dendrogram)
 
-    def on_xlim_changed(self, ax):
-        """Reset the x limits"""
-        self._disconnect_xlim_callbacks()
-        ax.set_xlim(self.xlims[ax])
-        self._connect_xlim_callbacks()
-
-    def _connect_ylim_callbacks(self):
+    def connect_ylim_callbacks(self):
         self.cid_heatmap = self.plot.ax_heatmap.callbacks.connect('ylim_changed', self.on_ylim_changed)
         self.cid_ax_row_colors = self.plot.ax_row_colors.callbacks.connect('ylim_changed', self.on_ylim_changed)
         self.cid_ax_row_dendrogram = self.plot.ax_row_dendrogram.callbacks.connect('ylim_changed', self.on_ylim_changed)
 
-    def _disconnect_ylim_callbacks(self):
-        self.plot.ax_heatmap.callbacks.disconnect(self.cid_heatmap)#, self.on_ylim_changed)
-        self.plot.ax_row_colors.callbacks.disconnect(self.cid_ax_row_colors)#, self.on_ylim_changed)
-        self.plot.ax_row_dendrogram.callbacks.disconnect(self.cid_ax_row_dendrogram)#, self.on_ylim_changed)
+    def disconnect_ylim_callbacks(self):
+        self.plot.ax_heatmap.callbacks.disconnect(self.cid_heatmap)
+        self.plot.ax_row_colors.callbacks.disconnect(self.cid_ax_row_colors)
+        self.plot.ax_row_dendrogram.callbacks.disconnect(self.cid_ax_row_dendrogram)
 
+    @block_callbacks
+    def on_xlim_changed(self, ax):
+        """Reset the x limits"""
+        ax.set_xlim(self.xlims[ax])
+
+    @block_callbacks
     def on_ylim_changed(self, ax):
         if ax is self.plot.ax_row_dendrogram:
             # divide by 10
@@ -245,8 +235,6 @@ class Heatmap(MatplotlibWidget):
         if lims[0] > self.max_ylim or lims[1] < self.min_ylim:
             self.y_lims_exceeded()
             return
-
-        self._disconnect_ylim_callbacks()
 
         if ax is not self.plot.ax_heatmap:
             self.plot.ax_heatmap.set_ylim(lims)
@@ -261,28 +249,12 @@ class Heatmap(MatplotlibWidget):
 
         self._previous_ylims = lims
 
-        self._connect_ylim_callbacks()
-
+    @block_callbacks
     def y_lims_exceeded(self):
-        # if lims[0] > self.max_ylim:
-        #     upper = self.max_ylim
-        # else:
-        #     upper = lims[0]
-        #
-        # if lims[1] < self.min_ylim:
-        #     lower = self.min_ylim
-        # else:
-        #     lower = lims[1]
-
         lims = self._previous_ylims
-
-        self._disconnect_ylim_callbacks()
-
         self.plot.ax_heatmap.set_ylim(lims)
         self.plot.ax_row_colors.set_ylim(lims)
         self.plot.ax_row_dendrogram.set_ylim(tuple(map(lambda x: x*10, lims)))
-
-        self._connect_ylim_callbacks()
 
     def create_ylabels_legend(self, ylabels_mapper):
         self.plot.ax_col_dendrogram.cla()
@@ -290,35 +262,6 @@ class Heatmap(MatplotlibWidget):
         self.plot.ax_col_dendrogram.legend(handles=handles, ncol=int(np.sqrt(len(handles))))
         self.plot.ax_col_dendrogram.get_xaxis().set_visible(False)
         self.plot.ax_col_dendrogram.get_yaxis().set_visible(False)
-
-    # def _set_ylabel_bar(self, labels : Series, cmap: str = 'tab20'):
-    #     assert isinstance(labels, Series)
-    #
-    #     self.ax_ylabel_bar.cla()
-    #
-    #     [[x1, y1], [x2, y2]] = self.ax_heatmap_.get_position().get_points()
-    #     bb = Bbox.from_extents([[0.123, y1], [0.11, y2]])
-    #     self.ax_ylabel_bar.set_position(bb)
-    #
-    #     # self.ax_ylabel_bar.get_xaxis().set_visible(False)s
-    #     # self.ax_ylabel_bar.get_yaxis().set_visible(False)
-    #     self.ax_ylabel_bar.axis('off')
-    #
-    #     labels_unique = labels.unique()
-    #     colors_map = {}
-    #
-    #     for ix, c in enumerate(labels_unique):
-    #         colors_map.update({labels_unique[ix]: ix})
-    #
-    #     colors = labels.map(colors_map)
-    #     color_labels_array = np.expand_dims(colors.values, axis=1)
-    #
-    #     ylabel_bar = self.ax_ylabel_bar.imshow(color_labels_array, aspect='auto', cmap=cmap)
-    #
-    #     cs = np.unique(color_labels_array.ravel())
-    #     colors = [ylabel_bar.cmap(ylabel_bar.norm(c)) for c in cs]
-    #     ps = [MPatch(color=colors[i], label=labels_unique[i]) for i in range(len(cs))]
-    #     self.ax_ylabel_bar.legend(handles=ps, bbox_to_anchor=(1,1))
 
     def add_stimulus_indicator(self, start: int, end: int, color: str):
         for t in [start, end]:
@@ -339,18 +282,6 @@ class Selection(QtCore.QObject):
         self.plot = None #heatmap_obj.plot
         self.heatmap = None #heatmap_obj
 
-        self.mode = None #mode
-        # if mode == 'row':
-        #     self.canvas.mpl_connect('button_press_event', self.select_row)
-        # elif mode == 'item':
-        #     rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
-        #     self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
-        #                                drawtype='box', useblit=True,
-        #                                button=[1, 3],  # don't use middle button
-        #                                minspanx=1, minspany=1,
-        #                                spancoords='data',
-        #                                interactive=True, rectprops=rp)
-        #     self.RS.set_active(True)
         self.RS = None
         self.current_ix = None
         self._highlight = None
@@ -378,15 +309,6 @@ class Selection(QtCore.QObject):
             self.canvas.setFocus()
             self.canvas.mpl_connect('key_press_event', self.set_multi_select_mode_on)
             self.canvas.mpl_connect('key_release_event', self.set_multi_select_mode_off)
-        # elif mode == 'span':
-        #     rp = dict(facecolor='w', edgecolor='k', lw=1, alpha=0.5)
-        #     self.RS = RectangleSelector(self.heatmap.plot, self.line_select_callback,
-        #                                 drawtype='box', useblit=True,
-        #                                 button=[1, 3],  # don't use middle button
-        #                                 minspanx=1, minspany=1,
-        #                                 spancoords='data',
-        #                                 interactive=True, rectprops=rp)
-        #     self.RS.set_active(True)
         else:
             raise ValueError("Invalid selection mode: '" + str(mode) + "' Valid modes are: 'row', 'item' or 'span'.")
 
