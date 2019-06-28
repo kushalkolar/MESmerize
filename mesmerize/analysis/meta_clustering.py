@@ -7,9 +7,7 @@ from multiprocessing import Pool
 
 from sklearn.cluster import AgglomerativeClustering
 from .clustering_metrics import davies_bouldin_score, pairwise_distances
-from scipy.stats import wasserstein_distance
 from .math import modln, modlog10
-from copy import deepcopy
 from scipy.fftpack import rfft
 
 
@@ -45,16 +43,6 @@ class BaseMetaClustering(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def run(self, num_threads, *args, **kwargs) -> None:
         pass
-
-    # @abc.abstractmethod
-    # @property
-    # def param_iters(self) -> list:
-    #     pass
-    #
-    # @abc.abstractmethod
-    # @property
-    # def result(self) -> list:
-    #     pass
 
 
 class MetaClustering(BaseMetaClustering):

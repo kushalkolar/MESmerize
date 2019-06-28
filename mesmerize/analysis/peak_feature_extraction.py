@@ -109,7 +109,7 @@ class PeakFeatures:
                   'falling_slope_at_mid': [peak_curve, ix_peak_rel],
                   'falling_slope_avg': [peak_curve, ix_peak_rel],
                   'duration_base': [peak_curve],
-                  'duration_mid': [peak_curve],
+                  'duration_mid': [peak_curve, ix_peak_rel],
                   'inter_peak_interval': [ix_peak_abs, ix_pre_peak, ix_nex_peak]
                   }
         # print(args_d)

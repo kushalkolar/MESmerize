@@ -15,6 +15,7 @@ import psutil
 import os
 from signal import SIGKILL
 from ....common.utils import make_workdir, make_runfile
+from ....common.qdialogs import *
 import pickle
 from ....analysis.data_types import Transmission
 import numpy as np
@@ -24,8 +25,8 @@ from collections import deque
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from matplotlib.gridspec import GridSpec
-from ....analysis.utils import get_proportions
 from seaborn import lineplot
+from ..proportions import ProportionsWidget
 
 
 class KShapeControlDock(QtWidgets.QDockWidget):
@@ -64,8 +65,13 @@ class KShapePlot(MatplotlibWidget):
         MatplotlibWidget.__init__(self)
         gs = GridSpec(1, 3, wspace=0.3)
         self.ax_curves = self.fig.add_subplot(gs[0, :2])
-        self.ax_prop = self.fig.add_subplot(gs[0, 2])
-        self.ax_prop.set_title('Proportions')
+        # self.ax_prop = self.fig.add_subplot(gs[0, 2])
+        # self.ax_prop.set_title('Proportions')
+
+        self.hlayout = QtWidgets.QHBoxLayout()
+        self.proportions_widget = ProportionsWidget()
+        self.hlayout.addWidget(ProportionsWidget)
+        self.vbox.addLayout(self.hlayout)
 
 
 class KShapeMeanPlots(MatplotlibWidget):
@@ -80,6 +86,7 @@ class KShapeMeanPlots(MatplotlibWidget):
 
     def _add_cluster(self, data, row: int, column: int, title: str):
         plot = lineplot(ax=self.axs[row, column])
+
 
 class KShapeWidget(QtWidgets.QMainWindow):
     sig_output_changed = QtCore.pyqtSignal(Transmission)
@@ -113,7 +120,7 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         self.control_widget.ui.listWidgetClusterNumber.currentItemChanged.connect(self.set_plot)
 
-        self.control_widget.ui.comboBoxGroups.currentTextChanged.connect(self.plot_proportions)
+        # self.control_widget.ui.comboBoxGroups.currentTextChanged.connect(self.plot_proportions)
 
         self.plot = KShapePlot()
         self.means_plot = KShapeMeanPlots()
@@ -167,7 +174,8 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         return p
 
-    def start_process(self):
+    @present_exceptions('Start process error', 'Make sure you have selected an appropriate Data Column')
+    def start_process(self, *args, **kwargs):
         if self.finished:
             if QtWidgets.QMessageBox.warning(self, 'Discard data?',
                                              'Would you like to discard the current clustering data?',
@@ -175,19 +183,22 @@ class KShapeWidget(QtWidgets.QMainWindow):
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
             self.plot.fig.clear()
-            # self.plot.clear()
+
+        self.finished = False
+        self.ks = None
+        self.y_pred = None
 
         scaler = TimeSeriesScalerMeanVariance()
-        try:
-            self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
-            arrays = self.transmission.df[self.data_column].values
-            arrays = self.pad_input_data(arrays)
-            self.input_data = scaler.fit_transform(arrays)[:, :, 0]
-        except:
-            QtWidgets.QMessageBox.warning(self, 'Invalid data column',
-                                          'The data types in the chosen '
-                                          'data column is not appropriate.\n' + traceback.format_exc())
-            return
+        # try:
+        self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
+        arrays = self.transmission.df[self.data_column].values
+        arrays = self.pad_input_data(arrays)
+        self.input_data = scaler.fit_transform(arrays)[:, :, 0]
+        # except:
+        #     QtWidgets.QMessageBox.warning(self, 'Invalid data column',
+        #                                   'The data types in the chosen '
+        #                                   'data column is not appropriate.\n' + traceback.format_exc())
+        #     return
 
         workdir = self.get_workdir()
 
@@ -218,7 +229,6 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         self.process.start(sh_file_path)
 
-        self.finished = False
         self.control_widget.set_active()
 
     def print_stdout(self, process: QtCore.QProcess):
@@ -282,24 +292,27 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         self.finished = True
 
-        self.plot_proportions(self.control_widget.ui.comboBoxGroups.currentText())
+        self.transmission.df['KSHAPE_CLUSTER'] = self.y_pred
+
+        self.plot.proportions_widget.set_input(self.transmission)
 
         self.send_output_transmission()
 
     def send_output_transmission(self):
-        self.transmission.df['KSHAPE_CLUSTER'] = self.y_pred
+        t = self.transmission.copy()
         params = self.params['kwargs']
-        self.transmission.history_trace.add_operation('all', operation='kshape', parameters=params)
-        self.sig_output_changed.emit(self.transmission)
+        t.history_trace.add_operation('all', operation='kshape', parameters=params)
+        self.sig_output_changed.emit(t)
 
+    @present_exceptions('Plotting error')
     def set_plot(self, item: QtWidgets.QListWidgetItem):
         if item is None:
             return
 
-        if not self.finished:
-            QtWidgets.QMessageBox.warning(self, 'Nothing to plot', 'Clustering must finish '
-                                                                   'before you can plot anything')
-            return
+        # if not self.finished:
+        #     QtWidgets.QMessageBox.warning(self, 'Nothing to plot', 'Clustering must finish '
+        #                                                            'before you can plot anything')
+        #     return
 
         cluster_num = int(item.text())
 
@@ -320,22 +333,22 @@ class KShapeWidget(QtWidgets.QMainWindow):
 
         self.plot.draw()
 
-    def plot_proportions(self, grouping_column):
-        if not self.finished:
-            return
-
-        group_labels = self.transmission.df[grouping_column]
-
-        try:
-            self.plot.ax_prop.cla()
-            props = get_proportions(self.y_pred, group_labels)
-            props.plot(kind='bar', stacked=True, ax=self.plot.ax_prop)
-            self.plot.ax_prop.legend(loc='best', bbox_to_anchor=(1.0, 0.5))
-            self.plot.draw()
-        except:
-            QtWidgets.QMessageBox.warning(self, 'Error showing proportions',
-                                          'You probably did not select an '
-                                          'appropriate grouping column\n' + traceback.format_exc())
+    # def plot_proportions(self, grouping_column):
+    #     if not self.finished:
+    #         return
+    #
+    #     group_labels = self.transmission.df[grouping_column]
+    #
+    #     try:
+    #         self.plot.ax_prop.cla()
+    #         props = get_proportions(self.y_pred, group_labels)
+    #         props.plot(kind='bar', stacked=True, ax=self.plot.ax_prop)
+    #         self.plot.ax_prop.legend(loc='best', bbox_to_anchor=(1.0, 0.5))
+    #         self.plot.draw()
+    #     except:
+    #         QtWidgets.QMessageBox.warning(self, 'Error showing proportions',
+    #                                       'You probably did not select an '
+    #                                       'appropriate grouping column\n' + traceback.format_exc())
 
     def set_means_plot(self):
         self.means_plot.set_clusters(self.input_data, self.y_pred)
