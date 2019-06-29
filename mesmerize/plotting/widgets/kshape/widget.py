@@ -70,7 +70,7 @@ class KShapePlot(MatplotlibWidget):
 
         self.hlayout = QtWidgets.QHBoxLayout()
         self.proportions_widget = ProportionsWidget()
-        self.hlayout.addWidget(ProportionsWidget)
+        self.hlayout.addWidget(self.proportions_widget)
         self.vbox.addLayout(self.hlayout)
 
 
