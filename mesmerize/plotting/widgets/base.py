@@ -18,7 +18,7 @@ from typing import *
 #TODO: Implement base for all plot widgets
 
 
-class AbstractBasePlotWidget(metaclass=abc.ABCMeta):
+class _AbstractBasePlotWidget(metaclass=abc.ABCMeta):
     @property
     @abc.abstractmethod
     def transmission(self) -> Transmission:
@@ -54,11 +54,11 @@ class AbstractBasePlotWidget(metaclass=abc.ABCMeta):
         pass
 
 
-class _MetaQtABC(QtWidgets.QWidget.__class__, AbstractBasePlotWidget.__class__):
+class _MetaQtABC(QtWidgets.QWidget.__class__, _AbstractBasePlotWidget.__class__):
     pass
 
 
-class BasePlotWidget(AbstractBasePlotWidget, metaclass=_MetaQtABC):
+class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
     def __init__(self):
         super().__init__()
         self.transmission = None
