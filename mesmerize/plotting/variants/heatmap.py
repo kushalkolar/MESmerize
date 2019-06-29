@@ -23,7 +23,7 @@ from matplotlib import pyplot as plt
 from matplotlib.widgets import RectangleSelector
 from pandas import Series
 from ..utils import get_colormap, map_labels_to_colors
-from typing import Union
+from typing import *
 import pandas as pd
 from matplotlib import gridspec
 from functools import partial
@@ -107,6 +107,7 @@ class Heatmap(MatplotlibWidget):
 
         self.selector = Selection()
         self.selector.sig_selection_changed.connect(self.sig_selection_changed.emit)
+        self.selector.sig_selection_changed.connect(self.scroll_selector)
 
         self.stimulus_indicators = []
         self.highlight_mode = highlight_mode
@@ -236,16 +237,8 @@ class Heatmap(MatplotlibWidget):
             self.y_lims_exceeded()
             return
 
-        if ax is not self.plot.ax_heatmap:
-            self.plot.ax_heatmap.set_ylim(lims)
+        self.set_y_lims(lims, skip_axes=ax)
 
-        if ax is not self.plot.ax_row_colors:
-            self.plot.ax_row_colors.set_ylim(lims)
-
-        if ax is not self.plot.ax_row_dendrogram:
-            # scale up by 10 for this ax
-            lims_ = tuple(map(lambda x: x * 10, lims))
-            self.plot.ax_row_dendrogram.set_ylim(lims_)
 
         self._previous_ylims = lims
 
@@ -270,6 +263,49 @@ class Heatmap(MatplotlibWidget):
             line = Line2D(x, y, lw=3, color=color)
             self.stimulus_indicators.append(line)
             self.plot.add_line(line)
+
+    def set_y_lims(self, lims: Tuple[int, int], skip_axes = None):
+        if skip_axes is not self.plot.ax_heatmap:
+            self.plot.ax_heatmap.set_ylim(lims)
+
+        if skip_axes is not self.plot.ax_row_colors:
+            self.plot.ax_row_colors.set_ylim(lims)
+
+        if skip_axes is not self.plot.ax_row_dendrogram:
+            # scale up by 10 for this ax
+            lims_ = tuple(map(lambda x: x * 10, lims))
+            self.plot.ax_row_dendrogram.set_ylim(lims_)
+
+    def get_y_lims(self) -> Tuple[int, int]:
+        if not self.plot.ax_heatmap.get_ylim() == self.plot.ax_row_colors.get_ylim():
+            raise ValueError('Axes y_lims not in sync, something wrong')
+
+        return self.plot.ax_heatmap.get_ylim()
+
+    @QtCore.pyqtSlot(tuple)
+    def scroll_selector(self, ixs: Tuple[int, int]):
+        upper, lower = self.get_y_lims()
+        if self.highlight_mode == 'row':
+            if ixs[1] + 2 > upper:
+                if ixs[1] + 2 > self.max_ylim:
+                    return
+
+                new_upper = min(ixs[1] + 10, self.max_ylim)
+                new_lower = max(self.min_ylim, lower + 10)
+
+            elif ixs[1] - 2 < lower:
+                if ixs[1] - 2 < self.min_ylim:
+                    return
+
+                new_lower = max(self.min_ylim, ixs[1] - 10)
+                new_upper = min(upper - 10, self.max_ylim)
+
+            else:
+                return
+
+            lims = (new_upper, new_lower)
+
+            self.set_y_lims(lims)
 
 
 class Selection(QtCore.QObject):
@@ -356,18 +392,25 @@ class Selection(QtCore.QObject):
 
     def _draw_row_selection(self, y):
         self._highlight = self.plot.add_patch(RectangularPatch((0, y), self.heatmap.data.shape[1], 1,
-                                                               facecolor='w', edgecolor='k', lw=3, alpha=0.5))
+                                                               facecolor='w', edgecolor='k', lw=3, alpha=0.2))
         self.canvas.draw()
 
     def on_key_press_event(self, ev):
         if ev.key == 'up':
-            self.select_row(max(self.current_ix[1] - 1, 0))
+            ixs = max(self.current_ix[1] - 1, self.heatmap.min_ylim)
+
         elif ev.key == 'down':
-            self.select_row(self.current_ix[1] + 1)
-        elif ev.key == 'left':
-            pass
-        elif ev.key == 'right':
-            pass
+            ixs = min(self.current_ix[1] + 1, self.heatmap.max_ylim)
+
+        else:
+
+            return
+        # elif ev.key == 'left':
+        #     pass
+        # elif ev.key == 'right':
+        #     pass
+
+        self.select_row(int(ixs))
 
     def set_multi_select_mode_on(self, ev):
         if ev.key == 'control':
@@ -385,7 +428,7 @@ class Selection(QtCore.QObject):
             self._draw_item_selection(ix)
 
     def _draw_item_selection(self, ix: tuple):
-        self._highlight = self.plot.add_patch(RectangularPatch(ix, 1, 1, facecolor='w', edgecolor='k', lw=3, alpha=0.5))
+        self._highlight = self.plot.add_patch(RectangularPatch(ix, 1, 1, facecolor='w', edgecolor='k', lw=3, alpha=0.2))
         self.canvas.draw()
 
     # def toggle_selector(self, event):
