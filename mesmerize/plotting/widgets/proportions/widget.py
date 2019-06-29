@@ -22,8 +22,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
     drop_opts = ['xs', 'ys']
 
     def __init__(self):
-        super(ProportionsWidget, self).__init__()
-        MatplotlibWidget.__init__(self)
+        super().__init__()
         self.ax = self.fig.add_subplot(111)
 
         self.message_label = QtWidgets.QLabel()

@@ -58,10 +58,9 @@ class _MetaQtABC(QtWidgets.QWidget.__class__, AbstractBasePlotWidget.__class__):
     pass
 
 
-class BasePlotWidget(AbstractBasePlotWidget, QtWidgets.QWidget, metaclass=_MetaQtABC):
+class BasePlotWidget(AbstractBasePlotWidget, metaclass=_MetaQtABC):
     def __init__(self):
-        super(BasePlotWidget, self).__init__()
-        QtWidgets.QWidget.__init__(self)
+        super().__init__()
         self.transmission = None
 
     @property
