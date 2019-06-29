@@ -317,7 +317,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
                  data_column=self.control_widget.ui.comboBoxDataColumn.currentText(),
                  labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
                  datapoint_tracer_curve_column=self.control_widget.ui.comboBoxDPTCurveColumn.currentText(),
-                 cmap=self.control_widget.ui.listWidgetColorMaps.current_cmap,
+                 cmap=self.control_widget.ui.listWidgetColorMapsData.current_cmap,
                  transmission=self.transmission)
         return d
 
