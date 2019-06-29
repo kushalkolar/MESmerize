@@ -10,15 +10,20 @@ qual_cmaps = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1', 'Set2',
               'tab20c']
 
 
-def auto_colormap(number_of_colors: int, color_map: str = 'hsv', output='mpl') -> List[Union[QtGui.QColor, Any]]:
+def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing: str = 'uniform') -> List[Union[QtGui.QColor, np.ndarray]]:
     """
-    :param number_of_colors: Numbers of colors for the colormap
-    :param color_map:        name of colormap
-    :param output:           option: 'mpl' returns RGBA values between 0-1 which matplotlib likes,
-                             option: 'pyqt' returns QtGui.QColor instances corresponding to the RGBA values
-    :return:                 List of colors with length according to the requested number of colors
+    Returns colors evenly spread through the chosen colormap.
+
+    :param n_colors: Numbers of colors to return
+    :param cmap:     name of colormap
+    :param output:   option: 'mpl' returns RGBA values between 0-1 which matplotlib likes,
+                     option: 'pyqt' returns QtGui.QColor instances corresponding to the RGBA values
+    :param spacing:  option: 'uniform' returns evenly spaced colors across the entire cmap range
+                     option: 'subsequent' returns subsequent colors from the cmap
+
+    :return:         List of colors as either QColor or numpy array with length n_colors
     """
-    cm = matplotlib_color_map.get_cmap(color_map)
+    cm = matplotlib_color_map.get_cmap(cmap)
     cm._init()
 
     if output == 'pyqt':
@@ -26,15 +31,18 @@ def auto_colormap(number_of_colors: int, color_map: str = 'hsv', output='mpl') -
     else:
         lut = (cm._lut).view(np.ndarray)
 
-    if not color_map in qual_cmaps:
-        cm_ixs = np.linspace(0, 210, number_of_colors, dtype=int)
+    if spacing == 'uniform':
+        if not cmap in qual_cmaps:
+            cm_ixs = np.linspace(0, 210, n_colors, dtype=int)
+        else:
+            if n_colors > len(lut):
+                raise ValueError('Too many colors requested for the chosen cmap')
+            cm_ixs = np.arange(0, len(lut), dtype=int)
     else:
-        if number_of_colors > len(lut):
-            raise ValueError('Too many colors requested for the chosen cmap')
-        cm_ixs = np.arange(0, len(lut), dtype=int)
+        cm_ixs = range(n_colors)
 
     colors = []
-    for ix in range(number_of_colors):
+    for ix in range(n_colors):
         c = lut[cm_ixs[ix]]
         if output == 'pyqt':
             colors.append(mkColor(c))
@@ -42,6 +50,7 @@ def auto_colormap(number_of_colors: int, color_map: str = 'hsv', output='mpl') -
             colors.append(c)
 
     return colors
+
 
 
 def get_colormap(labels: iter, cmap: str) -> dict:
