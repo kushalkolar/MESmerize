@@ -135,6 +135,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
                  labels_column: str,
                  cmap: str = 'jet',
                  transmission: Optional[Transmission] = None,
+                 sort: bool = True,
                  reset_sorting: bool = True,
                  **kwargs):
         """
@@ -143,6 +144,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         :param labels_column:   dataframe column (usually categorical labels) used to generate the y-labels and legend.
         :param cmap:            colormap choice
         :param transmission:    transmission object that dataframe originates, used to calculate data units if passed
+        :param sort:            if False, the sort comboBox is ignored
         :param reset_sorting:   reset the order of the rows in the heatmap
         """
         dataframe = self.merge_dataframes(dataframes)
@@ -170,13 +172,13 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
             self.comboBoxSortColumn.clear()
             self.comboBoxSortColumn.addItems(organize_dataframe_columns(self.dataframe.columns)[1])
 
-        ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
-        if (ix != -1) and (self.previous_sort_column != ''):
-            self.comboBoxSortColumn.setCurrentIndex(ix)
-            self.dataframe.sort_values(by=[self.previous_sort_column], inplace=True)
-            data = np.vstack(self.dataframe[self.data_column].values)
-        else:
-            data = np.vstack(self.dataframe[self.data_column].values)
+        if sort:
+            ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
+            if (ix != -1) and (self.previous_sort_column != ''):
+                self.comboBoxSortColumn.setCurrentIndex(ix)
+                self.dataframe.sort_values(by=[self.previous_sort_column], inplace=True)
+
+        data = np.vstack(self.dataframe[self.data_column].values)
 
         self._set_plot(data)
 
@@ -221,7 +223,11 @@ class ControlWidget(QtWidgets.QWidget):
         self.ui.setupUi(self)
         self.setMaximumWidth(350)
 
-        self.ui.listWidgetColorMaps.signal_colormap_changed.connect(lambda: self.sig_changed.emit())
+        self.ui.listWidgetColorMapsLabels.set_cmap('tab10')
+
+        self.ui.listWidgetColorMapsData.signal_colormap_changed.connect(lambda: self.sig_changed.emit())
+        self.ui.listWidgetColorMapsLabels.signal_colormap_changed.connect(lambda: self.sig_changed.emit())
+
         self.ui.comboBoxDataColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
         self.ui.comboBoxLabelsColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
         self.ui.comboBoxDPTCurveColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
@@ -326,7 +332,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         ix = self.control_widget.ui.comboBoxDataColumn.findText(opts['datapoint_tracer_curve_column'])
         self.control_widget.ui.comboBoxDPTCurveColumn.setCurrentIndex(ix)
 
-        self.control_widget.ui.listWidgetColorMaps.set_cmap(opts['cmap'])
+        self.control_widget.ui.listWidgetColorMapsData.set_cmap(opts['cmap'])
 
     def update_plot(self):
         self.set_data(**self.get_plot_opts())
@@ -345,12 +351,11 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
     @present_exceptions('Error while setting data', 'Make sure you have selected appropriate columns.', help_func)
     def set_data(self, *args, datapoint_tracer_curve_column: str = None, **kwargs):
         if self.transmission.last_output == 'AGG_CLUSTER_LABEL':
-            cluster_kwargs = self.get_cluster_kwargs()
             self.comboBoxSortColumn.setDisabled(True)
+            super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=self.get_cluster_kwargs(), sort=False, **kwargs)
         else:
-            cluster_kwargs = None
+            super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=None, **kwargs)
 
-        super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=cluster_kwargs, **kwargs)
         self.datapoint_tracer_curve_column = datapoint_tracer_curve_column
 
 

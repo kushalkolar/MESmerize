@@ -47,12 +47,22 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Colormap:</string>
+      <string>Data colormap:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="ColormapListWidget" name="listWidgetColorMaps"/>
+    <widget class="ColormapListWidget" name="listWidgetColorMapsData"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Legend colormap:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="ColormapListWidget" name="listWidgetColorMapsLabels"/>
    </item>
    <item>
     <widget class="QCheckBox" name="checkBoxLiveUpdate">

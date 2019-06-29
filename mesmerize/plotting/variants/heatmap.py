@@ -304,6 +304,10 @@ class Selection(QtCore.QObject):
 
         if mode == 'row':
             self.canvas.mpl_connect('button_press_event', self.select_row)
+            self.canvas.setFocusPolicy(QtCore.Qt.ClickFocus)
+            self.canvas.setFocus()
+            self.canvas.mpl_connect('key_press_event', self.on_key_press_event)
+
         elif mode == 'item':
             self.canvas.mpl_connect('button_press_event', self.select_item)
             self.canvas.setFocusPolicy(QtCore.Qt.ClickFocus)
@@ -317,7 +321,7 @@ class Selection(QtCore.QObject):
         if self._highlight is not None:
             self._highlight.remove()
         self._highlight = None
-    
+
     def update_selection(self, ix: tuple):
         if not self.multi_select_mode:
             self._clear_highlight()
@@ -329,7 +333,7 @@ class Selection(QtCore.QObject):
         if self.multi_select_mode:
             self.multi_selection_list.append(ix)
             self.sig_multi_selection_changed.emit(self.multi_selection_list)
-        
+
     def select_row(self, ev):
         if type(ev) is int:
             y = ev
@@ -340,20 +344,30 @@ class Selection(QtCore.QObject):
                 return
 
             y = ev.ydata
-            
+
             if y is None:
                 return
-            
+
             y = int(y)
-            
+
         ix = (0, y)
         self.update_selection(ix)
         self._draw_row_selection(y)
-    
+
     def _draw_row_selection(self, y):
         self._highlight = self.plot.add_patch(RectangularPatch((0, y), self.heatmap.data.shape[1], 1,
                                                                facecolor='w', edgecolor='k', lw=3, alpha=0.5))
         self.canvas.draw()
+
+    def on_key_press_event(self, ev):
+        if ev.key == 'up':
+            self.select_row(max(self.current_ix[1] - 1, 0))
+        elif ev.key == 'down':
+            self.select_row(self.current_ix[1] + 1)
+        elif ev.key == 'left':
+            pass
+        elif ev.key == 'right':
+            pass
 
     def set_multi_select_mode_on(self, ev):
         if ev.key == 'control':
@@ -381,7 +395,7 @@ class Selection(QtCore.QObject):
     #     if event.key in ['A', 'a'] and not self.RS.active:
     #         print('RectangleSelector activated.')
     #         self.RS.set_active(True)
-    
+
     # def line_select_callback(self, eclick, erelease):
     #     'eclick and erelease are the press and release events'
     #     x1, y1 = int(eclick.xdata), int(eclick.ydata)

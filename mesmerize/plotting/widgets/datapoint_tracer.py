@@ -91,7 +91,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         for k in row_dict.keys():
             row_dict[k] = row_dict[k][row.index.item()]
         self.pandas_series_widget.fill_widget(row_dict)
-        self.pandas_series_widget.collapseAll()
+        # self.pandas_series_widget.collapseAll()
 
         if self.ui.radioButtonMaxProjection.isChecked():
             self.set_image('max')
