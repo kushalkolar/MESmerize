@@ -257,6 +257,10 @@ class ViewerWorkEnv:
     def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = ''):
         """
         Return instance of work environment with ImgData.seq set from tifffile.imread.
+        :param path:        path to the tiff file
+        :param method:      one of 'imread', 'asarray', or 'asarray-multi'. Refers to usage of either tifffile.imread
+                            or tifffile.asarray. 'asarray-multi' will load multi-page tiff files.
+        :param meta_path:   path to a json file containing meta data
         """
 
         if method == 'imread':

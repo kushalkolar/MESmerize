@@ -11,15 +11,16 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from .pytemplates.cnmfe_pytemplate import *
 import json
 from ...common import get_window_manager
+from ...common.qdialogs import *
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_reference):
-        self.vi = ViewerInterface(viewer_reference)
+        self.vi = ViewerUtils(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
 
@@ -34,12 +35,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # assert isinstance(self.vi.viewer_ref.batch_manager, BatchModuleGui)
 
-    def _make_params_dict(self) -> dict:
+    @present_exceptions()
+    def get_params(self, *args, **kwargs) -> dict:
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
-            QtWidgets.QMessageBox.warning(self, 'No framerate for current image sequence!',
-                                          'You must set a framerate for the current image sequence before you can '
-                                          'continue!', QtWidgets.QMessageBox.Ok)
-            return None
+            raise KeyError('No framerate for current image sequence!',
+                           'You must set a framerate for the current image sequence. '
+                           'You can set it manually in the console like this:\nget_meta()["fps"] = <framerate>')
 
         # Get bord_px param if motion correction was performed
         history_trace = self.vi.viewer.workEnv.history_trace
@@ -68,36 +69,18 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
-    def export_params(self):
-        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Parameters', '', '(*.json)')
-
-        if path == '':
-            return
-        if path[0].endswith('.json'):
-            path = path[0]
-        else:
-            path = path[0] + '.json'
-
+    @use_save_file_dialog('Save parameters', None, ['.json'])
+    def export_params(self, path: str, *args, **kwargs):
         with open(path, 'w') as f:
-            d = self._make_params_dict()
+            d = self.get_params()
             json.dump(d, f)
 
-    def import_params(self):
-        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Import Parameters', '', '(*.json)')
-        if path == '':
-            return
-        try:
-            with open(path, 'r') as f:
-                d = json.load(f)
-                self.set_params(d)
-        except IOError as e:
-            QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
-            return
-        except KeyError as e:
-            QtWidgets.QMessageBox.warning(self, 'Invalid params file!',
-                                          'The chosen file is not a valid CNMF-E params file.\n' + str(e))
-        except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'Import error', str(e))
+    @use_open_file_dialog('Open CNMFE parameters file', None, ['.json'])
+    @present_exceptions('Cannot import parameters', 'Make sure it is a CNMFE parameters file')
+    def import_params(self, path, *args, **kwargs):
+        with open(path, 'r') as f:
+            d = json.load(f)
+            self.set_params(d)
 
     def set_params(self, params: dict):
         self.ui.comboBoxInput.setCurrentText(params['Input'])
@@ -125,7 +108,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         else:
             input_workEnv = self.ui.comboBoxInput.currentText()
 
-        d = self._make_params_dict()
+        d = self.get_params()
 
         if d is None:
             return
@@ -158,7 +141,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         else:
             input_workEnv = self.ui.comboBoxInput.currentText()
 
-        d = self._make_params_dict()
+        d = self.get_params()
 
         if d is None:
             return

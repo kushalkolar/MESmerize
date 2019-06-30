@@ -11,7 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from .pytemplates.cnmf_pytemplate import *
 import json
 from ...common import get_window_manager
@@ -19,7 +19,7 @@ from ...common import get_window_manager
 
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_reference):
-        self.vi = ViewerInterface(viewer_reference)
+        self.vi = ViewerUtils(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
 

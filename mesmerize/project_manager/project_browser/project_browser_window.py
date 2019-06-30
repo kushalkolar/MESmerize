@@ -25,7 +25,6 @@ from functools import partial
 class ProjectBrowserWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
-        self.setWindowTitle('Project Browser')
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -77,6 +76,8 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
 
         self._status_bar = None
         self.status_bar = self.statusBar()
+
+        self.setWindowTitle('Project Browser')
 
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:

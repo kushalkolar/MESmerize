@@ -5,14 +5,14 @@ from PyQt5 import QtWidgets, QtGui
 from matplotlib import cm as matplotlib_color_map
 
 from .... import pyqtgraphCore as pg
-from ....viewer.core.common import ViewerInterface
+from ....viewer.core.common import ViewerUtils
 from ....viewer.modules.roi_manager_modules.roi_types import ManualROI, CNMFROI
 from ....common import configuration, get_project_manager
 from typing import Union
 
 
 class ROIList(list):
-    def __init__(self, ui, roi_types: str, viewer_interface: ViewerInterface):
+    def __init__(self, ui, roi_types: str, viewer_interface: ViewerUtils):
         super(ROIList, self).__init__()
 
         assert isinstance(ui.listWidgetROIs, QtWidgets.QListWidget)

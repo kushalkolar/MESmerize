@@ -19,7 +19,7 @@ import pandas as pd
 import tifffile
 import numpy as np
 from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
-# from ...viewer.core import ViewerWorkEnv, ViewerInterface
+# from ...viewer.core import ViewerWorkEnv, ViewerUtils
 from ...common import get_window_manager, get_project_manager
 # from common import configuration
 import os

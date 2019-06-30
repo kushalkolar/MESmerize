@@ -17,7 +17,7 @@ import pandas as pd
 from ...common import configuration, get_project_manager, get_window_manager
 from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from functools import partial
-from ...viewer.core.common import ViewerInterface
+from ...viewer.core.common import ViewerUtils
 from ...viewer.core.viewer_work_environment import ViewerWorkEnv
 from collections import UserList
 # from ...common.window_manager import WindowClass
@@ -116,7 +116,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
     def slot_open_sample_id_in_viewer(self, sample_id: str):
         viewer = get_window_manager().get_new_viewer_window().viewer_reference
 
-        vi = ViewerInterface(viewer_reference=viewer)
+        vi = ViewerUtils(viewer_reference=viewer)
 
         row = self.dataframe[self.dataframe['SampleID'] == sample_id].iloc[0]
         pikPath = os.path.join(configuration.proj_path, row['ImgInfoPath'])

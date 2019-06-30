@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from .stimmap_modules.page import Page
 from .stimmap_modules.main_widget_pytemplate import *
 from ...pyqtgraphCore.imageview import ImageView
@@ -24,7 +24,7 @@ import pandas as pd
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer):
         QtWidgets.QDockWidget.__init__(self, parent)
-        self.vi = ViewerInterface(viewer)
+        self.vi = ViewerUtils(viewer)
 
         self.ui = Ui_MainWidget()
         self.ui.setupUi(self)

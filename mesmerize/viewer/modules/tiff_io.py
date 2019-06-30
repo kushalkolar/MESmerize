@@ -12,7 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from ...common.qdialogs import *
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from .pytemplates.tiff_io_pytemplate import *
 from ..core.viewer_work_environment import ViewerWorkEnv
 import os
@@ -23,7 +23,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     load_methods = ['asarray', 'asarray-multi', 'imread']
 
     def __init__(self, parent, viewer_reference):
-        self.vi = ViewerInterface(viewer_reference)
+        self.vi = ViewerUtils(viewer_reference)
         QtWidgets.QDockWidget.__init__(self, parent)
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)

@@ -17,7 +17,7 @@ from ..pyqtgraphCore.console import ConsoleWidget
 from ..pyqtgraphCore.imageview import ImageView
 from ..pyqtgraphCore import setConfigOptions
 from .modules import *
-from .core.common import ViewerInterface
+from .core.common import ViewerUtils
 import numpy as np
 from .core.viewer_work_environment import ViewerWorkEnv
 from ..common import configuration, doc_pages
@@ -161,7 +161,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         txt = "Namespaces:          \n" \
               "numpy as np          \n" \
-              "ViewerInterface as vi \n" \
+              "ViewerUtils as vi \n" \
               "self as this \n" \
               "ViewerWorkEnv (for factory purposes): workEnv\n" \
               "useful callables for scripting, see docs for examples:\n" \
@@ -217,7 +217,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def initialize_menubar_triggers(self):
         self.ui.actionBatch_Manager.triggered.connect(self.start_batch_manager)
 
-        self.vi = ViewerInterface(self._viewer)
+        self.vi = ViewerUtils(self._viewer)
 
         self.ui.actionDump_Work_Environment.triggered.connect(self.vi.discard_workEnv)
 

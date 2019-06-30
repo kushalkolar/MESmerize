@@ -34,7 +34,7 @@ from time import time
 
 
 if not sys.argv[0] == __file__:
-    from ...core.common import ViewerInterface
+    from ...core.common import ViewerUtils
     from ...core.viewer_work_environment import ViewerWorkEnv
 
 
@@ -129,7 +129,7 @@ def run(batch_dir: str, UUID: str):
 
 class Output:
     def __init__(self, batch_path, UUID, viewer_ref):
-        vi = ViewerInterface(viewer_ref)
+        vi = ViewerUtils(viewer_ref)
 
         if not vi.discard_workEnv():
             return
