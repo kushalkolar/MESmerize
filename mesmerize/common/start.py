@@ -85,8 +85,8 @@ def viewer(file: str = None, sample_id: str = None, uuid: UUID = None):
     #     pass
 
 
-def flowchart(file=None) -> FlowchartWindow:
-    w = FlowchartWindow(filename=file)
+def flowchart(file=None, parent=None) -> FlowchartWindow:
+    w = FlowchartWindow(parent=parent, filename=file)
 
     return w
 

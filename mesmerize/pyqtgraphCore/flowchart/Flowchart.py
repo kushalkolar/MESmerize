@@ -41,7 +41,7 @@ class Flowchart(Node):
     sigStateChanged = QtCore.Signal()  # called when output is expected to have changed
     sigChartChanged = QtCore.Signal(object, object, object) # called when nodes are added, removed, or renamed.
                                                             # (self, action, node)
-    
+
     def __init__(self, terminals=None, name=None, filePath=None, library=None):
         self.library = library or LIBRARY
         if name is None:
@@ -191,7 +191,9 @@ class Flowchart(Node):
         self.viewBox.addItem(item)
         item.moveBy(*pos)
         self._nodes[name] = node
-        self.widget().addNode(node) 
+        self.widget().addNode(node)
+        node.setParent(self)
+        node.parent_window = self.parent()
         node.sigClosed.connect(self.nodeClosed)
         node.sigRenamed.connect(self.nodeRenamed)
         node.sigOutputChanged.connect(self.nodeOutputChanged)

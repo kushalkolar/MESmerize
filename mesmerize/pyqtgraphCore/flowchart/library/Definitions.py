@@ -449,7 +449,9 @@ class PeakDetect(CtrlNode):
         # self.t.data_column['peaks_bases'] = 'peaks_bases'
         fb = self.ctrls['Fictional_Bases'].isChecked()
         self.row_ix = 0
-        self.t.df['peaks_bases'] = self.t.df.apply(lambda r: self._get_zero_crossings(r['_DERIVATIVE'], r[data_column], r['_NORM_PD'], fb), axis=1)
+
+        tqdm.pandas()
+        self.t.df['peaks_bases'] = self.t.df.progress_apply(lambda r: self._get_zero_crossings(r['_DERIVATIVE'], r[data_column], r['_NORM_PD'], fb), axis=1)
 
         self.t.df['curve'] = self.t.df[data_column]
         self.t.df.drop(columns=['_NORM_PD'], inplace=True)

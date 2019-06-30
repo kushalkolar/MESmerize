@@ -11,6 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
+import sys
 import pandas as pd
 import numpy as np
 import pickle
@@ -25,6 +26,9 @@ import traceback
 from configparser import RawConfigParser
 from ..common.utils import HdfTools
 from ..common import get_proj_config
+from tqdm import tqdm
+
+
 
 
 class _HistoryTraceExceptions(Exception):
@@ -359,7 +363,7 @@ class BaseTransmission:
     def to_hdf5(self, path: str):
         d = self.to_dict()
         df = d.pop('df')
-        HdfTools.save_dataframe(savepath=path, dataframe=df, metadata=d, metadata_method='json')
+        HdfTools.save_dataframe(path=path, dataframe=df, metadata=d, metadata_method='json')
 
     @classmethod
     def from_hdf5(cls, path: str):
@@ -457,7 +461,9 @@ class Transmission(BaseTransmission):
 
         """
         df = dataframe.copy()
-        df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+        # df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+        tqdm().pandas()
+        df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.progress_apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
 
         df.sort_values(by=['SampleID'], inplace=True)
         df = df.reset_index(drop=True)
