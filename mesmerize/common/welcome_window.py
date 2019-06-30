@@ -245,7 +245,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             filename = os.path.join(self.project_manager.root_dir, 'flowcharts', filename)
 
-        w = get_window_manager().get_new_flowchart(filename)
+        w = get_window_manager().get_new_flowchart(filename, parent=self)
         w.show()
 
     def get_batch_manager(self, run_batch: list = None, testing=False) -> BatchModuleGUI:
