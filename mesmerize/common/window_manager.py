@@ -43,8 +43,8 @@ class WindowManager:
         w.destroyed.connect(partial(self.viewers.remove_window, w))
         return w
 
-    def get_new_flowchart(self, filename: str = None):
-        w = start.flowchart(filename)
+    def get_new_flowchart(self, filename: str = None, parent = None):
+        w = start.flowchart(filename, parent)
         self.flowcharts.append(w)
         w.destroyed.connect(partial(self.flowcharts.remove_window, w))
         return w
