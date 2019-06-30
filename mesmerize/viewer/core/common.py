@@ -18,9 +18,10 @@ import numpy as np
 # import multiprocessing
 
 
-class ViewerInterface:
-    def __init__(self, viewer_reference):
+class ViewerUtils:
+    def __init__(self, viewer_reference: ImageView):
         """
+        Some utility functions for interfacing viewer.core.ViewerWorkEnv with the pyqtgraphCore.ImageView widget
         :type viewer_reference: ImageView
         """
         # assert isinstance(viewer_reference, ImageView)
@@ -38,7 +39,7 @@ class ViewerInterface:
 
         self.viewer.workEnv.roi_manager = self.viewer.parent().roi_manager.manager
         if self.viewer.workEnv.stim_maps is not None:
-            print(self.viewer.workEnv.stim_maps)
+            # print(self.viewer.workEnv.stim_maps)
             smm = self.viewer.parent().run_module('stimulus_mapping')
             smm.set_all_data(self.viewer.workEnv.stim_maps)
             try:

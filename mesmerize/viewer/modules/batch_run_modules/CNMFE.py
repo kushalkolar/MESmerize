@@ -14,7 +14,7 @@ Adapted from @agiovann and @epnev
 
 from __future__ import division
 import sys
-# from ..common import ViewerInterface, BatchRunInterface
+# from ..common import ViewerUtils, BatchRunInterface
 # from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
 # from MesmerizeCore import configuration
 # from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
@@ -47,7 +47,7 @@ from time import time
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
-    from ...core import ViewerInterface, ViewerWorkEnv
+    from ...core import ViewerUtils, ViewerWorkEnv
     from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 
@@ -354,7 +354,7 @@ class Output(QtWidgets.QWidget):
     def import_cnmfe_into_viewer(self):
         self.get_cnmfe_results()
 
-        vi = ViewerInterface(self.viewer_ref)
+        vi = ViewerUtils(self.viewer_ref)
 
         if not vi.discard_workEnv():
             return

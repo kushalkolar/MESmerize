@@ -9,10 +9,11 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets
 from .pytemplates.script_editor_pytemplate import Ui_ViewerScriptEditor
 from .script_editor_modules.syntax_editor import Highlighter
 import os
+from ...common.qdialogs import *
 
 
 class ModuleGUI(QtWidgets.QMainWindow):
@@ -26,7 +27,9 @@ class ModuleGUI(QtWidgets.QMainWindow):
 
         self.connect_actions()
 
-        self.ui.pushButtonRun.clicked.connect(self.run_in_console)
+        # self.ui.pushButtonRun.clicked.connect(self.run_in_console)
+        self.ui.actionRun.triggered.connect(self.run_in_console)
+        self.setWindowTitle('Viewer - Script editor')
 
     def connect_actions(self):
         self.ui.actionNew.triggered.connect(self.new_file)

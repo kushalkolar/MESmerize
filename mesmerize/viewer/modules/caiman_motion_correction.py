@@ -11,24 +11,23 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from .pytemplates.caiman_motion_correction_pytemplate import *
-import json
 from ...common import get_window_manager
 from ...pyqtgraphCore import LinearRegionItem
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_reference):
-        self.vi = ViewerInterface(viewer_reference)
+        self.vi = ViewerUtils(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
 
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.ui.btnAddToBatchRigid.clicked.connect(self.add_rig_corr_to_batch)
-        self.ui.btnAddToBatchElastic.clicked.connect(self.add_elas_corr_to_batch)
+        self.ui.btnAddToBatchRigid.clicked.connect(self.add_to_batch_rig_corr)
+        self.ui.btnAddToBatchElastic.clicked.connect(self.add_to_batch_elas_corr)
 
         self.ui.btnShowQuilt.clicked.connect(self.draw_quilt)
 
@@ -37,6 +36,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.overlapsH = []
         self.overlapsV = []
+
+        self._input_workEnv = None
 
     def draw_quilt(self):
         if self.ui.btnShowQuilt.isChecked() is False:
@@ -79,7 +80,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.overlapsH = []
         self.overlapsV = []
 
-    def _make_params_dict(self) -> dict:
+    def get_params(self) -> dict:
         d = {'max_shifts_x':        self.ui.spinboxX.value(),
              'max_shifts_y':        self.ui.spinboxY.value(),
              'iters_rigid':         self.ui.spinboxIterRigid.value(),
@@ -110,25 +111,46 @@ class ModuleGUI(QtWidgets.QDockWidget):
         elif params['output_bit_depth'] == '16':
             self.ui.comboBoxOutputBitDepth.setCurrentIndex(2)
 
-    def add_rig_corr_to_batch(self):
+    def set_input_workEnv(self, workEnv):
+        self._input_workEnv = workEnv
+
+    def get_input_workEnv(self):
+        if self._input_workEnv is None:
+            raise ValueError('Input work environment is not set')
+        else:
+            return self._input_workEnv
+
+    def add_to_batch_rig_corr(self):
         pass
 
-    def add_elas_corr_to_batch(self):
-        d = self._make_params_dict()
+    def add_to_batch_elas_corr(self):
+        d = self.get_params()
 
-        batch_manager = get_window_manager().get_batch_manager()
         name = self.ui.lineEditNameElastic.text()
 
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CaImAn motion correction: ' + name + ' to batch...')
 
-        batch_manager.add_item(module='caiman_motion_correction',
-                               viewer_reference=self.vi.viewer,
-                               name=name,
-                               input_workEnv=self.vi.viewer.workEnv,
-                               input_params=d,
-                               info=d)
+        self.set_input_workEnv(self.vi.viewer.workEnv)
+        self.add_to_batch()
+
+        # batch_manager.add_item(module='caiman_motion_correction',
+        #                        viewer_reference=self.vi.viewer,
+        #                        name=name,
+        #                        input_workEnv=self.vi.viewer.workEnv,
+        #                        input_params=d,
+        #                        info=d)
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CaImAn motion correction: ' + name + ' to batch!')
 
-
         self.ui.lineEditNameElastic.clear()
+
+    def add_to_batch(self):
+        input_params = self.get_params()
+        input_workEnv = self.get_input_workEnv()
+        item_name = input_params['name_elas']
+        batch_manager = get_window_manager().get_batch_manager()
+        batch_manager.add_item(module='caiman_motion_correction',
+                               name=item_name,
+                               input_workEnv=input_workEnv,
+                               input_params=input_params,
+                               info=input_params)

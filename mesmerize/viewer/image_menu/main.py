@@ -15,14 +15,14 @@ from PyQt5 import QtWidgets
 from ...pyqtgraphCore import LineSegmentROI, ROI
 import numpy as np
 from .resize import ResizeDialogBox
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from math import sqrt
 from .image_projections import display_projection
 
 
 class ImageMenu:
     def __init__(self, viewer_interface):
-        assert isinstance(viewer_interface, ViewerInterface)
+        assert isinstance(viewer_interface, ViewerUtils)
         self.vi = viewer_interface
 
         self.measure_line = None
