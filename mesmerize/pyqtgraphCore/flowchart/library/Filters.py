@@ -54,8 +54,8 @@ class TVDiff(CtrlNode):
         self.t = transmission.copy()
 
         output_column = '_TVDIFF'
-
-        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: self._func(x, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0))
+        tqdm.pandas()
+        self.t.df[output_column] = self.t.df[self.data_column].progress_apply(lambda x: self._func(x, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0))
         self.t.last_output = output_column
 
         params = {'data_column': self.data_column,
@@ -103,10 +103,11 @@ class ButterWorth(CtrlNode):
         self.order = self.ctrls['order'].value()
         self.freq_divisor = self.ctrls['freq_divisor'].value()
 
-        try:
-            self.t.df[self.output_column] = self.t.df.apply(lambda x: self._func(x[self.data_column], x['meta']), axis=1)
-        except KeyError as e:
-            raise KeyError(str(e))
+        # try:
+        tqdm.pandas()
+        self.t.df[self.output_column] = self.t.df.progress_apply(lambda x: self._func(x[self.data_column], x['meta']), axis=1)
+        # except KeyError as e:
+        #     raise KeyError(str(e))
 
         params = {'data_column': self.data_column,
                   'order': self.order,
@@ -150,7 +151,8 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
 
         output_column = '_SAVITZKY_GOLAY'
 
-        self.t.df[output_column] = self.t.df[self.data_column].apply(signal.savgol_filter, window_length=w, polyorder=p)
+        tqdm.pandas()
+        self.t.df[output_column] = self.t.df[self.data_column].progress_apply(signal.savgol_filter, window_length=w, polyorder=p)
 
         params = {'data_column': self.data_column,
                   'window_length': w,
@@ -182,7 +184,8 @@ class PowerSpectralDensity(CtrlNode):
 
         output_column = '_POWER_SPECTRAL_DENSITY'
 
-        self.t.df[output_column] = self.t.df[self.data_column].apply(self._func)
+        tqdm.pandas()
+        self.t.df[output_column] = self.t.df[self.data_column].progress_apply(self._func)
 
         params = {'data_column': self.data_column}
         self.t.history_trace.add_operation(data_block_id='all', operation='power_spectral_density', parameters=params)
@@ -221,7 +224,8 @@ class Resample(CtrlNode):
 
         output_column = '_RESAMPLE'
 
-        self.t.df[output_column] = self.t.df.apply(self._func, axis=1)
+        tqdm.pandas()
+        self.t.df[output_column] = self.t.df.progress_apply(self._func, axis=1)
 
         params = {'data_column': self.data_column,
                   'output_rate': self.new_rate,
@@ -314,7 +318,6 @@ class Normalize(CtrlNode):
 
         output_column = '_NORMALIZE'
 
-        #TODO: VERIFY THAT THIS MATCH IS CORRECT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         self.t.df[output_column] = self.t.df[self.data_column].apply(lambda a: ((a - np.min(a)) / (np.max(a - np.min(a)))))
 
         params = {'data_column': self.data_column,

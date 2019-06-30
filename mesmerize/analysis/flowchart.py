@@ -34,17 +34,18 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
         self.fc = Flowchart(terminals={'dataIn': {'io': 'in'}, 'dataOut': {'io': 'out'}})
 
         self.fc_widget = self.fc.widget()
+        self.fc.setParent(self)
 
         ns = {'np': np,
               'pd': pd,
               'get_nodes': self.fc.nodes,
-              'main': self
+              'this': self
               }
 
         txt = "Namespaces:\n" \
               "pandas as 'pd'\n" \
               "numpy as 'np'\n" \
-              "self as 'main'\n" \
+              "self as 'this'\n" \
               "'get_nodes()' to get a dict of all nodes\n"
 
         cmd_history_path = os.path.join(configuration.console_history_path, 'flowchart.pik')
