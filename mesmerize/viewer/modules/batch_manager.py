@@ -88,7 +88,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.listwBatch.currentItemChanged.connect(self.show_item_info)
 
         self.output_widgets = []
-        self.df = pandas.DataFrame()
+        self.df = pandas.DataFrame() #: pandas.DataFrame that stores a "database" of information on the batch
         self.init_batch(run_batch)
 
         self.move_processes = []
@@ -127,8 +127,17 @@ class ModuleGUI(QtWidgets.QWidget):
             i = self.get_item_index(run_batch[1])
             self.process_batch(start_ix=i, clear_viewers=True)
 
-    def get_item_index(self, u: uuid.UUID):
-        ix = self.df.index[self.df['uuid'] == u]
+    def get_item_index(self, u: Union[uuid.UUID, str]) -> int:
+        """
+        Get DataFrame index from UUID
+
+        :param u: UUID or str representing UUID
+        :type u: Union[uuid.UUID, str]
+
+        :return:  numerical index of the DataFrame corresponding to the UUID
+        :rtype: int
+        """
+        ix = self.df.index[self.df['uuid'] == uuid.UUID(u)]
         i = int(ix.to_native_types()[0])
         return i
 
@@ -193,9 +202,15 @@ class ModuleGUI(QtWidgets.QWidget):
     def load_item_input(self, viewers: Union[ViewerWindow, UserList], r: pandas.Series = None, UUID: uuid.UUID = None):
         """
         Pass either the batch DataFrame row or UUID of the item of which to load the input into a viewer
+
         :param viewers: ViewerWindow or list of ImageView
+        :type viewers:  Union[ViewerWindow, UserList]
+
         :param  r:    Row of batch DataFrame corresponding to the selected item
-        :param UUID:  UUID of the item to load input of
+        :type   r:    pandas.Series
+
+        :param UUID:  UUID of the item to load input from
+        :type  UUID:  uuid.UUID
         """
 
         if (r is None) and (UUID is None):
@@ -269,8 +284,13 @@ class ModuleGUI(QtWidgets.QWidget):
         """
         Calls subclass of BatchRunInterface.show_output()
         :param module:      The module name under /batch_run_modules that the batch item is from
-        :param viewers:     ViewerWindow or list of ImageView
-        :param UUID:        UUID of batch item to load output of
+        :type  module:      str
+
+        :param viewers: ViewerWindow or list of ImageView
+        :type viewers:  Union[ViewerWindow, UserList]
+
+        :param UUID:  UUID of the item to load input from
+        :type  UUID:  uuid.UUID
         """
         if len(self.output_widgets) > 3:
             try:
@@ -326,8 +346,21 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnDelete.setDisabled(b)
         self.ui.btnAbort.setEnabled(b)
 
-    def process_batch(self, start_ix=0, clear_viewers=False):
-        """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch"""
+    def process_batch(self, start_ix: Union[int, uuid.UUID] = 0, clear_viewers=False):
+        """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch
+        :param start_ix:       Either DataFrame index (int) or UUID of the item to start from.
+        :type  start_ix:       Union[int, uuid.UUID]
+
+        :param clear_viewers:  Clear work environments in all viewers that are open
+        :type  clear_viewers:  sbool
+        """
+
+        if isinstance(start_ix, (str, uuid.UUID)):
+            try:
+                ix = uuid.UUID(start_ix)
+                start_ix = self.get_item_index(ix)
+            except:
+                raise TypeError('Argument stat_ix only accepts types int, UUID, or str representing a UUID')
 
         self.ui.checkBoxUseWorkDir.setDisabled(True)
 
@@ -534,23 +567,26 @@ class ModuleGUI(QtWidgets.QWidget):
         # self.current_std_out.append(text)
         self.ui.textBrowserStdOut.append(text)
 
-    def add_item(self, module: str, input_workEnv: ViewerWorkEnv, input_params: dict, name='', info='') -> uuid.UUID:
-
+    def add_item(self, module: str, input_workEnv: ViewerWorkEnv, input_params: dict, name: str='', info: dict ='') -> uuid.UUID:
         """
+        Add an item to the currently open batch
+
         :param  module:         The module to run from /batch_run_modules.
-
-        # :param viewer_reference: Viewer to communicate with
-        # :type  viewer_reference: ImageView
-
-        :param  name:           A name for the batch item
+        :type   module:         str
 
         :param  input_workEnv:  Input workEnv that the module will use
+        :type   input_workEnv:  ViewerWorkEnv
 
-        :param  input_params:   Input params that the module will use.
-                                Depends on your subclass of BatchRunInterface.process() method
+        :param  input_params:   Input params that the module will use. Depends on your subclass of BatchRunInterface.process() method
         :type   input_params:   dict
 
+        :param  name:           A name for the batch item
+        :param  name:           str
+
         :param  info:           A dictionary with any metadata information to display in the scroll area label.
+        :param  info:           str
+
+        :return:                UUID of the added item
         """
         if input_workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
@@ -590,7 +626,7 @@ class ModuleGUI(QtWidgets.QWidget):
         return UUID
 
     def del_item(self):
-        """Delete an item from the batch and any corresponding dependents of the item's output"""
+        # """Delete the currently selected item from the batch and any corresponding dependents of the item's output"""
         if QtWidgets.QMessageBox.question(self, 'Confirm deletion',
                                           'Are you sure you want to delete the selected item from the batch? '
                                           'This will also remove ALL files associated to the item',
