@@ -11,16 +11,18 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-# from ..core.common import ViewerInterface
+# from ..core.common import ViewerUtils
 # from ..core.viewer_work_environment import ViewerWorkEnv
-from ..core import ViewerInterface, ViewerWorkEnv
+from ..core import ViewerUtils, ViewerWorkEnv
+# from ...pyqtgraphCore.imageview import ImageView
+from ..main_window import MainWindow as ViewerWindow
 from ..core.background_tiff_compressor import Compressor as TiffCompressor
 from ...common import get_sys_config, get_timestamp_str
 from ...common import get_window_manager
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
-from .batch_run_modules import * #DO NOT REMOVE THIS LINE
+from .batch_run_modules import * # DO NOT REMOVE THIS LINE
 import uuid
 import numpy as np
 # from .common import BatchRunInterface
@@ -37,9 +39,9 @@ import traceback
 from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from glob import glob
 from multiprocessing import Pool
-from uuid import UUID as UUIDType
 from ...common.utils import make_runfile, make_workdir
 from collections import UserList
+from typing import *
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -59,7 +61,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.working_dir = None
         self.batch_path = None
 
-        self.ui.listwBatch.itemDoubleClicked.connect(self.list_widget_item_double_clicked_slot)
+        self.ui.listwBatch.itemDoubleClicked.connect(self.on_list_widget_batch_doubleclicked)
 
         self.ui.btnStart.clicked.connect(self.process_batch)
         self.ui.btnStart.setDisabled(True)
@@ -91,45 +93,10 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.move_processes = []
 
-        self.ui.btnCompress.clicked.connect(self.compress_all)
+        # self.ui.btnCompress.clicked.connect(self.compress_all)
         self.ui.btnExportShScripts.clicked.connect(self.export_submission_scripts)
 
         self.lwd = None
-
-    def compress_all(self):
-        if QtWidgets.QMessageBox.warning(self, 'Compress Warning',
-                                         'YOU CANNOT ABORT THIS PROCESS ONCE IT STARTS, PROCEED?',
-                                         QtWidgets.QMessageBox.Yes,
-                                         QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-            return
-
-        # t = (psutil.virtual_memory().available / (10**9)) / ()
-
-        n, ok = QtWidgets.QInputDialog.getInt(self, 'Number of threads to use', 'Enter number of threads to use. \nDo not use more than: available ram / (size of largest image * 2)', 5, 1, 7, 1, QtWidgets.QInputDialog.Cancel)
-
-        if not ok:
-            return
-
-        uuids = self.df.uuid[self.df.compress == False]
-
-        l = []
-
-        for u in uuids:
-            l += glob(self.batch_path + '/*' + str(u) + '*.tiff')
-
-        p = Pool(n)
-
-        p.map(self._compress_tiff, l)
-
-    def _compress_tiff(self, path):
-        imgseq = tifffile.imread(path)
-
-        backup_path = path + '_bak'
-        os.rename(path, backup_path)
-
-        tifffile.imsave(path, data=imgseq.astype(np.uint16), compress=1)
-
-        os.remove(backup_path)
 
     def init_batch(self, run_batch):
         if not self._testing:
@@ -155,9 +122,15 @@ class ModuleGUI(QtWidgets.QWidget):
 
         if run_batch is not None:
             print('Running from item ' + run_batch[1])
-            ix = self.df.index[self.df['uuid'] == UUIDType(run_batch[1])]
-            i = int(ix.to_native_types()[0])
+            # ix = self.df.index[self.df['uuid'] == uuid.UUID(run_batch[1])]
+            # i = int(ix.to_native_types()[0])
+            i = self.get_item_index(run_batch[1])
             self.process_batch(start_ix=i, clear_viewers=True)
+
+    def get_item_index(self, u: uuid.UUID):
+        ix = self.df.index[self.df['uuid'] == u]
+        i = int(ix.to_native_types()[0])
+        return i
 
     def ask_create_new_batch(self):
         if self.ui.listwBatch.count() > 0:
@@ -213,30 +186,45 @@ class ModuleGUI(QtWidgets.QWidget):
             self.lwd = ListWidgetDialog()
             self.lwd.listWidget.addItems([str(i + 1) for i in range(len(viewers))])
             self.lwd.label.setText('Viewer to show input in:')
-            self.lwd.btnOK.clicked.connect(partial(self.show_input_in_viewer, viewers, r, UUID))
+            self.lwd.btnOK.clicked.connect(partial(self.load_item_input, viewers, r))
         else:
-            self.show_input_in_viewer(viewers[0], r, UUID)
+            self.load_item_input(viewers[0], r)
 
-    def show_input_in_viewer(self, viewers, r: pandas.Series, UUID: uuid.UUID):
+    def load_item_input(self, viewers: Union[ViewerWindow, UserList], r: pandas.Series = None, UUID: uuid.UUID = None):
         """
-        :param  r:  Row of batch DataFrame corresponding to the selected item
+        Pass either the batch DataFrame row or UUID of the item of which to load the input into a viewer
+        :param viewers: ViewerWindow or list of ImageView
+        :param  r:    Row of batch DataFrame corresponding to the selected item
+        :param UUID:  UUID of the item to load input of
         """
-        if not isinstance(viewers, UserList):
+
+        if (r is None) and (UUID is None):
+            raise TypeError('Must pass either one of batch item UUID or DataFrame row as Series object')
+        elif r is None:
+            r = self.df.loc[self.df['uuid'] == UUID]
+        elif UUID is None:
+            UUID = r['uuid']
+            if isinstance(UUID, pandas.Series):
+                UUID = UUID.item()
+
+        if isinstance(viewers, ViewerWindow):
             viewer = viewers.viewer_reference
-        else:
+        elif isinstance(viewers, UserList):
             if self.lwd.listWidget.currentItem() is None:
                 QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
                 return
             i = int(self.lwd.listWidget.currentRow())
             viewer = viewers[i].viewer_reference
+        else:
+            raise TypeError('Must pass pyqtgraphCore.ImageView instance or list of pyqtgraphCore.ImageView instances.')
 
-        vi = ViewerInterface(viewer_reference=viewer)
+        vi = ViewerUtils(viewer_reference=viewer)
 
         if r['input_item'].item() is None:
             if not vi.discard_workEnv():
                 return
-            pikpath = self.batch_path + '/' + str(UUID) + '_workEnv.pik'
-            tiffpath = self.batch_path + '/' + str(UUID) + '.tiff'
+            pikpath = os.path.join(self.batch_path, str(UUID) + '_workEnv.pik')
+            tiffpath = os.path.join(self.batch_path, str(UUID) + '.tiff')
             vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
             if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
                 vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
@@ -253,16 +241,14 @@ class ModuleGUI(QtWidgets.QWidget):
             self.lwd.close()
             self.lwd = None
 
-    def list_widget_item_double_clicked_slot(self, s: QtWidgets.QListWidgetItem):
-        """Calls subclass of BatchRunInterface.show_output()"""
+    def on_list_widget_batch_doubleclicked(self, s: QtWidgets.QListWidgetItem):
         self.ui.scrollAreaOutputInfo.show()
-        item_txt = s.text()
         UUID = s.data(3)
 
         r = self.df.loc[self.df['uuid'] == UUID]
 
-        module = r['module'].item()
-        m = globals()[module]
+        m = r['module'].item()
+        # m = globals()[module]
 
         output = self.get_batch_item_output(UUID)
 
@@ -275,13 +261,16 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.lwd = ListWidgetDialog()
                 self.lwd.listWidget.addItems([str(i + 1) for i in range(len(viewers))])
                 self.lwd.label.setText('Viewer to use for output:')
-                self.lwd.btnOK.clicked.connect(partial(self.show_item_output, m, viewers, UUID))
+                self.lwd.btnOK.clicked.connect(partial(self.load_item_output, m, viewers, UUID))
             else:
-                self.show_item_output(m, viewers[0], UUID)
+                self.load_item_output(m, viewers[0], UUID)
 
-    def show_item_output(self, module, viewers, UUID: uuid.UUID):
+    def load_item_output(self, module: str, viewers: Union[ViewerWindow, UserList], UUID: uuid.UUID):
         """
-        :param module: The module name under /batch_run_modules that the batch item is from
+        Calls subclass of BatchRunInterface.show_output()
+        :param module:      The module name under /batch_run_modules that the batch item is from
+        :param viewers:     ViewerWindow or list of ImageView
+        :param UUID:        UUID of batch item to load output of
         """
         if len(self.output_widgets) > 3:
             try:
@@ -289,6 +278,8 @@ class ModuleGUI(QtWidgets.QWidget):
                 w.deleteLater()
             except:
                 pass
+
+        module = globals()[module]
 
         if not isinstance(viewers, UserList):
             viewer = viewers.viewer_reference
@@ -341,9 +332,6 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.checkBoxUseWorkDir.setDisabled(True)
 
         if len(self.df.index) == 0:
-            pass
-
-            QtWidgets.QMessageBox.warning(self, 'Nothing to run', 'Nothing in the batch to run!')
             return
 
         if not clear_viewers:
@@ -376,7 +364,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def _clear_viewers(self):
         for viewer in get_window_manager().viewers:
-            vi = ViewerInterface(viewer.viewer_reference)
+            vi = ViewerUtils(viewer.viewer_reference)
             vi.discard_workEnv()
 
     @QtCore.pyqtSlot()
@@ -546,13 +534,13 @@ class ModuleGUI(QtWidgets.QWidget):
         # self.current_std_out.append(text)
         self.ui.textBrowserStdOut.append(text)
 
-    def add_item(self, module: str, viewer_reference, input_workEnv: ViewerWorkEnv, input_params: dict, name='', info=''):
+    def add_item(self, module: str, input_workEnv: ViewerWorkEnv, input_params: dict, name='', info='') -> uuid.UUID:
 
         """
         :param  module:         The module to run from /batch_run_modules.
 
-        :param viewer_reference: Viewer to communicate with
-        :type  viewer_reference: ImageView
+        # :param viewer_reference: Viewer to communicate with
+        # :type  viewer_reference: ImageView
 
         :param  name:           A name for the batch item
 
@@ -568,7 +556,7 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
                                                                               ' nothing to add to the batch!')
             return
-        # vi = ViewerInterface(viewer_reference)
+        # vi = ViewerUtils(viewer_reference)
         UUID = uuid.uuid4()
 
         if module == 'CNMFE' or module == 'caiman_motion_correction' or module == 'CNMF':
@@ -579,7 +567,7 @@ class ModuleGUI(QtWidgets.QWidget):
         pickle.dump(input_params, open(os.path.join(self.batch_path, str(UUID) + '.params'), 'wb'), protocol=4)
 
         input_params = np.array(input_params, dtype=object)
-        meta = np.array(info, dtype=object)
+        # meta = np.array(info, dtype=object)
 
         self.df = self.df.append({'module': module,
                                   'name': name,
@@ -599,6 +587,7 @@ class ModuleGUI(QtWidgets.QWidget):
         item.setData(3, UUID)
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
+        return UUID
 
     def del_item(self):
         """Delete an item from the batch and any corresponding dependents of the item's output"""
