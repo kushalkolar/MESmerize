@@ -206,24 +206,38 @@ class ViewTransmission(CtrlNode):
 class DropNa(CtrlNode):
     """Drop NaNs from the DataFrame"""
     nodeName = 'DropNaNs'
-    uiTemplate = [('axis', 'combo', {'values': ['row', 'columns'], 'toolTip': 'Choose to drop NaNs from rows or columns'}),
+    uiTemplate = [('axis', 'combo', {'values': ['row', 'columns'], 'toolTip': 'Choose to drop NaNs from according to all '
+                                                                              'rows, columns, or a specific column'}),
                   ('how', 'combo', {'values': ['any', 'all'], 'toolTip': 'any: drop from chosen axis if any element is NaN\n'
                                                                          'all: drop from chosen axis if all elements are NaN'}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
+    def __init__(self, *args, **kwargs):
+        super(DropNa, self).__init__(*args, **kwargs)
+
     def processData(self, transmission: Transmission):
+        items = ['row', 'columns'] + ['---------'] + transmission.df.columns.to_list()
+        self.ctrls['axis'].setItems(items)
+
         if not self.ctrls['Apply'].isChecked():
             return
 
         self.t = transmission.copy()
 
         axis = self.ctrls['axis'].currentText()
-        if axis == 'row':
-            axis = 0
 
-        how = self.ctrls['how'].currentText()
+        if self.ctrls['axis'].currentIndex() < 2:
+            if axis == 'row':
+                axis = 0
+            elif axis == 'columsn':
+                axis = 1
 
-        self.t.df.dropna(axis=axis, how=how, inplace=True)
+            how = self.ctrls['how'].currentText()
+            self.t.df.dropna(axis=axis, how=how, inplace=True)
+        else:
+            how = None
+            self.t.df = self.t.df[~self.t.df[axis].isna()]
+
         self.t.history_trace.add_operation('all', 'dropna', parameters={'axis': axis, 'how': how})
 
         return self.t

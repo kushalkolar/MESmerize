@@ -305,7 +305,7 @@ class KShapeWidget(QtWidgets.QMainWindow):
         self.sig_output_changed.emit(t)
 
     @present_exceptions('Plotting error')
-    def set_plot(self, item: QtWidgets.QListWidgetItem):
+    def set_plot(self, item: QtWidgets.QListWidgetItem, *args, **kwargs):
         if item is None:
             return
 
