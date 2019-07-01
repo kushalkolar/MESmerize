@@ -61,7 +61,7 @@ class _MetaQtABC(QtWidgets.QWidget.__class__, _AbstractBasePlotWidget.__class__)
 class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
     def __init__(self):
         super().__init__()
-        self.transmission = None
+        self._transmission = None
 
     @property
     def transmission(self) -> Transmission:
@@ -71,6 +71,8 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
 
     @transmission.setter
     def transmission(self, transmission: Transmission):
+        if not isinstance(transmission, Transmission):
+            raise TypeError('Input must be an instance of Transmission')
         self._transmission = transmission
 
     def set_input(self, transmission: Transmission):

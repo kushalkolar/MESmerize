@@ -16,6 +16,8 @@ from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from ....analysis import Transmission, organize_dataframe_columns, get_proportions
 from math import sqrt
 from ..base import BasePlotWidget
+from ....common.qdialogs import *
+from ...utils import auto_colormap
 
 
 class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
@@ -88,7 +90,6 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         spacer = QtWidgets.QSpacerItem(0, 10, QtWidgets.QSizePolicy.Expanding)
         self.vbox.insertSpacerItem(0, spacer)
 
-        self.transmission = None
         self.props_df = None
 
         self.block_signals_list = [self.xs_combo, self.ys_combo, self.checkbox_percent]
@@ -141,7 +142,8 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.checkbox_percent.setChecked(opts['percentages'])
 
-    def update_plot(self):
+    @present_exceptions('Plot error', 'Cannot plot, make sure you have selected appropriate data columns')
+    def update_plot(self, *args, **kwargs):
         self.ax.cla()
 
         opts = self.get_plot_opts()
@@ -156,7 +158,22 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         show_percents = opts['percentages']
 
         self.props_df = get_proportions(**opts)
-        self.props_df.plot(kind='bar', stacked=True, ax=self.ax)
+
+        n_labels = len(ys.unique())
+
+        if n_labels < 10:
+            cmap = 'tab10'
+        elif 10 < n_labels < 21:
+            cmap = 'tab20'
+        elif 210 < n_labels > 20:
+            cmap = 'nipy_spectral'
+        else:
+            raise ValueError('Cannot generate colormap for greater than 210 labels.\n'
+                             'Why would you > 210 labels?')
+
+        colors = auto_colormap(cmap)
+
+        self.props_df.plot(kind='bar', stacked=True, ax=self.ax, color=colors)
 
         if show_percents:
             label = 'percentages'
@@ -172,6 +189,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.draw()
         self.toolbar.update()
 
+    @present_exceptions('Export error', 'The following error occurred.')
     def export(self):
         if self.props_df is None:
             return

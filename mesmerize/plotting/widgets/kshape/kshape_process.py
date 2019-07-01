@@ -27,17 +27,15 @@ def run(data_path: str, params_path: str):
         f.write('0')
 
     print(f'Using work dir: {workdir}')
-    print('** Fitting input data **')
+    print('** Fitting and predicting **')
 
     kwargs = params['kwargs']
     ks = KShape(**kwargs)
-    ks.fit(X)
+
+    y_pred = ks.fit_predict(X)
 
     ks_path = os.path.join(workdir, 'ks.pickle')
     pickle.dump(ks, open(ks_path, 'wb'))
-
-    print('** Fitting predictions **')
-    y_pred = ks.fit_predict(X)
 
     y_pred_path = os.path.join(workdir, 'y_pred.pickle')
     pickle.dump(y_pred, open(y_pred_path, 'wb'))
