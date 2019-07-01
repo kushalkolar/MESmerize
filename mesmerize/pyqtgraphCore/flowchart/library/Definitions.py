@@ -491,6 +491,7 @@ class PeakDetect(CtrlNode):
             self.pbw = peak_editor.PeakEditorWindow(self.t, self.t)
             self.pbw.sig_send_data.connect(self._set_editor_output)
             self.pbw.sig_reconnect_flowchart.connect(self.changed)
+            self.pbw.setWindowTitle(self.name())
 
         self.pbw.show()
 

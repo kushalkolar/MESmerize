@@ -204,7 +204,6 @@ class PeakEditorWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(PeakEditorWindow, self).__init__()
         # Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        self.setWindowTitle('Mesmerize - Peak-Base editor')
         self.tpb = None
 
         self.connected = True
