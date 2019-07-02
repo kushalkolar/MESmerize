@@ -52,7 +52,6 @@ def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing
     return colors
 
 
-
 def get_colormap(labels: iter, cmap: str) -> dict:
     """
     Get dict for mapping labels onto colors
