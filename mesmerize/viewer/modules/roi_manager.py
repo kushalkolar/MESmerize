@@ -91,10 +91,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
         return super(ModuleGUI, self).eventFilter(QObject, QEvent)
 
     def play_forward(self):
-        self.vi.viewer.play(1000)
+        self.vi.viewer.play(500)
 
     def play_backward(self):
-        self.vi.viewer.play(-1000)
+        self.vi.viewer.play(-500)
 
     def img_seq_home(self):
         self.vi.viewer.setCurrentIndex(0)
