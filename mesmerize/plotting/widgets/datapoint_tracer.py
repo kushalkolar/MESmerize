@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from .datapoint_tracer_pytemplate import *
 from ...analysis.history_widget import HistoryTreeWidget
-from ...pyqtgraphCore import ImageView, LinearRegionItem, mkColor, setConfigOption
+from ...pyqtgraphCore import ImageView, LinearRegionItem, mkColor
 from uuid import UUID
 import pandas as pd
 import tifffile
@@ -155,7 +155,12 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         # img = np.dstack((img, z))
 
-        self.image_view.setImage(img)
+        if img.shape[0] > img.shape[1]:
+            x, y = (0, 1)
+        else:
+            x,y = (1, 0)
+
+        self.image_view.setImage(img, axes={'x': x, 'y': y})
 
         self.previous_sample_id_projection = f'{self.sample_id}{projection}'
         # self.image_item.setImage(img.T.astype(np.uint16))
