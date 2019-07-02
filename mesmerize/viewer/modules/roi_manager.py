@@ -76,6 +76,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 ix = self.manager.roi_list.current_index
                 self.ui.listWidgetROIs.setCurrentRow(min(max_ix, ix + 1))
 
+            elif QEvent.key() == QtCore.Qt.Key_Left:
+                self.vi.viewer.play(-1000)
+
+            elif QEvent.key() == QtCore.Qt.Key_Right:
+                self.vi.viewer.play(1000)
+
         return super(ModuleGUI, self).eventFilter(QObject, QEvent)
 
     def _list_widget_context_menu_requested(self, p):
