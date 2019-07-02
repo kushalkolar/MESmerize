@@ -94,7 +94,7 @@ class KShapeMeansPlot(MatplotlibWidget):
             cmap = 'tab10'
         elif 10 < n_clusters < 21:
             cmap = 'tab20'
-        elif 210 < n_clusters > 20:
+        elif 20 < n_clusters < 211:
             cmap = 'nipy_spectral'
         else:
             raise ValueError("Cannot generate colormap for greater than 210 clusters.\n"
