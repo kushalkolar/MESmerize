@@ -121,7 +121,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.ys_combo.clear()
         self.ys_combo.addItems(ccols)
 
-    def get_plot_opts(self, drop_keys: list = None):
+    def get_plot_opts(self, drop: bool = False):
         xs_name = self.xs_combo.currentText()
         ys_name = self.ys_combo.currentText()
 
@@ -129,7 +129,9 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
                     xs=self.transmission.df[xs_name],
                     ys=self.transmission.df[ys_name],
                     percentages=self.checkbox_percent.isChecked())
-
+        if drop:
+            for k in self.drop_opts:
+                opts.pop(k)
         return opts
 
     @BasePlotWidget.signal_blocker
@@ -161,7 +163,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         n_labels = len(ys.unique())
 
-        if n_labels < 10:
+        if n_labels < 11:
             cmap = 'tab10'
         elif 10 < n_labels < 21:
             cmap = 'tab20'
@@ -169,9 +171,9 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
             cmap = 'nipy_spectral'
         else:
             raise ValueError('Cannot generate colormap for greater than 210 labels.\n'
-                             'Why would you > 210 labels?')
+                             'Why would you have > 210 labels?')
 
-        colors = auto_colormap(cmap)
+        colors = auto_colormap(n_labels, cmap)
 
         self.props_df.plot(kind='bar', stacked=True, ax=self.ax, color=colors)
 

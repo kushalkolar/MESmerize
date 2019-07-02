@@ -63,6 +63,10 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
         super().__init__()
         self._transmission = None
 
+    def __init_subclass__(cls, **kwargs):
+        if not hasattr(cls, 'drop_opts'):
+            raise AttributeError('Must define class attribute "drop_opts"')
+
     @property
     def transmission(self) -> Transmission:
         if self._transmission is None:
@@ -81,7 +85,10 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
     def update_plot(self, *args, **kwargs):
         raise NotImplementedError('Must be implemented in subclass')
 
-    def get_plot_opts(self) -> dict:
+    def get_plot_opts(self, drop: bool) -> dict:
+        """
+        Drop keys that are incompatible with JSON
+        """
         raise NotImplementedError('Must be implemented in subclass')
 
     def set_plot_opts(self, opts: dict):
@@ -112,9 +119,10 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
 
     @present_exceptions('Plot Save Error', 'The following error occurred while trying to save the plot.')
     def save_plot(self, path):
-        plot_state = self.get_plot_opts()
-        for k in self.drop_opts:
-            plot_state.pop(k)
+        plot_state = self.get_plot_opts(drop=True)
+        # if self.drop_opts is not None:
+        #     for k in self.drop_opts:
+        #         plot_state.pop(k)
 
         plot_state['type'] = self.__class__.__name__
         self.transmission.plot_state = plot_state

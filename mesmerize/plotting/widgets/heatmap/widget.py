@@ -312,13 +312,16 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         if self._update_live:
             self.update_plot()
 
-    def get_plot_opts(self) -> dict:
+    def get_plot_opts(self, drop: bool = False) -> dict:
         d = dict(dataframes=self.transmission.df,
                  data_column=self.control_widget.ui.comboBoxDataColumn.currentText(),
                  labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
                  datapoint_tracer_curve_column=self.control_widget.ui.comboBoxDPTCurveColumn.currentText(),
                  cmap=self.control_widget.ui.listWidgetColorMapsData.current_cmap,
                  transmission=self.transmission)
+        if drop:
+            for k in self.drop_opts:
+                d.pop(k)
         return d
 
     @BasePlotWidget.signal_blocker

@@ -27,18 +27,27 @@ def run(data_path: str, params_path: str):
         f.write('0')
 
     print(f'Using work dir: {workdir}')
-    print('** Fitting and predicting **')
+
+    print('** Fitting training data **')
+    n_train = int((params['kwargs'].pop('train_percent') / 100) * X.shape[0])
+    train = X[np.random.choice(X.shape[0], size=n_train, replace=False)]
 
     kwargs = params['kwargs']
     ks = KShape(**kwargs)
 
-    y_pred = ks.fit_predict(X)
+    ks.fit(train)
+
+    print('**** Predicting ****')
+    y_pred = ks.predict(X)
 
     ks_path = os.path.join(workdir, 'ks.pickle')
     pickle.dump(ks, open(ks_path, 'wb'))
 
-    y_pred_path = os.path.join(workdir, 'y_pred.pickle')
-    pickle.dump(y_pred, open(y_pred_path, 'wb'))
+    y_pred_path = os.path.join(workdir, 'y_pred.npy')
+    np.save(y_pred_path, y_pred)
+
+    train_path = os.path.join(workdir, 'train.npy')
+    np.save(train_path, train)
 
     with open(out, 'w') as f:
         f.write('1')

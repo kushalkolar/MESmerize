@@ -23,12 +23,16 @@ from functools import partial
 from collections import deque
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ....pyqtgraphCore.console import ConsoleWidget
 from itertools import product as iter_product
 from seaborn import lineplot
 from ..proportions import ProportionsWidget
 from ..base import BasePlotWidget
 from math import sqrt, ceil
 from ...utils import auto_colormap
+from typing import Union
+
+
 
 class KShapeControlDock(QtWidgets.QDockWidget):
     def __init__(self, parent):
@@ -43,11 +47,12 @@ class KShapeControlDock(QtWidgets.QDockWidget):
         else:
             random_state = self.ui.spinBoxRandom.value()
 
-        d = {'n_clusters': self.ui.spinBoxN_clusters.value(),
-             'max_iter': self.ui.spinBoxMaxIter.value(),
-             'tol': 10 ** self.ui.spinBoxTol.value(),
-             'n_init': self.ui.spinBoxN_init.value(),
-             'random_state': random_state
+        d = {'n_clusters':      self.ui.spinBoxN_clusters.value(),
+             'max_iter':        self.ui.spinBoxMaxIter.value(),
+             'tol':             10 ** self.ui.spinBoxTol.value(),
+             'n_init':          self.ui.spinBoxN_init.value(),
+             'random_state':    random_state,
+             'train_percent':   self.ui.spinBoxTrainSubsetPercentage.value()
              }
 
         return d
@@ -73,6 +78,7 @@ class KShapePlot(QtWidgets.QDockWidget):
         self.fig = self.plot.fig
         self.ax_curves = self.fig.add_subplot(111)
         self.draw = self.plot.draw
+        self.setWindowTitle('Samples of raw curves in a cluster')
 
 
 class KShapeMeansPlot(MatplotlibWidget):
@@ -81,10 +87,10 @@ class KShapeMeansPlot(MatplotlibWidget):
         MatplotlibWidget.__init__(self)
         self.axs = None
 
-    def set_plots(self, input_arrays, n_clusters, y_pred):
+    def set_plots(self, input_arrays: np.ndarray, n_clusters: int, y_pred: np.ndarray, xzero_pos: str, error_band):
         ncols, nrows = (int(ceil(sqrt(n_clusters))),) * 2
 
-        if n_clusters < 10:
+        if n_clusters < 11:
             cmap = 'tab10'
         elif 10 < n_clusters < 21:
             cmap = 'tab20'
@@ -104,11 +110,16 @@ class KShapeMeansPlot(MatplotlibWidget):
             ys = input_arrays[y_pred == c_ix]
             xs = []
             for y in ys:
-                zero_ix = 0
+                if xzero_pos == 'zero':
+                    zero_ix = 0
+                elif xzero_pos == 'maxima':
+                    zero_ix = np.argmax(y)
+                else:
+                    raise ValueError('xzer_post argument accepts only either "zero" or "maxima"')
                 xs.append(np.arange((0 - zero_ix), y.size - zero_ix))
             xsh = np.hstack(xs)
             ysh = np.hstack(ys)
-            lineplot(x=xsh, y=ysh, ax=self.axs[i], err_style='band', color=colors[c_ix])
+            lineplot(x=xsh, y=ysh, ax=self.axs[i], err_style='band', color=colors[c_ix], ci=error_band)
             self.axs[i].set_title(f"cluster {c_ix}")
 
         self.draw()
@@ -123,10 +134,12 @@ class ProportionsDock(QtWidgets.QDockWidget):
 
         self.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable)
         self.setMinimumSize(QtCore.QSize(100, 600))
+        self.setWindowTitle('Proportions')
 
 
 class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     sig_output_changed = QtCore.pyqtSignal(Transmission)
+    drop_opts = None
 
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent=parent)
@@ -134,10 +147,10 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.setWindowTitle('k-Shape Clustering')
 
         self.control_widget = KShapeControlDock(parent=self)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.control_widget)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.control_widget)
 
         self.proportions_widget = ProportionsDock(self)
-        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.proportions_widget)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.proportions_widget)
 
         self.plot_proportions = self.proportions_widget.plot
 
@@ -150,6 +163,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self._params = None
 
         self._ks = None
+        self._train_data = None
         self._y_pred = None
         self._cluster_centers = None
         self._cluster_means = None
@@ -163,10 +177,20 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget.ui.listWidgetClusterNumber.currentItemChanged.connect(self.update_plot)
 
-        # self.control_widget.ui.comboBoxGroups.currentTextChanged.connect(self.plot_proportions)
+        self.control_widget.ui.pushButtonApplyPlotOptions.clicked.connect(self.update_plot)
+        self.control_widget.ui.pushButtonApplyPlotOptions.clicked.connect(self.update_plot_means)
+
+        self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
+        self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
 
         self.plot = KShapePlot(parent=self)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.plot)
+
+        self.dockConsole = QtWidgets.QDockWidget(self)
+        self.dockConsole.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable)
+        self.dockConsole.setWidget(ConsoleWidget(parent=self, namespace={'this': self}))
+
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dockConsole)
 
         self.plot_means = KShapeMeansPlot(parent=self)
         # self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.plot_means)
@@ -182,9 +206,11 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         return self._input_arrays
 
     @input_arrays.setter
-    def input_arrays(self, a: np.ndarray):
+    def input_arrays(self, a: Union[np.ndarray, list]):
+        if isinstance(a, list):
+            a = np.array(a)
         if not isinstance(a, np.ndarray):
-            raise TypeError('Must pass np.ndarray')
+            raise TypeError('Must pass np.ndarray or list')
         elif a.ndim > 2:
             raise ValueError('Array must be 2D')
 
@@ -215,15 +241,31 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self._n_clusters = n
 
     @property
+    def train_data(self) -> np.ndarray:
+        if self._train_data is None:
+            raise ValueError('Must run clustering first')
+        return self._train_data
+
+    @train_data.setter
+    def train_data(self, data: Union[np.ndarray, list]):
+        if isinstance(data, list):
+            data = np.array(data)
+        if not isinstance(data, np.ndarray):
+            raise ValueError('Must pass numpy array or list')
+        self._train_data = data
+
+    @property
     def y_pred(self) -> np.ndarray:
         if self._y_pred is None:
             raise ValueError('No predictions have been fit')
         return self._y_pred
 
     @y_pred.setter
-    def y_pred(self, y_pred: np.ndarray):
+    def y_pred(self, y_pred: Union[np.ndarray, list]):
+        if isinstance(y_pred, list):
+            y_pred = np.array(y_pred)
         if not isinstance(y_pred, np.ndarray):
-            raise TypeError('Must pass numpy array')
+            raise TypeError('Must pass numpy array or list')
         self._y_pred = y_pred
 
     @property
@@ -233,9 +275,11 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         return self._cluster_centers
 
     @cluster_centers.setter
-    def cluster_centers(self, c: np.ndarray):
+    def cluster_centers(self, c: Union[np.ndarray, list]):
+        if isinstance(c, list):
+            c = np.array(c)
         if not isinstance(c, np.ndarray):
-            raise TypeError('Cluster centers must be a np.ndarray')
+            raise TypeError('Must pass numpy array or list')
         self._cluster_centers = c
 
     @property
@@ -245,9 +289,11 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         return self._cluster_centers
 
     @cluster_means.setter
-    def cluster_means(self, cms: np.ndarray):
+    def cluster_means(self, cms: Union[np.ndarray, list]):
+        if isinstance(cms, list):
+            self.cms = np.array(cms)
         if not isinstance(cms, np.ndarray):
-            raise TypeError('Must pass np.ndarray')
+            raise TypeError('Must pass np.ndarray or list')
         self._cluster_means = cms
 
     @property
@@ -268,6 +314,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def set_input(self, transmission: Transmission):
         super(KShapeWidget, self).set_input(transmission)
         self.transmission.df.reset_index(drop=True, inplace=True)
+        self.proportions_widget.plot.set_input(self.transmission)
 
         cols = self.transmission.df.columns.tolist()
         cols.sort()
@@ -317,13 +364,16 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
                                              QtWidgets.QMessageBox.Yes,
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
-            self.plot.fig.clear()
+            self.plot.ax_curves.cla()
 
         self.finished = False
         self.clear_data()
 
         self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
         self.input_arrays = self.transmission.df[self.data_column].values
+
+        self.train_percentage = self.control_widget.ui.spinBoxTrainSubsetPercentage.value()
+
         padded = self.pad_input_data(self.input_arrays, method='fill-size')
         # scaler = TimeSeriesScalerMeanVariance()
         # self.input_arrays = scaler.fit_transform(padded)[:, :, 0]
@@ -375,7 +425,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         workdir = self.get_workdir()
 
-        for f in ['params.pickle', 'data.npy', 'ks.pickle', 'out.pickle']:
+        for f in ['params.pickle', 'data.npy', 'train.npy', 'y_pred.npy', 'ks.pickle', 'out']:
             try:
                 os.remove(workdir + '/' + f)
             except FileNotFoundError:
@@ -408,11 +458,14 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         if open(self.params['out'], 'r').read() == 0:
             return
 
-        ks_path = self.params['workdir'] + '/ks.pickle'
+        ks_path = os.path.join(self.params['workdir'], 'ks.pickle')
         self.ks = pickle.load(open(ks_path, 'rb'))
 
-        y_pred_path = self.params['workdir'] + '/y_pred.pickle'
-        self.y_pred = pickle.load(open(y_pred_path, 'rb'))
+        train_path = os.path.join(self.params['workdir'], 'train.npy')
+        self.train_data = np.load(train_path)
+
+        y_pred_path = os.path.join(self.params['workdir'], 'y_pred.npy')
+        self.y_pred = np.load(y_pred_path)
 
         self.n_clusters = self.params['kwargs']['n_clusters']
         self.cluster_centers = self.ks.cluster_centers_
@@ -428,11 +481,6 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.send_output_transmission()
         self.finished = True
 
-    def update_plot_means(self):
-        padded = self.pad_input_data(self.input_arrays, 'fill-size')
-        scaled = TimeSeriesScalerMeanVariance().fit_transform(padded)[:, :, 0]
-        self.plot_means.set_plots(scaled, self.n_clusters, self.y_pred)
-
     def send_output_transmission(self):
         t = self.transmission.copy()
         params = self.params['kwargs']
@@ -442,37 +490,58 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def set_n_clusters_list(self):
         self.control_widget.ui.listWidgetClusterNumber.clear()
         self.control_widget.ui.listWidgetClusterNumber.addItems(list(map(str, range(self.n_clusters))))
+        self.control_widget.ui.listWidgetClusterNumber.setCurrentRow(0)
 
     def set_plot_opts(self, opts: dict):
-        prop_opts = opts.pop('prop_opts')
-        self.plot.proportions_widget.set_plot_opts(prop_opts)
+        prop_opts = opts.pop('proportion_opts')
+        self.plot_proportions.set_plot_opts(prop_opts)
 
         ui_state = opts.pop('ui_state')
 
+        ix = self.control_widget.ui.comboBoxDataColumn.findText(ui_state['data_column'])
+        self.control_widget.ui.comboBoxDataColumn.setCurrentIndex(ix)
         self.control_widget.ui.checkBoxShowKShapeCenters.setChecked(ui_state['show_centers'])
+        self.control_widget.ui.spinBoxMaxNumCurves.setValue(ui_state['max_num_curves'])
+        ix = self.control_widget.ui.comboBoxErrorBand.findText(ui_state['error_band'])
+        self.control_widget.ui.comboBoxErrorBand.setCurrentIndex(ix)
+        self.control_widget.ui.radioButtonXZeroZero.setChecked(ui_state['x-zero_zero'])
+        self.control_widget.ui.radioButtonXZeroMaxima.setChecked(ui_state['x-zero_maxima'])
+
+        self.data_column = ui_state['data_column']
+        self.input_arrays = self.transmission.df[self.data_column].values
 
         for k in opts.keys():
             setattr(self, k, opts[k])
 
-    def get_plot_opts(self) -> dict:
-        opts = {'prop_opts':        self.plot.proportions_widget.get_plot_opts(),
-                'input_arrays':     self.input_arrays,
+        self.set_n_clusters_list()
+
+    def get_plot_opts(self, drop: bool) -> dict:
+        """
+        :param drop: Unused for this Plot Widget
+        :return:
+        """
+        opts = {'proportion_opts':  self.plot_proportions.get_plot_opts(drop=True),
                 'n_clusters':       self.n_clusters,
-                'y_pred':           self.y_pred,
-                'cluster_centers':  self.cluster_centers,
-                'ui_state':    {
-                                        'show_centers':     self.control_widget.ui.checkBoxShowKShapeCenters.isChecked(),
-                                        'max_num_curves':   self.control_widget.ui.spinBoxMaxNumCurves.values(),
-                                        'error_band':       self.control_widget.ui.comboBoxErrorBand.currentText(),
-                                        'zero_zero':        self.control_widget.ui.radioButtonZero.isChecked(),
-                                        'peak_zero':        self.control_widget.ui.radioButtonPeak.isChecked()
-                                    }
+                'train_data':       self.train_data.tolist(),
+                'y_pred':           self.y_pred.tolist(),
+                'cluster_centers':  self.cluster_centers.tolist(),
+                'ui_state':
+                                {'data_column':     self.data_column,
+                                 'show_centers':    self.control_widget.ui.checkBoxShowKShapeCenters.isChecked(),
+                                 'max_num_curves':  self.control_widget.ui.spinBoxMaxNumCurves.value(),
+                                 'error_band':      self.control_widget.ui.comboBoxErrorBand.currentText(),
+                                 'x-zero_zero':     self.control_widget.ui.radioButtonXZeroZero.isChecked(),
+                                 'x-zero_maxima':   self.control_widget.ui.radioButtonXZeroMaxima.isChecked()
+                                 }
                 }
 
         return opts
 
-    @present_exceptions('Plotting error')
+    @present_exceptions('Plotting error', 'The following error occurred when plotting the raw curves')
     def update_plot(self, *args, show_centers=True, **kwargs):
+        max_num_curves = self.control_widget.ui.spinBoxMaxNumCurves.value()
+        show_centers = self.control_widget.ui.checkBoxShowKShapeCenters.isChecked()
+
         cluster_num = int(self.control_widget.ui.listWidgetClusterNumber.currentItem().text())
 
         self.plot.ax_curves.cla()
@@ -480,11 +549,15 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         padded = self.pad_input_data(self.input_arrays)
         scaled = TimeSeriesScalerMeanVariance().fit_transform(padded)[:, :, 0]
 
-        max_curves = self.control_widget.ui.spinBoxMaxNumCurves.values()
-        for i, xx in enumerate(scaled[self.y_pred == cluster_num]):
-            self.plot.ax_curves.plot(xx.ravel(), 'k-', alpha=0.2)
+        members = scaled[self.y_pred == cluster_num]
+        # Plot only 'max_num_curves' to prevent the plot from being overcrowded and hard to visualize
+        n_samples = min(members.shape[0], max_num_curves)
+        samples = members[np.random.choice(members.shape[0], size=n_samples, replace=False)]
 
-        if self.control_widget.ui.checkBoxShowKShapeCenters.isChecked():
+        for sample in samples:
+            self.plot.ax_curves.plot(sample.ravel(), 'k-', alpha=0.2)
+
+        if show_centers:
             center = self.cluster_centers[cluster_num].ravel()
             self.plot.ax_curves.plot(center, 'r-')
 
@@ -496,6 +569,28 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.plot.ax_curves.set_title('Cluster ' + str(cluster_num))
 
         self.plot.draw()
+
+    @present_exceptions('Plotting error', 'The following error occurred when plotting the means')
+    def update_plot_means(self, *args, **kwargs):
+        padded = self.pad_input_data(self.input_arrays, 'fill-size')
+        scaled = TimeSeriesScalerMeanVariance().fit_transform(padded)[:, :, 0]
+
+        if self.control_widget.ui.radioButtonXZeroZero.isChecked():
+            xzero = 'zero'
+        elif self.control_widget.ui.radioButtonXZeroMaxima.isChecked():
+            xzero = 'maxima'
+        else:
+            raise ValueError('Must select an option for set x = 0 at')
+
+        if self.control_widget.ui.comboBoxErrorBand.currentText() == 'standard deviation':
+            ci = 'sd'
+        elif self.control_widget.ui.comboBoxErrorBand.currentText() == 'confidence interval':
+            ci = 95
+        elif self.control_widget.ui.comboBoxErrorBand.currentText() == 'None':
+            ci = None
+
+        self.plot_means.set_plots(scaled, self.n_clusters, self.y_pred, xzero_pos=xzero, error_band=ci)
+        self.plot_means.show()
 
     # Need to plot the means as well just once
     def open_plot(self, ptrn_path: str, proj_path: str) -> Union[Tuple[str, str], None]:
