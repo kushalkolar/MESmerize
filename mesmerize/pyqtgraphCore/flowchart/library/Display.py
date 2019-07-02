@@ -195,7 +195,7 @@ class BeeswarmPlots(CtrlNode):
 
     def _open_plot_gui(self):
         if self.plot_gui is None:
-            self.plot_gui = BeeswarmPlotWindow(parent=self.parent())
+            self.plot_gui = BeeswarmPlotWindow(parent=None)
         self.plot_gui.show()
 
 
