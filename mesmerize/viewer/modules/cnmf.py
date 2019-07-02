@@ -114,7 +114,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         batch_manager = get_window_manager().get_batch_manager()
         batch_manager.add_item(module='CNMF',
-                               viewer_reference=self.vi.viewer,
                                name=name,
                                input_workEnv=input_workEnv,
                                input_params=d,

@@ -167,7 +167,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
             cmap = 'tab10'
         elif 10 < n_labels < 21:
             cmap = 'tab20'
-        elif 210 < n_labels > 20:
+        elif 20 < n_labels < 211:
             cmap = 'nipy_spectral'
         else:
             raise ValueError('Cannot generate colormap for greater than 210 labels.\n'

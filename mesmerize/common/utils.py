@@ -131,8 +131,17 @@ class HdfTools:
             mg.attrs['method'] = metadata_method
 
             if metadata_method == 'json':
+                bad_keys = []
                 for k in metadata.keys():
-                    mg.create_dataset(k, data=json.dumps(metadata[k]))
+                    try:
+                        mg.create_dataset(k, data=json.dumps(metadata[k]))
+                    except TypeError as e:
+                        bad_keys.append(str(e))
+
+                if len(bad_keys) > 0:
+                    bad_keys = '\n'.join(bad_keys)
+                    raise TypeError(f"The following meta data keys are not JSON serializable\n{bad_keys}")
+
 
             elif metadata_method == 'recursive':
                 HdfTools._dicts_to_group(h5file=f, path='META/', d=metadata, raise_meta_fail=raise_meta_fail)
