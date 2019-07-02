@@ -178,8 +178,9 @@ class ProjectManager(QtCore.QObject):
         if columns_changed:
             self.backup_project_dataframe()
             self.dataframe.drop(columns=columns_to_drop, inplace=True)
+            self.save_dataframe()
 
-            self.signal_dataframe_changed.disconnect(get_window_manager().project_browser.update_dataframe_data)
+            self.signal_dataframe_changed.disconnect(get_window_manager().project_browser.project_browser.update_dataframe_data)
             get_window_manager().project_browser.deleteLater()
 
             self.signal_project_config_changed.emit()
