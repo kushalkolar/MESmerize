@@ -17,7 +17,7 @@ from signal import SIGKILL
 from ....common.utils import make_workdir, make_runfile
 from ....common.qdialogs import *
 import pickle
-from ....analysis.data_types import Transmission
+from ....analysis import Transmission, organize_dataframe_columns
 import numpy as np
 from functools import partial
 from collections import deque
@@ -31,7 +31,6 @@ from ..base import BasePlotWidget
 from math import sqrt, ceil
 from ...utils import auto_colormap
 from typing import Union
-
 
 
 class KShapeControlDock(QtWidgets.QDockWidget):
@@ -316,11 +315,11 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.transmission.df.reset_index(drop=True, inplace=True)
         self.proportions_widget.plot.set_input(self.transmission)
 
-        cols = self.transmission.df.columns.tolist()
-        cols.sort()
+        dcols, ccols, ucols = organize_dataframe_columns(self.transmission.df.columns.tolist())
+        dcols.sort()
 
         self.control_widget.ui.comboBoxDataColumn.clear()
-        self.control_widget.ui.comboBoxDataColumn.addItems(cols)
+        self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
 
     def pad_input_data(self, a: np.ndarray, method: str = 'random') -> np.ndarray:
         l = 0  # size of largest time series

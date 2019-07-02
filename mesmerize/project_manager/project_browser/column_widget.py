@@ -54,6 +54,8 @@ class ColumnWidget(QtWidgets.QWidget, Ui_column_template):
 
                 self.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
                 self.listWidget.customContextMenuRequested.connect(self.delete_context_menu_requested)
+        else:
+            self.listWidget.itemDoubleClicked.connect(partial(self.btn_apply_clicked_emit_dict, option='new'))
 
         if not is_root:
             self.btnApply.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
