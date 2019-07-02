@@ -122,7 +122,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding Corr PNR: ' + name + ' to batch...')
 
         batch_manager.add_item(module='CNMFE',
-                               viewer_reference=self.vi.viewer,
                                name=name,
                                input_workEnv=input_workEnv,
                                input_params=d,
