@@ -58,6 +58,26 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.pushButtonImportFromImageJ.clicked.connect(self.import_from_imagej)
 
+        self.installEventFilter(self)
+
+    def eventFilter(self, QObject, QEvent):
+        if QEvent.type() == QEvent.KeyPress:
+
+            if len(self.manager.roi_list) < 1:
+                return super(ModuleGUI, self).eventFilter(QObject, QEvent)
+
+            max_ix = len(self.manager.roi_list) - 1
+
+            if QEvent.key() == QtCore.Qt.Key_PageUp:
+                ix = self.manager.roi_list.current_index
+                self.ui.listWidgetROIs.setCurrentRow(max(0, ix - 1))
+
+            elif QEvent.key() == QtCore.Qt.Key_PageDown:
+                ix = self.manager.roi_list.current_index
+                self.ui.listWidgetROIs.setCurrentRow(min(max_ix, ix + 1))
+
+        return super(ModuleGUI, self).eventFilter(QObject, QEvent)
+
     def _list_widget_context_menu_requested(self, p):
         self.list_widget_context_menu.exec_(self.ui.listWidgetROIs.mapToGlobal(p))
 
