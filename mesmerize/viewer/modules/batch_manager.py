@@ -17,8 +17,9 @@ from ..core import ViewerUtils, ViewerWorkEnv
 # from ...pyqtgraphCore.imageview import ImageView
 from ..main_window import MainWindow as ViewerWindow
 from ..core.background_tiff_compressor import Compressor as TiffCompressor
-from ...common import get_sys_config, get_timestamp_str
-from ...common import get_window_manager
+from ...common import get_sys_config, get_timestamp_str, get_window_manager
+from ...common.qdialogs import *
+from ...common.utils import make_runfile, make_workdir
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
@@ -38,8 +39,6 @@ from signal import SIGKILL
 import traceback
 from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from glob import glob
-from multiprocessing import Pool
-from ...common.utils import make_runfile, make_workdir
 from collections import UserList
 from typing import *
 
@@ -97,6 +96,20 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnExportShScripts.clicked.connect(self.export_submission_scripts)
 
         self.lwd = None
+
+        self.ui.lineEditFindItem.textEdited.connect(self.higlight_items)
+        self.previous_list_widget_colors = None
+
+    def higlight_items(self):
+        self.reset_list_widget_colors()
+        txt = self.ui.lineEditFindItem.text()
+        if not txt:
+            return
+
+        items = self.ui.listwBatch.findItems(txt, QtCore.Qt.MatchContains)
+
+        for item in items:
+            item.setBackground(QtGui.QBrush(QtGui.QColor('#FF94F7')))
 
     def init_batch(self, run_batch):
         if not self._testing:
@@ -199,6 +212,7 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             self.load_item_input(viewers[0], r)
 
+    @present_exceptions
     def load_item_input(self, viewers: Union[ViewerWindow, UserList], r: pandas.Series = None, UUID: uuid.UUID = None):
         """
         Pass either the batch DataFrame row or UUID of the item of which to load the input into a viewer
@@ -707,7 +721,6 @@ class ModuleGUI(QtWidgets.QWidget):
             return
         try:
             df = pandas.read_pickle(dfpath)
-            assert isinstance(df, pandas.DataFrame)
             self.df = df
             if 'compressed' not in self.df.columns:
                 self.df['compressed'] = False * self.df.index.size
@@ -721,7 +734,6 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.ui.listwBatch.addItem(r['module'] + ': ' + r['name'])
                 n = self.ui.listwBatch.count()
                 item = self.ui.listwBatch.item(n - 1)
-                assert isinstance(item, QtWidgets.QListWidgetItem)
                 item.setData(3, r['uuid'])
 
                 output = self.get_batch_item_output(r['uuid'])
@@ -739,6 +751,19 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'File open Error!',
                                           'Could not open the dataframe file.\n' + traceback.format_exc())
             return
+
+    def reset_list_widget_colors(self):
+        for ix, r in self.df.iterrows():
+            item = self.ui.listwBatch.item(ix)
+
+            output = self.get_batch_item_output(r['uuid'])
+
+            if output is None:
+                item.setBackground(QtGui.QBrush(QtGui.QColor('#FFFFFF')))
+            elif output['status']:
+                item.setBackground(QtGui.QBrush(QtGui.QColor('#77dd77')))  # green
+            else:
+                item.setBackground(QtGui.QBrush(QtGui.QColor('#fe0d00')))  # red
 
     def init_compressor(self):
         self.thread_pool_compressor = QtCore.QThreadPool()
