@@ -518,7 +518,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         if cp:
             files = os.path.join(self.batch_path, f"*{u}*")
-            cp_str = f'cp {files} {self.working_dir}\n'
+            cp_str = f'cp {files} {self.working_dir}\nexport CURR_BATCH_DIR={self.batch_path}'
         else:
             cp_str = None
 
