@@ -19,9 +19,9 @@ class Plot(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out'}})
         self.trans_ids = []
-        self.pwin = simple_plot_window.PlotWindow()
+        self.plot_widget = simple_plot_window.PlotWindow()
         self.ctrls['Apply'].clicked.connect(self.update)
-        self.ctrls['Show'].clicked.connect(self.pwin.setVisible)
+        self.ctrls['Show'].clicked.connect(self.plot_widget.setVisible)
 
     def process(self, **kwargs):
         transmissions = kwargs['In']
@@ -37,7 +37,7 @@ class Plot(CtrlNode):
         if self.ctrls['Apply'].isChecked() is False:
             return
         data_column = self.ctrls['data_column'].currentText()
-        self.pwin.graphicsView.clear()
+        self.plot_widget.graphicsView.clear()
 
         srcs = []
         plots = []
@@ -73,11 +73,11 @@ class Plot(CtrlNode):
                     srcs.append('Plotting error: ' + str(e))
                     continue
 
-                self.pwin.graphicsView.addItem(plot)
+                self.plot_widget.graphicsView.addItem(plot)
 
             ci += 1
 
-        self.pwin.set_history_widget(srcs)
+        self.plot_widget.set_history_widget(srcs)
 
 
 class FrequencyDomainMagnitude(CtrlNode):
@@ -100,8 +100,8 @@ class Timeseries(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
         self.ctrls['Apply'].clicked.connect(self.update)
-        self.timeseries_widget = TimeseriesPlot()
-        self.ctrls['Show'].clicked.connect(self.timeseries_widget.show)
+        self.plot_widget = TimeseriesPlot()
+        self.ctrls['Show'].clicked.connect(self.plot_widget.show)
 
     def process(self, **kwargs):
         transmissions = kwargs['In']
@@ -121,7 +121,7 @@ class Timeseries(CtrlNode):
 
         es = self.ctrls['err_style'].currentText()
 
-        self.timeseries_widget.set(data=data, err_style=es)
+        self.plot_widget.set(data=data, err_style=es)
 
 
 class Heatmap(CtrlNode):
@@ -131,8 +131,8 @@ class Heatmap(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})#, 'Out': {'io': 'out'}})
-        self.heatmap_widget = HeatmapTracerWidget()
-        self.ctrls['Show'].clicked.connect(self.heatmap_widget.show)
+        self.plot_widget = HeatmapTracerWidget()
+        self.ctrls['Show'].clicked.connect(self.plot_widget.show)
 
     def process(self, **kwargs):
         self.transmissions = kwargs['In']
@@ -142,7 +142,7 @@ class Heatmap(CtrlNode):
         else:
             self.t = Transmission.merge(self.transmissions_list)
 
-        self.heatmap_widget.set_input(self.t)
+        self.plot_widget.set_input(self.t)
 
 
 class ScatterPlot(CtrlNode):
@@ -153,23 +153,23 @@ class ScatterPlot(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.plot_gui = None
+        self.plot_widget = None
         self.ctrls['Show'].clicked.connect(self._open_plot_gui)
 
     def process(self, **kwargs):
-        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_widget is None:
             return
 
         transmissions = kwargs['In']
 
         transmissions_list = merge_transmissions(transmissions)
 
-        self.plot_gui.update_input_transmissions(transmissions_list)
+        self.plot_widget.update_input_transmissions(transmissions_list)
 
     def _open_plot_gui(self):
-        if self.plot_gui is None:
-            self.plot_gui = ScatterPlotWidget(parent=self.parent())
-        self.plot_gui.show()
+        if self.plot_widget is None:
+            self.plot_widget = ScatterPlotWidget(parent=self.parent())
+        self.plot_widget.show()
 
 
 class BeeswarmPlots(CtrlNode):
@@ -180,23 +180,23 @@ class BeeswarmPlots(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.plot_gui = None
+        self.plot_widget = None
         self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
 
     def process(self, **kwargs):
-        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_widget is None:
             return
 
         transmissions = kwargs['In']
         transmissions_list = merge_transmissions(transmissions)
 
 
-        self.plot_gui.update_input_transmissions(transmissions_list)
+        self.plot_widget.update_input_transmissions(transmissions_list)
 
     def _open_plot_gui(self):
-        if self.plot_gui is None:
-            self.plot_gui = BeeswarmPlotWindow(parent=None)
-        self.plot_gui.show()
+        if self.plot_widget is None:
+            self.plot_widget = BeeswarmPlotWindow(parent=None)
+        self.plot_widget.show()
 
 
 class Proportions(CtrlNode):
