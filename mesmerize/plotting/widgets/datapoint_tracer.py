@@ -155,12 +155,12 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         # img = np.dstack((img, z))
 
-        if img.shape[0] > img.shape[1]:
-            x, y = (0, 1)
-        else:
-            x,y = (1, 0)
+        # if img.shape[0] > img.shape[1]:
+        #     x, y = (0, 1)
+        # else:
+        #     x,y = (1, 0)
 
-        self.image_view.setImage(img, axes={'x': x, 'y': y})
+        self.image_view.setImage(img, axes={'x': 0, 'y': 1})
 
         self.previous_sample_id_projection = f'{self.sample_id}{projection}'
         # self.image_item.setImage(img.T.astype(np.uint16))
