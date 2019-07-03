@@ -64,7 +64,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'nb_patch':        self.ui.spinBoxNb_patch.value(),
              'k':               self.ui.spinBoxK.value(),
              'name_corr_pnr':   self.ui.lineEdCorrPNRName.text(),
-             'name_cnmfe':      self.ui.lineEdName.text()
+             'name_cnmfe':      self.ui.lineEdName.text(),
+             'Ain':             self.ui.lineEditAin.text().replace(' ', '').strip('\n')
              }
 
         return d
@@ -97,6 +98,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.spinBoxK.setValue(params['k'])
         self.ui.lineEdCorrPNRName.setText(params['name_corr_pnr'])
         self.ui.lineEdName.setText(params['name_cnmfe'])
+        if 'Ain' in params.keys():
+            self.ui.lineEditAin.setText(params['Ain'])
 
     def add_to_batch_corr_pnr(self):
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
@@ -129,6 +132,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                )
 
         self.vi.viewer.status_bar_label.showMessage('Done adding Corr PNR: ' + name + ' to batch!')
+        self.clear_line_edits()
 
     def add_to_batch_cnmfe(self):
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
@@ -159,6 +163,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                info=d
                                )
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMFE: ' + name + ' to batch!')
+        self.clear_line_edits()
+
+    def clear_line_edits(self):
+        self.ui.lineEdCorrPNRName.clear()
+        self.ui.lineEdName.clear()
+        self.ui.lineEditAin.clear()
 
     @QtCore.pyqtSlot()
     def update_available_inputs(self):

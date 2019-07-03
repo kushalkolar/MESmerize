@@ -42,7 +42,7 @@ import pickle
 from glob import glob
 from functools import partial
 import traceback
-from time import time
+from time import time, sleep
 
 
 if not sys.argv[0] == __file__:
@@ -75,6 +75,30 @@ def run(batch_dir: str, UUID: str):
     gnb = input_params['gnb']
     nb_patch = input_params['nb_patch']
     k = input_params['k']
+    if 'Ain' in input_params.keys():
+        print('>> Ain specified, looking for cnm-A file <<')
+        item_uuid = input_params['Ain']
+        parent_batch_dir = os.environ['CURR_BATCH_DIR']
+        item_out_file = os.path.join(parent_batch_dir, f'{item_uuid}.out')
+        t0 = time()
+        timeout = 60
+        while not os.path.isfile(item_out_file):
+            print('>>> cnm-A not found, waiting for 15 seconds <<<')
+            sleep(15)
+            if time() - t0 > timeout:
+                output.update({'status': 0, 'output_info': 'Timeout exceeding in waiting for Ain input file'})
+                raise TimeoutError('Timeout exceeding in waiting for Ain input file')
+
+        if os.path.isfile(item_out_file):
+            if json.load(open(item_out_file, 'r'))['status']:
+                Ain_file = os.path.join(parent_batch_dir, item_uuid + '_cnm-A.pikl')
+                Ain = pickle.load(open(Ain_file, 'rb'))
+                print('>>> Found Ain file <<<')
+            else:
+                raise FileNotFoundError('>>> Could not find specified Ain file <<<')
+
+    else:
+        Ain = None
 
     filename = [filename]
 
@@ -146,7 +170,7 @@ def run(batch_dir: str, UUID: str):
                         # downsampling factor in space for initialization, increase if you have memory problems
                         ssub=2,
                         # if you want to initialize with some preselcted components you can pass them here as boolean vectors
-                        Ain=None,
+                        Ain=Ain,
                         # half size of the patch (final patch will be 100x100)
                         rf=(rf, rf),
                         # overlap among patches (keep it at least large as 4 times the neuron size)
@@ -184,8 +208,8 @@ def run(batch_dir: str, UUID: str):
         pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
         pickle.dump(dims, open(UUID + '_dims.pikl', 'wb'), protocol=4)
 
-        output_file_list = [UUID + '_Yr.pikl',
-                            UUID + '_cnm-A.pikl',
+        output_file_list = [UUID + '_cnm-A.pikl',
+                            UUID + '_Yr.pikl',
                             UUID + '_cnm-b.pikl',
                             UUID + '_cnm-C.pikl',
                             UUID + '_cnm-f.pikl',
