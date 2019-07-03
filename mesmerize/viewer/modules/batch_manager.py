@@ -612,7 +612,7 @@ class ModuleGUI(QtWidgets.QWidget):
         if module == 'CNMFE' or module == 'caiman_motion_correction' or module == 'CNMF':
             filename = os.path.join(self.batch_path, str(UUID) + '.tiff')
             tifffile.imsave(filename, data=input_workEnv.imgdata.seq.T, bigtiff=True)
-            input_workEnv.to_pickle(self.batch_path, filename=str(UUID) + '_workEnv', save_img_seq=False)
+            input_workEnv.to_pickle(self.batch_path, filename=str(UUID) + '_workEnv', save_img_seq=False, UUID=None)
 
         pickle.dump(input_params, open(os.path.join(self.batch_path, str(UUID) + '.params'), 'wb'), protocol=4)
 
