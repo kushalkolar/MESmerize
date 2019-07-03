@@ -60,9 +60,12 @@ class KShapeControlDock(QtWidgets.QDockWidget):
         self.ui.pushButtonStart.setDisabled(True)
         self.ui.pushButtonAbort.setEnabled(True)
 
+        self.ui.groupBoxKShapeParams.setEnabled(True)
+
     def set_inactive(self):
         self.ui.pushButtonStart.setEnabled(True)
         self.ui.pushButtonAbort.setDisabled(True)
+        self.ui.groupBoxKShapeParams.setDisabled(False)
 
 
 class KShapePlot(QtWidgets.QDockWidget):
@@ -168,6 +171,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self._cluster_means = None
 
         self.data_column = None
+        self.input_connected = True
 
         self.std_out = deque(maxlen=500)
 
@@ -181,6 +185,9 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
         self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
+
+        self.control_widget.ui.pushButtonReconnectFlowchartInput.clicked.connect(self.input_connect)
+        self.control_widget.ui.pushButtonReconnectFlowchartInput.setVisible(False)
 
         self.plot = KShapePlot(parent=self)
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.plot)
@@ -311,6 +318,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self._input_arrays = None
 
     def set_input(self, transmission: Transmission):
+        if not self.input_connected:
+            return
         super(KShapeWidget, self).set_input(transmission)
         self.transmission.df.reset_index(drop=True, inplace=True)
         self.proportions_widget.plot.set_input(self.transmission)
@@ -366,6 +375,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.plot.ax_curves.cla()
 
         self.finished = False
+        self.input_disconnect()
         self.clear_data()
 
         self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
@@ -439,6 +449,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.process.finished.disconnect(self.process_finished)
         self.terminate_qprocess()
         self.control_widget.set_inactive()
+
         return True
 
     def terminate_qprocess(self):
@@ -595,7 +606,18 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def open_plot(self, ptrn_path: str, proj_path: str) -> Union[Tuple[str, str], None]:
         super(KShapeWidget, self).open_plot(ptrn_path, proj_path)
         self.update_plot_means()
+        self.input_disconnect()
         return ptrn_path, proj_path
+
+    def input_disconnect(self):
+        self.input_connected = False
+        self.control_widget.ui.labelConnectedToFlowchart.setText('INPUT DISCONNECTED')
+        self.control_widget.ui.pushButtonReconnectFlowchartInput.setVisible(True)
+
+    def input_connect(self):
+        self.input_connected = True
+        self.control_widget.ui.labelConnectedToFlowchart.setText('INPUT CONNECTED TO FLOWCHART')
+        self.control_widget.ui.pushButtonReconnectFlowchartInput.setVisible(False)
 
     def closeEvent(self, QCloseEvent):
         if self.abort_process():
