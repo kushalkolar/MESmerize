@@ -76,26 +76,27 @@ def run(batch_dir: str, UUID: str):
     nb_patch = input_params['nb_patch']
     k = input_params['k']
     if 'Ain' in input_params.keys():
-        print('>> Ain specified, looking for cnm-A file <<')
-        item_uuid = input_params['Ain']
-        parent_batch_dir = os.environ['CURR_BATCH_DIR']
-        item_out_file = os.path.join(parent_batch_dir, f'{item_uuid}.out')
-        t0 = time()
-        timeout = 60
-        while not os.path.isfile(item_out_file):
-            print('>>> cnm-A not found, waiting for 15 seconds <<<')
-            sleep(15)
-            if time() - t0 > timeout:
-                output.update({'status': 0, 'output_info': 'Timeout exceeding in waiting for Ain input file'})
-                raise TimeoutError('Timeout exceeding in waiting for Ain input file')
+        if input_params['Ain']:
+            print('>> Ain specified, looking for cnm-A file <<')
+            item_uuid = input_params['Ain']
+            parent_batch_dir = os.environ['CURR_BATCH_DIR']
+            item_out_file = os.path.join(parent_batch_dir, f'{item_uuid}.out')
+            t0 = time()
+            timeout = 60
+            while not os.path.isfile(item_out_file):
+                print('>>> cnm-A not found, waiting for 15 seconds <<<')
+                sleep(15)
+                if time() - t0 > timeout:
+                    output.update({'status': 0, 'output_info': 'Timeout exceeding in waiting for Ain input file'})
+                    raise TimeoutError('Timeout exceeding in waiting for Ain input file')
 
-        if os.path.isfile(item_out_file):
-            if json.load(open(item_out_file, 'r'))['status']:
-                Ain_file = os.path.join(parent_batch_dir, item_uuid + '_cnm-A.pikl')
-                Ain = pickle.load(open(Ain_file, 'rb'))
-                print('>>> Found Ain file <<<')
-            else:
-                raise FileNotFoundError('>>> Could not find specified Ain file <<<')
+            if os.path.isfile(item_out_file):
+                if json.load(open(item_out_file, 'r'))['status']:
+                    Ain_file = os.path.join(parent_batch_dir, item_uuid + '_cnm-A.pikl')
+                    Ain = pickle.load(open(Ain_file, 'rb'))
+                    print('>>> Found Ain file <<<')
+                else:
+                    raise FileNotFoundError('>>> Could not find specified Ain file <<<')
 
     else:
         Ain = None
