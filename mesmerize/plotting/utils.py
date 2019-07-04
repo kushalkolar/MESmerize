@@ -5,6 +5,7 @@ from matplotlib import cm as matplotlib_color_map
 from typing import List, Union, Any
 from mesmerize.pyqtgraphCore import mkColor
 import numpy as np
+from collections import OrderedDict
 
 qual_cmaps = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1', 'Set2', 'Set3', 'tab10', 'tab20', 'tab20b',
               'tab20c']
@@ -52,17 +53,21 @@ def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing
     return colors
 
 
-def get_colormap(labels: iter, cmap: str) -> dict:
+def get_colormap(labels: iter, cmap: str) -> OrderedDict:
     """
     Get dict for mapping labels onto colors
     :param labels:  labels for creating a colormap
     :param cmap:    name of colormap
     :return:        dict of labels as keys and colors as values
     """
-    labels = set(labels)
+    if not len(set(labels)) == len(labels):
+        labels = list(set(labels))
+    else:
+        labels = list(labels)
+
     colors = auto_colormap(len(labels), cmap)
 
-    return dict(zip(labels, colors))
+    return OrderedDict(zip(labels, colors))
 
 
 def map_labels_to_colors(labels: iter, cmap: str):
