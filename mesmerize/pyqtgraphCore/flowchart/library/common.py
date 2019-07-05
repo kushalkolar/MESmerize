@@ -18,6 +18,7 @@ except:
 
 from ...widgets.ComboBox import ComboBox as QComboBox
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
+from ....analysis import organize_dataframe_columns
 
 
 def generateUi(opts):

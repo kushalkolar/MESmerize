@@ -56,7 +56,7 @@ def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing
 def get_colormap(labels: iter, cmap: str) -> OrderedDict:
     """
     Get dict for mapping labels onto colors
-    :param labels:  labels for creating a colormap
+    :param labels:  labels for creating a colormap. Order is maintained if it is a list of unique elements.
     :param cmap:    name of colormap
     :return:        dict of labels as keys and colors as values
     """
