@@ -136,24 +136,34 @@ class Heatmap(MatplotlibWidget):
         """
         self.data = data
 
-        cluster_kwarg_keys = ['row_cluster', 'row_linkage', 'col_cluster', 'col_linkage', 'colorbar_kws', 'metric', 'method']
-
-        if cluster_kwargs is None:
-            cluster_kwargs = dict.fromkeys(cluster_kwarg_keys)
-        else:
-            for key in cluster_kwarg_keys:
-                if key not in cluster_kwargs.keys():
-                    cluster_kwargs[key] = None
-
         if isinstance(ylabels, Series):
             ylabels = ylabels.values
-
         if ylabels is not None:
             mapper = get_colormap(ylabels, ylabels_cmap)
             row_colors = list(map(mapper.get, ylabels))
 
         else:
             row_colors = None
+
+        cluster_kwarg_keys = ['row_cluster', 'row_linkage', 'col_cluster', 'col_linkage', 'colorbar_kws', 'metric', 'method']
+
+        if cluster_kwargs is None:
+            cluster_kwargs = dict.fromkeys(cluster_kwarg_keys)
+            self.cluster_color_mapper = None
+        else:
+            if 'cluster_labels' in cluster_kwargs.keys():
+                cluster_labels = cluster_kwargs.pop('cluster_labels')
+
+                self.cluster_color_mapper = get_colormap(cluster_labels, cmap='tab10')
+                clus_colors = list(map(self.cluster_color_mapper.get, cluster_labels))
+
+                row_colors = [clus_colors, row_colors]
+            else:
+                self.cluster_color_mapper = None
+
+            for key in cluster_kwarg_keys:
+                if key not in cluster_kwargs.keys():
+                    cluster_kwargs[key] = None
 
         if self.fig is not None:
             self.fig.clear()
@@ -163,7 +173,7 @@ class Heatmap(MatplotlibWidget):
         self.plot.plot(*args, **cluster_kwargs, **kwargs)
 
         if ylabels is not None:
-            self.create_ylabels_legend(mapper)
+            self.create_ylabels_legend(mapper, self.cluster_color_mapper)
 
         self._previous_ylims = self.plot.ax_heatmap.get_ylim()
 
@@ -249,9 +259,13 @@ class Heatmap(MatplotlibWidget):
         self.plot.ax_row_colors.set_ylim(lims)
         self.plot.ax_row_dendrogram.set_ylim(tuple(map(lambda x: x*10, lims)))
 
-    def create_ylabels_legend(self, ylabels_mapper):
+    def create_ylabels_legend(self, ylabels_mapper, cluster_mapper):
         self.plot.ax_col_dendrogram.cla()
         handles = [MPatch(color=ylabels_mapper[k], label=k) for k in ylabels_mapper.keys()]
+
+        if cluster_mapper is not None:
+            handles = [MPatch(color=cluster_mapper[k], label=k) for k in cluster_mapper.keys()] + handles
+
         self.plot.ax_col_dendrogram.legend(handles=handles, ncol=int(np.sqrt(len(handles))))
         self.plot.ax_col_dendrogram.get_xaxis().set_visible(False)
         self.plot.ax_col_dendrogram.get_yaxis().set_visible(False)

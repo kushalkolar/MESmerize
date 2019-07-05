@@ -262,6 +262,8 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self._update_live = False
         self.block_signals_list = [self.control_widget]
 
+        self.is_clustering = False
+
     def set_update_live(self, b: bool):
         self._update_live = b
         if b:
@@ -270,7 +272,11 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
     @QtCore.pyqtSlot(tuple)
     def set_current_datapoint(self, ix: tuple):
         try:
-            identifier = self.dataframe.iloc[ix[1]]['uuid_curve']
+            if self.is_clustering:
+                ix = self.plot_widget.plot.dendrogram_row.reordered_ind[ix[1]]
+            else:
+                ix = ix[1]
+            identifier = self.dataframe.iloc[ix]['uuid_curve']
         except IndexError:
             warn('Datapoint index out of bounds. Probably clicked a plot point outside of the data')
             return
@@ -343,20 +349,19 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
     def get_cluster_kwargs(self) -> dict:
         # Just get the first datablock ID since Agglomerative clustering would have been done on all data blocks
         db_id = self.transmission.history_trace.data_blocks[0]
-        children = np.array(self.transmission.history_trace.get_operation_params(data_block_id=db_id, operation='agglomerative_clustering')['children'])
-        distance = np.arange(children.shape[0])
-        obs = np.arange(2, children.shape[0] + 2)
-        lkg = np.column_stack([children, distance, obs]).astype(np.float64)
-
-        ck = dict(row_linkage=lkg, row_cluster=True, col_cluster=False)
+        linkage = np.array(self.transmission.history_trace.get_operation_params(data_block_id=db_id, operation='fcluster')['linkage_matrix'])
+        cluster_labels = self.transmission.df['FCLUSTER_LABELS']
+        ck = dict(row_linkage=linkage, row_cluster=True, col_cluster=False, cluster_labels=cluster_labels)
         return ck
 
     @present_exceptions('Error while setting data', 'Make sure you have selected appropriate columns.', help_func)
     def set_data(self, *args, datapoint_tracer_curve_column: str = None, **kwargs):
-        if self.transmission.last_output == 'AGG_CLUSTER_LABEL':
+        if self.transmission.last_output == 'fcluster':
             self.comboBoxSortColumn.setDisabled(True)
+            self.is_clustering = True
             super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=self.get_cluster_kwargs(), sort=False, **kwargs)
         else:
+            self.is_clustering = False
             super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=None, **kwargs)
 
         self.datapoint_tracer_curve_column = datapoint_tracer_curve_column

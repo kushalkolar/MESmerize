@@ -2,9 +2,7 @@ from .common import *
 from sklearn import cluster as skcluster
 from ....plotting.widgets import LDAPlot
 from ....plotting.widgets import KShapeWidget
-from scipy.stats import wasserstein_distance
-from sklearn.metrics import pairwise_distances
-from scipy.cluster import hierarchy
+
 
 class KShape(CtrlNode):
     """k-Shape clustering"""
@@ -105,47 +103,6 @@ class KMeans(CtrlNode):
         return self.t
 
 
-class Linkage(CtrlNode):
-    """Basically scipy.cluster.hierarchy.linkage, Compute a linkage matrix for Hierarchical clustering"""
-    nodeName = 'Linkage'
-    uiTemplate = [('data_column',   'combo',    {'toolTip', 'Input column for clustering data, must form a 2D array'}),
-                  ('method',        'combo',    {'items': ['complete', 'average', 'single']}),
-                  ('metric',        'combo',    {'items': ['wasserstein', 'euclidean']}),
-                  ('optimal_order', 'check',    {'checked': True}),
-                  ('Apply',         'check',    {'checked': False, 'applyBox': True})]
-
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        self.ctrls['data_column'].setItems(self.t.df.columns)
-
-        if not self.ctrls['Apply'].isChecked():
-            return
-
-        self.data_column = self.ctrls['data_column'].currentText()
-
-        self.data = np.vstack(self.t.df[self.data_column].values)
-
-        method = self.ctrls['method'].currentText()
-        metric = self.ctrls['metric'].currentText()
-        optimal_ordering = self.ctrls['optimal_order'].isChecked()
-
-        self.linkage = hierarchy.linkage(self.data, method=method, metric=metric, optimal_ordering=optimal_ordering)
-        params = {'method': method, 'metric': metric, 'optimal_ordering': optimal_ordering}
-
-        return {'linkage': self.linkage, 'params': params}
-
-
-class HierFCluster(CtrlNode):
-    """Basically scipy.cluster.hierarchy.fcluster.
-    Form flat clusters from the hierarchical clustering defined by the given linkage matrix.
-    """
-    nodeName = 'FCluster'
-    uiTemplate = [('')]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'Linkage': {'io': 'in', 'multi': False},
-                                                 'Data':    {'io': 'in', 'multi': False},
-                                                 'Out': {'io': 'out'}})
 
 
 # class Agglomerative(CtrlNode):
