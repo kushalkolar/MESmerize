@@ -77,7 +77,7 @@ if is_building():
         numpy_include = pkg_resources.resource_filename('numpy', 'core/include')
         ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
 
-        ext = [Extension("caiman.source_extraction.cnmf.oasis",
+        ext += [Extension("caiman.source_extraction.cnmf.oasis",
                                  sources=["caiman/source_extraction/cnmf/oasis.pyx"],
                                  include_dirs=[numpy_include],
                                  language="c++")]
