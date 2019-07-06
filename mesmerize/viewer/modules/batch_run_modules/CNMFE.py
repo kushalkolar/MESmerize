@@ -97,7 +97,8 @@ def run(batch_dir: str, UUID: str):
                     print('>>> Found Ain file <<<')
                 else:
                     raise FileNotFoundError('>>> Could not find specified Ain file <<<')
-
+        else:
+            Ain = None
     else:
         Ain = None
 
