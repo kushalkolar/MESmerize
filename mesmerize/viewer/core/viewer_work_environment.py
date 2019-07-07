@@ -19,11 +19,11 @@ import pickle
 import tifffile
 import os
 from shutil import rmtree
-#from common import configuration
+from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
 import json
-
+from typing import Optional, Tuple
 
 class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
@@ -99,7 +99,7 @@ class ViewerWorkEnv:
         else:
             self.misc = {}
 
-        self.UUID = UUID
+        self._UUID = UUID
 
     # def get_imgdata(self):
     #     return self.imgdata
@@ -113,7 +113,15 @@ class ViewerWorkEnv:
     # def get_roi_manager(self):
     #     return self.roi_manager
 
-    def dump(self):
+    @property
+    def UUID(self) -> UUID_type:
+        if self._UUID is None:
+            raise ValueError('UUID is not set. UUID can only be set at instantiation')
+        if not isinstance(self._UUID, UUID_type):
+            raise TypeError('UUID is not of type uuid.UUID. Something went wrong. You should not modify the UUID')
+        return self._UUID
+
+    def clear(self):
         self.isEmpty = True
         del self.imgdata.seq
         self.imgdata = None
@@ -143,7 +151,9 @@ class ViewerWorkEnv:
         """
 
         if tiff_path is not None:
-            seq = tifffile.imread(tiff_path)
+            # seq = tifffile.imread(tiff_path)
+            tif = tifffile.TiffFile(tiff_path, is_nih=True)
+            seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
             seq = seq.T
         else:
             seq = None
@@ -244,20 +254,27 @@ class ViewerWorkEnv:
         return cls(imdata, meta=meta_data)
 
     @classmethod
-    def from_tiff(cls, path: str, method: str, meta_path: str = ''):
+    def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = ''):
         """
         Return instance of work environment with ImgData.seq set from tifffile.imread.
+        :param path:        path to the tiff file
+        :param method:      one of 'imread', 'asarray', or 'asarray-multi'. Refers to usage of either tifffile.imread
+                            or tifffile.asarray. 'asarray-multi' will load multi-page tiff files.
+        :param meta_path:   path to a json file containing meta data
         """
 
         if method == 'imread':
             seq = tifffile.imread(path)
+
         elif method == 'asarray':
             tif = tifffile.TiffFile(path, is_nih=True)
-            # seq = tif.asarray(key=range(0, len(tif.series)),
-            #                   maxworkers=int(8))
+            seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
+
+        elif method == 'asarray-multi':
+            tif = tifffile.TiffFile(path, is_nih=True)
 
             seq = tif.asarray(key=range(0, len(tif.series)),
-                              maxworkers=int(configuration.sys_cfg['HARDWARE']['n_processes']))
+                              maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
         else:
             raise ValueError("Must specify 'imread' or 'asarray' in method argument")
 
@@ -300,67 +317,82 @@ class ViewerWorkEnv:
 
         return d
 
-    def to_pickle(self, dir_path: str, filename: str = None, save_img_seq=True, UUID=None) -> str:
-        """
-        Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
-        for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
-        for saving current sample to the project. Image sequence is saved as a tiff and other information about the
-        image is saved in a pickle.
-        """
-        if self.isEmpty:
-            raise AttributeError('Work environment is empty!')
 
+    def _prepare_export(self, dir_path: str, filename: Optional[str] = None, save_img_seq: bool = True, UUID: Optional[UUID_type] = None) -> Tuple[str, dict]:
         if UUID is None:
             UUID = uuid4()
 
         if filename is None:
-            filename = dir_path + '/' + self.sample_id + '-_-' + str(UUID)
+            filename = os.path.join(dir_path, f'{self.sample_id}-_-{UUID}')
         else:
-            filename = dir_path + '/' + filename
+            filename = os.path.join(dir_path, filename)
 
         work_env = self._make_dict()
 
         data = {**work_env, 'UUID': UUID}
 
         if save_img_seq:
-            tifffile.imsave(filename + '.tiff', self.imgdata.seq.T, bigtiff=True)
-        pickle.dump(data, open(filename + '.pik', 'wb'), protocol=4)
+            tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
+
+        return (filename, data)
+
+    def to_pickle(self, dir_path: str, filename: Optional[str] = None, save_img_seq=True, UUID=None) -> str:
+        """
+        Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
+        for motion correction and package them into a pickle & image seq array. Used for batch motion correction and
+        for saving current sample to the project. Image sequence is saved as a tiff and other information about the
+        image is saved in a pickle.
+        """
+        filename, data = self._prepare_export(dir_path, filename, save_img_seq, UUID)
+        
+        pickle.dump(data, open(f'{filename}.pik', 'wb'), protocol=4)
 
         self.saved = True
 
         return filename
 
-    def to_pandas(self, proj_path: str, overwrite: bool = False) -> list:
+    def to_pandas(self, proj_path: str, modify_options: Optional[dict] = None) -> list:
         """
-        :param      proj_path: Root path of the current project
+        :param      proj_path:      Root path of the current project
+        :param      modify_options:
         :return:    list of dicts that each correspond to a single curve that can be appended
                     as rows to the project dataframe
         """
         if self.isEmpty:
-            raise AttributeError('Work environment is empty')
+            raise ValueError('Work environment is empty')
+
+        save_img_seq = True
 
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
-        imgdir = proj_path + '/images'  # + self.imgdata.SampleID + '_' + str(time.time())
+        imgdir = os.path.join(proj_path, 'images')  # + self.imgdata.SampleID + '_' + str(time.time())
 
-        if self.UUID is None:
+        if (modify_options is dict) and (self._UUID is None):
+            raise ValueError('Error overwriting Sample. Current Work Environment does not have a UUID.\n'
+                             'Samples always have a UUID, something went wrong. Reload the sample from the project.')
+
+        if self._UUID is None:
             UUID = uuid4()
         else:
-            assert isinstance(self.UUID, UUID_type)
             UUID = self.UUID
-        curves_dir = proj_path + '/curves/' + self.sample_id + '-_-' + str(UUID)
+        curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{str(UUID)}')
 
-        if overwrite:
+        if modify_options is not None:
             rmtree(curves_dir)
+            if modify_options['overwrite_img_seq']:
+                save_img_seq = True
+            else:
+                save_img_seq = False
 
-        img_path = self.to_pickle(imgdir, UUID=UUID)
-        
-        max_proj = np.amax(self.imgdata.seq, axis=2)
-        max_proj_path = img_path + '_max_proj.tiff'
-        tifffile.imsave(max_proj_path, max_proj)
+        img_path = self.to_pickle(imgdir, UUID=UUID, save_img_seq=save_img_seq)
 
-        std_proj = self.imgdata.seq.std(axis=2)
-        std_proj_path = img_path + '_std_proj.tiff'
-        tifffile.imsave(std_proj_path, std_proj)
+        if save_img_seq:
+            max_proj = np.amax(self.imgdata.seq, axis=2)
+            max_proj_path = img_path + '_max_proj.tiff'
+            tifffile.imsave(max_proj_path, max_proj)
+
+            std_proj = self.imgdata.seq.std(axis=2)
+            std_proj_path = img_path + '_std_proj.tiff'
+            tifffile.imsave(std_proj_path, std_proj)
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False
@@ -370,9 +402,9 @@ class ViewerWorkEnv:
         # This list is just used for gathering all new stims to add to the config file. This is just used for
         # populating the comboBoxes in the stimMapWidget GUI so that the widget doesn't need to access the DataFrame
         # for this simple task.
-        new_stimuli = []
+        # new_stimuli = []
         if self.stim_maps is None:
-            for stim_def in configuration.proj_cfg.options('STIM_DEFS'):
+            for stim_def in get_proj_config().options('STIM_DEFS'):
                 stimuli_unique_sets[stim_def] = ['untagged']
         else:
             for stim_def in self.stim_maps.keys():
@@ -386,12 +418,12 @@ class ViewerWorkEnv:
 
                 stimuli_unique_sets[stim_def] = list(set(stimuli))
 
-                for stim in stimuli_unique_sets[stim_def]:
-                    if stim not in configuration.proj_cfg['ALL_STIMS'].keys():
-                        new_stimuli.append(stim)
+                # for stim in stimuli_unique_sets[stim_def]:
+                #     if stim not in get_proj_config()['ALL_STIMS'].keys():
+                        # new_stimuli.append(stim)
 
-        configuration.proj_cfg['ALL_STIMS'] = {**configuration.proj_cfg['ALL_STIMS'], **dict.fromkeys(new_stimuli)}
-        configuration.save_proj_config()
+        # get_proj_config()['ALL_STIMS'] = {**get_proj_config()['ALL_STIMS'], **dict.fromkeys(new_stimuli)}
+        # configuration.save_proj_config()
 
         if self.imgdata.meta is not None:
             try:
@@ -421,8 +453,7 @@ class ViewerWorkEnv:
                     rois['states'][ix]['tags'][roi_def] = 'untagged'
 
             roi_tags = rois['states'][ix]['tags']
-
-            curve_path = curves_dir + '/' + str(ix).zfill(5) + '.npz'
+            curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
 
             np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
@@ -438,10 +469,10 @@ class ViewerWorkEnv:
             #                  }
 
             d = {'SampleID': self.sample_id,
-                 'CurvePath': curve_path.split(proj_path)[1],
+                 'CurvePath': os.path.relpath(curve_path, proj_path),
                  'ImgUUID': str(UUID),
-                 'ImgPath': img_path.split(proj_path)[1] + '.tiff',
-                 'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
+                 'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
+                 'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
                  'ROI_State': rois['states'][ix],
                  'date': date,
                  'uuid_curve': str(uuid4()),

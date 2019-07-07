@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>1013</height>
+    <width>499</width>
+    <height>912</height>
    </rect>
   </property>
   <property name="floating">
@@ -20,76 +20,8 @@
    <string>&amp;CNMF-E</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="20" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_18">
-      <item>
-       <widget class="QLabel" name="label_26">
-        <property name="text">
-         <string>overlap:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBoxOverlap">
-        <property name="maximum">
-         <number>999</number>
-        </property>
-        <property name="value">
-         <number>30</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_11">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="22" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_19">
-      <item>
-       <widget class="QLabel" name="label_27">
-        <property name="text">
-         <string>gnb:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBoxGnb">
-        <property name="maximum">
-         <number>99</number>
-        </property>
-        <property name="value">
-         <number>10</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_12">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <widget class="QLabel" name="label_19">
@@ -121,7 +53,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item>
      <widget class="QLabel" name="label_5">
       <property name="font">
        <font>
@@ -138,7 +70,7 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item>
      <widget class="QLabel" name="label_2">
       <property name="text">
        <string>gaussian width of a 2D gaussian kernel, which approximates a neuron
@@ -146,7 +78,7 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QLabel" name="label">
@@ -193,7 +125,7 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QLabel" name="label_9">
@@ -237,14 +169,14 @@
       </item>
      </layout>
     </item>
-    <item row="5" column="0">
+    <item>
      <widget class="Line" name="line_2">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
+    <item>
      <widget class="QLabel" name="label_20">
       <property name="font">
        <font>
@@ -258,14 +190,28 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="0">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Ain:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditAin"/>
+      </item>
+     </layout>
+    </item>
+    <item>
      <widget class="QLabel" name="label_7">
       <property name="text">
        <string>Minimum correlation of peak</string>
       </property>
      </widget>
     </item>
-    <item row="8" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_6">
       <item>
        <widget class="QLabel" name="label_8">
@@ -305,14 +251,14 @@
       </item>
      </layout>
     </item>
-    <item row="9" column="0">
+    <item>
      <widget class="QLabel" name="label_11">
       <property name="text">
        <string>Minimum peak to noise ratio</string>
       </property>
      </widget>
     </item>
-    <item row="10" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_7">
       <item>
        <widget class="QLabel" name="label_10">
@@ -346,14 +292,14 @@
       </item>
      </layout>
     </item>
-    <item row="11" column="0">
+    <item>
      <widget class="QLabel" name="label_13">
       <property name="text">
        <string>Adaptive way to set threshold on the transient size</string>
       </property>
      </widget>
     </item>
-    <item row="12" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_8">
       <item>
        <widget class="QLabel" name="label_12">
@@ -384,7 +330,7 @@
       </item>
      </layout>
     </item>
-    <item row="13" column="0">
+    <item>
      <widget class="QLabel" name="label_14">
       <property name="text">
        <string>Threshold on space consistency 
@@ -392,7 +338,7 @@ If lower more components will be accepted, potentially with worse quality</strin
       </property>
      </widget>
     </item>
-    <item row="14" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_9">
       <item>
        <widget class="QLabel" name="label_15">
@@ -429,14 +375,14 @@ If lower more components will be accepted, potentially with worse quality</strin
       </item>
      </layout>
     </item>
-    <item row="15" column="0">
+    <item>
      <widget class="QLabel" name="label_17">
       <property name="text">
        <string>Average decay time of calcium spikes (seconds)</string>
       </property>
      </widget>
     </item>
-    <item row="16" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_10">
       <item>
        <widget class="QLabel" name="label_16">
@@ -473,7 +419,212 @@ If lower more components will be accepted, potentially with worse quality</strin
       </item>
      </layout>
     </item>
-    <item row="27" column="0">
+    <item>
+     <widget class="QLabel" name="label_24">
+      <property name="text">
+       <string>Half size of patch</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_13">
+      <item>
+       <widget class="QLabel" name="label_21">
+        <property name="text">
+         <string>rf:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxRf">
+        <property name="maximum">
+         <number>999</number>
+        </property>
+        <property name="value">
+         <number>50</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_10">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_25">
+      <property name="text">
+       <string>Overlap of patches (at least 4 times the size of a neuron/cell)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_18">
+      <item>
+       <widget class="QLabel" name="label_26">
+        <property name="text">
+         <string>overlap:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxOverlap">
+        <property name="maximum">
+         <number>999</number>
+        </property>
+        <property name="value">
+         <number>30</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_11">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_28">
+      <property name="text">
+       <string>Global number of background components</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_19">
+      <item>
+       <widget class="QLabel" name="label_27">
+        <property name="text">
+         <string>gnb:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxGnb">
+        <property name="maximum">
+         <number>99</number>
+        </property>
+        <property name="value">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_12">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_30">
+      <property name="text">
+       <string>Background components per patch</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_20">
+      <item>
+       <widget class="QLabel" name="label_29">
+        <property name="text">
+         <string>nb_patch:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxNb_patch">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_13">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_32">
+      <property name="text">
+       <string>Number of neurons/cell per patch</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_21">
+      <item>
+       <widget class="QLabel" name="label_31">
+        <property name="text">
+         <string>k:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxK">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_14">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_11">
       <item>
        <widget class="QLabel" name="label_18">
@@ -517,7 +668,7 @@ If lower more components will be accepted, potentially with worse quality</strin
       </item>
      </layout>
     </item>
-    <item row="28" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_12">
       <item>
        <widget class="QPushButton" name="btnExport">
@@ -534,143 +685,6 @@ If lower more components will be accepted, potentially with worse quality</strin
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="21" column="0">
-     <widget class="QLabel" name="label_28">
-      <property name="text">
-       <string>Global number of background components</string>
-      </property>
-     </widget>
-    </item>
-    <item row="18" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_13">
-      <item>
-       <widget class="QLabel" name="label_21">
-        <property name="text">
-         <string>rf:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBoxRf">
-        <property name="maximum">
-         <number>999</number>
-        </property>
-        <property name="value">
-         <number>50</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_10">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="19" column="0">
-     <widget class="QLabel" name="label_25">
-      <property name="text">
-       <string>Overlap of patches (at least 4 times the size of a neuron/cell)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="26" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_21">
-      <item>
-       <widget class="QLabel" name="label_31">
-        <property name="text">
-         <string>k:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBoxK">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>10</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_14">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="23" column="0">
-     <widget class="QLabel" name="label_30">
-      <property name="text">
-       <string>Background components per patch</string>
-      </property>
-     </widget>
-    </item>
-    <item row="24" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_20">
-      <item>
-       <widget class="QLabel" name="label_29">
-        <property name="text">
-         <string>nb_patch:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBoxNb_patch">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>10</number>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_13">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="17" column="0">
-     <widget class="QLabel" name="label_24">
-      <property name="text">
-       <string>Half size of patch</string>
-      </property>
-     </widget>
-    </item>
-    <item row="25" column="0">
-     <widget class="QLabel" name="label_32">
-      <property name="text">
-       <string>Number of neurons/cell per patch</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

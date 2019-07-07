@@ -13,10 +13,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import abc
 import numpy as np
 from PyQt5 import QtWidgets
-from  .... import pyqtgraphCore as pg
+from .... import pyqtgraphCore as pg
 # from typing import Type, TypeVar
-from ....common import get_proj_config
+from ....common import get_proj_config, NoProjectOpen
+from warnings import warn
 from copy import deepcopy
+from typing import Union
 
 
 class AbstractBaseROI(metaclass=abc.ABCMeta):
@@ -58,7 +60,7 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def set_color(self, color: np.ndarray, *args, **kwargs):
+    def set_color(self, color, *args, **kwargs):
         pass
 
     @abc.abstractmethod
@@ -97,7 +99,7 @@ class AbstractBaseROI(metaclass=abc.ABCMeta):
 
 class BaseROI(AbstractBaseROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict = None):
-        # super().__init__(curve_plot_item, view_box, state)
+        super().__init__(curve_plot_item, view_box, state)
         if isinstance(curve_plot_item, pg.PlotDataItem):
             self.curve_plot_item = curve_plot_item
             self.curve_plot_item.setZValue(1)
@@ -105,7 +107,12 @@ class BaseROI(AbstractBaseROI):
             self.curve_plot_item = None
 
         if state is None:
-            self._tags = dict.fromkeys(get_proj_config().options('ROI_DEFS'))
+            try:
+                roi_defs = get_proj_config().options('ROI_DEFS')
+                self._tags = dict.fromkeys(roi_defs)
+            except NoProjectOpen as e:
+                self._tags = {}
+                warn('BaseROI subclass instance cannot load ROI_DEFS, no Project open.')
         else:
             self._tags = state['tags']
             self.curve_data = state['curve_data']
@@ -153,7 +160,7 @@ class BaseROI(AbstractBaseROI):
     def get_color(self):
         return self._color
 
-    def set_color(self, color: np.ndarray, *args, **kwargs):
+    def set_color(self, color: Union[np.ndarray, str], *args, **kwargs):
         pen = pg.mkPen(color, *args, **kwargs)
         self.roi_graphics_object.setPen(pen)
         self.curve_plot_item.setPen(pen)
@@ -189,6 +196,13 @@ class BaseROI(AbstractBaseROI):
             self.curve_plot_item.clear()
         del self.curve_plot_item
         del roi
+
+    def to_state(self):
+        raise NotImplementedError("Must be implemented in subclasses")
+
+    @classmethod
+    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
+        raise NotImplementedError("Must be implemented in subclasses")
 
 
 class ManualROI(BaseROI):

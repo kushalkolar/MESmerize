@@ -79,6 +79,7 @@ class Node(QtCore.QObject):
         for name, opts in terminals.items():
             self.addTerminal(name, **opts)
 
+        self.parent_window = None
         
     def nextTerminalName(self, name):
         """Return an unused terminal name"""

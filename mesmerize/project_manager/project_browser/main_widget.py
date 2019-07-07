@@ -14,13 +14,15 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtGui, QtWidgets
 from .tab_area_widget import TabAreaWidget
 import pandas as pd
-from ...common import configuration
+from ...common import configuration, get_project_manager, get_window_manager
 from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from functools import partial
-from ...viewer.core.common import ViewerInterface
+from ...viewer.core.common import ViewerUtils
 from ...viewer.core.viewer_work_environment import ViewerWorkEnv
-from ...common.window_manager import WindowClass
+from collections import UserList
+# from ...common.window_manager import WindowClass
 from ...common import start
+import os
 
 
 class ProjectBrowserWidget(QtWidgets.QWidget):
@@ -42,7 +44,7 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
 
         self.tab_widget.tabCloseRequested.connect(lambda ix: self.del_tab(ix))
 
-        configuration.project_manager.signal_dataframe_changed.connect(self.update_dataframe_data)
+        get_project_manager().signal_dataframe_changed.connect(self.update_dataframe_data)
 
     @QtCore.pyqtSlot(pd.DataFrame)
     def update_dataframe_data(self, dataframe: pd.DataFrame):
@@ -65,12 +67,12 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
             tab_name = QtWidgets.QInputDialog.getText(self, None, 'Enter name for new tab: ')
             if tab_name[0] == '' or tab_name[1] is False:
                 return
-            elif tab_name[0] in configuration.project_manager.child_dataframes.keys():
+            elif tab_name[0] in get_project_manager().child_dataframes.keys():
                 QtWidgets.QMessageBox.warning(self, 'DataFrame title already exists!',
                                               'That name already exists in your project, choose a different name!')
                 self.add_tab(dataframe, filter_history, is_root)
             tab_name = tab_name[0]
-            configuration.project_manager.add_child_dataframe(tab_name, filter_history, dataframe)
+            get_project_manager().add_sub_dataframe(tab_name, filter_history, dataframe)
         elif is_root:
             tab_name = 'root'
         else:
@@ -108,43 +110,17 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
 
         tab_name = self.tab_widget.widget(ix).tab_name
         self.tab_widget.removeTab(ix)
-        configuration.project_manager.remove_child_dataframe(tab_name)
+        get_project_manager().remove_sub_dataframe(tab_name)
 
     @QtCore.pyqtSlot(str)
     def slot_open_sample_id_in_viewer(self, sample_id: str):
-        viewers = configuration.window_manager.viewers
+        viewer = get_window_manager().get_new_viewer_window().viewer_reference
 
-        if len(viewers) == 0:
-            start.viewer()
-            self.open_sample_id_in_viewer(viewers[0], sample_id)
-
-        elif len(configuration.window_manager.viewers) > 1:
-            self.lwd = ListWidgetDialog()
-            self.lwd.listWidget.addItems([str(i) for i in range(len(viewers))])
-            self.lwd.label.setText('Viewer to show sample in:')
-            self.lwd.btnOK.clicked.connect(partial(self.open_sample_id_in_viewer, viewers, sample_id))
-
-        else:
-            self.open_sample_id_in_viewer(viewers[0], sample_id)
-
-    def open_sample_id_in_viewer(self, viewers, sample_id: str):
-        if not isinstance(viewers, WindowClass):
-            viewer = viewers.viewer_reference
-        else:
-            if self.lwd.listWidget.currentItem() is None:
-                QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
-                return
-            i = int(self.lwd.listWidget.currentItem().data(0))
-            viewer = viewers[i].viewer_reference
-
-        vi = ViewerInterface(viewer_reference=viewer)
+        vi = ViewerUtils(viewer_reference=viewer)
 
         row = self.dataframe[self.dataframe['SampleID'] == sample_id].iloc[0]
-        pikPath = configuration.proj_path + row['ImgInfoPath']
-        tiffPath = configuration.proj_path + row['ImgPath']
-
-        if not vi.discard_workEnv():
-            return
+        pikPath = os.path.join(configuration.proj_path, row['ImgInfoPath'])
+        tiffPath = os.path.join(configuration.proj_path, row['ImgPath'])
 
         vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikPath, tiff_path=tiffPath)
         vi.update_workEnv()

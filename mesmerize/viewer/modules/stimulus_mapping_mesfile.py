@@ -15,7 +15,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from PyQt5 import QtCore, QtGui, QtWidgets
 # from pyqtgraphCore.widgets.ColorButton import ColorButton
 import pandas as pd
-from ...common import configuration
+from ...common import configuration, get_project_manager
 from .stimmap_modules.page import Page
 from .stimmap_modules.row import Row, ColorButton
 from .stimulus_mapping import ModuleGUI# as StimulusMappingModuleGUI
@@ -67,7 +67,7 @@ class PageMes(Page):
 
         self.combobox_stim_defs = QtWidgets.QComboBox()
         self.update_stim_defs_combobox()
-        configuration.project_manager.signal_dataframe_changed.connect(self.update_stim_defs_combobox)
+        get_project_manager().signal_dataframe_changed.connect(self.update_stim_defs_combobox)
         self.ui.verticalLayout.insertWidget(1, self.combobox_stim_defs)
 
     def update_stim_defs_combobox(self):

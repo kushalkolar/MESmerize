@@ -1,0 +1,2 @@
+from .widget import ProportionsWidget
+

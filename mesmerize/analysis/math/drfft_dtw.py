@@ -1,11 +1,10 @@
-from tslearn.metrics import dtw
+# from tslearn.metrics import dtw
 from scipy.fftpack import rfft, irfft
 import numpy as np
 from multiprocessing import Pool, Manager
 from PyQt5 import QtCore, QtWidgets
 from functools import partial
 from ...plotting.variants.timeseries import TimeseriesPlot
-from time import sleep
 import traceback
 from os import environ
 try:

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from ...Qt import QtGui, QtCore, QtWidgets
-import numpy as np
+from spyder.widgets.variableexplorer.objecteditor import oedit
 from .common import *
 import traceback
 from functools import partial
 from ....analysis import Transmission
-from ....common import configuration
-from os.path import basename
+from ....common import get_project_manager
+import os
 
 
 class LoadProjDF(CtrlNode):
@@ -24,7 +24,7 @@ class LoadProjDF(CtrlNode):
         CtrlNode.__init__(self, name, terminals={'Out': {'io': 'out'}})
         self._loadNode = True
         self.t = None
-        child_df_names = ['root'] + list(configuration.project_manager.child_dataframes.keys())
+        child_df_names = ['root'] + list(get_project_manager().child_dataframes.keys())
         self.ctrls['DF_Name'].addItems(child_df_names)
         self.ctrls['Update'].clicked.connect(self.changed)
         # print('Node Refs:')
@@ -48,12 +48,12 @@ class LoadProjDF(CtrlNode):
                 return
             child_df_name = self.ctrls['DF_Name'].currentText()
             if child_df_name == 'root':
-                df = configuration.project_manager.dataframe
+                df = get_project_manager().dataframe
                 filter_history = None
             else:
-                df = configuration.project_manager.child_dataframes[child_df_name]['dataframe']
-                filter_history = configuration.project_manager.child_dataframes[child_df_name]['filter_history']
-            proj_path = configuration.proj_path
+                df = get_project_manager().child_dataframes[child_df_name]['dataframe']
+                filter_history = get_project_manager().child_dataframes[child_df_name]['filter_history']
+            proj_path = get_project_manager().root_dir
             # print('*****************config df ref hex ID:*****************')
             # print(hex(id(df)))
             self.t = Transmission.from_proj(proj_path, df, sub_dataframe_name=child_df_name,
@@ -79,24 +79,33 @@ class LoadFile(CtrlNode):
         self.ctrls['load_trn'].clicked.connect(self.file_dialog_trn_file)
         self.ctrls['proj_path'].clicked.connect(self.dir_dialog_proj_path)
 
-        self.transmission = None
+        self.t = None
         self._loadNode = True
 
     def file_dialog_trn_file(self):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
         if path == '':
             return
-        print(path)
         try:
-            self.transmission = Transmission.from_hickle(path[0])
+            self.t = Transmission.from_hdf5(path[0])
         except:
             QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
 
-        self.ctrls['fname'].setText(basename(path[0])[:-4])
+        self.ctrls['fname'].setText(os.path.basename(path[0]))
+
+        proj_path = get_project_manager().root_dir
+        if proj_path is not None:
+            self._set_proj_path(proj_path)
+
         # print(self.transmission)
         # self.update()
         self.changed()
+
+    def _set_proj_path(self, path: str):
+        self.ctrls['proj_path_label'].setText(os.path.basename(path))
+        self.t.set_proj_path(path)
+        self.t.set_proj_config()
 
     def dir_dialog_proj_path(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Project Folder')
@@ -105,14 +114,15 @@ class LoadFile(CtrlNode):
             return
 
         try:
-            self.transmission.set_proj_path(path)
-            self.transmission.set_proj_config()
+            self._set_proj_path(path)
+            self.changed()
         except (FileNotFoundError, NotADirectoryError) as e:
             QtWidgets.QMessageBox.warning(None, 'Invalid Project Folder', 'This is not a valid Mesmerize project\n' + e)
             return
 
     def process(self):
-        return {'Out': self.transmission}
+        self.t.get_proj_path()
+        return {'Out': self.t}
 
 
 class Save(CtrlNode):
@@ -156,10 +166,9 @@ class Save(CtrlNode):
 
         if self.ctrls['path'].text() != '':
             try:
-                transmission.to_hickle(self.ctrls['path'].text())
-            except Exception as e:
-                QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the transmission to file.\n'
-                                          + str(e))
+                transmission.to_hdf5(self.ctrls['path'].text())
+            except:
+                QtWidgets.QMessageBox.warning(None, 'File save error', 'Could not save the transmission to file.\n' + traceback.format_exc())
 
 
 class Merge(CtrlNode):
@@ -176,87 +185,62 @@ class Merge(CtrlNode):
         return {'Out': self.t}
 
 
-# class RunScript(CtrlNode):
-#     """Run a python script"""
-#     nodeName = 'RunScript'
-#     uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog'}),
-#                   ('fname', 'label', {'text': ': '}),
-#                   ('Run', 'button', {'text': 'Run Script'})
-#                   ]
-#
-#     def __init__(self, name):
-#         # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
-#         CtrlNode.__init__(self, name, terminals={
-#                 'In': {'io': 'in', 'renamable': True, 'multiable': True},
-#                 'Out': {'io': 'out', 'bypass': 'In', 'renamable': True, 'multiable': True}},
-#                 allowAddInput=True, allowAddOutput=True)
-#
-#         self.ctrls['Open'].clicked.connect(self._fileDialog)
-#         self.previous_output = None
-#         self.script = "return 'No Script'"
-#         self.ctrls['Run'].clicked.connect(self._execute)
-#
-#     def _fileDialog(self):
-#         self.path = QtWidgets.QFileDialog.getOpenFileName(None, 'Select script', '', '(*.py)')
-#         if self.path == '':
-#             return
-#         self.ctrls['fname'].setText(basename(self.path[0])[:-3])
-#
-#     def _execute(self):
-#         self.f = open(self.path[0], 'r')
-#         self.script = self.f.read()
-#         self.update()
-#
-#     def process(self, **kwargs):
-#         if self.path == '':
-#             return
-#
-#         g = globals()
-#         l = locals()
-#         exec(self.script, g, l)
-#
-#         return l['output']
+class ViewTransmission(CtrlNode):
+    """View/Edit transmission using the spyder object editor"""
+    nodeName = 'ViewData'
+    uiTemplate = [('No controls', 'label')]
+
+    # def __init__(self, name):
+    #     CtrlNode.__init__(self, name, terminals={'In':})
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission.copy()
+        edited = oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace})
+        if edited is not None:
+            self.t.df = edited['dataframe']
+            self.t.history_trace.add_operation('all', 'object_editor', {})
+
+        return self.t
 
 
-# class NewDataPass(CtrlNode):
-#     """Check curve uuid against Stats DataFrame and only pass through new samples"""
-#     nodeName = 'NewDataPass'
-#     uiTemplate = [('Open', 'button', {'text': 'OpenFileDialog', 'toolTip': 'Select the Stats DataFrame to compare against'}),
-#                   ('fname', 'label', {'text': ': '}),
-#                   ('Apply', 'check', {'checked': True, 'applyBox': True})
-#                   ]
-#
-#     def __init__(self, name):
-#         CtrlNode.__init__(self, name, {'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-#         self.ctrls['Open'].clicked.connect(self._fileDialog)
-#         self.transmission = None
-#
-#     def _fileDialog(self):
-#         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Import Statistics object', '', '(*.strn)')
-#         if path == '':
-#             return
-#         try:
-#             self.StatsData = StatsTransmission.from_pickle(path[0])
-#         except Exception as e:
-#             QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
-#             return
-#
-#         self.ctrls['fname'].setText(path)
-#
-#         self.changed()
-#
-#     def processData(self, transmission):
-#         t = transmission.copy()
-#         t.df = t.df[t.df['uuid_curve']]
-#
-#
-# class Bypass(CtrlNode):
-#     """Just a bypass node that doesn't do anything. Useful for quickly swapping Project DataFrames with an existing
-#     analysis flowchart whilst keeping the connections after the DataFrame."""
-#     uiTemplate = [('Bypass Node', 'label', {'text': ''})]
-#
-#     def processData(self, In):
-#         return In
+class DropNa(CtrlNode):
+    """Drop NaNs from the DataFrame"""
+    nodeName = 'DropNaNs'
+    uiTemplate = [('axis', 'combo', {'values': ['row', 'columns'], 'toolTip': 'Choose to drop NaNs from according to all '
+                                                                              'rows, columns, or a specific column'}),
+                  ('how', 'combo', {'values': ['any', 'all'], 'toolTip': 'any: drop from chosen axis if any element is NaN\n'
+                                                                         'all: drop from chosen axis if all elements are NaN'}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+
+    def __init__(self, *args, **kwargs):
+        super(DropNa, self).__init__(*args, **kwargs)
+
+    def processData(self, transmission: Transmission):
+        items = ['row', 'columns'] + ['---------'] + transmission.df.columns.to_list()
+        self.ctrls['axis'].setItems(items)
+
+        if not self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+        axis = self.ctrls['axis'].currentText()
+
+        if self.ctrls['axis'].currentIndex() < 2:
+            if axis == 'row':
+                axis = 0
+            elif axis == 'columsn':
+                axis = 1
+
+            how = self.ctrls['how'].currentText()
+            self.t.df.dropna(axis=axis, how=how, inplace=True)
+        else:
+            how = None
+            self.t.df = self.t.df[~self.t.df[axis].isna()]
+
+        self.t.history_trace.add_operation('all', 'dropna', parameters={'axis': axis, 'how': how})
+
+        return self.t
 
 
 class iloc(CtrlNode):
@@ -300,10 +284,13 @@ class TextFilter(CtrlNode):
 
     def processData(self, transmission):
         self.ctrls['Column'].setItems(transmission.df.columns.to_list())
+        col = self.ctrls['Column'].currentText()
+        completer = QtWidgets.QCompleter(list(map(str, transmission.df[col].unique())))
+        self.ctrls['filter'].setCompleter(completer)
+
         if self.ctrls['Apply'].isChecked() is False:
             return
 
-        col = self.ctrls['Column'].currentText()
         filt = self.ctrls['filter'].text()
 
         self.t = transmission.copy()
@@ -318,9 +305,9 @@ class TextFilter(CtrlNode):
                   }
 
         if include:
-            self.t.df = self.t.df[self.t.df[col] == filt]
+            self.t.df = self.t.df[self.t.df[col].astype(str) == filt]
         elif exclude:
-            self.t.df = self.t.df[self.t.df[col] != filt]
+            self.t.df = self.t.df[self.t.df[col].astype(str) != filt]
 
         self.t.df = self.t.df.reset_index(drop=True)
 

@@ -5,13 +5,14 @@ from PyQt5 import QtWidgets, QtGui
 from matplotlib import cm as matplotlib_color_map
 
 from .... import pyqtgraphCore as pg
-from ....viewer.core.common import ViewerInterface
-from ....viewer.modules.roi_manager_modules.roi_types import BaseROI, ManualROI
-from ....common import configuration
+from ....viewer.core.common import ViewerUtils
+from ....viewer.modules.roi_manager_modules.roi_types import ManualROI, CNMFROI
+from ....common import configuration, get_project_manager
+from typing import Union
 
 
 class ROIList(list):
-    def __init__(self, ui, roi_types: str, viewer_interface: ViewerInterface):
+    def __init__(self, ui, roi_types: str, viewer_interface: ViewerUtils):
         super(ROIList, self).__init__()
 
         assert isinstance(ui.listWidgetROIs, QtWidgets.QListWidget)
@@ -27,7 +28,7 @@ class ROIList(list):
         # self._list_widget_context_menu.addAction(self.action_delete_roi)
         #
         # self.list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # self.list_widget.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
+        # self.list_widget.customContextMenuRequested.connect(self.bulid_delete_menu)
 
         assert isinstance(ui.listWidgetROITags, QtWidgets.QListWidget)
         self.list_widget_tags = ui.listWidgetROITags
@@ -64,11 +65,11 @@ class ROIList(list):
         self.current_index = -1
         self.previous_index = -1
 
-        configuration.project_manager.signal_project_config_changed.connect(self.update_roi_defs_from_configuration)
+        get_project_manager().signal_project_config_changed.connect(self.update_roi_defs_from_configuration)
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
-    def append(self, roi: BaseROI):
+    def append(self, roi: Union[CNMFROI, ManualROI]):
         roi.add_to_viewer()
 
         roi_graphics_object = roi.get_roi_graphics_object()
@@ -144,7 +145,7 @@ class ROIList(list):
 
     def disconnect_all(self):
         self.list_widget.currentRowChanged.disconnect(self.set_current_index)
-        # self.list_widget.customContextMenuRequested.disconnect(self._list_widget_context_menu_requested)
+        # self.list_widget.customContextMenuRequested.disconnect(self.bulid_delete_menu)
         # self.action_delete_roi.triggered.disconnect(self.__delitem__)
         self.btn_plot.clicked.disconnect(self.plot_manual_roi_regions)
         self.show_all_checkbox.toggled.disconnect(self.slot_show_all_checkbox_clicked)
@@ -174,10 +175,10 @@ class ROIList(list):
             roi.set_original_color(c)
             roi.set_color(c)
 
-    def __getitem__(self, item) -> BaseROI:
+    def __getitem__(self, item) -> Union[ManualROI, CNMFROI]:
         return super(ROIList, self).__getitem__(item)
 
-    def set_current_index(self, ix):
+    def set_current_index(self, ix: int):
         if ix < 0:
             return
         if ix > self.__len__():
@@ -194,7 +195,7 @@ class ROIList(list):
         self._show_graphics_object(ix)
         self.set_list_widget_tags()
 
-    def highlight_roi(self, roi: QtWidgets.QGraphicsObject):
+    def highlight_roi(self, roi: Union[ManualROI, CNMFROI]):
         ix = self.index(roi)
         self.highlight_curve(ix)
         self.list_widget.setCurrentRow(ix)
@@ -246,7 +247,7 @@ class ROIList(list):
         for ix in range(self.__len__()):
             self._hide_graphics_object(ix)
 
-    def _live_update_requested(self, roi: BaseROI):
+    def _live_update_requested(self, roi: Union[ManualROI, CNMFROI]):
         ix = self.index(roi)
         if self.roi_types == 'CNMFROI':
             raise TypeError('Can only live update Manually drawn ROIs when they are moved')

@@ -14,10 +14,10 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ...pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from skimage.transform import rescale
 import numpy as np
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from functools import partial
 from multiprocessing.pool import ThreadPool as Pool
-from ...common.configuration import sys_cfg
+from ...common import get_sys_config
 import traceback
 
 
@@ -26,7 +26,7 @@ class ResizeDialogBox(QtWidgets.QWidget):
 
     def __init__(self, viewer_interface):
         QtWidgets.QWidget.__init__(self)
-        assert isinstance(viewer_interface, ViewerInterface)
+        assert isinstance(viewer_interface, ViewerUtils)
         self.vi = viewer_interface
         layout = QtWidgets.QVBoxLayout()
 
@@ -62,7 +62,7 @@ class ResizeDialogBox(QtWidgets.QWidget):
             self.hide()
             return
         self.vi.viewer.status_bar_label.showMessage('Resizing, please wait...')
-        n_processes = int(sys_cfg['HARDWARE']['n_processes'])
+        n_processes = int(get_sys_config()['_MESMERIZE_N_THREADS'])
 
         seq = self.vi.viewer.workEnv.imgdata.seq
         self.num_frames_to_process = seq.shape[2]

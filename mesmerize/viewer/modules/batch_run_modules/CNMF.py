@@ -37,12 +37,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
-    from ...core.common import ViewerInterface, ViewerWorkEnv
+    from ...core import ViewerUtils, ViewerWorkEnv
 
 
-def run(batch_dir, UUID, n_processes):
+def run(batch_dir: str, UUID: str):
 
     output = {'status': 0, 'output_info': ''}
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
     file_path = batch_dir + '/' + UUID
 
@@ -197,7 +198,7 @@ class Output(QtWidgets.QWidget):
     def import_cnmf_into_viewer(self):
         self.get_cnmf_results()
 
-        vi = ViewerInterface(self.viewer_ref)
+        vi = ViewerUtils(self.viewer_ref)
 
         if not vi.discard_workEnv():
             return
@@ -235,4 +236,4 @@ class Output(QtWidgets.QWidget):
 
 
 if sys.argv[0] == __file__:
-    run(sys.argv[1], sys.argv[2], sys.argv[3])
+    run(sys.argv[1], sys.argv[2])

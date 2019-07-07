@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/roi_manager_pytemplate.ui'
+# Form implementation generated from reading ui file './roi_manager_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -65,7 +65,7 @@ class Ui_DockWidget(object):
         self.listWidgetROITags.setObjectName("listWidgetROITags")
         self.verticalLayoutTags.addWidget(self.listWidgetROITags)
         self.gridLayout.addLayout(self.verticalLayoutTags, 2, 1, 1, 5)
-        self.lineEditROITag = QtWidgets.QLineEdit(self.tabStandard)
+        self.lineEditROITag = ROITagLineEdit(self.tabStandard)
         self.lineEditROITag.setObjectName("lineEditROITag")
         self.gridLayout.addWidget(self.lineEditROITag, 3, 0, 1, 6)
         self.btnSetROITag = QtWidgets.QPushButton(self.tabStandard)
@@ -111,3 +111,4 @@ class Ui_DockWidget(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabStandard), _translate("DockWidget", "Standard ROIs"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabMetaROI), _translate("DockWidget", "Meta ROIs"))
 
+from ..roi_manager_modules.roi_tag_line_edit import ROITagLineEdit

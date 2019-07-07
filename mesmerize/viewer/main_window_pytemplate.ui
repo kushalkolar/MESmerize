@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -71,10 +71,8 @@
    </widget>
    <widget class="QMenu" name="menuCustom_Modules">
     <property name="title">
-     <string>C&amp;ustom Modules</string>
+     <string>Plugins</string>
     </property>
-    <addaction name="actionReload_list"/>
-    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuImage">
     <property name="title">
@@ -215,7 +213,7 @@
   </action>
   <action name="actionDump_Work_Environment">
    <property name="text">
-    <string>&amp;Dump Work Environment</string>
+    <string>Clear Work Environment</string>
    </property>
   </action>
   <action name="actionAdd_to_project">
@@ -298,7 +296,7 @@
   </action>
   <action name="actionOpen_docs">
    <property name="text">
-    <string>Open docs</string>
+    <string>&amp;Open docs</string>
    </property>
   </action>
  </widget>

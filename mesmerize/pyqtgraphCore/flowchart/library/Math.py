@@ -131,9 +131,9 @@ class RFFT(CtrlNode):
         self.t.last_unit = 'frequency'
 
         params = {'data_column':    self.data_column,
-                  'frequencies':    freqs,
+                  'frequencies':    freqs.tolist(),
                   'sampling_rate':  framerate,
-                  'nyquist_frequency': freqs.max(),
+                  'nyquist_frequency': float(freqs.max()),
                   'units': 'frequency'
                   }
 

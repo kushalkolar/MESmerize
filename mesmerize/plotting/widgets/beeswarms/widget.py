@@ -128,13 +128,13 @@ class BeeswarmPlotWindow(PlotWindow):
             return
 
         for i, data_column in enumerate(self.data_columns):
-            msg = 'Progress: ' + str(
-                int(((i + 1) / len(self.data_columns)) * 100)) + ' % ,Plotting data column: ' + data_column
+            pr = int(((i + 1) / len(self.data_columns)) * 100)
+            msg = f'Progress: {pr} % ,Plotting data column: {data_column}'
             self.status_bar.showMessage(msg)
             self.beeswarm_plot.add_plot(data_column)
 
             for ix, (dataframe, group) in enumerate(zip(self.group_dataframes, self.groups)):
-                self.status_bar.showMessage(msg + ', plotting group: ' + group)
+                self.status_bar.showMessage(f'{msg}, plotting group: {group}')
                 self.beeswarm_plot.add_data_to_plot(i, data_series=dataframe[data_column],
                                                     uuid_series=dataframe[self.uuid_column],
                                                     name=group, color=colors[ix])

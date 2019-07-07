@@ -121,7 +121,7 @@
          </layout>
         </item>
         <item row="3" column="0" colspan="6">
-         <widget class="QLineEdit" name="lineEditROITag">
+         <widget class="ROITagLineEdit" name="lineEditROITag">
           <property name="placeholderText">
            <string>Add Tag to ROI Definition</string>
           </property>
@@ -183,6 +183,13 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ROITagLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>..roi_manager_modules.roi_tag_line_edit</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

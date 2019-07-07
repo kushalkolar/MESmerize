@@ -9,13 +9,33 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-
 from PyQt5 import QtCore, QtWidgets
 from ...variants import Heatmap
-import numpy as np
-import pandas as pd
+from ..base import BasePlotWidget
 from .. import DatapointTracerWidget
 from ....analysis.data_types import HistoryTrace, Transmission
+from ....analysis import organize_dataframe_columns
+from .control_widget_pytemplate import Ui_ControlWidget
+import numpy as np
+import pandas as pd
+from typing import Optional, Union
+from ....common.qdialogs import present_exceptions
+from warnings import warn
+
+
+def help_func(e, tb):
+    def show_info(info):
+        QtWidgets.QMessageBox.information(None, 'Help info', info)
+        return
+
+    if str(e).startswith('all the input array dimensions for the concatenation axis must match exactly'):
+        show_info('Make sure that the data under the "Data column" has been spliced.')
+
+    elif str(e).startswith('Too many colors requested for the chosen cmap'):
+        show_info('The chosen categorical labels column can only have a maximum of 20 unique labels.')
+
+    elif 'unhashable type' in str(e):
+        show_info('One of your selected columns has data type that is incompatible with what you have selected it for')
 
 
 class HeatmapWidget(QtWidgets.QWidget):
@@ -52,7 +72,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
     def __init__(self, highlight_mode='row'):
         QtWidgets.QWidget.__init__(self)
         self.vlayout = QtWidgets.QVBoxLayout(self)
-        
+
         self.plot_widget = Heatmap(highlight_mode=highlight_mode)
 
         self.labelSort = QtWidgets.QLabel(self)
@@ -68,7 +88,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         self.splitter = QtWidgets.QSplitter(self)
         self.splitter.setStretchFactor(1, 1)
         self.splitter.addWidget(self.plot_widget)
-        
+
         self.vlayout.addWidget(self.splitter)
         # self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
         self.setLayout(self.vlayout)
@@ -106,19 +126,26 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         else:
             dataframe = dataframes
 
-        assert isinstance(dataframe, pd.DataFrame)
+        if not isinstance(dataframe, pd.DataFrame):
+            raise TypeError('Must pass a dataframe or list of dataframes')
         return dataframe
 
-    def set_data(self, dataframes,
+    def set_data(self, dataframes: Union[pd.DataFrame, list],
                  data_column: str,
                  labels_column: str,
                  cmap: str = 'jet',
-                 transmission: Transmission = None,
-                 reset_data: bool = True,
+                 transmission: Optional[Transmission] = None,
+                 sort: bool = True,
+                 reset_sorting: bool = True,
                  **kwargs):
         """
         :param dataframes:      list of dataframes or a single DataFrame
-        :type dataframes:       list or pd.DataFrame
+        :param data_column:     data column of the dataframe that is plotted in the heatmap
+        :param labels_column:   dataframe column (usually categorical labels) used to generate the y-labels and legend.
+        :param cmap:            colormap choice
+        :param transmission:    transmission object that dataframe originates, used to calculate data units if passed
+        :param sort:            if False, the sort comboBox is ignored
+        :param reset_sorting:   reset the order of the rows in the heatmap
         """
         dataframe = self.merge_dataframes(dataframes)
         self.data_column = data_column
@@ -127,51 +154,58 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
 
         self.dataframe = dataframe.reset_index(drop=True)
 
+        self.kwargs = kwargs
+        # print(kwargs)
+
         self._transmission = None
         self._history_trace = None
         self.has_history_trace = False
 
         if transmission is not None:
-            assert isinstance(transmission, Transmission)
+            if not isinstance(transmission, Transmission):
+                raise TypeError("Argument 'transmission' must be of type mesmerize.analysis.data_types.Transmission")
             self.set_transmission(transmission)
 
         self._disconnect_comboBoxSort()
 
-        if reset_data:
+        if reset_sorting:
             self.comboBoxSortColumn.clear()
-            self.comboBoxSortColumn.addItems(self.dataframe.columns.to_list())
+            self.comboBoxSortColumn.addItems(organize_dataframe_columns(self.dataframe.columns)[1])
 
-        ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
-        if (ix != -1) and (self.previous_sort_column != ''):
-            self.comboBoxSortColumn.setCurrentIndex(ix)
-            self._set_sort_order(self.previous_sort_column)
-        else:
-            data = np.vstack(self.dataframe[self.data_column].values)
-            self._set_plot(data)
+        if sort:
+            ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
+            if (ix != -1) and (self.previous_sort_column != ''):
+                self.comboBoxSortColumn.setCurrentIndex(ix)
+                self.dataframe.sort_values(by=[self.previous_sort_column], inplace=True)
+
+        data = np.vstack(self.dataframe[self.data_column].values)
+
+        self._set_plot(data)
 
         self._connect_comboBoxSort()
 
     def _set_plot(self, data_array: np.ndarray):
         ylabels = self.dataframe[self.labels_column]
-        self.plot_widget.set(data_array, cmap=self.cmap, ylabels_bar=ylabels)
+        self.plot_widget.set(data_array, cmap=self.cmap, ylabels=ylabels, **self.kwargs)
 
+    @present_exceptions('Cannot sort', 'Make sure you choose an appropriate categorical column for sorting')
     def _set_sort_order(self, column: str):
         self.dataframe.sort_values(by=[column], inplace=True)
         a = np.vstack(self.dataframe[self.data_column].values)
         self.previous_sort_column = column
         self._set_plot(a)
 
-    def set_transmission(self, transmission):
+    def set_transmission(self, transmission: Transmission):
         self._transmission = transmission
         self.set_history_trace(transmission.history_trace)
 
     def get_transmission(self) -> Transmission:
         if self._transmission is None:
-            raise ValueError('No tranmission is set')
+            raise ValueError('No tranmission has been set')
         else:
             return self._transmission
 
-    def highlight_row(self, ix):
+    def highlight_row(self, ix: int):
         self.plot_widget.highlight_row(ix)
 
     def set_history_trace(self, history_trace: HistoryTrace):
@@ -180,55 +214,72 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         self.has_history_trace = True
 
 
-class HeatmapTracerWidget(HeatmapSplitterWidget):
+class ControlWidget(QtWidgets.QWidget):
+    sig_changed = QtCore.pyqtSignal()
+
     def __init__(self):
+        QtWidgets.QWidget.__init__(self)
+        self.ui = Ui_ControlWidget()
+        self.ui.setupUi(self)
+        self.setMaximumWidth(350)
+
+        self.ui.listWidgetColorMapsLabels.set_cmap('tab10')
+
+        self.ui.listWidgetColorMapsData.signal_colormap_changed.connect(lambda: self.sig_changed.emit())
+        self.ui.listWidgetColorMapsLabels.signal_colormap_changed.connect(lambda: self.sig_changed.emit())
+
+        self.ui.comboBoxDataColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
+        self.ui.comboBoxLabelsColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
+        self.ui.comboBoxDPTCurveColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
+
+
+class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
+    drop_opts = ['dataframes', 'transmission']
+
+    def __init__(self):
+        super(HeatmapTracerWidget, self).__init__()
         HeatmapSplitterWidget.__init__(self)
-#        QtWidgets.QWidget.__init__(self)
-#        self.vlayout = QtWidgets.QVBoxLayout(self)
-#
-#        self.plot_widget = Heatmap()
-#
-#        self.labelSort = QtWidgets.QLabel(self)
-#        self.labelSort.setText('Sort heatmap according to column:')
-#        self.labelSort.setMinimumHeight(30)
-#        self.labelSort.setMaximumHeight(30)
-#        self.comboBoxSortColumn = QtWidgets.QComboBox(self)
-#        self.comboBoxSortColumn.currentTextChanged.connect(self._set_sort_order)
-#
-#        self.plot_widget.layout().addWidget(self.labelSort)
-#        self.plot_widget.layout().addWidget(self.comboBoxSortColumn)
-#
-#        self.splitter = QtWidgets.QSplitter(self)
-#        self.splitter.setStretchFactor(1, 1)
-#        self.splitter.addWidget(self.plot_widget)
+        self.setWindowTitle('Heatmap Tracer Widget')
+        self.control_widget = ControlWidget()
+        self.add_to_splitter(self.control_widget)
 
         self.live_datapoint_tracer = DatapointTracerWidget()
         self.add_to_splitter(self.live_datapoint_tracer)
 
-#        self.vlayout.addWidget(self.splitter)
-#        # self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
-#        self.setLayout(self.vlayout)
-#
         self.plot_widget.sig_selection_changed.connect(self.set_current_datapoint)
 
-#        self.dataframe = None
-#        self.labels_column = None
-#        self.cmap = None
-#
-#        self.previous_sort_column = ''
-#
-#        self._transmission = None
-#        self._history_trace = None
-#        self.has_history_trace = False
-#        self.data_column = None
         self.datapoint_tracer_curve_column = None
+        self._previous_df_columns = []
 
-    # def set_data(self, *args, **kwargs):
-    #     super(HeatmapTracerWidget, self).set_data(*args, **kwargs)
+        self.control_widget.ui.pushButtonPlot.clicked.connect(self.update_plot)
+        self.control_widget.sig_changed.connect(self.update_plot)
+
+        self.control_widget.ui.checkBoxLiveUpdate.toggled.connect(self.set_update_live)
+
+        self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
+        self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
+
+        self._update_live = False
+        self.block_signals_list = [self.control_widget]
+
+        self.is_clustering = False
+
+    def set_update_live(self, b: bool):
+        self._update_live = b
+        if b:
+            self.update_plot()
 
     @QtCore.pyqtSlot(tuple)
     def set_current_datapoint(self, ix: tuple):
-        identifier = self.dataframe.iloc[ix[1]]['uuid_curve']
+        try:
+            if self.is_clustering:
+                ix = self.plot_widget.plot.dendrogram_row.reordered_ind[ix[1]]
+            else:
+                ix = ix[1]
+            identifier = self.dataframe.iloc[ix]['uuid_curve']
+        except IndexError:
+            warn('Datapoint index out of bounds. Probably clicked a plot point outside of the data')
+            return
         r = self.dataframe[self.dataframe['uuid_curve'] == identifier]
 
         if self.has_history_trace:
@@ -244,90 +295,75 @@ class HeatmapTracerWidget(HeatmapSplitterWidget):
                                               row=r,
                                               proj_path=self.get_transmission().get_proj_path(),
                                               history_trace=h)
-    #
-    # def _disconnect_comboBoxSort(self):
-    #     try:
-    #         self.comboBoxSortColumn.currentTextChanged.disconnect(self._set_sort_order)
-    #     except TypeError:
-    #         pass
-    #
-    # def _connect_comboBoxSort(self):
-    #     self.comboBoxSortColumn.currentTextChanged.connect(self._set_sort_order)
 
-    # def set_data(self, dataframes,
-    #              data_column: str,
-    #              labels_column: str,
-    #              datapoint_tracer_curve_column: str,
-    #              cmap: str = 'jet',
-    #              transmission: Transmission = None,
-    #              reset_data: bool = True):
-    #
-    #     if type(dataframes) is list:
-    #         dataframe = pd.concat(dataframes)
-    #     else:
-    #         dataframe = dataframes
-    #
-    #     assert isinstance(dataframe, pd.DataFrame)
-    #
-    #     self.data_column = data_column
-    #     self.cmap = cmap
-    #     self.labels_column = labels_column
-    #
-    #     self.dataframe = dataframe.reset_index(drop=True)
-    #
-    #     self._transmission = None
-    #     self._history_trace = None
-    #     self.has_history_trace = False
-    #
-    #     if transmission is not None:
-    #         assert isinstance(transmission, Transmission)
-    #         self.set_transmission(transmission)
-    #
-    #     self._disconnect_comboBoxSort()
-    #
-    #     if reset_data:
-    #         self.comboBoxSortColumn.clear()
-    #         self.comboBoxSortColumn.addItems(dataframe.columns.to_list())
-    #
-    #     ix = self.comboBoxSortColumn.findText(self.previous_sort_column)
-    #     if (ix != -1) and (self.previous_sort_column != ''):
-    #         self.comboBoxSortColumn.setCurrentIndex(ix)
-    #         self._set_sort_order(self.previous_sort_column)
-    #     else:
-    #         data = np.vstack(self.dataframe[self.data_column].values)
-    #         self._set_plot(data)
-    #
-    #     self._connect_comboBoxSort()
+    @BasePlotWidget.signal_blocker
+    def set_input(self, transmission: Transmission):
+        super(HeatmapTracerWidget, self).set_input(transmission)
+        cols = self.transmission.df.columns
+        if set(self._previous_df_columns) != set(cols):
+            dcols, ccols, ucols = organize_dataframe_columns(cols)
 
+            self.control_widget.ui.comboBoxDataColumn.clear()
+            self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
+
+            self.control_widget.ui.comboBoxLabelsColumn.clear()
+            self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
+
+            self.control_widget.ui.comboBoxDPTCurveColumn.clear()
+            self.control_widget.ui.comboBoxDPTCurveColumn.addItems(dcols)
+
+        # self.transmission = transmission
+        self._previous_df_columns = cols
+
+        if self._update_live:
+            self.update_plot()
+
+    def get_plot_opts(self, drop: bool = False) -> dict:
+        d = dict(dataframes=self.transmission.df,
+                 data_column=self.control_widget.ui.comboBoxDataColumn.currentText(),
+                 labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
+                 datapoint_tracer_curve_column=self.control_widget.ui.comboBoxDPTCurveColumn.currentText(),
+                 cmap=self.control_widget.ui.listWidgetColorMapsData.current_cmap,
+                 transmission=self.transmission)
+        if drop:
+            for k in self.drop_opts:
+                d.pop(k)
+        return d
+
+    @BasePlotWidget.signal_blocker
+    def set_plot_opts(self, opts: dict):
+        ix = self.control_widget.ui.comboBoxDataColumn.findText(opts['data_column'])
+        self.control_widget.ui.comboBoxDataColumn.setCurrentIndex(ix)
+
+        ix = self.control_widget.ui.comboBoxLabelsColumn.findText(opts['labels_column'])
+        self.control_widget.ui.comboBoxLabelsColumn.setCurrentIndex(ix)
+
+        ix = self.control_widget.ui.comboBoxDataColumn.findText(opts['datapoint_tracer_curve_column'])
+        self.control_widget.ui.comboBoxDPTCurveColumn.setCurrentIndex(ix)
+
+        self.control_widget.ui.listWidgetColorMapsData.set_cmap(opts['cmap'])
+
+    def update_plot(self):
+        self.set_data(**self.get_plot_opts())
+
+    def get_cluster_kwargs(self) -> dict:
+        # Just get the first datablock ID since Agglomerative clustering would have been done on all data blocks
+        db_id = self.transmission.history_trace.data_blocks[0]
+        linkage = np.array(self.transmission.history_trace.get_operation_params(data_block_id=db_id, operation='fcluster')['linkage_matrix'])
+        cluster_labels = self.transmission.df['FCLUSTER_LABELS']
+        ck = dict(row_linkage=linkage, row_cluster=True, col_cluster=False, cluster_labels=cluster_labels)
+        return ck
+
+    @present_exceptions('Error while setting data', 'Make sure you have selected appropriate columns.', help_func)
     def set_data(self, *args, datapoint_tracer_curve_column: str = None, **kwargs):
-        super(HeatmapTracerWidget, self).set_data(*args, **kwargs)
+        if self.transmission.last_output == 'fcluster':
+            self.comboBoxSortColumn.setDisabled(True)
+            self.is_clustering = True
+            super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=self.get_cluster_kwargs(), sort=False, **kwargs)
+        else:
+            self.is_clustering = False
+            super(HeatmapTracerWidget, self).set_data(*args, cluster_kwargs=None, **kwargs)
+
         self.datapoint_tracer_curve_column = datapoint_tracer_curve_column
 
-    # def _set_plot(self, data_array: np.ndarray):
-    #     ylabels = self.dataframe[self.labels_column]
-    #     self.plot_widget.set(data_array, cmap=self.cmap, ylabels_bar=ylabels)
-    #
-    # def _set_sort_order(self, column: str):
-    #     self.dataframe.sort_values(by=[column], inplace=True)
-    #     a = np.vstack(self.dataframe[self.data_column].values)
-    #     self.previous_sort_column = column
-    #     self._set_plot(a)
-    #
-    # def set_transmission(self, transmission):
-    #     self._transmission = transmission
-    #     self.set_history_trace(transmission.history_trace)
-    #
-    # def get_transmission(self) -> Transmission:
-    #     if self._transmission is None:
-    #         raise ValueError('No tranmission is set')
-    #     else:
-    #         return self._transmission
-    #
-    # def highlight_row(self, ix):
-    #     self.plot_widget.highlight_row(ix)
-    #
-    # def set_history_trace(self, history_trace: HistoryTrace):
-    #     assert isinstance(history_trace, HistoryTrace)
-    #     self._history_trace = history_trace
-    #     self.has_history_trace = True
 
