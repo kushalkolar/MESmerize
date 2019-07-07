@@ -7,13 +7,16 @@ Welcome to Mesmerize's documentation!
 =====================================
 
 .. toctree::
+	:maxdepth: 1
+	:caption: Overview
+
 	./Overview
+	./user_guides/installation
 
 .. toctree::
 	:maxdepth: 2
 	:caption: User Guides:
 	
-	./user_guides/installation
 	./user_guides/project_organization/new_project/new_project
 	./user_guides/viewer/overview
 	./user_guides/viewer/add_to_project

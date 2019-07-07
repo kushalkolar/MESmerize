@@ -31,7 +31,7 @@ When you choose tiff files from the whole brain, it will automatically locate an
 
 .. warning:: If the name of the tiff file and .json meta data file are different, you must specify the .json meta data file using the *Select meta data* button.
 
-.. warning:: **You cannot perform any analysis without the meta data file since you need the framerate of the video (usually 10 Hz) and it is specified in the meta data file.**
+.. warning:: **You cannot perform any analysis without the meta data file since you need the sampling rate of the video and it is specified in the meta data file.**
 
 Click the “Load into workEnv” button to load this image into your work environment.
 
