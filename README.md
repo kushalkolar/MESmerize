@@ -25,7 +25,7 @@ sudo apt update
 sudo apt install snapd
 ```
 
-To install `snapd` on Fedora
+Installing `snapd` on Fedora
 ```bash
 sudo dnf install snapd
 ```
