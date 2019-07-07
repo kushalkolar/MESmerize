@@ -6,6 +6,8 @@
 Welcome to Mesmerize's documentation!
 =====================================
 
+GitHub repo: https://github.com/kushalkolar/MESmerize
+
 .. toctree::
 	:maxdepth: 1
 	:caption: Overview
