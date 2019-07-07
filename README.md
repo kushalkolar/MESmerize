@@ -16,7 +16,14 @@ Command line snap installation:
 ```bash
 sudo snap install mesmerize
 ```
-You must have snapd installed to install snaps. If you are on Ubuntu 16.04 or later snapd is should be intalled with the OS. Here are instructions for installing snapd on your Linux distribution [https://docs.snapcraft.io/installing-snapd](https://docs.snapcraft.io/installing-snapd).
+Make sure you have **snapd** installed, which is required for running any snap apps.
+If you are on Ubuntu 16.04 or later snapd should be pre-installed. Here are instructions for installing snapd on your Linux distribution [https://docs.snapcraft.io/installing-snapd](https://docs.snapcraft.io/installing-snapd).
+
+It can be installed through apt for most Debian based distros
+```bash
+sudo apt update
+sudo apt install snapd
+```
 
 The snap has been tested to work on Ubuntu 18.04, Debian 9 (Stretch) and Fedora 29.
 
