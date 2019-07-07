@@ -12,7 +12,7 @@ Mesmerize is currently available only on Linux, it will soon be available for Ma
 ### Snap
 The easiest way to get Mesmerize is through the Snap store [https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize) .
 
-After installation simply run `mesmerize` in the terminal and the application will load and launch in ~10-30 seconds.
+After installation simply run `mesmerize` in the terminal and the application will launch in ~10-30 seconds.
 
 Command line snap installation:
 ```bash
