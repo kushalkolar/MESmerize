@@ -16,18 +16,25 @@ Command line snap installation:
 ```bash
 sudo snap install mesmerize
 ```
-Make sure you have **snapd** installed, which is required for running any snap apps.
-If you are on Ubuntu 16.04 or later snapd should be pre-installed. Here are instructions for installing snapd on your Linux distribution [https://docs.snapcraft.io/installing-snapd](https://docs.snapcraft.io/installing-snapd).
+Make sure you have `snapd` installed, which is required for running snap apps.
+If you are on Ubuntu 16.04 or later snapd should be pre-installed.
 
-It can be installed through apt for most Debian based distros
+You should be able to install `snapd` through apt for most Debian based distros
 ```bash
 sudo apt update
 sudo apt install snapd
 ```
 
+To install `snapd` on Fedora
+```bash
+sudo dnf install snapd
+```
+
+To install `snapd` on other distros please see: [https://docs.snapcraft.io/installing-snapd](https://docs.snapcraft.io/installing-snapd).
+
 The snap has been tested to work on Ubuntu 18.04, Debian 9 (Stretch) and Fedora 29.
 
-Mesmerize is experimental and we are working on increasing test coverage, however it has already been used extensively in our lab.
+Mesmerize is experimental and we are working on increasing test coverage, however it has already been used extensively in our lab and is under active development.
 
 ### PyPI
 
