@@ -14,7 +14,7 @@ Adapted from @agiovann and @epnev
 
 from __future__ import division
 import sys
-# from ..common import ViewerInterface, BatchRunInterface
+# from ..common import ViewerUtils, BatchRunInterface
 # from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
 # from MesmerizeCore import configuration
 # from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
@@ -42,19 +42,20 @@ import pickle
 from glob import glob
 from functools import partial
 import traceback
-from time import time
+from time import time, sleep
 
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
-    from ...core.common import ViewerInterface, ViewerWorkEnv
+    from ...core import ViewerUtils, ViewerWorkEnv
     from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 
-def run(batch_dir: str, UUID: str, n_processes: str):
+def run(batch_dir: str, UUID: str):
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
     file_path = batch_dir + '/' + UUID
 
@@ -74,6 +75,32 @@ def run(batch_dir: str, UUID: str, n_processes: str):
     gnb = input_params['gnb']
     nb_patch = input_params['nb_patch']
     k = input_params['k']
+    if 'Ain' in input_params.keys():
+        if input_params['Ain']:
+            print('>> Ain specified, looking for cnm-A file <<')
+            item_uuid = input_params['Ain']
+            parent_batch_dir = os.environ['CURR_BATCH_DIR']
+            item_out_file = os.path.join(parent_batch_dir, f'{item_uuid}.out')
+            t0 = time()
+            timeout = 60
+            while not os.path.isfile(item_out_file):
+                print('>>> cnm-A not found, waiting for 15 seconds <<<')
+                sleep(15)
+                if time() - t0 > timeout:
+                    output.update({'status': 0, 'output_info': 'Timeout exceeding in waiting for Ain input file'})
+                    raise TimeoutError('Timeout exceeding in waiting for Ain input file')
+
+            if os.path.isfile(item_out_file):
+                if json.load(open(item_out_file, 'r'))['status']:
+                    Ain_file = os.path.join(parent_batch_dir, item_uuid + '_cnm-A.pikl')
+                    Ain = pickle.load(open(Ain_file, 'rb'))
+                    print('>>> Found Ain file <<<')
+                else:
+                    raise FileNotFoundError('>>> Could not find specified Ain file <<<')
+        else:
+            Ain = None
+    else:
+        Ain = None
 
     filename = [filename]
 
@@ -145,7 +172,7 @@ def run(batch_dir: str, UUID: str, n_processes: str):
                         # downsampling factor in space for initialization, increase if you have memory problems
                         ssub=2,
                         # if you want to initialize with some preselcted components you can pass them here as boolean vectors
-                        Ain=None,
+                        Ain=Ain,
                         # half size of the patch (final patch will be 100x100)
                         rf=(rf, rf),
                         # overlap among patches (keep it at least large as 4 times the neuron size)
@@ -183,8 +210,8 @@ def run(batch_dir: str, UUID: str, n_processes: str):
         pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
         pickle.dump(dims, open(UUID + '_dims.pikl', 'wb'), protocol=4)
 
-        output_file_list = [UUID + '_Yr.pikl',
-                            UUID + '_cnm-A.pikl',
+        output_file_list = [UUID + '_cnm-A.pikl',
+                            UUID + '_Yr.pikl',
                             UUID + '_cnm-b.pikl',
                             UUID + '_cnm-C.pikl',
                             UUID + '_cnm-f.pikl',
@@ -353,7 +380,7 @@ class Output(QtWidgets.QWidget):
     def import_cnmfe_into_viewer(self):
         self.get_cnmfe_results()
 
-        vi = ViewerInterface(self.viewer_ref)
+        vi = ViewerUtils(self.viewer_ref)
 
         if not vi.discard_workEnv():
             return
@@ -393,4 +420,4 @@ class Output(QtWidgets.QWidget):
 
 
 if sys.argv[0] == __file__:
-    run(sys.argv[1], sys.argv[2], sys.argv[3])
+    run(sys.argv[1], sys.argv[2])

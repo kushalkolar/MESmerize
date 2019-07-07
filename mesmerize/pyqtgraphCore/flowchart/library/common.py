@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 from ...Qt import QtCore, QtGui
 from ...widgets.SpinBox import SpinBox
 #from ...SignalProxy import SignalProxy
@@ -8,6 +9,7 @@ from ..Node import Node
 import numpy as np
 from ...widgets.ColorButton import ColorButton
 from ....analysis import Transmission
+from tqdm import tqdm
 try:
     import metaarray
     HAVE_METAARRAY = True
@@ -16,7 +18,7 @@ except:
 
 from ...widgets.ComboBox import ComboBox as QComboBox
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
-from ....plotting.widgets import ColormapListWidget
+from ....analysis import organize_dataframe_columns
 
 
 def generateUi(opts):
@@ -115,9 +117,6 @@ def generateUi(opts):
             if 'checkable' in o:
                 w.setChecked(o['checkable'])
 
-        elif t == 'cmaplist' :
-            w = ColormapListWidget()
-
         elif t == 'color':
             w = ColorButton()
         else:
@@ -165,6 +164,9 @@ class CtrlNode(Node):
     def changed(self):
         self.update()
         self.sigStateChanged.emit(self)
+        out = f"Processing node: {self.name()}\n"
+
+        sys.stdout.write(out)
 
     def process(self, **kwargs):#In, display=True):
         In = kwargs['In']

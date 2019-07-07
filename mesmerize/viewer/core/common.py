@@ -13,15 +13,15 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ...pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from ...pyqtgraphCore.imageview import ImageView
-from ..core.viewer_work_environment import ViewerWorkEnv
 import numpy as np
 # import abc
 # import multiprocessing
 
 
-class ViewerInterface:
-    def __init__(self, viewer_reference):
+class ViewerUtils:
+    def __init__(self, viewer_reference: ImageView):
         """
+        Some utility functions for interfacing viewer.core.ViewerWorkEnv with the pyqtgraphCore.ImageView widget
         :type viewer_reference: ImageView
         """
         # assert isinstance(viewer_reference, ImageView)
@@ -39,7 +39,7 @@ class ViewerInterface:
 
         self.viewer.workEnv.roi_manager = self.viewer.parent().roi_manager.manager
         if self.viewer.workEnv.stim_maps is not None:
-            print(self.viewer.workEnv.stim_maps)
+            # print(self.viewer.workEnv.stim_maps)
             smm = self.viewer.parent().run_module('stimulus_mapping')
             smm.set_all_data(self.viewer.workEnv.stim_maps)
             try:
@@ -72,7 +72,7 @@ class ViewerInterface:
         if self.viewer.workEnv.roi_manager is not None:
             self.viewer.workEnv.roi_manager.clear()
         # re-initialize ROI and curve lists
-        self.viewer.workEnv.dump()
+        self.viewer.workEnv.clear()
         self.viewer.clear()
         self.viewer.workEnv.saved = True
         self.viewer.ui.label_curr_img_seq_name.setText('EMPTY')

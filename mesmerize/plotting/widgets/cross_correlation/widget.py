@@ -11,12 +11,14 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtCore, QtWidgets
 from .compute_cc import compute_cc_data, CC_Data
-from .control_widget import Ui_CrossCorrelationControls
+from .control_widget_pytemplate import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
-from ....analysis import Transmission, get_sampling_rate, get_array_size
+from ....analysis import Transmission, get_sampling_rate, get_array_size, organize_dataframe_columns
 import numpy as np
-from ....pyqtgraphCore import PlotDataItem
+from ....pyqtgraphCore import PlotDataItem, mkPen
+from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColor
+import pandas as pd
 
 
 class ControlWidget(QtWidgets.QWidget):
@@ -46,6 +48,9 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         self.plot_widget.sig_selection_changed.connect(self.set_lineplots)
 
+        # self.plot_widget.ax_ylabel_bar.set_axis_on()
+        # self.plot_widget.ax_heatmap.get_yaxis().set_visible(True)
+
         self.curve_plot_1 = PlotDataItem()
         self.curve_plot_2 = PlotDataItem()
 
@@ -58,6 +63,9 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.radioButtonLag.clicked.connect(self.set_heatmap)
         self.control_widget.ui.doubleSpinBoxMaximaThreshold.valueChanged.connect(self.set_heatmap)
         self.control_widget.ui.doubleSpinBoxLagThreshold.valueChanged.connect(self.set_heatmap)
+        self.datapoint_tracer = DatapointTracerWidget()
+
+        self.roi_2 = None
 
     def set_heatmap(self):
         if self.cc_data is None:
@@ -82,7 +90,16 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         plot_data = self.cc_data[sample_id].get_threshold_matrix(matrix_type=opt, lag_thr=lt, max_thr=mt, lag_thr_abs=abs_val)
 
-        self.plot_widget.set(plot_data, cmap=cmap)
+        labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
+        ylabels = self.transmission.df[labels_col]
+
+        self.plot_widget.set(plot_data, cmap=cmap, ylabels=ylabels)
+        # self.plot_widget.ax_ylabel_bar.set_axis_off()
+
+        self.plot_widget.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
+        self.plot_widget.plot.ax_heatmap.set_ylabel('Curve 2, cyan')
+
+        self.plot_widget.draw()
 
     def set_lineplots(self, indices):
         if self.plot_widget.selector.multi_select_mode:
@@ -117,11 +134,24 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             sub_df = self.transmission.df[self.transmission.df.SampleID == self.current_sample_id].reset_index(drop=True)
             ux = sub_df.uuid_curve.iloc[i]
             uy = sub_df.uuid_curve.iloc[j]
+
+            r = sub_df[sub_df.uuid_curve == ux]
+            db_id = r._BLOCK_.item()
+            r2 = sub_df[sub_df.uuid_curve == uy]
+
+            self.datapoint_tracer.set_widget(datapoint_uuid=ux, data_column_curve=self.data_column,
+                                             row=r, proj_path=self.transmission.get_proj_path(),
+                                             history_trace=self.transmission.history_trace.get_data_block_history(db_id),
+                                             roi_color='m')
+            self.datapoint_tracer.ui.graphicsViewPlot.clear()
+            self.add_second_roi_to_datapoint_tracer(r2)
+            self.datapoint_tracer.show()
+
             self.control_widget.ui.lineEditCurve1UUID.setText(ux)
             self.control_widget.ui.lineEditCurve2UUID.setText(uy)
 
-            self.curve_plot_1.setData(x)
-            self.curve_plot_2.setData(y)
+            self.curve_plot_1.setData(x, pen=mkPen(color='m', width=2))
+            self.curve_plot_2.setData(y, pen=mkPen(color='c', width=2))
 
             ncc = self.cc_data[self.current_sample_id].ccs[i, j, :]
 
@@ -130,19 +160,42 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.cross_corr_plot.set_single_line(x=xticks, y=ncc)
         self.cross_corr_plot.ax.set_xlabel("lag (seconds)")
 
+    # TODO: Just simplify the datapoint_tracer to take in multiple ROIs
+    def add_second_roi_to_datapoint_tracer(self, r: pd.Series):
+        if isinstance(self.roi_2, (CNMFROI, ManualROI)):
+            self.roi_2.remove_from_viewer()
+
+        roi_state = r['ROI_State'].item()
+        if isinstance(roi_state, pd.Series):
+            roi_state = roi_state.item()
+
+        if roi_state['roi_type'] == 'CNMFROI':
+            self.roi_2 = CNMFROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
+            self.roi_2.get_roi_graphics_object().setBrush(mkColor('c'))
+
+        elif roi_state['roi_type'] == 'ManualROI':
+            self.roi_2 = ManualROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
+
+        self.roi_2.get_roi_graphics_object().setPen(mkColor('c'))
+        self.roi_2.add_to_viewer()
+
     def _get_xticks_linspace(self, ncc) -> np.ndarray:
-        m = ncc.size
-        stop = ((m / 2) / self.sampling_rate)
-        start = -stop
-        return np.linspace(start, stop, m)
+            m = ncc.size
+            stop = ((m / 2) / self.sampling_rate)
+            start = -stop
+            return np.linspace(start, stop, m)
 
     def set_input(self, transmission: Transmission = None):
         self.transmission = transmission
         self.transmission.df.reset_index(drop=True, inplace=True)
-        # self.main_dataframe = self.transmission.df
+
+        cols = self.transmission.df.columns
+        dcols, ccols, ucols = organize_dataframe_columns(cols)
 
         self.control_widget.ui.comboBoxDataColumn.clear()
-        self.control_widget.ui.comboBoxDataColumn.addItems(self.transmission.df.columns)
+        self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
+
+        self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
 
         self.reset_sample_id_list_widget()
         self.control_widget.ui.listWidgetSampleID.setCurrentRow(0)
@@ -167,6 +220,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         for sample_id in self.sample_list:
             sub_df = self.transmission.df[self.transmission.df.SampleID == sample_id]
+
             data = np.vstack(sub_df[self.data_column].values)
             r = get_sampling_rate(self.transmission)
             self.sampling_rate = r

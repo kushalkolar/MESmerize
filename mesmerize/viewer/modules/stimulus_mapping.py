@@ -12,19 +12,19 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 """
 
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from .stimmap_modules.page import Page
 from .stimmap_modules.main_widget_pytemplate import *
 from ...pyqtgraphCore.imageview import ImageView
 from ...pyqtgraphCore import LinearRegionItem
-from ...common import configuration
+from ...common import configuration, get_project_manager
 import pandas as pd
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer):
         QtWidgets.QDockWidget.__init__(self, parent)
-        self.vi = ViewerInterface(viewer)
+        self.vi = ViewerUtils(viewer)
 
         self.ui = Ui_MainWidget()
         self.ui.setupUi(self)
@@ -35,7 +35,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.setup_tabs()
             self.ui.comboBoxShowTimelineChoice.currentIndexChanged.connect(self.set_timeline)
             self.timeline_stimulus_display = TimeLineStimulusMap(viewer)
-            configuration.project_manager.signal_project_config_changed.connect(self.reset)
+            get_project_manager().signal_project_config_changed.connect(self.reset)
             self.ui.btnSetAllMaps.clicked.connect(self.set_all_maps)
 
     def setup_tabs(self):

@@ -34,15 +34,16 @@ from time import time
 
 
 if not sys.argv[0] == __file__:
-    from ...core.common import ViewerInterface
+    from ...core.common import ViewerUtils
     from ...core.viewer_work_environment import ViewerWorkEnv
 
 
-def run(batch_dir, UUID, n_processes):
+def run(batch_dir: str, UUID: str):
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
     file_path = batch_dir + '/' + UUID
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
 
     c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
@@ -64,7 +65,7 @@ def run(batch_dir, UUID, n_processes):
         upsample_factor_grid = input_params['upsample']
         max_deviation_rigid = input_params['max_dev']
 
-        if os.environ['USE_CUDA'] == 'True':
+        if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
             USE_CUDA = True
         else:
             USE_CUDA = False
@@ -101,7 +102,7 @@ def run(batch_dir, UUID, n_processes):
         elif input_params['output_bit_depth'] == '16':
             m_els = m_els.astype(np.uint16)
 
-        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True)
+        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True, compress=1)
 
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
@@ -128,7 +129,7 @@ def run(batch_dir, UUID, n_processes):
 
 class Output:
     def __init__(self, batch_path, UUID, viewer_ref):
-        vi = ViewerInterface(viewer_ref)
+        vi = ViewerUtils(viewer_ref)
 
         if not vi.discard_workEnv():
             return
@@ -208,4 +209,4 @@ class BitDepthConverter:
         return np.take(lut, image).astype(lut.dtype)
 
 if sys.argv[0] == __file__:
-    run(sys.argv[1], sys.argv[2], sys.argv[3])
+    run(sys.argv[1], sys.argv[2])

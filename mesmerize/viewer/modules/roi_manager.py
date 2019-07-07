@@ -11,7 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from .pytemplates.roi_manager_pytemplate import *
 from .roi_manager_modules import managers
 from functools import partial
@@ -20,7 +20,7 @@ import traceback
 
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_reference):
-        self.vi = ViewerInterface(viewer_reference)
+        self.vi = ViewerUtils(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
 
@@ -57,6 +57,52 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.listWidgetROIs.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
 
         self.ui.pushButtonImportFromImageJ.clicked.connect(self.import_from_imagej)
+
+        self.installEventFilter(self)
+
+        self.ui.lineEditROITag.sig_key_right.connect(self.play_forward)
+        self.ui.lineEditROITag.sig_key_left.connect(self.play_backward)
+
+        self.ui.lineEditROITag.sig_key_home.connect(self.img_seq_home)
+        self.ui.lineEditROITag.sig_key_end.connect(self.img_seq_end)
+
+    def eventFilter(self, QObject, QEvent):
+        if QEvent.type() == QEvent.KeyPress:
+
+            if len(self.manager.roi_list) < 1:
+                return super(ModuleGUI, self).eventFilter(QObject, QEvent)
+
+            max_ix = len(self.manager.roi_list) - 1
+
+            if QEvent.key() == QtCore.Qt.Key_PageUp:
+                ix = self.manager.roi_list.current_index
+                self.ui.listWidgetROIs.setCurrentRow(max(0, ix - 1))
+
+            elif QEvent.key() == QtCore.Qt.Key_PageDown:
+                ix = self.manager.roi_list.current_index
+                self.ui.listWidgetROIs.setCurrentRow(min(max_ix, ix + 1))
+
+            elif QEvent.key() == QtCore.Qt.Key_Right:
+                self.play_forward()
+
+            elif QEvent.key() == QtCore.Qt.Key_Left:
+                self.play_backward()
+
+        return super(ModuleGUI, self).eventFilter(QObject, QEvent)
+
+    def play_forward(self):
+        self.vi.viewer.play(500)
+
+    def play_backward(self):
+        self.vi.viewer.play(-500)
+
+    def img_seq_home(self):
+        self.vi.viewer.setCurrentIndex(0)
+        self.vi.viewer.play(0)
+
+    def img_seq_end(self):
+        self.vi.viewer.setCurrentIndex(self.vi.viewer.getProcessedImage().shape[0] - 1)
+        self.vi.viewer.play(0)
 
     def _list_widget_context_menu_requested(self, p):
         self.list_widget_context_menu.exec_(self.ui.listWidgetROIs.mapToGlobal(p))

@@ -18,7 +18,6 @@ from math import ceil
 class ViolinsPlot(MatplotlibWidget):
     def __init__(self):
         MatplotlibWidget.__init__(self, size = (8,6), dpi=100)
-        sns.set()
 #        self.fig.subplots_adjust(hspace=0.3, wspace=0.3)
         self.num_columns = 4
         self.axes = []

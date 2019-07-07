@@ -13,13 +13,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import numpy as np
 from scipy import integrate
-import os
-# os.system("taskset -p 0xff %d" % os.getpid())
+import numpy as np
 
 
 class ComputePeakFeatures:
     @staticmethod
-    def amplitude_relative(q, peak_curve, ix_peak_rel):
+    def amplitude_relative(q, peak_curve: np.ndarray, ix_peak_rel: int):
         try:
             result = abs(min(peak_curve) - peak_curve[ix_peak_rel])
         except:
@@ -27,7 +26,7 @@ class ComputePeakFeatures:
         q.put({'_pfeature_amplitude_relative': result})
 
     @staticmethod
-    def amplitude_abs(q, pre_peak_baseline, ix_peak_abs):
+    def amplitude_abs(q, pre_peak_baseline: float, ix_peak_abs: int):
         try:
             result = ix_peak_abs - pre_peak_baseline
         except:
@@ -35,7 +34,7 @@ class ComputePeakFeatures:
         q.put({'_pfeature_amplitude_abs': result})
 
     @staticmethod
-    def area(q, peak_curve):
+    def area(q, peak_curve: np.ndarray):
         try:
             result = integrate.simps(peak_curve)
         except:
@@ -43,11 +42,11 @@ class ComputePeakFeatures:
         q.put({'_pfeature_area': result})
 
     @staticmethod
-    def rising_slope_at_mid(q, peak_curve, ix_peak_rel):
+    def rising_slope_at_mid(q, peak_curve: np.ndarray, ix_peak_rel: int):
         pass
 
     @staticmethod
-    def rising_slope_avg(q, peak_curve, ix_peak_rel):
+    def rising_slope_avg(q, peak_curve: np.ndarray, ix_peak_rel: int):
         try:
             dy = abs(peak_curve[0] - peak_curve[ix_peak_rel])
             result = dy / ix_peak_rel
@@ -56,11 +55,11 @@ class ComputePeakFeatures:
         q.put({'_pfeature_rising_slope_avg': result})
 
     @staticmethod
-    def falling_slope_at_mid(q, peak_curve, ix_peak_rel):
+    def falling_slope_at_mid(q, peak_curve: np.ndarray, ix_peak_rel: int):
         pass
 
     @staticmethod
-    def falling_slope_avg(q, peak_curve, ix_peak_rel):
+    def falling_slope_avg(q, peak_curve: np.ndarray, ix_peak_rel: int):
         try:
             dy = abs(peak_curve[-1] - peak_curve[ix_peak_rel])
             result = dy / abs(len(peak_curve) - ix_peak_rel)
@@ -69,7 +68,7 @@ class ComputePeakFeatures:
         q.put({'_pfeature_falling_slope_avg': result})
 
     @staticmethod
-    def duration_base(q, peak_curve):
+    def duration_base(q, peak_curve: np.ndarray):
         try:
             result = np.size(peak_curve)
         except:
@@ -81,7 +80,7 @@ class ComputePeakFeatures:
         pass
 
     @staticmethod
-    def inter_peak_interval(q, ix_peak_abs, ix_pre_peak, ix_nex_peak):
+    def inter_peak_interval(q, ix_peak_abs: int, ix_pre_peak: int, ix_nex_peak: int):
         try:
             if (ix_pre_peak is None) or (ix_nex_peak is None):
                 result = np.NaN

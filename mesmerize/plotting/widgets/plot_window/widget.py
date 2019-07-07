@@ -22,7 +22,9 @@ from ....pyqtgraphCore import GraphicsLayoutWidget, mkColor
 from ....pyqtgraphCore.console import ConsoleWidget
 from matplotlib import cm as matplotlib_color_map
 import numpy as np
-from ....analysis.data_types import Transmission
+from ....analysis import Transmission, organize_dataframe_columns
+from ....common import configuration
+import os
 
 
 class PlotWindow(QtWidgets.QMainWindow):
@@ -67,12 +69,9 @@ class PlotWindow(QtWidgets.QMainWindow):
               "graphicsViews (plot tabs) as graphicsViews\n" \
               "self as 'main'\n\n" \
 
-        # if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-        #     os.makedirs(configuration.sys_cfg_path + '/console_history')
-        #
-        # cmd_history_file = configuration.sys_cfg_path + '/console_history/plot_window.pik'
+        cmd_history_file = os.path.join(configuration.console_history_path, 'plot_window.pik')
 
-        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt)) #,historyFile=cmd_history_file))
+        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file))
 
         self.ui.dockConsole.hide()
 
@@ -126,21 +125,23 @@ class PlotWindow(QtWidgets.QMainWindow):
 
         self.merged_transmission = Transmission.merge(self.transmissions)
 
+        dcols, ccols, ucols = organize_dataframe_columns(self.merged_transmission.df.columns)
+
         self.ui.listWidgetDataColumns.clear()
-        self.ui.listWidgetDataColumns.addItems(columns)
+        self.ui.listWidgetDataColumns.addItems(dcols)
 
         self.ui.comboBoxGrouping.clear()
-        self.ui.comboBoxGrouping.addItems(columns)
+        self.ui.comboBoxGrouping.addItems(ccols)
 
         self.ui.comboBoxShape.clear()
-        self.ui.comboBoxShape.addItems(columns)
+        self.ui.comboBoxShape.addItems(ccols)
 
         self.ui.comboBoxDataPointTracerCurveColumn.clear()
-        self.ui.comboBoxDataPointTracerCurveColumn.addItems(columns)
+        self.ui.comboBoxDataPointTracerCurveColumn.addItems(dcols)
 
         self.ui.comboBoxUUIDColumn.clear()
-        self.ui.comboBoxUUIDColumn.addItems(columns)
-        self.ui.comboBoxUUIDColumn.setCurrentIndex(columns.index(next(column for column in columns if 'uuid' in column)))
+        self.ui.comboBoxUUIDColumn.addItems(ucols)
+        # self.ui.comboBoxUUIDColumn.setCurrentIndex(columns.index(next(column for column in columns if 'uuid' in column)))
 
         self.set_old_selections()
 

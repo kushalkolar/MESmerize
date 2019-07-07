@@ -11,7 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from ..core.common import ViewerInterface
+from ..core.common import ViewerUtils
 from ..core.viewer_work_environment import ViewerWorkEnv
 from .pytemplates.mesfile_io_pytemplate import *
 from .stimulus_mapping_mesfile import *
@@ -22,7 +22,7 @@ from .stimulus_mapping import ModuleGUI as StimMapModuleGUI
 
 class ModuleGUI(QtWidgets.QDockWidget):
     def __init__(self, parent, viewer_reference):
-        self.vi = ViewerInterface(viewer_reference)
+        self.vi = ViewerUtils(viewer_reference)
         self.parent = parent
 
         QtWidgets.QDockWidget.__init__(self, parent)
@@ -51,7 +51,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.listwMesfile.setEnabled(True)
             self.ui.listwMesfile.clear()
             # Get the references of the images, their descriptions, and add them to the list
-            for i in self.mesfile.images:
+            for i in self.mesfile.get_image_references():
                 j = self.mesfile.image_descriptions[i]
                 self.ui.listwMesfile.addItem(i + ': ' + j)
 

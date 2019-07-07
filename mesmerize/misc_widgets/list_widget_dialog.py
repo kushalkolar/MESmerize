@@ -12,13 +12,14 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 
 class ListWidgetDialog(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
         self.vertical_layout = QtWidgets.QVBoxLayout(self)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         self.label = QtWidgets.QLabel()
         self.vertical_layout.addWidget(self.label)

@@ -18,8 +18,8 @@ import pandas as pd
 # from common import configurationt
 from numpy import int64, float64
 from copy import deepcopy
-from functools import partial
-from ...common import configuration
+# from functools import partial
+from ...common import configuration, get_project_manager
 
 
 class TabAreaWidget(QtWidgets.QWidget):
@@ -110,8 +110,8 @@ class TabAreaWidget(QtWidgets.QWidget):
             self.filter_history += filter_history
             self.populate_tab()
 
-        configuration.project_manager.child_dataframes[self.tab_name]['dataframe'] = self.dataframe
-        configuration.project_manager.child_dataframes[self.tab_name]['filter_history'] = self.filter_history
+        get_project_manager().child_dataframes[self.tab_name]['dataframe'] = self.dataframe
+        get_project_manager().child_dataframes[self.tab_name]['filter_history'] = self.filter_history
 
     def _filter(self, column_widget: ColumnWidget, dataframe: pd.DataFrame) -> tuple:
         filt = column_widget.lineEdit.text()

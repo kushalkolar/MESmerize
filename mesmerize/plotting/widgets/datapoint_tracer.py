@@ -19,7 +19,11 @@ import pandas as pd
 import tifffile
 import numpy as np
 from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
+# from ...viewer.core import ViewerWorkEnv, ViewerUtils
+from ...common import get_window_manager, get_project_manager
 # from common import configuration
+import os
+from typing import Union, Optional
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):
@@ -31,6 +35,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.row = None
         self.proj_path = None
         self.sample_id = None
+        self.previous_sample_id_projection = None
         self.history_trace = None
         self.peak_ix = None
         self.tstart = None
@@ -45,6 +50,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         self.ui.groupBoxInfo.layout().addWidget(self.pandas_series_widget)
         self.image_view = ImageView()
+        self.image_view.tVals = np.arange(0, 100)
         self.image_item = self.image_view.getImageItem()
         self.view = self.ui.graphicsViewImage.addViewBox()
         self.view.setAspectLocked(True)
@@ -56,14 +62,11 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.ui.radioButtonMaxProjection.clicked.connect(lambda x: self.set_image('max'))
         self.ui.radioButtonSTDProjection.clicked.connect(lambda x: self.set_image('std'))
 
-    def set_widget(self, datapoint_uuid: UUID,
-                   data_column_curve: str,
-                   row: pd.Series,
-                   proj_path: str,
-                   history_trace: list = None,
-                   peak_ix: int = None,
-                   tstart: int = None,
-                   tend: int = None):
+        self.ui.pushButtonOpenInViewer.clicked.connect(self.open_in_viewer)
+
+    def set_widget(self, datapoint_uuid: UUID, data_column_curve: str, row: pd.Series, proj_path: str,
+                   history_trace: Optional[list] = None, peak_ix: Optional[int] = None, tstart: Optional[int] = None,
+                   tend: Optional[int] = None, roi_color: Optional[Union[str, float, int, tuple]] = 'ff0000'):
 
         self.uuid = datapoint_uuid
         self.row = row
@@ -88,7 +91,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         for k in row_dict.keys():
             row_dict[k] = row_dict[k][row.index.item()]
         self.pandas_series_widget.fill_widget(row_dict)
-        self.pandas_series_widget.collapseAll()
+        # self.pandas_series_widget.collapseAll()
 
         if self.ui.radioButtonMaxProjection.isChecked():
             self.set_image('max')
@@ -115,16 +118,19 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         if roi_state['roi_type'] == 'CNMFROI':
             self.roi = CNMFROI.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
-            self.roi.get_roi_graphics_object().setBrush(mkColor('#ff0000'))
+            self.roi.get_roi_graphics_object().setBrush(mkColor(roi_color))
         elif roi_state['roi_type'] == 'ManualROI':
             self.roi = ManualROI.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
-        self.roi.get_roi_graphics_object().setPen(mkColor('#ff0000'))
+        self.roi.get_roi_graphics_object().setPen(mkColor(roi_color))
         self.roi.add_to_viewer()
 
         if peak_ix is not None:
             pass
 
     def set_image(self, projection: str):
+        if f'{self.sample_id}{projection}' == self.previous_sample_id_projection:
+            return
+
         img_uuid = self.row['ImgUUID']
 
         if isinstance(img_uuid, pd.Series):
@@ -141,12 +147,28 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         else:
             raise ValueError('Can only accept "max" and "std" arguments')
 
-        img_path = self.proj_path + '/images/' + self.sample_id + '-_-' + img_uuid + suffix
+        img_path = os.path.join(self.proj_path, 'images', f'{self.sample_id}-_-{img_uuid}{suffix}')
 
         img = tifffile.imread(img_path)
 
-        self.image_item.setImage(img.astype(np.uint16))
-        self.image_item.resetTransform()
+        # z = np.zeros(img.shape)
+
+        # img = np.dstack((img, z))
+
+        # if img.shape[0] > img.shape[1]:
+        #     x, y = (0, 1)
+        # else:
+        #     x,y = (1, 0)
+
+        self.image_view.setImage(img, axes={'x': 0, 'y': 1})
+
+        self.previous_sample_id_projection = f'{self.sample_id}{projection}'
+        # self.image_item.setImage(img.T.astype(np.uint16))
+        # self.image_item.resetTransform()
+
+    def open_in_viewer(self):
+        w = get_window_manager().get_new_viewer_window()
+        w.open_from_dataframe(proj_path=self.proj_path, row=self.row)#, roi_index=('cnmf_idx', self.roi.cnmf_idx))
 
 
 class TimelineLinearRegion:

@@ -17,10 +17,8 @@ from ...pyqtgraphCore.console import ConsoleWidget
 from .pytemplates.mainwindow_pytemplate import Ui_MainWindow
 from spyder.widgets.variableexplorer import objecteditor
 import pandas as pd
-import numpy as np
-import pickle
 import os
-from ...common import configuration
+from ...common import configuration, get_project_manager
 from functools import partial
 
 
@@ -31,51 +29,55 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.project_browser = ProjectBrowserWidget(self, configuration.project_manager.dataframe)
+        self.project_browser = ProjectBrowserWidget(self, get_project_manager().dataframe)
         self.current_tab = 0
         self.project_browser.tab_widget.currentChanged.connect(self.set_current_tab)
         self.setCentralWidget(self.project_browser)
 
-        self.ui.actionto_pickle.triggered.connect(partial(self.save_path_dialog, file_ext='pikl', save_root=False))
-        self.ui.actionto_csv.triggered.connect(partial(self.save_path_dialog, file_ext='csv', save_root=False))
-        self.ui.actionto_excel.triggered.connect(partial(self.save_path_dialog, file_ext='xlsx', save_root=False))
+        self.ui.actionto_pickle.triggered.connect(partial(self.save_path_dialog, file_ext='pikl', save_root=True))
+        self.ui.actionto_csv.triggered.connect(partial(self.save_path_dialog, file_ext='csv', save_root=True))
+        self.ui.actionto_excel.triggered.connect(partial(self.save_path_dialog, file_ext='xlsx', save_root=True))
 
         self.ui.actionto_pickle_tab.triggered.connect(partial(self.save_path_dialog, file_ext='pikl', save_root=False))
         self.ui.actionto_csv_tab.triggered.connect(partial(self.save_path_dialog, file_ext='csv', save_root=False))
         self.ui.actionto_excel_tab.triggered.connect(partial(self.save_path_dialog, file_ext='xlsx', save_root=False))
 
-        self.ui.actionDataframe_editor.triggered.connect(self.view_dataframe)
+        self.ui.actionDataframe_editor.triggered.connect(self.edit_root_dataframe)
+
+        self.ui.actionViewCurrent_dataframe.triggered.connect(self.view_current_dataframe)
         self.ui.actionCurrent_tab_filter_history.triggered.connect(self.view_filters)
 
         self.ui.actionUpdate_current_tab.triggered.connect(self.update_tab_from_child_dataframe)
         self.ui.actionUpdate_all_tabs.triggered.connect(self.update_tabs_from_child_dataframes)
 
+        self.ui.actionSave_to_project.triggered.connect(self._save_dataframe)
+
         ns = {'pd': pd,
-              'np': np,
-              'pickle': pickle,
               'project_browser': self.project_browser,
-              'main': self
+              'this': self,
+              'get_dataframe': lambda: self.get_current_dataframe()[0],
+              'get_root_dataframe': lambda: self.get_current_dataframe(get_root=True)[0],
+              'set_root_dataframe': lambda df: get_project_manager().set_dataframe(df)
               }
 
         txt = "Namespaces:          \n" \
-              "numpy as np          \n" \
               "pandas as pd         \n" \
-              "pickle as pickle    \n" \
-              "self.window_manager as window_manager     \n" \
-              "self as main         \n" \
+              "Useful callables:\n" \
+              "get_dataframe() - returns dataframe of the current tab\n" \
+              "get_root_dataframe() - always return dataframe of root tab (i.e. entire dataframe)\n" \
+              "set_root_dataframe() - save the root dataframe\n" \
+              "self as this         \n" \
 
-        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-            os.makedirs(configuration.sys_cfg_path + '/console_history/')
+        cmd_history_file = os.path.join(configuration.console_history_path, 'project_browser.pik')
 
-        cmd_history_file = configuration.sys_cfg_path + '/console_history/project_browser.pik'
-
-        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt,
-                                                 historyFile=cmd_history_file))
+        self.ui.dockConsole.setWidget(ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file))
         # self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)
         self.ui.dockConsole.hide()
 
         self._status_bar = None
         self.status_bar = self.statusBar()
+
+        self.setWindowTitle('Project Browser')
 
     @property
     def status_bar(self) -> QtWidgets.QStatusBar:
@@ -88,8 +90,8 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
     def set_current_tab(self, ix: int):
         self.current_tab = ix
 
-    def save_path_dialog(self, file_ext: int, save_root=False):
-        path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save Transmission as', '', '(*.' + file_ext + ')')
+    def save_path_dialog(self, file_ext: str, save_root=False):
+        path = QtWidgets.QFileDialog.getSaveFileName(None, 'Save DataFrame as', '', f'(*.{file_ext})')
         if path == '':
             return
         if path[0].endswith('.' + file_ext):
@@ -106,14 +108,26 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
 
     def get_current_dataframe(self, get_root=False) -> (pd.DataFrame, list):
         if self.current_tab == 0 or get_root:
-            dataframe = configuration.project_manager.dataframe
+            dataframe = get_project_manager().get_dataframe()
             return dataframe, []
         else:
             tab_name = self.project_browser.tab_widget.widget(self.current_tab).tab_name
-            child = configuration.project_manager.child_dataframes[tab_name]
+            child = get_project_manager().child_dataframes[tab_name]
         return child['dataframe'], child['filter_history']
 
-    def view_dataframe(self):
+    def _save_dataframe(self):
+        get_project_manager().save_dataframe()
+
+    def edit_root_dataframe(self):
+        QtWidgets.QMessageBox.warning(self, 'Proceed with caution!',
+                                      'You are about to edit the project DataFrame, be careful!\n'
+                                      'If you make a mistake press "Close"')
+
+        df = objecteditor.oedit(get_project_manager().get_dataframe())
+        if df is not None:
+            get_project_manager().set_dataframe(df)
+
+    def view_current_dataframe(self):
         objecteditor.oedit(self.get_current_dataframe()[0])
 
     def view_filters(self):
@@ -129,11 +143,11 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         # for child in configuration.project_manager.child_dataframes.keys():
         #     configuration.project_manager.child_dataframes.pop(child)
 
-        configuration.project_manager.create_child_dataframes()
+        get_project_manager().create_sub_dataframe()
 
-        for child in configuration.project_manager.child_dataframes.keys():
-            dataframe = configuration.project_manager.child_dataframes[child]['dataframe']
-            filter_history = configuration.project_manager.child_dataframes[child]['filter_history']
+        for child in get_project_manager().child_dataframes.keys():
+            dataframe = get_project_manager().child_dataframes[child]['dataframe']
+            filter_history = get_project_manager().child_dataframes[child]['filter_history']
             self.project_browser.add_tab(dataframe, filter_history, name=child)
         self.status_bar.showMessage('Finished loading tabs!')
 
@@ -141,7 +155,7 @@ class ProjectBrowserWindow(QtWidgets.QMainWindow):
         if tab_name is None:
             tab_name = self.project_browser.tab_widget.widget(self.current_tab).tab_name
 
-        child = configuration.project_manager.child_dataframes[tab_name]
+        child = get_project_manager().child_dataframes[tab_name]
         dataframe = child['dataframe']
         filter_history = child['filter_history']
         self.project_browser.tabs[tab_name].dataframe = dataframe

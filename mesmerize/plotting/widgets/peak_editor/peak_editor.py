@@ -11,7 +11,6 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-# from ....pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from .... import pyqtgraphCore as pg
 import numpy as np
 import pandas as pd
@@ -20,6 +19,7 @@ from ....analysis.data_types import Transmission
 from ....analysis.history_widget import HistoryTreeWidget
 import traceback
 from functools import partial
+from ....common import get_window_manager
 
 
 class PeaksItemGraph(pg.GraphItem):
@@ -136,6 +136,13 @@ class PeaksItemGraph(pg.GraphItem):
 #        self.updateGraph()
         self.setData(**data)
         self.changed = True
+
+    def delete_all_items(self):
+        # while self.scatter.points().size > 1:
+        #     self.delete_item(self.scatter.points()[0])
+        self.scatter.clear()
+        for ix in range(len(self.events)):
+            del self.events[0]
     
     def add_item(self, pos):
         x_pos = pos[0]
@@ -187,17 +194,16 @@ class PeaksItemGraph(pg.GraphItem):
         self.scatter.setSize(size)
             
 
-class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+class PeakEditorWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     sig_disconnect_flowchart = QtCore.pyqtSignal()
     sig_reconnect_flowchart = QtCore.pyqtSignal()
     sig_send_data = QtCore.pyqtSignal(Transmission)
     
     def __init__(self, trans_curves, trans_peaks_bases):
         # super().__init__()
-        super(PBWindow, self).__init__()
+        super(PeakEditorWindow, self).__init__()
         # Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        self.setWindowTitle('Mesmerize - Peak-Base editor')
         self.tpb = None
 
         self.connected = True
@@ -237,9 +243,12 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.graphicsView.sigMouseClicked.connect(lambda gv, coors: self._add_event(self.current_curve.getViewBox().mapSceneToView(coors).toPoint()))
         
         self.btnSaveCurve.clicked.connect(self.save_current_curve)
+        # self.btnClearCurve.clicked.connect(self.clear_current_curve)
 
         self.btnDisconnectFromFlowchart.clicked.connect(self._disconnect_flowchart)
         self.btnSendToFlowchart.clicked.connect(self._send_data_to_flowchart)
+
+        self.pushButtonOpenInViewer.clicked.connect(self.open_current_curve_in_viewer)
 
     def _disconnect_flowchart(self):
         self.connected = False
@@ -262,12 +271,15 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.sig_reconnect_flowchart.emit()
     
     def _send_data_to_flowchart(self):
-        if self.tpb is None:
+        if self.get_data() is None:
             QtWidgets.QMessageBox.warning(self, 'Nothing to send', 'No data has been loaded that can be transmitted')
             return
 
         self.save_current_curve()
-        self.sig_send_data.emit(self.get_data())
+
+        to_send = self.get_data().copy()
+        to_send.df = to_send.df[~to_send.df.apply(lambda r: r.peaks_bases.empty, axis=1)]
+        self.sig_send_data.emit(to_send)
         
     def connect_mode_buttons(self):
         for k in self.mode_buttons.keys():
@@ -281,26 +293,7 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.current_mode = mode
         
         self.current_peak_scatter_plot.set_mode(mode)
-        
-#        activate = self.__getattribute__('_set_mode_' + mode)
-#        activate()
-    
-#    def _set_mode_drag(self):
-#        pass
-#    
-#    def _set_mode_view(self):
-#        pass
-#    
-#    def _set_mode_add_peaks(self):
-#        self._set_mode_add_event()
-#    
-#    def _set_mode_add_bases(self):
-#        self._set_mode_add_event()
-#    
-#    def _set_mode_add_event(self):
-#    
-#    def _set_mode_delete(self):
-#        pass
+
     
     def _add_event(self, qpoint: QtCore.QPoint):
         if self.current_mode not in ['add_peaks', 'add_bases']:
@@ -335,20 +328,17 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tpb.df.at[ix, 'peaks_bases'] = self.current_peak_scatter_plot.get_edited_dataframe()
         self.current_peak_scatter_plot.changed = False
 
+    def clear_current_curve(self):
+        self.current_peak_scatter_plot.delete_all_items()
+        self.save_current_curve()
+
     def _set_row(self):
         if self.current_peak_scatter_plot is not None:
             if self.current_peak_scatter_plot.changed:
                 self.save_current_curve()
 
         self.graphicsView.clear()
-#        self.c_plots = []
-#        ixs = [item.text() for item in self.listwIndices.selectedItems()]
-#        ixs = list(map(int, ixs))
 
-#        if len(ixs) == 0:
-#            return
-
-#        for ix in ixs:
         ix = self.listwIndices.currentRow()
         self.current_ix = ix
         curve_plot = pg.PlotDataItem()
@@ -356,120 +346,63 @@ class PBWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         curve = self.tc.df['curve'].iloc[ix]
 
-        uuid_curve = self.tc.df['uuid_curve'].iloc[ix]
-        if not isinstance(uuid_curve, str):
+        sample_id = self.tc.df['SampleID'].iloc[ix]
+        if not isinstance(sample_id, str):
             try:
-                uuid_curve = str(uuid_curve)
+                sample_id = str(sample_id)
             except:
-                print("Could not display UUID for curve at index: " + str(ix))
-        self.lineEditUUID.setText(uuid_curve)
-        # print('curve: ')
-        # print(curve)
-        # if curve is None:
-        #     QtGui.QMessageBox.warning(None, 'Empty Curve')
+                print("Could not display SampleID for curve at index: " + str(ix))
+        self.lineEditSampleID.setText(sample_id)
 
-#            if min(curve) > 0:
-#                min_curve = min(curve)
-#            else:
-#                min_curve = 0.00000001
-
-        curve_plot.setData(curve)# / min_curve)
-        
-#            curve_plot.mapFromView()
+        curve_plot.setData(curve)
 
         self.graphicsView.addItem(curve_plot)
 
-        # peak_ixs = self.tpb.df[self.tpb.data_column].iloc[ix].index[self.tpb.df[self.tpb.data_column].iloc[ix]['label'] == 'peak'].tolist()
+
         try:
             bases = self.tpb.df['peaks_bases'].iloc[ix]['event'][self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'base'].values
-            
-#                bases_plot = PeaksItemGraph()
-            
-            xs_b = bases; ys_b = np.take(curve, bases)
-            bases_data = np.column_stack((xs_b, ys_b))
-#                bases_plot.setData(pos=bases_data, size=15, symbolBrush=[(0, 255, 0, 150)] * 20, curve_data=curve)
-            
-#                bases_plot = pg.ScatterPlotItem(name='bases', pen=None, symbol='o', size=self.brush_size, brush=(0, 255, 0, 150))
-
-#                bases_plot.setData(bases, np.take(curve, bases))# / min_curve)
-            
-            # print(self.tpb.df['peaks_bases'].iloc[ix])
             peaks = self.tpb.df['peaks_bases'].iloc[ix]['event'][self.tpb.df['peaks_bases'].iloc[ix]['label'] == 'peak'].values#tolist()
 
-#                peaks_plot = pg.ScatterPlotItem(name='peaks', pen=None, symbol='o', size=self.brush_size, brush=(255, 0, 0, 150))
-            
-            xs = peaks; ys = np.take(curve, peaks)
-            peaks_data = np.column_stack((xs, ys))
-#                print(peaks_data)
-            
-            events = ((['base'] * bases_data.shape[0] + ['peak'] * peaks_data.shape[0]))
-            
-            all_data = np.vstack((bases_data, peaks_data))
-            red_brushes = [pg.fn.mkBrush(255, 0, 0, 150)] * peaks_data.shape[0]
-            green_brushes = [pg.fn.mkBrush(0, 255, 0, 150)] * bases_data.shape[0]
-            all_brushes = green_brushes + red_brushes
-            
-#            shapes = (['t'] * bases_data.shape[0]) + (['o'] * peaks_data.shape[0])
-            
-            peaks_plot = PeaksItemGraph()
-            peaks_plot.set_mode(self.current_mode)
+        except Exception:
+            QtWidgets.QMessageBox.warning(self, 'Warning', 'The curve probably contains no peaks.\n' +
+                                          traceback.format_exc())
+            peaks = np.array([], dtype=int)
+            bases = np.array([], dtype=int)
 
-            peaks_plot.setData(pos=all_data, size=self.brush_size, symbolBrush=all_brushes, curve_data=curve, events=events)# / min_curve)
-            
-            self.graphicsView.addItem(peaks_plot)
-            self.current_peak_scatter_plot =peaks_plot
-#                self.graphicsView.addItem(bases_plot)
-#                self.current_scatter_plots.append(bases_plot)
+        xs = peaks; ys = np.take(curve, peaks)
+        peaks_data = np.column_stack((xs, ys))
 
-        except Exception :
-            if QtWidgets.QMessageBox.question(self, 'Error!', 'The curve probably contains no peaks.\n' +
-                                              traceback.format_exc() + '\n\nWould you like to view the DataFrame?',
-                                              QtWidgets.QMessageBox.Yes,
-                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.Yes:
-                pass
-            return
+        xs_b = bases; ys_b = np.take(curve, bases)
+        bases_data = np.column_stack((xs_b, ys_b))
 
-#        if len(ixs) == 1:
-#            self.lastClicked = []
-#            peaks_plot.sigClicked.connect(self._clicked)
-#            bases_plot.sigClicked.connect(self._clicked)
 
-#    def _set_next_row(self):
-#        pass
+        events = ((['base'] * bases_data.shape[0] + ['peak'] * peaks_data.shape[0]))
 
-#    def _clicked(self, plot, points):
-#        for p in self.lastClicked:
-#            p.resetPen()
-#        print("clicked points", points)
-#        for p in points:
-#            p.setPen('b', width=3)
-#        self.lastClicked = points
+        all_data = np.vstack((bases_data, peaks_data))
+        red_brushes = [pg.fn.mkBrush(255, 0, 0, 150)] * peaks_data.shape[0]
+        green_brushes = [pg.fn.mkBrush(0, 255, 0, 150)] * bases_data.shape[0]
+        all_brushes = green_brushes + red_brushes
+
+
+        peaks_plot = PeaksItemGraph()
+        peaks_plot.set_mode(self.current_mode)
+
+        peaks_plot.setData(pos=all_data, size=self.brush_size, symbolBrush=all_brushes, curve_data=curve, events=events)# / min_curve)
+
+        self.graphicsView.addItem(peaks_plot)
+        self.current_peak_scatter_plot =peaks_plot
+
+    def open_current_curve_in_viewer(self):
+        w = get_window_manager().get_new_viewer_window()
+
+        row = self.tc.df.iloc[self.current_ix]
+        proj_path = self.tc.get_proj_path()
+        w.open_from_dataframe(proj_path, row=row)
 
     def _set_pens(self, n):
         self.current_peak_scatter_plot.set_brush_size(n)
         self.brush_size = n
 
-#    def _getBases(self):
-#        pass
 
     def get_data(self) -> Transmission:
         return self.tpb
-
-
-class workEnv():
-    pass
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-
-#    t = Transmission.from_pickle('/home/kushal/Sars_stuff/all_data_jorgen_wt_PEAK_DETECT_TRANSMISSION.trn')
-    t = Transmission.from_pickle('/share/data/temp/kushal/post_edit.trn')
-
-    pbw = PBWindow(t, t)#.df['_RAW_CURVE'], t.df['_RAW_CURVE'])
-    pbw.show()
-
-    import sys
-
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()

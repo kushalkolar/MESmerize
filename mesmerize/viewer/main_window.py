@@ -15,11 +15,13 @@ from .main_window_pytemplate import *
 from ..pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from ..pyqtgraphCore.console import ConsoleWidget
 from ..pyqtgraphCore.imageview import ImageView
+from ..pyqtgraphCore import setConfigOptions
 from .modules import *
-from .core.common import ViewerInterface
+from .core.common import ViewerUtils
 import numpy as np
 from .core.viewer_work_environment import ViewerWorkEnv
 from ..common import configuration, doc_pages
+from ..common import get_window_manager
 from .image_menu.main import ImageMenu
 from spyder.widgets.variableexplorer import objecteditor
 import traceback
@@ -27,7 +29,27 @@ from .core.add_to_project import AddToProjectDialog
 import os
 from . import image_utils
 import importlib
-from .modules import custom_modules
+import importlib.util
+# from .modules import custom_modules
+from functools import partial
+import sys
+import pandas as pd
+from typing import Optional, Union
+from uuid import UUID as UUID_type
+
+_custom_modules_dir = configuration.get_sys_config()['_MESMERIZE_CUSTOM_MODULES_DIR']
+_custom_modules_package_name = os.path.basename(os.path.dirname(_custom_modules_dir))
+_cmi = os.path.join(_custom_modules_dir, '__init__.py')
+
+if os.path.isfile(_cmi):
+    _parent_dir = os.path.abspath(os.path.join(_custom_modules_dir, os.path.pardir))
+    sys.path.append(_parent_dir)
+    _spec = importlib.util.spec_from_file_location('custom_modules', _cmi)
+    custom_modules = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(custom_modules)
+    _import_custom_modules = True
+else:
+    _import_custom_modules = False
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -38,11 +60,12 @@ class MainWindow(QtWidgets.QMainWindow):
                         'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
                         'roi_manager': roi_manager.ModuleGUI,
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
-                        'script_editor': script_editor.ModuleGUI
+                        'script_editor': script_editor.ModuleGUI,
                         }
+    available_modules = list(standard_modules.keys())
 
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self, parent=None)
+    def __init__(self, parent=None):
+        QtWidgets.QMainWindow.__init__(self, parent=parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.running_modules = []
@@ -65,29 +88,40 @@ class MainWindow(QtWidgets.QMainWindow):
         self.custom_modules = None
         self._cms = []
         self._cms_actions = []
-        self.set_custom_module_triggers()
+
+        if _import_custom_modules:
+            self.set_custom_module_triggers()
 
         self.ui.dockConsole.hide()
 
     def set_custom_module_triggers(self):
         self.custom_modules = dict()
 
+        failed_imports = []
         for mstr in custom_modules.__all__:
-            mstr = '.' + mstr
-            mod = importlib.import_module(mstr, package='mesmerize.viewer.modules.custom_modules')
-            c = getattr(mod, 'ModuleGUI')
-            self.custom_modules[mod.module_name] = c
+            try:
+                mstr = '.' + mstr
+                mod = importlib.import_module(mstr, package=_custom_modules_package_name)
+                c = getattr(mod, 'ModuleGUI')
+                self.custom_modules[mod.module_name] = c
 
-            name = mod.module_name
-            action = QtWidgets.QAction(self)
-            action.setCheckable(False)
-            action.setObjectName("custom_module" + name)
-            action.setText(name)
+                name = mod.module_name
+                action = QtWidgets.QAction(self)
+                action.setCheckable(False)
+                action.setObjectName("custom_module" + name)
+                action.setText(name)
 
-            action.triggered.connect(lambda: self.run_module(c))
+                action.triggered.connect(partial(self.run_module, c))
 
-            self._cms_actions.append(action)
-            self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
+                self._cms_actions.append(action)
+                self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
+            except ImportError:
+                failed_imports.append(mstr)
+        if len(failed_imports) > 0:
+            names = '\n'.join(failed_imports)
+            QtWidgets.QMessageBox.warning(self, 'Failed to load plugings', f'The following plugins failed to load:\n{names}')
+
+        self.available_modules += list(self.custom_modules.keys())
 
     @property
     def viewer_reference(self):
@@ -109,42 +143,34 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.initialize_menubar_triggers()
 
-        ns = {'np': np,
-              'vi': self.vi,
-              'viewer': self.vi.viewer,
-              'ViewerWorkEnv': ViewerWorkEnv,
-              'get_workEnv': self.vi.viewer.get_workEnv,
-              # 'get_seq': self.vi.viewer.workEnv.get_seq,
-              # 'get_meta': self.vi.viewer.workEnv.get_meta,
-              # 'get_imgdata': self.vi.viewer.workEnv.get_imgdata,
-              'update_workEnv': self.vi.update_workEnv,
-              'clear_workEnv': self.vi._clear_workEnv,
-              'running_modules': self.running_modules,
-              'get_module': self.run_module,
-              'get_batch_manager': self.get_batch_manager,
-              'roi_manager': self.vi.viewer.workEnv.roi_manager,
-              'objecteditor': objecteditor,
-              'image_utils': image_utils,
-              'main': self
+        ns = {'np':                 np,
+              'vi':                 self.vi,
+              'viewer':             self.vi.viewer,
+              'ViewerWorkEnv':      ViewerWorkEnv,
+              'get_workEnv':        self.vi.viewer.get_workEnv,
+              'get_image':          lambda: self.vi.viewer.get_workEnv().imgdata.seq,
+              'get_meta':           lambda: self.vi.viewer.get_workEnv().imgdata.meta,
+              'update_workEnv':     self.vi.update_workEnv,
+              'clear_workEnv':      self.vi._clear_workEnv,
+              'get_module':         self.get_module,
+              'get_batch_manager':  self.get_batch_manager,
+              'all_modules':        self.available_modules,
+              'image_utils':        image_utils,
+              'this': self
               }
 
         txt = "Namespaces:          \n" \
               "numpy as np          \n" \
-              "ViewerInterface as vi \n" \
-              "self as main         \n" \
-              "objecteditor as objecteditor\n" \
-              "ViewerWorkEnv class: workEnv\n" \
-              "useful shorcuts for scripting, see docs:\n" \
-              "viewer, get_workEnv(), running_modules\n" \
-              "get_workEnv().imgdata, get_workEnv().imgdata.seq, get_workEnv().meta, get_workEnv().roi_manager\n" \
-              "useful functions for scripting:\n" \
-              "update_workEnv, clear_workEnv, get_module, get_batch_manager\n" \
-              "For useful image utility functions: image_utils"
+              "ViewerUtils as vi \n" \
+              "self as this \n" \
+              "ViewerWorkEnv (for factory purposes): workEnv\n" \
+              "useful callables for scripting, see docs for examples:\n" \
+              "get_workEnv(), get_image(), get_meta(), get_module(<module name>), get_batch_manager()\n" \
+              "update_workEnv(), clear_workEnv()\n" \
+              "'all_modules' will list all available modules\n" \
+              "Some basic image utility functions: image_utils"
 
-        if not os.path.exists(configuration.sys_cfg_path + '/console_history/'):
-            os.makedirs(configuration.sys_cfg_path + '/console_history/')
-
-        cmd_history_file = configuration.sys_cfg_path + '/console_history/viewer.pik'
+        cmd_history_file = os.path.join(configuration.console_history_path, 'viewer.pik')
 
         self.console = ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
 
@@ -158,7 +184,11 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         # Show the QDockableWidget if it's already running
         if type(module_class) is str:
-            module_class = {**self.standard_modules, **self.custom_modules}[module_class]
+            if self.custom_modules is None:
+                cms = {}
+            else:
+                cms = self.custom_modules
+            module_class = {**self.standard_modules, **cms}[module_class]
 
         for m in self.running_modules:
             if isinstance(m, module_class):
@@ -176,6 +206,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.running_modules[-1].hide()
         return self.running_modules[-1]
 
+    def get_module(self, module_name: str, hide=False):
+        return self.run_module(module_name, hide)
+
     def update_available_inputs(self):
         for m in self.running_modules:
             if hasattr(m, 'update_available_inputs'):
@@ -184,7 +217,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def initialize_menubar_triggers(self):
         self.ui.actionBatch_Manager.triggered.connect(self.start_batch_manager)
 
-        self.vi = ViewerInterface(self._viewer)
+        self.vi = ViewerUtils(self._viewer)
 
         self.ui.actionDump_Work_Environment.triggered.connect(self.vi.discard_workEnv)
 
@@ -200,8 +233,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionStandard_Deviation.triggered.connect(self.image_menu.std_projection)
         self.ui.actionClose_all_projection_windows.triggered.connect(self.image_menu.close_projection_windows)
 
-    def get_batch_manager(self) -> object:
-        return configuration.window_manager.get_batch_manager()
+    def get_batch_manager(self) -> QtWidgets.QWidget:
+        return get_window_manager().get_batch_manager()
 
     def start_batch_manager(self):
         batch_manager = self.get_batch_manager()
@@ -266,18 +299,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
 
         if configuration.proj_path is None:
-            if QtWidgets.QMessageBox.question(self, 'No project open',
-                                              'Would you like to switch to project mode?',
-                                              QtWidgets.QMessageBox.No,
-                                              QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.No:
-                return
-            else:
-                import common.start
-                common.start.main()
+            QtWidgets.QMessageBox.question(self, 'No project open', 'You must have a project open to add to it')
+            return
 
         if len(self.viewer_reference.workEnv.roi_manager.roi_list) == 0:
-            QtWidgets.QMessageBox.warning(self, 'No curves',
-                                          'You do not have any curves in your work environment')
+            QtWidgets.QMessageBox.warning(self, 'No curves', 'You do not have any curves in your work environment')
             return
 
         else:
@@ -302,3 +328,84 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_work_environment_dialog(self):
         pass
+
+    def closeEvent(self, QCloseEvent):
+        if not self.vi.discard_workEnv():
+            QCloseEvent.ignore()
+        else:
+            QCloseEvent.accept()
+
+    def open_from_dataframe(self, proj_path: str,
+                            df: pd.DataFrame = None,
+                            row: pd.Series = None,
+                            sample_id: str = None,
+                            uuid_curve: Union[str, UUID_type] = None):
+
+        if df is not None:
+            if uuid_curve is not None:
+                row = df[df.uuid_curve == uuid_curve]
+
+            elif sample_id is not None:
+                rows = df[df.SampleID == sample_id]
+                row = rows.iloc[0]
+
+        if row is not None:
+
+            tp = row['ImgPath']
+            if isinstance(tp, pd.Series):
+                tp = tp.item()
+
+            tiff_path = os.path.join(proj_path, tp)
+
+            pp = row['ImgInfoPath']
+            if isinstance(pp, pd.Series):
+                pp = pp.item()
+
+            pik_path = os.path.join(proj_path, pp)
+
+            s = row['SampleID']
+            if isinstance(s, pd.Series):
+                s = s.item()
+
+            roi_state = row['ROI_State']
+            if isinstance(roi_state, pd.Series):
+                roi_state = roi_state.item()
+
+            if roi_state['roi_type'] == 'CNMFROI':
+                cnmf_idx = roi_state['cnmf_idx']
+                roi_index = ('cnmf_idx', cnmf_idx)
+            else:
+                roi_index = None
+
+            self._open_from_dataframe(tiff_path, pik_path, roi_index=roi_index, sample_id=s)
+            return
+
+        else:
+            raise ValueError('Must specify either df and sample_id/uuid_curve or supply the row (pd.Series)')
+
+    def _open_from_dataframe(self, tiff_path: str, pik_path: str, roi_index: Optional[tuple] = None,
+                             sample_id: Optional[str] = None):
+        setConfigOptions(imageAxisOrder='row-major')
+        self.vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pik_path, tiff_path=tiff_path)
+        self.vi.update_workEnv()
+
+        self.vi.viewer.workEnv.restore_rois_from_states()
+
+        if roi_index is not None:
+            roi_list = self.vi.viewer.workEnv.roi_manager.roi_list
+            if roi_index[0] == 'cnmf_idx':
+                c_idx = roi_index[1]
+                list_index = [r.cnmf_idx for r in roi_list].index(c_idx)
+            elif roi_index[0] == 'list_index':
+                list_index = roi_index[1]
+            else:
+                raise ValueError('roi_index must be either a cnmf index or the direct list index of the ROI_List object')
+
+            roi_list.list_widget.setCurrentRow(list_index)
+            rm = self.get_module('roi_manager')
+            if rm.ui.checkBoxShowAll.isChecked():
+                rm.ui.checkBoxShowAll.click()
+            rm.hide()
+
+        if sample_id is not None:
+            self.vi.viewer.ui.label_curr_img_seq_name.setText(sample_id)

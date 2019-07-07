@@ -13,31 +13,41 @@ import sys
 from tslearn.clustering import KShape
 import numpy as np
 import pickle
+import os
 
 
 def run(data_path: str, params_path: str):
     X = np.load(data_path)
 
     params = pickle.load(open(params_path, 'rb'))
+    workdir = params['workdir']
 
-    out = params['workdir'] + '/out'
+    out = os.path.join(workdir, 'out')
     with open(out, 'w') as f:
         f.write('0')
 
-    print('** Fitting input data **')
+    print(f'Using work dir: {workdir}')
+
+    print('** Fitting training data **')
+    n_train = int((params['kwargs'].pop('train_percent') / 100) * X.shape[0])
+    train = X[np.random.choice(X.shape[0], size=n_train, replace=False)]
 
     kwargs = params['kwargs']
     ks = KShape(**kwargs)
-    ks.fit(X)
 
-    ks_path = params['workdir'] + '/ks.pickle'
+    ks.fit(train)
+
+    print('**** Predicting ****')
+    y_pred = ks.predict(X)
+
+    ks_path = os.path.join(workdir, 'ks.pickle')
     pickle.dump(ks, open(ks_path, 'wb'))
 
-    print('** Fitting predictions **')
-    y_pred = ks.fit_predict(X)
+    y_pred_path = os.path.join(workdir, 'y_pred.npy')
+    np.save(y_pred_path, y_pred)
 
-    y_pred_path = params['workdir'] + '/y_pred.pickle'
-    pickle.dump(y_pred, open(y_pred_path, 'wb'))
+    train_path = os.path.join(workdir, 'train.npy')
+    np.save(train_path, train)
 
     with open(out, 'w') as f:
         f.write('1')

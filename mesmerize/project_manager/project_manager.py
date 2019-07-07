@@ -15,26 +15,33 @@ adding rows to the root dataframe, updating child dataframes, and updating the p
 """
 
 from PyQt5 import QtCore
-from ..common import configuration, project_config_window, start
+from ..common import configuration, project_config_window, start, get_window_manager, is_mesmerize_project
+# from ..common import get_window_manager
 import os
 import pandas as pd
 from time import time
-from shutil import copyfile
+from shutil import move as move_file
+from warnings import warn
 
 
 class ProjectManager(QtCore.QObject):
     signal_dataframe_changed = QtCore.pyqtSignal(pd.DataFrame)
     signal_project_config_changed = QtCore.pyqtSignal()
 
-    def __init__(self, project_root_dir: str):
+    def __init__(self):
         QtCore.QObject.__init__(self)
+        self.root_dir = None
+        self.dataframe = pd.DataFrame(data=None)
+        self.child_dataframes = None
+
+    def set(self, project_root_dir: str):
         self.root_dir = project_root_dir
         configuration.proj_path = self.root_dir
         self.dataframe = pd.DataFrame(data=None)
         self.signal_dataframe_changed.connect(self.save_dataframe)
         self.child_dataframes = dict()
 
-    def create_child_dataframes(self):
+    def create_sub_dataframe(self):
         for child_name in configuration.proj_cfg.options('CHILD_DFS'):
             filt = configuration.proj_cfg['CHILD_DFS'][child_name]
             df = self.dataframe.copy()
@@ -43,7 +50,7 @@ class ProjectManager(QtCore.QObject):
                 df = eval(f)
             self.child_dataframes.update({child_name: {'dataframe': df, 'filter_history': filt}})
 
-    def add_child_dataframe(self, child_name: str, filter_history: str, dataframe: pd.DataFrame):
+    def add_sub_dataframe(self, child_name: str, filter_history: str, dataframe: pd.DataFrame):
         self.child_dataframes.update({child_name: {'dataframe': dataframe, 'filter_history': filter_history}})
         if child_name in configuration.proj_cfg.options('CHILD_DFS'):
             configuration.proj_cfg['CHILD_DFS'][child_name] = configuration.proj_cfg['CHILD_DFS'][child_name] + '\n'.join(filter_history)
@@ -52,7 +59,7 @@ class ProjectManager(QtCore.QObject):
 
         configuration.save_proj_config()
 
-    def remove_child_dataframe(self, name: str):
+    def remove_sub_dataframe(self, name: str):
         self.child_dataframes.pop(name)
         configuration.proj_cfg.remove_option('CHILD_DFS', name)
         configuration.save_proj_config()
@@ -65,23 +72,25 @@ class ProjectManager(QtCore.QObject):
         os.mkdir(self.root_dir + '/plots')
         os.mkdir(self.root_dir + '/clusters')
 
-        configuration.new_proj_config()
+        configuration.create_new_proj_config()
 
         self._initialize_config_window()
         self.config_window.tabs.widget(0).ui.btnSave.clicked.connect(self._create_new_project_dataframe)
         self.config_window.show()
 
     def open_project(self):
-        if not os.path.isdir(self.root_dir + '/dataframes'):
-            raise NotADirectoryError('dataframes directory not found')
+        is_mesmerize_project(self.root_dir)
+        # if not os.path.isdir(self.root_dir + '/dataframes'):
+        #     raise NotADirectoryError('dataframes directory not found')
+        #
+        # if not os.path.isdir(self.root_dir + '/images'):
+        #     raise NotADirectoryError('images directory not found')
+        #
+        # if not os.path.isdir(self.root_dir + '/curves'):
+        #     raise NotADirectoryError('curves directory not found')
 
-        if not os.path.isdir(self.root_dir + '/images'):
-            raise NotADirectoryError('images directory not found')
-
-        if not os.path.isdir(self.root_dir + '/curves'):
-            raise NotADirectoryError('curves directory not found')
-
-        self.dataframe = pd.read_pickle(self.root_dir + '/dataframes/root.dfr')
+        df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
+        self.dataframe = pd.read_hdf(df_path, key='project_dataframe', mode='r')
 
         self._initialize_config_window()
 
@@ -113,10 +122,23 @@ class ProjectManager(QtCore.QObject):
         self.save_dataframe()
 
         start.project_browser()
-        configuration.window_manager.welcome_window.ui.btnProjectBrowser.clicked.connect(configuration.window_manager.project_browsers[-1].show)
+
+    def get_dataframe(self) -> pd.DataFrame:
+        return self.dataframe
+
+    def set_dataframe(self, dataframe: pd.DataFrame):
+        if not isinstance(dataframe, pd.DataFrame):
+            raise TypeError('Must pass an instance of pandas.DataFrame')
+        self.dataframe = dataframe.copy(deep=True)
+        self.emit_signal_dataframe_changed()
 
     def save_dataframe(self):
-        self.dataframe.to_pickle(self.root_dir + '/dataframes/root.dfr')
+        df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
+        if os.path.isfile(df_path):
+            warn('root.dfr already exists, renaming file...')
+            self.backup_project_dataframe()
+
+        self.dataframe.to_hdf(df_path, key='project_dataframe', mode='w')
 
     def update_project_config_requested(self, custom_to_add: dict):
         if self.dataframe.empty:
@@ -156,17 +178,17 @@ class ProjectManager(QtCore.QObject):
         if columns_changed:
             self.backup_project_dataframe()
             self.dataframe.drop(columns=columns_to_drop, inplace=True)
+            self.save_dataframe()
 
-            configuration.project_manager.signal_dataframe_changed.disconnect(configuration.window_manager.project_browsers[0].project_browser.update_dataframe_data)
-            configuration.window_manager.project_browsers[0].deleteLater()
-            del configuration.window_manager.project_browsers[0]
+            self.signal_dataframe_changed.disconnect(get_window_manager().project_browser.project_browser.update_dataframe_data)
+            get_window_manager().project_browser.deleteLater()
 
             self.signal_project_config_changed.emit()
             self.emit_signal_dataframe_changed()
 
-            start.project_browser()
-            start.load_child_dataframes_gui()
-            configuration.window_manager.project_browsers[0].show()
+            pb = start.project_browser()
+            pb.reload_all_tabs()
+            get_window_manager().project_browser = pb
 
         # configuration.proj_cfg_changed.notify_all()
 
@@ -174,7 +196,7 @@ class ProjectManager(QtCore.QObject):
         widget.children()
 
     def backup_project_dataframe(self):
-        copyfile(self.root_dir + '/dataframes/root.dfr', self.root_dir + '/dataframes/root_bak' + str(time()) + '.dfr')
+        move_file(os.path.join(self.root_dir, 'dataframes', 'root.dfr'), os.path.join(self.root_dir, 'dataframes', f'root_bak_{time()}.dfr'))
 
     def append_to_dataframe(self, dicts_to_append: list):
         self.backup_project_dataframe()
