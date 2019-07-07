@@ -20,14 +20,18 @@ Ubuntu 16.04 and later usually come pre-installed with snapd.
 
 You should be able to install ``snapd`` through apt for most Debian based distros::
 
-	$ sudo apt update
-	$ sudo apt install snapd
+	sudo apt update
+	sudo apt install snapd
 
 Installing ``snapd`` on Fedora::
 
-	$ sudo dnf install snapd
+	sudo dnf install snapd
 
 To install ``snapd`` on other distros please see: https://docs.snapcraft.io/installing-snapd
+
+If you have trouble installing Mesmerize via snap you might need to install `core18 <https://snapcraft.io/core18>`_ first::
+
+	sudo snap install core18
 
 PyPI
 ====
