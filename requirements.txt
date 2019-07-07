@@ -25,5 +25,7 @@ sklearn==0.0
 spyder==3.3.3
 tifffile==0.15.1
 tqdm==4.31.1
-PeakUtils
+PeakUtils==1.3.2
+h5py==2.9.0
+tables==3.5.2
 
