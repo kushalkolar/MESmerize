@@ -34,7 +34,7 @@ def is_building():
 s = dict(
     name='mesmerize',
     version='0.1',
-    packages=find_packages(exclude=['use_cases', 'use_cases.*']), #+ ['tests', 'tslearn', 'mesmerize.common', 'mesmerize.common.pytemplates', 'mesmerize.viewer',
+    packages=find_packages(exclude=['use_cases', 'use_cases.*', 'tests']), #+ ['tests', 'tslearn', 'mesmerize.common', 'mesmerize.common.pytemplates', 'mesmerize.viewer',
               # 'mesmerize.viewer.core', 'mesmerize.viewer.modules', 'mesmerize.viewer.modules.pytemplates',
               # 'mesmerize.viewer.modules.custom_modules', 'mesmerize.viewer.modules.stimmap_modules',
               # 'mesmerize.viewer.modules.batch_run_modules', 'mesmerize.viewer.modules.roi_manager_modules',

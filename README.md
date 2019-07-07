@@ -1,3 +1,6 @@
+[![Snap Status](https://build.snapcraft.io/badge/kushalkolar/MESmerize.svg)](https://build.snapcraft.io/user/kushalkolar/MESmerize) [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability)
+
 # Mesmerize
 
-Mesmerize is a platform, largely built using pyqtgraph, for the annotation and analysis of neuronal calcium imaging data. It is also able to work with temporal stimulus data acquired in conjunction with a Femtonics ________ microscope. Mesmerize does not provide a single static pipeline for calcium data analysis, it instead allows the user to dynamically design and adapt their own analysis pipeline(s) which are most coherent with their specific project, experiments, and scientific questions,  without the need to learn programming.
+Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize attempts to encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and keep track of the analysis so that it can be recapitulated. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.
+
