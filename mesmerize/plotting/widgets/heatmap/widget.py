@@ -15,7 +15,7 @@ from ..base import BasePlotWidget
 from .. import DatapointTracerWidget
 from ....analysis.data_types import HistoryTrace, Transmission
 from ....analysis import organize_dataframe_columns
-from .control_widget import Ui_ControlWidget
+from .control_widget_pytemplate import Ui_ControlWidget
 import numpy as np
 import pandas as pd
 from typing import Optional, Union

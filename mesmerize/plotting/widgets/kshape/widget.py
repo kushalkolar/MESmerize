@@ -9,7 +9,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-from .control_widget import *
+from .control_widget_pytemplate import *
 from . import kshape_process
 import psutil
 import os
