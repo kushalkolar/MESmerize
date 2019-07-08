@@ -11,7 +11,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtCore, QtWidgets
 from .compute_cc import compute_cc_data, CC_Data
-from .control_widget import Ui_CrossCorrelationControls
+from .control_widget_pytemplate import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
 from ....analysis import Transmission, get_sampling_rate, get_array_size, organize_dataframe_columns
