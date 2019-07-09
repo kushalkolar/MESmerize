@@ -36,6 +36,34 @@ class AbsoluteValue(CtrlNode):
         return self.t
 
 
+class XpowerY(CtrlNode):
+    """Raise each element of arrays in data column to the exponent Y"""
+    nodeName = 'XpowerY'
+    # Not sure why someone would take the 99th power or root, but I'll leave it there
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Y', 'intSpin', {'value': 2, 'min': -99, 'max': 99, 'step': 1}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+    output_column = '_X_POWER_Y'
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        self.t = transmission.copy()
+        Y = self.ctrls['Y'].value()
+        params = {'data_column': self.data_column,
+                  'exponent':    Y}
+
+        self.t.df[self.output_column] = self.t.df[self.data_column].apply(lambda x: np.power(x, Y))
+
+        self.t.history_trace.add_operation(data_block_id='all', operation='x_power_y', parameters=params)
+        self.t.last_output = self.output_column
+
+        return self.t
+
+
 class LogTransform(CtrlNode):
     """Can perform various log transforms"""
     nodeName = 'LogTransform'
