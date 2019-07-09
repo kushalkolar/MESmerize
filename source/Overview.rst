@@ -3,16 +3,16 @@ Overview
 
 .. image:: ./imgs/Overview/welcome_window.png
    :target: ./imgs/Overview/welcome_window.png
-   :alt: alt text
+   :alt: welcome window
 
 
 The Viewer
 ^^^^^^^^^^
 
 
-.. image:: ./imgs/Overview/overview.png
-   :target: ./imgs/Overview/overview.png
-   :alt: alt text
+.. image:: ./imgs/Overview/viewer.png
+   :target: ./imgs/Overview/viewer.png
+   :alt: viewer
 
 
 Opening Image sequences
@@ -28,14 +28,14 @@ Stimulus information from mes files or CSV's can be mapped onto your imaging dat
 CaImAn modules
 ^^^^^^^^^^^^^^
 
-Mesmerize contains front-end GUI modules for the extremely useful and versatile CaImAn library. This makes it very easy for users to make use of the library without writing a single line of code.
+Mesmerize contains front-end GUI modules for the extremely useful and versatile CaImAn library. This makes it very easy for users without a programming background to use the library.
 
 **CaImAn Elastic Motion Correction**
 
 
 .. image:: ./imgs/Overview/motion_correction.png
    :target: ./imgs/Overview/motion_correction.png
-   :alt: alt text
+   :alt: mot cor
 
 
 **CNMFE**
@@ -43,7 +43,7 @@ Mesmerize contains front-end GUI modules for the extremely useful and versatile 
 
 .. image:: ./imgs/Overview/cnmfe.png
    :target: ./imgs/Overview/cnmfe.png
-   :alt: alt text
+   :alt: cnmfe
 
 
 The computationally intense procedures performed using the CaImAn library (Elastic Motion Correction and CNMF) can be organized using the Mesmerize Batch Manager.
@@ -51,17 +51,22 @@ The computationally intense procedures performed using the CaImAn library (Elast
 Batch Manager
 ^^^^^^^^^^^^^
 
-
 .. image:: ./imgs/Overview/batch_manager.png
    :target: ./imgs/Overview/batch_manager.png
-   :alt: alt text
+   :alt: batch manager
 
+Project Organization
+^^^^^^^^^^^^^^^^^^^^
 
-ROI Manager
-^^^^^^^^^^^
+.. image:: ./imgs/Overview/project_browser.png
+  :target: ./imgs/Overview/project_browser.png
+  :alt: project browser
 
 Data analysis - pyqtgraph programmable flowcharts.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ./imgs/Overview/flowchart.png
+  :target: ./imgs/Overview/flowchart.png
 
 **Types of Nodes**
 
@@ -118,3 +123,9 @@ Data analysis - pyqtgraph programmable flowcharts.
 
       * **Decomposition** - based on sklearn
       * PCA
+
+Interactive Plots
+^^^^^^^^^^^^^^^^^
+
+.. image:: ./imgs/Overview/interactive.gif
+  :target: ./imgs/Overview/interactive.gif

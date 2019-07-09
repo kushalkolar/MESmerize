@@ -20,6 +20,8 @@ from functools import partial
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
+    """Module used for loading tiff files into the Viewer Work Enviroment."""
+
     load_methods = ['asarray', 'asarray-multi', 'imread']
 
     def __init__(self, parent, viewer_reference):
@@ -104,7 +106,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.load_tiff_file(tiff_path, meta_path, method)
 
-    def load_tiff_file(self, tiff_path, meta_path, method):
+    def load_tiff_file(self, tiff_path: str, meta_path: str, method: str) -> None:
+        """
+        Load a tiff file along with associated meta data
+
+        :param tiff_path: path to the tiff file
+        :param meta_path: path to the json meta data file
+        :param method: one of "asarray", "asarray-multi", or "imread". "asarray" and "asarray-multi" use :meth:`tifffile.asarray`, "asarray-multi" is for multi-page tiffs, and "imread" uses :meth:`tifffile.imread`
+        :return:
+        """
         self.vi.viewer.status_bar_label.showMessage('Please wait, loading tiff file, this may take a few minutes...')
 
         if not self.vi.discard_workEnv():

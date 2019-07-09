@@ -8,7 +8,7 @@ Snap
 The easiest way to get Mesmerize is through the Snap Store
 
 .. image:: https://snapcraft.io/static/images/badges/en/snap-store-black.svg
-	:target: https://snapcraft.io/mesmerize
+  :target: https://snapcraft.io/mesmerize
 
 Command line snap installation:
 ``sudo snap install mesmerize``

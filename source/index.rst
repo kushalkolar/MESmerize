@@ -6,7 +6,8 @@
 Welcome to Mesmerize's documentation!
 =====================================
 
-GitHub repo: https://github.com/kushalkolar/MESmerize
+| GitHub: https://github.com/kushalkolar/MESmerize
+| Help forum: https://groups.google.com/d/forum/mesmerize
 
 .. toctree::
 	:maxdepth: 1
@@ -18,7 +19,8 @@ GitHub repo: https://github.com/kushalkolar/MESmerize
 .. toctree::
 	:maxdepth: 2
 	:caption: User Guides:
-	
+
+	./user_guides/convert_meta_data
 	./user_guides/project_organization/new_project/new_project
 	./user_guides/viewer/overview
 	./user_guides/viewer/add_to_project
@@ -30,6 +32,7 @@ GitHub repo: https://github.com/kushalkolar/MESmerize
 	:caption: API Reference:
 
 	./api_reference/Viewer_data_types
+	./api_reference/viewer_modules/viewer_modules
 	./api_reference/Analysis_data_types
 
 

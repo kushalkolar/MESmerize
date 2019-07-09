@@ -30,6 +30,7 @@ class ViewerUtils:
         self.roi_manager = None
 
     def update_workEnv(self):
+        """Update the ImageView widget with the ViewerWorkEnv"""
         self.viewer.status_bar_label.showMessage('Updating work environment, please wait...')
         self.viewer.parent().show()
 
@@ -53,6 +54,7 @@ class ViewerUtils:
         self.viewer.ui.splitter.setEnabled(b)
 
     def discard_workEnv(self, clear_sample_id=False):
+        """Ask the user if they want to discard their work environment"""
         self.viewer.parent().show()
 
         if self.viewer.workEnv.isEmpty:
@@ -69,6 +71,7 @@ class ViewerUtils:
         return True
 
     def _clear_workEnv(self, clear_sample_id=False):
+        """Cleanup of the ViewerWorkEnv and ImageView widget"""
         if self.viewer.workEnv.roi_manager is not None:
             self.viewer.workEnv.roi_manager.clear()
         # re-initialize ROI and curve lists

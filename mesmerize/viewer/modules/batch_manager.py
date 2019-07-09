@@ -362,11 +362,9 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def process_batch(self, start_ix: Union[int, uuid.UUID] = 0, clear_viewers=False):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch
-        :param start_ix:       Either DataFrame index (int) or UUID of the item to start from.
-        :type  start_ix:       Union[int, uuid.UUID]
 
+        :param start_ix:       Either DataFrame index (int) or UUID of the item to start from.
         :param clear_viewers:  Clear work environments in all viewers that are open
-        :type  clear_viewers:  sbool
         """
 
         if isinstance(start_ix, (str, uuid.UUID)):
