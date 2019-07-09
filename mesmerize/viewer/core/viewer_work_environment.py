@@ -205,6 +205,13 @@ class ViewerWorkEnv:
 
     @staticmethod
     def _organize_meta(meta: dict, origin: str) -> dict:
+        """
+        Organize input meta data dict into a uniform structure
+
+        :param meta:    meta data dict, origin from a json file for example
+        :param origin:  name of the origin source of the meta data, such a program or microscope etc.
+        :return:        dict organized with keys that are used throughout Mesmerize.
+        """
         if origin == 'mes':
             fps = float(1000/meta['FoldedFrameInfo']['frameTimeLength'])
 
@@ -224,8 +231,6 @@ class ViewerWorkEnv:
                       'vmax':      vmax,
                       'orig_meta': meta}
 
-            return meta_d
-
         elif origin == 'AwesomeImager' or origin == 'DeepEyes':
             meta_d = {'origin':     origin,
                       'version':    meta['version'],
@@ -234,16 +239,29 @@ class ViewerWorkEnv:
                       'vmin':       meta['level_min'],
                       'vmax':       meta['level_max'],
                       'orig_meta':  meta}
-            return meta_d
 
         else:
-            raise ValueError('Unrecognized meta data source.')
+            required = ['fps', 'date']
+            if not all(k in meta.keys() for k in required):
+                raise KeyError(f'Meta data dict must contain all mandatory fields: {required}')
+
+            meta_d = {'origin':     origin,
+                      'fps':        meta['fps'],
+                      'date':       meta['date']}
+
+            if 'orig_meta' in meta.keys():
+                meta_d.update({'orig_meta': meta['orig_meta']})
+
+        return meta_d
 
     @classmethod
     def from_mesfile(cls, mesfile_object: MES, img_reference: str):
         """
         Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
         MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.
+
+        :param mesfile_object: MES object, created from .mes file
+        :param img_reference: image reference to load, see :meth:`mesmerize.viewer.core.mesfile.MES.get_image_references`
         """
         imgseq, raw_meta = mesfile_object.load_img(img_reference)
 
@@ -257,6 +275,7 @@ class ViewerWorkEnv:
     def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = ''):
         """
         Return instance of work environment with ImgData.seq set from tifffile.imread.
+
         :param path:        path to the tiff file
         :param method:      one of 'imread', 'asarray', or 'asarray-multi'. Refers to usage of either tifffile.imread
                             or tifffile.asarray. 'asarray-multi' will load multi-page tiff files.

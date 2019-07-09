@@ -3,7 +3,7 @@ Data types used for analysis
 
 BaseTransmission
 ================
-.. autoclass:: analysis.data_types.BaseTransmission
+.. autoclass:: mesmerize.analysis.data_types.BaseTransmission
 	:special-members:
 	:members:
 	:private-members:
@@ -12,7 +12,7 @@ Transmission
 ================
 **Inherits from BaseTransmission**
 
-.. autoclass:: analysis.data_types.Transmission
+.. autoclass:: mesmerize.Transmission
 	:special-members:
 	:members:
 	:private-members:
@@ -20,16 +20,13 @@ Transmission
 Transmission Helper functions
 -----------------------------
 
-.. autofunction:: analysis.data_types.get_sampling_rate
+.. autofunction:: mesmerize.analysis.get_sampling_rate
 
-.. autofunction:: analysis.data_types.get_array_size
+.. autofunction:: mesmerize.analysis.get_array_size
 
 HistoryTrace
 ================
-.. autoclass:: analysis.data_types.HistoryTrace
+.. autoclass:: mesmerize.analysis.data_types.HistoryTrace
 	:special-members:
 	:members:
 	:private-members:
-
-.. autoclass:: mesmerize.viewer.module.batch_manager.ModuleGUI
-	:members:
