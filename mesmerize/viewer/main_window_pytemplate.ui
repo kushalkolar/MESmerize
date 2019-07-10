@@ -20,12 +20,12 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Fi&amp;le</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionAdd_to_project"/>
     <addaction name="separator"/>
@@ -65,13 +65,13 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>E&amp;dit</string>
+     <string>&amp;Edit</string>
     </property>
     <addaction name="actionMeta_data"/>
    </widget>
    <widget class="QMenu" name="menuCustom_Modules">
     <property name="title">
-     <string>Plugins</string>
+     <string>&amp;Plugins</string>
     </property>
    </widget>
    <widget class="QMenu" name="menuImage">
@@ -108,7 +108,7 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionOpen_docs"/>
    </widget>

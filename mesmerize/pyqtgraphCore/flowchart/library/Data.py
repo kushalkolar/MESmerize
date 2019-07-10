@@ -176,6 +176,9 @@ class Merge(CtrlNode):
     nodeName = 'Merge'
     uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True})]
 
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
+
     def process(self, **kwargs):
         self.transmissions = kwargs['In']
         self.transmissions_list = merge_transmissions(self.transmissions)

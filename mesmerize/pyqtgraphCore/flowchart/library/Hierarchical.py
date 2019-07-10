@@ -121,14 +121,13 @@ class FCluster(CtrlNode):
                 pass
 
 
-
 class Inconsistent(CtrlNode):
     """Calculate inconsistency statistics on a linkage matrix. Returns inconsistency matrix"""
     nodeName = 'Inconsistent'
     uiTemplate = [('levels', 'intSpin', {'value': 2, 'min': 1, 'max': 99, 'step': 1})]
 
     def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'Linkage': {'io': 'in', 'multi': False}, 'IncM': {'io', 'out'}})
+        CtrlNode.__init__(self, name, terminals={'Linkage': {'io': 'in', 'multi': False}, 'IncM': {'io': 'out'}})
 
     def process(self, **kwargs) -> Dict[str, Dict[np.ndarray, int]]:
         Z = kwargs['Linkage']
@@ -142,7 +141,7 @@ class Inconsistent(CtrlNode):
 class MaxInconsistent(CtrlNode):
     """Return the maximum inconsistency coefficient for each non-singleton cluster and its children."""
     nodeName = 'MaxInconsistent'
-    uiTemplate = [('no params', 'label', {'text', 'no params'})]
+    uiTemplate = [('no params', 'label', {'text': 'no params'})]
 
     def __init__(self, name, **kwargs):
         CtrlNode.__init__(self, name, terminals={'Linkage': {'io': 'in', 'multi': False},
@@ -170,7 +169,7 @@ class MaxInconsistent(CtrlNode):
 
 class MaxIncStat(CtrlNode):
     """Return the maximum statistic for each non-singleton cluster and its children."""
-    nodeName = 'MaxRStat'
+    nodeName = 'MaxIncStat'
     uiTemplate = [('Stat', 'combo', {'items': ['mean', 'stdev', 'num_links', 'inc_coef']})]
 
     def __init__(self, name, **kwargs):
