@@ -4,7 +4,7 @@ Viewer overview
 **The Viewer allows you to do the following things:**
 
 * Examine your calcium movies
-* Use a lot of modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.
+* Use modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.
 * You can also make modifications to an existing Sample in your project by opening it in the Viewer. See Modify Sample and Overwrite guide.
 
 Viewer layout
@@ -53,10 +53,14 @@ If you double click on “meta” above you can see your meta data.
 
 .. image:: ./overview/10.png
 
-A faster way to explore your meta data is through the console.
+You can view your meta data more quickly using the console.
 
 Open the console by going to View -> Console.
-You can then type the following to see the meta data: ``viewer.workEnv.imgdata.meta``
+You can then call ``get_meta()`` to print the meta data dict.
 
 .. image:: ./overview/11.png
 
+Running scripts
+---------------
+
+You can run scripts in the Viewer console to automate tasks such as batch creation. See the scripting guides <ref here> for more detail.
