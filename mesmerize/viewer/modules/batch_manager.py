@@ -362,9 +362,11 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def process_batch(self, start_ix: Union[int, uuid.UUID] = 0, clear_viewers=False):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch
-
         :param start_ix:       Either DataFrame index (int) or UUID of the item to start from.
+        :type  start_ix:       Union[int, uuid.UUID]
+
         :param clear_viewers:  Clear work environments in all viewers that are open
+        :type  clear_viewers:  sbool
         """
 
         if isinstance(start_ix, (str, uuid.UUID)):
@@ -468,7 +470,7 @@ class ModuleGUI(QtWidgets.QWidget):
         for f in files:
             src = os.path.join(self.working_dir, f)
             dst = os.path.join(self.batch_path, f)
-            shell_str += f'mv -n {src} {dst}\n'
+            shell_str += f'mv {src} {dst}\n'
         u = f'*{UUID}*'
         shell_str += f'rm {os.path.join(self.working_dir, u)}'
         move_file = os.path.join(self.working_dir, 'move.sh')
