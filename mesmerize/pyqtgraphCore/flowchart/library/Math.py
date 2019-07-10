@@ -41,7 +41,7 @@ class XpowerY(CtrlNode):
     nodeName = 'XpowerY'
     # Not sure why someone would take the 99th power or root, but I'll leave it there
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Y', 'intSpin', {'value': 2, 'min': -99, 'max': 99, 'step': 1}),
+                  ('Y', 'doubleSpin', {'value': 2.0, 'min': -99.0, 'max': 99.0, 'step': 0.5}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
     output_column = '_X_POWER_Y'
 
