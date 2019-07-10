@@ -2,18 +2,11 @@ Overview
 ********
 
 .. image:: ./imgs/Overview/welcome_window.png
-   :target: ./imgs/Overview/welcome_window.png
-   :alt: welcome window
-
 
 The Viewer
 ^^^^^^^^^^
 
-
 .. image:: ./imgs/Overview/viewer.png
-   :target: ./imgs/Overview/viewer.png
-   :alt: viewer
-
 
 Opening Image sequences
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -32,19 +25,11 @@ Mesmerize contains front-end GUI modules for the extremely useful and versatile 
 
 **CaImAn Elastic Motion Correction**
 
-
 .. image:: ./imgs/Overview/motion_correction.png
-   :target: ./imgs/Overview/motion_correction.png
-   :alt: mot cor
-
 
 **CNMFE**
 
-
 .. image:: ./imgs/Overview/cnmfe.png
-   :target: ./imgs/Overview/cnmfe.png
-   :alt: cnmfe
-
 
 The computationally intense procedures performed using the CaImAn library (Elastic Motion Correction and CNMF) can be organized using the Mesmerize Batch Manager.
 
@@ -52,21 +37,16 @@ Batch Manager
 ^^^^^^^^^^^^^
 
 .. image:: ./imgs/Overview/batch_manager.png
-   :target: ./imgs/Overview/batch_manager.png
-   :alt: batch manager
 
 Project Organization
 ^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ./imgs/Overview/project_browser.png
-  :target: ./imgs/Overview/project_browser.png
-  :alt: project browser
 
 Data analysis - pyqtgraph programmable flowcharts.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ./imgs/Overview/flowchart.png
-  :target: ./imgs/Overview/flowchart.png
 
 **Types of Nodes**
 
@@ -128,4 +108,3 @@ Interactive Plots
 ^^^^^^^^^^^^^^^^^
 
 .. image:: ./imgs/Overview/interactive.gif
-  :target: ./imgs/Overview/interactive.gif
