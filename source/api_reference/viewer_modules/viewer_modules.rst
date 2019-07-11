@@ -9,6 +9,8 @@ Batch Manager
     :members:
     :private-members:
 
+.. _API_TiffModule:
+
 Tiff Module
 ===========
 Can be used with scripts within Mesmerize for loading tiff files without using the API of :ref:`ViewerCore`

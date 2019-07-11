@@ -24,6 +24,7 @@ Welcome to Mesmerize's documentation!
 	./user_guides/project_organization/new_project/new_project
 	./user_guides/viewer/overview
 	./user_guides/viewer/add_to_project
+	./user_guides/flowchart/nodes
 	./user_guides/faq
 
 
