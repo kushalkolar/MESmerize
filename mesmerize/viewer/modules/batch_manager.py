@@ -14,7 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 # from ..core.common import ViewerUtils
 # from ..core.viewer_work_environment import ViewerWorkEnv
 from ..core import ViewerUtils, ViewerWorkEnv
-# from ...pyqtgraphCore.imageview import ImageView
+from ...pyqtgraphCore.imageview import ImageView
 from ..main_window import MainWindow as ViewerWindow
 from ..core.background_tiff_compressor import Compressor as TiffCompressor
 from ...common import get_sys_config, get_timestamp_str, get_window_manager
@@ -145,10 +145,7 @@ class ModuleGUI(QtWidgets.QWidget):
         Get DataFrame index from UUID
 
         :param u: UUID or str representing UUID
-        :type u: Union[uuid.UUID, str]
-
         :return:  numerical index of the DataFrame corresponding to the UUID
-        :rtype: int
         """
         ix = self.df.index[self.df['uuid'] == uuid.UUID(u)]
         i = int(ix.to_native_types()[0])
@@ -196,7 +193,6 @@ class ModuleGUI(QtWidgets.QWidget):
         self.show()
 
     def btn_view_input_slot(self):
-        # TODO: This should ask which viewer to display output in if more than 2 are open
         s = self.ui.listwBatch.currentItem()
         UUID = s.data(3)
 
@@ -218,13 +214,8 @@ class ModuleGUI(QtWidgets.QWidget):
         Pass either the batch DataFrame row or UUID of the item of which to load the input into a viewer
 
         :param viewers: ViewerWindow or list of ImageView
-        :type viewers:  Union[ViewerWindow, UserList]
-
         :param  r:    Row of batch DataFrame corresponding to the selected item
-        :type   r:    pandas.Series
-
         :param UUID:  UUID of the item to load input from
-        :type  UUID:  uuid.UUID
         """
 
         if (r is None) and (UUID is None):
@@ -294,17 +285,13 @@ class ModuleGUI(QtWidgets.QWidget):
             else:
                 self.load_item_output(m, viewers[0], UUID)
 
-    def load_item_output(self, module: str, viewers: Union[ViewerWindow, UserList], UUID: uuid.UUID):
+    def load_item_output(self, module: str, viewers: Union[ViewerWindow, ImageView, UserList], UUID: uuid.UUID):
         """
         Calls subclass of BatchRunInterface.show_output()
-        :param module:      The module name under /batch_run_modules that the batch item is from
-        :type  module:      str
 
-        :param viewers: ViewerWindow or list of ImageView
-        :type viewers:  Union[ViewerWindow, UserList]
-
-        :param UUID:  UUID of the item to load input from
-        :type  UUID:  uuid.UUID
+        :param module:  The module name under /batch_run_modules that the batch item is from
+        :param viewers: ViewerWindow, ImageView, or list of ViewerWindows
+        :param UUID:    UUID of the item to load input from
         """
         if len(self.output_widgets) > 3:
             try:
@@ -315,14 +302,19 @@ class ModuleGUI(QtWidgets.QWidget):
 
         module = globals()[module]
 
-        if not isinstance(viewers, UserList):
+        if isinstance(viewers, ViewerWindow):
             viewer = viewers.viewer_reference
-        else:
+        elif isinstance(viewers, ImageView):
+            viewer = viewers
+        elif isinstance(viewers, UserList):
             if self.lwd.listWidget.currentItem() is None:
                 QtWidgets.QMessageBox.warning(self, 'Nothing selected', 'You must select from the list')
                 return
             i = int(self.lwd.listWidget.currentRow())
             viewer = viewers[i].viewer_reference
+        else:
+            raise TypeError('"viewers" argument must be one of: ViewerWindow, ImageView, or list of ViewerWindows')
+
         try:
             self.output_widgets.append(module.Output(self.batch_path, UUID, viewer))
         except:
@@ -362,11 +354,9 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def process_batch(self, start_ix: Union[int, uuid.UUID] = 0, clear_viewers=False):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch
-        :param start_ix:       Either DataFrame index (int) or UUID of the item to start from.
-        :type  start_ix:       Union[int, uuid.UUID]
 
+        :param start_ix:       Either DataFrame index (int) or UUID of the item to start from.
         :param clear_viewers:  Clear work environments in all viewers that are open
-        :type  clear_viewers:  sbool
         """
 
         if isinstance(start_ix, (str, uuid.UUID)):
@@ -586,20 +576,10 @@ class ModuleGUI(QtWidgets.QWidget):
         Add an item to the currently open batch
 
         :param  module:         The module to run from /batch_run_modules.
-        :type   module:         str
-
         :param  input_workEnv:  Input workEnv that the module will use
-        :type   input_workEnv:  ViewerWorkEnv
-
         :param  input_params:   Input params that the module will use. Depends on your subclass of BatchRunInterface.process() method
-        :type   input_params:   dict
-
         :param  name:           A name for the batch item
-        :param  name:           str
-
         :param  info:           A dictionary with any metadata information to display in the scroll area label.
-        :param  info:           str
-
         :return:                UUID of the added item
         """
         if input_workEnv.isEmpty:
