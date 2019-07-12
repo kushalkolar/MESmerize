@@ -141,7 +141,8 @@ def get_array_size(transmission: Transmission, data_column: str) -> int:
 def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[str], List[str]]:
     """
     Organizes DataFrame columns into data column, categorical label columns, and uuid columns.
-    :param columns: DataFrame columns
+
+    :param columns: All DataFrame columns
     :return:        (data_columns, categorical_columns, uuid_columns)
     """
     columns = list(columns)
