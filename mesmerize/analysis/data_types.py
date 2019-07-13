@@ -267,8 +267,11 @@ class HistoryTrace:
 
     @classmethod
     def merge(cls, history_traces: list):
-        """Merge a list of HistoryTrace instances into one HistoryTrace instance.
-        Useful when merging Transmission objects"""
+        """
+        Merge a list of HistoryTrace instances into one HistoryTrace instance.
+        Useful when merging Transmission objects.
+        """
+
         assert all(isinstance(h, HistoryTrace) for h in history_traces)
         data_blocks_l2_list = [h.data_blocks for h in history_traces]
         data_blocks = list(chain.from_iterable(data_blocks_l2_list))
@@ -515,7 +518,7 @@ class Transmission(BaseTransmission):
     @classmethod
     def merge(cls, transmissions: list):
         """
-        Merges a list of Transmissions into one transmission. A single dataframe is created by simple concatenation.
+        Merges a list of Transmissions into one transmission. A single DataFrame is created by simple concatenation.
         HistoryTrace objects are also merged using HistoryTrace.merge.
 
         :param transmissions: A list containing Transmission objects to merge
