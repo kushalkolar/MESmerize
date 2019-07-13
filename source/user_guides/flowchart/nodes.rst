@@ -311,6 +311,105 @@ TimeSeries
 	For more information see :ref:`plot_TimeSeries`
 
 
+--------
+
+.. _nodes_Signal:
+
+Signal
+------
+
+**Routine signal processing functions**
+
+I recommend this book by Professor Tom O'Haver if you are unfamiliar with basic signal processing: https://terpconnect.umd.edu/~toh/spectrum/TOC.html
+
+
+.. _node_ButterWorth:
+
+Butterworth
+^^^^^^^^^^^
+
+	Creates a Butterworth filter using `scipy.signal.butter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter>`_ and applies it using `scipy.signal.filtfilt <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html>`_. 
+
+	The Wn parameter of `scipy.signal.butter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter>`_ is calculated by dividing the sampling rate of the data by the *freq_divisor* parameter (see below).
+
+	**Output Data Column** *(numerical)*: _BUTTERWORTH
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with filtered signals in the output data column
+	========== 	=================
+
+	============ 	===========
+	Parameters		Description
+	============	===========
+	data_column	Data column containing numerical arrays
+	order		Order of the filter
+	freq_divisor	Divisor for dividing the sampling frequency of the data to get Wn
+	Apply		:ref:`ApplyCheckBox`
+	============ 	===========
+
+
+.. _node_SavitzkyGolay:
+
+SavitzkyGolay
+^^^^^^^^^^^^^
+
+	Savitzky Golay filter. Uses `scipy.signal.savgol_filter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html>`_.
+
+	**Output Data Column** *(numerical)*: _SAVITZKY_GOLAY
+
+.. _node_PowSpecDens:
+
+PowSpecDens
+^^^^^^^^^^^
+
+
+.. _node_Resample:
+
+Resample
+^^^^^^^^
+
+
+.. _node_ScalerMeanVar:
+
+ScalerMeanVar
+^^^^^^^^^^^^^
+
+
+.. _node_Normalize:
+
+Normalize
+^^^^^^^^^
+
+
+.. _node_RFFT:
+
+RFFT
+^^^^
+
+
+.. _node_iRFFT:
+
+iRFFT
+^^^^^
+
+
+.. _node_PeakDetect:
+
+PeakDetect
+^^^^^^^^^^
+
+
+.. _node_PeakFeatures:
+
+PeakFeatures
+^^^^^^^^^^^^
+
+
+--------
+
 
 .. _nodes_Hierarchical:
 
@@ -319,7 +418,7 @@ Hierarchical
 
 These nodes allow you to perform Hierarchical Clustering using `scipy.cluster.hierarchy <https://docs.scipy.org/doc/scipy-1.2.1/reference/cluster.hierarchy.html>`_.
 
-If you are unfamiliar with Hierarchical Clustering I recommend going through this chapter from a Stanford Statistics course: http://www.econ.upf.edu/~michael/stanford/maeb7.pdf
+If you are unfamiliar with Hierarchical Clustering I recommend going through this chapter from Michael Greenacre: http://www.econ.upf.edu/~michael/stanford/maeb7.pdf
 
 .. note::
 	**Some of these nodes do not use Transmission objects for some inputs/outputs.**
