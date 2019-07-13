@@ -1,73 +1,13 @@
 # -*- coding: utf-8 -*-
+import traceback
+from PyQt5 import QtWidgets
+from ....plotting.widgets.peak_editor import peak_editor
 from .common import *
-from ....analysis.data_types import Transmission
+from ....analysis import Transmission, peak_feature_extraction
 from scipy import signal
+from scipy import fftpack
 import pandas as pd
-from ....analysis.math.tvregdiff import tv_reg_diff
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
-
-
-class Derivative(CtrlNode):
-    """Return the Derivative of a curve."""
-    nodeName = 'Derivative'
-    uiTemplate = [('data_column', 'combo', {}),
-                  ('dt', 'intSpin', {'min': 1, 'max': 999, 'value': 1, 'step': 1}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True})
-                  ]
-
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        self.set_data_column_combo_box()
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        self.t = transmission.copy()
-
-        output_column = '_DERIVATIVE'
-
-        self.t.df[output_column] = self.t.df[self.data_column].apply(np.gradient)
-        self.t.last_output = output_column
-
-        params = {'data_column': self.data_column,
-                  'units': self.t.last_unit
-                  }
-
-        self.t.history_trace.add_operation(data_block_id='all', operation='derivative', parameters=params)
-
-        return self.t
-
-
-class TVDiff(CtrlNode):
-    """Total Variation Regularized Numerical Differentiation, Chartrand 2011 method"""
-    nodeName = 'TVDiff'
-    uiTemplate = [('data_column', 'combo', {}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True}),
-                  ]
-
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        self.set_data_column_combo_box()
-
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        self.t = transmission.copy()
-
-        output_column = '_TVDIFF'
-        tqdm.pandas()
-        self.t.df[output_column] = self.t.df[self.data_column].progress_apply(lambda x: self._func(x, 100, 1e-1, dx=0.05, ep=1e-2, scale='large', diagflag=0))
-        self.t.last_output = output_column
-
-        params = {'data_column': self.data_column,
-                  'units': self.t.last_unit
-                  }
-
-        self.t.history_trace.add_operation(data_block_id='all', operation='tvdiff', parameters=params)
-
-        return self.t
-
-    def _func(self, *args, **kwargs):
-        return tv_reg_diff(*args, **kwargs)
 
 
 class ButterWorth(CtrlNode):
@@ -199,8 +139,8 @@ class PowerSpectralDensity(CtrlNode):
 
 
 class Resample(CtrlNode):
-    """Resample 1D data, uses scipy.signal.resample. "Rs" number of samples to resample to per "Tu" unit of time.
-    If "Tu" = 1, then Rs is the new sampling rate to resample to\nOutput Column -> Input Column"""
+    """Resample 1D data, uses scipy.signal.resample. "Rs": New sampling rate in "Tu" units of time.
+    If "Tu" = 1, then Rs is the new sampling rate in Hertz\nOutput Column -> Input Column"""
 
     nodeName = 'Resample'
     uiTemplate = [('data_column', 'combo', {}),
@@ -243,9 +183,6 @@ class Resample(CtrlNode):
             raise ValueError('Framerate not set for SampleID: ' + row['SampleID']
                              + '. You must set a framerate for this SampleID to continue')
         Ns = row[self.data_column].shape[0]
-
-        Rs = self.ctrls['Rs'].value()
-        Tu = self.ctrls['Tu'].value()
 
         Rn = int((Ns / Nf) * (self.new_rate))
 
@@ -329,371 +266,433 @@ class Normalize(CtrlNode):
 
         return self.t
 
-# class Downsample(CtrlNode):
-#     """Downsample by averaging samples together."""
-#     nodeName = 'Downsample'
-#     uiTemplate = [
-#         ('n', 'intSpin', {'min': 1, 'max': 1000000})
-#     ]
-#
-#     def processData(self, data):
-#         return functions.downsample(data, self.ctrls['n'].value(), axis=0)
-#
-#
-# class Subsample(CtrlNode):
-#     """Downsample by selecting every Nth sample."""
-#     nodeName = 'Subsample'
-#     uiTemplate = [
-#         ('n', 'intSpin', {'min': 1, 'max': 1000000})
-#     ]
-#
-#     def processData(self, data):
-#         return data[::self.ctrls['n'].value()]
-#
-#
-# class Bessel(CtrlNode):
-#     """Bessel filter. Input data must have time values."""
-#     nodeName = 'BesselFilter'
-#     uiTemplate = [
-#         ('band', 'combo', {'values': ['lowpass', 'highpass'], 'index': 0}),
-#         ('cutoff', 'spin', {'value': 1000., 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'Hz', 'siPrefix': True}),
-#         ('order', 'intSpin', {'value': 4, 'min': 1, 'max': 16}),
-#         ('bidir', 'check', {'checked': True})
-#     ]
-#
-#     def processData(self, data):
-#         s = self.stateGroup.state()
-#         if s['band'] == 'lowpass':
-#             mode = 'low'
-#         else:
-#             mode = 'high'
-#         return functions.besselFilter(data, bidir=s['bidir'], btype=mode, cutoff=s['cutoff'], order=s['order'])
-#
-#
-# class Butterworth(CtrlNode):
-#     """Butterworth filter"""
-#     nodeName = 'ButterworthFilter'
-#     uiTemplate = [
-#         ('band', 'combo', {'values': ['lowpass', 'highpass'], 'index': 0}),
-#         ('wPass', 'spin', {'value': 1000., 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'Hz', 'siPrefix': True}),
-#         ('wStop', 'spin', {'value': 2000., 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'Hz', 'siPrefix': True}),
-#         ('gPass', 'spin', {'value': 2.0, 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'dB', 'siPrefix': True}),
-#         ('gStop', 'spin', {'value': 20.0, 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'dB', 'siPrefix': True}),
-#         ('bidir', 'check', {'checked': True})
-#     ]
-#
-#     def processData(self, data):
-#         s = self.stateGroup.state()
-#         if s['band'] == 'lowpass':
-#             mode = 'low'
-#         else:
-#             mode = 'high'
-#         ret = functions.butterworthFilter(data, bidir=s['bidir'], btype=mode, wPass=s['wPass'], wStop=s['wStop'], gPass=s['gPass'], gStop=s['gStop'])
-#         return ret
-#
-#
-# class ButterworthNotch(CtrlNode):
-#     """Butterworth notch filter"""
-#     nodeName = 'ButterworthNotchFilter'
-#     uiTemplate = [
-#         ('low_wPass', 'spin', {'value': 1000., 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'Hz', 'siPrefix': True}),
-#         ('low_wStop', 'spin', {'value': 2000., 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'Hz', 'siPrefix': True}),
-#         ('low_gPass', 'spin', {'value': 2.0, 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'dB', 'siPrefix': True}),
-#         ('low_gStop', 'spin', {'value': 20.0, 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'dB', 'siPrefix': True}),
-#         ('high_wPass', 'spin', {'value': 3000., 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'Hz', 'siPrefix': True}),
-#         ('high_wStop', 'spin', {'value': 4000., 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'Hz', 'siPrefix': True}),
-#         ('high_gPass', 'spin', {'value': 2.0, 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'dB', 'siPrefix': True}),
-#         ('high_gStop', 'spin', {'value': 20.0, 'step': 1, 'dec': True, 'range': [0.0, None], 'suffix': 'dB', 'siPrefix': True}),
-#         ('bidir', 'check', {'checked': True})
-#     ]
-#
-#     def processData(self, data):
-#         s = self.stateGroup.state()
-#
-#         low = functions.butterworthFilter(data, bidir=s['bidir'], btype='low', wPass=s['low_wPass'], wStop=s['low_wStop'], gPass=s['low_gPass'], gStop=s['low_gStop'])
-#         high = functions.butterworthFilter(data, bidir=s['bidir'], btype='high', wPass=s['high_wPass'], wStop=s['high_wStop'], gPass=s['high_gPass'], gStop=s['high_gStop'])
-#         return low + high
-#
-#
-# class Mean(CtrlNode):
-#     """Filters data by taking the mean of a sliding window"""
-#     nodeName = 'MeanFilter'
-#     uiTemplate = [
-#         ('n', 'intSpin', {'min': 1, 'max': 1000000})
-#     ]
-#
-#     @metaArrayWrapper
-#     def processData(self, data):
-#         n = self.ctrls['n'].value()
-#         return functions.rollingSum(data, n) / n
-#
-#
-# class Median(CtrlNode):
-#     """Filters data by taking the median of a sliding window"""
-#     nodeName = 'MedianFilter'
-#     uiTemplate = [
-#         ('n', 'intSpin', {'min': 1, 'max': 1000000})
-#     ]
-#
-#     @metaArrayWrapper
-#     def processData(self, data):
-#         try:
-#             import scipy.ndimage
-#         except ImportError:
-#             raise Exception("MedianFilter node requires the package scipy.ndimage.")
-#         return scipy.ndimage.median_filter(data, self.ctrls['n'].value())
-#
-# class Mode(CtrlNode):
-#     """Filters data by taking the mode (histogram-based) of a sliding window"""
-#     nodeName = 'ModeFilter'
-#     uiTemplate = [
-#         ('window', 'intSpin', {'value': 500, 'min': 1, 'max': 1000000}),
-#     ]
-#
-#     @metaArrayWrapper
-#     def processData(self, data):
-#         return functions.modeFilter(data, self.ctrls['window'].value())
-#
-#
-# class Denoise(CtrlNode):
-#     """Removes anomalous spikes from data, replacing with nearby values"""
-#     nodeName = 'DenoiseFilter'
-#     uiTemplate = [
-#         ('radius', 'intSpin', {'value': 2, 'min': 0, 'max': 1000000}),
-#         ('threshold', 'doubleSpin', {'value': 4.0, 'min': 0, 'max': 1000})
-#     ]
-#
-#     def processData(self, data):
-#         #print "DENOISE"
-#         s = self.stateGroup.state()
-#         return functions.denoise(data, **s)
-#
-#
-# class Gaussian(CtrlNode):
-#     """Gaussian smoothing filter."""
-#     nodeName = 'GaussianFilter'
-#     uiTemplate = [
-#         ('sigma', 'doubleSpin', {'min': 0, 'max': 1000000})
-#     ]
-#
-#     @metaArrayWrapper
-#     def processData(self, data):
-#         try:
-#             import scipy.ndimage
-#         except ImportError:
-#             raise Exception("GaussianFilter node requires the package scipy.ndimage.")
-#
-#         if hasattr(data, 'implements') and data.implements('MetaArray'):
-#             info = data.infoCopy()
-#             filt = pgfn.gaussianFilter(data.asarray(), self.ctrls['sigma'].value())
-#             if 'values' in info[0]:
-#                 info[0]['values'] = info[0]['values'][:filt.shape[0]]
-#             return metaarray.MetaArray(filt, info=info)
-#         else:
-#             return pgfn.gaussianFilter(data, self.ctrls['sigma'].value())
+
+class RFFT(CtrlNode):
+    """
+    Uses fftpack.rfft, 'Discrete Fourier transform of a real sequence.\n
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.rfft.html#scipy.fftpack.rfft
+    """
+    nodeName = 'RFFT'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        # TODO: Replace this code block with the DataTypes.get_framerate() method
+        ##############################################################################################################
+        sampling_rates = []
+
+        for db in transmission.history_trace.data_blocks:
+            if transmission.history_trace.check_operation_exists(db, 'resample'):
+                sampling_rates.append(transmission.history_trace.get_operation_params(db, 'resample')['output_rate'])
+            else:
+                r = pd.DataFrame(transmission.get_data_block_dataframe(db).meta.to_list())['fps'].unique()
+                # if rates.size > 1:
+                #     raise ValueError("Sampling rates for the data do not match")
+                # else:
+                sampling_rates.append(r)
+
+        rates = np.hstack([sampling_rates])
+
+        if np.ptp(rates) > 0.1:
+            raise ValueError("Sampling rates of the data differ by greater than the tolerance of 0.1 Hz")
+
+        framerate = int(np.mean(sampling_rates))
+        ##############################################################################################################
+
+        array_size = transmission.df[self.data_column].apply(lambda a: a.size).unique()
+
+        if array_size.size > 1:
+            raise ValueError("Size of all arrays in data column must match exactly.")
+
+        array_size = array_size[0]
+
+        freqs = fftpack.rfftfreq(array_size) * framerate
+
+        self.t = transmission.copy()
+
+        output_column = '_RFFT'
+
+        self.t.df[output_column] = self.t.df[self.data_column].apply(fftpack.rfft)
+
+        self.t.last_unit = 'frequency'
+
+        params = {'data_column':    self.data_column,
+                  'frequencies':    freqs.tolist(),
+                  'sampling_rate':  framerate,
+                  'nyquist_frequency': float(freqs.max()),
+                  'units': 'frequency'
+                  }
+
+        self.t.history_trace.add_operation(data_block_id='all', operation='rfft', parameters=params)
+        self.t.last_output = output_column
+
+        return self.t
 
 
+class iRFFT(CtrlNode):
+    """
+    Uses fftpack.irfft, 'Return inverse discrete Fourier transform of real sequence.'\n
+    https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.irfft.html#scipy.fftpack.irfft\n
+    Input must have an _RFFT column from the RFFT node.\n
+    """
+    nodeName = 'iRFFT'
+    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True})]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        self.t = transmission.copy()
+
+        output_column = '_IRFFT'
+
+        self.t.df[output_column] = self.t.df['_RFFT'].apply(fftpack.irfft)
+        self.t.last_unit = 'time'
+
+        params = {'data_column': '_RFFT',
+                  'units': 'time'
+                  }
+
+        self.t.history_trace.add_operation(data_block_id='all', operation='irfft', parameters=params)
+        self.t.last_output = output_column
+
+        return self.t
 
 
-# class Derivative(CtrlNode):
-#     """Returns the pointwise derivative of the input"""
-#     nodeName = 'DerivativeFilter'
-#
-#     def processData(self, data):
-#         if hasattr(data, 'implements') and data.implements('MetaArray'):
-#             info = data.infoCopy()
-#             if 'values' in info[0]:
-#                 info[0]['values'] = info[0]['values'][:-1]
-#             return metaarray.MetaArray(data[1:] - data[:-1], info=info)
-#         else:
-#             return data[1:] - data[:-1]
+class PeakDetect(CtrlNode):
+    """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
+    nodeName = 'Peak_Detect'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Fictional_Bases', 'check', {'checked': True}),
+                  ('Edit', 'button', {'text': 'Open GUI'}),
+                  ('SlopeThr', 'doubleSpin', {'min': -100.00, 'max': 1.0, 'step': 0.010}),
+                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
+                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
+                  ]
 
+    def __init__(self, name, **kwargs):
+        CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
+                                                 'Normalized': {'io': 'in'},
+                                                 'Curve': {'io': 'in'},
+                                                 'PB_Input': {'io': 'in'},
+                                                 'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
+        self.data_modified = False
+        self.editor_output = False
+        self.pbw = None
+        self.ctrls['Edit'].clicked.connect(self._peak_editor)
+        self.t = None
 
+    def _get_zero_crossings(self, d1: np.ndarray, sig: np.ndarray, norm_sig: np.ndarray, fictional_bases: bool = False) -> pd.DataFrame:
+        """
+        Find the peaks and bases of the signal by finding zero crossing in the first derivative of the filtered signal
+        :param dsig: The first derivative of the signal
+        :return: DataFrame, all zero crossing events in one column, another column denotes it as a peak or base.
+        """
+        # Get array of all sign switches
+        sc = np.diff(np.sign(d1))
 
-        # try:
-        #     import scipy.ndimage
-        # except ImportError:
-        #     raise Exception("GaussianFilter node requires the package scipy.ndimage.")
-        #
-        # if hasattr(data, 'implements') and data.implements('MetaArray'):
-        #     info = data.infoCopy()
-        #     filt = pgfn.gaussianFilter(data.asarray(), self.ctrls['sigma'].value())
-        #     if 'values' in info[0]:
-        #         info[0]['values'] = info[0]['values'][:filt.shape[0]]
-        #     return metaarray.MetaArray(filt, info=info)
+        peaks_raw = np.where(sc < 0)[0]
+        bases = np.where(sc > 0)[0]
+
+        # Remove all peaks where amplitude is below the specified threshold
+        peak_yvals = np.take(norm_sig, peaks_raw)
+        # print('peak_yvals: ' + str(peak_yvals))
+        ix_below_ampl_thr = np.where(peak_yvals < self.ctrls['AmplThrAbs'].value())
+        # print('ix_below_ampl_thr: ' + str(ix_below_ampl_thr))
+        peaks_ampl_thr = np.delete(peaks_raw, ix_below_ampl_thr)
+
+        s2 = np.gradient(d1)
+        # Remove all peaks where the 2nd derivative is below a certain threshold
+        peak_d2 = np.take(s2, peaks_ampl_thr)
+        ix_below_slope_thr = np.where(peak_d2 > self.ctrls['SlopeThr'].value())
+        # print('peak_d2: ' + str(peak_d2))
+        # print('ix_below_slope_thr: ' + str(ix_below_slope_thr))
+        peaks = np.delete(peaks_ampl_thr, ix_below_slope_thr)
+
+        ## TODO; DEBATE ABOUT HOW TO PROPERLY DEAL WITH TRACES THAT HAVE NO PEAKS
+        if peaks.size == 0:
+            # abort = True
+            # peaks = np.array([1])
+            # bases = np.array([0, 2])
+            return pd.DataFrame()
         # else:
-        #     return pgfn.gaussianFilter(data, self.ctrls['sigma'].value())
+        #     self.row_ix += 1
+        #     return pd.DataFrame()
 
-# class Derivative(CtrlNode):  # Get the derivative for example
-#     nodeName = 'Derivative'
-#
-#     def processData(self, data):
-#         out = data['curve'].apply(np.gradient)
-#         return {'dataOut': out}
+        # Add bases to beginning and end of sequence if first or last peak is lonely
+        if fictional_bases:
+            if bases.size == 0:
+                bases = np.array([0, sc.size])
+            else:
+                if bases[0] > peaks[0]:
+                    bases = np.insert(bases, 0, 0)
 
-#
-# class Integral(CtrlNode):
-#     """Returns the pointwise integral of the input"""
-#     nodeName = 'IntegralFilter'
-#     uiTemplate = [
-#         ('dt', 'intSpin', {'min': 0, 'max': 100, 'value': 1})
-#     ]
-#
-#     def processData(self, data):
-#         data[1:] += data[:-1]
-#         return data
-#
-#
-# class Detrend(CtrlNode):
-#     """Removes linear trend from the data"""
-#     nodeName = 'DetrendFilter'
-#
-#     @metaArrayWrapper
-#     def processData(self, data):
-#         try:
-#             from scipy.signal import detrend
-#         except ImportError:
-#             raise Exception("DetrendFilter node requires the package scipy.signal.")
-#         return detrend(data)
-#
-# class RemoveBaseline(PlottingCtrlNode):
-#     """Remove an arbitrary, graphically defined baseline from the data."""
-#     nodeName = 'RemoveBaseline'
-#
-#     def __init__(self, name):
-#         ## define inputs and outputs (one output needs to be a plot)
-#         PlottingCtrlNode.__init__(self, name)
-#         self.line = PolyLineROI([[0,0],[1,0]])
-#         self.line.sigRegionChanged.connect(self.changed)
-#
-#         ## create a PolyLineROI, add it to a plot -- actually, I think we want to do this after the node is connected to a plot (look at EventDetection.ThresholdEvents node for ideas), and possible after there is data. We will need to update the end positions of the line each time the input data changes
-#         #self.line = None ## will become a PolyLineROI
-#
-#     def connectToPlot(self, node):
-#         """Define what happens when the node is connected to a plot"""
-#
-#         if node.plot is None:
-#             return
-#         node.getPlot().addItem(self.line)
-#
-#     def disconnectFromPlot(self, plot):
-#         """Define what happens when the node is disconnected from a plot"""
-#         plot.removeItem(self.line)
-#
-#     def processData(self, data):
-#         ## get array of baseline (from PolyLineROI)
-#         h0 = self.line.getHandles()[0]
-#         h1 = self.line.getHandles()[-1]
-#
-#         timeVals = data.xvals(0)
-#         h0.setPos(timeVals[0], h0.pos()[1])
-#         h1.setPos(timeVals[-1], h1.pos()[1])
-#
-#         pts = self.line.listPoints() ## lists line handles in same coordinates as data
-#         pts, indices = self.adjustXPositions(pts, timeVals) ## maxe sure x positions match x positions of data points
-#
-#         ## construct an array that represents the baseline
-#         arr = np.zeros(len(data), dtype=float)
-#         n = 1
-#         arr[0] = pts[0].y()
-#         for i in range(len(pts)-1):
-#             x1 = pts[i].x()
-#             x2 = pts[i+1].x()
-#             y1 = pts[i].y()
-#             y2 = pts[i+1].y()
-#             m = (y2-y1)/(x2-x1)
-#             b = y1
-#
-#             times = timeVals[(timeVals > x1)*(timeVals <= x2)]
-#             arr[n:n+len(times)] = (m*(times-times[0]))+b
-#             n += len(times)
-#
-#         return data - arr ## subract baseline from data
-#
-#     def adjustXPositions(self, pts, data):
-#         """Return a list of Point() where the x position is set to the nearest x value in *data* for each point in *pts*."""
-#         points = []
-#         timeIndices = []
-#         for p in pts:
-#             x = np.argwhere(abs(data - p.x()) == abs(data - p.x()).min())
-#             points.append(Point(data[x], p.y()))
-#             timeIndices.append(x)
-#
-#         return points, timeIndices
-#
-#
-#
-# class AdaptiveDetrend(CtrlNode):
-#     """Removes baseline from data, ignoring anomalous events"""
-#     nodeName = 'AdaptiveDetrend'
-#     uiTemplate = [
-#         ('threshold', 'doubleSpin', {'value': 3.0, 'min': 0, 'max': 1000000})
-#     ]
-#
-#     def processData(self, data):
-#         return functions.adaptiveDetrend(data, threshold=self.ctrls['threshold'].value())
-#
-# class HistogramDetrend(CtrlNode):
-#     """Removes baseline from data by computing mode (from histogram) of beginning and end of data."""
-#     nodeName = 'HistogramDetrend'
-#     uiTemplate = [
-#         ('windowSize', 'intSpin', {'value': 500, 'min': 10, 'max': 1000000, 'suffix': 'pts'}),
-#         ('numBins', 'intSpin', {'value': 50, 'min': 3, 'max': 1000000}),
-#         ('offsetOnly', 'check', {'checked': False}),
-#     ]
-#
-#     def processData(self, data):
-#         s = self.stateGroup.state()
-#         #ws = self.ctrls['windowSize'].value()
-#         #bn = self.ctrls['numBins'].value()
-#         #offset = self.ctrls['offsetOnly'].checked()
-#         return functions.histogramDetrend(data, window=s['windowSize'], bins=s['numBins'], offsetOnly=s['offsetOnly'])
-#
-#
-#
-# class RemovePeriodic(CtrlNode):
-#     nodeName = 'RemovePeriodic'
-#     uiTemplate = [
-#         #('windowSize', 'intSpin', {'value': 500, 'min': 10, 'max': 1000000, 'suffix': 'pts'}),
-#         #('numBins', 'intSpin', {'value': 50, 'min': 3, 'max': 1000000})
-#         ('f0', 'spin', {'value': 60, 'suffix': 'Hz', 'siPrefix': True, 'min': 0, 'max': None}),
-#         ('harmonics', 'intSpin', {'value': 30, 'min': 0}),
-#         ('samples', 'intSpin', {'value': 1, 'min': 1}),
-#     ]
-#
-#     def processData(self, data):
-#         times = data.xvals('Time')
-#         dt = times[1]-times[0]
-#
-#         data1 = data.asarray()
-#         ft = np.fft.fft(data1)
-#
-#         ## determine frequencies in fft data
-#         df = 1.0 / (len(data1) * dt)
-#         freqs = np.linspace(0.0, (len(ft)-1) * df, len(ft))
-#
-#         ## flatten spikes at f0 and harmonics
-#         f0 = self.ctrls['f0'].value()
-#         for i in xrange(1, self.ctrls['harmonics'].value()+2):
-#             f = f0 * i # target frequency
-#
-#             ## determine index range to check for this frequency
-#             ind1 = int(np.floor(f / df))
-#             ind2 = int(np.ceil(f / df)) + (self.ctrls['samples'].value()-1)
-#             if ind1 > len(ft)/2.:
-#                 break
-#             mag = (abs(ft[ind1-1]) + abs(ft[ind2+1])) * 0.5
-#             for j in range(ind1, ind2+1):
-#                 phase = np.angle(ft[j])   ## Must preserve the phase of each point, otherwise any transients in the trace might lead to large artifacts.
-#                 re = mag * np.cos(phase)
-#                 im = mag * np.sin(phase)
-#                 ft[j] = re + im*1j
-#                 ft[len(ft)-j] = re - im*1j
-#
-#         data2 = np.fft.ifft(ft).real
-#
-#         ma = metaarray.MetaArray(data2, info=data.infoCopy())
-#         return ma
-#
-#
-#
+                if bases[-1] < peaks[-1]:
+                    bases = np.insert(bases, -1, sc.size)
+
+        # Construct peak & base columns on dataframe
+        peaks_df = pd.DataFrame()
+        peaks_df['event'] = peaks
+        peaks_df['label'] = 'peak'
+
+        bases_df = pd.DataFrame()
+        bases_df['event'] = bases
+        bases_df['label'] = 'base'
+
+        peaks_bases_df = pd.concat([peaks_df, bases_df])
+        peaks_bases_df = peaks_bases_df.sort_values('event')
+        peaks_bases_df.reset_index(drop=True, inplace=True)
+
+        # if abort:
+        #     self.row_ix += 1
+        #     warn(f'No peaks detected at index: {self.row_ix}')
+        #     return peaks_bases_df
+
+        # peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
+        # peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
+
+        # Set the peaks at the index of the local maxima of the raw curve instead of the maxima inferred
+        # from the derivative
+        # Also remove peaks which are lower than the relative amplitude threshold
+        rows_drop = []
+        for ix, r in peaks_bases_df.iterrows():
+            if r['label'] == 'peak' and ix > 0:
+                if peaks_bases_df.iloc[ix - 1]['label'] == 'base' and peaks_bases_df.iloc[ix + 1]['label'] == 'base':
+                    ix_left_base = peaks_bases_df.iloc[ix - 1]['event']
+                    ix_right_base = peaks_bases_df.iloc[ix + 1]['event']
+
+                    #  Adjust the xval of the curve by finding the absolute maxima of this section of the raw curve,
+                    # flanked by the bases of the peak
+                    peak_revised = np.where(sig == np.max(
+                        np.take(sig, np.arange(ix_left_base, ix_right_base))))[0][0]
+
+                    # Get rising and falling amplitudes
+                    rise_ampl = sig[peak_revised] - sig[ix_left_base]
+                    fall_ampl = sig[peak_revised] - sig[ix_right_base]
+
+                    # Check if above relative amplitude threshold
+                    if (rise_ampl + fall_ampl) > self.ctrls['AmplThrRel'].value():
+                        peaks_bases_df.set_value(ix, 'event', peak_revised)
+                    else:
+                        rows_drop.append(ix)
+
+        peaks_bases_df = peaks_bases_df.drop(peaks_bases_df.index[rows_drop])
+        peaks_bases_df = peaks_bases_df.reset_index(drop=True)
+
+        # remove bases that aren't around any peak
+        for ix, r in peaks_bases_df.iterrows():
+            if r['label'] == 'base' and 1 < ix < (peaks_bases_df.index.size - 1):
+                if peaks_bases_df.iloc[ix - 1]['label'] != 'peak' and peaks_bases_df.iloc[ix + 1]['label'] != 'peak':
+                    rows_drop.append(ix)
+
+        # Weird behavior dealing with bases at the end of a curve
+        try:
+            peaks_bases_df = peaks_bases_df.drop(peaks_bases_df.index[rows_drop])
+            peaks_bases_df = peaks_bases_df.reset_index(drop=True)
+        except:
+            pass
+
+        self.row_ix += 1
+        # print(peaks_bases_df)
+        return peaks_bases_df
+
+    def process(self, display=True, **kwargs):
+        out = self.processData(**kwargs)
+        return {'Out': out}
+
+    def processData(self, **inputs):
+        if self.editor_output:
+            return self.t
+
+        pb_input = inputs['PB_Input']
+        if isinstance(pb_input, Transmission):
+            self.t = pb_input
+            self.t.df.reset_index(drop=True, inplace=True)
+            if self.pbw is None:
+                self._peak_editor()
+            else:
+                self.pbw.update_transmission(self.t, self.t)
+            self.pbw.btnDisconnectFromFlowchart.setDisabled(True)
+            return self.t
+
+        columns = inputs['Curve'].df.columns.to_list()
+        self.ctrls['data_column'].setItems(columns)
+
+        if self.data_modified is True:
+            if QtWidgets.QMessageBox.question(None, 'Discard peak edits?',
+                                              'You have made modifications to peak data passing '
+                                              'through this node! Would you like to discard all '
+                                              'changes and load the newly transmitted data?',
+                                              QtWidgets.QMessageBox.Yes,
+                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                return self.t
+        self.data_modified = False
+
+        if not self.ctrls['Apply'].isChecked():
+            return
+        # if inputs['Derivative'] is None:
+        #     raise Exception('No incoming Derivative transmission. '
+        #                     'You must input at least a derivative')
+        #
+        # self.t = inputs['Derivative'].copy()
+        #
+        # if inputs['Curve'] is not None:
+        #     if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
+        #         QtWidgets.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
+        #                                                        ' MUST match!')
+        #         raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
+
+        if inputs['Derivative'] is None:
+            raise KeyError('No incoming Derivative transmission. '
+                           'You must input both a curve and its derivative '
+                           'You must input at least a derivative')
+
+        if inputs['Curve'] is None:
+            raise KeyError('No incoming Curve transmission.'
+                           ' You must input both a curve and its derivative')
+
+        if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
+            raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
+
+        t_d1 = inputs['Derivative'].copy()
+        assert isinstance(t_d1, Transmission)
+        d1 = t_d1.df['_DERIVATIVE']
+
+        t_norm = inputs['Normalized'].copy()
+        assert isinstance(t_norm, Transmission)
+        norm_series = t_norm.df[t_norm.last_output]
+
+        self.t = inputs['Curve'].copy()
+        self.t.df['_DERIVATIVE'] = d1
+        self.t.df['_NORM_PD'] = norm_series
+        data_column = self.ctrls['data_column'].currentText()
+        # self.t.df['raw_curve'] = self.t.df[data_column]
+
+        assert isinstance(self.t, Transmission)
+
+        # self.t.data_column['peaks_bases'] = 'peaks_bases'
+        fb = self.ctrls['Fictional_Bases'].isChecked()
+        self.row_ix = 0
+
+        tqdm.pandas()
+        self.t.df['peaks_bases'] = self.t.df.progress_apply(lambda r: self._get_zero_crossings(r['_DERIVATIVE'], r[data_column], r['_NORM_PD'], fb), axis=1)
+
+        self.t.df['curve'] = self.t.df[data_column]
+        self.t.df.drop(columns=['_NORM_PD'], inplace=True)
+        self.t.df.reset_index(inplace=True, drop=True)
+        # self.t.df.drop(columns=['raw_curve'])
+
+        if self.pbw is not None:
+            # self.pbw.curve_column = data_column
+            self.pbw.update_transmission(self.t, self.t)
+
+        params = {'data_column': data_column,
+                  'SlopeThr': self.ctrls['SlopeThr'].value(),
+                  'AmplThrRel': self.ctrls['AmplThrRel'].value(),
+                  'AmplThrAbs': self.ctrls['AmplThrAbs'].value(),
+                  'derivative_input_history_trace': t_d1.history_trace.get_all_data_blocks_history(),
+                  'normalized_input_history_trace': t_norm.history_trace.get_all_data_blocks_history(),
+                  'units': self.t.last_unit
+                  }
+
+        self.t.history_trace.add_operation('all', operation='peak_detect', parameters=params)
+
+        return self.t
+
+    def _set_editor_output(self, edited_transmission: Transmission):
+        self.t = edited_transmission
+        self.editor_output = True
+        self.data_modified = True
+        # self.pbw.close()
+        # self.editor_output = True
+        # self.t = self.pbw.getData()
+        # self.pbw = None
+        # self.data_modified = True
+        self.changed()
+
+    def _peak_editor(self):
+        if self.pbw is None:
+            self.pbw = peak_editor.PeakEditorWindow(self.t, self.t)
+            self.pbw.sig_send_data.connect(self._set_editor_output)
+            self.pbw.sig_reconnect_flowchart.connect(self.changed)
+            self.pbw.setWindowTitle(self.name())
+
+        self.pbw.show()
+
+
+class PeakFeatures(CtrlNode):
+    """Extract peak features. Use this after the Peak_Detect node. This node does not operate live, you must
+    click the "Extract" button to propogate newly computed peak features"""
+    nodeName = 'Peak_Features'
+    uiTemplate = [('Compute', 'button', {'text': 'Compute'}),
+                  ('Info', 'label', {'text': ''})]
+
+    # uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
+    #               ('Stats', 'button', {'text': 'Statistics/Plotting'})
+    #               ]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out', 'bypass': 'In'}})
+        self.ctrls['Compute'].clicked.connect(self._compute)
+        # self.ctrls['Stats'].setEnabled(False)
+        # self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
+        self.peak_results = None
+
+    def process(self, **kwargs):
+        self.kwargs = kwargs.copy()
+        merged = Transmission.merge(self.peak_results)
+        return {'Out': merged}
+
+    def _compute(self):
+        if self.kwargs is None:
+            self.peak_results = None
+            return
+
+        transmissions = self.kwargs['In']
+
+        if not len(transmissions) > 0:
+            raise Exception('No incoming transmissions')
+
+        self.peak_results = []
+        for t in transmissions.items():
+            t = t[1]
+            if t is None:
+                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
+                continue
+            # elif not any('Peak_Detect' in d for d in t.src):
+            #     raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
+            #                      'a Peak_Detect node before this one.')
+            # t = t.copy()
+            try:
+                self.ctrls['Info'].setText('Please wait...')
+                pf = peak_feature_extraction.PeakFeaturesIter(t)
+                trans_with_features = pf.get_all()
+
+                self.peak_results.append(trans_with_features)
+
+            except Exception as e:
+                QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak feature extraction:\n'
+                                                                   + traceback.format_exc())
+
+        self.ctrls['Info'].setText('Finished!')
+        self.changed()
+
+    #     self.ctrls['Stats'].setEnabled(True)
+    #
+    # def _open_stats_gui(self):
+    #     if hasattr(self, 'stats_gui'):
+    #         self.stats_gui.show()
+    #         return
+    #     self.stats_gui = StatsWindow()
+    #     self.stats_gui.input_transmissions(self.peak_results)
+    #     self.stats_gui.show()

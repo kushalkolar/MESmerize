@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from ...Qt import QtWidgets
 # from . import functions
 from .common import *
 from ....analysis.data_types import *
-from ....plotting.widgets.peak_editor import peak_editor
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
-from warnings import warn
 
 
 def _static_dfof(F: np.ndarray) -> np.ndarray:
@@ -136,81 +133,81 @@ class ExtractStim(CtrlNode):
         return self.t
 
 
-class ROI_TagFilter(CtrlNode):
-    """Pass-through DataFrame rows if they have the chosen tags"""
-    nodeName = 'ROI_TagFilter'
-    # Cannot use QComboBox for ROI_Type since it leads to a stack overflow in Node.__getattr__ when removing or clearing the combobox
-    uiTemplate = [('ROI_Type', 'combo', {}),
-                  # ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
-                  ('ROI_Tag', 'combo', {}),
-                  ('Include', 'radioBtn', {'checked': True}),
-                  ('Exclude', 'radioBtn', {'checked': False}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True})
-                  ]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        self.ctrls['ROI_Type'].currentIndexChanged.connect(self._setAvailTags)
-        # QtWidgets.QComboBox.currentInde
-        # self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
-
-    def _setAvailTags(self):
-        try:
-            roi_type = self.ctrls['ROI_Type'].currentText()
-            avail_tags = list(set(self.t.df[roi_type]))
-            self.ctrls['ROI_Tag'].setItems(avail_tags)
-        except:
-            pass
-
-    # try:
-    #         tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
-    #     except (KeyError, IndexError) as e:
-    #         QtWidgets.QMessageBox.warning(None, 'ROI type not found',
-    #                                       'The ROI type which you have entered'
-    #                                       ' does not exist in the incoming dataframe\n' + str(e))
-    #         return
-    #     self.ctrls['availTags'].setText(', '.join(tags))
-    #     self.ctrls['availTags'].setToolTip('\n'.join(tags))
-    #     self._setROITagAutoCompleter(tags)
-    #
-    # def _setROITagAutoCompleter(self, tags):
-    #     ac = QtWidgets.QCompleter(tags, self.ctrls['ROI_Tags'])
-    #     self.ctrls['ROI_Tags'].setCompleter(ac)
-
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        # self.set_data_column_combo_box()
-
-        self.ctrls['ROI_Type'].setItems(self.t.ROI_DEFS)
-        self._setAvailTags()
-        # ac = QtWidgets.QCompleter(self.tran/smission.ROI_DEFS, self.ctrls['ROI_Type'])
-        # self.ctrls['ROI_Type'].setCompleter(ac)
-        # self.ctrls['ROI_Type'].setToolTip('\n'.join(self.transmission.ROI_DEFS))
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        self.t = transmission.copy()
-
-        roi_type = self.ctrls['ROI_Type'].currentText()
-        roi_tag = self.ctrls['ROI_Tag'].currentText()
-
-        include = self.ctrls['Include'].isChecked()
-        exclude = self.ctrls['Exclude'].isChecked()
-
-        params = {'roi_type': roi_type,
-                  'roi_tag': roi_tag,
-                  'include': include,
-                  'exclude': exclude
-                  }
-
-        if include:
-            self.t.df = self.t.df[self.t.df[roi_type] == roi_tag]
-        elif exclude:
-            self.t.df = self.t.df[self.t.df[roi_type] != roi_tag]
-
-        self.t.history_trace.add_operation(data_block_id='all', operation='roi_tag_filter', parameters=params)
-
-        return self.t
+# class ROI_TagFilter(CtrlNode):
+#     """Pass-through DataFrame rows if they have the chosen tags"""
+#     nodeName = 'ROI_TagFilter'
+#     # Cannot use QComboBox for ROI_Type since it leads to a stack overflow in Node.__getattr__ when removing or clearing the combobox
+#     uiTemplate = [('ROI_Type', 'combo', {}),
+#                   # ('availTags', 'label', {'toolTip': 'All tags found under this ROI_Def'}),
+#                   ('ROI_Tag', 'combo', {}),
+#                   ('Include', 'radioBtn', {'checked': True}),
+#                   ('Exclude', 'radioBtn', {'checked': False}),
+#                   ('Apply', 'check', {'checked': False, 'applyBox': True})
+#                   ]
+#
+#     def __init__(self, name):
+#         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+#         self.ctrls['ROI_Type'].currentIndexChanged.connect(self._setAvailTags)
+#         # QtWidgets.QComboBox.currentInde
+#         # self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
+#
+#     def _setAvailTags(self):
+#         try:
+#             roi_type = self.ctrls['ROI_Type'].currentText()
+#             avail_tags = list(set(self.t.df[roi_type]))
+#             self.ctrls['ROI_Tag'].setItems(avail_tags)
+#         except:
+#             pass
+#
+#     # try:
+#     #         tags = list(set(self.transmission.df[self.ctrls['ROI_Type'].text()]))
+#     #     except (KeyError, IndexError) as e:
+#     #         QtWidgets.QMessageBox.warning(None, 'ROI type not found',
+#     #                                       'The ROI type which you have entered'
+#     #                                       ' does not exist in the incoming dataframe\n' + str(e))
+#     #         return
+#     #     self.ctrls['availTags'].setText(', '.join(tags))
+#     #     self.ctrls['availTags'].setToolTip('\n'.join(tags))
+#     #     self._setROITagAutoCompleter(tags)
+#     #
+#     # def _setROITagAutoCompleter(self, tags):
+#     #     ac = QtWidgets.QCompleter(tags, self.ctrls['ROI_Tags'])
+#     #     self.ctrls['ROI_Tags'].setCompleter(ac)
+#
+#     def processData(self, transmission: Transmission):
+#         self.t = transmission
+#         # self.set_data_column_combo_box()
+#
+#         self.ctrls['ROI_Type'].setItems(self.t.ROI_DEFS)
+#         self._setAvailTags()
+#         # ac = QtWidgets.QCompleter(self.tran/smission.ROI_DEFS, self.ctrls['ROI_Type'])
+#         # self.ctrls['ROI_Type'].setCompleter(ac)
+#         # self.ctrls['ROI_Type'].setToolTip('\n'.join(self.transmission.ROI_DEFS))
+#         if self.ctrls['Apply'].isChecked() is False:
+#             return
+#
+#         self.t = transmission.copy()
+#
+#         roi_type = self.ctrls['ROI_Type'].currentText()
+#         roi_tag = self.ctrls['ROI_Tag'].currentText()
+#
+#         include = self.ctrls['Include'].isChecked()
+#         exclude = self.ctrls['Exclude'].isChecked()
+#
+#         params = {'roi_type': roi_type,
+#                   'roi_tag': roi_tag,
+#                   'include': include,
+#                   'exclude': exclude
+#                   }
+#
+#         if include:
+#             self.t.df = self.t.df[self.t.df[roi_type] == roi_tag]
+#         elif exclude:
+#             self.t.df = self.t.df[self.t.df[roi_type] != roi_tag]
+#
+#         self.t.history_trace.add_operation(data_block_id='all', operation='roi_tag_filter', parameters=params)
+#
+#         return self.t
 
 
         # chosen_tags = [tag.strip() for tag in self.ctrls['ROI_Tags'].text().split(',')]
@@ -232,268 +229,6 @@ class ROI_TagFilter(CtrlNode):
         # t.src.append({'ROI_Include': params})
 
         # return t
-
-
-class PeakDetect(CtrlNode):
-    """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
-    nodeName = 'Peak_Detect'
-    uiTemplate = [('data_column', 'combo', {}),
-                  ('Fictional_Bases', 'check', {'checked': True}),
-                  ('Edit', 'button', {'text': 'Open GUI'}),
-                  ('SlopeThr', 'doubleSpin', {'min': -100.00, 'max': 1.0, 'step': 0.010}),
-                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
-                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True})
-                  ]
-
-    def __init__(self, name, **kwargs):
-        CtrlNode.__init__(self, name, terminals={'Derivative': {'io': 'in'},
-                                                 'Normalized': {'io': 'in'},
-                                                 'Curve': {'io': 'in'},
-                                                 'PB_Input': {'io': 'in'},
-                                                 'Out': {'io': 'out', 'bypass': 'Curve'}}, **kwargs)
-        self.data_modified = False
-        self.editor_output = False
-        self.pbw = None
-        self.ctrls['Edit'].clicked.connect(self._peak_editor)
-        self.t = None
-
-    def _get_zero_crossings(self, d1: np.ndarray, sig: np.ndarray, norm_sig: np.ndarray, fictional_bases: bool = False) -> pd.DataFrame:
-        """
-        Find the peaks and bases of the signal by finding zero crossing in the first derivative of the filtered signal
-        :param dsig: The first derivative of the signal
-        :return: DataFrame, all zero crossing events in one column, another column denotes it as a peak or base.
-        """
-        # Get array of all sign switches
-        sc = np.diff(np.sign(d1))
-
-        peaks_raw = np.where(sc < 0)[0]
-        bases = np.where(sc > 0)[0]
-
-        # Remove all peaks where amplitude is below the specified threshold
-        peak_yvals = np.take(norm_sig, peaks_raw)
-        # print('peak_yvals: ' + str(peak_yvals))
-        ix_below_ampl_thr = np.where(peak_yvals < self.ctrls['AmplThrAbs'].value())
-        # print('ix_below_ampl_thr: ' + str(ix_below_ampl_thr))
-        peaks_ampl_thr = np.delete(peaks_raw, ix_below_ampl_thr)
-
-        s2 = np.gradient(d1)
-        # Remove all peaks where the 2nd derivative is below a certain threshold
-        peak_d2 = np.take(s2, peaks_ampl_thr)
-        ix_below_slope_thr = np.where(peak_d2 > self.ctrls['SlopeThr'].value())
-        # print('peak_d2: ' + str(peak_d2))
-        # print('ix_below_slope_thr: ' + str(ix_below_slope_thr))
-        peaks = np.delete(peaks_ampl_thr, ix_below_slope_thr)
-
-        ## TODO; DEBATE ABOUT HOW TO PROPERLY DEAL WITH TRACES THAT HAVE NO PEAKS
-        if peaks.size == 0:
-            # abort = True
-            # peaks = np.array([1])
-            # bases = np.array([0, 2])
-            return pd.DataFrame()
-        # else:
-        #     self.row_ix += 1
-        #     return pd.DataFrame()
-
-        # Add bases to beginning and end of sequence if first or last peak is lonely
-        if fictional_bases:
-            if bases.size == 0:
-                bases = np.array([0, sc.size])
-            else:
-                if bases[0] > peaks[0]:
-                    bases = np.insert(bases, 0, 0)
-
-                if bases[-1] < peaks[-1]:
-                    bases = np.insert(bases, -1, sc.size)
-
-        # Construct peak & base columns on dataframe
-        peaks_df = pd.DataFrame()
-        peaks_df['event'] = peaks
-        peaks_df['label'] = 'peak'
-
-        bases_df = pd.DataFrame()
-        bases_df['event'] = bases
-        bases_df['label'] = 'base'
-
-        peaks_bases_df = pd.concat([peaks_df, bases_df])
-        peaks_bases_df = peaks_bases_df.sort_values('event')
-        peaks_bases_df.reset_index(drop=True, inplace=True)
-
-        # if abort:
-        #     self.row_ix += 1
-        #     warn(f'No peaks detected at index: {self.row_ix}')
-        #     return peaks_bases_df
-
-        # peaks_bases_df['peak'] = peaks_bases_df['label'] == 'peak'
-        # peaks_bases_df['base'] = peaks_bases_df['label'] == 'base'
-
-        # Set the peaks at the index of the local maxima of the raw curve instead of the maxima inferred
-        # from the derivative
-        # Also remove peaks which are lower than the relative amplitude threshold
-        rows_drop = []
-        for ix, r in peaks_bases_df.iterrows():
-            if r['label'] == 'peak' and ix > 0:
-                if peaks_bases_df.iloc[ix - 1]['label'] == 'base' and peaks_bases_df.iloc[ix + 1]['label'] == 'base':
-                    ix_left_base = peaks_bases_df.iloc[ix - 1]['event']
-                    ix_right_base = peaks_bases_df.iloc[ix + 1]['event']
-
-                    #  Adjust the xval of the curve by finding the absolute maxima of this section of the raw curve,
-                    # flanked by the bases of the peak
-                    peak_revised = np.where(sig == np.max(
-                        np.take(sig, np.arange(ix_left_base, ix_right_base))))[0][0]
-
-                    # Get rising and falling amplitudes
-                    rise_ampl = sig[peak_revised] - sig[ix_left_base]
-                    fall_ampl = sig[peak_revised] - sig[ix_right_base]
-
-                    # Check if above relative amplitude threshold
-                    if (rise_ampl + fall_ampl) > self.ctrls['AmplThrRel'].value():
-                        peaks_bases_df.set_value(ix, 'event', peak_revised)
-                    else:
-                        rows_drop.append(ix)
-
-        peaks_bases_df = peaks_bases_df.drop(peaks_bases_df.index[rows_drop])
-        peaks_bases_df = peaks_bases_df.reset_index(drop=True)
-
-        # remove bases that aren't around any peak
-        for ix, r in peaks_bases_df.iterrows():
-            if r['label'] == 'base' and 1 < ix < (peaks_bases_df.index.size - 1):
-                if peaks_bases_df.iloc[ix - 1]['label'] != 'peak' and peaks_bases_df.iloc[ix + 1]['label'] != 'peak':
-                    rows_drop.append(ix)
-
-        # Weird behavior dealing with bases at the end of a curve
-        try:
-            peaks_bases_df = peaks_bases_df.drop(peaks_bases_df.index[rows_drop])
-            peaks_bases_df = peaks_bases_df.reset_index(drop=True)
-        except:
-            pass
-
-        self.row_ix += 1
-        # print(peaks_bases_df)
-        return peaks_bases_df
-
-    def process(self, display=True, **kwargs):
-        out = self.processData(**kwargs)
-        return {'Out': out}
-
-    def processData(self, **inputs):
-        if self.editor_output:
-            return self.t
-
-        pb_input = inputs['PB_Input']
-        if isinstance(pb_input, Transmission):
-            self.t = pb_input
-            self.t.df.reset_index(drop=True, inplace=True)
-            if self.pbw is None:
-                self._peak_editor()
-            else:
-                self.pbw.update_transmission(self.t, self.t)
-            self.pbw.btnDisconnectFromFlowchart.setDisabled(True)
-            return self.t
-
-        columns = inputs['Curve'].df.columns.to_list()
-        self.ctrls['data_column'].setItems(columns)
-
-        if self.data_modified is True:
-            if QtWidgets.QMessageBox.question(None, 'Discard peak edits?',
-                                              'You have made modifications to peak data passing '
-                                              'through this node! Would you like to discard all '
-                                              'changes and load the newly transmitted data?',
-                                              QtWidgets.QMessageBox.Yes,
-                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-                return self.t
-        self.data_modified = False
-
-        if not self.ctrls['Apply'].isChecked():
-            return
-        # if inputs['Derivative'] is None:
-        #     raise Exception('No incoming Derivative transmission. '
-        #                     'You must input at least a derivative')
-        #
-        # self.t = inputs['Derivative'].copy()
-        #
-        # if inputs['Curve'] is not None:
-        #     if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
-        #         QtWidgets.QMessageBox.warning(None, 'ValueError!', 'Input diemensions of Derivative and Curve transmissions'
-        #                                                        ' MUST match!')
-        #         raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
-
-        if inputs['Derivative'] is None:
-            raise KeyError('No incoming Derivative transmission. '
-                           'You must input both a curve and its derivative '
-                           'You must input at least a derivative')
-
-        if inputs['Curve'] is None:
-            raise KeyError('No incoming Curve transmission.'
-                           ' You must input both a curve and its derivative')
-
-        if inputs['Derivative'].df.index.size != inputs['Curve'].df.index.size:
-            raise ValueError('Input diemensions of Derivative and Curve transmissions MUST match!')
-
-        t_d1 = inputs['Derivative'].copy()
-        assert isinstance(t_d1, Transmission)
-        d1 = t_d1.df['_DERIVATIVE']
-
-        t_norm = inputs['Normalized'].copy()
-        assert isinstance(t_norm, Transmission)
-        norm_series = t_norm.df[t_norm.last_output]
-
-        self.t = inputs['Curve'].copy()
-        self.t.df['_DERIVATIVE'] = d1
-        self.t.df['_NORM_PD'] = norm_series
-        data_column = self.ctrls['data_column'].currentText()
-        # self.t.df['raw_curve'] = self.t.df[data_column]
-
-        assert isinstance(self.t, Transmission)
-
-        # self.t.data_column['peaks_bases'] = 'peaks_bases'
-        fb = self.ctrls['Fictional_Bases'].isChecked()
-        self.row_ix = 0
-
-        tqdm.pandas()
-        self.t.df['peaks_bases'] = self.t.df.progress_apply(lambda r: self._get_zero_crossings(r['_DERIVATIVE'], r[data_column], r['_NORM_PD'], fb), axis=1)
-
-        self.t.df['curve'] = self.t.df[data_column]
-        self.t.df.drop(columns=['_NORM_PD'], inplace=True)
-        self.t.df.reset_index(inplace=True, drop=True)
-        # self.t.df.drop(columns=['raw_curve'])
-
-        if self.pbw is not None:
-            # self.pbw.curve_column = data_column
-            self.pbw.update_transmission(self.t, self.t)
-
-        params = {'data_column': data_column,
-                  'SlopeThr': self.ctrls['SlopeThr'].value(),
-                  'AmplThrRel': self.ctrls['AmplThrRel'].value(),
-                  'AmplThrAbs': self.ctrls['AmplThrAbs'].value(),
-                  'derivative_input_history_trace': t_d1.history_trace.get_all_data_blocks_history(),
-                  'normalized_input_history_trace': t_norm.history_trace.get_all_data_blocks_history(),
-                  'units': self.t.last_unit
-                  }
-
-        self.t.history_trace.add_operation('all', operation='peak_detect', parameters=params)
-
-        return self.t
-
-    def _set_editor_output(self, edited_transmission: Transmission):
-        self.t = edited_transmission
-        self.editor_output = True
-        self.data_modified = True
-        # self.pbw.close()
-        # self.editor_output = True
-        # self.t = self.pbw.getData()
-        # self.pbw = None
-        # self.data_modified = True
-        self.changed()
-
-    def _peak_editor(self):
-        if self.pbw is None:
-            self.pbw = peak_editor.PeakEditorWindow(self.t, self.t)
-            self.pbw.sig_send_data.connect(self._set_editor_output)
-            self.pbw.sig_reconnect_flowchart.connect(self.changed)
-            self.pbw.setWindowTitle(self.name())
-
-        self.pbw.show()
 
 
 # class DeltaFoF(CtrlNode):
@@ -612,50 +347,6 @@ class StaticDFoFo(CtrlNode):
         self.t.df[output_column] = self.t.df[data_column].apply(lambda a: _static_dfof(a))
 
         self.t.history_trace.add_operation(data_block_id='all', operation='static_df_o_f', parameters=params)
-        self.t.last_output = output_column
-
-        return self.t
-
-
-class SpliceArrays(CtrlNode):
-    """Splice 1-D numpy arrays in a particular column."""
-    nodeName = 'SpliceArrays'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'combo', {}),
-                  ('indices', 'lineEdit', {'text': '', 'placeHolder': 'start_ix:end_ix'})]
-
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        self.set_data_column_combo_box()
-
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        self.t = transmission.copy()
-        indices = self.ctrls['indices'].text()
-
-        if indices == '':
-            return
-        if ':' not in indices:
-            return
-        else:
-            indices = indices.split(':')
-
-        start_ix = int(indices[0])
-        end_ix = int(indices[1])
-
-        data_column = self.ctrls['data_column'].currentText()
-        output_column = '_SPLICE_ARRAYS'
-
-        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: a[start_ix:end_ix])
-
-        params = {'data_column': data_column,
-                  'start_ix': start_ix,
-                  'end_ix': end_ix,
-                  'units': self.t.last_unit
-                  }
-
-        self.t.history_trace.add_operation(data_block_id='all', operation='splice_arrays', parameters=params)
         self.t.last_output = output_column
 
         return self.t
