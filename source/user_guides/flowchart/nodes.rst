@@ -344,7 +344,7 @@ Butterworth
 	============ 	===========
 	Parameters		Description
 	============	===========
-	data_column	Data column containing numerical arrays
+	data_column	Data column containing numerical arrays to be filtered
 	order		Order of the filter
 	freq_divisor	Divisor for dividing the sampling frequency of the data to get Wn
 	Apply		:ref:`ApplyCheckBox`
@@ -356,9 +356,26 @@ Butterworth
 SavitzkyGolay
 ^^^^^^^^^^^^^
 
-	Savitzky Golay filter. Uses `scipy.signal.savgol_filter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html>`_.
+	`Savitzky Golay filter <https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter>`_. Uses `scipy.signal.savgol_filter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html>`_.
 
 	**Output Data Column** *(numerical)*: _SAVITZKY_GOLAY
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with filtered signals in the output data column
+	========== 	=================
+
+	============= 	===========
+	Parameters		Description
+	=============	===========
+	data_column	Data column containing numerical arrays to be filtered
+	window_length	Size of windows for fitting the polynomials. Must be an odd number.
+	polyorder		Order of polynomials to fit into the windows. Must be less than *window_length*
+	Apply		:ref:`ApplyCheckBox`
+	============= 	===========
+
 
 .. _node_PowSpecDens:
 
@@ -371,35 +388,159 @@ PowSpecDens
 Resample
 ^^^^^^^^
 
+	Resample the data in numerical arrays. Uses `scipy.signal.resample <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample.html>`_.
+
+	**Output Data Column** *(numerical)*: _RESAMPLE
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with resampled signals in the output data column
+	========== 	=================
+	
+	============= 	===========
+	Parameters		Description
+	=============	===========
+	data_column	Data column containing numerical arrays to be resampled
+	Rs		New sampling rate in *Tu* units of time.
+	Tu		Time unit
+	Apply		:ref:`ApplyCheckBox`
+	============= 	===========
+	
+	.. note::
+		If Tu = 1, then Rs is the new sampling rate in Hertz.
+
 
 .. _node_ScalerMeanVar:
 
 ScalerMeanVar
 ^^^^^^^^^^^^^
 
+	Uses `tslearn.preprocessing.TimeSeriesScalerMeanVariance <https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html>`_
+	
+	**Output Data Column** *(numerical)*: _SCALER_MEAN_VARIANCE
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with scaled signals in the output column
+	========== 	=================
+
+	============= 	===========
+	Parameters		Description
+	=============	===========
+	data_column	Data column containing numerical arrays to be scaled
+	mu		Mean of the output time series
+	std		Standard Deviation of the output time series
+	Apply		:ref:`ApplyCheckBox`
+	============= 	===========
+
+
+	.. note::
+		if mu = 0 and std = 1, the output is the z-score of the signal.
 
 .. _node_Normalize:
 
 Normalize
 ^^^^^^^^^
 
+	Normalize the signal so that all values are between 0 and 1 based on the min and max of the signal.
+
+	**Output Data Column** *(numerical)*: _NORMALIZE
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with scaled signals in the output column
+	========== 	=================
+
+	============= 	===========
+	Parameters		Description
+	=============	===========
+	data_column	Data column containing numerical arrays to be scaled
+	Apply		:ref:`ApplyCheckBox`
+	============= 	===========
 
 .. _node_RFFT:
 
 RFFT
 ^^^^
 
+	Uses `scipy.fftpack.rfft <https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.rfft.html>`_. "Discrete Fourier transform of a real sequence"
+
+	**Output Data Column** *(numerical)*: _RFFT
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the RFT of signals in the output column
+	========== 	=================
+
+	============= 	===========
+	Parameters		Description
+	=============	===========
+	data_column	Data column containing numerical arrays
+	Apply		:ref:`ApplyCheckBox`
+	============= 	===========
+
 
 .. _node_iRFFT:
 
 iRFFT
 ^^^^^
+	Uses `scipy.fftpack.irfft <https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.irfft.html>`_. "inverse discrete Fourier transform of real sequence x"
+
+	**Output Data Column** *(numerical)*: _IRFFT
 
 
 .. _node_PeakDetect:
 
 PeakDetect
 ^^^^^^^^^^
+
+	Perform Peak Detection using derivatives.
+
+	**Output Data Column** *(DataFrame)*: peaks_bases
+
+
+	===================== 	=================
+	Terminal   		Description
+	===================== 	=================
+	Derivative 		Transmission with derivatives of signals. Must have **_DERIVATIVE** column.
+
+				| It's recommended to use a derivative from a normalized filtered signal.
+
+	Normalized 		Transmission containing Normalized signals, used for thresholding
+
+				| See :ref:`node_Normalize` node
+
+	Curve      		Transmission containing original signals.
+
+				| Usually not filtered to avoid distortions caused by filtering
+
+	PB_Input *(optional)*		Transmission containing peaks & bases data (peaks_bases column).
+
+				| Useful for visualizing a saved Transmission that has peaks & bases data
+
+	Out			Transmission with the detected peaks & bases as DataFrames in the output column
+	===================== 	=================
+
+
+	===================== 	=================
+	Parameter   		Description
+	===================== 	=================
+	data_column		Data column of the input *Curve* Transmission for placing peaks & bases onto
+	Fictional_Bases		Add bases to beginning and end of signal if first or last peak is lonely
+	Edit			Open Peak Editor GUI, see :ref:`plot_PeakEditor`
+	SlopeThr			Slope threshold
+	AmplThrAbs			Absolute amplitude threshold
+	AmplThrRel			Relative amplitude threshold
+	Apply			:ref:`ApplyCheckBox`
+	===================== 	=================
 
 
 .. _node_PeakFeatures:
@@ -409,6 +550,21 @@ PeakFeatures
 
 
 --------
+
+.. _nodes_Math:
+
+Math
+----
+
+**Nodes for performing simple Math functions**
+
+
+.. _node_Derivative:
+
+Derivative
+^^^^^^^^^^
+
+
 
 
 .. _nodes_Hierarchical:
