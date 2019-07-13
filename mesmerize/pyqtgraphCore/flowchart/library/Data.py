@@ -334,47 +334,6 @@ class SelectColumns(CtrlNode):
     pass
 
 
-class SpliceArrays(CtrlNode):
-    """Splice 1-D numpy arrays in a particular column."""
-    nodeName = 'SpliceArrays'
-    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
-                  ('data_column', 'combo', {}),
-                  ('indices', 'lineEdit', {'text': '', 'placeHolder': 'start_ix:end_ix'})]
-
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        self.set_data_column_combo_box()
-
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        self.t = transmission.copy()
-        indices = self.ctrls['indices'].text()
-
-        if indices == '':
-            return
-        if ':' not in indices:
-            return
-        else:
-            indices = indices.split(':')
-
-        start_ix = int(indices[0])
-        end_ix = int(indices[1])
-
-        data_column = self.ctrls['data_column'].currentText()
-        output_column = '_SPLICE_ARRAYS'
-
-        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: a[start_ix:end_ix])
-
-        params = {'data_column': data_column,
-                  'start_ix': start_ix,
-                  'end_ix': end_ix,
-                  'units': self.t.last_unit
-                  }
-
-        self.t.history_trace.add_operation(data_block_id='all', operation='splice_arrays', parameters=params)
-        self.t.last_output = output_column
-
 class TextFilter(CtrlNode):
     nodeName = 'TextFilter'
     uiTemplate = [('Column', 'combo', {'toolTip': 'Filter according to this column'}),
