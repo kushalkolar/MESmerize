@@ -4,7 +4,7 @@ from ....analysis import simple_plot_window
 from .common import *
 import numpy as np
 import pandas as pd
-from ....plotting.widgets import HeatmapTracerWidget, ScatterPlotWidget, BeeswarmPlotWindow, ProportionsWidget
+from ....plotting.widgets import HeatmapTracerWidget, ScatterPlotWidget, BeeswarmPlotWindow, ProportionsWidget, CrossCorrelationWidget
 from ....plotting.variants.timeseries import TimeseriesPlot
 
 
@@ -568,3 +568,16 @@ class Proportions(CtrlNode):
 #
 #
 #
+class CrossCorr(CtrlNode):
+    """Cross Correlation"""
+    nodeName = 'CrossCorr'
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.cc_widget = CrossCorrelationWidget()
+        self.ctrls['ShowGUI'].clicked.connect(self.cc_widget.show)
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.cc_widget.set_input(transmission)
+        return None

@@ -7,7 +7,11 @@ from typing import *
 
 
 class Linkage(CtrlNode):
-    """Basically scipy.cluster.hierarchy.linkage, Compute a linkage matrix for Hierarchical clustering"""
+    """
+    Basically scipy.cluster.hierarchy.linkage
+    Compute a linkage matrix for Hierarchical clustering
+    """
+
     nodeName = 'Linkage'
     uiTemplate = [('data_column',   'combo',    {'toolTip': 'Input column for clustering data, must form a 2D array'}),
                   ('method',        'combo',    {'items': ['complete', 'average', 'single']}),
@@ -43,9 +47,11 @@ class Linkage(CtrlNode):
 
 
 class FCluster(CtrlNode):
-    """Basically scipy.cluster.hierarchy.fcluster.
+    """
+    Basically scipy.cluster.hierarchy.fcluster.
     Form flat clusters from the hierarchical clustering defined by the given linkage matrix.
     """
+
     nodeName = 'FCluster'
     uiTemplate = [('threshold', 'doubleSpin', {'step': 0.001, 'min': 0.0, 'max': 9999.0}),
                   ('criterion', 'combo', {'items': ['distance', 'maxclust', 'inconsistent',

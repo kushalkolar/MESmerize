@@ -2,27 +2,8 @@
 from ...Qt import QtWidgets
 # from . import functions
 from .common import *
-from ....analysis.data_types import *
-from ....analysis import peak_feature_extraction
 from ....plotting.widgets import CurvePlotWindow
 # from analysis import pca_gui
-import traceback
-from ....plotting.widgets import CrossCorrelationWidget
-
-
-class CrossCorr(CtrlNode):
-    """Cross Correlation"""
-    nodeName = 'CrossCorr'
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.cc_widget = CrossCorrelationWidget
-        self.ctrls['ShowGUI'].clicked.connect(self.cc_widget.show)
-
-    def processData(self, transmission: Transmission):
-        self.t = transmission
-        self.cc_widget.set_input(transmission)
-        return None
 
 
 class CurvePlotsNode(CtrlNode):
@@ -61,75 +42,6 @@ class CurvePlotsNode(CtrlNode):
         if self.plot_gui is None:
             self.plot_gui = CurvePlotWindow(parent=self.parent())
         self.plot_gui.show()
-
-
-class PeakFeatures(CtrlNode):
-    """Extract peak features. Use this after the Peak_Detect node. This node does not operate live, you must
-    click the "Extract" button to propogate newly computed peak features"""
-    nodeName = 'Peak_Features'
-    uiTemplate = [('Compute', 'button', {'text': 'Compute'}),
-                  ('Info', 'label', {'text': ''})]
-
-    # uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
-    #               ('Stats', 'button', {'text': 'Statistics/Plotting'})
-    #               ]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        self.ctrls['Compute'].clicked.connect(self._compute)
-        # self.ctrls['Stats'].setEnabled(False)
-        # self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
-        self.peak_results = None
-
-    def process(self, **kwargs):
-        self.kwargs = kwargs.copy()
-        merged = Transmission.merge(self.peak_results)
-        return {'Out': merged}
-
-    def _compute(self):
-        if self.kwargs is None:
-            self.peak_results = None
-            return
-
-        transmissions = self.kwargs['In']
-
-        if not len(transmissions) > 0:
-            raise Exception('No incoming transmissions')
-
-        self.peak_results = []
-        for t in transmissions.items():
-            t = t[1]
-            if t is None:
-                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-                continue
-            # elif not any('Peak_Detect' in d for d in t.src):
-            #     raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
-            #                      'a Peak_Detect node before this one.')
-            # t = t.copy()
-            try:
-                self.ctrls['Info'].setText('Please wait...')
-                pf = peak_feature_extraction.PeakFeaturesIter(t)
-                trans_with_features = pf.get_all()
-
-                self.peak_results.append(trans_with_features)
-
-            except Exception as e:
-                QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak feature extraction:\n'
-                                                                   + traceback.format_exc())
-
-        self.ctrls['Info'].setText('Finished!')
-        self.changed()
-
-    #     self.ctrls['Stats'].setEnabled(True)
-    #
-    # def _open_stats_gui(self):
-    #     if hasattr(self, 'stats_gui'):
-    #         self.stats_gui.show()
-    #         return
-    #     self.stats_gui = StatsWindow()
-    #     self.stats_gui.input_transmissions(self.peak_results)
-    #     self.stats_gui.show()
-
 
 # class PCA(CtrlNode):
 #     """PCA (Principal component analysis)"""
