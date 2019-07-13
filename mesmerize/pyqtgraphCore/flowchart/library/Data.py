@@ -5,6 +5,7 @@ from .common import *
 import traceback
 from functools import partial
 from ....analysis import Transmission
+from ....analysis.history_widget import HistoryTreeWidget
 from ....common import get_project_manager
 import os
 
@@ -174,7 +175,7 @@ class Save(CtrlNode):
 class Merge(CtrlNode):
     """Merge transmissions"""
     nodeName = 'Merge'
-    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True})]
+    uiTemplate = [('no controls', 'label')]
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
@@ -189,21 +190,22 @@ class Merge(CtrlNode):
 
 
 class ViewTransmission(CtrlNode):
-    """View/Edit transmission using the spyder object editor"""
+    """View transmission using the spyder object editor"""
     nodeName = 'ViewData'
-    uiTemplate = [('No controls', 'label')]
+    uiTemplate = [('no controls', 'label')]
 
-    # def __init__(self, name):
-    #     CtrlNode.__init__(self, name, terminals={'In':})
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}})
+        # self.edited_transmission = None
 
     def processData(self, transmission: Transmission):
         self.t = transmission.copy()
-        edited = oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace})
-        if edited is not None:
-            self.t.df = edited['dataframe']
-            self.t.history_trace.add_operation('all', 'object_editor', {})
+        oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace})
+        # if self.edited is not None:
+        #     self.edited.add_operation('all', 'object_editor', {})
+        #     return self.edited
 
-        return self.t
+        # return self.t
 
 
 class DropNa(CtrlNode):
@@ -246,6 +248,20 @@ class DropNa(CtrlNode):
         return self.t
 
 
+class ViewHistory(CtrlNode):
+    """View History Trace of the input Transmission"""
+    nodeName = 'ViewHistory'
+    uiTemplate = [('Show', 'button')]
+
+    def __init__(self, *args, **kwargs):
+        super(ViewHistory, self).__init__(*args, **kwargs)
+        self.history_widget = HistoryTreeWidget()
+        self.ctrls['Show'].clicked.connect(self.history_widget.show)
+
+    def processData(self, transmission: Transmission):
+        self.history_widget.fill_widget(transmission.history_trace)
+
+
 class iloc(CtrlNode):
     """Pass only one or multiple DataFrame Indices"""
     nodeName = 'iloc'
@@ -265,58 +281,57 @@ class iloc(CtrlNode):
         return t
 
 
+class SpliceArrays(CtrlNode):
+    """Splice 1-D numpy arrays in a particular column."""
+    nodeName = 'SpliceArrays'
+    uiTemplate = [('Apply', 'check', {'checked': True, 'applyBox': True}),
+                  ('data_column', 'combo', {}),
+                  ('indices', 'lineEdit', {'text': '', 'placeHolder': 'start_ix:end_ix'})]
+    output_column = '_SPLICE_ARRAYS'
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        self.t = transmission.copy()
+        indices = self.ctrls['indices'].text()
+
+        if indices == '':
+            return
+        if ':' not in indices:
+            return
+        else:
+            indices = indices.split(':')
+
+        start_ix = int(indices[0])
+        end_ix = int(indices[1])
+
+        data_column = self.ctrls['data_column'].currentText()
+
+
+        self.t.df[self.output_column] = self.t.df[data_column].apply(lambda a: a[start_ix:end_ix])
+
+        params = {'data_column': data_column,
+                  'start_ix': start_ix,
+                  'end_ix': end_ix,
+                  'units': self.t.last_unit
+                  }
+
+        self.t.history_trace.add_operation(data_block_id='all', operation='splice_arrays', parameters=params)
+        self.t.last_output = self.output_column
+
+        return self.t
+
+
 class SelectRows(CtrlNode):
     pass
 
 
 class SelectColumns(CtrlNode):
     pass
-
-
-class TextFilter(CtrlNode):
-    nodeName = 'TextFilter'
-    uiTemplate = [('Column', 'combo', {'toolTip': 'Filter according to this column'}),
-                  ('filter', 'lineEdit', {'toolTip': 'Filter to apply in selected column'}),
-                  ('Include', 'radioBtn', {'checked': True}),
-                  ('Exclude', 'radioBtn', {'checked': False}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
-
-    # def __init__(self, name):
-    #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-    #     self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
-
-    def processData(self, transmission):
-        self.ctrls['Column'].setItems(transmission.df.columns.to_list())
-        col = self.ctrls['Column'].currentText()
-        completer = QtWidgets.QCompleter(list(map(str, transmission.df[col].unique())))
-        self.ctrls['filter'].setCompleter(completer)
-
-        if self.ctrls['Apply'].isChecked() is False:
-            return
-
-        filt = self.ctrls['filter'].text()
-
-        self.t = transmission.copy()
-
-        include = self.ctrls['Include'].isChecked()
-        exclude = self.ctrls['Exclude'].isChecked()
-
-        params = {'column': col,
-                  'filter': filt,
-                  'include': include,
-                  'exclude': exclude
-                  }
-
-        if include:
-            self.t.df = self.t.df[self.t.df[col].astype(str) == filt]
-        elif exclude:
-            self.t.df = self.t.df[self.t.df[col].astype(str) != filt]
-
-        self.t.df = self.t.df.reset_index(drop=True)
-
-        self.t.history_trace.add_operation('all', operation='text_filter', parameters=params)
-
-        return self.t
 
 
 class SpliceArrays(CtrlNode):
@@ -359,5 +374,49 @@ class SpliceArrays(CtrlNode):
 
         self.t.history_trace.add_operation(data_block_id='all', operation='splice_arrays', parameters=params)
         self.t.last_output = output_column
+
+class TextFilter(CtrlNode):
+    nodeName = 'TextFilter'
+    uiTemplate = [('Column', 'combo', {'toolTip': 'Filter according to this column'}),
+                  ('filter', 'lineEdit', {'toolTip': 'Filter to apply in selected column'}),
+                  ('Include', 'radioBtn', {'checked': True}),
+                  ('Exclude', 'radioBtn', {'checked': False}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+
+    # def __init__(self, name):
+    #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
+    #     self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
+
+    def processData(self, transmission):
+        ccols = organize_dataframe_columns(transmission.df.columns.to_list())[1]
+        self.ctrls['Column'].setItems(ccols)
+        col = self.ctrls['Column'].currentText()
+        completer = QtWidgets.QCompleter(list(map(str, transmission.df[col].unique())))
+        self.ctrls['filter'].setCompleter(completer)
+
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        filt = self.ctrls['filter'].text()
+
+        self.t = transmission.copy()
+
+        include = self.ctrls['Include'].isChecked()
+        exclude = self.ctrls['Exclude'].isChecked()
+
+        params = {'column': col,
+                  'filter': filt,
+                  'include': include,
+                  'exclude': exclude
+                  }
+
+        if include:
+            self.t.df = self.t.df[self.t.df[col].astype(str) == filt]
+        elif exclude:
+            self.t.df = self.t.df[self.t.df[col].astype(str) != filt]
+
+        self.t.df = self.t.df.reset_index(drop=True)
+
+        self.t.history_trace.add_operation('all', operation='text_filter', parameters=params)
 
         return self.t

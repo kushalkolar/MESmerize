@@ -33,15 +33,12 @@ from ..graphicsItems.ViewBox import *
 from ..graphicsItems.GradientEditorItem import addGradientListToDocstring
 from .. import ptime as ptime
 from .. import debug as debug
-# from ..SignalProxy import SignalProxy
-# from .. import getConfigOption
+from ..SignalProxy import SignalProxy
+from .. import getConfigOption
 # from multiprocessing import Process, Queue
 import numpy as np
-#from common import configuration  # DO NOT REMOVE THIS LINE OR YOU WILL GET CIRCULAR IMPORTS AND BREAK EVERYTHING
 #from viewer.core.viewer_work_environment import ViewerWorkEnv
 # from common import configuration
-# from MesmerizeCore import misc_widgets
-# import MesmerizeCore.Export
 # from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 from ...viewer import export
 try:
