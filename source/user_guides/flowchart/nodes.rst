@@ -554,11 +554,21 @@ PeakFeatures
 	============================    ========================================
 	Output Data Column              Description
 	============================    ========================================
-	_pfeature_peak_curve            Arrays that represent single peaks
-	_pfeature_amplitude_abs         Peak amplitude relative to the min value of the parent curve
-	_pfeature_amplitude_relative    Peak amplitude relative to the min value of the peak curve
+	_pfeature_peak_curve            array representing the peak
+	_pfeature_amplitude_abs         peak amplitude relative to the min value of the parent curve
+	_pfeature_amplitude_rel         peak amplitude relative to the min value of the peak curve
+	_pfeature_area                  area under the peak, `Simpson's Rule <https://en.wikipedia.org/wiki/Simpson%27s_rule>`_
+	_pfeature_rising_slope_avg      slope of the line drawn from the left base to the peak
+	_pfeature_falling_slope_avg     slope of the line drawn from the right base to the peak
+	_pfeature_duration_base         distance between the left and right base
+	_pfeature_peak_interval         ...
+	_pfeature_ix_peak_abs           index of the peak maxima in the parent curve
+	_pfeature_ix_peak_rel           index of the peak maxima in the peak curve (_pfeature_peak_curve)
+	_pfeature_uuid                  peak `UUID <https://en.wikipedia.org/wiki/Universally_unique_identifier>`_
+	_pfeature_ix_base_left_abs      index of the left base in the parent curve
+	_pfeature_ix_base_right_abs     index of the right base in the parent curve
 	============================    ========================================
-	
+
 	========== 	=================
 	Terminal		Description
 	========== 	=================
@@ -694,6 +704,26 @@ LogTransform
 
 
 ---------------------
+
+.. _nodes_Biology:
+
+Biology
+-------
+
+**Nodes for some biologically useful things which I couldn't categorize elsewhere**
+
+
+.. _node_ExtractStim:
+
+ExtractStim
+^^^^^^^^^^^
+
+	Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it.
+
+	
+
+
+
 
 .. _nodes_Hierarchical:
 
