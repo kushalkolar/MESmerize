@@ -209,6 +209,8 @@ DropNaNs
 	=========== 	===========
 		
 
+--------------------------
+
 .. _nodes_Display:
 
 Display
@@ -311,7 +313,7 @@ TimeSeries
 	For more information see :ref:`plot_TimeSeries`
 
 
---------
+--------------------
 
 .. _nodes_Signal:
 
@@ -525,7 +527,6 @@ PeakDetect
 	PB_Input *(optional)*		Transmission containing peaks & bases data (peaks_bases column).
 
 				| Useful for visualizing a saved Transmission that has peaks & bases data
-
 	Out			Transmission with the detected peaks & bases as DataFrames in the output column
 	===================== 	=================
 
@@ -548,6 +549,23 @@ PeakDetect
 PeakFeatures
 ^^^^^^^^^^^^
 
+	Compute peak features. The DataFrame of the ouput Transmission contains one row for each peak.
+	
+	============================    ========================================
+	Output Data Column              Description
+	============================    ========================================
+	_pfeature_peak_curve            Arrays that represent single peaks
+	_pfeature_amplitude_abs         Peak amplitude relative to the min value of the parent curve
+	_pfeature_amplitude_relative    Peak amplitude relative to the min value of the peak curve
+	============================    ========================================
+	
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission. Must contain *peak_bases* column containing peak_bases DataFrames.
+	Out		Transmission with peak features in various output columns
+	========== 	=================
+
 
 --------
 
@@ -556,7 +574,7 @@ PeakFeatures
 Math
 ----
 
-**Nodes for performing simple Math functions**
+**Nodes for performing basic Math functions**
 
 
 .. _node_Derivative:
@@ -564,8 +582,118 @@ Math
 Derivative
 ^^^^^^^^^^
 
+	Computes the first derivative.
+	
+	**Output Data Column** *(numerical)*: _DERIVATIVE
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the derivative placed in the output column
+	========== 	=================
+
+	===================== 	=================
+	Parameter   		Description
+	===================== 	=================
+	data_column		Data column containing numerical arrays
+	Apply			:ref:`ApplyCheckBox`
+	===================== 	=================
 
 
+
+.. _node_TVDiff:
+
+TVDiff
+^^^^^^
+
+	Based on `Numerical Differentiation of Noisy, Nonsmooth Data. Rick Chartrand. (2011). <http://dx.doi.org/10.5402/2011/164564>`_. Translated to Python by Simone Sturniolo.
+
+
+
+.. _node_XpowerY:
+
+XpowerY
+^^^^^^^
+
+	Raises each element of the numerical arrays in the data_column to the exponent Y
+
+	**Output Data Column** *(numerical)*: _X_POWER_Y
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+
+	===================== 	=================
+	Parameter   		Description
+	===================== 	=================
+	data_column		Data column containing numerical arrays
+	Y			Exponent
+	Apply			:ref:`ApplyCheckBox`
+	===================== 	=================
+
+
+.. _node_AbsoluteValue:
+
+AbsoluteValue
+^^^^^^^^^^^^^
+
+	Element-wise absolute values of the input arrays. Computes root mean squares if input arrays are complex.
+
+	**Output Data Column** *(numerical)*: _ABSOLUTE_VALUE
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+
+	===================== 	=================
+	Parameter   		Description
+	===================== 	=================
+	data_column		Data column containing numerical arrays
+	Apply			:ref:`ApplyCheckBox`
+	===================== 	=================
+
+
+.. _node_LogTransform:
+
+LogTransform
+^^^^^^^^^^^^
+
+	Perform Logarithmic transformation of the data.
+
+	**Output Data Column** *(numerical)*: _LOG_TRANSFORM
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+
+	============ 	=================
+	Parameter   	Description
+	============ 	=================
+	data_column	Data column containing numerical arrays
+
+	transform		*log10*: Base 10 logarithm
+
+			| *ln*: Natural logarithm
+
+			| *modlog10*: :math:`sign(x) * \log_{10} (|x| + 1)`
+
+			| *modln*: :math:`sign(x) * \ln (|x| + 1)`
+
+	Apply		:ref:`ApplyCheckBox`
+	============ 	=================
+
+
+---------------------
 
 .. _nodes_Hierarchical:
 
@@ -611,10 +739,6 @@ Linkage
 	============= 	=================
 	
 
-
-
-
-
 .. _node_FCluster:
 
 FCluster
@@ -630,7 +754,7 @@ FCluster
 	Terminal                        Description
 	====================            =================
 	Linkage                         Linkage matrix, output from :ref:`node_Linkage` node.
-	Data                            Input Transmission, usually the same input Transmission for the :ref:`node_Linkage`
+	Data                            Input Transmission, usually the same input Transmission used for the :ref:`node_Linkage` node.
 	IncM *(optional)*	           Inconsistency matrix, output from :ref:`node_Inconsistent`
 	Monocrit *(optinal)*	           Output from :ref:`node_MaxIncStat` or :ref:`node_MaxInconsistent`
 	Out                             Transmission with clustering data that can be visualized using the :ref:`node_Heatmap`
@@ -649,7 +773,7 @@ MaxIncStat
 ^^^^^^^^^^
 
 
-.. _node_MaxInconsisten:
+.. _node_MaxInconsistent:
 
 MaxInconsistent
 ^^^^^^^^^^^^^^^
