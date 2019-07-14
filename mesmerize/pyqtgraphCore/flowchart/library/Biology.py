@@ -102,8 +102,8 @@ class ExtractStim(CtrlNode):
                 stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
 
                 rn['_EXTRACT_STIM'] = stim_extract
-                rn['_STIM_TYPE'] = stim_def
-                rn['_STIMULUS'] = stim_tag
+                rn['STIM_TYPE'] = stim_def
+                rn['STIMULUS'] = stim_tag
 
                 df.loc[df.index.size] = rn
 
