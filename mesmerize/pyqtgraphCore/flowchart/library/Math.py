@@ -36,7 +36,7 @@ class AbsoluteValue(CtrlNode):
 class XpowerY(CtrlNode):
     """Raise each element of arrays in data column to the exponent Y"""
     nodeName = 'XpowerY'
-    # Not sure why someone would take the 99th power or root, but I'll leave it there
+    # Not sure why someone would take the 99th power, but I'll leave it there
     uiTemplate = [('data_column', 'combo', {}),
                   ('Y', 'doubleSpin', {'value': 2.0, 'min': -99.0, 'max': 99.0, 'step': 0.5}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
@@ -65,7 +65,7 @@ class LogTransform(CtrlNode):
     """Can perform various log transforms"""
     nodeName = 'LogTransform'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('transform', 'combo', {'values': ['log10', 'ln', 'modlog10']}),
+                  ('transform', 'combo', {'values': ['log10', 'ln', 'modlog10', 'modln']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
@@ -93,6 +93,10 @@ class LogTransform(CtrlNode):
             logmod = lambda x: np.sign(x) * (np.log10(np.abs(x) + 1))
             self.t.df[output_column] = self.t.df[self.data_column].apply(logmod)
 
+        elif transform == 'modln':
+            logmod = lambda x: np.sign(x) * (np.log(np.abs(x)) + 1)
+            self.t.df[output_column] = self.t.df[self.data_column].apply(logmod)
+
         self.t.history_trace.add_operation(data_block_id='all', operation='log_transform', parameters=params)
         self.t.last_output = output_column
 
@@ -103,7 +107,6 @@ class Derivative(CtrlNode):
     """Return the Derivative of a curve."""
     nodeName = 'Derivative'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('dt', 'intSpin', {'min': 1, 'max': 999, 'value': 1, 'step': 1}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
