@@ -219,6 +219,7 @@ class ManualROI(BaseROI):
         self.set_roi_graphics_object(roi_graphics_object)
 
         if state is not None:
+            self.add_to_viewer()
             self._set_roi_graphics_object_state(state['roi_graphics_object_state'])
 
     def get_roi_graphics_object(self) -> pg.ROI:
@@ -256,6 +257,7 @@ class ManualROI(BaseROI):
                                                   [0, int(0.1 * y)]],
                                                  closed=True, pos=[0, 0], removable=True)
             return roi_graphics_object
+
         elif shape == 'EllipseROI':
             roi_graphics_object = pg.EllipseROI(pos=[0, 0], size=[x, y], removable=True)
             return roi_graphics_object

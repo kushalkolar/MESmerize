@@ -19,6 +19,7 @@ from ...pyqtgraphCore.imageview import ImageView
 from ...pyqtgraphCore import LinearRegionItem
 from ...common import configuration, get_project_manager
 import pandas as pd
+from typing import *
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -161,7 +162,7 @@ class TimeLineStimulusMap:
         self.viewer = viewer
         self.linear_regions = []
 
-    def add_linear_region(self, frame_start: int, frame_end: int, color: QtGui.QColor):
+    def add_linear_region(self, frame_start: int, frame_end: int, color: Tuple[float, float, float, float]):
         linear_region = LinearRegionItem(values=[frame_start, frame_end],
                                          brush=color, movable=False, bounds=[frame_start, frame_end])
         linear_region.setZValue(0)
