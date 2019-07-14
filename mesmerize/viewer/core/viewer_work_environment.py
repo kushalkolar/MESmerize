@@ -78,7 +78,6 @@ class ViewerWorkEnv:
 
         self.roi_manager = roi_manager
 
-        self._saved = True
         self.changed_items = []
         self.roi_states = roi_states
         self.comments = comments
@@ -100,6 +99,8 @@ class ViewerWorkEnv:
             self.misc = {}
 
         self._UUID = UUID
+
+        self._saved = True
 
     # def get_imgdata(self):
     #     return self.imgdata
@@ -368,7 +369,7 @@ class ViewerWorkEnv:
         image is saved in a pickle.
         """
         filename, data = self._prepare_export(dir_path, filename, save_img_seq, UUID)
-        
+
         pickle.dump(data, open(f'{filename}.pik', 'wb'), protocol=4)
 
         self.saved = True
