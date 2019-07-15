@@ -102,7 +102,7 @@ class PeakFeatures:
 
         # A dictionary of Compute function names as the key, the stuff in that key is that function's arguments
         args_d = {'amplitude_relative': [peak_curve, ix_peak_rel],
-                  'amplitude_abs': [min(self.curve), ix_peak_abs],
+                  'amplitude_abs': [min(self.curve), peak_curve.max()],
                   'area': [peak_curve],
                   'rising_slope_at_mid': [peak_curve, ix_peak_rel],
                   'rising_slope_avg': [peak_curve, ix_peak_rel],

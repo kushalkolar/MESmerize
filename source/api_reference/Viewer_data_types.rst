@@ -1,4 +1,4 @@
-.. _ViewerCore:
+.. _API_ViewerCore:
 
 Viewer Core
 ***********

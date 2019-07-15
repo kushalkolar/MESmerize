@@ -141,9 +141,19 @@ class Heatmap(MatplotlibWidget):
         if ylabels is not None:
             mapper = get_colormap(ylabels, ylabels_cmap)
             row_colors = list(map(mapper.get, ylabels))
-
         else:
             row_colors = None
+
+        if 'xlabels' in kwargs.keys():
+            xlabels = kwargs.pop('xlabels')
+
+            if isinstance(xlabels, Series):
+                xlabels = xlabels.values
+
+            xlabels_mapper = get_colormap(xlabels, ylabels_cmap)
+            col_colors = list(map(xlabels_mapper.get, xlabels))
+        else:
+            col_colors = None
 
         cluster_kwarg_keys = ['row_cluster', 'row_linkage', 'col_cluster', 'col_linkage', 'colorbar_kws', 'metric', 'method']
 
@@ -168,7 +178,7 @@ class Heatmap(MatplotlibWidget):
         if self.fig is not None:
             self.fig.clear()
 
-        self.plot = CustomClusterGrid(data=data, fig=self.fig, figsize=None, row_colors=row_colors, col_colors=None,
+        self.plot = CustomClusterGrid(data=data, fig=self.fig, figsize=None, row_colors=row_colors, col_colors=col_colors,
                                       z_score=None, standard_scale=None, mask=None)
         self.plot.plot(*args, **cluster_kwargs, **kwargs)
 

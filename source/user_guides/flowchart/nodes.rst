@@ -1,5 +1,7 @@
-Flowchart Nodes
-***************
+.. _FlowchartNodes:
+
+Nodes
+*****
 
 
 .. _nodes_Data:
@@ -724,13 +726,13 @@ ExtractStim
 
 	Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it. It outputs one row per stimulus period.
 
-	============================    ========================================
-	Output Data Column              Description
-	============================    ========================================
-	STIM_TYPE			Stimulus type, corresponds to your :ref:`ProjectConfig`
-	STIMULUS			Name of the stimulus.
-	_EXTRACT_STIM		The extracted array based on the parameters.
-	============================    ========================================
+	===================    ========================================
+	Output Data Column     Description
+	===================    ========================================
+	STIM_TYPE              Stimulus type, corresponds to your :ref:`ProjectConfig`
+	STIMULUS               Name of the stimulus.
+	_EXTRACT_STIM          The extracted array based on the parameters.
+	===================    ========================================
 
 	============         =================
 	Parameter            Description

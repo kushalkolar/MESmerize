@@ -1,6 +1,8 @@
 Viewer Modules
 **************
 
+.. _API_BatchManager:
+
 Batch Manager
 =============
 
@@ -13,7 +15,7 @@ Batch Manager
 
 Tiff Module
 ===========
-Can be used with scripts within Mesmerize for loading tiff files without using the API of :ref:`ViewerCore`
+Can be used with scripts within Mesmerize for loading tiff files without using the API of :ref:`API_ViewerCore`
 
 .. autoclass:: mesmerize.viewer.modules.tiff_io.ModuleGUI
     :members:

@@ -67,7 +67,19 @@ class DatapointTracerWidget(QtWidgets.QWidget):
     def set_widget(self, datapoint_uuid: UUID, data_column_curve: str, row: pd.Series, proj_path: str,
                    history_trace: Optional[list] = None, peak_ix: Optional[int] = None, tstart: Optional[int] = None,
                    tend: Optional[int] = None, roi_color: Optional[Union[str, float, int, tuple]] = 'ff0000'):
+        """
+        Set the widget from the datapoint.
 
+        :param datapoint_uuid:      appropriate UUID for the datapoint (such as uuid_curve or _pfeature_uuid)
+        :param data_column_curve:   data column containing an array to plot
+        :param row:                 DataFrame row that corresponds to the datapoint
+        :param proj_path:           root dir of the project the datapoint comes from, used for finding max & std projections
+        :param history_trace:       history trace of the datablock the datapoint comes from
+        :param peak_ix:             Deprecated
+        :param tstart:              lower bounds for drawing `LinearRegionItem`
+        :param tend:                upper bounds for drawing `LinearRegionItem`
+        :param roi_color:           color for drawing the spatial bounds of the ROI
+        """
         self.uuid = datapoint_uuid
         self.row = row
         self.proj_path = proj_path
@@ -128,6 +140,11 @@ class DatapointTracerWidget(QtWidgets.QWidget):
             pass
 
     def set_image(self, projection: str):
+        """
+        Set either the max or std projection image
+
+        :param projection: one of either 'max' or 'std'
+        """
         if f'{self.sample_id}{projection}' == self.previous_sample_id_projection:
             return
 
@@ -167,6 +184,9 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         # self.image_item.resetTransform()
 
     def open_in_viewer(self):
+        """
+        Open the parent Sample of the current datapoint.
+        """
         w = get_window_manager().get_new_viewer_window()
         w.open_from_dataframe(proj_path=self.proj_path, row=self.row)#, roi_index=('cnmf_idx', self.roi.cnmf_idx))
 

@@ -15,24 +15,40 @@ Welcome to Mesmerize's documentation!
 
 	./Overview
 	./user_guides/installation
+	./user_guides/faq
 
 .. toctree::
-	:maxdepth: 2
-	:caption: User Guides:
+	:maxdepth: 1
+	:caption: Project:
 
-	./user_guides/convert_meta_data
 	./user_guides/project_organization/new_project/new_project
+
+.. toctree::
+	:maxdepth: 1
+	:caption: Viewer
+
 	./user_guides/viewer/overview
+	./user_guides/convert_meta_data
 	./user_guides/viewer/add_to_project
+
+.. toctree::
+	:maxdepth: 1
+	:caption: Flowchart
+
 	./user_guides/flowchart/overview
 	./user_guides/flowchart/nodes
 	./user_guides/flowchart/examples
-	./user_guides/faq
 
+.. toctree::
+	:maxdepth: 1
+	:caption: Plots
+	:glob:
+
+	./user_guides/plots/*
 
 .. toctree::
 	:maxdepth: 2
-	:caption: API Reference:
+	:caption: API Reference
 
 	./api_reference/Viewer_data_types
 	./api_reference/viewer_modules/viewer_modules
