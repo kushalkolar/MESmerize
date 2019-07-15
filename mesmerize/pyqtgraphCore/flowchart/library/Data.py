@@ -200,7 +200,7 @@ class ViewTransmission(CtrlNode):
 
     def processData(self, transmission: Transmission):
         self.t = transmission.copy()
-        oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace})
+        oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace.history})
         # if self.edited is not None:
         #     self.edited.add_operation('all', 'object_editor', {})
         #     return self.edited
