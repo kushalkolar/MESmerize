@@ -76,7 +76,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             d = self.get_params()
             json.dump(d, f)
 
-    @use_open_file_dialog('Open CNMFE parameters file', None, ['.json'])
+    @use_open_file_dialog('Open CNMFE parameters file', None, ['*.json'])
     @present_exceptions('Cannot import parameters', 'Make sure it is a CNMFE parameters file')
     def import_params(self, path, *args, **kwargs):
         with open(path, 'r') as f:

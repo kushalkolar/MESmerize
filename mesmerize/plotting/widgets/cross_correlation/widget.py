@@ -90,8 +90,10 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         plot_data = self.cc_data[sample_id].get_threshold_matrix(matrix_type=opt, lag_thr=lt, max_thr=mt, lag_thr_abs=abs_val)
 
+        sub_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
+
         labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
-        ylabels = self.transmission.df[labels_col]
+        ylabels = sub_df[labels_col]
 
         # Since it's just same curve vs. same curves in the cc_matrix
         xlabels = ylabels
