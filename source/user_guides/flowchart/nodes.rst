@@ -1,5 +1,5 @@
-Description of Flowchart Nodes
-******************************
+Flowchart Nodes
+***************
 
 
 .. _nodes_Data:
@@ -40,6 +40,10 @@ Load_Proj_DF
 
 	Load the entire Project DataFrame (root) of the project that is currently open, or a sub-DataFrame that corresponds a tab that you have created in the :ref:`ProjectBrowser`.
 
+	**Output Data Column** *(numerical)*: _RAW_CURVE
+
+		Each element in this output column contains a 1-D array representing the trace extracted from an ROI.
+
 	========== 	=================
 	Terminal		Description
 	========== 	=================
@@ -51,7 +55,7 @@ Load_Proj_DF
 	=========== 	===========
 	DF_Name		DataFrame name. List correponds to :ref:`ProjectBrowser` tabs.
 	Update		Re-create Transmission from corresponding :ref:`ProjectBrowser` tab.
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	=========== 	===========
 
 	.. note::
@@ -78,7 +82,7 @@ Save
 	Parameters		Description
 	=========== 	===========
 	saveBtn		Button to choose a filepath to save the Transmission to.
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	=========== 	===========
 
 	.. note::
@@ -94,7 +98,7 @@ Merge
 	Merge multiple Transmissions into a single Transmission. The DataFrames of the individual Transmissions are concatenated using `pandas.concat <https://pandas.pydata.org/pandas-docs/version/0.24/user_guide/merging.html#concatenating-objects>`_ and History Traces are also merged. The History Trace of each indidual input Transmission is kept separately.
 
 	.. warning::
-		At the moment, if you create two separate data streams that originate from the same Transmission and then merge them at a later point, the History Trace of the individual data streams is not maintained.
+		At the moment, if you create two separate data streams that originate from the same Transmission and then merge them at a later point, the analysis log (History Trace) of the individual data streams are not maintained. See the information about data blocks in the :ref:`concept_Transmission`.
 
 	========== 	=================
 	Terminal		Description
@@ -147,7 +151,7 @@ TextFilter
 	filter		Text filter to apply
 	Include		Include all rows matching the text filter
 	Exclude		Exclude all rows matching the text filter
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	=========== 	===========
 
 
@@ -172,7 +176,7 @@ SpliceArrays
 	=========== 	===========
 	data_column	Numerical data column containing the arrays to be spliced
 	indices		The splice indices, "start_index:end_index"
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	=========== 	===========
 
 
@@ -205,7 +209,7 @@ DropNaNs
 
 			| ignored if "axis" parameter is set to a specific column
 
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	=========== 	===========
 		
 
@@ -278,7 +282,7 @@ Plot
 	=========== 	===========
 	data_column	Data column to plot, must contain numerical arrays
 	Show		Show/hide the plot window
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	=========== 	===========
 
 
@@ -349,7 +353,7 @@ Butterworth
 	data_column	Data column containing numerical arrays to be filtered
 	order		Order of the filter
 	freq_divisor	Divisor for dividing the sampling frequency of the data to get Wn
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============ 	===========
 
 
@@ -375,7 +379,7 @@ SavitzkyGolay
 	data_column	Data column containing numerical arrays to be filtered
 	window_length	Size of windows for fitting the polynomials. Must be an odd number.
 	polyorder		Order of polynomials to fit into the windows. Must be less than *window_length*
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============= 	===========
 
 
@@ -407,7 +411,7 @@ Resample
 	data_column	Data column containing numerical arrays to be resampled
 	Rs		New sampling rate in *Tu* units of time.
 	Tu		Time unit
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============= 	===========
 	
 	.. note::
@@ -436,7 +440,7 @@ ScalerMeanVar
 	data_column	Data column containing numerical arrays to be scaled
 	mu		Mean of the output time series
 	std		Standard Deviation of the output time series
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============= 	===========
 
 
@@ -463,7 +467,7 @@ Normalize
 	Parameters		Description
 	=============	===========
 	data_column	Data column containing numerical arrays to be scaled
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============= 	===========
 
 .. _node_RFFT:
@@ -486,7 +490,7 @@ RFFT
 	Parameters		Description
 	=============	===========
 	data_column	Data column containing numerical arrays
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============= 	===========
 
 
@@ -526,7 +530,7 @@ PeakDetect
 
 	PB_Input *(optional)*		Transmission containing peaks & bases data (peaks_bases column).
 
-				| Useful for visualizing a saved Transmission that has peaks & bases data
+					| Useful for visualizing a saved Transmission that has peaks & bases data
 	Out			Transmission with the detected peaks & bases as DataFrames in the output column
 	===================== 	=================
 
@@ -540,7 +544,7 @@ PeakDetect
 	SlopeThr			Slope threshold
 	AmplThrAbs			Absolute amplitude threshold
 	AmplThrRel			Relative amplitude threshold
-	Apply			:ref:`ApplyCheckBox`
+	Apply			Process data through this node
 	===================== 	=================
 
 
@@ -607,7 +611,7 @@ Derivative
 	Parameter   		Description
 	===================== 	=================
 	data_column		Data column containing numerical arrays
-	Apply			:ref:`ApplyCheckBox`
+	Apply			Process data through this node
 	===================== 	=================
 
 
@@ -642,7 +646,7 @@ XpowerY
 	===================== 	=================
 	data_column		Data column containing numerical arrays
 	Y			Exponent
-	Apply			:ref:`ApplyCheckBox`
+	Apply			Process data through this node
 	===================== 	=================
 
 
@@ -666,7 +670,7 @@ AbsoluteValue
 	Parameter   		Description
 	===================== 	=================
 	data_column		Data column containing numerical arrays
-	Apply			:ref:`ApplyCheckBox`
+	Apply			Process data through this node
 	===================== 	=================
 
 
@@ -693,13 +697,13 @@ LogTransform
 
 	transform		*log10*: Base 10 logarithm
 
-			| *ln*: Natural logarithm
+				| *ln*: Natural logarithm
 
-			| *modlog10*: :math:`sign(x) * \log_{10} (|x| + 1)`
+				| *modlog10*: :math:`sign(x) * \log_{10} (|x| + 1)`
 
-			| *modln*: :math:`sign(x) * \ln (|x| + 1)`
+				| *modln*: :math:`sign(x) * \ln (|x| + 1)`
 
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============ 	=================
 
 
@@ -718,12 +722,77 @@ Biology
 ExtractStim
 ^^^^^^^^^^^
 
-	Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it.
+	Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it. It outputs one row per stimulus period.
 
-	
+	============================    ========================================
+	Output Data Column              Description
+	============================    ========================================
+	STIM_TYPE			Stimulus type, corresponds to your :ref:`ProjectConfig`
+	STIMULUS			Name of the stimulus.
+	_EXTRACT_STIM		The extracted array based on the parameters.
+	============================    ========================================
+
+	============         =================
+	Parameter            Description
+	============         =================
+	data_column          Data column containing the signals to be extracted based on the stimulus maps
+	Stim_Type            Type of stimulus to extract
+	Stimulus             Name of the stimulus to extract
+	start_offset         Offset the start index of the stimulus mapping by a value (in frames)
+	end_offset           Offset the end index of the stimulus mapping by a value (in frames)
+
+	zero_pos             Zero index of the extracted signal
+
+                             | *start_offset*: extraction begins at the *start_offset* value, stops at the *end_offset*
+
+                             | *stim_end*: extraction begins at the end of the stimulus, stops at the *end_offset*.
+
+                             | *stim_center*: extraction begins at the midpoint of the stimulus period plus the *start_offset*, stops at *end_offset*
+	============         =================
+
+
+.. _node_DetrendDFoF:
+
+DetrendDFoF
+^^^^^^^^^^^
+
+	Uses the `detrend_df_f <http://flatironinstitute.github.io/CaImAn/core_functions.html#caiman.source_extraction.cnmf.utilities.detrend_df_f>`_ function from the CaImAn library. This node does not use any of the numerical data in a Transmission DataFrame to compute the detrended :math:`\Delta F / F_o`. It directly uses the CNMF output data for the Samples that are present in the Transmission DataFrame.
+
+	**Output Data Column** *(numerical)*: _DETREND_DF_O_F
+
+
+----------------------
+
+.. _nodes_Clustering:
+
+Clustering
+----------
+
+
+.. _node_KShape:
+
+KShape
+^^^^^^
+
+	Perform `KShape clustering <http://www.cs.columbia.edu/~jopa/kshape.html>`_. I recommend reading the paper on it: `Paparrizos, John, and Luis Gravano. "k-Shape: Efficient and Accurate Clustering of Time Series." In Proceedings of the 2015 ACM SIGMOD International Conference on Management of Data, pp. 1855-1870. ACM, 2015 <http://www.cs.columbia.edu/~jopa/Papers/PaparrizosSIGMOD2015.pdf>`_. This node uses the `tslearn.clustering.KShape <https://tslearn.readthedocs.io/en/latest/gen_modules/clustering/tslearn.clustering.KShape.html#tslearn.clustering.KShape>`_ implementation.
+
+
+.. _node_KMeans:
+
+KMeans
+^^^^^^
+
+	Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
+
+
+.. _node_LDA:
+
+LDA
+^^^
 
 
 
+----------------------
 
 .. _nodes_Hierarchical:
 
@@ -765,7 +834,7 @@ Linkage
 
 			| `Click here for more info <https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.linkage.html?highlight=optimal_ordering>`_
 
-	Apply		:ref:`ApplyCheckBox`
+	Apply		Process data through this node
 	============= 	=================
 	
 

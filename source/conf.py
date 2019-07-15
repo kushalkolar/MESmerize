@@ -47,8 +47,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'sphinx_autodoc_typehints',
-    'sphinxcontrib.tikz'
+    'sphinx_autodoc_typehints'
 ]
 napoleon_use_param = True
 set_type_checking_flag = True
@@ -131,8 +130,8 @@ latex_elements = {
 
     # Additional stuff for the LaTeX preamble.
     #
-    'preamble': r"""\\usepackage{tikz}
-		\\usepackage{pgfplots}"""
+    #'preamble': r"""\\usepackage{tikz}
+	#	\\usepackage{pgfplots}"""
 
     # Latex figure (float) alignment
     #
