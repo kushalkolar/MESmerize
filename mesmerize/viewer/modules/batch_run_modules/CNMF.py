@@ -128,7 +128,22 @@ def run(batch_dir: str, UUID: str):
         pickle.dump(idx_components, open(UUID + '_idx_components.pikl', 'wb'), protocol=4)
         pickle.dump(cnmYrA, open(UUID  + '_cnm-YrA.pikl', 'wb'), protocol=4)
         pickle.dump(dims, open(UUID  + '_dims.pikl', 'wb'), protocol=4)
-        output.update({'output': UUID, 'status': 1})
+
+        output_file_list = [UUID + '_cnm-A.pikl',
+                            UUID + '_Yr.pikl',
+                            UUID + '_cnm-b.pikl',
+                            UUID + '_cnm-C.pikl',
+                            UUID + '_cnm-f.pikl',
+                            UUID + '_idx_components.pikl',
+                            UUID + '_cnm-YrA.pikl',
+                            UUID + '_dims.pikl',
+                            UUID + '.out'
+                            ]
+
+        output.update({'output': UUID,
+                       'status': 1,
+                       'output_files': output_file_list
+                       })
 
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
@@ -231,9 +246,9 @@ class Output(QtWidgets.QWidget):
                 m.add_all_cnmfe_components(cnmA=self.cnmA,
                                            cnmb=self.cnmb,
                                            cnmC=self.cnmC,
-                                           cnm_f = self.cnm_f,
-                                           cnmYrA = self.cnmYrA,
-                                           idx_components=self.idx_components,
+                                           cnm_f=self.cnm_f,
+                                           cnmYrA=self.cnmYrA,
+                                           idx_components=np.array(range(len(self.idx_components))),
                                            dims=self.dims,
                                            input_params_dict=input_params,
                                            dfof=True)
