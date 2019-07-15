@@ -237,8 +237,8 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
     drop_opts = ['dataframes', 'transmission']
 
     def __init__(self):
-        super(HeatmapTracerWidget, self).__init__()
-        HeatmapSplitterWidget.__init__(self)
+        super().__init__()
+
         self.setWindowTitle('Heatmap Tracer Widget')
         self.control_widget = ControlWidget()
         self.add_to_splitter(self.control_widget)
@@ -251,8 +251,9 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.datapoint_tracer_curve_column = None
         self._previous_df_columns = []
 
+        self.control_widget.ui.listWidgetColorMapsData.set_cmap('jet')
+
         self.control_widget.ui.pushButtonPlot.clicked.connect(self.update_plot)
-        self.control_widget.sig_changed.connect(self.update_plot)
 
         self.control_widget.ui.checkBoxLiveUpdate.toggled.connect(self.set_update_live)
 
@@ -263,6 +264,8 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.block_signals_list = [self.control_widget]
 
         self.is_clustering = False
+
+        self.control_widget.sig_changed.connect(self.update_plot)
 
     def set_update_live(self, b: bool):
         self._update_live = b
@@ -324,7 +327,8 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
                  labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
                  datapoint_tracer_curve_column=self.control_widget.ui.comboBoxDPTCurveColumn.currentText(),
                  cmap=self.control_widget.ui.listWidgetColorMapsData.current_cmap,
-                 transmission=self.transmission)
+                 transmission=self.transmission,
+                 ylabels_cmap=self.control_widget.ui.listWidgetColorMapsLabels.current_cmap)
         if drop:
             for k in self.drop_opts:
                 d.pop(k)

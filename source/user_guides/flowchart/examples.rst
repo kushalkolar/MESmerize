@@ -1,5 +1,7 @@
-Flowchart Examples
-******************
+.. _FlowchartExamples:
+
+Examples
+********
 
 Plot a heatmap of normalized data
 ---------------------------------

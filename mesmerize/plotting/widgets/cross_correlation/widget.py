@@ -93,7 +93,10 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
         ylabels = self.transmission.df[labels_col]
 
-        self.plot_widget.set(plot_data, cmap=cmap, ylabels=ylabels)
+        # Since it's just same curve vs. same curves in the cc_matrix
+        xlabels = ylabels
+
+        self.plot_widget.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels, linewidths=.5, linecolor='k')
         # self.plot_widget.ax_ylabel_bar.set_axis_off()
 
         self.plot_widget.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
@@ -150,8 +153,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.control_widget.ui.lineEditCurve1UUID.setText(ux)
             self.control_widget.ui.lineEditCurve2UUID.setText(uy)
 
-            self.curve_plot_1.setData(x, pen=mkPen(color='m', width=2))
-            self.curve_plot_2.setData(y, pen=mkPen(color='c', width=2))
+            self.curve_plot_1.setData(x=np.linspace(0, (len(x) / self.sampling_rate), len(x)), y=x, pen=mkPen(color='m', width=2))
+            self.curve_plot_2.setData(x=np.linspace(0, (len(y) / self.sampling_rate), len(y)), y=y, pen=mkPen(color='c', width=2))
 
             ncc = self.cc_data[self.current_sample_id].ccs[i, j, :]
 

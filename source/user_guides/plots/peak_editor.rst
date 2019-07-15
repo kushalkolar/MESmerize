@@ -2,3 +2,6 @@
 
 Peak Editor
 ***********
+
+Visualize and edit detected peaks & bases.
+

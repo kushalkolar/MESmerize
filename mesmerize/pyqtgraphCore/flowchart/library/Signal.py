@@ -370,7 +370,7 @@ class iRFFT(CtrlNode):
 
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
-    nodeName = 'Peak_Detect'
+    nodeName = 'PeakDetect'
     uiTemplate = [('data_column', 'combo', {}),
                   ('Fictional_Bases', 'check', {'checked': True}),
                   ('Edit', 'button', {'text': 'Open GUI'}),
