@@ -248,7 +248,7 @@ class Output(QtWidgets.QWidget):
                                            cnmC=self.cnmC,
                                            cnm_f=self.cnm_f,
                                            cnmYrA=self.cnmYrA,
-                                           idx_components=np.array(range(len(self.idx_components))),
+                                           idx_components=np.array(range(self.cnmC.shape[0])),
                                            dims=self.dims,
                                            input_params_dict=input_params,
                                            dfof=True)
