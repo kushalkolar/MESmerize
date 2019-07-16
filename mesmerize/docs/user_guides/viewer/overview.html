@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Viewer overview &mdash; Mesmerize 1 documentation</title>
+  <title>Viewer overview &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -35,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Add a Sample to the Project" href="add_to_project.html" />
+    <link rel="next" title="Convert Meta Data" href="../convert_meta_data.html" />
     <link rel="prev" title="Create a New Project" href="../project_organization/new_project/new_project.html" />
     <link href="../../_static/style.css" rel="stylesheet" type="text/css">
 
@@ -61,6 +62,10 @@
           
             
             
+              <div class="version">
+                0.1
+              </div>
+            
           
 
           
@@ -82,25 +87,54 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guides:</span></p>
-<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#viewer-layout">Viewer layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#opening-images">Opening Images</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exploring-the-work-environment">Exploring the work environment</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="add_to_project.html">Add a Sample to the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+<p class="caption"><span class="caption-text">Project:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#viewer-layout">Viewer layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#opening-images">Opening Images</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#load-method">Load Method</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exploring-the-work-environment">Exploring the work environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-scripts">Running scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 </ul>
 
@@ -168,10 +202,11 @@
             
   <div class="section" id="viewer-overview">
 <h1>Viewer overview<a class="headerlink" href="#viewer-overview" title="Permalink to this headline">¶</a></h1>
+<p>Based on the <a class="reference external" href="http://www.pyqtgraph.org/documentation/widgets/imageview.html">pyqtgraph ImageView</a> widget.</p>
 <p><strong>The Viewer allows you to do the following things:</strong></p>
 <ul class="simple">
 <li>Examine your calcium movies</li>
-<li>Use a lot of modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.</li>
+<li>Use modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.</li>
 <li>You can also make modifications to an existing Sample in your project by opening it in the Viewer. See Modify Sample and Overwrite guide.</li>
 </ul>
 <div class="section" id="viewer-layout">
@@ -183,13 +218,13 @@
 <h2>Opening Images<a class="headerlink" href="#opening-images" title="Permalink to this headline">¶</a></h2>
 <p>You can open <em>tiff</em> files and <em>mes</em> files in the Viewer.
 To open a tiff file go to Modules -&gt; Load Images -&gt; Tiff files.</p>
-<p>To open tiff files just click the “Select file” button and choose your file.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">To open files from our whole brain brain you must choose the “asarray” option.</p>
+<p class="last">You can also use this module through the console and scripts. See <a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html#api-tiffmodule"><span class="std std-ref">Tiff Module</span></a></p>
 </div>
+<p>To open tiff files just click the “Select file” button and choose your file.</p>
 <img alt="../../_images/21.png" src="../../_images/21.png" />
-<p>When you choose tiff files from the whole brain, it will automatically locate and find the associated .json meta data if it has the same name as that tiff file.</p>
+<p>When you choose a tiff file it will automatically find the associated .json meta data if it has the same filename.</p>
 <img alt="../../_images/41.png" src="../../_images/41.png" />
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -197,12 +232,22 @@ To open a tiff file go to Modules -&gt; Load Images -&gt; Tiff files.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last"><strong>You cannot perform any analysis without the meta data file since you need the framerate of the video (usually 10 Hz) and it is specified in the meta data file.</strong></p>
+<p class="last"><strong>You cannot perform any analysis without the meta data file since you need the sampling rate of the video and it is specified in the meta data file.</strong></p>
 </div>
+<div class="section" id="load-method">
+<h3>Load Method<a class="headerlink" href="#load-method" title="Permalink to this headline">¶</a></h3>
+<p>The options for “Load Method” correspond to the <a class="reference external" href="https://pypi.org/project/tifffile/">tifffile</a> library method that is used for loading the images.</p>
+<ul class="simple">
+<li>asarray: Should work for most tiff files, fast method</li>
+<li>asarray - multi series: Also fast. Use this if it is a multi-page tiff. For example if the tiff file was created by a program that appends each frame to a file as they are being acquired by the camera.</li>
+<li>imread: Usually slower, should work for most tiff files.</li>
+</ul>
+<p>If you are not sure which method you should use, try all of them and see which one loads your data appropriately. If none of them work, contact us and I may be able to add more methods.</p>
 <p>Click the “Load into workEnv” button to load this image into your work environment.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">If you have an unsaved work environment open (such as a video with ROIs for example) it will prompt you to confirm that you want to clear the work environment before loading the chosen image into the work environment.</p>
+</div>
 </div>
 </div>
 <div class="section" id="exploring-the-work-environment">
@@ -217,10 +262,14 @@ To open a tiff file go to Modules -&gt; Load Images -&gt; Tiff files.</p>
 <img alt="../../_images/9.png" src="../../_images/9.png" />
 <p>If you double click on “meta” above you can see your meta data.</p>
 <img alt="../../_images/10.png" src="../../_images/10.png" />
-<p>A faster way to explore your meta data is through the console.</p>
+<p>You can view your meta data more quickly using the console.</p>
 <p>Open the console by going to View -&gt; Console.
-You can then type the following to see the meta data: <code class="docutils literal notranslate"><span class="pre">viewer.workEnv.imgdata.meta</span></code></p>
+You can then call <code class="docutils literal notranslate"><span class="pre">get_meta()</span></code> to print the meta data dict.</p>
 <img alt="../../_images/111.png" src="../../_images/111.png" />
+</div>
+<div class="section" id="running-scripts">
+<h2>Running scripts<a class="headerlink" href="#running-scripts" title="Permalink to this headline">¶</a></h2>
+<p>You can run scripts in the Viewer console to automate tasks such as batch creation. See the scripting guides &lt;ref here&gt; for more detail.</p>
 </div>
 </div>
 
@@ -232,7 +281,7 @@ You can then type the following to see the meta data: <code class="docutils lite
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="add_to_project.html" class="btn btn-neutral float-right" title="Add a Sample to the Project" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../convert_meta_data.html" class="btn btn-neutral float-right" title="Convert Meta Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../project_organization/new_project/new_project.html" class="btn btn-neutral float-left" title="Create a New Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

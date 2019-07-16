@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; Mesmerize 1 documentation</title>
+  <title>Index &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -26,6 +26,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,6 +61,10 @@
           
             
             
+              <div class="version">
+                0.1
+              </div>
+            
           
 
           
@@ -81,20 +86,45 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guides:</span></p>
+              <p class="caption"><span class="caption-text">Overview</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/overview.html">Viewer overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/faq.html">FAQs</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+<p class="caption"><span class="caption-text">Project:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 </ul>
 
@@ -173,41 +203,54 @@
  | <a href="#H"><strong>H</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  
 </div>
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.__init__">__init__() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.__init__">__init__() (mesmerize.analysis.data_types.BaseTransmission method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.__init__">(analyser.DataTypes.HistoryTrace method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.__init__">(mesmerize.Transmission method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.__init__">(viewer.core.mesfile.MES method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.__init__">(mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.__init__">(viewer.core.viewer_work_environment.ViewerWorkEnv method)</a>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.__init__">(mesmerize.viewer.core.ViewerUtils method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.__init__">(mesmerize.viewer.core.ViewerWorkEnv method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.__init__">(mesmerize.viewer.core.mesfile.MES method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.__init__">(mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.__init__">[1]</a>
 </li>
       </ul></li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.__weakref__">__weakref__ (analyser.DataTypes.BaseTransmission attribute)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.__weakref__">__weakref__ (mesmerize.analysis.data_types.HistoryTrace attribute)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.__weakref__">(analyser.DataTypes.HistoryTrace attribute)</a>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.__weakref__">(mesmerize.viewer.core.ViewerUtils attribute)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.__weakref__">(viewer.core.mesfile.MES attribute)</a>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.__weakref__">(mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.__weakref__">(viewer.core.viewer_work_environment.ViewerWorkEnv attribute)</a>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.__weakref__">(mesmerize.viewer.core.mesfile.MES attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission._load_files">_load_files() (analyser.DataTypes.Transmission static method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace._add_data_block">_add_data_block() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission._make_dict">_make_dict() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils._clear_workEnv">_clear_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace._to_uuid">_to_uuid() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission._load_files">_load_files() (mesmerize.Transmission static method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv._organize_meta">_organize_meta() (mesmerize.viewer.core.ViewerWorkEnv static method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace._to_uuid">_to_uuid() (mesmerize.analysis.data_types.HistoryTrace static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -215,11 +258,11 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.add_data_block">add_data_block() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item">add_item() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.add_operation">add_operation() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.add_operation">add_operation() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -227,7 +270,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission">BaseTransmission (class in analyser.DataTypes)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission">BaseTransmission (class in mesmerize.analysis.data_types)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -235,11 +278,11 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.check_operation_exists">check_operation_exists() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.check_operation_exists">check_operation_exists() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.create_data_block">create_data_block() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.create_data_block">create_data_block() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -247,7 +290,15 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.data_blocks">data_blocks (analyser.DataTypes.HistoryTrace attribute)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.data_blocks">data_blocks (mesmerize.analysis.data_types.HistoryTrace attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget">DatapointTracerWidget (class in mesmerize.plotting)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df">df (mesmerize.viewer.modules.batch_manager.ModuleGUI attribute)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df">[1]</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.discard_workEnv">discard_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -255,31 +306,47 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.empty_df">empty_df() (analyser.DataTypes.BaseTransmission static method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.empty_df">empty_df() (mesmerize.analysis.data_types.BaseTransmission static method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.empty_df">(mesmerize.Transmission static method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.from_json">from_json() (analyser.DataTypes.HistoryTrace class method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_dict">from_dict() (mesmerize.analysis.data_types.HistoryTrace static method)</a>
 </li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_mesfile">from_mesfile() (viewer.core.viewer_work_environment.ViewerWorkEnv class method)</a>
-</li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.from_pickle">from_pickle() (analyser.DataTypes.BaseTransmission class method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_hdf5">from_hdf5() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.from_pickle">(analyser.DataTypes.HistoryTrace class method)</a>
-</li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_pickle">(viewer.core.viewer_work_environment.ViewerWorkEnv class method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_hdf5">(mesmerize.Transmission class method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_hickle">from_hickle() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_json">from_json() (mesmerize.analysis.data_types.HistoryTrace class method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_mesfile">from_mesfile() (mesmerize.viewer.core.ViewerWorkEnv class method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission.from_proj">from_proj() (analyser.DataTypes.Transmission class method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_pickle">from_pickle() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_pickle">(mesmerize.Transmission class method)</a>
 </li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_tiff">from_tiff() (viewer.core.viewer_work_environment.ViewerWorkEnv class method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_pickle">(mesmerize.analysis.data_types.HistoryTrace class method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_pickle">(mesmerize.viewer.core.ViewerWorkEnv class method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_proj">from_proj() (mesmerize.Transmission class method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_tiff">from_tiff() (mesmerize.viewer.core.ViewerWorkEnv class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -287,23 +354,29 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_all_data_blocks_history">get_all_data_blocks_history() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_all_data_blocks_history">get_all_data_blocks_history() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.get_array_size">get_array_size() (in module analyser.DataTypes)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.get_array_size">get_array_size() (in module mesmerize.analysis)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_data_block_history">get_data_block_history() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_data_block_history">get_data_block_history() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.get_image_references">get_image_references() (viewer.core.mesfile.MES method)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.get_image_references">get_image_references() (mesmerize.viewer.core.mesfile.MES method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index">get_item_index() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_operation_params">get_operation_params() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_operation_params">get_operation_params() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_operations_list">get_operations_list() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_operations_list">get_operations_list() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.get_proj_path">get_proj_path() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.get_proj_path">get_proj_path() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.get_proj_path">(mesmerize.Transmission method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.get_sampling_rate">get_sampling_rate() (in module analyser.DataTypes)</a>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.get_sampling_rate">get_sampling_rate() (in module mesmerize.analysis)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -311,11 +384,11 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.history">history (analyser.DataTypes.HistoryTrace attribute)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.history">history (mesmerize.analysis.data_types.HistoryTrace attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace">HistoryTrace (class in analyser.DataTypes)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace">HistoryTrace (class in mesmerize.analysis.data_types)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -323,11 +396,17 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.load_img">load_img() (viewer.core.mesfile.MES method)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.load_img">load_img() (mesmerize.viewer.core.mesfile.MES method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input">load_item_input() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.load_mesfile">load_mesfile() (viewer.core.viewer_work_environment.ViewerWorkEnv static method)</a>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_output">load_item_output() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_output">[1]</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.load_mesfile">load_mesfile() (mesmerize.viewer.core.ViewerWorkEnv static method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/tiff_io.html#mesmerize.viewer.modules.tiff_io.ModuleGUI.load_tiff_file">load_tiff_file() (mesmerize.viewer.modules.tiff_io.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.tiff_io.ModuleGUI.load_tiff_file">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -335,15 +414,37 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.merge">merge() (analyser.DataTypes.HistoryTrace class method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.merge">merge() (mesmerize.analysis.data_types.HistoryTrace class method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission.merge">(analyser.DataTypes.Transmission class method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.merge">(mesmerize.Transmission class method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES">MES (class in viewer.core.mesfile)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES">MES (class in mesmerize.viewer.core.mesfile)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI">ModuleGUI (class in mesmerize.viewer.modules.batch_manager)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI">[1]</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/tiff_io.html#mesmerize.viewer.modules.tiff_io.ModuleGUI">(class in mesmerize.viewer.modules.tiff_io)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.tiff_io.ModuleGUI">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget.open_in_viewer">open_in_viewer() (mesmerize.plotting.DatapointTracerWidget method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch">process_batch() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -351,7 +452,21 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.set_proj_path">set_proj_path() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget.set_image">set_image() (mesmerize.plotting.DatapointTracerWidget method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.set_proj_config">set_proj_config() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.set_proj_path">set_proj_path() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.set_proj_path">(mesmerize.Transmission method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget.set_widget">set_widget() (mesmerize.plotting.DatapointTracerWidget method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.show_item_info">show_item_info() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.show_item_info">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -359,21 +474,51 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.to_json">to_json() (analyser.DataTypes.HistoryTrace method)</a>
-</li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pandas">to_pandas() (viewer.core.viewer_work_environment.ViewerWorkEnv method)</a>
-</li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.to_pickle">to_pickle() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_dict">to_dict() (mesmerize.analysis.data_types.BaseTransmission method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.to_pickle">(analyser.DataTypes.HistoryTrace method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_dict">(mesmerize.Transmission method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pickle">(viewer.core.viewer_work_environment.ViewerWorkEnv method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.to_dict">(mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_hdf5">to_hdf5() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_hdf5">(mesmerize.Transmission method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_hickle">to_hickle() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_hickle">(mesmerize.Transmission method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission">Transmission (class in analyser.DataTypes)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.to_json">to_json() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.to_pandas">to_pandas() (mesmerize.viewer.core.ViewerWorkEnv method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_pickle">to_pickle() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_pickle">(mesmerize.Transmission method)</a>
+</li>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.to_pickle">(mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.to_pickle">(mesmerize.viewer.core.ViewerWorkEnv method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission">Transmission (class in mesmerize)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.update_workEnv">update_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -381,7 +526,11 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv">ViewerWorkEnv (class in viewer.core.viewer_work_environment)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils">ViewerUtils (class in mesmerize.viewer.core)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv">ViewerWorkEnv (class in mesmerize.viewer.core)</a>
 </li>
   </ul></td>
 </tr></table>
