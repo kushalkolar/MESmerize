@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Create a New Project &mdash; Mesmerize 1 documentation</title>
+  <title>Create a New Project &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -36,7 +37,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Viewer overview" href="../../viewer/overview.html" />
-    <link rel="prev" title="Installation" href="../../installation.html" />
+    <link rel="prev" title="FAQs" href="../../faq.html" />
     <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -61,6 +62,10 @@
           
             
             
+              <div class="version">
+                0.1
+              </div>
+            
           
 
           
@@ -82,12 +87,14 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guides:</span></p>
-<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Create a New Project</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#biological-questions">Biological Questions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#new-project">New Project</a></li>
@@ -103,13 +110,36 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../viewer/overview.html">Viewer overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../viewer/add_to_project.html">Add a Sample to the Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQs</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+<p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 </ul>
 
@@ -179,7 +209,7 @@
 <h1>Create a New Project<a class="headerlink" href="#create-a-new-project" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="biological-questions">
 <h2>Biological Questions<a class="headerlink" href="#biological-questions" title="Permalink to this headline">¶</a></h2>
-<p><strong>Before you create a new Mesmerize Project you must thoroughly think about the biological questions that you interested in. Here are some thoughts to help you:</strong></p>
+<p><strong>Before you create a new Mesmerize Project you must thoroughly think about the biological questions that you are interested in. Here are some thoughts to help you:</strong></p>
 <blockquote>
 <div><ul>
 <li><p class="first">The effects of different types of temporary stimulation? Such as poking or odors?</p>
@@ -303,7 +333,7 @@
         <a href="../../viewer/overview.html" class="btn btn-neutral float-right" title="Viewer overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../../installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../../faq.html" class="btn btn-neutral float-left" title="FAQs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

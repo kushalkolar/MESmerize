@@ -1,0 +1,1686 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Nodes &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Flowchart Overview" href="overview.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Nodes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data">Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loadfile">LoadFile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-proj-df">Load_Proj_DF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#save">Save</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#merge">Merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewdata">ViewData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewhistorytrace">ViewHistoryTrace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#textfilter">TextFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#splicearrays">SpliceArrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dropnans">DropNaNs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#display">Display</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#beeswarmplots">BeeswarmPlots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#heatmap">Heatmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot">Plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#proportions">Proportions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scatterplot">ScatterPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timeseries">TimeSeries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#signal">Signal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#butterworth">Butterworth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#savitzkygolay">SavitzkyGolay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#powspecdens">PowSpecDens</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resample">Resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scalermeanvar">ScalerMeanVar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normalize">Normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rfft">RFFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#irfft">iRFFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#peakdetect">PeakDetect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#peakfeatures">PeakFeatures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#math">Math</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#derivative">Derivative</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tvdiff">TVDiff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#xpowery">XpowerY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#absolutevalue">AbsoluteValue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logtransform">LogTransform</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#biology">Biology</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extractstim">ExtractStim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detrenddfof">DetrendDFoF</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#clustering">Clustering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kshape">KShape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kmeans">KMeans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lda">LDA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hierarchical">Hierarchical</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#linkage">Linkage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fcluster">FCluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inconsistent">Inconsistent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maxincstat">MaxIncStat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maxinconsistent">MaxInconsistent</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Nodes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user_guides/flowchart/nodes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="nodes">
+<span id="flowchartnodes"></span><h1>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="data">
+<span id="nodes-data"></span><h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p><strong>These nodes are for performing general data related operations</strong></p>
+<div class="section" id="loadfile">
+<span id="node-loadfile"></span><h3>LoadFile<a class="headerlink" href="#loadfile" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Loads a save Transmission file. If you have a Project open it will automatically set the project path according to the open project. Otherwise you must specify the project path. You can specify a different project path to the project that is currently open (this is untested, weird things could happen). You should not merge Transmissions originating from different projects.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Out</td>
+<td>Transmission loaded from the selected file.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>load_trn</td>
+<td>Button to choose a .trn file (Transmission) to load</td>
+</tr>
+<tr class="row-odd"><td>proj_path</td>
+<td>Button to select the Mesmerize project that corresponds to the chosen .trn file.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The purpose of specifying the Project Path when you load a save Transmission file is so that    interactive plots and the <a class="reference internal" href="../plots/datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a> can find raw data that correspond to datapoints.</p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="load-proj-df">
+<span id="node-load-proj-df"></span><h3>Load_Proj_DF<a class="headerlink" href="#load-proj-df" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Load the entire Project DataFrame (root) of the project that is currently open, or a sub-DataFrame that corresponds a tab that you have created in the <a class="reference internal" href="../project_organization/project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a>.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _RAW_CURVE</p>
+<blockquote>
+<div>Each element in this output column contains a 1-D array representing the trace extracted from an ROI.</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Out</td>
+<td>Transmission created from the Project DataFrame or sub-DataFrame.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>DF_Name</td>
+<td>DataFrame name. List correponds to <a class="reference internal" href="../project_organization/project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a> tabs.</td>
+</tr>
+<tr class="row-odd"><td>Update</td>
+<td>Re-create Transmission from corresponding <a class="reference internal" href="../project_organization/project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a> tab.</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <strong>DF_Name</strong> options do not update live with the removal or creation of tabs in the <a class="reference internal" href="../project_organization/project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a>, you must create a new node to reflect these types of changes.</p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="save">
+<span id="node-save"></span><h3>Save<a class="headerlink" href="#save" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Save the input Transmission to a file so that the Transmission can be used re-loaded in the Flowchart for later use.</p>
+<p><strong>Usage:</strong> Connect an input Transmission to this node’s <strong>In</strong> terminal, click the button to choose a path to save a new file to, and then click the Apply checkbox to save the input Transmission to the chosen file.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Transmission to be saved to file</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>saveBtn</td>
+<td>Button to choose a filepath to save the Transmission to.</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You must always save a Transmission to a new file (pandas with hdf5 exihibts weird behavior if you overwrite, this is the easiest workaround). If you try to overwrite the file you will be presented with an error saying that the file already exists.</p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="merge">
+<span id="node-merge"></span><h3>Merge<a class="headerlink" href="#merge" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Merge multiple Transmissions into a single Transmission. The DataFrames of the individual Transmissions are concatenated using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.24/user_guide/merging.html#concatenating-objects">pandas.concat</a> and History Traces are also merged. The History Trace of each indidual input Transmission is kept separately.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">At the moment, if you create two separate data streams that originate from the same Transmission and then merge them at a later point, the analysis log (History Trace) of the individual data streams are not maintained. See the information about data blocks in the <a class="reference internal" href="overview.html#concept-transmission"><span class="std std-ref">Transmission</span></a>.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Transmissions to be merged</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Merged Transmission</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="viewdata">
+<span id="node-viewdata"></span><h3>ViewData<a class="headerlink" href="#viewdata" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>View the input Transmission object using the spyder Object Editor. For example you can explore the Transmission DataFrame and HistoryTrace.</div></blockquote>
+</div>
+<div class="section" id="viewhistorytrace">
+<span id="node-viewhistorytrace"></span><h3>ViewHistoryTrace<a class="headerlink" href="#viewhistorytrace" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>View the HistoryTrace of the input Transmission in a nice Tree View GUI.</div></blockquote>
+</div>
+<div class="section" id="textfilter">
+<span id="node-textfilter"></span><h3>TextFilter<a class="headerlink" href="#textfilter" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Include or Exclude Transmission DataFrame rows according to a text filter in a categorical column.</p>
+<p><strong>Usage Example:</strong> If you want to select all traces that are from photoreceptor cells and you have a categorical column, named cell_types for example, containing cell type labels, choose “cell_type” as the <em>Column</em> parameter and enter “photoreceptor” as the <em>filter</em> parameter, and select <em>Include</em>. If you want to select everything that are not photoreceptors select <em>Exclude</em>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is recommended to filter and group your data beforehand using the <a class="reference internal" href="../project_organization/project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a> since it allows much more sophisticated filtering.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission its DataFrame filtered accoring parameters</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Column</td>
+<td>Categorical column that contains the text filter to apply</td>
+</tr>
+<tr class="row-odd"><td>filter</td>
+<td>Text filter to apply</td>
+</tr>
+<tr class="row-even"><td>Include</td>
+<td>Include all rows matching the text filter</td>
+</tr>
+<tr class="row-odd"><td>Exclude</td>
+<td>Exclude all rows matching the text filter</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="splicearrays">
+<span id="node-splicearrays"></span><h3>SpliceArrays<a class="headerlink" href="#splicearrays" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Splice arrays derived in the specified numerical data column and place the spliced output arrays in the output column.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _SPLICE_ARRAYS</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with arrays from the input column spliced and placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Numerical data column containing the arrays to be spliced</td>
+</tr>
+<tr class="row-odd"><td>indices</td>
+<td>The splice indices, “start_index:end_index”</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="dropnans">
+<span id="node-dropnans"></span><h3>DropNaNs<a class="headerlink" href="#dropnans" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Drop NaNs and Nones (null) from the Transmission DataFrame. Uses <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.24/reference/api/pandas.DataFrame.dropna.html">DataFrame.dropna</a> and <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.24/reference/api/pandas.DataFrame.isna.html">DataFrame.isna</a> methods.</p>
+<ul class="simple">
+<li>If you choose “row” or “column” as axis, entire rows or columns will be dropped if any or all (see params) of the values are NaN/None.</li>
+<li>If you choose to drop NaNs/Nones according to a specific column, it will drop the entire row if that row has a NaN/None value for the chosen column.</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission NaNs and None’s removed according to the params</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>axis</td>
+<td>Choose to rows, columns, or a rows according to a specific column.</td>
+</tr>
+<tr class="row-odd"><td>how</td>
+<td><p class="first"><em>any:</em> Drop if any value in the row/column is NaN/None</p>
+<div class="line-block">
+<div class="line"><em>all:</em> Drop only if all values in the row/column are Nan/None</div>
+</div>
+<div class="last line-block">
+<div class="line">ignored if “axis” parameter is set to a specific column</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="display">
+<span id="nodes-display"></span><h2>Display<a class="headerlink" href="#display" title="Permalink to this headline">¶</a></h2>
+<p><strong>These nodes connect input Transmission(s) to various plots for visualization</strong></p>
+<div class="section" id="beeswarmplots">
+<span id="node-beeswarmplots"></span><h3>BeeswarmPlots<a class="headerlink" href="#beeswarmplots" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Based on pqytgraph Beeswarm plots.</p>
+<p>Visualize data points as a pseudoscatter and as corresponding Violin Plots. This is commonly used to visualize peak features and compare different experimental groups.</p>
+<p>For more information please see <span class="xref std std-ref">plot_BeeswarmPlots</span></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td><p class="first">Input Transmission</p>
+<div class="last line-block">
+<div class="line">The DataFrame column(s) of interest must have single numerical values, not arrays</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="heatmap">
+<span id="node-heatmap"></span><h3>Heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Used for visualizing numerical arrays in the form of a heatmap. Also used for visualizing a hieararchical clustering tree (dendrogram) along with a heatmap with row order corresponding to the order leaves of the dendrogram.</p>
+<p>For more information see <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td><p class="first">Input Transmission</p>
+<div class="last line-block">
+<div class="line">The arrays in the DataFrame column(s) of interest <strong>must</strong> be of the same length</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Arrays in the DataFrame column(s) of interest <strong>must</strong> be of the same length. If they are not, you must splice them using the <a class="reference internal" href="#node-splicearrays"><span class="std std-ref">SpliceArrays</span></a> node.</p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="plot">
+<span id="node-plot"></span><h3>Plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>A simple plot.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column to plot, must contain numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>Show</td>
+<td>Show/hide the plot window</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="proportions">
+<span id="node-proportions"></span><h3>Proportions<a class="headerlink" href="#proportions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Plot stacked bar chart of one categorical variable vs. another categorical variable.</p>
+<p>For more information see <a class="reference internal" href="../plots/proportions.html#plot-proportions"><span class="std std-ref">Proportions</span></a></p>
+</div></blockquote>
+</div>
+<div class="section" id="scatterplot">
+<span id="node-scatterplot"></span><h3>ScatterPlot<a class="headerlink" href="#scatterplot" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Create scatter plot of a numerical data column containing [X, Y] values (arrays of size 2).</p>
+<p>For more information see <span class="xref std std-ref">plot_ScatterPlot</span></p>
+</div></blockquote>
+</div>
+<div class="section" id="timeseries">
+<span id="node-timeseries"></span><h3>TimeSeries<a class="headerlink" href="#timeseries" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Plot the means along with confidence intervals or standard eviation of numerical arrays representing time series data.</p>
+<p>For more information see <span class="xref std std-ref">plot_TimeSeries</span></p>
+</div></blockquote>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="signal">
+<span id="nodes-signal"></span><h2>Signal<a class="headerlink" href="#signal" title="Permalink to this headline">¶</a></h2>
+<p><strong>Routine signal processing functions</strong></p>
+<p>I recommend this book by Professor Tom O’Haver if you are unfamiliar with basic signal processing: <a class="reference external" href="https://terpconnect.umd.edu/~toh/spectrum/TOC.html">https://terpconnect.umd.edu/~toh/spectrum/TOC.html</a></p>
+<div class="section" id="butterworth">
+<span id="node-butterworth"></span><h3>Butterworth<a class="headerlink" href="#butterworth" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Creates a Butterworth filter using <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter">scipy.signal.butter</a> and applies it using <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html">scipy.signal.filtfilt</a>.</p>
+<p>The Wn parameter of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter">scipy.signal.butter</a> is calculated by dividing the sampling rate of the data by the <em>freq_divisor</em> parameter (see below).</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _BUTTERWORTH</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with filtered signals in the output data column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays to be filtered</td>
+</tr>
+<tr class="row-odd"><td>order</td>
+<td>Order of the filter</td>
+</tr>
+<tr class="row-even"><td>freq_divisor</td>
+<td>Divisor for dividing the sampling frequency of the data to get Wn</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="savitzkygolay">
+<span id="node-savitzkygolay"></span><h3>SavitzkyGolay<a class="headerlink" href="#savitzkygolay" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference external" href="https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter">Savitzky Golay filter</a>. Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html">scipy.signal.savgol_filter</a>.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _SAVITZKY_GOLAY</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with filtered signals in the output data column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays to be filtered</td>
+</tr>
+<tr class="row-odd"><td>window_length</td>
+<td>Size of windows for fitting the polynomials. Must be an odd number.</td>
+</tr>
+<tr class="row-even"><td>polyorder</td>
+<td>Order of polynomials to fit into the windows. Must be less than <em>window_length</em></td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="powspecdens">
+<span id="node-powspecdens"></span><h3>PowSpecDens<a class="headerlink" href="#powspecdens" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="resample">
+<span id="node-resample"></span><h3>Resample<a class="headerlink" href="#resample" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Resample the data in numerical arrays. Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample.html">scipy.signal.resample</a>.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _RESAMPLE</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with resampled signals in the output data column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays to be resampled</td>
+</tr>
+<tr class="row-odd"><td>Rs</td>
+<td>New sampling rate in <em>Tu</em> units of time.</td>
+</tr>
+<tr class="row-even"><td>Tu</td>
+<td>Time unit</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If Tu = 1, then Rs is the new sampling rate in Hertz.</p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="scalermeanvar">
+<span id="node-scalermeanvar"></span><h3>ScalerMeanVar<a class="headerlink" href="#scalermeanvar" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Uses <a class="reference external" href="https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html">tslearn.preprocessing.TimeSeriesScalerMeanVariance</a></p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _SCALER_MEAN_VARIANCE</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with scaled signals in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays to be scaled</td>
+</tr>
+<tr class="row-odd"><td>mu</td>
+<td>Mean of the output time series</td>
+</tr>
+<tr class="row-even"><td>std</td>
+<td>Standard Deviation of the output time series</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">if mu = 0 and std = 1, the output is the z-score of the signal.</p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="normalize">
+<span id="node-normalize"></span><h3>Normalize<a class="headerlink" href="#normalize" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Normalize the signal so that all values are between 0 and 1 based on the min and max of the signal.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _NORMALIZE</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with scaled signals in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays to be scaled</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="rfft">
+<span id="node-rfft"></span><h3>RFFT<a class="headerlink" href="#rfft" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.rfft.html">scipy.fftpack.rfft</a>. “Discrete Fourier transform of a real sequence”</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _RFFT</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the RFT of signals in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="irfft">
+<span id="node-irfft"></span><h3>iRFFT<a class="headerlink" href="#irfft" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.irfft.html">scipy.fftpack.irfft</a>. “inverse discrete Fourier transform of real sequence x”</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _IRFFT</p>
+</div></blockquote>
+</div>
+<div class="section" id="peakdetect">
+<span id="node-peakdetect"></span><h3>PeakDetect<a class="headerlink" href="#peakdetect" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Perform Peak Detection using derivatives.</p>
+<p><strong>Output Data Column</strong> <em>(DataFrame)</em>: peaks_bases</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Derivative</td>
+<td><p class="first">Transmission with derivatives of signals. Must have <strong>_DERIVATIVE</strong> column.</p>
+<div class="last line-block">
+<div class="line">It’s recommended to use a derivative from a normalized filtered signal.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>Normalized</td>
+<td><p class="first">Transmission containing Normalized signals, used for thresholding</p>
+<div class="last line-block">
+<div class="line">See <a class="reference internal" href="#node-normalize"><span class="std std-ref">Normalize</span></a> node</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Curve</td>
+<td><p class="first">Transmission containing original signals.</p>
+<div class="last line-block">
+<div class="line">Usually not filtered to avoid distortions caused by filtering</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>PB_Input <em>(optional)</em></td>
+<td><p class="first">Transmission containing peaks &amp; bases data (peaks_bases column).</p>
+<div class="last line-block">
+<div class="line">Useful for visualizing a saved Transmission that has peaks &amp; bases data</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Out</td>
+<td>Transmission with the detected peaks &amp; bases as DataFrames in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column of the input <em>Curve</em> Transmission for placing peaks &amp; bases onto</td>
+</tr>
+<tr class="row-odd"><td>Fictional_Bases</td>
+<td>Add bases to beginning and end of signal if first or last peak is lonely</td>
+</tr>
+<tr class="row-even"><td>Edit</td>
+<td>Open Peak Editor GUI, see <a class="reference internal" href="../plots/peak_editor.html#plot-peakeditor"><span class="std std-ref">Peak Editor</span></a></td>
+</tr>
+<tr class="row-odd"><td>SlopeThr</td>
+<td>Slope threshold</td>
+</tr>
+<tr class="row-even"><td>AmplThrAbs</td>
+<td>Absolute amplitude threshold</td>
+</tr>
+<tr class="row-odd"><td>AmplThrRel</td>
+<td>Relative amplitude threshold</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="peakfeatures">
+<span id="node-peakfeatures"></span><h3>PeakFeatures<a class="headerlink" href="#peakfeatures" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Compute peak features. The DataFrame of the ouput Transmission contains one row for each peak.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Output Data Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>_pfeature_peak_curve</td>
+<td>array representing the peak</td>
+</tr>
+<tr class="row-odd"><td>_pfeature_amplitude_abs</td>
+<td>peak amplitude relative to the min value of the parent curve</td>
+</tr>
+<tr class="row-even"><td>_pfeature_amplitude_rel</td>
+<td>peak amplitude relative to the min value of the peak curve</td>
+</tr>
+<tr class="row-odd"><td>_pfeature_area</td>
+<td>area under the peak, <a class="reference external" href="https://en.wikipedia.org/wiki/Simpson%27s_rule">Simpson’s Rule</a></td>
+</tr>
+<tr class="row-even"><td>_pfeature_rising_slope_avg</td>
+<td>slope of the line drawn from the left base to the peak</td>
+</tr>
+<tr class="row-odd"><td>_pfeature_falling_slope_avg</td>
+<td>slope of the line drawn from the right base to the peak</td>
+</tr>
+<tr class="row-even"><td>_pfeature_duration_base</td>
+<td>distance between the left and right base</td>
+</tr>
+<tr class="row-odd"><td>_pfeature_peak_interval</td>
+<td>…</td>
+</tr>
+<tr class="row-even"><td>_pfeature_ix_peak_abs</td>
+<td>index of the peak maxima in the parent curve</td>
+</tr>
+<tr class="row-odd"><td>_pfeature_ix_peak_rel</td>
+<td>index of the peak maxima in the peak curve (_pfeature_peak_curve)</td>
+</tr>
+<tr class="row-even"><td>_pfeature_uuid</td>
+<td>peak <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a></td>
+</tr>
+<tr class="row-odd"><td>_pfeature_ix_base_left_abs</td>
+<td>index of the left base in the parent curve</td>
+</tr>
+<tr class="row-even"><td>_pfeature_ix_base_right_abs</td>
+<td>index of the right base in the parent curve</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission. Must contain <em>peak_bases</em> column containing peak_bases DataFrames.</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with peak features in various output columns</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="math">
+<span id="nodes-math"></span><h2>Math<a class="headerlink" href="#math" title="Permalink to this headline">¶</a></h2>
+<p><strong>Nodes for performing basic Math functions</strong></p>
+<div class="section" id="derivative">
+<span id="node-derivative"></span><h3>Derivative<a class="headerlink" href="#derivative" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Computes the first derivative.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _DERIVATIVE</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the derivative placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="tvdiff">
+<span id="node-tvdiff"></span><h3>TVDiff<a class="headerlink" href="#tvdiff" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>Based on <a class="reference external" href="http://dx.doi.org/10.5402/2011/164564">Numerical Differentiation of Noisy, Nonsmooth Data. Rick Chartrand. (2011).</a>. Translated to Python by Simone Sturniolo.</div></blockquote>
+</div>
+<div class="section" id="xpowery">
+<span id="node-xpowery"></span><h3>XpowerY<a class="headerlink" href="#xpowery" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Raises each element of the numerical arrays in the data_column to the exponent Y</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _X_POWER_Y</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>Y</td>
+<td>Exponent</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="absolutevalue">
+<span id="node-absolutevalue"></span><h3>AbsoluteValue<a class="headerlink" href="#absolutevalue" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Element-wise absolute values of the input arrays. Computes root mean squares if input arrays are complex.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _ABSOLUTE_VALUE</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="logtransform">
+<span id="node-logtransform"></span><h3>LogTransform<a class="headerlink" href="#logtransform" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Perform Logarithmic transformation of the data.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _LOG_TRANSFORM</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>transform</td>
+<td><p class="first"><em>log10</em>: Base 10 logarithm</p>
+<div class="line-block">
+<div class="line"><em>ln</em>: Natural logarithm</div>
+</div>
+<div class="line-block">
+<div class="line"><em>modlog10</em>: <span class="math notranslate nohighlight">\(sign(x) * \log_{10} (|x| + 1)\)</span></div>
+</div>
+<div class="last line-block">
+<div class="line"><em>modln</em>: <span class="math notranslate nohighlight">\(sign(x) * \ln (|x| + 1)\)</span></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="biology">
+<span id="nodes-biology"></span><h2>Biology<a class="headerlink" href="#biology" title="Permalink to this headline">¶</a></h2>
+<p><strong>Nodes for some biologically useful things which I couldn’t categorize elsewhere</strong></p>
+<div class="section" id="extractstim">
+<span id="node-extractstim"></span><h3>ExtractStim<a class="headerlink" href="#extractstim" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it. It outputs one row per stimulus period.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Output Data Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>STIM_TYPE</td>
+<td>Stimulus type, corresponds to your <span class="xref std std-ref">ProjectConfig</span></td>
+</tr>
+<tr class="row-odd"><td>STIMULUS</td>
+<td>Name of the stimulus.</td>
+</tr>
+<tr class="row-even"><td>_EXTRACT_STIM</td>
+<td>The extracted array based on the parameters.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing the signals to be extracted based on the stimulus maps</td>
+</tr>
+<tr class="row-odd"><td>Stim_Type</td>
+<td>Type of stimulus to extract</td>
+</tr>
+<tr class="row-even"><td>Stimulus</td>
+<td>Name of the stimulus to extract</td>
+</tr>
+<tr class="row-odd"><td>start_offset</td>
+<td>Offset the start index of the stimulus mapping by a value (in frames)</td>
+</tr>
+<tr class="row-even"><td>end_offset</td>
+<td>Offset the end index of the stimulus mapping by a value (in frames)</td>
+</tr>
+<tr class="row-odd"><td>zero_pos</td>
+<td><p class="first">Zero index of the extracted signal</p>
+<div class="line-block">
+<div class="line"><em>start_offset</em>: extraction begins at the <em>start_offset</em> value, stops at the <em>end_offset</em></div>
+</div>
+<div class="line-block">
+<div class="line"><em>stim_end</em>: extraction begins at the end of the stimulus, stops at the <em>end_offset</em>.</div>
+</div>
+<div class="last line-block">
+<div class="line"><em>stim_center</em>: extraction begins at the midpoint of the stimulus period plus the <em>start_offset</em>, stops at <em>end_offset</em></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="detrenddfof">
+<span id="node-detrenddfof"></span><h3>DetrendDFoF<a class="headerlink" href="#detrenddfof" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Uses the <a class="reference external" href="http://flatironinstitute.github.io/CaImAn/core_functions.html#caiman.source_extraction.cnmf.utilities.detrend_df_f">detrend_df_f</a> function from the CaImAn library. This node does not use any of the numerical data in a Transmission DataFrame to compute the detrended <span class="math notranslate nohighlight">\(\Delta F / F_o\)</span>. It directly uses the CNMF output data for the Samples that are present in the Transmission DataFrame.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _DETREND_DF_O_F</p>
+</div></blockquote>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="clustering">
+<span id="nodes-clustering"></span><h2>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="kshape">
+<span id="node-kshape"></span><h3>KShape<a class="headerlink" href="#kshape" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>Perform <a class="reference external" href="http://www.cs.columbia.edu/~jopa/kshape.html">KShape clustering</a>. I recommend reading the paper on it: <a class="reference external" href="http://www.cs.columbia.edu/~jopa/Papers/PaparrizosSIGMOD2015.pdf">Paparrizos, John, and Luis Gravano. “k-Shape: Efficient and Accurate Clustering of Time Series.” In Proceedings of the 2015 ACM SIGMOD International Conference on Management of Data, pp. 1855-1870. ACM, 2015</a>. This node uses the <a class="reference external" href="https://tslearn.readthedocs.io/en/latest/gen_modules/clustering/tslearn.clustering.KShape.html#tslearn.clustering.KShape">tslearn.clustering.KShape</a> implementation.</div></blockquote>
+</div>
+<div class="section" id="kmeans">
+<span id="node-kmeans"></span><h3>KMeans<a class="headerlink" href="#kmeans" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>Basically <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html">sklearn.cluster.KMeans</a>.</div></blockquote>
+</div>
+<div class="section" id="lda">
+<span id="node-lda"></span><h3>LDA<a class="headerlink" href="#lda" title="Permalink to this headline">¶</a></h3>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="hierarchical">
+<span id="nodes-hierarchical"></span><h2>Hierarchical<a class="headerlink" href="#hierarchical" title="Permalink to this headline">¶</a></h2>
+<p>These nodes allow you to perform Hierarchical Clustering using <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.2.1/reference/cluster.hierarchy.html">scipy.cluster.hierarchy</a>.</p>
+<p>If you are unfamiliar with Hierarchical Clustering I recommend going through this chapter from Michael Greenacre: <a class="reference external" href="http://www.econ.upf.edu/~michael/stanford/maeb7.pdf">http://www.econ.upf.edu/~michael/stanford/maeb7.pdf</a></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Some of these nodes do not use Transmission objects for some inputs/outputs.</strong></p>
+</div>
+<div class="section" id="linkage">
+<span id="node-linkage"></span><h3>Linkage<a class="headerlink" href="#linkage" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Compute a linkage matrix which can be used to form flat clusters using the <a class="reference internal" href="#node-fcluster"><span class="std std-ref">FCluster</span></a> node.</p>
+<p>Based on <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.linkage.html">scipy.cluster.hierarchy.linkage</a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Linkage matrix, <strong>not a Transmission object</strong></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="92%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameters</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Numerical data column used for computing linkage matrix</td>
+</tr>
+<tr class="row-odd"><td>method</td>
+<td>linkage method</td>
+</tr>
+<tr class="row-even"><td>metric</td>
+<td>metric for computing distance matrix</td>
+</tr>
+<tr class="row-odd"><td>optimal_order</td>
+<td><p class="first">minimize distance between successive leaves, more intuitive visualization</p>
+<div class="last line-block">
+<div class="line"><a class="reference external" href="https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.linkage.html?highlight=optimal_ordering">Click here for more info</a></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="fcluster">
+<span id="node-fcluster"></span><h3>FCluster<a class="headerlink" href="#fcluster" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>“Form flat clusters from the hierarchical clustering defined by the given linkage matrix.”</p>
+<p>Based on <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.fcluster.html">scipy.cluster.hierarchy.fcluster</a></p>
+<p><strong>Output Data Column</strong> <em>(categorial)</em>: FCLUSTER_LABELS</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Linkage</td>
+<td>Linkage matrix, output from <a class="reference internal" href="#node-linkage"><span class="std std-ref">Linkage</span></a> node.</td>
+</tr>
+<tr class="row-odd"><td>Data</td>
+<td>Input Transmission, usually the same input Transmission used for the <a class="reference internal" href="#node-linkage"><span class="std std-ref">Linkage</span></a> node.</td>
+</tr>
+<tr class="row-even"><td>IncM <em>(optional)</em></td>
+<td>Inconsistency matrix, output from <a class="reference internal" href="#node-inconsistent"><span class="std std-ref">Inconsistent</span></a></td>
+</tr>
+<tr class="row-odd"><td>Monocrit <em>(optinal)</em></td>
+<td>Output from <a class="reference internal" href="#node-maxincstat"><span class="std std-ref">MaxIncStat</span></a> or <a class="reference internal" href="#node-maxinconsistent"><span class="std std-ref">MaxInconsistent</span></a></td>
+</tr>
+<tr class="row-even"><td>Out</td>
+<td>Transmission with clustering data that can be visualized using the <a class="reference internal" href="#node-heatmap"><span class="std std-ref">Heatmap</span></a></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="inconsistent">
+<span id="node-inconsistent"></span><h3>Inconsistent<a class="headerlink" href="#inconsistent" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="maxincstat">
+<span id="node-maxincstat"></span><h3>MaxIncStat<a class="headerlink" href="#maxincstat" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="maxinconsistent">
+<span id="node-maxinconsistent"></span><h3>MaxInconsistent<a class="headerlink" href="#maxinconsistent" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral float-left" title="Flowchart Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

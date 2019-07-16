@@ -4,19 +4,21 @@ FAQs
 ROIs
 ====
 	#. Can I delete an ROI?
-		- See ROI Manager guide, page 4, line 4.
+		- See ROI Manager guide. <link here>
 
 	#. I don’t want to delete ROIs but I want to mark them for exclusion in further analysis, how can I do this?
 		- You can do this by creating an ROI type category. See <link here> *Add New ROI Type Later* which uses this as an example. You can also create this ROI Type category when you create a New Project, not necessarily when you already have a project as the example uses.
 
 	#. Can I tag more than one piece of information to each ROI?
-		- Yes, add as many ROI Type categories as you want in the Project Configuration (See <link here> *New Project Configuration guide* and <link here> *ROI Manager guide*)
+		- Yes, add as many ROI Type categories as you want in the Project Configuration.
+
+		.. seealso:: :ref:`Project Configuration <project-configuration>` <tagging_rois_link>
 
 	#. I already have a Mesmerize project with many Samples in it. Can I add a new ROI Type category?
 		- Yes see <link here> *Add New ROI Type Later guide*
 
 	#. Can some samples in my project have ROIs that originate from CNMF(E) and others that are manually drawn?
-		- No.
+		- This is not recommended.
 
 CNMFE
 =====
@@ -65,5 +67,5 @@ Project Organization
 		- If you are adding a new Custom Column you can enter a “Dataframe replace value”. This will allow you to set a value for all existing Samples in your project for this new column.
 		- If you do not set a Dataframe replace value it will label all existing as “untagged”
 
-.. seealso:: :ref:`Project Configuration <project-configuration>`
+		.. seealso:: :ref:`Project Configuration <project-configuration>`
 
