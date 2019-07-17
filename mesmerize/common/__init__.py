@@ -4,7 +4,7 @@ import configparser
 from datetime import datetime
 from time import time
 from .. import docs
-from .configuration import get_sys_config
+from .configuration import get_sys_config, console_history_path
 from functools import partial
 from PyQt5.QtWidgets import QApplication
 

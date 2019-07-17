@@ -168,7 +168,7 @@ class ScatterPlot(CtrlNode):
 
     def _open_plot_gui(self):
         if self.plot_widget is None:
-            self.plot_widget = ScatterPlotWidget(parent=self.parent())
+            self.plot_widget = ScatterPlotWidget()
         self.plot_widget.show()
 
 

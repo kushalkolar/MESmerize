@@ -326,6 +326,32 @@ class SpliceArrays(CtrlNode):
         return self.t
 
 
+class PadArrays(CtrlNode):
+    """Pad 1-D numpy arrays in a particular column"""
+    nodeName = 'PadArrays'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('output_size', 'intSpin', {'min': -1, 'max': 9999999, 'step': 100, 'value': -1}),
+                  ('method', 'combo', {'items': ['fill-size', 'random']}),
+                  ('mode', 'combo', {'items': ['minimum', 'constant', 'edge', 'maximum',
+                                               'mean', 'median', 'reflect', 'symmetric', 'wrap'], 'toolTip': 'Passed to numpy.pad "mode" parameter'}),
+                  ('constant', 'doubleSpin', {'min': -9999999.9, 'max': 9999999.9, 'value': 1.0, 'step': 10.0,
+                                              'tooltip': 'Value to use if "mode" is set to "constant"'}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+    def _pad(self):
+        pass
+
+
 class SelectRows(CtrlNode):
     pass
 
@@ -346,7 +372,7 @@ class TextFilter(CtrlNode):
     #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
     #     self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
-    def processData(self, transmission):
+    def processData(self, transmission: Transmission):
         ccols = organize_dataframe_columns(transmission.df.columns.to_list())[1]
         self.ctrls['Column'].setItems(ccols)
         col = self.ctrls['Column'].currentText()
