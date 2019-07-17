@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Examples &mdash; Mesmerize 0.1.0 documentation</title>
+  <title>Consoles &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Beeswarm" href="../plots/beeswarm.html" />
-    <link rel="prev" title="Nodes" href="nodes.html" />
+    <link rel="next" title="Viewer Core" href="../../api_reference/Viewer_data_types.html" />
+    <link rel="prev" title="Simple Plot" href="../plots/simple_plot.html" />
     <link href="../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -104,14 +104,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../viewer/add_to_project.html">Add a Sample to the Project</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Flowchart Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nodes.html">Nodes</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#plot-a-heatmap-of-normalized-data">Plot a heatmap of normalized data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#peak-detection-kshape-clustering">Peak detection &amp; KShape clustering</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/examples.html">Examples</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
@@ -127,10 +123,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../plots/simple_plot.html">Simple Plot</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Consoles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#saving-plots">Saving plots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#plot-navbar">Plot Navbar</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -183,13 +179,13 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-      <li>Examples</li>
+      <li>Consoles</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/user_guides/flowchart/examples.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/user_guides/general/misc.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -202,14 +198,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="examples">
-<span id="flowchartexamples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="plot-a-heatmap-of-normalized-data">
-<h2>Plot a heatmap of normalized data<a class="headerlink" href="#plot-a-heatmap-of-normalized-data" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="consoles">
+<span id="consoleoverview"></span><h1>Consoles<a class="headerlink" href="#consoles" title="Permalink to this headline">¶</a></h1>
+<p>A Python console is embedded in many parts of Mesmerize. You can use it to perform very specific operations more quickly than with a GUI, save an analysis object in between something, format plots, etc.</p>
+<p>The console is accessible in many windows through View -&gt; Console. The namespace of the console is usually the same as that of the window that it is embedded in (the instance is usually named as “this”). A list of useful object references and helper functions are listed when you open most consoles.</p>
+<p>You can run entire scripts within the console. You can also use import statements to import libraries that you have in your Python environment.</p>
+<p>Keyboard controls:</p>
+<p><strong>Execute:</strong> Shift + Enter</p>
+<p><strong>New line:</strong> Enter</p>
+<p><strong>Scroll up through history</strong>: Page Up</p>
+<p><strong>Scroll down through history:</strong> Page Down</p>
+<p>The history is stored in ~/.mesmerize</p>
 </div>
-<div class="section" id="peak-detection-kshape-clustering">
-<h2>Peak detection &amp; KShape clustering<a class="headerlink" href="#peak-detection-kshape-clustering" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="saving-plots">
+<span id="save-ptrn"></span><h1>Saving plots<a class="headerlink" href="#saving-plots" title="Permalink to this headline">¶</a></h1>
+<p>Some plots allow you to save them in an interactive form, along with the plot data and the plot state as a “.ptrn” file. If you save the file in the “plots” directory of your project it will be listed in the <span class="xref std std-ref">WelcomeWindow</span> when you open your project.</p>
+<p>This is currently possible with the following plots: <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a>, <a class="reference internal" href="../plots/kshape.html#plot-kshape"><span class="std std-ref">KShape</span></a> and <a class="reference internal" href="../plots/proportions.html#plot-proportions"><span class="std std-ref">Proportions</span></a>.</p>
 </div>
+<div class="section" id="plot-navbar">
+<span id="id1"></span><h1>Plot Navbar<a class="headerlink" href="#plot-navbar" title="Permalink to this headline">¶</a></h1>
+<p>Many plots have a navigation toolbar which you can use to zoom, pan, configure plots, and export plots as images.</p>
+<p>Official matplotlib docs about the navigation toolbar: <a class="reference external" href="https://matplotlib.org/2.1.2/users/navigation_toolbar.html">https://matplotlib.org/2.1.2/users/navigation_toolbar.html</a></p>
+<p><strong>Home:</strong> Reset the plot (not applicable for all plots)</p>
+<p><strong>Pan:</strong> Pan the plot</p>
+<p><strong>Zoom:</strong> Zoom in/out a selection using the left/right mouse button respectively</p>
+<p><strong>Subplot-configuration:</strong> Options to adjust spacing, borders, set tight layout.</p>
+<p><strong>Edit axis, curve…:</strong> For some plots. Options for formating x &amp; y axis limits, labels, select line style, color, etc.</p>
+<p><strong>Save:</strong> Export the figure as an image.  <strong>This is not the same as saving an interactive plot, see “Saving Plots” above</strong>.</p>
 </div>
 
 
@@ -220,10 +235,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../plots/beeswarm.html" class="btn btn-neutral float-right" title="Beeswarm" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../../api_reference/Viewer_data_types.html" class="btn btn-neutral float-right" title="Viewer Core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="nodes.html" class="btn btn-neutral float-left" title="Nodes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../plots/simple_plot.html" class="btn btn-neutral float-left" title="Simple Plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -118,15 +118,25 @@
 <li class="toctree-l1"><a class="reference internal" href="kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="peak_editor.html">Peak Editor</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Proportions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Proportions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#plot-navbar">Plot Navbar</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 </ul>
 
             
@@ -193,7 +203,20 @@
             
   <div class="section" id="proportions">
 <span id="plot-proportions"></span><h1>Proportions<a class="headerlink" href="#proportions" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="../general/misc.html#save-ptrn"><span class="std std-ref">This plot can be saved in an interactive form</span></a></p>
+</div>
 <p>Compare proportions of categorical variables between different groups using bar charts.</p>
+<img alt="../../_images/proportions.png" src="../../_images/proportions.png" />
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p><strong>X column:</strong> DataFrame column containing the categorical labels used for grouping the data</p>
+<p><strong>Y column:</strong> DataFrame column containing categoricals labels to plot proportions of counts/raw counts</p>
+<p><strong>Show percentages:</strong> When unchecked shows raw counts</p>
+<p><strong>Swap X-Y:</strong> Swap X &amp; Y columns</p>
+<p><strong>Export CSV:</strong> Export the data for the current plot as to a csv file.</p>
+</div>
 </div>
 
 
