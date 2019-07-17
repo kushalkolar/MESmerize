@@ -120,11 +120,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+</ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 </ul>
 
             
@@ -348,6 +355,59 @@
     <span class="n">dcols</span><span class="o">.</span><span class="n">sort</span><span class="p">();</span><span class="n">ccols</span><span class="o">.</span><span class="n">sort</span><span class="p">();</span><span class="n">ucols</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">dcols</span><span class="p">,</span> <span class="n">ccols</span><span class="p">,</span> <span class="n">ucols</span>
+
+
+<span class="k">def</span> <span class="nf">pad_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;random&#39;</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;minimum&#39;</span><span class="p">,</span>
+               <span class="n">constant</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pad all the input arrays so that are of the same length. The length is determined by the largest input array.</span>
+<span class="sd">    The padding value for each input array is the minimum value in that array.</span>
+
+<span class="sd">    Padding for each input array is either done after the array&#39;s last index to fill up to the length of the</span>
+<span class="sd">    largest input array (method &#39;fill-size&#39;) or the padding is randomly flanked to the input array (method &#39;random&#39;)</span>
+<span class="sd">    for easier visualization.</span>
+
+<span class="sd">    :param a: 1D array of input arrays where each element is a sample array</span>
+<span class="sd">    :param method: one of &#39;fill-size&#39; or &#39;random&#39;, see docstring for details</span>
+<span class="sd">    :return: Arrays padded according to the method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># size of largest time series</span>
+
+    <span class="c1"># Get size of largest time series</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="n">l</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">s</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">output_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">output_size</span> <span class="o">&lt;</span> <span class="n">l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Output size must be equal to larger than the size of the largest input array&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">output_size</span>
+
+    <span class="c1"># pre-allocate output array</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="c1"># pad each 1D time series</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">l</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">continue</span>
+
+        <span class="n">max_pad_en_ix</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="n">s</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;random&#39;</span><span class="p">:</span>
+            <span class="n">pre</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_pad_en_ix</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;fill-size&#39;</span><span class="p">:</span>
+            <span class="n">pre</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must specific method as either &quot;random&quot; or &quot;fill-size&quot;&#39;</span><span class="p">)</span>
+
+        <span class="n">post</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="p">(</span><span class="n">pre</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span>
+        <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">post</span><span class="p">),</span> <span class="s1">&#39;minimum&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p</span>
 </pre></div>
 
            </div>

@@ -265,6 +265,13 @@ Heatmap
 	.. note::
 		Arrays in the DataFrame column(s) of interest **must** be of the same length. If they are not, you must splice them using the :ref:`node_SpliceArrays` node.
 
+.. _node_CrossCorr:
+
+CrossCorr
+^^^^^^^^^
+
+	Perform Cross-Correlation analysis. See :ref:`plot_CrossCorrelation` for more information.
+	
 
 .. _node_Plot:
 
@@ -775,9 +782,7 @@ Clustering
 
 KShape
 ^^^^^^
-
-	Perform `KShape clustering <http://www.cs.columbia.edu/~jopa/kshape.html>`_. I recommend reading the paper on it: `Paparrizos, John, and Luis Gravano. "k-Shape: Efficient and Accurate Clustering of Time Series." In Proceedings of the 2015 ACM SIGMOD International Conference on Management of Data, pp. 1855-1870. ACM, 2015 <http://www.cs.columbia.edu/~jopa/Papers/PaparrizosSIGMOD2015.pdf>`_. This node uses the `tslearn.clustering.KShape <https://tslearn.readthedocs.io/en/latest/gen_modules/clustering/tslearn.clustering.KShape.html#tslearn.clustering.KShape>`_ implementation.
-
+	Perform KShape clustering. For more information see :ref:`KShape plot <plot_KShape>`.
 
 .. _node_KMeans:
 
@@ -791,8 +796,6 @@ KMeans
 
 LDA
 ^^^
-
-
 
 ----------------------
 

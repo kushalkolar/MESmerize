@@ -116,6 +116,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#layout">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lag-matrix">Lag Matrix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#maxima-matrix">Maxima Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#thresholds">Thresholds</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="datapoint_tracer.html">Datapoint Tracer</a></li>
@@ -127,11 +131,18 @@
 <li class="toctree-l1"><a class="reference internal" href="scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simple_plot.html">Simple Plot</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#plot-navbar">Plot Navbar</a></li>
+</ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 </ul>
 
             
@@ -198,7 +209,7 @@
             
   <div class="section" id="cross-correlation">
 <span id="plot-crosscorrelation"></span><h1>Cross Correlation<a class="headerlink" href="#cross-correlation" title="Permalink to this headline">¶</a></h1>
-<p>Explore <a class="reference external" href="https://en.wikipedia.org/wiki/Cross-correlation">Cross-correlation functions</a> of all curves from a sample.</p>
+<p>Explore <a class="reference external" href="https://en.wikipedia.org/wiki/Cross-correlation">Cross-correlation functions</a> of all curves from a sample. Normalized cross-correlations are computed using <cite>tslearn.cycc.normalized_cc</cite></p>
 <p>This is an interactive widget. You can click on the individual cells in the heatmap to view the individual curves, the cross-correlation function of the two curves, and the spatial localization of the ROI that they originate from.</p>
 <img alt="../../_images/cross_cor.gif" src="../../_images/cross_cor.gif" />
 <div class="section" id="layout">
@@ -213,11 +224,32 @@
 </div>
 <div class="section" id="lag-matrix">
 <h2>Lag Matrix<a class="headerlink" href="#lag-matrix" title="Permalink to this headline">¶</a></h2>
-<p>The Lag Matrix is computed by finding the distance between zero and the position of the global maxima in the cross-correlation function.</p>
+<dl class="docutils">
+<dt>Computed as follows:</dt>
+<dd><ol class="first arabic simple">
+<li>A 2D array is created where each element is a cross-correlation function (represented by a 1D numerical array).</li>
+<li>The x-distance (time) between zero and the global maxima of the cross-correlation function (called <span class="math notranslate nohighlight">\(lag\)</span>) is computed for each of these elements.</li>
+<li>The 2D array of cross-correlation functions is reduced to a 2D array of these <span class="math notranslate nohighlight">\(lag\)</span> values.</li>
+</ol>
+<p class="last">The result is a matrix where each element is the x-distance between zero and the global maxima of the cross-correlation of the two curves the element represents.</p>
+</dd>
+</dl>
 </div>
 <div class="section" id="maxima-matrix">
 <h2>Maxima Matrix<a class="headerlink" href="#maxima-matrix" title="Permalink to this headline">¶</a></h2>
-<p>The Maxima Matrix is computed by</p>
+<p>Similar to computation of the Lag Matrix above, but instead of using the <span class="math notranslate nohighlight">\(lag\)</span> between zero and the global maxima it uses the y-value of the global maxima.</p>
+</div>
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p><strong>Data column:</strong> The data column, containing <em>numerical</em> arrays, that are used as the input curves for computing cross-correlations.</p>
+<p><strong>Labels column:</strong> The labels column, containing <em>categorical</em> labels, that are used for the row and column labels in the heatmaps.</p>
+<p><strong>Pre-normalization:</strong> Option to perform 0 - 1 Normalization (Same method as the <a class="reference internal" href="../flowchart/nodes.html#node-normalize"><span class="std std-ref">Normalize</span></a>) or <a class="reference external" href="https://en.wikipedia.org/wiki/Standard_score">Z-Score</a> of the input curves prior to computing their cross-correlation functions.</p>
+<p><strong>Compute all data:</strong> Appy the parameters and compute cross-correlation data for all Samples in the DataFrame of the input transmission.</p>
+<div class="section" id="thresholds">
+<h3>Thresholds<a class="headerlink" href="#thresholds" title="Permalink to this headline">¶</a></h3>
+<p>Apply thresholds for <span class="math notranslate nohighlight">\(lag\)</span> and the maxima value. The colormap limits of the heatmap are set according to this threshold and all data under are set to white on the heatmap (you can still click and explore them).</p>
+<p>Thresholds are applied live onto the heatmap.</p>
+</div>
 </div>
 </div>
 

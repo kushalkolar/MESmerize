@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>&lt;no title&gt; &mdash; Mesmerize 0.1.0 documentation</title>
+  <title>KShape &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="Data types used for analysis" href="../../Analysis_data_types.html" />
     <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -120,11 +121,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference</span></p>
+<p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">KShape</a></li>
 </ul>
 
             
@@ -170,7 +178,7 @@
     
       <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
-      <li>&lt;no title&gt;</li>
+      <li>KShape</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -189,12 +197,146 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
+  <div class="section" id="kshape">
+<span id="api-kshape"></span><h1>KShape<a class="headerlink" href="#kshape" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mesmerize.plotting.KShapeWidget">
+<em class="property">class </em><code class="descclassname">mesmerize.plotting.</code><code class="descname">KShapeWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapeWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.KShapeWidget" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.input_arrays">
+<code class="descname">input_arrays</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.input_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>The input arrays for clustering</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2D array, [num_samples, padded_peak_curve_length]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.ks">
+<code class="descname">ks</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.ks" title="Permalink to this definition">¶</a></dt>
+<dd><p>KShape object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.n_clusters">
+<code class="descname">n_clusters</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.n_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of clusters</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.train_data">
+<code class="descname">train_data</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.train_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The training data for clustering</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Training data as a 2D array, [num_samples, padded_peak_curve_length]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.y_pred">
+<code class="descname">y_pred</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.y_pred" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicted cluster labels after the model converges</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">1D array of cluster labels that correspond to the input_data</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.cluster_means">
+<code class="descname">cluster_means</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.cluster_means" title="Permalink to this definition">¶</a></dt>
+<dd><p>The cluster means</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2D array, [cluster_label, cluster_mean_array]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.params">
+<code class="descname">params</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parameters dict.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.KShapeWidget.set_input">
+<code class="descname">set_input</code><span class="sig-paren">(</span><em>transmission: mesmerize.analysis.data_types.Transmission</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapeWidget.set_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.set_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the input Transmission for the widget</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transmission</strong> – Input Transmission</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.KShapeWidget.pad_input_data">
+<code class="descname">pad_input_data</code><span class="sig-paren">(</span><em>a: numpy.ndarray</em>, <em>method: str = 'random'</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapeWidget.pad_input_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.pad_input_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad all the input arrays so that are of the same length. The length is determined by the largest input array.
+The padding value for each input array is the minimum value in that array.</p>
+<p>Padding for each input array is either done after the array’s last index to fill up to the length of the
+largest input array (method ‘fill-size’) or the padding is randomly flanked to the input array (method ‘random)
+for easier visualization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> – 1D array of input arrays where each element is a sample array</li>
+<li><strong>method</strong> – ‘fill-size’ or ‘random’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2D array of the padded arrays in the rows</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.KShapeWidget.start_process">
+<code class="descname">start_process</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapeWidget.start_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.start_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the the KShape clustering in a QProcess</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../../Analysis_data_types.html" class="btn btn-neutral float-left" title="Data types used for analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

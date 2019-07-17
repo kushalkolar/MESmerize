@@ -33,7 +33,7 @@ Click on a node to highlight the Control Widget
 .. _concept_Transmission:
 
 Transmission
-------------
+============
 
 :ref:`API Reference <API_Transmission>`
 
@@ -58,3 +58,21 @@ Almost every node uses a Transmission object for input and output. A Transmissio
 	**History Trace**
 
 	The History Trace of a Transmission is a log containing the discrete analysis steps, known as operations, along with their parameters and any other useful information. When a flowchart node performs an operation it stores the output(s) data in the Transmission DataFrame and appends the operation parameters to this log. A seperate log is kept for each data block present in the Transmission DataFrame.
+
+
+.. _console_Flowchart:
+
+Console
+=======
+
+You have direct access to the data within the nodes through the console in the flowchart. To show the console go to View -> Console.
+
+.. seealso:: If you are unfamiliar with the console see the overview on :ref:`ConsoleOverview`
+
+call `get_nodes()` to view a dict of all nodes in the flowchart. You can access the output Transmission in most nodes through the attribute `t`. You can access the transmission dataframe through `t.df`.
+
+.. seealso:: See the :ref:`Transmission API <API_Transmission>` for more information. Sources for the nodes at mesmerize/pyqtgraphCore/flowchart/library.
+
+**Example, directly accessing DataFrame elements through the flowchart console**
+
+.. image:: ./flowchart_console.png
