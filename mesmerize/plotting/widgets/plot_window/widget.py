@@ -58,7 +58,7 @@ class PlotWindow(QtWidgets.QMainWindow):
               'scipy': scipy,
               'pd': pd,
               'graphicsViews': self.graphicsViews,
-              'main': self,
+              'this': self,
               }
 
         txt = "Namespaces:\n" \
@@ -67,7 +67,7 @@ class PlotWindow(QtWidgets.QMainWindow):
               "scipy as 'scipy'\n" \
               "pd as pandas\n" \
               "graphicsViews (plot tabs) as graphicsViews\n" \
-              "self as 'main'\n\n" \
+              "self as 'this'\n\n" \
 
         cmd_history_file = os.path.join(configuration.console_history_path, 'plot_window.pik')
 

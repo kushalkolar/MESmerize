@@ -19,7 +19,7 @@ from ...variants import PgScatterPlot
 from uuid import UUID
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 # from pyqtgraphCore.functions import mkBrush
-# import pandas as pd
+import pandas as pd
 from .. import HeatmapTracerWidget
 from ...variants import Heatmap
 
@@ -86,13 +86,19 @@ class LDAPlot(PlotWindow):
     @QtCore.pyqtSlot(UUID)
     def set_current_datapoint(self, identifier: UUID):
         self.current_datapoint = identifier
+        identifier = str(identifier)
         r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
 
+        db_id = r._BLOCK_
+        if isinstance(db_id, pd.Series):
+            db_id = r._BLOCK_.item()
+
+        history_trace = self.merged_transmission.history_trace.get_data_block_history(db_id)
         self.live_datapoint_tracer.set_widget(datapoint_uuid=identifier,
                                               data_column_curve=self.datapoint_tracer_curve_column,
                                               row=r,
                                               proj_path=self.merged_transmission.get_proj_path(),
-                                              history_trace=self.merged_transmission.get_history_trace(identifier))
+                                              history_trace=history_trace)
 
     def update_params(self):
         super(LDAPlot, self).update_params()
