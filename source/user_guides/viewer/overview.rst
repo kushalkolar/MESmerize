@@ -1,3 +1,5 @@
+.. _ViewerOverview:
+
 Viewer overview
 ***************
 
@@ -12,7 +14,7 @@ Based on the `pyqtgraph ImageView <http://www.pyqtgraph.org/documentation/widget
 Viewer layout
 -------------
 
-.. image:: ./overview/1.png
+.. thumbnail:: ./overview/1.png
 
 To access Viewer modules choose the module you want to run from the Modules menu at the top. All modules, except the Batch Manager, are small floating windows which you can dock into the Viewer by dragging them to an edge of the viewer.
 
@@ -54,7 +56,7 @@ Exploring the work environment
 ------------------------------
 You can explore everything, such as meta data, in your work environment by going to View - > Work Environment Editor..
 
-.. image:: ./overview/8.png
+.. thumbnail:: ./overview/8.png
 
 .. note:: This is read only, you cannot edit via this GUI.
 
@@ -71,7 +73,7 @@ You can view your meta data more quickly using the console.
 Open the console by going to View -> Console.
 You can then call ``get_meta()`` to print the meta data dict.
 
-.. image:: ./overview/11.png
+.. thumbnail:: ./overview/11.png
 
 Running scripts
 ---------------

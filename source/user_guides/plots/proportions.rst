@@ -8,7 +8,7 @@ Proportions
 
 Compare proportions of categorical variables between different groups using bar charts.
 
-.. image:: ./proportions.png
+.. thumbnail:: ./proportions.png
 
 Parameters
 ----------

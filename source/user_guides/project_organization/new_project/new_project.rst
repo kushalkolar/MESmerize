@@ -1,3 +1,5 @@
+.. _CreateNewProject:
+
 Create a New Project
 ********************
 
@@ -24,21 +26,7 @@ Biological Questions
 New Project
 ===========
 
-To create a new project click **New Project** in the welcome window.
-
-.. image:: ../../imgs/welcome_window.png
-
-Choose a location to store your project.
-
-.. image:: ./1.png
-
-Choose a name for your project. This will create a directory within the location you have selected above using the name that you enter here. You can change the name of this project later.
-
-|2png| |3png|
-
-.. |2png| image:: ./2.png
-
-.. |3png| image:: ./3.png
+To create a new project click **New Project** in the :ref:`Welcome Window <WelcomeWindow>`. You will then be prompted to choose a location and a name for the project. This will create a directory with the chosen name in the location you previously selected.
 
 
 .. _project-configuration:
@@ -104,7 +92,7 @@ When you add samples to your project from the viewer, you will be prompted to en
 
 .. seealso:: :ref:`Add to Project guide <add-to-project>`
 
-.. image:: ./add_to_proj.png
+.. thumbnail:: ./add_to_proj.png
 
 
 ----

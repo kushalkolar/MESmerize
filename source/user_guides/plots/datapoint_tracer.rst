@@ -11,7 +11,7 @@ The Datapoint Tracer is embedded in some plots, and in others you can open it by
 
 **Datapoint Tracer Layout**
 
-.. image:: ./datapoint_tracer.png
+.. thumbnail:: ./datapoint_tracer.png
 
 **Top right**: Max Projection or Standard Deviation Project of the image sequence.
 

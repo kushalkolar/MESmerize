@@ -3,6 +3,8 @@
 Viewer Core
 ***********
 
+.. _API_ViewerWorkEnv:
+
 ViewerWorkEnv
 =======================
 .. autoclass:: mesmerize.viewer.core.ViewerWorkEnv
@@ -10,6 +12,7 @@ ViewerWorkEnv
     :members:
     :private-members:
 
+.. _API_ViewerUtils:
 
 ViewerUtils
 ===========
@@ -17,6 +20,8 @@ ViewerUtils
   :special-members:
   :members:
   :private-members:
+  
+.. _API_Mesfile:
 
 Mesfile
 =======
