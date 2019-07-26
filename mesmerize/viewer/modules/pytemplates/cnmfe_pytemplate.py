@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './cnmfe_pytemplate.ui'
+# Form implementation generated from reading ui file './ui_files/cnmfe_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -12,7 +12,7 @@ class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(499, 912)
+        DockWidget.resize(499, 1053)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -173,12 +173,12 @@ class Ui_DockWidget(object):
         self.label_16 = QtWidgets.QLabel(self.dockWidgetContents)
         self.label_16.setObjectName("label_16")
         self.horizontalLayout_10.addWidget(self.label_16)
-        self.spinBoxDecayTime = QtWidgets.QSpinBox(self.dockWidgetContents)
-        self.spinBoxDecayTime.setMinimum(1)
-        self.spinBoxDecayTime.setMaximum(999)
-        self.spinBoxDecayTime.setProperty("value", 10)
-        self.spinBoxDecayTime.setObjectName("spinBoxDecayTime")
-        self.horizontalLayout_10.addWidget(self.spinBoxDecayTime)
+        self.doubleSpinBox = QtWidgets.QDoubleSpinBox(self.dockWidgetContents)
+        self.doubleSpinBox.setMinimum(0.1)
+        self.doubleSpinBox.setSingleStep(0.5)
+        self.doubleSpinBox.setProperty("value", 4.0)
+        self.doubleSpinBox.setObjectName("doubleSpinBox")
+        self.horizontalLayout_10.addWidget(self.doubleSpinBox)
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_10.addItem(spacerItem6)
         self.verticalLayout.addLayout(self.horizontalLayout_10)
@@ -301,8 +301,7 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.doubleSpinBoxMinCorr, self.spinBoxMinPNR)
         DockWidget.setTabOrder(self.spinBoxMinPNR, self.spinBoxMinSNR)
         DockWidget.setTabOrder(self.spinBoxMinSNR, self.doubleSpinBoxRValuesMin)
-        DockWidget.setTabOrder(self.doubleSpinBoxRValuesMin, self.spinBoxDecayTime)
-        DockWidget.setTabOrder(self.spinBoxDecayTime, self.spinBoxRf)
+        DockWidget.setTabOrder(self.doubleSpinBoxRValuesMin, self.spinBoxRf)
         DockWidget.setTabOrder(self.spinBoxRf, self.spinBoxOverlap)
         DockWidget.setTabOrder(self.spinBoxOverlap, self.spinBoxGnb)
         DockWidget.setTabOrder(self.spinBoxGnb, self.spinBoxNb_patch)

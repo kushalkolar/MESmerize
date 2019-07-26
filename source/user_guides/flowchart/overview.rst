@@ -8,7 +8,7 @@ The Flowchart is based on the `pyqtgraph flowchart widgets <http://www.pyqtgraph
 
 **Flowchart Window**
 
-.. image:: ./flowchart_overview.png
+.. thumbnail:: ./flowchart_overview.png
 
 **Add node**: Right click -> Add node -> Choose from selection
 
@@ -18,13 +18,13 @@ Click on a node to highlight the Control Widget
 
 **Connecting nodes**: Click on a node terminal and drag to another terminal
 
-**Save the flowchart layout**: Click "Save as..." to save the layout to a new file. You must specify the file extension as ".fc". If you save this file within the "flowchart" directory of your project it will show up in the :ref:`WelcomeWindow` when you open your project.
+**Save the flowchart layout**: Click "Save as..." to save the layout to a new file. You must specify the file extension as ".fc". If you save this file within the :ref:`"flowcharts" directory <ProjectStructure>` of your project it will show up in the :ref:`WelcomeWindow` when you open your project.
 
 	.. note::
 		This does not save the data, use the :ref:`node_Save` node to save data.
 
 	.. warning::
-		There is a weird Qt or pyqtgraph bug that prevents some parameter settings to be saved, and/or for parameter settings to be saved to an existing .fc file. If you're interested take a look at pyqtgraphCore.WidgetGroup. Anyways you shouldn't be using the flowchart layout to save this information, that's what the History Trace in Transmission objects is for.
+		Due to a weird Qt or pyqtgraph bug certain parameter values (such as those in drop-down menus) can't be saved. Similarly, parameters values are lost when you save to an existing .fc file. If you're interested take a look at ``pyqtgraphCore.WidgetGroup``. Anyways you shouldn't be using the flowchart layout to save this information, that's what the History Trace in Transmission objects is for.
 
 **Load an .fc file**: Click the "Load" button.
 
@@ -69,10 +69,10 @@ You have direct access to the data within the nodes through the console in the f
 
 .. seealso:: If you are unfamiliar with the console see the overview on :ref:`ConsoleOverview`
 
-call `get_nodes()` to view a dict of all nodes in the flowchart. You can access the output Transmission in most nodes through the attribute `t`. You can access the transmission dataframe through `t.df`.
+Call ``get_nodes()`` to view a dict of all nodes in the flowchart. You can access the output Transmission in most nodes through the attribute `t`. You can access the transmission dataframe through ``t.df``.
 
 .. seealso:: See the :ref:`Transmission API <API_Transmission>` for more information. Sources for the nodes at mesmerize/pyqtgraphCore/flowchart/library.
 
 **Example, directly accessing DataFrame elements through the flowchart console**
 
-.. image:: ./flowchart_console.png
+.. thumbnail:: ./flowchart_console.png

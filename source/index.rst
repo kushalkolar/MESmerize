@@ -30,7 +30,16 @@ Welcome to Mesmerize's documentation!
 	./user_guides/viewer/overview
 	./user_guides/convert_meta_data
 	./user_guides/viewer/add_to_project
-
+	
+.. toctree::
+    :maxdepth: 1
+    :caption: Viewer Modules
+    
+    ./user_guides/viewer/modules/batch_manager
+    ./user_guides/viewer/modules/caiman_motion_correction
+    ./user_guides/viewer/modules/cnmf
+    ./user_guides/viewer/modules/cnmfe
+    
 .. toctree::
 	:maxdepth: 1
 	:caption: Flowchart

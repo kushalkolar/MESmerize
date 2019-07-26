@@ -335,7 +335,7 @@ Signal
 
 **Routine signal processing functions**
 
-I recommend this book by Professor Tom O'Haver if you are unfamiliar with basic signal processing: https://terpconnect.umd.edu/~toh/spectrum/TOC.html
+I recommend this book by Tom O'Haver if you are unfamiliar with basic signal processing: https://terpconnect.umd.edu/~toh/spectrum/TOC.html
 
 
 .. _node_ButterWorth:
@@ -517,10 +517,11 @@ iRFFT
 PeakDetect
 ^^^^^^^^^^
 
-	Perform Peak Detection using derivatives.
+	Simple Peak Detection using derivatives. The "Differentiation" chapter of Tom O'Haver's book has a section on Peak Detection which I recommend reading. https://terpconnect.umd.edu/~toh/spectrum/TOC.html
 
 	**Output Data Column** *(DataFrame)*: peaks_bases
-
+	
+	.. seealso:: :ref:`Peak Editor GUI <plot_PeakEditor>`
 
 	===================== 	=================
 	Terminal   		Description
@@ -542,6 +543,8 @@ PeakDetect
 					| Useful for visualizing a saved Transmission that has peaks & bases data
 	Out			Transmission with the detected peaks & bases as DataFrames in the output column
 	===================== 	=================
+	
+	.. warning:: The *PB_Input* terminal overrides all other terminals. Do not connect inputs to *PB_Input* and other terminals simultaneously.
 
 
 	===================== 	=================
@@ -739,6 +742,7 @@ ExtractStim
 	STIM_TYPE              Stimulus type, corresponds to your :ref:`ProjectConfig`
 	STIMULUS               Name of the stimulus.
 	_EXTRACT_STIM          The extracted array based on the parameters.
+	uuid_stim		  UUID for the extracted stimulus period
 	===================    ========================================
 
 	============         =================

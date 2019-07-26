@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>499</width>
-    <height>912</height>
+    <height>1053</height>
    </rect>
   </property>
   <property name="floating">
@@ -392,15 +392,15 @@ If lower more components will be accepted, potentially with worse quality</strin
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBoxDecayTime">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox">
         <property name="minimum">
-         <number>1</number>
+         <double>0.100000000000000</double>
         </property>
-        <property name="maximum">
-         <number>999</number>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
         </property>
         <property name="value">
-         <number>10</number>
+         <double>4.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -698,7 +698,6 @@ If lower more components will be accepted, potentially with worse quality</strin
   <tabstop>spinBoxMinPNR</tabstop>
   <tabstop>spinBoxMinSNR</tabstop>
   <tabstop>doubleSpinBoxRValuesMin</tabstop>
-  <tabstop>spinBoxDecayTime</tabstop>
   <tabstop>spinBoxRf</tabstop>
   <tabstop>spinBoxOverlap</tabstop>
   <tabstop>spinBoxGnb</tabstop>
