@@ -19,9 +19,10 @@ Welcome to Mesmerize's documentation!
 
 .. toctree::
 	:maxdepth: 1
-	:caption: Project:
+	:caption: Project Organization:
 
 	./user_guides/project_organization/new_project/new_project
+	./user_guides/project_organization/project_browser/project_browser
 
 .. toctree::
 	:maxdepth: 1
