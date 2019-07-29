@@ -38,7 +38,7 @@ Project Configuration
 
 After setting a project name you must configure it. This is where your biological questions of interest are important. You can change your project configuration later, but it is most time efficient if you enter all your categories of interest now.
 
-.. warning:: It's best practice to restart Mesmerize whenever you change the project configuration.
+.. warning:: Restart Mesmerize whenever you change the project configuration.
 
 .. seealso:: :ref:`Add To Project Guide <add-to-project>` **to understand how the project configuration relates to the addition of data samples to your project**
 

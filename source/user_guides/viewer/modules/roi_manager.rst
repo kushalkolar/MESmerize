@@ -82,18 +82,27 @@ Access the back-end ROI Manager through the viewer console or :ref:`Script edito
 
 .. seealso:: :ref:`Back-end ROI Manager APIs <API_ROIManagers>`, :ref:`ROIList API <API_ROIList>`, :ref:`ROI Type APIs <API_ROITypes>`
 
+Get the back-end ROI Manager, see :ref:`ROI Manager APIs <API_ROIManagers>`
+
 .. code-block:: python
     
-    # Get the back-end ROI Manager
     >>> get_workEnv().roi_manager
     
     <mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE object at 0x7f01b8780668>``
-    
-    # Get the ROI List
-    >>> get_workEnv().roi_manager.roi_list
+   
+Get the ROI List, see :ref:`ROIList API <API_ROIList>`
 
+.. code-block:: python
+
+    >>> get_workEnv().roi_manager.roi_list
+    
     [<mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc78b278>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc817630>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc817668>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc7c5438>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc7c5208>]
     
+
+Work with an ROI object, see :ref:`ROI Type APIs <API_ROITypes>`
+
+.. code-block:: python
+
     # Get the curve data of an ROI
     >>> get_workEnv().roi_manager.roi_list[3].curve_data
     
