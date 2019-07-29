@@ -7,7 +7,7 @@ Project Browser
 
 You can open the Project Browser from the :ref:`Welcome Window <WelcomeWindow>` after you have opened a project.
 
-.. thumbnail:: ./overview.png
+.. image:: ./overview.png
 
 The columns that are visible in the Project Browser Window correspond to the :ref:`Project Configuration <project-configuration>`. For each column you will see a list which is a set of unique elements from that column in the project DataFrame.
 
@@ -16,14 +16,109 @@ Functions
 Open Sample
 ===========
 
-Double-click on a Sample in the *SampleID* column to open it in the :ref:`Viewer <ViewerOverview>`
+Double-click on a Sample in the *SampleID* column to open it in the :ref:`Viewer <ViewerOverview>`.
+
+In the viewer you can make changes and then save it by going to File -> Add to Project. You will see a "Save changes (overwrite)" option which will overwrite the data for this project Sample with the current data in the viewer work environment. If you have not changed the image sequence data you can uncheck the "Overwrite image data" checkbox, useful if your image sequences are large.
+
+.. image:: ./save_changes.png
 
 Filter
 ======
 
-You can sort your Project DataFrame into different groups (such as experimental groups) using simple text and numerical filters.
+You can sort your Project DataFrame into different groups (such as experimental groups) using text and numerical filters. Type a filter into the text entries that are below the list of elements for a column. You can also click on one or many elements in a column to set those elements as the filters.
+
+If you filter out of the root tab, it will always create a new tab with a name of your choice. If you filter out of any other tab it will apply the filter in-place unless you right click on the "Apply" button and choose "Apply in new tab"
+
+Text filters
+------------
+
+Partial match
+-------------
+
+To filter out a group based on partial text matches just enter the text into the filter text entry below the column(s) of interest and click "Apply"
+
+.. image:: ./simple_filter.png
+
+Since this is filtering out of the root tab, you will be prompted to give a name for a new tab that will be created based on the filter you have entered.
+
+.. image:: ./tab_name_prompt.png
+
+The result is a DataFrame containing all rows where the cell_name contains 'aten'
+
+.. image:: ./simple_filter_result.png
+
+If you go to View -> Current dataframe you can see the whole dataframe.
+
+.. thumbnail:: ./simple_filter_result_2.png
+
+To see how the filter translates to pandas commands go to View -> Current tab filter history
+
+.. image:: ./pandas_filter_history.png
 
 
+.. _ProjectBrowserMultipleFilters:
+
+Multiple filters
+----------------
+
+You can combine filters together by using the ``|`` seperator. The ``|`` acts as an "or" operator.
+
+.. image:: ./filter_many.png
+
+The result is all rows where mn, palp, or pr are in the cell_name column.
+
+.. image:: ./filter_many_result.png
+
+.. note:: This can be combined with :ref:`Modifiers <ProjectBrowserModifiers>`
+
+.. _ProjectBrowserFilterMultipleColumns:
+
+Filter multiple columns
+-----------------------
+
+You can filter multiple columns simultaneously if you are not in the root tab. You can create a new tab that is essentially the same as the root by just keeping the filter entries blank and clicking "Apply".
+
+Filter out all rows where the cell_name column contains 'pr' and promoter column contains 'pc2' or 'cng_ch4'.
+
+.. image:: ./multiple_columns.png
+
+Right click on the "Apply" button and choose "Apply all" or "Apply all in new tab"
+
+.. image:: ./multiple_columns_result.png
+
+If you view the pandas filter history (View -> Current tab filter history) you can see that the filters for each column are simply applied sequentially.
+
+.. image:: ./multiple_columns_filter_history.png
+
+The dataframe
+
+.. thumbnail:: ./multiple_columns_result_dataframe.png
+
+
+.. _ProjectBrowserModifiers:
+
+Modifiers
+---------
+
+You can perform other types of matches, such as exact matches, negations, and exact negations. Enter the filter and then right click on the text entry to see available modifiers and choose the desired modifier.
+
+.. image:: ./modifiers_str.png
+
+============    ===================================
+Modifier        Description
+============    ===================================
+$NOT:           Results in the negation of partial matches
+$STR:           Treats the filter as a str, same as Partial Match (see above sub-section)
+$STR=:          Exact text match
+$STR!=:         Negation of exact text match
+============    ===================================
+
+Numerical filters
+-----------------
+
+By default the filters in all entires are treated as text. If your column contains numerical data you have additional options for modifiers. The first four modifiers are the :ref:`same as explained above <ProjectBrowserModifiers>`. The rest are self explanatory.
+
+.. image:: ./modfiers_num.png
 
 Editor
 ======
@@ -35,9 +130,6 @@ You can view and edit the Project DataFrame directly in a GUI using the DataFram
 .. warning:: Make sure you know what you are doing when you directly modify the Project DataFrame. Changes cannot be undone but you can restore a backup from the project's :ref:`dataframe directory <ProjectStructure>`. For example, do not modify data under the following columns: CurvePath, ImgInfoPath, ImgPath, ROI_State, any uuid column.
 
 .. seealso:: Uses the `Spyder object editor <https://docs.spyder-ide.org/variableexplorer.html?highlight=object%20editor>`_
-
-Export
-======
 
 Console
 =======
@@ -59,7 +151,7 @@ set_root_dataframe()        pass a pandas.DataFrame instance to set it as the pr
 Usage
 -----
 
-General usage in order to modify the project DataFrame would be something like this:
+General usage to modify the project DataFrame would be something like this:
 
 .. code-block:: python
     
