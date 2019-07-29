@@ -3,6 +3,8 @@
 ROI Manager
 ***********
 
+:ref:`API Reference <API_ROIManager>`
+
 **Manage and annotate ROIs**
 
 .. thumbnail:: ./roi_manager_viewer.png
@@ -12,6 +14,7 @@ The ROI Manager has a manual mode, to draw ROIs manually, and a CNMF(E) mode whe
 .. seealso:: :ref:`CNMF Usage <module_CNMF_Usage>` and :ref:`CNMFE Usage <module_CNMFE_Usage>`.
 
 .. note:: You cannot combine manual and CNMF(E) ROIs in the same sample.
+
 
 The ImageJ ROI import uses the read-roi package by Hadrien Mary https://pypi.org/project/read-roi/
 
@@ -71,3 +74,39 @@ Manual ROI Mode
 When you click the "Add ROI" button to add a Manual Polygon ROI, a new rectangular ROI will be add in the top left corner of the image. You can add new vertices to this polygon by clicking on any of its edges. You can drag the vertices to change the shape of the polygon, and you can drag the entire ROI as well by clicking and dragging within the ROI region. Similarly you can reshape elliptical ROIs.
 
 Hovering over the ROI selects it in the ROI list.
+
+Console
+=======
+
+Access the back-end ROI Manager through the viewer console or :ref:`Script editor <ScriptEditor>` to interact with the ROIs.
+
+.. seealso:: :ref:`Back-end ROI Manager APIs <API_ROIManagers>`, :ref:`ROIList API <API_ROIList>`, :ref:`ROI Type APIs <API_ROITypes>`
+
+.. code-block:: python
+    
+    # Get the back-end ROI Manager
+    >>> get_workEnv().roi_manager
+    
+    <mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE object at 0x7f01b8780668>``
+    
+    # Get the ROI List
+    >>> get_workEnv().roi_manager.roi_list
+
+    [<mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc78b278>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc817630>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc817668>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc7c5438>, <mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc7c5208>]
+    
+    # Get the curve data of an ROI
+    >>> get_workEnv().roi_manager.roi_list[3].curve_data
+    
+    (array([   0,    1,    2, ..., 2995, 2996, 2997]), array([ -207.00168389,  -161.78229208,  -157.62522988, ..., -1017.73174502,
+       -1030.27047731, -1042.26989668]))
+       
+    # Get the tags of an ROI
+    >>> get_workEnv().roi_manager.roi_list[2].get_all_tags()
+    
+    {'anatomical_location': 'tail', 'cell_name': 'dcen', 'morphology': 'untagged'}
+    
+    # Get a single tag
+    >>> get_workEnv().roi_manager.roi_list[2].get_tag('cell_name')
+    
+    'dcen'
+    
