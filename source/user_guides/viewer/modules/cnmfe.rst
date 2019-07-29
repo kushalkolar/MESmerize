@@ -27,20 +27,22 @@ Please see the CaImAn demo notebook mentioned above to understand the parameters
 
 **Ain**: Seed spatial components from another CNMFE item by entering its UUID here.
 
+.. _module_CNMFE_Usage:
+
 Usage
 =====
 
 This module creates two types of batch items, one where you can inspect the Correlation & PNR images and another that performs CNMFE and extracts components. Here is an outline of typical usage:
 
-#. Enter a *gSig* parameter value and a name for "Inspect Correlation and PNR", the text entry for "Stop here". Click "Add to batch". Run the batch item.
+- Enter a *gSig* parameter value and a name for "Inspect Correlation and PNR", the text entry for "Stop here". Click "Add to batch". Run the batch item.
 
-#. Double-click the batch item, you will be presented with a GUI to help optimize *min_corr* and *min_pnr*. For the correlation image use the vmin slider to optimize the seperation of cells and set the *min_corr* parameter to this value. Likewise, optimize the value for the PNR until the PNR image mostly contains regions that show real signal and no or few regions that are likely to be just noise and set this vmin value as the *min_pnr* parameter. You may need to try slightly different variations to optimize the parameters.
+- Double-click the batch item, you will be presented with a GUI to help optimize *min_corr* and *min_pnr*. For the correlation image use the vmin slider to optimize the seperation of cells and set the *min_corr* parameter to this value. Likewise, optimize the value for the PNR until the PNR image mostly contains regions that show real signal and no or few regions that are likely to be just noise and set this vmin value as the *min_pnr* parameter. You may need to try slightly different variations to optimize the parameters.
 
 .. image:: ./corr_pnr_img.png
 
-#. Enter the rest of the parameters and give a name under "Perform CNMF-E", click "Add to batch" and run the item.
+- Enter the rest of the parameters and give a name under "Perform CNMF-E", click "Add to batch" and run the item.
 
-#. Double-click the batch item and you will be presented with 3 options. The first option will display the correlation-pnr images and the second option is currently non-functional (matplotlib Qt issue). The last option will import the components extracted by CNMFE into an open Viewer. The components are managed by the ROI Manager.
+- Double-click the batch item and you will be presented with 3 options. The first option will display the correlation-pnr images and the second option is currently non-functional (matplotlib Qt issue). The last option will import the components extracted by CNMFE into an open Viewer. The components are managed by the ROI Manager.
 
 .. seealso:: :ref:`ROI Manager <ROIManager>`
 

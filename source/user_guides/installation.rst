@@ -37,7 +37,7 @@ If you have trouble installing Mesmerize via snap you might need to install `cor
 
 	sudo snap install core18
 
-	
+
 .. _pip_install:
 
 PyPI

@@ -9,6 +9,8 @@ Biological Questions
 
 	- The effects of different types of temporary stimulation? Such as poking or odors?
 
+	- Are you interested in neuronal activity during specific behavioral periods?
+
 	- Differences in calcium dynamics between different anatomical regions?
 
 	- Chemogenetic experiments using transgenes to express DDREADs.
@@ -49,6 +51,8 @@ Categorical Data Columns
 
 .. note:: You can change the project configuration at any point in the future by adding new columns or changing the visible/hidden columns.
 
+.. _ROITypeColumns:
+
 ROI Type Columns
 ^^^^^^^^^^^^^^^^
 
@@ -61,12 +65,16 @@ Create ROI-bound *categories* with which you want to group your data. Enter the 
 
 .. seealso:: **<link here> *ROI Manager guide* to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.**
 
+.. _StimulusTypeColums:
+
 Stimulus Type Columns
 ^^^^^^^^^^^^^^^^^^^^^
 
-If you're interested in temporally mapping stimulus information to your traces you can add a “Stimulus Type column”. These are only for when you are applying a stimuli that are **temporary and do not span the entire length of the video.**
+If you're interested in mapping temporal information to your traces, such as stimuli or behavioral periods, add a “Stimulus Type column” for each type. This is only for temporary stimulation or behavioral periods that do not span the entire length of the video.
 
 .. seealso:: **<link here> Stimulus Mapping guide, to understand how stimuli can be labelled.**
+
+.. _CustomColumns:
 
 Custom Columns
 ^^^^^^^^^^^^^^

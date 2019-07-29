@@ -22,7 +22,7 @@ The Welcome Window is the first window that you are presented with when you laun
 Project Structure
 =================
 
-A Mesmerize project is entirely encapsulated within a project directory. It contains the following:
+A Mesmerize project is encapsulated within a single directory. It contains the following:
 
 - config file - contains configuration data, such as roi type columns, stimulus type columns, and custom columns with their datatypes.
 
@@ -60,6 +60,7 @@ Project Sample
 ==============
 
 
+
 .. _ConsoleOverview:
 
 Consoles
@@ -67,7 +68,7 @@ Consoles
 
 A Python console is embedded in many parts of Mesmerize. You can use it to perform very specific operations, further automate tasks, save an analysis object, format plots, etc.
 
-The console is accessible in many windows through View -> Console. Within the console namespace ``this`` refers to the window. For example ``this`` refers to the :ref`Project Browser` Window instance in the Project Browser's console. A list of useful object references and helper functions are listed when you open most consoles.
+The console is accessible in many windows through View -> Console. Within the console namespace ``this`` refers to the window. For example ``this`` refers to the :ref:`Project Browser <ProjectBrowser>` Window instance in the Project Browser's console. A list of useful object references and helper functions are listed when you open most consoles.
 
 You can run entire scripts within the console. You can also use import statements to import libraries that you have in your Python environment.
 
@@ -134,7 +135,7 @@ This window is accessible through the :ref:`Welcome Window <WelcomeWindow>` menu
 
 **Work dir:** Many parts of Mesmerize use a working directory for temporary files. If you have a fast filesystem you can use that for this purpose.
 
-**Pre-run commands (big text entry):** Mesmerize runs some computationally intensive tasks in subprocesses. These commands are run prior to the python script that performs the task.
+**Pre-run commands (large text entry):** Mesmerize runs some computationally intensive tasks in subprocesses. These commands are run prior to the python script that performs the task.
 
     - If you are using Mesmerize in a virtual environment (such as a :ref:`pip installed <pip_install>` Mesmerize) you will need activate the environment so you must include the line ``source /path_to_venv/bin/activate`` to the pre-run commands
     
