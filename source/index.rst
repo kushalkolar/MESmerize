@@ -36,6 +36,7 @@ Welcome to Mesmerize's documentation!
     :caption: Viewer Modules
     
     ./user_guides/viewer/modules/batch_manager
+    ./user_guides/viewer/modules/roi_manager
     ./user_guides/viewer/modules/caiman_motion_correction
     ./user_guides/viewer/modules/cnmf
     ./user_guides/viewer/modules/cnmfe
@@ -67,6 +68,7 @@ Welcome to Mesmerize's documentation!
 
 	./api_reference/Viewer_data_types
 	./api_reference/viewer_modules/viewer_modules
+	./api_reference/viewer_modules/roi_manager
 	./api_reference/Analysis_data_types
 	./api_reference/plotting/widgets/kshape
 

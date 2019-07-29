@@ -11,7 +11,7 @@ This is currently used for :ref:`Caiman Motion Correction <module_CaimanMotionCo
 
 The Batch Manager can be accessed in the viewer through Modules -> Batch Manager. If you don't have a batch open you will be prompted with a dialog to open a batch or to select a location for a new batch.
 
-.. warning:: The full path to the batch directory must not contain spaces or special characters, only a-Z, A-Z and numbers.
+.. warning:: The full path to the batch directory must not contain spaces or special characters, only a-z, A-Z, 0-9 and underscores.
 
 The Batch Manager processes the batch items in external processes, allowing you to add batch items when that batch is being processed.
 
