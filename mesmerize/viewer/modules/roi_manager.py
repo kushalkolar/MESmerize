@@ -19,7 +19,9 @@ import traceback
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
+    """The GUI front-end for the ROI Manager module"""
     def __init__(self, parent, viewer_reference):
+        """Instantiate attributes"""
         self.vi = ViewerUtils(viewer_reference)
 
         QtWidgets.QDockWidget.__init__(self, parent)
@@ -27,7 +29,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.manager = managers.ManagerManual(self, self.ui, self.vi)
+        self.manager = managers.ManagerManual(self, self.ui, self.vi) #: The back-end manager instance.
         self.vi.viewer.workEnv.roi_manager = self.manager
 
         self.vi.viewer.workEnv.rois = self.manager.roi_list
@@ -67,6 +69,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.lineEditROITag.sig_key_end.connect(self.img_seq_end)
 
     def eventFilter(self, QObject, QEvent):
+        """Set some keyboard shortcuts"""
         if QEvent.type() == QEvent.KeyPress:
 
             if len(self.manager.roi_list) < 1:
@@ -108,6 +111,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.list_widget_context_menu.exec_(self.ui.listWidgetROIs.mapToGlobal(p))
 
     def slot_delete_roi_menu(self):
+        """Delete the currently selected ROI"""
         if hasattr(self, 'manager'):
             if isinstance(self.manager, managers.ManagerCNMFE):
                 self.manager.update_idx_components(self.manager.roi_list.current_index)
@@ -118,6 +122,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.btnAddROIMenu.exec_(self.ui.btnAddROI.mapToGlobal(p))
 
     def start_cnmfe_mode(self):
+        """Start in CNMFE mode. Creates a new back-end manager instance (uses ManagerCNMFE)"""
         print('staring cnmfe mode in roi manager')
 
         if hasattr(self, 'manager'):
@@ -129,10 +134,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnSwitchToManualMode.setEnabled(True)
 
     def add_all_cnmfe_components(self, *args, **kwargs):
+        """Import CNMF(E) output data"""
         assert isinstance(self.manager, managers.ManagerCNMFE)
         self.manager.add_all_components(*args, **kwargs)
 
     def start_manual_mode(self):
+        """Start in manual mode. Creates a new back-end manager instance (Uses ManagerManual)"""
         print('staring manual mode')
 
         if hasattr(self, 'manager'):
@@ -144,6 +151,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnSwitchToManualMode.setDisabled(True)
 
     def add_manual_roi(self, shape: str):
+        """Add a manual ROI. Just calls ManagerManual.add_roi"""
         if self.vi.viewer.workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self,
                                           'Empty Work Environment',
@@ -158,10 +166,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
         pass
 
     def package_for_project(self) -> dict:
+        """Gets all the ROI states so that they can be packaged along with the rest of the work environment to be saved as a project Sample"""
         states = self.manager.get_all_states()
         return states
 
     def set_all_from_states(self, states: dict):
+        """Set all the ROIs from a states dict. Instantiates the appropriate back-end Manager"""
         if states['roi_type'] == 'CNMFROI':
             self.start_cnmfe_mode()
             self.manager.restore_from_states(states)
@@ -171,6 +181,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.manager.restore_from_states(states)
 
     def import_from_imagej(self):
+        """Import ROIs from ImageJ zip file"""
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import ImageJ ROIs', '', '(*.zip)')
         if path == '':
             return
