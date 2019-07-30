@@ -22,6 +22,10 @@ In the viewer you can make changes and then save it by going to File -> Add to P
 
 .. image:: ./save_changes.png
 
+.. note:: You can make any changes that you want to the Sample. This may include things such as changing or adding new tags to ROIs, changing stimulus maps, tagging a new custom column etc.
+
+.. warning:: You can never change the AnimalID or TrialID (i.e. SampleID) since these are partially used as unique identifiers. A workaround is described in the :ref:`FAQ for Project Organization <faq-project-organization>`.
+
 Filter
 ======
 

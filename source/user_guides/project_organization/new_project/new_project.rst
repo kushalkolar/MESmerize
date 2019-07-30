@@ -38,11 +38,13 @@ Project Configuration
 
 After setting a project name you must configure it. This is where your biological questions of interest are important. You can change your project configuration later, but it is most time efficient if you enter all your categories of interest now.
 
+.. image:: ./4.png
+
 .. warning:: Restart Mesmerize whenever you change the project configuration.
 
-.. seealso:: :ref:`Add To Project Guide <add-to-project>` **to understand how the project configuration relates to the addition of data samples to your project**
+.. note:: If you have Samples in your project and you change the project configuration at a later date to add new columns, all existing rows in your project DataFrame are labelled as "untagged" for the new columns.
 
-.. image:: ./4.png
+.. seealso:: :ref:`Add To Project Guide <add-to-project>` **to understand how the project configuration relates to the addition of data samples to your project**
 
 
 Categorical Data Columns
@@ -63,7 +65,7 @@ Create ROI-bound *categories* with which you want to group your data. Enter the 
 
 .. image:: ./5.png
 
-.. seealso:: **<link here> *ROI Manager guide* to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.**
+.. seealso:: :ref:`ROI Manager <ROIManager>` to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.
 
 .. _StimulusTypeColums:
 
@@ -111,4 +113,4 @@ Visible / Hidden in Project Browser
 
 You can drag and drop items (column names) between these two lists to set which ones are visible in the Project Browser. This is just to avoid clutter.
 
-.. seealso:: <link here> Project Browser guide
+.. seealso:: :ref:`Project Browser <ProjectBrowser>`
