@@ -36,6 +36,7 @@ Welcome to Mesmerize's documentation!
     :maxdepth: 1
     :caption: Viewer Modules
     
+    ./user_guides/viewer/modules/tiff_file
     ./user_guides/viewer/modules/batch_manager
     ./user_guides/viewer/modules/roi_manager
     ./user_guides/viewer/modules/caiman_motion_correction
