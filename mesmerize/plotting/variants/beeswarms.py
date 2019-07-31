@@ -71,8 +71,8 @@ class BeeswarmPlot(QtCore.QObject):
     def _clicked(self, plot, points):
         for i, p in enumerate(self.lastClicked):
             assert isinstance(p, SpotItem)
-            p.setPen('w')
-            # p.setBrush(p._data['orig_brush'])
+            p.setPen('k')
+            p.setBrush(p._data['orig_brush'])
 
         if len(points) == 1:
             p = points[0]
@@ -81,8 +81,8 @@ class BeeswarmPlot(QtCore.QObject):
 
         for p in points:
             assert isinstance(p, SpotItem)
-            p.setPen('k')
-            # p.setBrush('w')
+            p.setPen('w')
+            p.setBrush('w')
 
         self.lastClicked = points
 
