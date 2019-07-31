@@ -173,12 +173,33 @@ Open docs
 Open these docs
 
 
+.. _ViewerConsole::
+
 Console
 =======
 
 You can interact directly with the :ref:`work environment <ViewerWorkEnv>` using the console.
 
-.. seealso:: :ref:`Viewer Core API <API_ViewerCore>`
+.. seealso:: :ref:`Viewer Core API <API_ViewerCore>`, :ref:`Overview on consoles <ConsoleOverview>`
+
+Namespace
+---------
+
+=====================   ====================================================================
+Reference               Description
+=====================   ====================================================================
+vi                      Instance of :ref:`ViewerUtils <API_ViewerUtils>`. Use this to interact with the viewer.
+all_modules             List all available modules (includes default and any available plugins/custom modules)
+ViewerWorkEnv           Use for creating new instances of :ref:`ViewerWorkEnv <API_ViewerWorkEnv>`
+ImgData                 Use for creating new instances of :ref:`ImgData <API_ImgData>`=
+get_workEnv()           Get the current viewer :ref:`work environment <ViewerWorkEnv>` (instance of :ref:`ViewerWorkEnv <API_ViewerWorkEnv>`)
+get_image()             Get the current image sequence (returns current :ref:`ViewerWorkEnv.imgdata.seq <API_ViewerWorkEnv>`)
+get_meta()              Get the current meta data
+get_module(<name>)      Pass the name of a module as a string. Returns that module if it is available.
+get_batch_manager()     Get the batch manager.
+update_workEnv()        Update the viewer GUI with the viewer work environment (vi.viewer.workEnv)
+clear_workEnv()         Clear the current work envionment, cleanup the GUI and free the RAM
+=====================   ====================================================================
 
 Examples
 --------
@@ -186,16 +207,89 @@ Examples
 View meta data
 ^^^^^^^^^^^^^^
 
+.. code-block:: python
+
+    >>> get_meta()
+    
+    {'origin': 'AwesomeImager', 'version': '4107ff58a0c3d4d5d3c15c3d6a69f8798a20e3de', 'fps': 10.0, 'date': '20190426_152034', 'vmin': 323, 'vmax': 1529, 'orig_meta': {'source': 'AwesomeImager', 'version': '4107ff58a0c3d4d5d3c15c3d6a69f8798a20e3de', 'level_min': 323, 'stims': {}, 'time': '152034', 'date': '20190426', 'framerate': 10.0, 'level_max': 1529}}
+
 View history trace
 ^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+    >>> get_workEnv().history_trace
+    
+    [{'caiman_motion_correction': {'max_shifts_x': 32, 'max_shifts_y': 32, 'iters_rigid': 1, 'name_rigid': 'Does not matter', 'max_dev': 20, 'strides': 196, 'overlaps': 98, 'upsample': 4, 'name_elas': 'a1_t2', 'output_bit_depth': 'Do not convert', 'bord_px': 5}}, {'cnmfe': {'Input': 'Current Work Environment', 'frate': 10.0, 'gSig': 10, 'bord_px': 5, 'min_corr': 0.9600000000000001, 'min_pnr': 10, 'min_SNR': 1, 'r_values_min': 0.7, 'decay_time': 2, 'rf': 80, 'stride': 40, 'gnb': 8, 'nb_patch': 8, 'k': 8, 'name_corr_pnr': 'a8_t1', 'name_cnmfe': 'a1_t2', 'do_corr_pnr': False, 'do_cnmfe': True}}, {'cnmfe': {'Input': 'Current Work Environment', 'frate': 10.0, 'gSig': 10, 'bord_px': 5, 'min_corr': 0.9600000000000001, 'min_pnr': 14, 'min_SNR': 1, 'r_values_min': 0.7, 'decay_time': 4, 'rf': 80, 'stride': 40, 'gnb': 8, 'nb_patch': 8, 'k': 8, 'name_corr_pnr': '', 'name_cnmfe': 'a1_t2', 'do_corr_pnr': False, 'do_cnmfe': True}}]
 
 Open image
 ^^^^^^^^^^
 
+.. code-block:: python
+    :linenos:
+    
+    # Get the tiff module
+    tio = get_module('tiff_io')
+    
+    # Set the tiff and meta file paths
+    tiff_path = '/path_to_tiff_file.tiff'
+    meta_path = '/path_to_meta_file.json'
+    
+    tio.load_tiff(tiff_path, meta_path, method='asarray')
+    
+.. seealso:: :ref:`Tiff IO API <API_TiffModule>`, :ref:`Information on the meta data format <ConvertMetaData>`
+
+**Use the ViewerCore API to open any arbitrary image**
+
+.. code-block:: python
+    :linenos:
+
+    import tifffile
+    import json
+    
+    # Open an image file in whatever way you require
+    seq = tifffile.imread('/path_to_tiff_file')
+    
+    meta = ...
+    
+    # Create ImgData instance
+    # Image sequence must be numpy array of shape [x, y, t]
+    imgdata = ImgData(seq.T, meta)
+    
+    # Create a work environment instance
+    work_env = ViewerWorkEnv(imgdata)
+    
+    # Set this new work environment instance as the viewer work environment
+    vi.viewer.workEnv = work_end
+    
+    # Update the viewer GUI with the new work envionment
+    update_workEnv()
+    
+    
 Splice img seq
 ^^^^^^^^^^^^^^
+
+Extract the image sequence between frame 1000 and 2000. Image sequences are simply numpy arrays.
+
+.. seealso:: Numpy array indexing: https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
+
+.. code-block:: python
+    :linenos:
+    
+    # Get the current image sequence
+    seq = get_image()
+    
+    # Trim the image sequence
+    trim = seq[:, :, 1000:2000]
+    
+    # Set the viewer work environment image sequence to the trim one
+    vi.viewer.workEnv.imgdata.seq = trim
+    
+    # Update the GUI with the new work environment
+    update_workEnv()
+
 
 Running scripts
 ===============
 
-You can run scripts in the Viewer console to automate tasks such as batch creation. See the scripting guides <ref here> for more detail.
+You can run scripts in the Viewer console to automate tasks such as batch creation. It basically allows you to use the :ref:`viewer console <ViewerConsole>` through a text editor instead. See the scripting guides <ref here> for more detail.

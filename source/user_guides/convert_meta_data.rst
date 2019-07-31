@@ -16,8 +16,8 @@ Minimal Example
 .. code-block:: javascript
 
 	{
-		 "source":    "our_recording_program"
-		 "fps":       20.0
+		 "source":    "our_recording_program",
+		 "fps":       20.0,
 		 "date":      20190425_114405
 	}
 
@@ -36,13 +36,13 @@ If you have other data that you would like to keep for the purpose of custom mod
 .. code-block:: javascript
 
 	{
-		 "source":    "our_recording_program"
-		 "version":   0.1.2
-		 "fps":       20.0
-		 "date":      20190425_114405
+		 "source":    "our_recording_program",
+		 "version":   0.1.2,
+		 "fps":       20.0,
+		 "date":      20190425_114405,
 		 "orig_meta":	
 				{
-					"scanner_info":   [1, 2, 3]
+					"scanner_info":   [1, 2, 3],
 					"other_stuff:     "val"
 				}
 	}

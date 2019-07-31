@@ -45,6 +45,7 @@ This example shows how to add all tiff files (of image sequences) from a directo
 .. seealso:: This example uses the :ref:`ViewerWorkEnv API <API_ViewerWorkEnv>` and :ref:`Batch Manager API <API_BatchManager>`
 
 .. code-block:: python
+    :linenos:
     
     # Import glob so we can get all tiff files in a dir
     from glob import glob
@@ -68,53 +69,55 @@ This example shows how to add all tiff files (of image sequences) from a directo
                 }
 
     # Path to the dir containing images
-	files = glob("/full_path_to_raw_images/*.tiff")
-	# Sort in alphabetical order (should also work for numbers)
-	files.sort()
+    files = glob("/full_path_to_raw_images/*.tiff")
+    # Sort in alphabetical order (should also work for numbers)
+    files.sort()
 
-	# Open each file, crop, and add to batch with 3 diff mot cor params
-	for i, path in enumerate(files):
-		print("Working on file " + str(i + 1) + " / " + str(len(files)))
-
-		# get json file path for the meta data
-		meta_path = path[:-5] + ".json"
-
-		# Create a new work environment with this image sequence
-		work_env = ViewerWorkEnv.from_tiff(path, "asarray-multi", meta_path)
-		
-		# Get caiman motion correction module, hide=False to not show GUI
-		mc_module = get_module("caiman_motion_correction", hide=True)
-		
-		# Set name for this video file
-		name = os.path.basename(path)[:-5]
-		mc_params["name_elas"] = name	
-		
-		mc_module.set_input_workEnv(work_env)
-		# First variant of params
-		mc_params["strides"] = 196
-		mc_params["overlaps"] = 98
-		# Add one variant of params for this video to the batch
-		mc_module.set_params(mc_params)
-		mc_module.add_to_batch()
-
-		# Try another variant of params	
-		mc_params["strides"] = 256
-		mc_params["overlaps"] = 128
-		# Set these params and add to batch
-		mc_module.set_params(mc_params)
-		mc_module.add_to_batch()
-		
-		# Try one more variant of params	
-		mc_params["strides"] = 296
-		mc_params["overlaps"] = 148
-		# Set these params and add to batch
-		mc_module.set_params(mc_params)
-		mc_module.add_to_batch()
-
-	# If you want to process the batch after adding the items uncomment the following lines
-	#bm = get_batch_manager()
-	#bm.process_batch(clear_viewers=True)
-	
+    # Open each file, crop, and add to batch with 3 diff mot cor params
+    for i, path in enumerate(files):
+        print("Working on file " + str(i + 1) + " / " + str(len(files)))
+        
+        # get json file path for the meta data
+        meta_path = path[:-5] + ".json"
+        
+        # Create a new work environment with this image sequence
+        work_env = ViewerWorkEnv.from_tiff(path, "asarray-multi", meta_path)
+        
+        # Get caiman motion correction module, hide=False to not show GUI
+        mc_module = get_module("caiman_motion_correction", hide=True)
+        
+        # Set name for this video file
+        name = os.path.basename(path)[:-5]
+        mc_params["name_elas"] = name	
+        
+        # Set the input work environment
+        mc_module.set_input_workEnv(work_env)
+        
+        # First variant of params
+        mc_params["strides"] = 196
+        mc_params["overlaps"] = 98
+        # Add one variant of params for this video to the batch
+        mc_module.set_params(mc_params)
+        mc_module.add_to_batch()
+        
+        # Try another variant of params	
+        mc_params["strides"] = 256
+        mc_params["overlaps"] = 128
+        # Set these params and add to batch
+        mc_module.set_params(mc_params)
+        mc_module.add_to_batch()
+        
+        # Try one more variant of params	
+        mc_params["strides"] = 296
+        mc_params["overlaps"] = 148
+        # Set these params and add to batch
+        mc_module.set_params(mc_params)
+        mc_module.add_to_batch()
+        
+    # If you want to process the batch after adding the items uncomment the following lines
+    #bm = get_batch_manager()
+    #bm.process_batch(clear_viewers=True)
+    
 
 Crop and add items
 ------------------
@@ -122,6 +125,7 @@ Crop and add items
 This example shows how to crop videos prior to adding them as batch items. This is useful if you want to crop-out large unchanging regions of your movides. It uses either simple thresholding or spectral salieny on a standard deviation projection to determine the bounding box for cropping.
 
 .. code-block:: python
+    :linenos:
 
     # Import glob so we can get all tiff files in a dir
     from glob import glob
@@ -168,57 +172,59 @@ This example shows how to crop videos prior to adding them as batch items. This 
                 }
 
     # Path to the dir containing images
-	files = glob("/full_path_to_raw_images/*.tiff")
-	# Sort in alphabetical order (should also work for numbers)
-	files.sort()
+    files = glob("/full_path_to_raw_images/*.tiff")
+    # Sort in alphabetical order (should also work for numbers)
+    files.sort()
+    
+    # Open each file, crop, and add to batch with 3 diff mot cor params
+    for i, path in enumerate(files):
+        print("Working on file " + str(i + 1) + " / " + str(len(files)))
 
-	# Open each file, crop, and add to batch with 3 diff mot cor params
-	for i, path in enumerate(files):
-		print("Working on file " + str(i + 1) + " / " + str(len(files)))
+        # get json file path for the meta data
+        meta_path = path[:-5] + ".json"
+        
+        # Create a new work environment with this image sequence
+        work_env = ViewerWorkEnv.from_tiff(path, "asarray-multi", meta_path)
+        
+        print("Cropping file: " + str(i + 1))
+        
+        raw_seq = work_env.imgdata.seq	
+        # Auto crop the image sequence
+        cropped = auto_crop.crop(raw_seq, crop_params)	
+        # Set work env img seq to the cropped one and update
+        work_env.imgdata.seq = cropped
+        
+        # Get caiman motion correction module, hide=False to not show GUI
+        mc_module = get_module("caiman_motion_correction", hide=True)
+        
+        # Set name for this video file
+        name = os.path.basename(path)[:-5]
+        mc_params["name_elas"] = name	
+        
+        # Set the input work environment
+        mc_module.set_input_workEnv(work_env)
+        
+        # First variant of params
+        mc_params["strides"] = 196
+        mc_params["overlaps"] = 98
+        # Add one variant of params for this video to the batch
+        mc_module.set_params(mc_params)
+        mc_module.add_to_batch()
+        
+        # Try another variant of params	
+        mc_params["strides"] = 256
+        mc_params["overlaps"] = 128
+        # Set these params and add to batch
+        mc_module.set_params(mc_params)
+        mc_module.add_to_batch()
+        
+        # Try one more variant of params	
+        mc_params["strides"] = 296
+        mc_params["overlaps"] = 148
+        # Set these params and add to batch
+        mc_module.set_params(mc_params)
+        mc_module.add_to_batch()
 
-		# get json file path for the meta data
-		meta_path = path[:-5] + ".json"
-
-		# Create a new work environment with this image sequence
-		work_env = ViewerWorkEnv.from_tiff(path, "asarray-multi", meta_path)
-
-		print("Cropping file: " + str(i + 1))
-
-		raw_seq = work_env.imgdata.seq	
-		# Auto crop the image sequence
-		cropped = auto_crop.crop(raw_seq, crop_params)	
-		# Set work env img seq to the cropped one and update
-		work_env.imgdata.seq = cropped
-		
-		# Get caiman motion correction module, hide=False to not show GUI
-		mc_module = get_module("caiman_motion_correction", hide=True)
-		
-		# Set name for this video file
-		name = os.path.basename(path)[:-5]
-		mc_params["name_elas"] = name	
-		
-		mc_module.set_input_workEnv(work_env)
-		# First variant of params
-		mc_params["strides"] = 196
-		mc_params["overlaps"] = 98
-		# Add one variant of params for this video to the batch
-		mc_module.set_params(mc_params)
-		mc_module.add_to_batch()
-
-		# Try another variant of params	
-		mc_params["strides"] = 256
-		mc_params["overlaps"] = 128
-		# Set these params and add to batch
-		mc_module.set_params(mc_params)
-		mc_module.add_to_batch()
-		
-		# Try one more variant of params	
-		mc_params["strides"] = 296
-		mc_params["overlaps"] = 148
-		# Set these params and add to batch
-		mc_module.set_params(mc_params)
-		mc_module.add_to_batch()
-
-	# If you want to process the batch after adding the items uncomment the following lines
-	#bm = get_batch_manager()
-	#bm.process_batch(clear_viewers=True)
+    # If you want to process the batch after adding the items uncomment the following lines
+    #bm = get_batch_manager()
+    #bm.process_batch(clear_viewers=True)
