@@ -192,7 +192,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.toolbar.update()
 
     @present_exceptions('Export error', 'The following error occurred.')
-    def export(self):
+    def export(self, *args, **kwargs):
         if self.props_df is None:
             return
         if self.transmission is None:
