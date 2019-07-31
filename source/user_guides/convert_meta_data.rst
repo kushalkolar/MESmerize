@@ -1,7 +1,7 @@
-.. _ConvertMetaData
+.. _ConvertMetaData:
 
 Convert Meta Data
-*****************
+=================
 
 In order for you to use your videos with Mesmerize, each of your videos must have meta data organized in the format below.
 

@@ -38,10 +38,12 @@ Welcome to Mesmerize's documentation!
     
     ./user_guides/viewer/modules/tiff_file
     ./user_guides/viewer/modules/batch_manager
+    ./user_guides/viewer/modules/stimulus_mapping
     ./user_guides/viewer/modules/roi_manager
     ./user_guides/viewer/modules/caiman_motion_correction
     ./user_guides/viewer/modules/cnmf
     ./user_guides/viewer/modules/cnmfe
+    ./user_guides/viewer/modules/script_editor
     
 .. toctree::
 	:maxdepth: 1

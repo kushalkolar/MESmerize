@@ -122,7 +122,7 @@ Numerical filters
 
 By default the filters in all entires are treated as text. If your column contains numerical data you have additional options for modifiers. The first four modifiers are the :ref:`same as explained above <ProjectBrowserModifiers>`. The rest are self explanatory.
 
-.. image:: ./modfiers_num.png
+.. image:: ./modifiers_num.png
 
 Editor
 ======
