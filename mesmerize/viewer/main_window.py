@@ -20,6 +20,7 @@ from .modules import *
 from .core.common import ViewerUtils
 import numpy as np
 from .core.viewer_work_environment import ViewerWorkEnv
+from .core.data_types import ImgData
 from ..common import configuration, doc_pages
 from ..common import get_window_manager
 from .image_menu.main import ImageMenu
@@ -147,6 +148,7 @@ class MainWindow(QtWidgets.QMainWindow):
               'vi':                 self.vi,
               'viewer':             self.vi.viewer,
               'ViewerWorkEnv':      ViewerWorkEnv,
+              'ImgData':            ImgData,
               'get_workEnv':        self.vi.viewer.get_workEnv,
               'get_image':          lambda: self.vi.viewer.get_workEnv().imgdata.seq,
               'get_meta':           lambda: self.vi.viewer.get_workEnv().imgdata.meta,
@@ -163,7 +165,7 @@ class MainWindow(QtWidgets.QMainWindow):
               "numpy as np          \n" \
               "ViewerUtils as vi \n" \
               "self as this \n" \
-              "ViewerWorkEnv (for factory purposes): workEnv\n" \
+              "ViewerWorkEnv and ImgData for factory purposes\n" \
               "useful callables for scripting, see docs for examples:\n" \
               "get_workEnv(), get_image(), get_meta(), get_module(<module name>), get_batch_manager()\n" \
               "update_workEnv(), clear_workEnv()\n" \
