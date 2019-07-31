@@ -366,11 +366,11 @@ class ScatterPlotItem(GraphicsObject):
         newData = self.data[len(oldData):]
         newData['size'] = -1  ## indicates to use default size
 
-        # if 'brush' in kargs:
-        #     if not isinstance(kargs['brush'], QtGui.QBrush):
-        #         newData['orig_brush'] = fn.mkBrush(kargs['brush'])
-        #     else:
-        #         newData['orig_brush'] = kargs['brush']
+        if 'brush' in kargs:
+            if not isinstance(kargs['brush'], QtGui.QBrush):
+                newData['orig_brush'] = fn.mkBrush(kargs['brush'])
+            else:
+                newData['orig_brush'] = kargs['brush']
         # if 'pen' in kargs:
         #     if not isinstance(kargs['pen'], QtGui.QBrush):
         #         newData['orig_pen'] = fn.mkPen(kargs['brush'])
@@ -879,7 +879,10 @@ class SpotItem(object):
 
     @property
     def uuid(self) -> UUID:
-        return self._uuid
+        if isinstance(self._uuid, UUID):
+            return self._uuid
+        elif isinstance(self._uuid, str):
+            return UUID(self._uuid)
 
     def data(self):
         """Return the user data associated with this spot."""
