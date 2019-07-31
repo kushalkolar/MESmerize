@@ -172,8 +172,7 @@ Open docs
 
 Open these docs
 
-
-.. _ViewerConsole::
+.. _ViewerConsole:
 
 Console
 =======
@@ -191,7 +190,7 @@ Reference               Description
 vi                      Instance of :ref:`ViewerUtils <API_ViewerUtils>`. Use this to interact with the viewer.
 all_modules             List all available modules (includes default and any available plugins/custom modules)
 ViewerWorkEnv           Use for creating new instances of :ref:`ViewerWorkEnv <API_ViewerWorkEnv>`
-ImgData                 Use for creating new instances of :ref:`ImgData <API_ImgData>`=
+ImgData                 Use for creating new instances of :ref:`ImgData <API_ImgData>`
 get_workEnv()           Get the current viewer :ref:`work environment <ViewerWorkEnv>` (instance of :ref:`ViewerWorkEnv <API_ViewerWorkEnv>`)
 get_image()             Get the current image sequence (returns current :ref:`ViewerWorkEnv.imgdata.seq <API_ViewerWorkEnv>`)
 get_meta()              Get the current meta data
@@ -237,7 +236,7 @@ Open image
     
     tio.load_tiff(tiff_path, meta_path, method='asarray')
     
-.. seealso:: :ref:`Tiff IO API <API_TiffModule>`, :ref:`Information on the meta data format <ConvertMetaData>`
+.. seealso:: :ref:`Tiff IO API <API_TiffModule>`, Information on the :ref:`meta data format <ConvertMetaData>`
 
 **Use the ViewerCore API to open any arbitrary image**
 
@@ -271,7 +270,7 @@ Splice img seq
 
 Extract the image sequence between frame 1000 and 2000. Image sequences are simply numpy arrays.
 
-.. seealso:: Numpy array indexing: https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html
+.. seealso:: `Numpy array indexing <https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html>`_
 
 .. code-block:: python
     :linenos:
@@ -290,6 +289,6 @@ Extract the image sequence between frame 1000 and 2000. Image sequences are simp
 
 
 Running scripts
-===============
+----------------
 
-You can run scripts in the Viewer console to automate tasks such as batch creation. It basically allows you to use the :ref:`viewer console <ViewerConsole>` through a text editor instead. See the scripting guides <ref here> for more detail.
+You can use the :ref:`Script Editor <module_ScriptEditor>` to run scripts in the Viewer console for automating tasks such as batch creation. It basically allows you to use the :ref:`viewer console <ViewerConsole>` more conveniently with a text editor.
