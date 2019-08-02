@@ -69,11 +69,16 @@ class HeatmapWidget(QtWidgets.QWidget):
 
 
 class HeatmapSplitterWidget(QtWidgets.QWidget):
+    """Widget for interactive heatmaps"""
     def __init__(self, highlight_mode='row'):
+        """
+
+        :param highlight_mode: Interactive mode, one of 'row' or 'item'
+        """
         QtWidgets.QWidget.__init__(self)
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
-        self.plot_widget = Heatmap(highlight_mode=highlight_mode)
+        self.plot_variant = Heatmap(highlight_mode=highlight_mode)  #: That plot variant used by this plot widget
 
         self.labelSort = QtWidgets.QLabel(self)
         self.labelSort.setText('Sort heatmap according to column:')
@@ -82,12 +87,12 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         self.comboBoxSortColumn = QtWidgets.QComboBox(self)
         self.comboBoxSortColumn.currentTextChanged.connect(self._set_sort_order)
 
-        self.plot_widget.layout().addWidget(self.labelSort)
-        self.plot_widget.layout().addWidget(self.comboBoxSortColumn)
+        self.plot_variant.layout().addWidget(self.labelSort)
+        self.plot_variant.layout().addWidget(self.comboBoxSortColumn)
 
         self.splitter = QtWidgets.QSplitter(self)
         self.splitter.setStretchFactor(1, 1)
-        self.splitter.addWidget(self.plot_widget)
+        self.splitter.addWidget(self.plot_variant)
 
         self.vlayout.addWidget(self.splitter)
         # self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
@@ -139,6 +144,8 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
                  reset_sorting: bool = True,
                  **kwargs):
         """
+        Set the data and then set the plot
+
         :param dataframes:      list of dataframes or a single DataFrame
         :param data_column:     data column of the dataframe that is plotted in the heatmap
         :param labels_column:   dataframe column (usually categorical labels) used to generate the y-labels and legend.
@@ -146,6 +153,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         :param transmission:    transmission object that dataframe originates, used to calculate data units if passed
         :param sort:            if False, the sort comboBox is ignored
         :param reset_sorting:   reset the order of the rows in the heatmap
+        :param kwargs:          Passed to Heatmap.set
         """
         dataframe = self.merge_dataframes(dataframes)
         self.data_column = data_column
@@ -186,29 +194,39 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
 
     def _set_plot(self, data_array: np.ndarray):
         ylabels = self.dataframe[self.labels_column]
-        self.plot_widget.set(data_array, cmap=self.cmap, ylabels=ylabels, **self.kwargs)
+        self.plot_variant.set(data_array, cmap=self.cmap, ylabels=ylabels, **self.kwargs)
 
     @present_exceptions('Cannot sort', 'Make sure you choose an appropriate categorical column for sorting')
     def _set_sort_order(self, column: str):
+        """
+        Set the sort order of the heatmap rows according to a dataframe column. The column must contain categorical
+        values. The rows are grouped together according to the categorical values.
+
+        :param column: DataFrame column containing categorical values used for sorting the heatmap rows
+        """
         self.dataframe.sort_values(by=[column], inplace=True)
         a = np.vstack(self.dataframe[self.data_column].values)
         self.previous_sort_column = column
         self._set_plot(a)
 
     def set_transmission(self, transmission: Transmission):
+        """Set the input transmission"""
         self._transmission = transmission
         self.set_history_trace(transmission.history_trace)
 
     def get_transmission(self) -> Transmission:
+        """Get the input transmission"""
         if self._transmission is None:
             raise ValueError('No tranmission has been set')
         else:
             return self._transmission
 
     def highlight_row(self, ix: int):
-        self.plot_widget.highlight_row(ix)
+        """Highlight a row on the heatmap"""
+        self.plot_variant.highlight_row(ix)
 
     def set_history_trace(self, history_trace: HistoryTrace):
+        """Set the history trace object from the input transmission"""
         assert isinstance(history_trace, HistoryTrace)
         self._history_trace = history_trace
         self.has_history_trace = True
@@ -234,7 +252,8 @@ class ControlWidget(QtWidgets.QWidget):
 
 
 class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
-    drop_opts = ['dataframes', 'transmission']
+    """Heatmap with an embedded datapoint tracer"""
+    drop_opts = ['dataframes', 'transmission']  #: keys of the plot_opts dict that are not JSON compatible and not required for restoring this plot
 
     def __init__(self):
         super().__init__()
@@ -246,7 +265,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.live_datapoint_tracer = DatapointTracerWidget()
         self.add_to_splitter(self.live_datapoint_tracer)
 
-        self.plot_widget.sig_selection_changed.connect(self.set_current_datapoint)
+        self.plot_variant.sig_selection_changed.connect(self.set_current_datapoint)
 
         self.datapoint_tracer_curve_column = None
         self._previous_df_columns = []
@@ -268,15 +287,21 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.sig_changed.connect(self.update_plot)
 
     def set_update_live(self, b: bool):
+        """Set whether the plot should update live with changes in the flowchart"""
         self._update_live = b
         if b:
             self.update_plot()
 
     @QtCore.pyqtSlot(tuple)
     def set_current_datapoint(self, ix: tuple):
+        """
+        Set the currently selected datapoint in the :ref:`Datapoint Tracer <DatapointTracer>`.
+
+        :param ix: index, (x, y). x is always 0 for this widget since it only uses 'row' selection mode and not 'item'
+        """
         try:
             if self.is_clustering:
-                ix = self.plot_widget.plot.dendrogram_row.reordered_ind[ix[1]]
+                ix = self.plot_variant.plot.dendrogram_row.reordered_ind[ix[1]]
             else:
                 ix = ix[1]
             identifier = self.dataframe.iloc[ix]['uuid_curve']
@@ -301,6 +326,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
 
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
+        """Set the input Transmission and update the plot if _update_live is True"""
         super(HeatmapTracerWidget, self).set_input(transmission)
         cols = self.transmission.df.columns
         if set(self._previous_df_columns) != set(cols):
@@ -322,6 +348,10 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
             self.update_plot()
 
     def get_plot_opts(self, drop: bool = False) -> dict:
+        """
+        Get the plot options
+        :param drop: Drop the non-json compatible objects that are not necessary to restore this plot
+        """
         d = dict(dataframes=self.transmission.df,
                  data_column=self.control_widget.ui.comboBoxDataColumn.currentText(),
                  labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
@@ -336,6 +366,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
 
     @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
+        """Set all plot options from a dict"""
         ix = self.control_widget.ui.comboBoxDataColumn.findText(opts['data_column'])
         self.control_widget.ui.comboBoxDataColumn.setCurrentIndex(ix)
 
@@ -348,9 +379,11 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.listWidgetColorMapsData.set_cmap(opts['cmap'])
 
     def update_plot(self):
+        """Calls set_data and passes dict from get_plot_opts() as keyword arguments"""
         self.set_data(**self.get_plot_opts())
 
     def get_cluster_kwargs(self) -> dict:
+        """Organize kwargs for visualization of hierarchical clustering"""
         # Just get the first datablock ID since Agglomerative clustering would have been done on all data blocks
         db_id = self.transmission.history_trace.data_blocks[0]
         linkage = np.array(self.transmission.history_trace.get_operation_params(data_block_id=db_id, operation='fcluster')['linkage_matrix'])
@@ -360,6 +393,15 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
 
     @present_exceptions('Error while setting data', 'Make sure you have selected appropriate columns.', help_func)
     def set_data(self, *args, datapoint_tracer_curve_column: str = None, **kwargs):
+        """
+        Set the plot data, parameters and draw the plot.
+        If the input Transmission comes directly from the FCluster it will pass a dict from get_cluster_kwargs() to the
+        cluster_kwargs argument. Else it will pass None to cluster_kwargs.
+
+        :param args: arguments to pass to superclass set_data() method
+        :param datapoint_tracer_curve_column: Data column containing curves to use in the datapoint tracer
+        :param kwargs:  keyword arguments, passed to superclass set_data() method
+        """
         if self.transmission.last_output == 'fcluster':
             self.comboBoxSortColumn.setDisabled(True)
             self.is_clustering = True

@@ -21,11 +21,11 @@ from ...utils import auto_colormap
 
 
 class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
-    drop_opts = ['xs', 'ys']
+    drop_opts = ['xs', 'ys']  #: Drop the 'xs' and 'ys' since they are pd.Series objects and not required for restoring the plot
 
     def __init__(self):
         super().__init__()
-        self.ax = self.fig.add_subplot(111)
+        self.ax = self.fig.add_subplot(111)  #: The axis that is used for this plot
 
         self.message_label = QtWidgets.QLabel()
         self.message_label.setText('')
@@ -96,6 +96,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
     @BasePlotWidget.signal_blocker
     def swap_x_y(self, *args, **kwargs):
+        """Swap the X and Y axes"""
         xs_opt = self.xs_combo.currentText()
         ys_opt = self.ys_combo.currentText()
 
@@ -122,6 +123,11 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.ys_combo.addItems(ccols)
 
     def get_plot_opts(self, drop: bool = False):
+        """
+        Get the plot options
+
+        :param drop: Drop the 'xs' and 'ys' objects when saving the returned dict for saving to an hdf5 file
+        """
         xs_name = self.xs_combo.currentText()
         ys_name = self.ys_combo.currentText()
 
@@ -136,6 +142,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
     @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
+        """Set the plot options"""
         ix_x = self.xs_combo.findText(opts['xs_name'])
         self.xs_combo.setCurrentIndex(ix_x)
 
@@ -146,6 +153,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
     @present_exceptions('Plot error', 'Cannot plot, make sure you have selected appropriate data columns')
     def update_plot(self, *args, **kwargs):
+        """Update the plot data and draw"""
         self.ax.cla()
 
         opts = self.get_plot_opts()
@@ -193,6 +201,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
     @present_exceptions('Export error', 'The following error occurred.')
     def export(self, *args, **kwargs):
+        """Export as a csv file"""
         if self.props_df is None:
             return
         if self.transmission is None:

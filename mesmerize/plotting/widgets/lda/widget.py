@@ -173,7 +173,7 @@ class LDAPlot(PlotWindow):
             col_name = c + '__dec_func'
             self.dataframe[col_name] = self.decision_function[:, i]
         self.decision_function_widget.dataframe = self.dataframe
-        self.decision_function_widget.plot_widget.set(self.decision_function, cmap='jet', xticklabels=self.lda.classes_)
+        self.decision_function_widget.plot_variant.set(self.decision_function, cmap='jet', xticklabels=self.lda.classes_)
         self.decision_function_widget.set_transmission(self.merged_transmission)
         self.decision_function_widget.show()
 

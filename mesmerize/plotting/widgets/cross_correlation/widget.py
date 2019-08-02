@@ -46,7 +46,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.sample_list = None
         self.cc_data = None
 
-        self.plot_widget.sig_selection_changed.connect(self.set_lineplots)
+        self.plot_variant.sig_selection_changed.connect(self.set_lineplots)
 
         # self.plot_widget.ax_ylabel_bar.set_axis_on()
         # self.plot_widget.ax_heatmap.get_yaxis().set_visible(True)
@@ -98,18 +98,18 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         # Since it's just same curve vs. same curves in the cc_matrix
         xlabels = ylabels
 
-        self.plot_widget.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels, linewidths=.5, linecolor='k')
+        self.plot_variant.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels, linewidths=.5, linecolor='k')
         # self.plot_widget.ax_ylabel_bar.set_axis_off()
 
-        self.plot_widget.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
-        self.plot_widget.plot.ax_heatmap.set_ylabel('Curve 2, cyan')
+        self.plot_variant.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
+        self.plot_variant.plot.ax_heatmap.set_ylabel('Curve 2, cyan')
 
-        self.plot_widget.draw()
+        self.plot_variant.draw()
 
     def set_lineplots(self, indices):
-        if self.plot_widget.selector.multi_select_mode:
+        if self.plot_variant.selector.multi_select_mode:
             nccs = []
-            for ix in self.plot_widget.selector.multi_selection_list:
+            for ix in self.plot_variant.selector.multi_selection_list:
                 # x = self.data[ix[0]]
                 # y = self.data[ix[1]]
                 i = ix[0]
