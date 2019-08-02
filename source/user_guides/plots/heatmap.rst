@@ -3,6 +3,8 @@
 Heatmap
 *******
 
+:ref:`API Reference <API_HeatmapTracerWidget>`
+
 .. note::
 	This plot can be saved in an interactive form, see :ref:`Saving plots <save_ptrn>`
 
