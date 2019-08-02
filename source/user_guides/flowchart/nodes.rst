@@ -719,7 +719,58 @@ LogTransform
 	============ 	=================
 
 
----------------------
+ArrayStats
+^^^^^^^^^^
+
+    Perform a few basic statistical functions.
+    
+    **Output Data Column** *(numerical)*: Customizable by user entry
+    Output data are single numbers, not arrays
+    
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+	
+	The desired function is applied to each 1D array in the *data_column* and the output is placed in the Output Data Column.
+
+	============ 	=================
+	Parameter   	Description
+	============ 	=================
+	data_column	Data column containing numerical arrays
+
+	function		*amin*: Return the minimum of the input array
+
+				| *amax*: Return the maximum of the input array
+
+				| *nanmin*: Return the minimum of the input array, ignore NaNs
+
+				| *nanmax*: Return the maximum of the input array, ignore NaNs
+				
+				| *ptp*: Return the range (max - min) of the values of the input array
+				
+				| *median*: Return the median of the input array
+				
+				| *mean*: Return the mean of the input array
+				
+				| *std*: Return the standard deviation of the input array
+				
+				| *var*: Return the variance of the input array
+				
+				| *nanmedian*: Return the median of the input array, ignore NaNs
+				
+				| *nanmean*: Return the mean of the input array, ignore NaNs
+				
+				| *nanstd*: Return the standard deviation of the input array, ignore NaNs
+				
+				| *nanvar*: Return the variance of the input array, ignore NaNs
+
+	Apply		Process data through this node
+	============ 	=================
+
+--------------------
 
 .. _nodes_Biology:
 

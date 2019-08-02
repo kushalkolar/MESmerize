@@ -33,6 +33,7 @@ ManagerManual
 -------------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual
+    :show-inheritance:
     :special-members:
     :members:
     :member-order: bysource
@@ -41,6 +42,7 @@ ManagerCNMFE
 ------------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE
+    :show-inheritance:
     :special-members:
     :members:
     :member-order: bysource
@@ -78,6 +80,7 @@ BaseROI
 -------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI
+    :show-inheritance:
     :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state
     :member-order: bysource
     
@@ -85,6 +88,7 @@ ManualROI
 ---------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI
+    :show-inheritance:
     :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state
     :member-order: bysource
 
@@ -92,6 +96,7 @@ CNMFROI
 -------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI
+    :show-inheritance:
     :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data, _create_scatter_plot
     :member-order: bysource
     

@@ -3,6 +3,8 @@
 Proportions
 ***********
 
+:ref:`API Reference <API_Proportions>`
+
 .. note::
 	:ref:`This plot can be saved in an interactive form <save_ptrn>`
 
