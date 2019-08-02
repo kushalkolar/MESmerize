@@ -15,23 +15,13 @@ import numpy as np
 from PyQt5 import QtWidgets
 from .... import pyqtgraphCore as pg
 # from typing import Type, TypeVar
-from ....common import get_proj_config, NoProjectOpen
+from ....common import get_proj_config, NoProjectOpen, InheritDocs
 from warnings import warn
 from copy import deepcopy
 from typing import Union
 
 
-class _InheritDocs(abc.ABCMeta):
-    def __new__(mcls, classname, bases, cls_dict):
-        cls = super().__new__(mcls, classname, bases, cls_dict)
-        for name, member in cls_dict.items():
-            if not getattr(member, '__doc__'):
-                if hasattr(bases[-1], name):
-                    member.__doc__ = getattr(bases[-1], name).__doc__
-        return cls
-
-
-class _AbstractBaseROI(metaclass=_InheritDocs):
+class _AbstractBaseROI(metaclass=InheritDocs):
     """
     Abstract base class defining an ROI that works with the ROIList and ROI Managers.
     Inherit from this or BaseROI to make a new ROI class
