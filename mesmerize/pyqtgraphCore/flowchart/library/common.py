@@ -230,6 +230,9 @@ class CtrlNode(Node):
     def data_column(self, d):
         pass
 
+    def apply_checked(self) -> bool:
+        return self.ctrls['Apply'].isChecked()
+
 
 class PlottingCtrlNode(CtrlNode):
     """Abstract class for CtrlNodes that can connect to plots."""
