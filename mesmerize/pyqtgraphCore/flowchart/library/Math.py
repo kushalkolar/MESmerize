@@ -163,3 +163,48 @@ class TVDiff(CtrlNode):
 
     def _func(self, *args, **kwargs):
         return tv_reg_diff(*args, **kwargs)
+
+
+class Integrate(CtrlNode):
+    pass
+
+class ArrayStats(CtrlNode):
+    """Perform various statistical functions"""
+    nodeName = 'ArrayStats'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('function', 'combo', {'items': ['amin', 'amax', 'nanmin', 'nanmax', 'ptp', 'median', 'mean', 'std',
+                                                   'var', 'nanmedian', 'nanmean', 'nanstd', 'nanvar']}),
+                  ('output_col', 'lineEdit', {}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if not self.apply_checked():
+            return
+
+        self.t = transmission.copy()
+
+        output_column = self.ctrls['output_col'].text()
+
+        output_column = output_column.upper()
+        if not output_column.startswith('_'):
+            output_column = '_' + output_column
+
+        function = self.ctrls['function']
+
+        params = {'data_column': self.data_column,
+                  'output_column': output_column,
+                  'function': function
+                  }
+
+        func = getattr(np, function)
+
+        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: func(x))
+        self.t.last_output = output_column
+
+        self.t.history_trace.add_operation('all', 'array_stats', params)
+
+        return self.t
+
