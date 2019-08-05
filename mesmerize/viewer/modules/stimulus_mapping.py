@@ -39,6 +39,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
             get_project_manager().signal_project_config_changed.connect(self.reset)
             self.ui.btnSetAllMaps.clicked.connect(self.set_all_maps)
 
+    @property
+    def maps(self) -> dict:
+        """Returns a dictionary of the stimulus maps"""
+        return self.tabs
+
     def setup_tabs(self):
         self.ui.comboBoxShowTimelineChoice.addItems([''])
         self.ui.comboBoxShowTimelineChoice.addItems(configuration.proj_cfg.options('STIM_DEFS'))

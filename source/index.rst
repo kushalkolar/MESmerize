@@ -81,6 +81,7 @@ Welcome to Mesmerize's documentation!
 	./api_reference/Viewer_data_types
 	./api_reference/viewer_modules/viewer_modules
 	./api_reference/viewer_modules/roi_manager
+	./api_reference/viewer_modules/stimulus_mapping
 	./api_reference/Analysis_data_types
 	./api_reference/plotting/widgets/bases
 	./api_reference/plotting/widgets/heatmap
