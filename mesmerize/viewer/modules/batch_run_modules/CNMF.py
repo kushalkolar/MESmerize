@@ -259,6 +259,8 @@ class Output(QtWidgets.QWidget):
             name = ''
         vi.viewer.ui.label_curr_img_seq_name.setText('CNMF of: ' + name)
 
+        self.close()
+
 
 if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2])
