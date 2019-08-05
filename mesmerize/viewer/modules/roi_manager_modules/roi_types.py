@@ -368,7 +368,7 @@ class CNMFROI(BaseROI):
     """A class for ROIs imported from CNMF(E) output data"""
     def __init__(self, curve_plot_item: pg.PlotDataItem,
                  view_box: pg.ViewBox, cnmf_idx: int = None,
-                 curve_data=None, contour=None, state: Union[dict, None] = None):
+                 curve_data=None, contour=None, state: Union[dict, None] = None, **kwargs):
         """
         Instantiate attributes.
 
@@ -382,6 +382,13 @@ class CNMFROI(BaseROI):
 
         self.roi_xs = np.empty(0)  #: numpy array of the x values of the ROI's spatial coordinates
         self.roi_ys = np.empty(0)  #: numpy array of the y values of the ROI's spatial coordinates
+
+        if 'raw_min' in kwargs.keys() and 'raw_max' in kwargs.keys():
+            self.raw_min = kwargs.pop('raw_min')
+            self.raw_max = kwargs.pop('raw_max')
+        else:
+            self.raw_min = None
+            self.raw_max = None
 
         if state is None:
             self.set_roi_graphics_object(contour)
@@ -403,7 +410,14 @@ class CNMFROI(BaseROI):
         self._create_scatter_plot()
         # self.curve_data = state['curve_data']
         self.cnmf_idx = state['cnmf_idx']
-        
+
+        if 'raw_min' in state.keys() and 'raw_max' in state.keys():
+            self.raw_min = state.pop('raw_min')
+            self.raw_max = state.pop('raw_max')
+        else:
+            self.raw_min = None
+            self.raw_max = None
+
     def get_roi_graphics_object(self) -> pg.ScatterPlotItem:
         if self.roi_graphics_object is None:
             raise AttributeError('Must call set_roi_graphics_object() first')
@@ -432,7 +446,9 @@ class CNMFROI(BaseROI):
                  'curve_data':  self.curve_data,
                  'tags':        self.get_all_tags(),
                  'roi_type':    'CNMFROI',
-                 'cnmf_idx':    self.cnmf_idx
+                 'cnmf_idx':    self.cnmf_idx,
+                 'raw_min':     self.raw_min,
+                 'raw_max':     self.raw_max
                  }
         return state
 

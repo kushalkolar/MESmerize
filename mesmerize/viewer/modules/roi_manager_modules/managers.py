@@ -185,7 +185,8 @@ class ManagerCNMFE(AbstractBaseManager):
         """Create empty CNMFROI list"""
         self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
 
-    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict, dfof=False):
+    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict, dfof=False,
+                           calc_raw_min_max=False):
         """Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs"""
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
@@ -206,14 +207,40 @@ class ManagerCNMFE(AbstractBaseManager):
             temporal_components = cnmC[idx_components]
         self.input_params_dict = self.input_params_dict
         num_components = len(temporal_components)
+
+        if calc_raw_min_max:
+            img = self.vi.viewer.workEnv.imgdata.seq.T.copy()
+
         for ix in range(num_components):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
                                                         + str(ix) + ' / ' + str(num_components))
 
             curve_data = temporal_components[ix]
             contour = contours[ix]
-            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), idx_components[ix], curve_data, contour)
+
+            if calc_raw_min_max:
+                # Get the raw min and max from the roi region
+                mask = self.cnmA[:, idx_components[ix]].toarray().reshape(dims) > 0
+                mask3d = np.array((mask,) * curve_data.shape[0])
+
+                reg = img.copy()
+                reg[~mask3d] = np.nan
+
+                c = np.nanmean(reg, axis=(1, 2))
+                raw_min = c.min()
+                raw_max = c.max()
+                del reg
+            else:
+                raw_min = None
+                raw_max = None
+
+            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), idx_components[ix], curve_data, contour,
+                          raw_min=raw_min, raw_max=raw_max)
+
             self.roi_list.append(roi)
+
+        if calc_raw_min_max:
+            del img
 
         self.roi_list.reindex_colormap()
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')

@@ -279,6 +279,11 @@ class Output(QtWidgets.QWidget):
             self.btnImportIntoViewer.setText('Import CNMFE output into chosen Viewer')
             layout.addWidget(self.btnImportIntoViewer)
 
+            self.checkbox_calc_raw_min_max = QtWidgets.QCheckBox()
+            self.checkbox_calc_raw_min_max.setText('Calculate raw min and max of components')
+            self.checkbox_calc_raw_min_max.setChecked(True)
+            layout.addWidget(self.checkbox_calc_raw_min_max)
+
             self.setLayout(layout)
 
             self.btnCP.clicked.connect(self.output_corr_pnr)
@@ -408,7 +413,9 @@ class Output(QtWidgets.QWidget):
                                            cnmYrA=self.cnmYrA,
                                            idx_components=self.idx_components,
                                            dims=self.dims,
-                                           input_params_dict=input_params)
+                                           input_params_dict=input_params,
+                                           calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
+                                           )
 
         if 'name_cnmfe' in input_params.keys():
             name = input_params['name_cnmfe']
