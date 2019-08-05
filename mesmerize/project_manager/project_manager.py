@@ -65,12 +65,12 @@ class ProjectManager(QtCore.QObject):
         configuration.save_proj_config()
 
     def setup_new_project(self):
-        os.makedirs(os.path.join(self.root_dir, '/dataframes'))
-        os.mkdir(os.path.join(self.root_dir, '/batches'))
-        os.mkdir(os.path.join(self.root_dir, '/images'))
-        os.mkdir(os.path.join(self.root_dir, '/curves'))
-        os.mkdir(os.path.join(self.root_dir, '/plots'))
-        os.mkdir(os.path.join(self.root_dir, '/flowcharts'))
+        os.makedirs(os.path.join(self.root_dir, 'dataframes'))
+        os.mkdir(os.path.join(self.root_dir, 'batches'))
+        os.mkdir(os.path.join(self.root_dir, 'images'))
+        os.mkdir(os.path.join(self.root_dir, 'curves'))
+        os.mkdir(os.path.join(self.root_dir, 'plots'))
+        os.mkdir(os.path.join(self.root_dir, 'flowcharts'))
 
         configuration.create_new_proj_config()
 
