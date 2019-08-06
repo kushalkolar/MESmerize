@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>301</width>
-    <height>679</height>
+    <height>699</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -154,6 +154,29 @@
     <widget class="QCheckBox" name="checkBoxShowStimuli">
      <property name="text">
       <string>Show Stimuli</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButtonShowHideConsole">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>38</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Show/Hide Console</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
