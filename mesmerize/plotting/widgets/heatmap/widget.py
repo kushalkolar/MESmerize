@@ -19,8 +19,11 @@ from .control_widget_pytemplate import Ui_ControlWidget
 import numpy as np
 import pandas as pd
 from typing import Optional, Union
+from ....common.configuration import console_history_path
 from ....common.qdialogs import present_exceptions
+from ....pyqtgraphCore.console import ConsoleWidget
 from warnings import warn
+import os
 
 
 def help_func(e, tb):
@@ -262,8 +265,34 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget = ControlWidget()
         self.add_to_splitter(self.control_widget)
 
-        self.live_datapoint_tracer = DatapointTracerWidget()
+        self.live_datapoint_tracer = DatapointTracerWidget()  #: The embedded `Datapoint Tracer <API_DatapointTracer>`
         self.add_to_splitter(self.live_datapoint_tracer)
+
+        ns = {'this': self,
+              'plot_variant': lambda: self.plot_variant,
+              'plot': lambda: self.plot_variant.plot,
+              'fig': lambda: self.plot_variant.fig
+              }
+
+        txt = ["Namespaces",
+               "self as 'this'",
+               "self.plot_variant as 'plot_variant'",
+               "self.plot_variant.plot as 'plot'",
+               "self.plot_variants.fig as 'fig'"
+               ]
+
+        txt = "\n".join(txt)
+
+        cmd_history_file = os.path.join(console_history_path, 'heatmap_tracer_widget')
+
+        self.console_widget = ConsoleWidget(parent=self, namespace=ns, text=txt, historyFile=cmd_history_file)
+        self.console_widget.setVisible(False)
+        self.control_widget.ui.pushButtonShowHideConsole.toggled.connect(self.console_widget.setVisible)
+        self.vlayout.addWidget(self.console_widget)
+
+        # TODO: Replace the constant exception windows with a status bar that displays red text if something goes
+        #  wrong and can be clicked to display the traceback
+        self.status_label = QtWidgets.QLabel(self)
 
         self.plot_variant.sig_selection_changed.connect(self.set_current_datapoint)
 
@@ -350,6 +379,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
     def get_plot_opts(self, drop: bool = False) -> dict:
         """
         Get the plot options
+
         :param drop: Drop the non-json compatible objects that are not necessary to restore this plot
         """
         d = dict(dataframes=self.transmission.df,
