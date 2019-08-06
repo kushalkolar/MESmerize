@@ -18,7 +18,7 @@ Minimal Example
 	{
 		 "source":    "our_recording_program",
 		 "fps":       20.0,
-		 "date":      20190425_114405
+		 "date":      "20190425_114405"
 	}
 
 Fields and data types
