@@ -18,6 +18,7 @@ from uuid import UUID
 import pandas as pd
 import tifffile
 import numpy as np
+import pickle
 from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
 # from ...viewer.core import ViewerWorkEnv, ViewerUtils
 from ...common import get_window_manager, get_project_manager
@@ -94,7 +95,14 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
         if history_trace is None:
             self.history_trace = []
-        self.history_trace = history_trace
+
+        img_info_path = row['ImgInfoPath']
+        if isinstance(img_info_path, pd.Series):
+            img_info_path = img_info_path.item()
+        img_info_path = os.path.join(self.proj_path, img_info_path)
+        preprocess_history = pickle.load(open(img_info_path, 'rb'))['history_trace']
+
+        self.history_trace = preprocess_history + history_trace
 
         self.ui.lineEditUUID.setText(str(self.uuid))
         self.history_widget.fill_widget(self.history_trace)
