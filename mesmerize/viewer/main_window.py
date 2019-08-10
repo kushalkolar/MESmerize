@@ -393,7 +393,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.vi.viewer.workEnv.restore_rois_from_states()
         self.vi.viewer.workEnv.changed_items.clear()
-        self.vi.viewer.workEnv.saved = True
 
         if roi_index is not None:
             roi_list = self.vi.viewer.workEnv.roi_manager.roi_list
@@ -413,3 +412,5 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if sample_id is not None:
             self.vi.viewer.ui.label_curr_img_seq_name.setText(sample_id)
+
+        self.vi.viewer.workEnv.saved = True

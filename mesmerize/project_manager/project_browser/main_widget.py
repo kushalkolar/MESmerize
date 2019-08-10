@@ -131,3 +131,6 @@ class ProjectBrowserWidget(QtWidgets.QWidget):
             self.lwd.deleteLater()
         except:
             pass
+
+        vi.viewer.workEnv.saved = True
+        
