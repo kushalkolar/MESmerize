@@ -82,6 +82,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.doubleSpinBoxRvalThr.setValue(d['rval_thr'])
         self.ui.doubleSpinBoxCNNThr.setValue(d['cnn_thr'])
         self.ui.spinBoxDecayTime.setValue(d['decay_time'])
+        self.ui.lineEdName.setText(d['name_cnmf'])
         self.ui.checkBoxRefit.setChecked(d['refit'])
 
     @use_save_file_dialog('Save params file as', None, '.json')
