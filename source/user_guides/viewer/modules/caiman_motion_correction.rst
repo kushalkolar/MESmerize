@@ -28,7 +28,7 @@ This module adds a "caiman motion correction" *item* to the batch. Set the desir
 
 .. seealso:: This modules uses the :ref:`Batch Manager <module_BatchManager>`.
 
-.. note:: The parameters used for motion correction are stored in the work environment of the viewer and this log is carried over and saved in the :ref:`Project Sample <ProjectSample>` as well. To see the parameters that were used for motion correction in the viewer, execute ``get_workEnv().history_trace['caiman_motion_correction']`` in the viewer console.
+.. note:: The parameters used for motion correction are stored in the work environment of the viewer and this log is carried over and saved in the :ref:`Project Sample <ProjectSample>` as well. To see the parameters that were used for motion correction in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the ``caiman_motion_correction`` entry.
 
 Script Usage
 ============
