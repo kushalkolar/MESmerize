@@ -73,9 +73,9 @@ Namespace
 reference           Description
 ==================  ========================================================================================
 this                The higher-level :ref:`HeatmapTracerWidget <API_HeatmapTracerWidget>` instance, i.e. the entire widget
-get_plot_area()     The lower-level :ref:`Heatmap <API_Variant_Heatmap>` variant instance, basically the actual plot area
-get_plot()          seaborn ClusterGrid instance containing the axes
-get_fig()           matplotlib `Figure <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib-figure-figure>`_ instance
+get_plot_area()     Returns the lower-level :ref:`Heatmap <API_Variant_Heatmap>` variant instance, basically the actual plot area
+get_plot()          Returns the seaborn ClusterGrid instance containing the axes
+get_fig()           Returns the matplotlib `Figure <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib-figure-figure>`_ instance
 ==================  ========================================================================================
 
 
