@@ -118,7 +118,7 @@ def run(batch_dir: str, UUID: str):
             cnmb = cnm.b
             cnmC = cnm.C
             cnm_f = cnm.f
-            cnmYrA = cnm.YrA2
+            cnmYrA = cnm.YrA
 
         pickle.dump(Yr, open(UUID + '_Yr.pikl', 'wb'), protocol=4)
         pickle.dump(cnmA, open(UUID + '_cnm-A.pikl', 'wb'), protocol=4)
