@@ -220,6 +220,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
     def compute_dataframe(self):
         self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
+        labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
 
         self.cc_data = dict.fromkeys(self.sample_list)
 
@@ -232,5 +233,6 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
             self.cc_data[sample_id] = compute_cc_data(data)
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
+            self.cc_data[sample_id].labels = sub_df[labels_col].tolist()
 
         self.set_current_sample()

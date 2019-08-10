@@ -12,16 +12,18 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ....analysis.math.cross_correlation import *
 import numpy as np
 
-
 class CC_Data:
     def __init__(self, ccs: np.ndarray = None,
                  lag_matrix: np.ndarray = None,
                  epsilon_matrix: np.ndarray = None,
-                 curve_uuids: list = None):
+                 curve_uuids: list = None,
+                 labels: list = None):
+
         self.ccs = ccs
         self.lag_matrix = lag_matrix
         self.epsilon_matrix = epsilon_matrix
         self.curve_uuids = curve_uuids
+        self.labels = labels
 
     def get_threshold_matrix(self, matrix_type: str, lag_thr: float, max_thr: float, lag_thr_abs: bool = True) -> np.ndarray:
         # Get lag and maxima matrices
