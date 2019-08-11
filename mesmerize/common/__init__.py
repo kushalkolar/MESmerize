@@ -7,6 +7,7 @@ from .. import docs
 from .configuration import get_sys_config, console_history_path
 from functools import partial
 from PyQt5.QtWidgets import QApplication
+from abc import ABCMeta
 
 
 # def get_sys_config() -> configparser.RawConfigParser:
@@ -44,6 +45,17 @@ doc_pages = {'home':            '/../index.html',
 
 for k in doc_pages.keys():
     doc_pages[k] = partial(open_new_web_browser_tab, docs_dir + doc_pages[k])
+
+
+class InheritDocs(ABCMeta):
+    """Inherit doc string from superclass if not present in subclass"""
+    def __new__(mcls, classname, bases, cls_dict):
+        cls = super().__new__(mcls, classname, bases, cls_dict)
+        for name, member in cls_dict.items():
+            if not getattr(member, '__doc__'):
+                if hasattr(bases[-1], name):
+                    member.__doc__ = getattr(bases[-1], name).__doc__
+        return cls
 
 
 def get_timestamp_str() -> str:
