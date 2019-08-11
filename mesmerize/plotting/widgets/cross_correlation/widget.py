@@ -241,7 +241,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         self.set_current_sample()
 
-    @use_save_file_dialog('Save file as', None, ['.hdf5'])
+    @use_save_file_dialog('Save file as', None, '.hdf5')
     @present_exceptions()
     def export_data(self, path, *args, **kwargs):
         HdfTools.save_dict(self.cc_data, path, group='cross_corr_data')
