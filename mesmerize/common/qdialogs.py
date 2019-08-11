@@ -71,8 +71,8 @@ def use_save_file_dialog(title: str = 'Save file', start_dir: Union[str, None] =
         def fn(self, *args, **kwargs):
             if ext is None:
                 raise ValueError('Must specify extension')
-            if ext.startswith('*'):
-                ex = ext[1:]
+            # if ext.startswith('*'):
+            #     ex = ext[1:]
             else:
                 ex = ext
             path = QFileDialog.getSaveFileName(self, title, _get_start_dir(start_dir), f'(*{ex})')
