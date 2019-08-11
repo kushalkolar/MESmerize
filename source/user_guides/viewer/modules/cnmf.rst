@@ -29,11 +29,17 @@ Console
     # Get the batch manager
     bm = get_batch_manager()
     cnmf_mod = get_module('cnmf')
+    
+    # Start index if we want to start processing the new items after they have been added
+    start_ix = bm.df.index.size + 1
 
     for ix, r in bm.df.iterrows():
-        # Add the first 12 items to the batch as cnmf items
-        if ix == 12:
+        # Use output of items 6 - 12
+        if ix < 6:
+            continue
+        if ix > 12:
             break
+            
         # Get the name of the mot cor item	
         name = r['name']
 
@@ -46,4 +52,10 @@ Console
         # Set the CNMF params and add to batch
         cnmf_mod.set_params(params)
         cnmf_mod.add_to_batch_cnmf()
-        
+    
+    # Cleanup the work environment
+    vi._clear_workEnv()
+    
+    # Uncomment the last two lines to start the batch as well
+    #bm.process_batch(start_ix, clear_viewers=True)
+    

@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: kushal
+#
+# @author: kushal
+#
+# Chatzigeorgiou Group
+# Sars International Centre for Marine Molecular Biology
+#
+# GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-Chatzigeorgiou Group
-Sars International Centre for Marine Molecular Biology
-
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-"""
 
 import numpy as np
 from tslearn.cycc import normalized_cc
 from itertools import product
 from ...common.utils import HdfTools
-from typing import List
 # from tslearn.preprocessing import TimeSeriesScalerMeanVariance, TimeSeriesScalerMinMax
 # from sklearn.metrics import pairwise_distances
 
@@ -83,6 +82,14 @@ def get_epsilon(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = Non
 
 
 def get_lag_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndarray:
+    """
+    Get a 2D matrix of lags. Can pass either a 2D array of 1D curves or cross-correlations
+
+    :param curves: 2D array of 1D curves
+    :param ccs:    2D array of 1D cross-correlation functions represented by arrays
+
+    :return: 2D matrix of lag values, shape is [n_curves, n_curves]
+    """
     if ccs is None:
         m = curves.shape[0]
         a = np.zeros((m, m))
@@ -95,6 +102,14 @@ def get_lag_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndar
 
 
 def get_epsilon_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndarray:
+    """
+    Get a 2D matrix of maximas. Can pass either a 2D array of 1D curves or cross-correlations
+
+    :param curves: 2D array of 1D curves
+    :param ccs:    2D array of 1D cross-correlation functions represented by arrays
+
+    :return: 2D matrix of maxima values, shape is [n_curves, n_curves]
+    """
     if ccs is None:
         m = curves.shape[0]
         a = np.zeros((m, m))
@@ -122,18 +137,25 @@ class CC_Data:
         """
         Object for organizing cross-correlation data
 
+        types must be numpy.ndarray to be compatible with hdf5
+
         :param ccs:             array of cross-correlation functions, shape: [n_curves, n_curves, func_length]
+        :type ccs:              np.ndarray
         :param lag_matrix:      the lag matrix, shape: [n_curves, n_curves]
+        :type lag_matrix:       np.ndarray
         :param epsilon_matrix:  the maxima matrix, shape: [n_curves, n_curves]
+        :type epsilon_matrix:   np.ndarray
         :param curve_uuids:     uuids (str representation) for each of the curves, length: n_curves
-        :param labels:          list of labels for each curve, length: n_curves
+        :type curve_uuids:      np.ndarray
+        :param labels:          labels for each curve, length: n_curves
+        :type labels:           np.ndarray
         """
 
-        self.ccs = ccs
-        self.lag_matrix = lag_matrix
-        self.epsilon_matrix = epsilon_matrix
-        self.curve_uuids = curve_uuids
-        self.labels = labels
+        self.ccs = ccs  #: array of cross-correlation functions
+        self.lag_matrix = lag_matrix  #: lag matrix
+        self.epsilon_matrix = epsilon_matrix  #: maxima matrix
+        self.curve_uuids = curve_uuids  #: uuids for each curve
+        self.labels = labels  #: labels for each curve
 
     def get_threshold_matrix(self, matrix_type: str, lag_thr: float, max_thr: float,
                              lag_thr_abs: bool = True) -> np.ndarray:
