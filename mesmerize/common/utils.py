@@ -21,7 +21,7 @@ import json
 import pandas as pd
 from warnings import warn
 from tqdm import tqdm
-
+import traceback
 
 def make_workdir(prefix: str = '') -> str:
     main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
@@ -171,15 +171,19 @@ class HdfTools:
         return (df, metadata)
 
     @staticmethod
-    def save_dict(d: dict, filename: str, group: str):
+    def save_dict(d: dict, filename: str, group: str, raise_type_fail=True):
         """
         Recursively save a dict to an hdf5 group.
         :param d:        dict to save
         :param filename: filename
         :param group:    group name to save the dict to
+        :param raise_type_fail: whether to raise if saving a piece of data fails
         """
+        if os.path.isfile(filename):
+            raise FileExistsError
+
         with h5py.File(filename, 'w') as h5file:
-            HdfTools._dicts_to_group(h5file, f'{group}/', d, raise_meta_fail=True)
+            HdfTools._dicts_to_group(h5file, f'{group}/', d, raise_meta_fail=raise_type_fail)
 
     @staticmethod
     def _dicts_to_group(h5file: h5py.File, path: str, d: dict, raise_meta_fail: bool):
@@ -188,13 +192,16 @@ class HdfTools:
             if isinstance(item, np.ndarray):
 
                 if item.dtype == np.dtype('O'):
-                    msg = f"numpy dtype 'O' for item: {item} not supported not supported by HDF5"
+                    try:
+                        h5file[path + key] = item
+                    except:
+                        msg = f"numpy dtype 'O' for item: {item} not supported by HDF5\n{traceback.format_exc()}"
 
-                    if raise_meta_fail:
-                        raise TypeError(msg)
-                    else:
-                        h5file[path + key] = str(item)
-                        warn(f"{msg}, storing whatever str(obj) returns.")
+                        if raise_meta_fail:
+                            raise TypeError(msg)
+                        else:
+                            h5file[path + key] = str(item)
+                            warn(f"{msg}, storing whatever str(obj) returns.")
 
                 else:
                     h5file[path + key] = item
