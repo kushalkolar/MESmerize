@@ -117,8 +117,8 @@ class CC_Data:
     def __init__(self, ccs: np.ndarray = None,
                  lag_matrix: np.ndarray = None,
                  epsilon_matrix: np.ndarray = None,
-                 curve_uuids: List[str] = None,
-                 labels: List[str] = None):
+                 curve_uuids: np.ndarray = None,
+                 labels: np.ndarray = None):
         """
         Object for organizing cross-correlation data
 
