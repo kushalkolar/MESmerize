@@ -213,6 +213,9 @@ class HdfTools:
             elif isinstance(item, dict):
                 HdfTools._dicts_to_group(h5file, path + key + '/', item, raise_meta_fail)
 
+            elif hasattr(item, '__dict__'):
+                HdfTools._dicts_to_group(h5file, path + key + '/', item.__dict__, raise_meta_fail)
+
             else:
                 msg = f"{type(item)} for item: {item} not supported not supported by HDF5"
 
