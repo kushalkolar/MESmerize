@@ -195,6 +195,7 @@ class HdfTools:
                     # see if h5py is ok with it
                     try:
                         h5file[path + key] = item
+                        # h5file[path + key].attrs['dtype'] = item.dtype.str
                     except:
                         msg = f"numpy dtype 'O' for item: {item} not supported by HDF5\n{traceback.format_exc()}"
 
@@ -207,10 +208,12 @@ class HdfTools:
                 # numpy array of unicode strings
                 elif item.dtype.str.startswith('<U'):
                     h5file[path + key] = item.astype(h5py.special_dtype(vlen=str))
+                    h5file[path + key].attrs['dtype'] = item.dtype.str  # h5py doesn't restore the right dtype for str types
 
                 # other types
                 else:
                     h5file[path + key] = item
+                    # h5file[path + key].attrs['dtype'] = item.dtype.str
 
             # single pieces of data
             elif isinstance(item, (str, bytes, int, float, np.int, np.int8, np.int16, np.int32, np.int64, np.float,
@@ -250,7 +253,10 @@ class HdfTools:
         ans = {}
         for key, item in h5file[path].items():
             if isinstance(item, h5py._hl.dataset.Dataset):
-                ans[key] = item[()]
+                if item.attrs.__contains__('dtype'):
+                    ans[key] = item[()].astype(item.attrs['dtype'])
+                else:
+                    ans[key] = item[()]
             elif isinstance(item, h5py._hl.group.Group):
                 ans[key] = HdfTools._dicts_from_group(h5file, path + key + '/')
         return ans
