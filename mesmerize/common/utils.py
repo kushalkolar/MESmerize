@@ -192,6 +192,7 @@ class HdfTools:
             if isinstance(item, np.ndarray):
 
                 if item.dtype == np.dtype('O'):
+                    # see if h5py is ok with it
                     try:
                         h5file[path + key] = item
                     except:
@@ -203,9 +204,15 @@ class HdfTools:
                             h5file[path + key] = str(item)
                             warn(f"{msg}, storing whatever str(obj) returns.")
 
+                # numpy array of unicode strings
+                elif item.dtype.str.startswith('<U'):
+                    h5file[path + key] = item.astype(h5py.special_dtype(vlen=str))
+
+                # other types
                 else:
                     h5file[path + key] = item
 
+            # single pieces of data
             elif isinstance(item, (str, bytes, int, float, np.int, np.int8, np.int16, np.int32, np.int64, np.float,
                                    np.float16, np.float32, np.float64, np.float128, np.complex)):
                 h5file[path + key] = item
@@ -213,6 +220,7 @@ class HdfTools:
             elif isinstance(item, dict):
                 HdfTools._dicts_to_group(h5file, path + key + '/', item, raise_meta_fail)
 
+            # last resort, try to convert this object to a dict and save its attributes
             elif hasattr(item, '__dict__'):
                 HdfTools._dicts_to_group(h5file, path + key + '/', item.__dict__, raise_meta_fail)
 
