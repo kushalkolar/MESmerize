@@ -15,7 +15,7 @@ def get_centerlike(cluster_members: np.ndarray, metric: Optional[Union[str, call
     :return:                The cluster member which is most centerlike, and its index in the cluster_members array
     """
     if dist_matrix is None:
-        pairwise_distances(cluster_members, metric=metric)
+        dist_matrix = pairwise_distances(cluster_members, metric=metric)
 
     c_ix = np.argmin(np.sum(dist_matrix, axis=0))
     c = cluster_members[c_ix, :]
