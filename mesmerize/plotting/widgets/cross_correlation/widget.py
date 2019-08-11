@@ -237,7 +237,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.cc_data[sample_id] = compute_cc_data(data)
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
             self.cc_data[sample_id].curve_uuids = np.array(list(map(str, sub_df['uuid_curve'].values))) # convert all UUIDs to str representation
-            self.cc_data[sample_id].labels = sub_df[labels_col].values
+            self.cc_data[sample_id].labels = sub_df[labels_col].values.astype(np.unicode)
 
         self.set_current_sample()
 
