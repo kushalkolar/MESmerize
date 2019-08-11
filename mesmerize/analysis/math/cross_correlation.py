@@ -25,6 +25,7 @@ def ncc_c(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     :param y: Input array [y2, y2, x3, ... yn]
 
     :return:  Returns the normalized cross correlation function (as an array) of the two input vector arguments "x" and "y"
+    :rtype: np.ndarray
     """
     cc = normalized_cc(x.reshape(-1, 1), y.reshape(-1, 1))
     return cc
@@ -39,6 +40,7 @@ def get_omega(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None)
     :param cc: cross-correlation function represented as an array [c1, c2, c3, ... cn]
 
     :return: index (x-axis position) of the global maxima of the cross-correlation function
+    :rtype: np.ndarray
     """
     if cc is None:
         cc = ncc_c(x, y)
@@ -55,6 +57,7 @@ def get_lag(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -
     :param cc: cross-correlation function represented as a array [c1, c2, c3, ... cn]
 
     :return: Position of the maxima of the cross-correlation function with respect to middle point of the cross-correlation function
+    :rtype: np.ndarray
     """
     if cc is None:
         w = get_omega(x, y)
@@ -74,6 +77,7 @@ def get_epsilon(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = Non
     :param cc: cross-correlation function represented as an array [c1, c2, c3, ... cn]
 
     :return: Magnitude of the global maxima of the cross-correlationn function
+    :rtype: np.ndarray
     """
     if cc is None:
         cc = ncc_c(x, y)
@@ -89,6 +93,7 @@ def get_lag_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndar
     :param ccs:    2D array of 1D cross-correlation functions represented by arrays
 
     :return: 2D matrix of lag values, shape is [n_curves, n_curves]
+    :rtype: np.ndarray
     """
     if ccs is None:
         m = curves.shape[0]
@@ -109,6 +114,7 @@ def get_epsilon_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.
     :param ccs:    2D array of 1D cross-correlation functions represented by arrays
 
     :return: 2D matrix of maxima values, shape is [n_curves, n_curves]
+    :rtype: np.ndarray
     """
     if ccs is None:
         m = curves.shape[0]
@@ -166,7 +172,9 @@ class CC_Data:
         :param lag_thr:         lag threshold
         :param max_thr:         maxima threshold
         :param lag_thr_abs:     threshold with the absolute value of lag
+
         :return:    the requested matrix with the thresholds applied to it.
+        :rtype: np.ndarray
         """
         # Get lag and maxima matrices
         l = self.lag_matrix
@@ -223,6 +231,9 @@ def compute_cc_data(curves: np.ndarray) -> CC_Data:
     Compute cross-correlation data (cc functions, lag and maxima matrices)
 
     :param curves: input curves as a 2D array, shape is [n_samples, curve_size]
+
+    :return:    cross correlation data for the input curves as a CC_Data instance
+    :rtype: CC_Data
     """
     ccs = compute_ccs(curves)
 
@@ -232,11 +243,13 @@ def compute_cc_data(curves: np.ndarray) -> CC_Data:
     return CC_Data(ccs, l, e)
 
 
-def compute_ccs(a: np.ndarray):
+def compute_ccs(a: np.ndarray) -> np.ndarray:
     """
     Compute cross-correlations between all 1D curves in a 2D input array
 
     :param a: 2D input array of 1D curves, shape is [n_samples, curve_size]
+
+    :rtype: np.ndarray
     """
     n = a.shape[0]
     m = a.shape[1]

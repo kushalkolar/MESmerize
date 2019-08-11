@@ -25,3 +25,12 @@ CC_Data
 .. autoclass:: mesmerize.analysis.math.cross_correlation.CC_Data
     :members: __init__, ccs, lag_matrix, epsilson_matrix, curve_uuids, labels, get_threshold_matrix, from_dict, to_hdf5, from_hdf5
     :member-order: bysource
+
+
+Clustering metrics
+==================
+
+.. automodule:: mesmerize.analysis.clustering_metrics
+    :members:
+    :member-order: bysource
+    
