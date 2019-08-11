@@ -10,7 +10,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtWidgets
-from .compute_cc import compute_cc_data, CC_Data
+from ....analysis.math.cross_correlation import compute_cc_data, CC_Data
 from .control_widget_pytemplate import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
@@ -19,6 +19,8 @@ import numpy as np
 from ....pyqtgraphCore import PlotDataItem, mkPen
 from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColor
 import pandas as pd
+from ....common.qdialogs import *
+from ....common.utils import HdfTools
 
 
 class ControlWidget(QtWidgets.QWidget):
@@ -58,6 +60,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.graphicsViewCurve2.addItem(self.curve_plot_2)
 
         self.control_widget.ui.pushButtonComputeAllData.clicked.connect(self.compute_dataframe)
+        self.control_widget.ui.pushButtonExportAllData.clicked.connect(self.export_data)
 
         self.control_widget.ui.radioButtonMaxima.clicked.connect(self.set_heatmap)
         self.control_widget.ui.radioButtonLag.clicked.connect(self.set_heatmap)
@@ -233,6 +236,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
             self.cc_data[sample_id] = compute_cc_data(data)
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
+            self.cc_data[sample_id].curve_uuids = list(map(str, sub_df['uuid_curve'].tolist())) # convert all UUIDs to str representation
             self.cc_data[sample_id].labels = sub_df[labels_col].tolist()
 
         self.set_current_sample()
+
+    @use_save_file_dialog('Save file as', None, ['.hdf5'])
+    @present_exceptions()
+    def export_data(self, path, *args, **kwargs):
+        HdfTools.save_dict(self.cc_data, path, group='cross_corr_data')
