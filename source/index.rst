@@ -16,6 +16,7 @@ Welcome to Mesmerize's documentation!
 	./Overview
 	./user_guides/installation
 	./user_guides/faq
+	./citation_guide
 
 .. toctree::
 	:maxdepth: 1
@@ -83,6 +84,7 @@ Welcome to Mesmerize's documentation!
 	./api_reference/viewer_modules/roi_manager
 	./api_reference/viewer_modules/stimulus_mapping
 	./api_reference/Analysis_data_types
+	./api_reference/analysis
 	./api_reference/plotting/widgets/bases
 	./api_reference/plotting/widgets/heatmap
 	./api_reference/plotting/widgets/kshape
