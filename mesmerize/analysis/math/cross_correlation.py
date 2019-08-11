@@ -171,17 +171,6 @@ class CC_Data:
 
         return a
 
-    def to_dict(self) -> dict:
-        """Save the data as a dict, useful for export"""
-        d = {'ccs': self.ccs,
-             'lag_matrix': self.lag_matrix,
-             'epsilon_matrix': self.epsilon_matrix,
-             'curve_uuids': self.curve_uuids,
-             'labels': self.labels
-             }
-
-        return d
-
     @classmethod
     def from_dict(cls, d: dict):
         """Load data from a dict"""
@@ -193,8 +182,8 @@ class CC_Data:
 
         :param path: path to save the hdf5 file to, file must not exist.
         """
-        d = self.to_dict()
-        HdfTools.save_dict(d, path, 'cross_corr_data')
+
+        HdfTools.save_dict(self.__dict__, path, 'cross_corr_data')
 
     @classmethod
     def from_hdf5(cls, path: str):
