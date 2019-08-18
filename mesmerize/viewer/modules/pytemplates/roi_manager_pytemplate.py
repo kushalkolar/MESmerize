@@ -93,7 +93,7 @@ class Ui_DockWidget(object):
         self.horizontalSliderSpotSize.setMinimum(1)
         self.horizontalSliderSpotSize.setMaximum(20)
         self.horizontalSliderSpotSize.setPageStep(1)
-        self.horizontalSliderSpotSize.setProperty("value", 7)
+        self.horizontalSliderSpotSize.setProperty("value", 1)
         self.horizontalSliderSpotSize.setOrientation(QtCore.Qt.Horizontal)
         self.horizontalSliderSpotSize.setObjectName("horizontalSliderSpotSize")
         self.gridLayout.addWidget(self.horizontalSliderSpotSize, 1, 0, 1, 4)
@@ -124,7 +124,7 @@ class Ui_DockWidget(object):
         self.btnSwitchToManualMode.setText(_translate("DockWidget", "Switch to manual mode"))
         self.pushButtonImportFromImageJ.setText(_translate("DockWidget", "Import from ImageJ"))
         self.label_3.setText(_translate("DockWidget", "Spot size"))
-        self.label_4.setText(_translate("DockWidget", "7"))
+        self.label_4.setText(_translate("DockWidget", "1"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabStandard), _translate("DockWidget", "Standard ROIs"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabMetaROI), _translate("DockWidget", "Meta ROIs"))
 
