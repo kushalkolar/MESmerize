@@ -68,6 +68,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.lineEditROITag.sig_key_home.connect(self.img_seq_home)
         self.ui.lineEditROITag.sig_key_end.connect(self.img_seq_end)
 
+        self.ui.horizontalSliderSpotSize.valueChanged.connect(self.set_spot_size)
+
     def eventFilter(self, QObject, QEvent):
         """Set some keyboard shortcuts"""
         if QEvent.type() == QEvent.KeyPress:
@@ -193,3 +195,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           'Could not open the chosen file.\n'
                                           'It might not be an ImageJ ROIs file' + traceback.format_exc())
 
+    def set_spot_size(self, size: int):
+        if not isinstance(self.manager, managers.ManagerCNMFE):
+            return
+
+        self.manager.set_spot_size(size)

@@ -302,3 +302,7 @@ class ManagerCNMFE(AbstractBaseManager):
         """Update idx_components if the user manually delete an ROI"""
         roi = self.roi_list[self.roi_list.current_index]
         self.idx_components = np.delete(self.idx_components, np.where(self.idx_components == roi.cnmf_idx)[0])
+
+    def set_spot_size(self, size: int):
+        for roi in self.roi_list:
+            roi.get_roi_graphics_object().setSize(size)
