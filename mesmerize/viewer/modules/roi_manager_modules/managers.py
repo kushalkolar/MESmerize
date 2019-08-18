@@ -223,7 +223,7 @@ class ManagerCNMFE(AbstractBaseManager):
                 mask = self.cnmA[:, idx_components[ix]].toarray().reshape(dims) > 0
                 mask3d = np.array((mask,) * curve_data.shape[0])
 
-                reg = img.copy()
+                reg = img.copy().astype(np.float32)
                 reg[~mask3d] = np.nan
 
                 c = np.nanmean(reg, axis=(1, 2))
