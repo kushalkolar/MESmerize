@@ -438,7 +438,7 @@ class CNMFROI(BaseROI):
 
     def _create_scatter_plot(self):
         """Create the scatter plot that is used for visualization of the spatial localization"""
-        self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s')
+        self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s', size=1)
 
     def to_state(self) -> dict:
         state = {'roi_xs':      self.roi_xs,
