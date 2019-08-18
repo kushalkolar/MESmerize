@@ -84,7 +84,7 @@ class LoadFile(CtrlNode):
         self._loadNode = True
 
     def file_dialog_trn_file(self):
-        path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
+        path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn, *.ptrn)')
         if path == '':
             return
         try:
