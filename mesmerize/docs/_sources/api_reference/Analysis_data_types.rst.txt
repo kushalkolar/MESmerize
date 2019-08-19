@@ -22,8 +22,8 @@ BaseTransmission
 
 .. _API_Transmission_helper_functions:
 
-Transmission Helper functions
------------------------------
+Helper functions
+================
 
 .. autofunction:: mesmerize.analysis.get_sampling_rate
 

@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
         <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,6 +36,7 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
@@ -90,16 +93,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul>
@@ -122,16 +138,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -193,14 +226,29 @@
            <div itemprop="articleBody">
             
   <h1>All modules for which code is available</h1>
-<ul><li><a href="mesmerize/analysis/data_types.html">mesmerize.analysis.data_types</a></li>
+<ul><li><a href="PyQt5/QtCore.html">PyQt5.QtCore</a></li>
+<li><a href="mesmerize/analysis/clustering_metrics.html">mesmerize.analysis.clustering_metrics</a></li>
+<li><a href="mesmerize/analysis/data_types.html">mesmerize.analysis.data_types</a></li>
+<li><a href="mesmerize/analysis/math/cross_correlation.html">mesmerize.analysis.math.cross_correlation</a></li>
 <li><a href="mesmerize/analysis/utils.html">mesmerize.analysis.utils</a></li>
+<li><a href="mesmerize/plotting/utils.html">mesmerize.plotting.utils</a></li>
+<li><a href="mesmerize/plotting/variants/heatmap.html">mesmerize.plotting.variants.heatmap</a></li>
+<li><a href="mesmerize/plotting/widgets/base.html">mesmerize.plotting.widgets.base</a></li>
 <li><a href="mesmerize/plotting/widgets/datapoint_tracer.html">mesmerize.plotting.widgets.datapoint_tracer</a></li>
+<li><a href="mesmerize/plotting/widgets/heatmap/widget.html">mesmerize.plotting.widgets.heatmap.widget</a></li>
 <li><a href="mesmerize/plotting/widgets/kshape/widget.html">mesmerize.plotting.widgets.kshape.widget</a></li>
+<li><a href="mesmerize/plotting/widgets/proportions/widget.html">mesmerize.plotting.widgets.proportions.widget</a></li>
 <li><a href="mesmerize/viewer/core/common.html">mesmerize.viewer.core.common</a></li>
+<li><a href="mesmerize/viewer/core/data_types.html">mesmerize.viewer.core.data_types</a></li>
 <li><a href="mesmerize/viewer/core/mesfile.html">mesmerize.viewer.core.mesfile</a></li>
 <li><a href="mesmerize/viewer/core/viewer_work_environment.html">mesmerize.viewer.core.viewer_work_environment</a></li>
 <li><a href="mesmerize/viewer/modules/batch_manager.html">mesmerize.viewer.modules.batch_manager</a></li>
+<li><a href="mesmerize/viewer/modules/roi_manager.html">mesmerize.viewer.modules.roi_manager</a></li>
+<li><a href="mesmerize/viewer/modules/roi_manager_modules/managers.html">mesmerize.viewer.modules.roi_manager_modules.managers</a></li>
+<li><a href="mesmerize/viewer/modules/roi_manager_modules/roi_list.html">mesmerize.viewer.modules.roi_manager_modules.roi_list</a></li>
+<li><a href="mesmerize/viewer/modules/roi_manager_modules/roi_types.html">mesmerize.viewer.modules.roi_manager_modules.roi_types</a></li>
+<li><a href="mesmerize/viewer/modules/stimmap_modules/page.html">mesmerize.viewer.modules.stimmap_modules.page</a></li>
+<li><a href="mesmerize/viewer/modules/stimulus_mapping.html">mesmerize.viewer.modules.stimulus_mapping</a></li>
 <li><a href="mesmerize/viewer/modules/tiff_io.html">mesmerize.viewer.modules.tiff_io</a></li>
 </ul>
 
