@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,10 +36,11 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Viewer overview" href="../../viewer/overview.html" />
-    <link rel="prev" title="FAQs" href="../../faq.html" />
+    <link rel="next" title="Project Browser" href="../project_browser/project_browser.html" />
+    <link rel="prev" title="Citation guide" href="../../../citation_guide.html" />
     <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -92,8 +95,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Create a New Project</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#biological-questions">Biological Questions</a></li>
@@ -110,12 +114,24 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul>
@@ -138,16 +154,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -213,13 +246,15 @@
            <div itemprop="articleBody">
             
   <div class="section" id="create-a-new-project">
-<h1>Create a New Project<a class="headerlink" href="#create-a-new-project" title="Permalink to this headline">¶</a></h1>
+<span id="createnewproject"></span><h1>Create a New Project<a class="headerlink" href="#create-a-new-project" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="biological-questions">
 <h2>Biological Questions<a class="headerlink" href="#biological-questions" title="Permalink to this headline">¶</a></h2>
 <p><strong>Before you create a new Mesmerize Project you must thoroughly think about the biological questions that you are interested in. Here are some thoughts to help you:</strong></p>
 <blockquote>
 <div><ul>
 <li><p class="first">The effects of different types of temporary stimulation? Such as poking or odors?</p>
+</li>
+<li><p class="first">Are you interested in neuronal activity during specific behavioral periods?</p>
 </li>
 <li><p class="first">Differences in calcium dynamics between different anatomical regions?</p>
 </li>
@@ -242,25 +277,24 @@
 <hr class="docutils" />
 <div class="section" id="new-project">
 <h2>New Project<a class="headerlink" href="#new-project" title="Permalink to this headline">¶</a></h2>
-<p>To create a new project click <strong>New Project</strong> in the welcome window.</p>
-<img alt="../../../_images/welcome_window1.png" src="../../../_images/welcome_window1.png" />
-<p>Choose a location to store your project.</p>
-<img alt="../../../_images/1.png" src="../../../_images/1.png" />
-<p>Choose a name for your project. This will create a directory within the location you have selected above using the name that you enter here. You can change the name of this project later.</p>
-<p><img alt="2png" src="../../../_images/2.png" /> <img alt="3png" src="../../../_images/3.png" /></p>
+<p>To create a new project click <strong>New Project</strong> in the <a class="reference internal" href="../../general/misc.html#welcomewindow"><span class="std std-ref">Welcome Window</span></a>. You will then be prompted to choose a location and a name for the project. This will create a directory with the chosen name in the location you previously selected.</p>
 </div>
 <div class="section" id="project-configuration">
 <span id="id1"></span><h2>Project Configuration<a class="headerlink" href="#project-configuration" title="Permalink to this headline">¶</a></h2>
 <p>After setting a project name you must configure it. This is where your biological questions of interest are important. You can change your project configuration later, but it is most time efficient if you enter all your categories of interest now.</p>
+<img alt="../../../_images/4.png" src="../../../_images/4.png" />
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">It’s best practice to restart Mesmerize whenever you change the project configuration.</p>
+<p class="last">Restart Mesmerize whenever you change the project configuration.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you have Samples in your project and you change the project configuration at a later date to add new columns, all existing rows in your project DataFrame are labelled as “untagged” for the new columns.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="../../viewer/add_to_project.html#add-to-project"><span class="std std-ref">Add To Project Guide</span></a> <strong>to understand how the project configuration relates to the addition of data samples to your project</strong></p>
 </div>
-<img alt="../../../_images/4.png" src="../../../_images/4.png" />
 <div class="section" id="categorical-data-columns">
 <h3>Categorical Data Columns<a class="headerlink" href="#categorical-data-columns" title="Permalink to this headline">¶</a></h3>
 <p><strong>Mesmerize allows you to create three main different types of categorical data columns (for the project DataFrame), and an unlimited number of each type. These categorical data columns allow you to group your data during analysis, and therefore perform comparisons between experimental groups. In essense, these categorical data columns form scaffold with which you can create your experimental groups during analysis.</strong></p>
@@ -269,7 +303,7 @@
 <p class="last">You can change the project configuration at any point in the future by adding new columns or changing the visible/hidden columns.</p>
 </div>
 <div class="section" id="roi-type-columns">
-<h4>ROI Type Columns<a class="headerlink" href="#roi-type-columns" title="Permalink to this headline">¶</a></h4>
+<span id="roitypecolumns"></span><h4>ROI Type Columns<a class="headerlink" href="#roi-type-columns" title="Permalink to this headline">¶</a></h4>
 <p>Create ROI-bound <em>categories</em> with which you want to group your data. Enter the desired name for the category and click <strong>Add</strong>. Here are some examples:</p>
 <blockquote>
 <div><ul class="simple">
@@ -280,19 +314,19 @@
 <img alt="../../../_images/5.png" src="../../../_images/5.png" />
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><strong>&lt;link here&gt; *ROI Manager guide* to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.</strong></p>
+<p class="last"><a class="reference internal" href="../../viewer/modules/roi_manager.html#roimanager"><span class="std std-ref">ROI Manager</span></a> to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.</p>
 </div>
 </div>
 <div class="section" id="stimulus-type-columns">
-<h4>Stimulus Type Columns<a class="headerlink" href="#stimulus-type-columns" title="Permalink to this headline">¶</a></h4>
-<p>If you’re interested in temporally mapping stimulus information to your traces you can add a “Stimulus Type column”. These are only for when you are applying a stimuli that are <strong>temporary and do not span the entire length of the video.</strong></p>
+<span id="stimulustypecolums"></span><h4>Stimulus Type Columns<a class="headerlink" href="#stimulus-type-columns" title="Permalink to this headline">¶</a></h4>
+<p>If you’re interested in mapping temporal information to your traces, such as stimuli or behavioral periods, add a “Stimulus Type column” for each type. This is only for temporary stimulation or behavioral periods that do not span the entire length of the video.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><strong>&lt;link here&gt; Stimulus Mapping guide, to understand how stimuli can be labelled.</strong></p>
 </div>
 </div>
 <div class="section" id="custom-columns">
-<h4>Custom Columns<a class="headerlink" href="#custom-columns" title="Permalink to this headline">¶</a></h4>
+<span id="customcolumns"></span><h4>Custom Columns<a class="headerlink" href="#custom-columns" title="Permalink to this headline">¶</a></h4>
 <p>Here you can create categories to tag any other piece of useful information to each Sample. i.e. to the entire video recording. For example:</p>
 <blockquote>
 <div><ul class="simple">
@@ -314,8 +348,17 @@
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="../../viewer/add_to_project.html#add-to-project"><span class="std std-ref">Add to Project guide</span></a></p>
 </div>
-<img alt="../../../_images/add_to_proj.png" src="../../../_images/add_to_proj.png" />
-</div>
+<a class=""
+               data-lightbox="group-be3bb0de-88f6-4350-bec5-92643b179c2c"
+               href="../../../_images/add_to_proj1.png"
+               title=""
+               data-title=""
+               ><img src="../../../_images/add_to_proj1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a></div>
 </div>
 <hr class="docutils" />
 <div class="section" id="visible-hidden-in-project-browser">
@@ -323,7 +366,7 @@
 <p>You can drag and drop items (column names) between these two lists to set which ones are visible in the Project Browser. This is just to avoid clutter.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">&lt;link here&gt; Project Browser guide</p>
+<p class="last"><a class="reference internal" href="../project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a></p>
 </div>
 </div>
 </div>
@@ -337,10 +380,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../viewer/overview.html" class="btn btn-neutral float-right" title="Viewer overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../project_browser/project_browser.html" class="btn btn-neutral float-right" title="Project Browser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../../faq.html" class="btn btn-neutral float-left" title="FAQs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../../../citation_guide.html" class="btn btn-neutral float-left" title="Citation guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -3,12 +3,14 @@
 Proportions
 ***********
 
+:ref:`API Reference <API_Proportions>`
+
 .. note::
 	:ref:`This plot can be saved in an interactive form <save_ptrn>`
 
 Compare proportions of categorical variables between different groups using bar charts.
 
-.. image:: ./proportions.png
+.. thumbnail:: ./proportions.png
 
 Parameters
 ----------

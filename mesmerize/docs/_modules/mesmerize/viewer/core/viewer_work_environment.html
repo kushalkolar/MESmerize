@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -34,6 +36,7 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
@@ -90,16 +93,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul>
@@ -122,16 +138,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -222,6 +255,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
+
 <div class="viewcode-block" id="ViewerWorkEnv"><a class="viewcode-back" href="../../../../api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv">[docs]</a><span class="k">class</span> <span class="nc">ViewerWorkEnv</span><span class="p">:</span>
 <div class="viewcode-block" id="ViewerWorkEnv.__init__"><a class="viewcode-back" href="../../../../api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgdata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_id</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">UUID</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">meta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stim_maps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">roi_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">roi_states</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comments</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">origin_file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -251,29 +285,29 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">imgdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1">#: Return True if the work environment is empty</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span> <span class="o">=</span> <span class="n">imgdata</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="p">,</span> <span class="n">ImgData</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">()</span>  <span class="c1">#: ImgData instance</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span>
 
         <span class="k">if</span> <span class="n">history_trace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">history_trace</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history_trace</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1">#: history log</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">history_trace</span> <span class="o">=</span> <span class="n">history_trace</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span> <span class="o">=</span> <span class="n">stim_maps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span> <span class="o">=</span> <span class="n">stim_maps</span>  <span class="c1">#: Stimulus maps</span>
 
         <span class="k">if</span> <span class="s1">&#39;stimMaps&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stim_maps</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;stimMaps&#39;</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample_id</span> <span class="o">=</span> <span class="n">sample_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_id</span> <span class="o">=</span> <span class="n">sample_id</span>  <span class="c1">#: SampleID, if opened from a project Sample</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="o">=</span> <span class="n">roi_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="o">=</span> <span class="n">roi_manager</span>  <span class="c1">#: reference to the back-end ROI Manager that is currently in use</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">changed_items</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span> <span class="o">=</span> <span class="n">roi_states</span>
@@ -295,7 +329,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">misc</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_UUID</span> <span class="o">=</span> <span class="n">UUID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_UUID</span> <span class="o">=</span> <span class="n">UUID</span>  <span class="c1">#: UUID, if opened from a project Sample refers to the ImgUUID</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_saved</span> <span class="o">=</span> <span class="kc">True</span></div>
 
@@ -319,7 +353,8 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;UUID is not of type uuid.UUID. Something went wrong. You should not modify the UUID&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_UUID</span>
 
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ViewerWorkEnv.clear"><a class="viewcode-back" href="../../../../api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleanup of the work environment&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isEmpty</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imgdata</span> <span class="o">=</span> <span class="kc">None</span>
@@ -331,7 +366,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">origin_file</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saved</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">changed_items</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Work environment dumped!&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Work environment dumped!&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">restore_rois_from_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_states</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
@@ -575,6 +610,8 @@
 
 <div class="viewcode-block" id="ViewerWorkEnv.to_pandas"><a class="viewcode-back" href="../../../../api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.to_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">modify_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Used for saving the work environment as a project Sample.</span>
+
 <span class="sd">        :param      proj_path:      Root path of the current project</span>
 <span class="sd">        :param      modify_options:</span>
 <span class="sd">        :return:    list of dicts that each correspond to a single curve that can be appended</span>

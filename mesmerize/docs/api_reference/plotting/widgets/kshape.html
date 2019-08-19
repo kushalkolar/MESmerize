@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,9 +36,11 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="prev" title="Data types used for analysis" href="../../Analysis_data_types.html" />
+    <link rel="next" title="Proportions" href="proportions.html" />
+    <link rel="prev" title="Heatmap" href="heatmap.html" />
     <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -91,16 +95,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul>
@@ -123,16 +140,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heatmap.html">Heatmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -202,7 +236,21 @@
 <dl class="class">
 <dt id="mesmerize.plotting.KShapeWidget">
 <em class="property">class </em><code class="descclassname">mesmerize.plotting.</code><code class="descname">KShapeWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapeWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.KShapeWidget" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="bases.html#mesmerize.plotting.widgets.base.BasePlotWidget" title="mesmerize.plotting.widgets.base.BasePlotWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.plotting.widgets.base.BasePlotWidget</span></code></a></p>
+<p>User-end KShape widget</p>
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.sig_output_changed">
+<code class="descname">sig_output_changed</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.sig_output_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits output Transmission containing cluster labels</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.drop_opts">
+<code class="descname">drop_opts</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.drop_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unused by this plot widget</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="mesmerize.plotting.KShapeWidget.input_arrays">
 <code class="descname">input_arrays</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.input_arrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>The input arrays for clustering</p>
@@ -210,7 +258,9 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2D array, [num_samples, padded_peak_curve_length]</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2D array, shape is [num_samples, padded_peak_curve_length]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
 </tr>
 </tbody>
 </table>
@@ -225,7 +275,8 @@
 <dl class="attribute">
 <dt id="mesmerize.plotting.KShapeWidget.n_clusters">
 <code class="descname">n_clusters</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.n_clusters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number of clusters</p>
+<dd><p>Number of clusters
+:rtype: int</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -237,6 +288,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Training data as a 2D array, [num_samples, padded_peak_curve_length]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
 </tr>
 </tbody>
 </table>
@@ -252,8 +305,16 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">1D array of cluster labels that correspond to the input_data</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.KShapeWidget.cluster_centers">
+<code class="descname">cluster_centers</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.cluster_centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cluster centroids</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -274,6 +335,14 @@
 <dt id="mesmerize.plotting.KShapeWidget.params">
 <code class="descname">params</code><a class="headerlink" href="#mesmerize.plotting.KShapeWidget.params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parameters dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -323,6 +392,59 @@ for easier visualization.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot">
+<em class="property">class </em><code class="descclassname">mesmerize.plotting.widgets.kshape.widget.</code><code class="descname">KShapeMeansPlot</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapeMeansPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.pyqtgraphCore.widgets.MatplotlibWidget.MatplotlibWidget</span></code></p>
+<p>Means plots grouped by cluster membership</p>
+<dl class="attribute">
+<dt id="mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.axs">
+<code class="descname">axs</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.axs" title="Permalink to this definition">¶</a></dt>
+<dd><p>array of axis objects used for drawing the means plots, shape is [nrows, ncols]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.set_plots">
+<code class="descname">set_plots</code><span class="sig-paren">(</span><em>input_arrays: numpy.ndarray</em>, <em>n_clusters: int</em>, <em>y_pred: numpy.ndarray</em>, <em>xzero_pos: str</em>, <em>error_band</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapeMeansPlot.set_plots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.set_plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the subplots</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_arrays</strong> – padded input arrays (2D),  shape is [num_samples, padded_peak_curve_length]</li>
+<li><strong>n_clusters</strong> – number of clusters</li>
+<li><strong>y_pred</strong> – cluster predictions (labels)</li>
+<li><strong>xzero_pos</strong> – set the zero position as the ‘zero’ position of the input array or the ‘maxima’ of the input array</li>
+<li><strong>error_band</strong> – Type of error band to show, one of either ‘ci’ or ‘std’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="mesmerize.plotting.widgets.kshape.widget.KShapePlot">
+<em class="property">class </em><code class="descclassname">mesmerize.plotting.widgets.kshape.widget.</code><code class="descname">KShapePlot</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/kshape/widget.html#KShapePlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.widgets.kshape.widget.KShapePlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDockWidget</span></code></p>
+<p>Curves plots, showing a sample of individual curves from a single cluster</p>
+<dl class="attribute">
+<dt id="mesmerize.plotting.widgets.kshape.widget.KShapePlot.ax_curves">
+<code class="descname">ax_curves</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.plotting.widgets.kshape.widget.KShapePlot.ax_curves" title="Permalink to this definition">¶</a></dt>
+<dd><p>The axis on which the curves are drawn</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.widgets.kshape.widget.KShapePlot.plot">
+<code class="descname">plot</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.plotting.widgets.kshape.widget.KShapePlot.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>MatplotlibWidget() instancehu</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -333,8 +455,10 @@ for easier visualization.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="proportions.html" class="btn btn-neutral float-right" title="Proportions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="../../Analysis_data_types.html" class="btn btn-neutral float-left" title="Data types used for analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="heatmap.html" class="btn btn-neutral float-left" title="Heatmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
