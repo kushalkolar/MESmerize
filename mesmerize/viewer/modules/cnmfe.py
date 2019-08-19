@@ -57,7 +57,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'min_pnr':         self.ui.spinBoxMinPNR.value(),
              'min_SNR':         self.ui.spinBoxMinSNR.value(),
              'r_values_min':    self.ui.doubleSpinBoxRValuesMin.value(),
-             'decay_time':      self.ui.spinBoxDecayTime.value(),
+             'decay_time':      self.ui.doubleSpinBoxDecayTime.value(),
              'rf':              self.ui.spinBoxRf.value(),
              'stride':          self.ui.spinBoxOverlap.value(),
              'gnb':             self.ui.spinBoxGnb.value(),
