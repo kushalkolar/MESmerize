@@ -57,7 +57,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'min_pnr':         self.ui.spinBoxMinPNR.value(),
              'min_SNR':         self.ui.spinBoxMinSNR.value(),
              'r_values_min':    self.ui.doubleSpinBoxRValuesMin.value(),
-             'decay_time':      self.ui.spinBoxDecayTime.value(),
+             'decay_time':      self.ui.doubleSpinBoxDecayTime.value(),
              'rf':              self.ui.spinBoxRf.value(),
              'stride':          self.ui.spinBoxOverlap.value(),
              'gnb':             self.ui.spinBoxGnb.value(),
@@ -76,7 +76,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             d = self.get_params()
             json.dump(d, f)
 
-    @use_open_file_dialog('Open CNMFE parameters file', None, ['.json'])
+    @use_open_file_dialog('Open CNMFE parameters file', None, ['*.json'])
     @present_exceptions('Cannot import parameters', 'Make sure it is a CNMFE parameters file')
     def import_params(self, path, *args, **kwargs):
         with open(path, 'r') as f:

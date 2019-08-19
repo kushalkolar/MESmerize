@@ -15,6 +15,7 @@ from ..core.common import ViewerUtils
 from .pytemplates.cnmf_pytemplate import *
 import json
 from ...common import get_window_manager
+from ...common.qdialogs import *
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -33,12 +34,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # assert isinstance(self.vi.viewer_ref.batch_manager, BatchModuleGui)
 
-    def _make_params_dict(self):
+    @present_exceptions()
+    def get_params(self, *args, **kwargs) -> dict:
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
-            QtWidgets.QMessageBox.warning(self, 'No framerate for current image sequence!',
-                                          'You must set a framerate for the current image sequence before you can '
-                                          'continue!', QtWidgets.QMessageBox.Ok)
-            return None
+            raise KeyError('No framerate for current image sequence!',
+                           'You must set a framerate for the current image sequence. '
+                           'You can set it manually in the console like this:\nget_meta()["fps"] = <framerate>')
 
         history_trace = self.vi.viewer.workEnv.history_trace
         try:
@@ -47,8 +48,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
             bord_px = 0
 
         d = {'Input':           self.ui.comboBoxInput.currentText(),
-             'fr':              self.vi.viewer.workEnv.imgdata.meta['fps'],
-             'bord_px':         bord_px,
              'p':               self.ui.spinBoxP.value(),
              'gnb':             self.ui.spinBoxGnb.value(),
              'merge_thresh':    self.ui.doubleSpinBoxMergeThresh.value(),
@@ -60,54 +59,49 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'rval_thr':        self.ui.doubleSpinBoxRvalThr.value(),
              'cnn_thr':         self.ui.doubleSpinBoxCNNThr.value(),
              'decay_time':      self.ui.spinBoxDecayTime.value(),
-             'frames_window':   self.ui.spinBoxFramesWindow.value(),
-             'quantileMin':     self.ui.spinBoxQuantileMin.value(),
-             'name_cnmf':       self.ui.lineEdName.text()
+             'name_cnmf':       self.ui.lineEdName.text(),
+             'refit':           self.ui.checkBoxRefit.isChecked()
              }
+
+        # Non UI params
+        d = {'fr': self.vi.viewer.workEnv.imgdata.meta['fps'],
+             'bord_px': bord_px,
+             **d}
 
         return d
 
-    def export_params(self):
-        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Parameters', '', '(*.json)')
+    def set_params(self, d: dict):
+        self.ui.spinBoxP.setValue(d['p'])
+        self.ui.spinBoxGnb.setValue(d['gnb'])
+        self.ui.doubleSpinBoxMergeThresh.setValue(d['merge_thresh'])
+        self.ui.spinBoxRf.setValue(d['rf'])
+        self.ui.spinBoxStrideCNMF.setValue(d['stride_cnmf'])
+        self.ui.spinBoxK.setValue(d['k'])
+        self.ui.spinBoxGSig.setValue(d['gSig'])
+        self.ui.doubleSpinBoxMinSNR.setValue(d['min_SNR'])
+        self.ui.doubleSpinBoxRvalThr.setValue(d['rval_thr'])
+        self.ui.doubleSpinBoxCNNThr.setValue(d['cnn_thr'])
+        self.ui.spinBoxDecayTime.setValue(d['decay_time'])
+        self.ui.lineEdName.setText(d['name_cnmf'])
+        self.ui.checkBoxRefit.setChecked(d['refit'])
 
-        if path == '':
-            return
-        if path[0].endswith('.json'):
-            path = path[0]
-        else:
-            path = path[0] + '.json'
-
+    @use_save_file_dialog('Save params file as', None, '.json')
+    def export_params(self, path, args, **kwargs):
         with open(path, 'w') as f:
-            d = self._make_params_dict()
+            d = self.get_params()
             json.dump(d, f)
 
-    def import_params(self):
-        pass
-        # path = QtWidgets.QFileDialog.getOpenFileName(self, 'Import Parameters', '', '(*.json)')
-        # if path == '':
-        #     return
-        # try:
-        #     with open(path, 'r') as f:
-        #         d = json.load(f)
-        #         self.ui.spinBoxGSig.setValue(d['gSig'])
-        #         self.ui.doubleSpinBoxMinCorr.setValue(d['min_corr'])
-        #         self.ui.spinBoxMinPNR.setValue(d['min_pnr'])
-        #         self.ui.doubleSpinBoxRValuesMin.setValue(d['r_values_min'])
-        #         self.ui.spinBoxDecayTime.setValue(d['decay_time'])
-        # except IOError as e:
-        #     QtWidgets.QMessageBox.warning(self, 'File open Error!', 'Could not open the chosen file.\n' + str(e))
-        #     return
-        # except KeyError as e:
-        #     QtWidgets.QMessageBox.warning(self, 'Invalid params file!',
-        #                                   'The chosen file is not a valid CNMF-E params file.\n' + str(e))
+    @use_open_file_dialog('Choose params file', None, ['*.json'])
+    @present_exceptions('Cannot import parameters', 'Make sure it is a CNMF parameters file')
+    def import_params(self, path, *args, **kwargs):
+        with open(path, 'r') as f:
+            d = json.load(f)
+            self.set_params(d)
 
     def add_to_batch_cnmf(self):
         input_workEnv = self.vi.viewer.workEnv
 
-        d = self._make_params_dict()
-
-        if d is None:
-            return
+        d = self.get_params()
 
         name = self.ui.lineEdName.text()
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMF: ' + name + ' to batch...')
@@ -121,7 +115,3 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                )
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')
         self.ui.lineEdName.clear()
-
-    @QtCore.pyqtSlot()
-    def update_available_inputs(self):
-        print('Input changes received in cnmfe module!')

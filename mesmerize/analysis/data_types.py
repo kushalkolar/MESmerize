@@ -29,8 +29,6 @@ from ..common import get_proj_config
 from tqdm import tqdm
 
 
-
-
 class _HistoryTraceExceptions(Exception):
     def __init__(self, msg):
         assert isinstance(msg, str)
@@ -120,7 +118,7 @@ class HistoryTrace:
 
     @property
     def history(self) -> dict:
-        """The actual history trace data that is stored in the structured outlined in the doc string"""
+        """The analysis log that is stored in the structure outlined in the doc string"""
         return self._history
 
     @history.setter
@@ -128,15 +126,21 @@ class HistoryTrace:
         self._history = h
 
     def create_data_block(self, dataframe: pd.DataFrame) -> Tuple[pd.DataFrame, UUID]:
-        """Creates a new UUID, assigns it to the input dataframe by setting the UUID in the _BLOCK_ column"""
+        """
+        Creates a new UUID, assigns it to the input dataframe by setting the UUID in the _BLOCK_ column
+
+        :param dataframe: Assigns a block ID to this entire DataFrame.
+        """
         block_id = uuid4()
-        self.add_data_block(block_id)
+        self._add_data_block(block_id)
         dataframe['_BLOCK_'] = str(block_id)
         return dataframe, block_id
 
-    def add_data_block(self, data_block_id: UUID):
-        """Adds new datablock UUID to the list of datablocks in this instance.
-        Throws exception if UUID already exists."""
+    def _add_data_block(self, data_block_id: UUID):
+        """
+        Adds new datablock UUID to the list of datablocks in this instance.
+        Throws exception if UUID already exists.
+        """
         assert isinstance(data_block_id, UUID)
         if data_block_id in self.data_blocks:
             raise DataBlockAlreadyExists(str(data_block_id))
@@ -146,8 +150,14 @@ class HistoryTrace:
         self.history.update({data_block_id: []})
 
     def add_operation(self, data_block_id: Union[UUID, str], operation: str, parameters: dict):
-        """Add a single operation, that is usually performed by a node, to the history trace.
-        Added to all or specific datablock(s), depending on which datablock(s) the node performed the operation on"""
+        """
+        Add a single operation, that is usually performed by a node, to the history trace.
+        Added to all or specific datablock(s), depending on which datablock(s) the node performed the operation on
+
+        :param data_block_id: data_block_id to log the operation on to. either a UUID or 'all' to append the operation to all data blocks
+        :param operation: name of the operation, usually the same as the name of the node in all lowercase
+        :param parameters: operation parameters.
+        """
         assert isinstance(operation, str)
         assert isinstance(parameters, dict)
 
@@ -190,7 +200,7 @@ class HistoryTrace:
     def get_operations_list(self, data_block_id: Union[UUID, str]) -> list:
         """
         Returns just a simple list of operations in the order that they were performed on the given datablock.
-        To get the operations along with their paramters call get_data_block_history()
+        To get the operations along with their parameters call get_data_block_history()
         """
         data_block_id = self._to_uuid(data_block_id)
 
@@ -223,8 +233,10 @@ class HistoryTrace:
 
     @staticmethod
     def _to_uuid(u: Union[str, UUID]) -> UUID:
-        """If input is a <str> that can be formatted as a UUID, return it as UUID type.
-        If input is a UUID, just returns it."""
+        """
+        If argument 'u' is type <str> that can be formatted as a UUID, return it as UUID type.
+        If argument 'u' is a UUID, just return it.
+        """
         if isinstance(u, UUID):
             return u
         elif isinstance(u, str):
@@ -232,35 +244,68 @@ class HistoryTrace:
         else:
             raise TypeError('Must pass str or UUID')
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """
+        Package the HistoryTrace instance as a dict. Converts all UUIDs to <str> representation for JSON compatibility.
+        """
+
         dbs_str = [str(db) for db in self.data_blocks]
         hist_str = self.get_all_data_blocks_history()
+
         return {'history': hist_str, 'data_blocks': dbs_str}
 
     @staticmethod
     def from_dict(d: dict) -> dict:
+        """
+        Format a dict stored using HistoryTrace.to_dict so that it can be used to create a HistoryTrace instance.
+        Converts all the <str> representations of UUID back to <uuid.UUID> types.
+
+        :param d: dict containing appropriate 'history' and 'datablocks' keys. Must be packaged by HistoryTrace.to_dict()
+        :return: dict formatted so that it can be used to instantiate a HistoryTrace instance recapitulating the HistoryTrace it was packaged from.
+        """
+
         hist = {HistoryTrace._to_uuid(k): v for k, v in d['history'].items()}
         dbs = [HistoryTrace._to_uuid(u) for u in d['data_blocks']]
+
         return {'history': hist, 'data_blocks': dbs}
 
     def to_json(self, path: str):
-        """Save to json file"""
+        """
+        Save HistoryTrace to a JSON file.
+
+        :param path: file path, usually ends with .json
+        """
+
         json.dump(self.to_dict(), open(path, 'w'))
 
     @classmethod
     def from_json(cls, path: str):
-        """Load from json file"""
+        """
+        Instantiate HistoryTrace from JSON file (that was saved using HistoryTrace.to_json)
+
+        :param path: file path, usually ends with .json
+        """
+
         j = json.load(open(path, 'r'))
         j = HistoryTrace.from_dict(j)
+
         return cls(history=j['history'], data_blocks=['data_blocks'])
 
-    def to_pickle(self, path):
-        """Save as pickle"""
+    def to_pickle(self, path: str):
+        """
+        Dump this instance to a pickle
+
+        :param path: file path
+        """
         pickle.dump(self.to_dict(), open(path, 'wb'))
 
     @classmethod
     def from_pickle(cls, path: str):
-        """Load from pickle"""
+        """
+        Load HistoryTrace that was pickled
+
+        :param path: file path
+        """
         p = pickle.load(open(path, 'r'))
         p = HistoryTrace.from_dict(p)
         return cls(history=p['history'], data_blocks=p['data_blocks'])
@@ -270,6 +315,8 @@ class HistoryTrace:
         """
         Merge a list of HistoryTrace instances into one HistoryTrace instance.
         Useful when merging Transmission objects.
+
+        :param history_traces: list of HistoryTrace instances
         """
 
         assert all(isinstance(h, HistoryTrace) for h in history_traces)
@@ -302,7 +349,7 @@ class BaseTransmission:
 
         :param  last_unit:      Current units of the data. Refers to the units of column in last_output
 
-        :param plot_state:      State of a plot, such as data and label columns. Used when saving plots.
+        :param plot_state:      State of a plot, such as data and label columns. Used when saving interactive plots.
 
         :ivar df:               Dataframe instance belonging to a Transmission instance
         :ivar history_trace:    :class: `HistoryTrace` instance
@@ -349,7 +396,7 @@ class BaseTransmission:
 
     def to_dict(self) -> dict:
         """
-        Package Transmission as a dict, useful for pickling
+        Package Transmission as a dict, useful for saving to hdf5 or pickle
         """
         d = {'df':              self.df,
              'history_trace':   self.history_trace.to_dict(),
@@ -361,34 +408,60 @@ class BaseTransmission:
         return d
 
     def to_hickle(self, path):
+        """
+        Save as an hdf5 file using hickle (not recommended, use to_hdf5)
+
+        :param path: file path
+        """
         hickle.dump(self.to_dict(), path)
 
     def to_hdf5(self, path: str):
+        """
+        Save as an hdf5 file. Uses pytables to save the DataFrame an JSON to save the HistoryTrace. See :ref:`HdfTools` for information on the file structure.
+
+        :param path: file path, usually ends in .trn
+        """
         d = self.to_dict()
         df = d.pop('df')
         HdfTools.save_dataframe(path=path, dataframe=df, metadata=d, metadata_method='json')
 
     @classmethod
     def from_hdf5(cls, path: str):
+        """
+        Create Transmission from an hdf5 file. See :ref:`HdfTools` for information on the file structure.
+
+        :param path: file path, usually ends in .trn
+        :return:
+        """
         df, meta = HdfTools.load_dataframe(path)
         return cls(df, **meta)
 
     @classmethod
     def from_hickle(cls, path):
+        """
+        Create Transmission from hdf5 file saved using hickle.
+
+        :param path: file path, usually ends in .trn
+        :return:
+        """
         h = hickle.load(path)
         return cls(**h)
 
     @classmethod
     def from_pickle(cls, path):
         """
-        :param path: Path to the pickle file
+        Load Transmission from a pickle.
+
+        :param path: file path, usually ends in .trn
         """
         p = pickle.load(open(path, 'rb'))
         return cls(**p)
 
     def to_pickle(self, path: str):
         """
-        :param path: Path of where to store pickle
+        Svae Transmission as a pickle
+
+        :param path: file path, usually ends in .trn
         """
         pickle.dump(self.to_dict(), open(path, 'wb'), protocol=4)
 
@@ -398,6 +471,8 @@ class BaseTransmission:
     @staticmethod
     def empty_df(transmission, addCols: list = None) -> pd.DataFrame:
         """
+        Just a helper method to return an empty DataFrame with the same columns
+
         :param transmission: Transmission object that forms the basis
         :param addCols: list of columns to add
 
@@ -414,6 +489,8 @@ class BaseTransmission:
 
     def get_proj_path(self) -> str:
         """
+        Get the project root dir associated to this Transmission.
+
         :return: Root directory of the project
         """
         if self._proj_path is None:
@@ -422,10 +499,13 @@ class BaseTransmission:
 
     def set_proj_path(self, path: str):
         """
-        Set the project path for appending relative paths (stored in the project dataframe) to the various project files.
+        Set the project root dir for this transmission.
 
-        :type path: Root directory of the project
+        Used for appending relative paths (stored in the project DataFrame) to the various project files. For example, this is used by the Datapoint Tracer to find max and std projections of image sequeences.
+
+        :param path: Root directory of the project
         """
+
         path = os.path.abspath(path)
 
         if not os.path.isdir(path + '/images'):
@@ -436,6 +516,10 @@ class BaseTransmission:
         self._proj_path = path
 
     def set_proj_config(self):
+        """
+        Sets some project config related attributes.
+
+        """
         proj_path = self.get_proj_path()
         if proj_path is None:
             raise ValueError('Project path must be set before setting project configuration')
@@ -459,7 +543,7 @@ class Transmission(BaseTransmission):
         """
         :param proj_path: root directory of the project
         :param dataframe: Chosen Child DataFrame from the Mesmerize Project
-        :param sub_dataframe_name: Name of the child dataframe to load
+        :param sub_dataframe_name: Name of the sub DataFrame to load
         :param dataframe_filter_history: Filter history of the child dataframe
 
         """

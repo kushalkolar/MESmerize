@@ -18,8 +18,8 @@ class ExtractStim(CtrlNode):
     uiTemplate = [('data_column', 'combo', {}),
                   ('Stim_Type', 'combo', {}),
                   ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus', 'text': ''}),
-                  ('start_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
-                  ('end_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
+                  ('start_offset', 'doubleSpin', {'min': -999999.0, 'max': 999999.99, 'value': 0, 'step': 1}),
+                  ('end_offset', 'doubleSpin', {'min': -999999.0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
@@ -91,7 +91,7 @@ class ExtractStim(CtrlNode):
 
                 elif zero_pos == 'stim_end':
                     tstart = stim_end
-                    tend = min(tstart + end_offset, len(curve) - 1)
+                    tend = min(stim_end + end_offset, len(curve) - 1)
 
                 elif zero_pos == 'stim_center':
                     tstart = int(((stim_start + stim_end) / 2)) + start_offset
@@ -102,8 +102,8 @@ class ExtractStim(CtrlNode):
                 stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
 
                 rn['_EXTRACT_STIM'] = stim_extract
-                rn['_STIM_TYPE'] = stim_def
-                rn['_STIMULUS'] = stim_tag
+                rn['STIM_TYPE'] = stim_def
+                rn['STIMULUS'] = stim_tag
 
                 df.loc[df.index.size] = rn
 

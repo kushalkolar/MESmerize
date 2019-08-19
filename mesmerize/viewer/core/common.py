@@ -22,11 +22,12 @@ class ViewerUtils:
     def __init__(self, viewer_reference: ImageView):
         """
         Some utility functions for interfacing viewer.core.ViewerWorkEnv with the pyqtgraphCore.ImageView widget
+
         :type viewer_reference: ImageView
         """
         # assert isinstance(viewer_reference, ImageView)
-        self.viewer = viewer_reference
-        self.work_env = self.viewer.workEnv
+        self.viewer = viewer_reference  #: reference to the pyqtgraph ImageView widget instance (viewer)
+        self.work_env = self.viewer.workEnv  #: ViewerWorkEnv instance
         self.roi_manager = None
 
     def update_workEnv(self):

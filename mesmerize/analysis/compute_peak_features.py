@@ -26,9 +26,9 @@ class ComputePeakFeatures:
         q.put({'_pfeature_amplitude_relative': result})
 
     @staticmethod
-    def amplitude_abs(q, pre_peak_baseline: float, ix_peak_abs: int):
+    def amplitude_abs(q, curve_baseline: float, peak_curve: np.ndarray):
         try:
-            result = ix_peak_abs - pre_peak_baseline
+            result = peak_curve.max() - curve_baseline
         except:
             result = np.NaN
         q.put({'_pfeature_amplitude_abs': result})
