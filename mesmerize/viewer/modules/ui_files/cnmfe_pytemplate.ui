@@ -392,7 +392,7 @@ If lower more components will be accepted, potentially with worse quality</strin
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox">
+       <widget class="QDoubleSpinBox" name="doubleSpinBoxDecayTime">
         <property name="minimum">
          <double>0.100000000000000</double>
         </property>
