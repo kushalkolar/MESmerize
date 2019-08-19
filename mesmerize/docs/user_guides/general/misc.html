@@ -1,0 +1,279 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Consoles &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Viewer Core" href="../../api_reference/Viewer_data_types.html" />
+    <link rel="prev" title="Simple Plot" href="../plots/simple_plot.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#plot-navbar">Plot Navbar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Consoles</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user_guides/general/misc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="consoles">
+<span id="consoleoverview"></span><h1>Consoles<a class="headerlink" href="#consoles" title="Permalink to this headline">¶</a></h1>
+<p>A Python console is embedded in many parts of Mesmerize. You can use it to perform very specific operations more quickly than with a GUI, save an analysis object in between something, format plots, etc.</p>
+<p>The console is accessible in many windows through View -&gt; Console. The namespace of the console is usually the same as that of the window that it is embedded in (the instance is usually named as “this”). A list of useful object references and helper functions are listed when you open most consoles.</p>
+<p>You can run entire scripts within the console. You can also use import statements to import libraries that you have in your Python environment.</p>
+<p>Keyboard controls:</p>
+<p><strong>Execute:</strong> Shift + Enter</p>
+<p><strong>New line:</strong> Enter</p>
+<p><strong>Scroll up through history</strong>: Page Up</p>
+<p><strong>Scroll down through history:</strong> Page Down</p>
+<p>The history is stored in ~/.mesmerize</p>
+</div>
+<div class="section" id="saving-plots">
+<span id="save-ptrn"></span><h1>Saving plots<a class="headerlink" href="#saving-plots" title="Permalink to this headline">¶</a></h1>
+<p>Some plots allow you to save them in an interactive form, along with the plot data and the plot state as a “.ptrn” file. If you save the file in the “plots” directory of your project it will be listed in the <span class="xref std std-ref">WelcomeWindow</span> when you open your project.</p>
+<p>This is currently possible with the following plots: <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a>, <a class="reference internal" href="../plots/kshape.html#plot-kshape"><span class="std std-ref">KShape</span></a> and <a class="reference internal" href="../plots/proportions.html#plot-proportions"><span class="std std-ref">Proportions</span></a>.</p>
+</div>
+<div class="section" id="plot-navbar">
+<span id="id1"></span><h1>Plot Navbar<a class="headerlink" href="#plot-navbar" title="Permalink to this headline">¶</a></h1>
+<p>Many plots have a navigation toolbar which you can use to zoom, pan, configure plots, and export plots as images.</p>
+<p>Official matplotlib docs about the navigation toolbar: <a class="reference external" href="https://matplotlib.org/2.1.2/users/navigation_toolbar.html">https://matplotlib.org/2.1.2/users/navigation_toolbar.html</a></p>
+<p><strong>Home:</strong> Reset the plot (not applicable for all plots)</p>
+<p><strong>Pan:</strong> Pan the plot</p>
+<p><strong>Zoom:</strong> Zoom in/out a selection using the left/right mouse button respectively</p>
+<p><strong>Subplot-configuration:</strong> Options to adjust spacing, borders, set tight layout.</p>
+<p><strong>Edit axis, curve…:</strong> For some plots. Options for formating x &amp; y axis limits, labels, select line style, color, etc.</p>
+<p><strong>Save:</strong> Export the figure as an image.  <strong>This is not the same as saving an interactive plot, see “Saving Plots” above</strong>.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../api_reference/Viewer_data_types.html" class="btn btn-neutral float-right" title="Viewer Core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../plots/simple_plot.html" class="btn btn-neutral float-left" title="Simple Plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

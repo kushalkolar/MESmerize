@@ -63,9 +63,8 @@ def run(batch_dir: str, UUID: str):
     rval_thr = input_params['rval_thr']
     cnn_thr = input_params['cnn_thr']
     decay_time = input_params['decay_time']
-    frames_window = input_params['frames_window']
-    quantileMin = input_params['quantileMin']
     bord_px = input_params['bord_px']
+    refit = input_params['refit']
 
     print('*********** Creating Process Pool ***********')
     c, dview, np = cm.cluster.setup_cluster(backend='local', n_processes=n_processes, single_thread=False)
@@ -96,29 +95,56 @@ def run(batch_dir: str, UUID: str):
                                              dview=dview, min_SNR=min_SNR,
                                              r_values_min=rval_thr, use_cnn=False,
                                              thresh_cnn_lowest=cnn_thr)
-        A_in, C_in, b_in, f_in = cnm.A[:,
-                                 idx_components], cnm.C[idx_components], cnm.b, cnm.f
-        cnm2 = cnmf.CNMF(n_processes=n_processes, k=A_in.shape[-1], gSig=gSig, p=p, dview=dview,
-                         merge_thresh=merge_thresh, Ain=A_in, Cin=C_in, b_in=b_in,
-                         f_in=f_in, rf=None, stride=None, gnb=gnb,
-                         method_deconvolution='oasis', check_nan=True)
 
-        cnm2 = cnm2.fit(Y)
+        if refit:
 
-        F_dff = detrend_df_f(cnm2.A, cnm2.b, cnm2.C, cnm2.f, YrA=cnm2.YrA,
-                             quantileMin=quantileMin, frames_window=frames_window)
+            A_in, C_in, b_in, f_in = cnm.A[:,
+                                     idx_components], cnm.C[idx_components], cnm.b, cnm.f
 
+            cnm2 = cnmf.CNMF(n_processes=n_processes, k=A_in.shape[-1], gSig=gSig, p=p, dview=dview,
+                             merge_thresh=merge_thresh, Ain=A_in, Cin=C_in, b_in=b_in,
+                             f_in=f_in, rf=None, stride=None, gnb=gnb,
+                             method_deconvolution='oasis', check_nan=True)
+
+            cnm2 = cnm2.fit(Y)
+
+            cnmA = cnm2.A
+            cnmb = cnm2.b
+            cnmC = cnm2.C
+            cnm_f = cnm2.f
+            cnmYrA = cnm2.YrA
+        else:
+            cnmA = cnm.A
+            cnmb = cnm.b
+            cnmC = cnm.C
+            cnm_f = cnm.f
+            cnmYrA = cnm.YrA
 
         pickle.dump(Yr, open(UUID + '_Yr.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.A, open(UUID + '_cnm-A.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.b, open(UUID + '_cnm-b.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.C, open(UUID + '_cnm-C.pikl', 'wb'), protocol=4)
-        pickle.dump(F_dff, open(UUID + '_F_dff.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.f, open(UUID + '_cnm-f.pikl', 'wb'), protocol=4)
+        pickle.dump(cnmA, open(UUID + '_cnm-A.pikl', 'wb'), protocol=4)
+        pickle.dump(cnmb, open(UUID + '_cnm-b.pikl', 'wb'), protocol=4)
+        pickle.dump(cnmC, open(UUID + '_cnm-C.pikl', 'wb'), protocol=4)
+        pickle.dump(cnm_f, open(UUID + '_cnm-f.pikl', 'wb'), protocol=4)
         pickle.dump(idx_components, open(UUID + '_idx_components.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.YrA, open(UUID  + '_cnm-YrA.pikl', 'wb'), protocol=4)
+        pickle.dump(cnmYrA, open(UUID  + '_cnm-YrA.pikl', 'wb'), protocol=4)
         pickle.dump(dims, open(UUID  + '_dims.pikl', 'wb'), protocol=4)
-        output.update({'output': UUID, 'status': 1})
+
+        output_file_list = [UUID + '_cnm-A.pikl',
+                            UUID + '_Yr.pikl',
+                            UUID + '_cnm-b.pikl',
+                            UUID + '_cnm-C.pikl',
+                            UUID + '_cnm-f.pikl',
+                            UUID + '_idx_components.pikl',
+                            UUID + '_cnm-YrA.pikl',
+                            UUID + '_dims.pikl',
+                            UUID + '.out'
+                            ]
+
+        output.update({'output': UUID,
+                       'status': 1,
+                       'output_files': output_file_list
+                       })
+
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
@@ -166,7 +192,6 @@ class Output(QtWidgets.QWidget):
 
         self.cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
         self.cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
-        self.F_dff = pickle.load(open(filename + '_F_dff.pikl', 'rb'))
         self.cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
         self.cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
         self.cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
@@ -220,10 +245,10 @@ class Output(QtWidgets.QWidget):
                 m.start_cnmfe_mode()
                 m.add_all_cnmfe_components(cnmA=self.cnmA,
                                            cnmb=self.cnmb,
-                                           cnmC=self.F_dff,
-                                           cnm_f = self.cnm_f,
-                                           cnmYrA = self.cnmYrA,
-                                           idx_components=self.idx_components,
+                                           cnmC=self.cnmC,
+                                           cnm_f=self.cnm_f,
+                                           cnmYrA=self.cnmYrA,
+                                           idx_components=np.array(range(self.cnmC.shape[0])),
                                            dims=self.dims,
                                            input_params_dict=input_params,
                                            dfof=True)
@@ -233,6 +258,8 @@ class Output(QtWidgets.QWidget):
         else:
             name = ''
         vi.viewer.ui.label_curr_img_seq_name.setText('CNMF of: ' + name)
+
+        self.close()
 
 
 if sys.argv[0] == __file__:

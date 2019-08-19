@@ -19,6 +19,8 @@ class ButterWorth(CtrlNode):
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
+    output_column = '_BUTTERWORTH'
+
     def _func(self, x: np.ndarray, meta: dict):
         N = self.ctrls['order'].value()
         freq = 1 / meta['fps']
@@ -37,8 +39,6 @@ class ButterWorth(CtrlNode):
             return
 
         self.t = transmission.copy()
-
-        self.output_column = '_BUTTERWORTH'
 
         self.order = self.ctrls['order'].value()
         self.freq_divisor = self.ctrls['freq_divisor'].value()
@@ -108,7 +108,7 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
 
 class PowerSpectralDensity(CtrlNode):
     """Return the Power Spectral Density of a curve."""
-    nodeName = 'PowSpectDens'
+    nodeName = 'PowSpecDens'
     uiTemplate = [('data_column', 'combo', {}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
@@ -204,7 +204,7 @@ class Resample(CtrlNode):
 class ScalerMeanVariance(CtrlNode):
     """Scaler for time series. Scales time series so that their mean (resp. standard deviation) in each dimension is mu (resp. std).\n
     See https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html#tslearn.preprocessing.TimeSeriesScalerMeanVariance"""
-    nodeName = 'ScalerMeanVariance'
+    nodeName = 'ScalerMeanVar'
     uiTemplate = [('data_column', 'combo', {}),
                    ('mu', 'doubleSpin', {'value': 0.0, 'step': 0.1, 'toolTip': 'Mean of the output time series'}),
                    ('std', 'doubleSpin', {'value': 1.0, 'step': 1.0, 'toolTip': 'Standard deviation of the output time series'}),
@@ -370,7 +370,7 @@ class iRFFT(CtrlNode):
 
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
-    nodeName = 'Peak_Detect'
+    nodeName = 'PeakDetect'
     uiTemplate = [('data_column', 'combo', {}),
                   ('Fictional_Bases', 'check', {'checked': True}),
                   ('Edit', 'button', {'text': 'Open GUI'}),
@@ -633,7 +633,7 @@ class PeakDetect(CtrlNode):
 class PeakFeatures(CtrlNode):
     """Extract peak features. Use this after the Peak_Detect node. This node does not operate live, you must
     click the "Extract" button to propogate newly computed peak features"""
-    nodeName = 'Peak_Features'
+    nodeName = 'PeakFeatures'
     uiTemplate = [('Compute', 'button', {'text': 'Compute'}),
                   ('Info', 'label', {'text': ''})]
 

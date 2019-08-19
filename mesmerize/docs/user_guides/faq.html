@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>FAQs &mdash; Mesmerize 1 documentation</title>
+  <title>FAQs &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
         <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -35,8 +36,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Viewer classes" href="../api_reference/Viewer_data_types.html" />
-    <link rel="prev" title="Add a Sample to the Project" href="viewer/add_to_project.html" />
+    <link rel="next" title="Create a New Project" href="project_organization/new_project/new_project.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -61,6 +62,10 @@
           
             
             
+              <div class="version">
+                0.1
+              </div>
+            
           
 
           
@@ -82,15 +87,10 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guides:</span></p>
+              <p class="caption"><span class="caption-text">Overview</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="project_organization/new_project/new_project.html">Create a New Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="viewer/overview.html">Viewer overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="viewer/add_to_project.html">Add a Sample to the Project</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FAQs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#rois">ROIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cnmfe">CNMFE</a></li>
@@ -99,10 +99,47 @@
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+<p class="caption"><span class="caption-text">Project:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project_organization/new_project/new_project.html">Create a New Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/misc.html#plot-navbar">Plot Navbar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 </ul>
 
             
@@ -172,18 +209,18 @@
 <div class="section" id="rois">
 <h2>ROIs<a class="headerlink" href="#rois" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><ol class="arabic simple">
+<div><ol class="arabic">
 <li><dl class="first docutils">
 <dt>Can I delete an ROI?</dt>
-<dd><ul class="first last">
-<li>See ROI Manager guide, page 4, line 4.</li>
+<dd><ul class="first last simple">
+<li>See ROI Manager guide. &lt;link here&gt;</li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>I don’t want to delete ROIs but I want to mark them for exclusion in further analysis, how can I do this?</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li>You can do this by creating an ROI type category. See &lt;link here&gt; <em>Add New ROI Type Later</em> which uses this as an example. You can also create this ROI Type category when you create a New Project, not necessarily when you already have a project as the example uses.</li>
 </ul>
 </dd>
@@ -191,15 +228,19 @@
 </li>
 <li><dl class="first docutils">
 <dt>Can I tag more than one piece of information to each ROI?</dt>
-<dd><ul class="first last">
-<li>Yes, add as many ROI Type categories as you want in the Project Configuration (See &lt;link here&gt; <em>New Project Configuration guide</em> and &lt;link here&gt; <em>ROI Manager guide</em>)</li>
+<dd><ul class="first simple">
+<li>Yes, add as many ROI Type categories as you want in the Project Configuration.</li>
 </ul>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="project_organization/new_project/new_project.html#project-configuration"><span class="std std-ref">Project Configuration</span></a> &lt;tagging_rois_link&gt;</p>
+</div>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>I already have a Mesmerize project with many Samples in it. Can I add a new ROI Type category?</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li>Yes see &lt;link here&gt; <em>Add New ROI Type Later guide</em></li>
 </ul>
 </dd>
@@ -207,8 +248,8 @@
 </li>
 <li><dl class="first docutils">
 <dt>Can some samples in my project have ROIs that originate from CNMF(E) and others that are manually drawn?</dt>
-<dd><ul class="first last">
-<li>No.</li>
+<dd><ul class="first last simple">
+<li>This is not recommended.</li>
 </ul>
 </dd>
 </dl>
@@ -300,10 +341,10 @@
 <div class="section" id="project-organization">
 <span id="faq-project-organization"></span><h2>Project Organization<a class="headerlink" href="#project-organization" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><ol class="arabic simple">
+<div><ol class="arabic">
 <li><dl class="first docutils">
 <dt>Can I modify a sample?</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li>See &lt;link here&gt; <em>Modify Sample and Overwrite guide</em>. Double click the Sample ID in the Project Browser to open it in a viewer. You can then make any modifications you want and then go to File -&gt; Add to Project and select the “Save Changes Overwrite” option at the bottom.</li>
 </ul>
 </dd>
@@ -311,7 +352,7 @@
 </li>
 <li><dl class="first docutils">
 <dt>Can I change the SampleID?</dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li>No this is fundamentally impossible due to the underlying data structure.</li>
 <li>A work-around is to open that Sample in the viewer (double click it in the project browser), make any modifications if necessary, then go to File -&gt; Add to Project, enter the the information for this sample and a new Animal ID (and Trial ID if wanted), and then select the option “Add to Project Dataframe” at the bottom and click Proceed. This will now add a new Sample to the project with this Sample ID. You can then delete the previous Sample, see &lt;link here&gt; <em>Project Browser guide</em></li>
 </ul>
@@ -320,20 +361,20 @@
 </li>
 <li><dl class="first docutils">
 <dt>Can I add a new Custom Column, ROI Column, or Stimulus Column to my project when I already have samples in my project?</dt>
-<dd><ul class="first last">
+<dd><ul class="first simple">
 <li>Yes, just modify your Project Configuration using the exact same GUI that you used when creating your project. In the Welcome Window go to Configure -&gt; Project Configuration. Add anything that you want, and then click “Save and Apply”. It’s best to immediately restart Mesmerize whenever you change your project configuration.</li>
 <li>If you are adding a new Custom Column you can enter a “Dataframe replace value”. This will allow you to set a value for all existing Samples in your project for this new column.</li>
 <li>If you do not set a Dataframe replace value it will label all existing as “untagged”</li>
 </ul>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="project_organization/new_project/new_project.html#project-configuration"><span class="std std-ref">Project Configuration</span></a></p>
+</div>
 </dd>
 </dl>
 </li>
 </ol>
 </div></blockquote>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="project_organization/new_project/new_project.html#project-configuration"><span class="std std-ref">Project Configuration</span></a></p>
-</div>
 </div>
 </div>
 
@@ -345,10 +386,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../api_reference/Viewer_data_types.html" class="btn btn-neutral float-right" title="Viewer classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="project_organization/new_project/new_project.html" class="btn btn-neutral float-right" title="Create a New Project" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="viewer/add_to_project.html" class="btn btn-neutral float-left" title="Add a Sample to the Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -103,116 +103,6 @@ class KMeans(CtrlNode):
         return self.t
 
 
-
-
-# class Agglomerative(CtrlNode):
-#     """Recursively merges the pair of clusters that minimally increases a given linkage distance.\n
-#     https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html\n
-#     Output column -> AGG_CLUSTER_<data_column>"""
-#     nodeName = 'Agglomerative'
-#     uiTemplate = [('data_column', 'combo', {}),
-#
-#                   ('n_clusters', 'intSpin',
-#                    {'min': 2, 'max': 999, 'step': 1, 'value': 2,
-#                     'toolTip': 'The number of clusters to find.'}),
-#
-#                   ('affinity', 'combo',
-#                    {'items': ['wasserstein', 'euclidean', 'l1', 'l2', 'manhattan', 'cosine'],
-#                     'tooltip': 'Metric used to compute the linkage.\n'
-#                                'Can be “euclidean”, “l1”, “l2”, “manhattan”, “cosine”, or ‘precomputed’.'
-#                                '\nIf linkage is “ward”, only “euclidean” is accepted'}),
-#
-#                   ('connectivity_matrix', 'combo',
-#                    {'toolTip': 'Dataframe column containing a connectivity matrix.\n'
-#                                'Defines for each sample the neighboring samples following a given structure of the data.\n'
-#                                'This can be a connectivity matrix itself or a callable that transforms the data\n'
-#                                'into a connectivity matrix, such as derived from kneighbors_graph.\n'
-#                                'Default is None, i.e, the hierarchical clustering algorithm is unstructured.'}),
-#
-#                   ('compute_full_tree', 'combo',
-#                    {'items': ['auto', 'True', 'False'],
-#                     'toolTip': 'Stop early the construction of the tree at n_clusters.'
-#                                '\nThis is useful to decrease computation time if the number of clusters is not small compared to the number of samples.\n'
-#                                'This option is useful only when specifying a connectivity matrix.\n'
-#                                'Note also that when varying the number of clusters and using caching, it may be advantageous to compute the full tree.'}),
-#
-#                   ('linkage', 'combo',
-#                    {'items': ['complete', 'average', 'single', 'ward'],
-#                     'toolTIp': 'The linkage criterion determines which distance to use between sets of observation.'
-#                                '\nThe algorithm will merge the pairs of cluster that minimize this criterion.'
-#                                '\nward minimizes the variance of the clusters being merged.\n'
-#                                'average uses the average of the distances of each observation of the two sets.\n'
-#                                'complete or maximum linkage uses the maximum distances between all observations of the two sets.\n'
-#                                'single uses the minimum of the distances between all observations of the two sets.'}),
-#
-#                   ('Apply', 'check', {'checked': False, 'applyBox': True})
-#                   ]
-#
-#     def processData(self, transmission: Transmission):
-#         self.t = transmission
-#         self.set_data_column_combo_box()
-#         columns = transmission.df.columns
-#         self.ctrls['connectivity_matrix'].setItems(['None'] + columns.to_list())
-#
-#         if self.ctrls['Apply'].isChecked() is False:
-#             return
-#
-#         self.t = transmission.copy()
-#
-#         n_clusters = self.ctrls['n_clusters'].value()
-#         affinity = self.ctrls['affinity'].currentText()
-#
-#         connectivity_matrix = self.ctrls['connectivity_matrix'].currentText()
-#         if connectivity_matrix == 'None':
-#             connectivity_matrix = None
-#             connectivity_matrix_col = None
-#         else:
-#             connectivity_matrix_col = connectivity_matrix
-#             connectivity_matrix = np.vstack(self.t.df[connectivity_matrix_col].values)
-#
-#         compute_full_tree = self.ctrls['compute_full_tree'].currentText()
-#         if compute_full_tree == 'True':
-#             compute_full_tree = True
-#         elif compute_full_tree == 'False':
-#             compute_full_tree = False
-#
-#         linkage = self.ctrls['linkage'].currentText()
-#
-#         output_column = 'AGG_CLUSTER_LABEL'
-#
-#         data = np.vstack(self.t.df[self.data_column].values)
-#
-#         if affinity == 'wasserstein':
-#             data = pairwise_distances(data, metric=wasserstein_distance)
-#             distance_metric = 'wasserstein'
-#             affinity = 'precomputed'
-#         else:
-#             distance_metric = affinity
-#
-#         self.clustering = skcluster.AgglomerativeClustering(n_clusters=n_clusters, affinity=affinity,
-#                                                             connectivity=connectivity_matrix,
-#                                                             compute_full_tree=compute_full_tree, linkage=linkage)
-#
-#         self.clustering.fit(data)
-#
-#         self.t.df[output_column] = self.clustering.labels_
-#
-#         params = {'data_column':                    self.data_column,
-#                   'n_clusters':                     n_clusters,
-#                   'affinity':                       affinity,
-#                   'distance_metric':                distance_metric,
-#                   'connectivity_matrix_column':     connectivity_matrix_col,
-#                   'compute_full_tree':              compute_full_tree,
-#                   'linkage':                        linkage,
-#                   'children':                       self.clustering.children_.tolist()
-#                   }
-#
-#         self.t.history_trace.add_operation(data_block_id='all', operation='agglomerative_clustering', parameters=params)
-#         self.t.last_output = output_column
-#
-#         return self.t
-
-
 class LDA(CtrlNode):
     """LDA"""
     nodeName = 'LDA'
@@ -221,22 +111,22 @@ class LDA(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.plot_gui = None
+        self.plot_widget = None
         self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
 
     def process(self, **kwargs):
-        if (self.ctrls['Apply'].isChecked() is False) or self.plot_gui is None:
+        if (self.ctrls['Apply'].isChecked() is False) or self.plot_widget is None:
             return
 
         transmissions = kwargs['In']
 
         transmissions_list = merge_transmissions(transmissions)
 
-        self.plot_gui.update_input_transmissions(transmissions_list)
+        self.plot_widget.update_input_transmissions(transmissions_list)
 
     def _open_plot_gui(self):
-        if self.plot_gui is None:
-            self.plot_gui = LDAPlot(parent=self.parent())
-        self.plot_gui.show()
+        if self.plot_widget is None:
+            self.plot_widget = LDAPlot()
+        self.plot_widget.show()
 
 

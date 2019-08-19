@@ -85,11 +85,15 @@ class BeeswarmPlotWindow(PlotWindow):
         tend = None
 
         if '_pfeature_ix_base_left_abs' in self.dataframe.columns:
-            tstart = self.dataframe[self.dataframe[self.uuid_column] == identifier]['_pfeature_ix_base_left_abs'].item()
+            tstart = self.dataframe[self.dataframe[self.uuid_column] == str(identifier)]['_pfeature_ix_base_left_abs']
+            if isinstance(tstart, pd.Series):
+                tstart = tstart.item()
         if '_pfeature_ix_base_right_abs' in self.dataframe.columns:
-            tend = self.dataframe[self.dataframe[self.uuid_column] == identifier]['_pfeature_ix_base_right_abs'].item()
+            tend = self.dataframe[self.dataframe[self.uuid_column] == str(identifier)]['_pfeature_ix_base_right_abs']
+            if isinstance(tend, pd.Series):
+                tend = tend.item()
 
-        r = self.dataframe[self.dataframe[self.uuid_column] == identifier]
+        r = self.dataframe[self.dataframe[self.uuid_column] == str(identifier)]
 
         if isinstance(r._BLOCK_, pd.Series):
             block_id = r._BLOCK_.item()

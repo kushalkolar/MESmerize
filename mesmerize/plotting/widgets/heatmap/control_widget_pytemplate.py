@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ControlWidget(object):
     def setupUi(self, ControlWidget):
         ControlWidget.setObjectName("ControlWidget")
-        ControlWidget.resize(301, 679)
+        ControlWidget.resize(301, 699)
         self.verticalLayout = QtWidgets.QVBoxLayout(ControlWidget)
         self.verticalLayout.setObjectName("verticalLayout")
         self.label_2 = QtWidgets.QLabel(ControlWidget)
@@ -87,6 +87,16 @@ class Ui_ControlWidget(object):
         self.checkBoxShowStimuli = QtWidgets.QCheckBox(ControlWidget)
         self.checkBoxShowStimuli.setObjectName("checkBoxShowStimuli")
         self.verticalLayout.addWidget(self.checkBoxShowStimuli)
+        self.pushButtonShowHideConsole = QtWidgets.QPushButton(ControlWidget)
+        self.pushButtonShowHideConsole.setMinimumSize(QtCore.QSize(0, 38))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButtonShowHideConsole.setFont(font)
+        self.pushButtonShowHideConsole.setCheckable(True)
+        self.pushButtonShowHideConsole.setObjectName("pushButtonShowHideConsole")
+        self.verticalLayout.addWidget(self.pushButtonShowHideConsole)
 
         self.retranslateUi(ControlWidget)
         QtCore.QMetaObject.connectSlotsByName(ControlWidget)
@@ -104,5 +114,6 @@ class Ui_ControlWidget(object):
         self.pushButtonSave.setText(_translate("ControlWidget", "Save"))
         self.pushButtonLoad.setText(_translate("ControlWidget", "Load"))
         self.checkBoxShowStimuli.setText(_translate("ControlWidget", "Show Stimuli"))
+        self.pushButtonShowHideConsole.setText(_translate("ControlWidget", "Show/Hide Console"))
 
 from ...utils import ColormapListWidget

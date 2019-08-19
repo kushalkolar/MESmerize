@@ -32,7 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.setWindowTitle('Mesmerize - Main Window')
+        self.setWindowTitle('Mesmerize - Welcome Window')
 
         self.window_manager = get_window_manager()
 

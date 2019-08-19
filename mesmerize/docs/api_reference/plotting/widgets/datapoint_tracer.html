@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Datapoint Tracer &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/faq.html">FAQs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kshape.html">KShape</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Datapoint Tracer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/api_reference/plotting/widgets/datapoint_tracer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="datapoint-tracer">
+<span id="api-datapointtracer"></span><h1>Datapoint Tracer<a class="headerlink" href="#datapoint-tracer" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="../../../user_guides/plots/datapoint_tracer.html#datapointtracer"><span class="std std-ref">User guide</span></a></p>
+<dl class="class">
+<dt id="mesmerize.plotting.DatapointTracerWidget">
+<em class="property">class </em><code class="descclassname">mesmerize.plotting.</code><code class="descname">DatapointTracerWidget</code><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/datapoint_tracer.html#DatapointTracerWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.DatapointTracerWidget" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="mesmerize.plotting.DatapointTracerWidget.set_widget">
+<code class="descname">set_widget</code><span class="sig-paren">(</span><em>datapoint_uuid: uuid.UUID</em>, <em>data_column_curve: str</em>, <em>row: pandas.core.series.Series</em>, <em>proj_path: str</em>, <em>history_trace: Optional[list] = None</em>, <em>peak_ix: Optional[int] = None</em>, <em>tstart: Optional[int] = None</em>, <em>tend: Optional[int] = None</em>, <em>roi_color: Union[str</em>, <em>float</em>, <em>int</em>, <em>tuple</em>, <em>None] = 'ff0000'</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/datapoint_tracer.html#DatapointTracerWidget.set_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.DatapointTracerWidget.set_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the widget from the datapoint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>datapoint_uuid</strong> – appropriate UUID for the datapoint (such as uuid_curve or _pfeature_uuid)</li>
+<li><strong>data_column_curve</strong> – data column containing an array to plot</li>
+<li><strong>row</strong> – DataFrame row that corresponds to the datapoint</li>
+<li><strong>proj_path</strong> – root dir of the project the datapoint comes from, used for finding max &amp; std projections</li>
+<li><strong>history_trace</strong> – history trace of the datablock the datapoint comes from</li>
+<li><strong>peak_ix</strong> – Deprecated</li>
+<li><strong>tstart</strong> – lower bounds for drawing <cite>LinearRegionItem</cite></li>
+<li><strong>tend</strong> – upper bounds for drawing <cite>LinearRegionItem</cite></li>
+<li><strong>roi_color</strong> – color for drawing the spatial bounds of the ROI</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.DatapointTracerWidget.set_image">
+<code class="descname">set_image</code><span class="sig-paren">(</span><em>projection: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/datapoint_tracer.html#DatapointTracerWidget.set_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.DatapointTracerWidget.set_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set either the max or std projection image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>projection</strong> – one of either ‘max’ or ‘std’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.DatapointTracerWidget.open_in_viewer">
+<code class="descname">open_in_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/datapoint_tracer.html#DatapointTracerWidget.open_in_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.DatapointTracerWidget.open_in_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the parent Sample of the current datapoint.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -51,7 +51,11 @@
       <widget class="QListWidget" name="listWidget"/>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit"/>
+      <widget class="QLineEdit" name="lineEdit">
+       <property name="placeholderText">
+        <string>Filter</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

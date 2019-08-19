@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDataframe">
@@ -29,7 +29,7 @@
     </property>
     <widget class="QMenu" name="menuSave_current_tab">
      <property name="title">
-      <string>Save current tab</string>
+      <string>&amp;Export current tab</string>
      </property>
      <addaction name="separator"/>
      <addaction name="actionto_pickle_tab"/>
@@ -38,7 +38,7 @@
     </widget>
     <widget class="QMenu" name="menuSave_all_tabs">
      <property name="title">
-      <string>Export root</string>
+      <string>&amp;Export root</string>
      </property>
      <addaction name="actionto_pickle"/>
      <addaction name="actionto_csv"/>
@@ -94,7 +94,7 @@
   </widget>
   <action name="actionDataframe_editor">
    <property name="text">
-    <string>Dataframe editor</string>
+    <string>&amp;Dataframe editor</string>
    </property>
   </action>
   <action name="actionConsole">
@@ -112,12 +112,12 @@
   </action>
   <action name="actionUpdate_current_tab">
    <property name="text">
-    <string>Update current tab</string>
+    <string>Update &amp;current tab</string>
    </property>
   </action>
   <action name="actionUpdate_all_tabs">
    <property name="text">
-    <string>Update all tabs</string>
+    <string>&amp;Update all tabs</string>
    </property>
   </action>
   <action name="actionto_pickle_tab">
@@ -160,12 +160,12 @@
   </action>
   <action name="actionSave_to_project">
    <property name="text">
-    <string>Save to project</string>
+    <string>Save to &amp;project</string>
    </property>
   </action>
   <action name="actionViewCurrent_dataframe">
    <property name="text">
-    <string>Current dataframe</string>
+    <string>Current &amp;dataframe</string>
    </property>
   </action>
  </widget>

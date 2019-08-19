@@ -3,7 +3,7 @@ Create a New Project
 
 Biological Questions
 ====================
-**Before you create a new Mesmerize Project you must thoroughly think about the biological questions that you interested in. Here are some thoughts to help you:**
+**Before you create a new Mesmerize Project you must thoroughly think about the biological questions that you are interested in. Here are some thoughts to help you:**
 
 	- The effects of different types of temporary stimulation? Such as poking or odors?
 
@@ -116,4 +116,3 @@ Visible / Hidden in Project Browser
 You can drag and drop items (column names) between these two lists to set which ones are visible in the Project Browser. This is just to avoid clutter.
 
 .. seealso:: <link here> Project Browser guide
-
