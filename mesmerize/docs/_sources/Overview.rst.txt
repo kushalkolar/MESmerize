@@ -11,7 +11,7 @@ The Viewer
 Opening Image sequences
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Mesmerize is able to work with standard 2D imaging sequences stored as tiff files and also with mes files from Femtonics microscopes. The downstream analysis is the same regardless of the input source once it's in the viewer.
+Mesmerize is able to work with 2D imaging sequences stored as tiff files and also with mes files from Femtonics microscopes. If you have image sequences stored in another format they can also be used if a Python library exists for opening them.
 
 Stimulus mapping
 ^^^^^^^^^^^^^^^^

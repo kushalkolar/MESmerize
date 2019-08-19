@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -34,6 +36,7 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Examples" href="examples.html" />
@@ -92,16 +95,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul class="current">
@@ -148,6 +164,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#xpowery">XpowerY</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#absolutevalue">AbsoluteValue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#logtransform">LogTransform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arraystats">ArrayStats</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#biology">Biology</a><ul>
@@ -188,16 +205,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -751,7 +785,7 @@
 <div class="section" id="signal">
 <span id="nodes-signal"></span><h2>Signal<a class="headerlink" href="#signal" title="Permalink to this headline">¶</a></h2>
 <p><strong>Routine signal processing functions</strong></p>
-<p>I recommend this book by Professor Tom O’Haver if you are unfamiliar with basic signal processing: <a class="reference external" href="https://terpconnect.umd.edu/~toh/spectrum/TOC.html">https://terpconnect.umd.edu/~toh/spectrum/TOC.html</a></p>
+<p>I recommend this book by Tom O’Haver if you are unfamiliar with basic signal processing: <a class="reference external" href="https://terpconnect.umd.edu/~toh/spectrum/TOC.html">https://terpconnect.umd.edu/~toh/spectrum/TOC.html</a></p>
 <div class="section" id="butterworth">
 <span id="node-butterworth"></span><h3>Butterworth<a class="headerlink" href="#butterworth" title="Permalink to this headline">¶</a></h3>
 <blockquote>
@@ -1068,8 +1102,12 @@
 <div class="section" id="peakdetect">
 <span id="node-peakdetect"></span><h3>PeakDetect<a class="headerlink" href="#peakdetect" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Perform Peak Detection using derivatives.</p>
+<div><p>Simple Peak Detection using derivatives. The “Differentiation” chapter of Tom O’Haver’s book has a section on Peak Detection which I recommend reading. <a class="reference external" href="https://terpconnect.umd.edu/~toh/spectrum/TOC.html">https://terpconnect.umd.edu/~toh/spectrum/TOC.html</a></p>
 <p><strong>Output Data Column</strong> <em>(DataFrame)</em>: peaks_bases</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../plots/peak_editor.html#plot-peakeditor"><span class="std std-ref">Peak Editor GUI</span></a></p>
+</div>
 <table border="1" class="docutils">
 <colgroup>
 <col width="21%" />
@@ -1114,6 +1152,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The <em>PB_Input</em> terminal overrides all other terminals. Do not connect inputs to <em>PB_Input</em> and other terminals simultaneously.</p>
+</div>
 <table border="1" class="docutils">
 <colgroup>
 <col width="22%" />
@@ -1432,6 +1474,95 @@
 </tbody>
 </table>
 </div></blockquote>
+</div>
+<div class="section" id="arraystats">
+<h3>ArrayStats<a class="headerlink" href="#arraystats" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Perform a few basic statistical functions.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: Customizable by user entry
+Output data are single numbers, not arrays</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<p>The desired function is applied to each 1D array in the <em>data_column</em> and the output is placed in the Output Data Column.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>function</td>
+<td><p class="first"><em>amin</em>: Return the minimum of the input array</p>
+<div class="line-block">
+<div class="line"><em>amax</em>: Return the maximum of the input array</div>
+</div>
+<div class="line-block">
+<div class="line"><em>nanmin</em>: Return the minimum of the input array, ignore NaNs</div>
+</div>
+<div class="line-block">
+<div class="line"><em>nanmax</em>: Return the maximum of the input array, ignore NaNs</div>
+</div>
+<div class="line-block">
+<div class="line"><em>ptp</em>: Return the range (max - min) of the values of the input array</div>
+</div>
+<div class="line-block">
+<div class="line"><em>median</em>: Return the median of the input array</div>
+</div>
+<div class="line-block">
+<div class="line"><em>mean</em>: Return the mean of the input array</div>
+</div>
+<div class="line-block">
+<div class="line"><em>std</em>: Return the standard deviation of the input array</div>
+</div>
+<div class="line-block">
+<div class="line"><em>var</em>: Return the variance of the input array</div>
+</div>
+<div class="line-block">
+<div class="line"><em>nanmedian</em>: Return the median of the input array, ignore NaNs</div>
+</div>
+<div class="line-block">
+<div class="line"><em>nanmean</em>: Return the mean of the input array, ignore NaNs</div>
+</div>
+<div class="line-block">
+<div class="line"><em>nanstd</em>: Return the standard deviation of the input array, ignore NaNs</div>
+</div>
+<div class="last line-block">
+<div class="line"><em>nanvar</em>: Return the variance of the input array, ignore NaNs</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
 <hr class="docutils" />
 </div>
 </div>
@@ -1461,6 +1592,9 @@
 </tr>
 <tr class="row-even"><td>_EXTRACT_STIM</td>
 <td>The extracted array based on the parameters.</td>
+</tr>
+<tr class="row-odd"><td>uuid_stim</td>
+<td>UUID for the extracted stimulus period</td>
 </tr>
 </tbody>
 </table>

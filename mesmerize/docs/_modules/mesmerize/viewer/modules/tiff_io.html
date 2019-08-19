@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -34,6 +36,7 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
@@ -90,16 +93,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul>
@@ -122,16 +138,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -307,7 +340,10 @@
 
 <span class="sd">        :param tiff_path: path to the tiff file</span>
 <span class="sd">        :param meta_path: path to the json meta data file</span>
-<span class="sd">        :param method: one of &quot;asarray&quot;, &quot;asarray-multi&quot;, or &quot;imread&quot;. &quot;asarray&quot; and &quot;asarray-multi&quot; use :meth:`tifffile.asarray`, &quot;asarray-multi&quot; is for multi-page tiffs, and &quot;imread&quot; uses :meth:`tifffile.imread`</span>
+<span class="sd">        :param method: one of &quot;asarray&quot;, &quot;asarray-multi&quot;, or &quot;imread&quot;</span>
+<span class="sd">                        &quot;asarray&quot; and &quot;asarray-multi&quot; uses :meth:`tifffile.asarray`</span>
+<span class="sd">                        &quot;asarray-multi&quot; is for multi-page tiffs</span>
+<span class="sd">                        &quot;imread&quot; uses :meth:`tifffile.imread`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;Please wait, loading tiff file, this may take a few minutes...&#39;</span><span class="p">)</span>

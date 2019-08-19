@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Stimulus Mapping &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Data types used for analysis" href="../Analysis_data_types.html" />
+    <link rel="prev" title="ROI Manager" href="roi_manager.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Stimulus Mapping</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#modulegui">ModuleGUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#page">Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dataframe-format">DataFrame Format</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Stimulus Mapping</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api_reference/viewer_modules/stimulus_mapping.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="stimulus-mapping">
+<span id="module-stimulusmapping"></span><h1>Stimulus Mapping<a class="headerlink" href="#stimulus-mapping" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="modulegui">
+<h2>ModuleGUI<a class="headerlink" href="#modulegui" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.stimulus_mapping.ModuleGUI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.stimulus_mapping.</code><code class="descname">ModuleGUI</code><span class="sig-paren">(</span><em>parent</em>, <em>viewer</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimulus_mapping.html#ModuleGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimulus_mapping.ModuleGUI" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="mesmerize.viewer.modules.stimulus_mapping.ModuleGUI.maps">
+<code class="descname">maps</code><a class="headerlink" href="#mesmerize.viewer.modules.stimulus_mapping.ModuleGUI.maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of the stimulus maps</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="page">
+<h2>Page<a class="headerlink" href="#page" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.stimmap_modules.page.</code><code class="descname">Page</code><span class="sig-paren">(</span><em>parent</em>, <em>stim_type: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page.set_data">
+<code class="descname">set_data</code><span class="sig-paren">(</span><em>dataframe: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page.set_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the stimulus map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataframe</strong> – DataFrame with the appropriate rows (see add_row())</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page.get_dataframe">
+<code class="descname">get_dataframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page.get_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the stimulus map as a DataFrame</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page.set_units">
+<code class="descname">set_units</code><span class="sig-paren">(</span><em>units: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page.set_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page.set_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the time units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>units</strong> – One of ‘frames’ or ‘seconds’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page.get_units">
+<code class="descname">get_units</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page.get_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page.get_units" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the time units</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page.add_row">
+<code class="descname">add_row</code><span class="sig-paren">(</span><em>pd_series: pandas.core.series.Series = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page.add_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page.add_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a row to the stimulus map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pd_series</strong> – pandas series containing the following: stimulus name, start, end, and color</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page.delete_row">
+<code class="descname">delete_row</code><span class="sig-paren">(</span><em>row: Union[mesmerize.viewer.modules.stimmap_modules.row.Row, int]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page.delete_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page.delete_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a row from the stimulus map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>row</strong> – The Row object to remove or the numerical index of the row</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.stimmap_modules.page.Page.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/stimmap_modules/page.html#Page.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.stimmap_modules.page.Page.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the stimulus map</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="dataframe-format">
+<h2>DataFrame Format<a class="headerlink" href="#dataframe-format" title="Permalink to this headline">¶</a></h2>
+<p><strong>Page.set_data() expects a DataFrame in the following format</strong></p>
+<p><strong>Columns</strong></p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>Stimulus name</td>
+</tr>
+<tr class="row-odd"><td>start</td>
+<td>Start time of stimulus period</td>
+</tr>
+<tr class="row-even"><td>end</td>
+<td>End time of stimulus period</td>
+</tr>
+<tr class="row-odd"><td>color</td>
+<td>Color to display in the viewer curve plot.</td>
+</tr>
+</tbody>
+</table>
+<p>Data types:</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Data type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>name</td>
+<td>str</td>
+</tr>
+<tr class="row-odd"><td>start</td>
+<td>numpy.float64</td>
+</tr>
+<tr class="row-even"><td>end</td>
+<td>numpy.float64</td>
+</tr>
+<tr class="row-odd"><td>color</td>
+<td><p class="first">Tuple in RGBA format</p>
+<div class="line-block">
+<div class="line">(int, int, int, int)</div>
+</div>
+<div class="last line-block">
+<div class="line">Each int must be within the 0 - 255 range</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<p><strong>Example</strong></p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="22%" />
+<col width="25%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">name</th>
+<th class="head">start</th>
+<th class="head">end</th>
+<th class="head">color</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>control</td>
+<td>0.0</td>
+<td>328.0</td>
+<td>(0, 75, 0, 255)</td>
+</tr>
+<tr class="row-odd"><td>stim_A</td>
+<td>328.0</td>
+<td>1156.0</td>
+<td>(0, 0, 125, 255)</td>
+</tr>
+<tr class="row-even"><td>stim_C</td>
+<td>1156.0</td>
+<td>2987.0</td>
+<td>(125, 0, 0, 255)</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Analysis_data_types.html" class="btn btn-neutral float-right" title="Data types used for analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="roi_manager.html" class="btn btn-neutral float-left" title="ROI Manager" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

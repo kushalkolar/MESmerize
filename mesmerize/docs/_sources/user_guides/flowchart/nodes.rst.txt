@@ -335,7 +335,7 @@ Signal
 
 **Routine signal processing functions**
 
-I recommend this book by Professor Tom O'Haver if you are unfamiliar with basic signal processing: https://terpconnect.umd.edu/~toh/spectrum/TOC.html
+I recommend this book by Tom O'Haver if you are unfamiliar with basic signal processing: https://terpconnect.umd.edu/~toh/spectrum/TOC.html
 
 
 .. _node_ButterWorth:
@@ -517,10 +517,11 @@ iRFFT
 PeakDetect
 ^^^^^^^^^^
 
-	Perform Peak Detection using derivatives.
+	Simple Peak Detection using derivatives. The "Differentiation" chapter of Tom O'Haver's book has a section on Peak Detection which I recommend reading. https://terpconnect.umd.edu/~toh/spectrum/TOC.html
 
 	**Output Data Column** *(DataFrame)*: peaks_bases
-
+	
+	.. seealso:: :ref:`Peak Editor GUI <plot_PeakEditor>`
 
 	===================== 	=================
 	Terminal   		Description
@@ -542,6 +543,8 @@ PeakDetect
 					| Useful for visualizing a saved Transmission that has peaks & bases data
 	Out			Transmission with the detected peaks & bases as DataFrames in the output column
 	===================== 	=================
+	
+	.. warning:: The *PB_Input* terminal overrides all other terminals. Do not connect inputs to *PB_Input* and other terminals simultaneously.
 
 
 	===================== 	=================
@@ -716,7 +719,58 @@ LogTransform
 	============ 	=================
 
 
----------------------
+ArrayStats
+^^^^^^^^^^
+
+    Perform a few basic statistical functions.
+    
+    **Output Data Column** *(numerical)*: Customizable by user entry
+    Output data are single numbers, not arrays
+    
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+	
+	The desired function is applied to each 1D array in the *data_column* and the output is placed in the Output Data Column.
+
+	============ 	=================
+	Parameter   	Description
+	============ 	=================
+	data_column	Data column containing numerical arrays
+
+	function		*amin*: Return the minimum of the input array
+
+				| *amax*: Return the maximum of the input array
+
+				| *nanmin*: Return the minimum of the input array, ignore NaNs
+
+				| *nanmax*: Return the maximum of the input array, ignore NaNs
+				
+				| *ptp*: Return the range (max - min) of the values of the input array
+				
+				| *median*: Return the median of the input array
+				
+				| *mean*: Return the mean of the input array
+				
+				| *std*: Return the standard deviation of the input array
+				
+				| *var*: Return the variance of the input array
+				
+				| *nanmedian*: Return the median of the input array, ignore NaNs
+				
+				| *nanmean*: Return the mean of the input array, ignore NaNs
+				
+				| *nanstd*: Return the standard deviation of the input array, ignore NaNs
+				
+				| *nanvar*: Return the variance of the input array, ignore NaNs
+
+	Apply		Process data through this node
+	============ 	=================
+
+--------------------
 
 .. _nodes_Biology:
 
@@ -739,6 +793,7 @@ ExtractStim
 	STIM_TYPE              Stimulus type, corresponds to your :ref:`ProjectConfig`
 	STIMULUS               Name of the stimulus.
 	_EXTRACT_STIM          The extracted array based on the parameters.
+	uuid_stim		  UUID for the extracted stimulus period
 	===================    ========================================
 
 	============         =================

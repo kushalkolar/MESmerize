@@ -8,7 +8,7 @@ The Flowchart is based on the `pyqtgraph flowchart widgets <http://www.pyqtgraph
 
 **Flowchart Window**
 
-.. image:: ./flowchart_overview.png
+.. thumbnail:: ./flowchart_overview.png
 
 **Add node**: Right click -> Add node -> Choose from selection
 
@@ -18,13 +18,13 @@ Click on a node to highlight the Control Widget
 
 **Connecting nodes**: Click on a node terminal and drag to another terminal
 
-**Save the flowchart layout**: Click "Save as..." to save the layout to a new file. You must specify the file extension as ".fc". If you save this file within the "flowchart" directory of your project it will show up in the :ref:`WelcomeWindow` when you open your project.
+**Save the flowchart layout**: Click "Save as..." to save the layout to a new file. You must specify the file extension as ".fc". If you save this file within the :ref:`"flowcharts" directory <ProjectStructure>` of your project it will show up in the :ref:`WelcomeWindow` when you open your project.
 
 	.. note::
 		This does not save the data, use the :ref:`node_Save` node to save data.
 
 	.. warning::
-		There is a weird Qt or pyqtgraph bug that prevents some parameter settings to be saved, and/or for parameter settings to be saved to an existing .fc file. If you're interested take a look at pyqtgraphCore.WidgetGroup. Anyways you shouldn't be using the flowchart layout to save this information, that's what the History Trace in Transmission objects is for.
+		Due to a weird Qt or pyqtgraph bug certain parameter values (such as those in drop-down menus) can't be saved. Similarly, parameters values are lost when you save to an existing .fc file. If you're interested take a look at ``pyqtgraphCore.WidgetGroup``. Anyways you shouldn't be using the flowchart layout to save this information, that's what the History Trace in Transmission objects is for.
 
 **Load an .fc file**: Click the "Load" button.
 
@@ -43,8 +43,8 @@ Almost every node uses a Transmission object for input and output. A Transmissio
 
 	The Transmission DataFrame is created from your :ref:`ProjectDataFrame` (or sub-DataFrame) by the :ref:`node_Load_Proj_DF` node. This initial DataFrame will contain the same columns as your Project DataFrame, and a new column named **_RAW_CURVE**. Each element (row) in the **_RAW_CURVE** column is a 1-D numerical array representing a single raw curve extracted from an ROI. 
 
-	A new column named **_BLOCK_** is also added which contains the `UUID <https://en.wikipedia.org/wiki/Universally_unique_identifier>`_ for logging the analysis history of this newly created block of DataFrame rows, known as a *data block*. This allows you to merge Transmissions (see :ref:`_node_Merge` node) and maintain their independent analysis logs prior to the merge.
-
+	A new column named **_BLOCK_** is also added which contains the `UUID <https://en.wikipedia.org/wiki/Universally_unique_identifier>`_ for logging the analysis history of this newly created block of DataFrame rows, known as a *data block*. This allows you to merge Transmissions (see :ref:`Merge node <node_Merge>`) and maintain their independent analysis logs prior to the merge.
+        
 	**Naming conventions for DataFrame columns according to the data types**
 
 	- *numerical data*: single leading underscore ( _ ). All caps if produced by a flowchart node.
@@ -69,10 +69,10 @@ You have direct access to the data within the nodes through the console in the f
 
 .. seealso:: If you are unfamiliar with the console see the overview on :ref:`ConsoleOverview`
 
-call `get_nodes()` to view a dict of all nodes in the flowchart. You can access the output Transmission in most nodes through the attribute `t`. You can access the transmission dataframe through `t.df`.
+Call ``get_nodes()`` to view a dict of all nodes in the flowchart. You can access the output Transmission in most nodes through the attribute `t`. You can access the transmission dataframe through ``t.df``.
 
 .. seealso:: See the :ref:`Transmission API <API_Transmission>` for more information. Sources for the nodes at mesmerize/pyqtgraphCore/flowchart/library.
 
 **Example, directly accessing DataFrame elements through the flowchart console**
 
-.. image:: ./flowchart_console.png
+.. thumbnail:: ./flowchart_console.png
