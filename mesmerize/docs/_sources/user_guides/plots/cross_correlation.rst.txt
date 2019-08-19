@@ -3,15 +3,15 @@
 Cross Correlation
 *****************
 
-Explore `Cross-correlation functions <https://en.wikipedia.org/wiki/Cross-correlation>`_ of all curves from a sample. Normalized cross-correlations are computed using `tslearn.cycc.normalized_cc`
+Explore `Cross-correlation functions <https://en.wikipedia.org/wiki/Cross-correlation>`_ of all curves from a sample. Normalized cross-correlations are computed using ``tslearn.cycc.normalized_cc``
 
 This is an interactive widget. You can click on the individual cells in the heatmap to view the individual curves, the cross-correlation function of the two curves, and the spatial localization of the ROI that they originate from.
 
-.. image:: ./cross_cor.gif
+.. thumbnail:: ./cross_cor.gif
 
 Layout
 ======
- .. image:: ./cross_correlation_layout.png
+ .. thumbnail:: ./cross_correlation_layout.png
 
 **Left**: Lag or Maxima Matrix (see below) with thresholds applied and visualized as a heatmap. When you click on the individual cells it will open/update the :ref:`DatapointTracer` according to the two curves the cell corresponds to.
 

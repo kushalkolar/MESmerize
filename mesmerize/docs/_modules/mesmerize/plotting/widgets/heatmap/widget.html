@@ -1,0 +1,716 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mesmerize.plotting.widgets.heatmap.widget &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mesmerize.plotting.widgets.heatmap.widget</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mesmerize.plotting.widgets.heatmap.widget</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">@author: kushal</span>
+
+<span class="sd">Chatzigeorgiou Group</span>
+<span class="sd">Sars International Centre for Marine Molecular Biology</span>
+
+<span class="sd">GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="k">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">...variants</span> <span class="k">import</span> <span class="n">Heatmap</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">BasePlotWidget</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">DatapointTracerWidget</span>
+<span class="kn">from</span> <span class="nn">....analysis.data_types</span> <span class="k">import</span> <span class="n">HistoryTrace</span><span class="p">,</span> <span class="n">Transmission</span>
+<span class="kn">from</span> <span class="nn">....analysis</span> <span class="k">import</span> <span class="n">organize_dataframe_columns</span>
+<span class="kn">from</span> <span class="nn">.control_widget_pytemplate</span> <span class="k">import</span> <span class="n">Ui_ControlWidget</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">....common.configuration</span> <span class="k">import</span> <span class="n">console_history_path</span>
+<span class="kn">from</span> <span class="nn">....common.qdialogs</span> <span class="k">import</span> <span class="n">present_exceptions</span>
+<span class="kn">from</span> <span class="nn">....pyqtgraphCore.console</span> <span class="k">import</span> <span class="n">ConsoleWidget</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="k">def</span> <span class="nf">help_func</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">show_info</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Help info&#39;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;all the input array dimensions for the concatenation axis must match exactly&#39;</span><span class="p">):</span>
+        <span class="n">show_info</span><span class="p">(</span><span class="s1">&#39;Make sure that the data under the &quot;Data column&quot; has been spliced.&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Too many colors requested for the chosen cmap&#39;</span><span class="p">):</span>
+        <span class="n">show_info</span><span class="p">(</span><span class="s1">&#39;The chosen categorical labels column can only have a maximum of 20 unique labels.&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="s1">&#39;unhashable type&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+        <span class="n">show_info</span><span class="p">(</span><span class="s1">&#39;One of your selected columns has data type that is incompatible with what you have selected it for&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">HeatmapWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_widget</span> <span class="o">=</span> <span class="n">Heatmap</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">data_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jet&#39;</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">array</span>
+
+        <span class="k">elif</span> <span class="n">dataframe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_column</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;You must pass either a numpy array or dataframe as and argument&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="HeatmapSplitterWidget"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget">[docs]</a><span class="k">class</span> <span class="nc">HeatmapSplitterWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Widget for interactive heatmaps&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="HeatmapSplitterWidget.__init__"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">highlight_mode</span><span class="o">=</span><span class="s1">&#39;row&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param highlight_mode: Interactive mode, one of &#39;row&#39; or &#39;item&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span> <span class="o">=</span> <span class="n">Heatmap</span><span class="p">(</span><span class="n">highlight_mode</span><span class="o">=</span><span class="n">highlight_mode</span><span class="p">)</span>  <span class="c1">#: That plot variant used by this plot widget</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">labelSort</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labelSort</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Sort heatmap according to column:&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labelSort</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labelSort</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_sort_order</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labelSort</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSplitter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">setStretchFactor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="p">)</span>
+        <span class="c1"># self.vlayout.addSpacerItem(QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="p">)</span>
+
+        <span class="c1"># self.plot_widget.signal_row_selection_changed.connect(self.set_current_datapoint)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_column</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_sort_column</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transmission</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_history_trace</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_history_trace</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">add_to_splitter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ui</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ui</span>
+
+    <span class="k">def</span> <span class="nf">_disconnect_comboBoxSort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_sort_order</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_connect_comboBoxSort</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_sort_order</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">merge_dataframes</span><span class="p">(</span><span class="n">dataframes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dataframes</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dataframes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframes</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Must pass a dataframe or list of dataframes&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataframe</span>
+
+<div class="viewcode-block" id="HeatmapSplitterWidget.set_data"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+                 <span class="n">data_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">labels_column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jet&#39;</span><span class="p">,</span>
+                 <span class="n">transmission</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Transmission</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">sort</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">reset_sorting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the data and then set the plot</span>
+
+<span class="sd">        :param dataframes:      list of dataframes or a single DataFrame</span>
+<span class="sd">        :param data_column:     data column of the dataframe that is plotted in the heatmap</span>
+<span class="sd">        :param labels_column:   dataframe column (usually categorical labels) used to generate the y-labels and legend.</span>
+<span class="sd">        :param cmap:            colormap choice</span>
+<span class="sd">        :param transmission:    transmission object that dataframe originates, used to calculate data units if passed</span>
+<span class="sd">        :param sort:            if False, the sort comboBox is ignored</span>
+<span class="sd">        :param reset_sorting:   reset the order of the rows in the heatmap</span>
+<span class="sd">        :param kwargs:          Passed to Heatmap.set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge_dataframes</span><span class="p">(</span><span class="n">dataframes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span> <span class="o">=</span> <span class="n">data_column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_column</span> <span class="o">=</span> <span class="n">labels_column</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="c1"># print(kwargs)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transmission</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_history_trace</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_history_trace</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">transmission</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transmission</span><span class="p">,</span> <span class="n">Transmission</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Argument &#39;transmission&#39; must be of type mesmerize.analysis.data_types.Transmission&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_transmission</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_disconnect_comboBoxSort</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">reset_sorting</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+            <span class="n">ix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">previous_sort_column</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ix</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">previous_sort_column</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">previous_sort_column</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_plot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connect_comboBoxSort</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">ylabels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">labels_column</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cmap</span><span class="p">,</span> <span class="n">ylabels</span><span class="o">=</span><span class="n">ylabels</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeatmapSplitterWidget._set_sort_order"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget._set_sort_order">[docs]</a>    <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Cannot sort&#39;</span><span class="p">,</span> <span class="s1">&#39;Make sure you choose an appropriate categorical column for sorting&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_set_sort_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the sort order of the heatmap rows according to a dataframe column. The column must contain categorical</span>
+<span class="sd">        values. The rows are grouped together according to the categorical values.</span>
+
+<span class="sd">        :param column: DataFrame column containing categorical values used for sorting the heatmap rows</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="n">column</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">previous_sort_column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_plot</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HeatmapSplitterWidget.set_transmission"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.set_transmission">[docs]</a>    <span class="k">def</span> <span class="nf">set_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the input transmission&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transmission</span> <span class="o">=</span> <span class="n">transmission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_history_trace</span><span class="p">(</span><span class="n">transmission</span><span class="o">.</span><span class="n">history_trace</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HeatmapSplitterWidget.get_transmission"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.get_transmission">[docs]</a>    <span class="k">def</span> <span class="nf">get_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Transmission</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the input transmission&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transmission</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No tranmission has been set&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transmission</span></div>
+
+<div class="viewcode-block" id="HeatmapSplitterWidget.highlight_row"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.highlight_row">[docs]</a>    <span class="k">def</span> <span class="nf">highlight_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Highlight a row on the heatmap&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">highlight_row</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">set_history_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history_trace</span><span class="p">:</span> <span class="n">HistoryTrace</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the history trace object from the input transmission&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">history_trace</span><span class="p">,</span> <span class="n">HistoryTrace</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_history_trace</span> <span class="o">=</span> <span class="n">history_trace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_history_trace</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<span class="k">class</span> <span class="nc">ControlWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="n">sig_changed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">Ui_ControlWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="mi">350</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsLabels</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="s1">&#39;tab10&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsData</span><span class="o">.</span><span class="n">signal_colormap_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsLabels</span><span class="o">.</span><span class="n">signal_colormap_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sig_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="HeatmapTracerWidget"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget">[docs]</a><span class="k">class</span> <span class="nc">HeatmapTracerWidget</span><span class="p">(</span><span class="n">BasePlotWidget</span><span class="p">,</span> <span class="n">HeatmapSplitterWidget</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Heatmap with an embedded datapoint tracer&quot;&quot;&quot;</span>
+    <span class="n">drop_opts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dataframes&#39;</span><span class="p">,</span> <span class="s1">&#39;transmission&#39;</span><span class="p">]</span>  <span class="c1">#: keys of the plot_opts dict that are not JSON compatible and not required for restoring this plot</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Heatmap Tracer Widget&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span> <span class="o">=</span> <span class="n">ControlWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_to_splitter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">live_datapoint_tracer</span> <span class="o">=</span> <span class="n">DatapointTracerWidget</span><span class="p">()</span>  <span class="c1">#: The embedded `Datapoint Tracer &lt;API_DatapointTracer&gt;`</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_to_splitter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live_datapoint_tracer</span><span class="p">)</span>
+
+        <span class="n">ns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;this&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>
+              <span class="s1">&#39;get_plot_area&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="p">,</span>
+              <span class="s1">&#39;get_plot&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">plot</span><span class="p">,</span>
+              <span class="s1">&#39;get_fig&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">fig</span>
+              <span class="p">}</span>
+
+        <span class="n">txt</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Namespaces&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;self as &#39;this&#39;&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;Usefull callables, see docs for details:&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;get_plot_area(), get_plot(), get_fig()&quot;</span>
+               <span class="p">]</span>
+
+        <span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+
+        <span class="n">cmd_history_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">console_history_path</span><span class="p">,</span> <span class="s1">&#39;heatmap_tracer_widget&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">console_widget</span> <span class="o">=</span> <span class="n">ConsoleWidget</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">txt</span><span class="p">,</span> <span class="n">historyFile</span><span class="o">=</span><span class="n">cmd_history_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">console_widget</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonShowHideConsole</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console_widget</span><span class="o">.</span><span class="n">setVisible</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console_widget</span><span class="p">)</span>
+
+        <span class="c1"># TODO: Replace the constant exception windows with a status bar that displays red text if something goes</span>
+        <span class="c1">#  wrong and can be clicked to display the traceback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">sig_selection_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_current_datapoint</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datapoint_tracer_curve_column</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_df_columns</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsData</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="s1">&#39;jet&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonPlot</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">checkBoxLiveUpdate</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_update_live</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonSave</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_plot_dialog</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonLoad</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_plot_dialog</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_live</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_signals_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_clustering</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">sig_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HeatmapTracerWidget.set_update_live"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_update_live">[docs]</a>    <span class="k">def</span> <span class="nf">set_update_live</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set whether the plot should update live with changes in the flowchart&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_live</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="HeatmapTracerWidget.set_current_datapoint"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_current_datapoint">[docs]</a>    <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_current_datapoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the currently selected datapoint in the :ref:`Datapoint Tracer &lt;DatapointTracer&gt;`.</span>
+
+<span class="sd">        :param ix: index, (x, y). x is always 0 for this widget since it only uses &#39;row&#39; selection mode and not &#39;item&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_clustering</span><span class="p">:</span>
+                <span class="n">ix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">dendrogram_row</span><span class="o">.</span><span class="n">reordered_ind</span><span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ix</span> <span class="o">=</span> <span class="n">ix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix</span><span class="p">][</span><span class="s1">&#39;uuid_curve&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Datapoint index out of bounds. Probably clicked a plot point outside of the data&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;uuid_curve&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">identifier</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_history_trace</span><span class="p">:</span>
+            <span class="n">block_id</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">_BLOCK_</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block_id</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                <span class="n">block_id</span> <span class="o">=</span> <span class="n">block_id</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_history_trace</span><span class="o">.</span><span class="n">get_data_block_history</span><span class="p">(</span><span class="n">block_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">live_datapoint_tracer</span><span class="o">.</span><span class="n">set_widget</span><span class="p">(</span><span class="n">datapoint_uuid</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
+                                              <span class="n">data_column_curve</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datapoint_tracer_curve_column</span><span class="p">,</span>
+                                              <span class="n">row</span><span class="o">=</span><span class="n">r</span><span class="p">,</span>
+                                              <span class="n">proj_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_transmission</span><span class="p">()</span><span class="o">.</span><span class="n">get_proj_path</span><span class="p">(),</span>
+                                              <span class="n">history_trace</span><span class="o">=</span><span class="n">h</span><span class="p">)</span></div>
+
+    <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
+    <span class="k">def</span> <span class="nf">set_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the input Transmission and update the plot if _update_live is True&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_previous_df_columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+            <span class="n">dcols</span><span class="p">,</span> <span class="n">ccols</span><span class="p">,</span> <span class="n">ucols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">dcols</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">dcols</span><span class="p">)</span>
+
+        <span class="c1"># self.transmission = transmission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_df_columns</span> <span class="o">=</span> <span class="n">cols</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_live</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
+
+<div class="viewcode-block" id="HeatmapTracerWidget.get_plot_opts"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.get_plot_opts">[docs]</a>    <span class="k">def</span> <span class="nf">get_plot_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the plot options</span>
+
+<span class="sd">        :param drop: Drop the non-json compatible objects that are not necessary to restore this plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dataframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="p">,</span>
+                 <span class="n">data_column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">currentText</span><span class="p">(),</span>
+                 <span class="n">labels_column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">currentText</span><span class="p">(),</span>
+                 <span class="n">datapoint_tracer_curve_column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">currentText</span><span class="p">(),</span>
+                 <span class="n">cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsData</span><span class="o">.</span><span class="n">current_cmap</span><span class="p">,</span>
+                 <span class="n">transmission</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="p">,</span>
+                 <span class="n">ylabels_cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsLabels</span><span class="o">.</span><span class="n">current_cmap</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">drop</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_opts</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+    <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
+    <span class="k">def</span> <span class="nf">set_plot_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set all plot options from a dict&quot;&quot;&quot;</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;data_column&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+
+        <span class="n">ix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;labels_column&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+
+        <span class="n">ix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;datapoint_tracer_curve_column&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsData</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="HeatmapTracerWidget.update_plot"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.update_plot">[docs]</a>    <span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calls set_data and passes dict from get_plot_opts() as keyword arguments&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_opts</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">get_cluster_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Organize kwargs for visualization of hierarchical clustering&quot;&quot;&quot;</span>
+        <span class="c1"># Just get the first datablock ID since Agglomerative clustering would have been done on all data blocks</span>
+        <span class="n">db_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">data_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">linkage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">get_operation_params</span><span class="p">(</span><span class="n">data_block_id</span><span class="o">=</span><span class="n">db_id</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;fcluster&#39;</span><span class="p">)[</span><span class="s1">&#39;linkage_matrix&#39;</span><span class="p">])</span>
+        <span class="n">cluster_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;FCLUSTER_LABELS&#39;</span><span class="p">]</span>
+        <span class="n">ck</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row_linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span> <span class="n">row_cluster</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">col_cluster</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cluster_labels</span><span class="o">=</span><span class="n">cluster_labels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ck</span>
+
+<div class="viewcode-block" id="HeatmapTracerWidget.set_data"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_data">[docs]</a>    <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Error while setting data&#39;</span><span class="p">,</span> <span class="s1">&#39;Make sure you have selected appropriate columns.&#39;</span><span class="p">,</span> <span class="n">help_func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">datapoint_tracer_curve_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the plot data, parameters and draw the plot.</span>
+<span class="sd">        If the input Transmission comes directly from the FCluster it will pass a dict from get_cluster_kwargs() to the</span>
+<span class="sd">        cluster_kwargs argument. Else it will pass None to cluster_kwargs.</span>
+
+<span class="sd">        :param args: arguments to pass to superclass set_data() method</span>
+<span class="sd">        :param datapoint_tracer_curve_column: Data column containing curves to use in the datapoint tracer</span>
+<span class="sd">        :param kwargs:  keyword arguments, passed to superclass set_data() method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">last_output</span> <span class="o">==</span> <span class="s1">&#39;fcluster&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_clustering</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cluster_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cluster_kwargs</span><span class="p">(),</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_clustering</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cluster_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">datapoint_tracer_curve_column</span> <span class="o">=</span> <span class="n">datapoint_tracer_curve_column</span></div></div>
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

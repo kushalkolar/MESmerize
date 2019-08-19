@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -34,8 +36,11 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Viewer overview" href="../../viewer/overview.html" />
+    <link rel="prev" title="Create a New Project" href="../new_project/new_project.html" />
     <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -90,16 +95,47 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
-<ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Project Browser</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#open-sample">Open Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filter">Filter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#text-filters">Text filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partial-match">Partial match</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-filters">Multiple filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-multiple-columns">Filter multiple columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modifiers">Modifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#numerical-filters">Numerical filters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#editor">Editor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#console">Console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul>
@@ -122,16 +158,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -198,6 +251,235 @@
             
   <div class="section" id="project-browser">
 <span id="projectbrowser"></span><h1>Project Browser<a class="headerlink" href="#project-browser" title="Permalink to this headline">¶</a></h1>
+<p><strong>Browse, edit and sort the project DataFrame</strong></p>
+<p>You can open the Project Browser from the <a class="reference internal" href="../../general/misc.html#welcomewindow"><span class="std std-ref">Welcome Window</span></a> after you have opened a project.</p>
+<img alt="../../../_images/overview1.png" src="../../../_images/overview1.png" />
+<p>The columns that are visible in the Project Browser Window correspond to the <a class="reference internal" href="../new_project/new_project.html#project-configuration"><span class="std std-ref">Project Configuration</span></a>. For each column you will see a list which is a set of unique elements from that column in the project DataFrame.</p>
+<p>Functions</p>
+<div class="section" id="open-sample">
+<h2>Open Sample<a class="headerlink" href="#open-sample" title="Permalink to this headline">¶</a></h2>
+<p>Double-click on a Sample in the <em>SampleID</em> column to open it in the <a class="reference internal" href="../../viewer/overview.html#vieweroverview"><span class="std std-ref">Viewer</span></a>.</p>
+<p>In the viewer you can make changes and then save it by going to File -&gt; Add to Project. You will see a “Save changes (overwrite)” option which will overwrite the data for this project Sample with the current data in the viewer work environment. If you have not changed the image sequence data you can uncheck the “Overwrite image data” checkbox, useful if your image sequences are large.</p>
+<img alt="../../../_images/save_changes.png" src="../../../_images/save_changes.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can make any changes that you want to the Sample. This may include things such as changing or adding new tags to ROIs, changing stimulus maps, tagging a new custom column etc.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You can never change the AnimalID or TrialID (i.e. SampleID) since these are partially used as unique identifiers. A workaround is described in the <a class="reference internal" href="../../faq.html#faq-project-organization"><span class="std std-ref">FAQ for Project Organization</span></a>.</p>
+</div>
+</div>
+<div class="section" id="filter">
+<h2>Filter<a class="headerlink" href="#filter" title="Permalink to this headline">¶</a></h2>
+<p>You can sort your Project DataFrame into different groups (such as experimental groups) using text and numerical filters. Type a filter into the text entries that are below the list of elements for a column. You can also click on one or many elements in a column to set those elements as the filters.</p>
+<p>If you filter out of the root tab, it will always create a new tab with a name of your choice. If you filter out of any other tab it will apply the filter in-place unless you right click on the “Apply” button and choose “Apply in new tab”</p>
+<div class="section" id="text-filters">
+<h3>Text filters<a class="headerlink" href="#text-filters" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="partial-match">
+<h3>Partial match<a class="headerlink" href="#partial-match" title="Permalink to this headline">¶</a></h3>
+<p>To filter out a group based on partial text matches just enter the text into the filter text entry below the column(s) of interest and click “Apply”</p>
+<img alt="../../../_images/simple_filter1.png" src="../../../_images/simple_filter1.png" />
+<p>Since this is filtering out of the root tab, you will be prompted to give a name for a new tab that will be created based on the filter you have entered.</p>
+<img alt="../../../_images/tab_name_prompt.png" src="../../../_images/tab_name_prompt.png" />
+<p>The result is a DataFrame containing all rows where the cell_name contains ‘aten’</p>
+<img alt="../../../_images/simple_filter_result1.png" src="../../../_images/simple_filter_result1.png" />
+<p>If you go to View -&gt; Current dataframe you can see the whole dataframe.</p>
+<a class=""
+               data-lightbox="group-80fd348f-8c59-4071-8551-30496efac24b"
+               href="../../../_images/simple_filter_result_21.png"
+               title=""
+               data-title=""
+               ><img src="../../../_images/simple_filter_result_21.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p>To see how the filter translates to pandas commands go to View -&gt; Current tab filter history</p>
+<img alt="../../../_images/pandas_filter_history.png" src="../../../_images/pandas_filter_history.png" />
+</div>
+<div class="section" id="multiple-filters">
+<span id="projectbrowsermultiplefilters"></span><h3>Multiple filters<a class="headerlink" href="#multiple-filters" title="Permalink to this headline">¶</a></h3>
+<p>You can combine filters together by using the <code class="docutils literal notranslate"><span class="pre">|</span></code> seperator. The <code class="docutils literal notranslate"><span class="pre">|</span></code> acts as an “or” operator.</p>
+<img alt="../../../_images/filter_many.png" src="../../../_images/filter_many.png" />
+<p>The result is all rows where mn, palp, or pr are in the cell_name column.</p>
+<img alt="../../../_images/filter_many_result.png" src="../../../_images/filter_many_result.png" />
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This can be combined with <a class="reference internal" href="#projectbrowsermodifiers"><span class="std std-ref">Modifiers</span></a></p>
+</div>
+</div>
+<div class="section" id="filter-multiple-columns">
+<span id="projectbrowserfiltermultiplecolumns"></span><h3>Filter multiple columns<a class="headerlink" href="#filter-multiple-columns" title="Permalink to this headline">¶</a></h3>
+<p>You can filter multiple columns simultaneously if you are not in the root tab. You can create a new tab that is essentially the same as the root by just keeping the filter entries blank and clicking “Apply”.</p>
+<p>Filter out all rows where the cell_name column contains ‘pr’ and promoter column contains ‘pc2’ or ‘cng_ch4’.</p>
+<img alt="../../../_images/multiple_columns.png" src="../../../_images/multiple_columns.png" />
+<p>Right click on the “Apply” button and choose “Apply all” or “Apply all in new tab”</p>
+<img alt="../../../_images/multiple_columns_result.png" src="../../../_images/multiple_columns_result.png" />
+<p>If you view the pandas filter history (View -&gt; Current tab filter history) you can see that the filters for each column are simply applied sequentially.</p>
+<img alt="../../../_images/multiple_columns_filter_history.png" src="../../../_images/multiple_columns_filter_history.png" />
+<p>The dataframe</p>
+<a class=""
+               data-lightbox="group-3232d4d0-a1c4-4af6-abef-371275ef653d"
+               href="../../../_images/multiple_columns_result_dataframe1.png"
+               title=""
+               data-title=""
+               ><img src="../../../_images/multiple_columns_result_dataframe1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a></div>
+<div class="section" id="modifiers">
+<span id="projectbrowsermodifiers"></span><h3>Modifiers<a class="headerlink" href="#modifiers" title="Permalink to this headline">¶</a></h3>
+<p>You can perform other types of matches, such as exact matches, negations, and exact negations. Enter the filter and then right click on the text entry to see available modifiers and choose the desired modifier.</p>
+<img alt="../../../_images/modifiers_str.png" src="../../../_images/modifiers_str.png" />
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Modifier</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>$NOT:</td>
+<td>Results in the negation of partial matches</td>
+</tr>
+<tr class="row-odd"><td>$STR:</td>
+<td>Treats the filter as a str, same as Partial Match (see above sub-section)</td>
+</tr>
+<tr class="row-even"><td>$STR=:</td>
+<td>Exact text match</td>
+</tr>
+<tr class="row-odd"><td>$STR!=:</td>
+<td>Negation of exact text match</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="numerical-filters">
+<h3>Numerical filters<a class="headerlink" href="#numerical-filters" title="Permalink to this headline">¶</a></h3>
+<p>By default the filters in all entires are treated as text. If your column contains numerical data you have additional options for modifiers. The first four modifiers are the <a class="reference internal" href="#projectbrowsermodifiers"><span class="std std-ref">same as explained above</span></a>. The rest are self explanatory.</p>
+<img alt="../../../_images/modifiers_num.png" src="../../../_images/modifiers_num.png" />
+</div>
+</div>
+<div class="section" id="editor">
+<h2>Editor<a class="headerlink" href="#editor" title="Permalink to this headline">¶</a></h2>
+<p>You can view and edit the Project DataFrame directly in a GUI using the DataFrame editor.</p>
+<a class=""
+               data-lightbox="group-ad3033f6-d5f2-4c08-b7d3-77ab1dee4a3e"
+               href="../../../_images/dataframe_editor1.png"
+               title=""
+               data-title=""
+               ><img src="../../../_images/dataframe_editor1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Make sure you know what you are doing when you directly modify the Project DataFrame. Changes cannot be undone but you can restore a backup from the project’s <a class="reference internal" href="../../general/misc.html#projectstructure"><span class="std std-ref">dataframe directory</span></a>. For example, do not modify data under the following columns: CurvePath, ImgInfoPath, ImgPath, ROI_State, any uuid column.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Uses the <a class="reference external" href="https://docs.spyder-ide.org/variableexplorer.html?highlight=object%20editor">Spyder object editor</a></p>
+</div>
+</div>
+<div class="section" id="console">
+<h2>Console<a class="headerlink" href="#console" title="Permalink to this headline">¶</a></h2>
+<p>If you are familiar with pandas you can interact with the project DataFrame directly. If you are unfamiliar with pandas it’s very easy to learn.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.24/">Pandas documentation</a></p>
+</div>
+<p><strong>Useful Callables</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Callable</th>
+<th class="head">Purpose</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>get_dataframe()</td>
+<td>returns dataframe of the current project browser tab</td>
+</tr>
+<tr class="row-odd"><td>get_root_dataframe()</td>
+<td>always returns dataframe of the root tab (entire project DataFrame)</td>
+</tr>
+<tr class="row-even"><td>set_root_dataframe()</td>
+<td>pass a pandas.DataFrame instance to set it as the project DataFrame</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>General usage to modify the project DataFrame would be something like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a copy the project DataFrame to modify</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">get_root_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># Do stuff to df</span>
+<span class="o">...</span>
+
+<span class="c1"># Set the project DataFrame with the modified one</span>
+<span class="n">set_root_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Let’s say you have been inconsistent in naming “ATENA” ROI Tags in the “cell_name” column. You can rename all occurances of ‘atena’ to ‘ATENA’</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a copy of the project DataFrame</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">df</span> <span class="o">=</span> <span class="n">get_root_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># View all occurances of &#39;atena&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">cell_name</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">cell_name</span> <span class="o">==</span> <span class="s1">&#39;atena&#39;</span><span class="p">]</span>
+<span class="mi">2</span>      <span class="n">atena</span>
+<span class="mi">3</span>      <span class="n">atena</span>
+<span class="mi">4</span>      <span class="n">atena</span>
+<span class="mi">5</span>      <span class="n">atena</span>
+<span class="mi">6</span>      <span class="n">atena</span>
+<span class="mi">205</span>    <span class="n">atena</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">cell_name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">object</span>
+
+<span class="c1"># Rename all occurances of &#39;atena&#39; to &#39;ATENA&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">cell_name</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">cell_name</span> <span class="o">==</span> <span class="s1">&#39;atena&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ATENA&#39;</span>
+
+<span class="c1"># Check that there are more occurances of &#39;atena&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">cell_name</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">cell_name</span> <span class="o">==</span> <span class="s1">&#39;atena&#39;</span><span class="p">]</span>
+<span class="n">Series</span><span class="p">([],</span> <span class="n">Name</span><span class="p">:</span> <span class="n">cell_name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span>
+
+<span class="c1"># Check that we have renamed the &#39;atena&#39; occurances to &#39;ATENA&#39;</span>
+<span class="c1"># Indices 2-6 and 205 were named &#39;atena&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">cell_name</span>
+<span class="mi">0</span>      <span class="n">untagged</span>
+<span class="mi">1</span>      <span class="n">untagged</span>
+<span class="mi">2</span>         <span class="n">ATENA</span>
+<span class="mi">3</span>         <span class="n">ATENA</span>
+<span class="mi">4</span>         <span class="n">ATENA</span>
+<span class="mi">5</span>         <span class="n">ATENA</span>
+<span class="mi">6</span>         <span class="n">ATENA</span>
+<span class="mi">7</span>         <span class="n">atenp</span>
+<span class="o">...</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">cell_name</span><span class="p">,</span> <span class="n">Length</span><span class="p">:</span> <span class="mi">311</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">object</span>
+
+<span class="c1"># Check index 205</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">cell_name</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">205</span><span class="p">]</span>
+<span class="s1">&#39;ATENA&#39;</span>
+
+<span class="c1"># Finally set the changed DataFrame as the root (project) DataFrame</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">set_root_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -205,6 +487,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../viewer/overview.html" class="btn btn-neutral float-right" title="Viewer overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../new_project/new_project.html" class="btn btn-neutral float-left" title="Create a New Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

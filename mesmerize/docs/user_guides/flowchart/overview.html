@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -34,10 +36,11 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Nodes" href="nodes.html" />
-    <link rel="prev" title="Add a Sample to the Project" href="../viewer/add_to_project.html" />
+    <link rel="prev" title="Script Editor" href="../viewer/modules/script_editor.html" />
     <link href="../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -92,16 +95,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul class="current">
@@ -128,16 +144,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -207,12 +240,21 @@
 <p>The flowchart allows you to analyze samples in your project and create plots by arranging analysis nodes. Each node takes an input, performs an operation, and produces an output. For example the <a class="reference internal" href="nodes.html#node-derivative"><span class="std std-ref">Derivative</span></a> node takes use-specified numerical arrays, computes the derivative of these arrays, and then outputs the result.</p>
 <p>The Flowchart is based on the <a class="reference external" href="http://www.pyqtgraph.org/documentation/flowchart/">pyqtgraph flowchart widgets</a></p>
 <p><strong>Flowchart Window</strong></p>
-<img alt="../../_images/flowchart_overview.png" src="../../_images/flowchart_overview.png" />
-<p><strong>Add node</strong>: Right click -&gt; Add node -&gt; Choose from selection</p>
+<a class=""
+               data-lightbox="group-4bf62a45-b98e-4298-b339-ad2339f74ff2"
+               href="../../_images/flowchart_overview1.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/flowchart_overview1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p><strong>Add node</strong>: Right click -&gt; Add node -&gt; Choose from selection</p>
 <p>Click on a node to highlight the Control Widget</p>
 <p><strong>Remove node</strong>: Right click -&gt; Remove node</p>
 <p><strong>Connecting nodes</strong>: Click on a node terminal and drag to another terminal</p>
-<p><strong>Save the flowchart layout</strong>: Click “Save as…” to save the layout to a new file. You must specify the file extension as “.fc”. If you save this file within the “flowchart” directory of your project it will show up in the <span class="xref std std-ref">WelcomeWindow</span> when you open your project.</p>
+<p><strong>Save the flowchart layout</strong>: Click “Save as…” to save the layout to a new file. You must specify the file extension as “.fc”. If you save this file within the <a class="reference internal" href="../general/misc.html#projectstructure"><span class="std std-ref">“flowcharts” directory</span></a> of your project it will show up in the <a class="reference internal" href="../general/misc.html#welcomewindow"><span class="std std-ref">Welcome Window</span></a> when you open your project.</p>
 <blockquote>
 <div><div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -220,7 +262,7 @@
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">There is a weird Qt or pyqtgraph bug that prevents some parameter settings to be saved, and/or for parameter settings to be saved to an existing .fc file. If you’re interested take a look at pyqtgraphCore.WidgetGroup. Anyways you shouldn’t be using the flowchart layout to save this information, that’s what the History Trace in Transmission objects is for.</p>
+<p class="last">Due to a weird Qt or pyqtgraph bug certain parameter values (such as those in drop-down menus) can’t be saved. Similarly, parameters values are lost when you save to an existing .fc file. If you’re interested take a look at <code class="docutils literal notranslate"><span class="pre">pyqtgraphCore.WidgetGroup</span></code>. Anyways you shouldn’t be using the flowchart layout to save this information, that’s what the History Trace in Transmission objects is for.</p>
 </div>
 </div></blockquote>
 <p><strong>Load an .fc file</strong>: Click the “Load” button.</p>
@@ -232,7 +274,7 @@
 <blockquote>
 <div><p><strong>Transmission DataFrame</strong></p>
 <p>The Transmission DataFrame is created from your <span class="xref std std-ref">ProjectDataFrame</span> (or sub-DataFrame) by the <a class="reference internal" href="nodes.html#node-load-proj-df"><span class="std std-ref">Load_Proj_DF</span></a> node. This initial DataFrame will contain the same columns as your Project DataFrame, and a new column named <strong>_RAW_CURVE</strong>. Each element (row) in the <strong>_RAW_CURVE</strong> column is a 1-D numerical array representing a single raw curve extracted from an ROI.</p>
-<p>A new column named <strong>_BLOCK_</strong> is also added which contains the <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a> for logging the analysis history of this newly created block of DataFrame rows, known as a <em>data block</em>. This allows you to merge Transmissions (see <span class="xref std std-ref">_node_Merge</span> node) and maintain their independent analysis logs prior to the merge.</p>
+<p>A new column named <strong>_BLOCK_</strong> is also added which contains the <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a> for logging the analysis history of this newly created block of DataFrame rows, known as a <em>data block</em>. This allows you to merge Transmissions (see <a class="reference internal" href="nodes.html#node-merge"><span class="std std-ref">Merge node</span></a>) and maintain their independent analysis logs prior to the merge.</p>
 <p><strong>Naming conventions for DataFrame columns according to the data types</strong></p>
 <ul class="simple">
 <li><em>numerical data</em>: single leading underscore ( _ ). All caps if produced by a flowchart node.</li>
@@ -255,14 +297,23 @@
 <p class="first admonition-title">See also</p>
 <p class="last">If you are unfamiliar with the console see the overview on <a class="reference internal" href="../general/misc.html#consoleoverview"><span class="std std-ref">Consoles</span></a></p>
 </div>
-<p>call <cite>get_nodes()</cite> to view a dict of all nodes in the flowchart. You can access the output Transmission in most nodes through the attribute <cite>t</cite>. You can access the transmission dataframe through <cite>t.df</cite>.</p>
+<p>Call <code class="docutils literal notranslate"><span class="pre">get_nodes()</span></code> to view a dict of all nodes in the flowchart. You can access the output Transmission in most nodes through the attribute <cite>t</cite>. You can access the transmission dataframe through <code class="docutils literal notranslate"><span class="pre">t.df</span></code>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">See the <a class="reference internal" href="../../api_reference/Analysis_data_types.html#api-transmission"><span class="std std-ref">Transmission API</span></a> for more information. Sources for the nodes at mesmerize/pyqtgraphCore/flowchart/library.</p>
 </div>
 <p><strong>Example, directly accessing DataFrame elements through the flowchart console</strong></p>
-<img alt="../../_images/flowchart_console.png" src="../../_images/flowchart_console.png" />
-</div>
+<a class=""
+               data-lightbox="group-ee924be5-627a-43bf-ab06-6ff4b4b7b1c1"
+               href="../../_images/flowchart_console1.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/flowchart_console1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a></div>
 </div>
 
 
@@ -276,7 +327,7 @@
         <a href="nodes.html" class="btn btn-neutral float-right" title="Nodes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../viewer/add_to_project.html" class="btn btn-neutral float-left" title="Add a Sample to the Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../viewer/modules/script_editor.html" class="btn btn-neutral float-left" title="Script Editor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

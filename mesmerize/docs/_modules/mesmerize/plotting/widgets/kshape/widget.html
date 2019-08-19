@@ -25,7 +25,9 @@
         <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -34,6 +36,7 @@
   
   <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
     <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
@@ -90,16 +93,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Project:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Viewer</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Flowchart</span></p>
 <ul>
@@ -122,16 +138,33 @@
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -266,29 +299,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">groupBoxKShapeParams</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">KShapePlot</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="KShapePlot"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapePlot">[docs]</a><span class="k">class</span> <span class="nc">KShapePlot</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Curves plots, showing a sample of individual curves from a single cluster&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">MatplotlibWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">MatplotlibWidget</span><span class="p">()</span>  <span class="c1">#: MatplotlibWidget() instancehu</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setFeatures</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="o">.</span><span class="n">DockWidgetFloatable</span> <span class="o">|</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="o">.</span><span class="n">DockWidgetMovable</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">fig</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax_curves</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax_curves</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>  <span class="c1">#: The axis on which the curves are drawn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">draw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">draw</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Samples of raw curves in a cluster&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Samples of raw curves in a cluster&#39;</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">KShapeMeansPlot</span><span class="p">(</span><span class="n">MatplotlibWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="KShapeMeansPlot"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeMeansPlot">[docs]</a><span class="k">class</span> <span class="nc">KShapeMeansPlot</span><span class="p">(</span><span class="n">MatplotlibWidget</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Means plots grouped by cluster membership&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="c1"># QtWidgets.QDockWidget.__init__(self, parent=parent)</span>
         <span class="n">MatplotlibWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axs</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#: array of axis objects used for drawing the means plots, shape is [nrows, ncols]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_arrays</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">xzero_pos</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">error_band</span><span class="p">):</span>
+<div class="viewcode-block" id="KShapeMeansPlot.set_plots"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeMeansPlot.set_plots">[docs]</a>    <span class="k">def</span> <span class="nf">set_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_arrays</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_clusters</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">xzero_pos</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">error_band</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the subplots</span>
+
+<span class="sd">        :param input_arrays: padded input arrays (2D),  shape is [num_samples, padded_peak_curve_length]</span>
+<span class="sd">        :param n_clusters: number of clusters</span>
+<span class="sd">        :param y_pred: cluster predictions (labels)</span>
+<span class="sd">        :param xzero_pos: set the zero position as the &#39;zero&#39; position of the input array or the &#39;maxima&#39; of the input array</span>
+<span class="sd">        :param error_band: Type of error band to show, one of either &#39;ci&#39; or &#39;std&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">))),</span> <span class="nb">int</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_clusters</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="n">n_clusters</span> <span class="o">&lt;</span> <span class="mi">11</span><span class="p">:</span>
@@ -325,7 +370,7 @@
             <span class="n">lineplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">xsh</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">ysh</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">err_style</span><span class="o">=</span><span class="s1">&#39;band&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">c_ix</span><span class="p">],</span> <span class="n">ci</span><span class="o">=</span><span class="n">error_band</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;cluster </span><span class="si">{c_ix}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">ProportionsDock</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="p">):</span>
@@ -341,8 +386,9 @@
 
 
 <div class="viewcode-block" id="KShapeWidget"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget">[docs]</a><span class="k">class</span> <span class="nc">KShapeWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">,</span> <span class="n">BasePlotWidget</span><span class="p">):</span>
-    <span class="n">sig_output_changed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">Transmission</span><span class="p">)</span>
-    <span class="n">drop_opts</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;User-end KShape widget&quot;&quot;&quot;</span>
+    <span class="n">sig_output_changed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">Transmission</span><span class="p">)</span>  <span class="c1">#: Emits output Transmission containing cluster labels</span>
+    <span class="n">drop_opts</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#: Unused by this plot widget</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
@@ -355,10 +401,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">proportions_widget</span> <span class="o">=</span> <span class="n">ProportionsDock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">RightDockWidgetArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">proportions_widget</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot_proportions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proportions_widget</span><span class="o">.</span><span class="n">plot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_proportions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proportions_widget</span><span class="o">.</span><span class="n">plot</span>  <span class="c1">#: Embedded Proportions Plot</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#: External QProcess that runs the clustering</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_workdir</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -390,9 +436,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonReconnectFlowchartInput</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_connect</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonReconnectFlowchartInput</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">KShapePlot</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">KShapePlot</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>  <span class="c1">#: The single curve plots</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">plot_means</span> <span class="o">=</span> <span class="n">KShapeMeansPlot</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_means</span> <span class="o">=</span> <span class="n">KShapeMeansPlot</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>  <span class="c1">#: The means plots</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_means</span><span class="p">)</span>
 
@@ -433,7 +479,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The input arrays for clustering</span>
 
-<span class="sd">        :return: 2D array, [num_samples, padded_peak_curve_length]</span>
+<span class="sd">        :return: 2D array, shape is [num_samples, padded_peak_curve_length]</span>
+<span class="sd">        :rtype: np.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_arrays</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input array not set&#39;</span><span class="p">)</span>
@@ -441,6 +488,11 @@
 
     <span class="nd">@input_arrays</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">input_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the input arrays</span>
+
+<span class="sd">        :param a: 2D array, [num_samples, padded_peak_curve_length]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -469,6 +521,7 @@
     <span class="k">def</span> <span class="nf">n_clusters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Number of clusters</span>
+<span class="sd">        :rtype: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_clusters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must finish clustering first&#39;</span><span class="p">)</span>
@@ -486,6 +539,7 @@
 <span class="sd">        The training data for clustering</span>
 
 <span class="sd">        :return: Training data as a 2D array, [num_samples, padded_peak_curve_length]</span>
+<span class="sd">        :rtype: np.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must run clustering first&#39;</span><span class="p">)</span>
@@ -505,6 +559,7 @@
 <span class="sd">        Predicted cluster labels after the model converges</span>
 
 <span class="sd">        :return: 1D array of cluster labels that correspond to the input_data</span>
+<span class="sd">        :rtype: np.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_pred</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No predictions have been fit&#39;</span><span class="p">)</span>
@@ -512,6 +567,12 @@
 
     <span class="nd">@y_pred</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">y_pred</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predictions of cluster members, i.e. cluster labels</span>
+
+<span class="sd">        :param y_pred:</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -520,6 +581,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cluster_centers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Cluster centroids&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cluster_centers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must finish clustering first&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cluster_centers</span>
@@ -555,6 +617,8 @@
     <span class="k">def</span> <span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters dict.</span>
+
+<span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Params not set&#39;</span><span class="p">)</span>
@@ -694,11 +758,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">textBrowser</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">std_out</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_workdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the workdir&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_workdir</span> <span class="o">=</span> <span class="n">make_workdir</span><span class="p">(</span><span class="s1">&#39;kshape&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workdir</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">clear_workdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear the workdir&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -723,6 +789,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">terminate_qprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Terminate running QProcess&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">py_proc</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">pid</span><span class="p">())</span><span class="o">.</span><span class="n">children</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pid</span>
         <span class="k">except</span> <span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">:</span>
@@ -733,6 +800,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span> <span class="n">SIGKILL</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">process_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the plots when the external clustering QProcess finishes&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">set_inactive</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -762,6 +830,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">send_output_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send output Transmission containing cluster labels&quot;&quot;&quot;</span>
         <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;kwargs&#39;</span><span class="p">]</span>
         <span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;kshape&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
@@ -773,6 +842,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetClusterNumber</span><span class="o">.</span><span class="n">setCurrentRow</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_plot_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">opts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the plot options&quot;&quot;&quot;</span>
         <span class="n">prop_opts</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;proportion_opts&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_proportions</span><span class="o">.</span><span class="n">set_plot_opts</span><span class="p">(</span><span class="n">prop_opts</span><span class="p">)</span>
 
@@ -797,8 +867,9 @@
 
     <span class="k">def</span> <span class="nf">get_plot_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param drop: Unused for this Plot Widget</span>
-<span class="sd">        :return:</span>
+<span class="sd">        Get the plot options</span>
+
+<span class="sd">        :param drop: Unused for this Plot Widget, doesn&#39;t matter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;proportion_opts&#39;</span><span class="p">:</span>  <span class="bp">self</span><span class="o">.</span><span class="n">plot_proportions</span><span class="o">.</span><span class="n">get_plot_opts</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
                 <span class="s1">&#39;n_clusters&#39;</span><span class="p">:</span>       <span class="bp">self</span><span class="o">.</span><span class="n">n_clusters</span><span class="p">,</span>
@@ -819,6 +890,7 @@
 
     <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Plotting error&#39;</span><span class="p">,</span> <span class="s1">&#39;The following error occurred when plotting the raw curves&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">show_centers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the curve plots (raw samples)&quot;&quot;&quot;</span>
         <span class="n">max_num_curves</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">spinBoxMaxNumCurves</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
         <span class="n">show_centers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">checkBoxShowKShapeCenters</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
 
@@ -852,6 +924,7 @@
 
     <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Plotting error&#39;</span><span class="p">,</span> <span class="s1">&#39;The following error occurred when plotting the means&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">update_plot_means</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the means plot&quot;&quot;&quot;</span>
         <span class="n">padded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_input_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_arrays</span><span class="p">,</span> <span class="s1">&#39;fill-size&#39;</span><span class="p">)</span>
         <span class="n">scaled</span> <span class="o">=</span> <span class="n">TimeSeriesScalerMeanVariance</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">padded</span><span class="p">)[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>
 
@@ -880,11 +953,13 @@
         <span class="k">return</span> <span class="n">ptrn_path</span><span class="p">,</span> <span class="n">proj_path</span>
 
     <span class="k">def</span> <span class="nf">input_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Disconnect the input from the flowchart&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_connected</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelConnectedToFlowchart</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;INPUT DISCONNECTED&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonReconnectFlowchartInput</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">input_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connect the input to the flowchart&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_connected</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelConnectedToFlowchart</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;INPUT CONNECTED TO FLOWCHART&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonReconnectFlowchartInput</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>

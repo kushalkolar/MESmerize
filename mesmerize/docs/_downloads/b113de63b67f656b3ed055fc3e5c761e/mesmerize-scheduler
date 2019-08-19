@@ -1,0 +1,91 @@
+#!/bin/bash
+
+if [ -z "$DISPLAY" ]
+then
+	echo "No DISPLAY Environment Variable is set"
+	echo "You must run this program in a NoMachine, X2Go or other X-Session"
+	echo "exiting"
+	exit
+fi
+
+# Set all kwargs
+while getopts ":b:i:t:" opt; do
+  case $opt in
+    b) batch_path="$OPTARG"
+    ;;
+    i) id_item="$OPTARG"
+    ;;
+    t) start_at="$OPTARG"
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    ;;
+  esac
+done
+
+name=$0
+
+function error {
+	echo -e "\e[31m\e[1mMissing option for argument \"$1\""
+	echo -e "\e[0m"
+	usage
+}
+
+# Usage documentation
+function usage {
+	echo "Usage: mesmerize-scheduler -b <batch> -i <start item> -t <start time>"
+	echo ""
+	echo "	-b	full batch path in quotes, no spaces"
+	echo "	-i 	uuid of the batch item to start from, no quotes"
+	echo "	-t	time at which to start the batch, no quotes"
+	echo ""
+	echo "	examples of how to specify time:"
+	echo "		23:00  7:30Feb30"
+	echo "		use 24hr time and no spaces"
+
+	echo ""
+	echo "Full usage example:"
+	echo "	mesmerize-scheduler -b \"/share/data/temp/kushal/pc2_batch\" -i a80d1923-e490-4eb3-ba4f-7e651d4cf938 -t 2:00"
+	exit 1
+}
+
+# Show usage doc if no params are passed
+if [ $OPTIND -eq 1 ]
+then
+	usage
+	exit
+fi
+
+if [ -z $batch_path ]; then error "-b"; fi
+
+if [ -z $id_item ]; then error "-i"; fi
+
+if [ -z $start_at ]; then error "-t"; fi
+
+# Location for script file that at will run
+script_file=${HOME}/.mesmerize/.${id_item}
+
+# Write out the script file that actually starts mesmerize
+echo "#!/bin/bash" > $script_file
+echo "# Batch will start at $start_at" >> $script_file
+# Necessary because it's a GUI program
+echo "export DISPLAY=$DISPLAY" >> $script_file
+# Actual mesmerize command which starts running the batch from the specified item onward
+echo "mesmerize run batch \"$batch_path\" $id_item" >> $script_file
+# Cleanup
+echo "rm $script_file" >> $script_file
+
+# Make executable
+chmod +x $script_file
+
+# Schedule the script to run at specified time
+at $start_at -f $script_file
+
+echo ""
+echo "Unless errors are specified above, batch is scheduled to run at specified time."
+echo "To cancel this scheduled run remove the following file, or use the atrm command."
+echo ""
+echo $script_file
+echo ""
+echo "Your batch will run in this current NoMachine/X2Go session."
+echo "You may close NoMachine/disconect from the network, but do not logout"
+

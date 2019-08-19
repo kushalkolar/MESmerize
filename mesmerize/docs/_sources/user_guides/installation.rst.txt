@@ -1,5 +1,9 @@
+.. _installation_guide:
+
 Installation
 ************
+
+.. _snap_install:
 
 Snap
 ====
@@ -32,6 +36,9 @@ To install ``snapd`` on other distros please see: https://docs.snapcraft.io/inst
 If you have trouble installing Mesmerize via snap you might need to install `core18 <https://snapcraft.io/core18>`_ first::
 
 	sudo snap install core18
+
+
+.. _pip_install:
 
 PyPI
 ====
