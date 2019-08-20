@@ -197,7 +197,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.df.to_pickle(os.path.join(self.batch_path, 'dataframe.batch'))
 
         self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
-        self.ui.labelBatchPath.setText(os.path.dirname(self.batch_path))
+        self.ui.labelBatchPath.setText(self.batch_path)
         self.show()
 
     def btn_view_input_slot(self):
