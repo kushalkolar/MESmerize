@@ -54,12 +54,15 @@ def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing
     return colors
 
 
-def get_colormap(labels: iter, cmap: str) -> OrderedDict:
+def get_colormap(labels: iter, cmap: str, **kwargs) -> OrderedDict:
     """
     Get a dict for mapping labels onto colors
 
+    Any kwargs are passed to auto_colormap()
+
     :param labels:  labels for creating a colormap. Order is maintained if it is a list of unique elements.
     :param cmap:    name of colormap
+
     :return:        dict of labels as keys and colors as values
     """
     if not len(set(labels)) == len(labels):
@@ -67,20 +70,22 @@ def get_colormap(labels: iter, cmap: str) -> OrderedDict:
     else:
         labels = list(labels)
 
-    colors = auto_colormap(len(labels), cmap)
+    colors = auto_colormap(len(labels), cmap, **kwargs)
 
     return OrderedDict(zip(labels, colors))
 
 
-def map_labels_to_colors(labels: iter, cmap: str):
+def map_labels_to_colors(labels: iter, cmap: str, **kwargs) -> list:
     """
     Map labels onto colors according to chosen colormap
+
+    Any kwargs are passed to auto_colormap()
 
     :param labels:  labels for mapping onto a colormap
     :param cmap:    name of colormap
     :return:        list of colors mapped onto the labels
     """
-    mapper = get_colormap(labels, cmap)
+    mapper = get_colormap(labels, cmap, **kwargs)
     return list(map(mapper.get, labels))
 
 
