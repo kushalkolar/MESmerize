@@ -196,12 +196,12 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
             ys = data[:, 1]
 
         elif self.plot_opts['xy_radio']:
-            xs = np.vstack(self.transmission.df[self.plot_opts['x_column']])
-            ys = np.vstack(self.transmission.df[self.plot_opts['y_column']])
+            xs = self.transmission.df[self.plot_opts['x_column']].values
+            ys = self.transmission.df[self.plot_opts['y_column']].values
 
-            if xs.ndim != 1:
+            if xs.ndim > 1:
                 raise ValueError('X Column must contain single values, not arrays')
-            if ys.ndim != 1:
+            if ys.ndim > 1:
                 raise ValueError('Y Column must contain single values, not arrays')
 
         else:
@@ -236,18 +236,16 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         if colors_map is not None:
             self.plot_variant.set_legend(colors_map, shapes_map)
 
-    def set_current_datapoint(self, u: UUID):
-        self.current_datapoint = u
-        u = str(UUID)
+    def set_current_datapoint(self, identifier: UUID):
+        self.current_datapoint = identifier
+        u = str(self.current_datapoint)
 
-        uuid_column = self.control_widget.ui.comboBoxUUIDColumn.currentText()
+        uuid_column = self.plot_opts['uuid_column']
 
-        r = self.transmission.df[self.transmission.df[uuid_column] == u]
-        dpt_col = self.control_widget.ui.comboBoxDPTCurve.currentText()
+        r = self.transmission.df[self.transmission.df[uuid_column].str.match(u)]
+        dpt_col = self.plot_opts['dpt_curve_column']
 
-        print(r)
         db_id = r['_BLOCK_']
-        print(db_id)
         if isinstance(db_id, pd.Series):
             db_id = db_id.item()
         ht = self.transmission.history_trace.get_data_block_history(db_id)
