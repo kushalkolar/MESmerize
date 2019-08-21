@@ -103,30 +103,30 @@ class KMeans(CtrlNode):
         return self.t
 
 
-class LDA(CtrlNode):
-    """LDA"""
-    nodeName = 'LDA'
-    uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
-                  ('ShowGUI', 'button', {'text': 'OpenGUI'})]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.plot_widget = None
-        self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
-
-    def process(self, **kwargs):
-        if (self.ctrls['Apply'].isChecked() is False) or self.plot_widget is None:
-            return
-
-        transmissions = kwargs['In']
-
-        transmissions_list = merge_transmissions(transmissions)
-
-        self.plot_widget.update_input_transmissions(transmissions_list)
-
-    def _open_plot_gui(self):
-        if self.plot_widget is None:
-            self.plot_widget = LDAPlot()
-        self.plot_widget.show()
+# class LDA(CtrlNode):
+#     """LDA"""
+#     nodeName = 'LDA'
+#     uiTemplate = [('Apply', 'check', {'checked': False, 'applyBox': True}),
+#                   ('ShowGUI', 'button', {'text': 'OpenGUI'})]
+#
+#     def __init__(self, name):
+#         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+#         self.plot_widget = None
+#         self.ctrls['ShowGUI'].clicked.connect(self._open_plot_gui)
+#
+#     def process(self, **kwargs):
+#         if (self.ctrls['Apply'].isChecked() is False) or self.plot_widget is None:
+#             return
+#
+#         transmissions = kwargs['In']
+#
+#         transmissions_list = merge_transmissions(transmissions)
+#
+#         self.plot_widget.update_input_transmissions(transmissions_list)
+#
+#     def _open_plot_gui(self):
+#         if self.plot_widget is None:
+#             self.plot_widget = LDAPlot()
+#         self.plot_widget.show()
 
 
