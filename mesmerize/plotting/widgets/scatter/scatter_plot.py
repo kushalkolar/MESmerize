@@ -242,9 +242,11 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         r = self.transmission.df[self.transmission.df[self.control_widget.ui.comboBoxUUIDColumn.currentText()] == u]
         dpt_col = self.control_widget.ui.comboBoxDPTCurve.currentText()
 
-        ht = r._BLOCK_
-        if isinstance(ht, pd.Series):
-            ht = ht.item()
+        db_id = r._BLOCK_
+        if isinstance(db_id, pd.Series):
+            db_id = db_id.item()
+
+        ht = self.transmission.history_trace.get_data_block_history(db_id)
 
         self.live_datapoint_tracer.set_widget(u, dpt_col, row=r, proj_path=get_project_manager().root_dir,
                                               history_trace=ht)
