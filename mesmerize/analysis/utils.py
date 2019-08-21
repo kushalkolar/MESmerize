@@ -146,7 +146,9 @@ def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[
     :return:        (data_columns, categorical_columns, uuid_columns)
     """
     columns = list(columns)
-    columns.remove('_BLOCK_')
+    if '_BLOCK_' in columns:
+        columns.remove('_BLOCK_')
+
     dcols = [c for c in columns if c.startswith('_')]
 
     ucols = [c for c in columns if ('uuid' in c) or ('UUID' in c)]

@@ -381,7 +381,6 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
                  labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
                  datapoint_tracer_curve_column=self.control_widget.ui.comboBoxDPTCurveColumn.currentText(),
                  cmap=self.control_widget.ui.listWidgetColorMapsData.current_cmap,
-                 cmap_labels=self.control_widget.ui.listWidgetColorMapsLabels.current_cmap,
                  transmission=self.transmission,
                  ylabels_cmap=self.control_widget.ui.listWidgetColorMapsLabels.current_cmap)
         if drop:
@@ -402,7 +401,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.comboBoxDPTCurveColumn.setCurrentIndex(ix)
 
         self.control_widget.ui.listWidgetColorMapsData.set_cmap(opts['cmap'])
-        self.control_widget.ui.listWidgetColorMapsLabels.set_cmap(opts['cmap_labels'])
+        self.control_widget.ui.listWidgetColorMapsLabels.set_cmap(opts['ylabels_cmap'])
 
     def update_plot(self):
         """Calls set_data and passes dict from get_plot_opts() as keyword arguments"""

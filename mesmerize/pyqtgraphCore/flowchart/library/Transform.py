@@ -6,6 +6,7 @@ from .common import *
 from ....analysis import organize_dataframe_columns
 import pandas as pd
 
+
 class Manifold(CtrlNode):
     """Manifold learning"""
     nodeName = 'Manifold'
@@ -76,24 +77,25 @@ class LDA(CtrlNode):
                   ('shrinkage', 'combo', {'items': ['None', 'auto', 'value']}),
                   ('shrinkage_val', 'doubleSpin', {'min': 0.0, 'max': 1.0, 'step': 0.1, 'value': 0.5}),
                   ('n_components', 'intSpin', {'min': 2, 'max': 1000, 'step': 1, 'value': 2}),
-                  ('tol', 'int', {'min': -50, 'max': 0, 'step': 1, 'value': -4}),
-                  ('Apply', 'check', {'applyBox': True, 'checked': True})
+                  ('tol', 'intSpin', {'min': -50, 'max': 0, 'step': 1, 'value': -4}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False}),
+                  ('score', 'lineEdit', {})
                   ]
 
-    # def __init__(self, name, **kwargs):
-    #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'},
-    #                                              'T': {'io': 'out'},
-    #                                              'W': {'io': 'out'},
-    #                                              'means': {'io': 'out'},
-    #                                              'dfunc': {'io': 'out'}
-    #                                              },
-    #                       **kwargs)
+    def __init__(self, name, **kwargs):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'},
+                                                 'T': {'io': 'out'},
+                                                 'coef': {'io': 'out'},
+                                                 'means': {'io': 'out'},
+                                                 },
+                          **kwargs)
+        self.ctrls['score'].setReadOnly(True)
 
-    # def process(self, **kwargs):
-    #     return self.processData(**kwargs)
+    def process(self, **kwargs):
+        return self.processData(**kwargs)
 
-    def processData(self, transmission: Transmission):
-        self.t = transmission.copy()
+    def processData(self, In: Transmission):
+        self.t = In.copy()
 
         dcols, ccols, ucols = organize_dataframe_columns(self.t.df.columns)
 
@@ -115,7 +117,7 @@ class LDA(CtrlNode):
             shrinkage = None
 
         n_components = self.ctrls['n_components'].value()
-        tol = 10 ** self.ctrls['tol'].value()
+        tol = 10**self.ctrls['tol'].value()
 
         store_covariance = True if solver == 'svd' else False
 
@@ -127,7 +129,8 @@ class LDA(CtrlNode):
                   'store_covariance': store_covariance
                   }
 
-        kwargs = params.copy().pop('data_columns')
+        kwargs = params.copy()
+        kwargs.pop('data_columns')
         self.lda = LinearDiscriminantAnalysis(**kwargs)
 
         # Make an array of all the data from the selected columns
@@ -137,14 +140,29 @@ class LDA(CtrlNode):
 
         self.X_ = self.lda.fit_transform(self.X, self.y)
 
-        params.update({'score': self.lda.score(self.X, self.y), 'covariance': self.lda.covariance_.tolist()})
+        self.t.df['_LDA_TRANSFORM'] = self.X_.tolist()
+
+        params.update({'score': self.lda.score(self.X, self.y),
+                       'classes': self.lda.classes_.tolist()
+                       })
+
+        self.ctrls['score'].setText(f"{params['score']:.4f}")
+
+        self.t.history_trace.add_operation('all', 'lda', params)
 
         self.t.df['_LDA_DFUNC'] = self.lda.decision_function(self.X).tolist()
-        self.t.df['_LDA_COEF'] = self.lda.coef_.tolist()
-        self.t.df['_LDA_MEANS'] = self.lda.means_.tolist()
-        self.t.df['_LDA_CLASSES'] = self.lda.classes_.tolist()
+        # self.t.df['_LDA_COEF'] = self.lda.coef_.tolist()
+        # self.t.df['_LDA_MEANS'] = self.lda.means_.tolist()
+        # self.t.df['_LDA_CLASSES'] = self.lda.classes_.tolist()
 
-        return self.t
+        coef_df = pd.DataFrame({'classes': self.lda.classes_, '_COEF': self.lda.coef_.tolist()})
+        t_coef = Transmission(df=coef_df, history_trace=self.t.history_trace)
+
+        means_df = pd.DataFrame({'classes': self.lda.classes_, '_MEANS': self.lda.means_.tolist()})
+        t_means = Transmission(df=means_df, history_trace=self.t.history_trace)
+
+        return {'T': self.t, 'coef': t_coef, 'means': t_means}
+
 
 class Decomposition(CtrlNode):
     """Decomposition methods for dimensionality reduction"""
