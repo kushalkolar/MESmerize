@@ -86,10 +86,7 @@ Welcome to Mesmerize's documentation!
 	./api_reference/Analysis_data_types
 	./api_reference/analysis
 	./api_reference/plotting/utils
-	./api_reference/plotting/widgets/bases
-	./api_reference/plotting/widgets/heatmap
-	./api_reference/plotting/widgets/kshape
-	./api_reference/plotting/widgets/proportions
+	./api_reference/plotting/widgets/*
 
 
 
