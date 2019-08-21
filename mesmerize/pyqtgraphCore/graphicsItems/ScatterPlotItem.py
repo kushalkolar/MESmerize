@@ -367,10 +367,27 @@ class ScatterPlotItem(GraphicsObject):
         newData['size'] = -1  ## indicates to use default size
 
         if 'brush' in kargs:
-            if not isinstance(kargs['brush'], QtGui.QBrush):
+            try:
+                iterator = iter(kargs['brush'])
+            except TypeError:
                 newData['orig_brush'] = fn.mkBrush(kargs['brush'])
             else:
-                newData['orig_brush'] = kargs['brush']
+                newData['orig_brush'] = list(map(fn.mkBrush, kargs['brush']))
+
+            # if not isinstance(kargs['brush'], (QtGui.QBrush, QtGui.QColor, str, int, float, tuple, np.ndarray)):
+            #     try:
+            #         newData['orig_brush'] = fn.mkBrush(kargs['brush'])
+            #     except:
+            #         try:
+            #             iterator = iter(kargs['brush'])
+            #         except:
+            #             raise TypeError('brush must be iterable if not convertible to QtGui.QBrush')
+            #     else:
+            #         newData['orig_brush'] = list(map(fn.mkBrush, kargs['brush']))
+            # else:
+            #     newData['orig_brush'] = kargs['brush']
+
+
         # if 'pen' in kargs:
         #     if not isinstance(kargs['pen'], QtGui.QBrush):
         #         newData['orig_pen'] = fn.mkPen(kargs['brush'])
