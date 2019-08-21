@@ -148,8 +148,7 @@ class Heatmap(CtrlNode):
 class ScatterPlot(CtrlNode):
     """Scatter Plot, useful for visualizing transformed data and clusters"""
     nodeName = "ScatterPlot"
-    uiTemplate = [('Show', 'button', {'text': 'Show'}),
-                  ('Apply', 'check', {'checked': False, 'applyBox': True})]
+    uiTemplate = [('Show', 'button', {'text': 'Show'})]
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
@@ -157,16 +156,13 @@ class ScatterPlot(CtrlNode):
         self.ctrls['Show'].clicked.connect(self.plot_widget.show)
 
     def process(self, **kwargs):
-        if not self.apply_checked():
-            return
-
         transmissions = kwargs['In']
 
         tran_list = merge_transmissions(transmissions)
         merged = Transmission.merge(tran_list)
 
         self.plot_widget.set_input(merged)
-        
+
 
 class BeeswarmPlots(CtrlNode):
     """Beeswarm and Violin plots"""
