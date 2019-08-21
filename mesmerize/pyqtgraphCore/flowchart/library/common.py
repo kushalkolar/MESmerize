@@ -17,6 +17,7 @@ except:
     HAVE_METAARRAY = False
 
 from ...widgets.ComboBox import ComboBox as QComboBox
+from ...widgets.ListWidget import ListWidget
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
 from ....analysis import organize_dataframe_columns
 
@@ -83,6 +84,13 @@ def generateUi(opts):
                         w.addItem(i)
             if 'items' in o.keys():
                 w.setItems(o['items'])
+
+        elif t == 'list_widget':
+            w = ListWidget()
+            if 'items' in o.keys():
+                w.setItems(o['items'])
+            if 'selection_mode' in o.keys():
+                w.setSelectionMode(o['selection_mode'])
 
         elif t == 'lineEdit':
             w = QtGui.QLineEdit()
