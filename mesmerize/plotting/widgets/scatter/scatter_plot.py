@@ -105,6 +105,12 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.live_datapoint_tracer = DatapointTracerWidget()
         self.plot_variant.signal_spot_clicked.connect(self.set_current_datapoint)
 
+        self.dockDatapointTracer = QtWidgets.QDockWidget(self)
+        self.dockDatapointTracer.setWindowTitle('Datapoint Tracer')
+        self.dockDatapointTracer.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable)
+        self.dockDatapointTracer.setWidget(self.live_datapoint_tracer)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.dockDatapointTracer)
+
         cmd_history_file = os.path.join(console_history_path, 'scatter_plot.pik')
 
         ns = {'this': self,
@@ -242,7 +248,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         uuid_column = self.plot_opts['uuid_column']
 
-        r = self.transmission.df[self.transmission.df[uuid_column].str.match(u)]
+        r = self.transmission.df[self.transmission.df[uuid_column] == u]
         dpt_col = self.plot_opts['dpt_curve_column']
 
         db_id = r['_BLOCK_']

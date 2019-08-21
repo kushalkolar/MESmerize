@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtWidgets
 class ListWidget(QtWidgets.QListWidget):
     """QListWidget with a signal blocker for set_items"""
 
-    def blockSignals(func):
+    def blockSignals(func, *args):
         def fn(self, *args, **kwds):
             blocked = self.signalsBlocked()
             self.blockSignals(True)
@@ -36,5 +36,6 @@ class ListWidget(QtWidgets.QListWidget):
                 continue
             item = item[0]
             item.setSelected(True)
+
     def getSelectedItems(self) -> list:
-        return [self.item(ix).text() for ix in range(self.count())]
+        return [item.text() for item in self.selectedItems()]
