@@ -415,11 +415,9 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.transmission.df.reset_index(drop=True, inplace=True)
         self.proportions_widget.plot.set_input(self.transmission)
 
-        dcols, ccols, ucols = organize_dataframe_columns(self.transmission.df.columns.tolist())
-        dcols.sort()
-
+    def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
         self.control_widget.ui.comboBoxDataColumn.clear()
-        self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
+        self.control_widget.ui.comboBoxDataColumn.addItems(data_columns)
 
     def pad_input_data(self, a: np.ndarray, method: str = 'random') -> np.ndarray:
         """

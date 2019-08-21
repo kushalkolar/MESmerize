@@ -32,6 +32,12 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.message_label.setMaximumHeight(30)
         self.vbox.addWidget(self.message_label)
 
+        self.checkbox_update_live = QtWidgets.QCheckBox(self)
+        self.checkbox_update_live.setText('Live update from flowchart')
+        self.checkbox_update_live.setChecked(True)
+        self.checkbox_update_live.toggled.connect(self.set_update_live)
+        self.vbox.addWidget(self.checkbox_update_live)
+
         xs_label = QtWidgets.QLabel(self)
         xs_label.setText('X column')
         xs_label.setMaximumHeight(30)
@@ -92,7 +98,15 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.props_df = None
 
-        self.block_signals_list = [self.xs_combo, self.ys_combo, self.checkbox_percent]
+        self.block_signals_list = [self.xs_combo, self.ys_combo, self.checkbox_percent, self.checkbox_update_live]
+
+    @BasePlotWidget.signal_blocker
+    def set_update_live(self, b: bool):
+        self.checkbox_update_live.setChecked(b)
+        self.update_live = b
+
+        if b:
+            self.update_plot()
 
     @BasePlotWidget.signal_blocker
     def swap_x_y(self, *args, **kwargs):
@@ -112,15 +126,16 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         super(ProportionsWidget, self).set_input(transmission)
-        cols = self.transmission.df
+        if self.update_live:
+            self.update_plot()
 
-        dcols, ccols, ucols = organize_dataframe_columns(cols)
-
+    @BasePlotWidget.signal_blocker
+    def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
         self.xs_combo.clear()
-        self.xs_combo.addItems(ccols)
+        self.xs_combo.addItems(categorical_columns)
 
         self.ys_combo.clear()
-        self.ys_combo.addItems(ccols)
+        self.ys_combo.addItems(categorical_columns)
 
     def get_plot_opts(self, drop: bool = False):
         """

@@ -296,7 +296,6 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.plot_variant.sig_selection_changed.connect(self.set_current_datapoint)
 
         self.datapoint_tracer_curve_column = None
-        self._previous_df_columns = []
 
         self.control_widget.ui.listWidgetColorMapsData.set_cmap('jet')
 
@@ -307,16 +306,18 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
         self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
 
-        self._update_live = False
+        self.update_live = False
         self.block_signals_list = [self.control_widget]
 
         self.is_clustering = False
 
         self.control_widget.sig_changed.connect(self.update_plot)
 
+    @BasePlotWidget.signal_blocker
     def set_update_live(self, b: bool):
         """Set whether the plot should update live with changes in the flowchart"""
-        self._update_live = b
+        self.update_live = b
+        self.control_widget.ui.checkBoxLiveUpdate.setChecked(b)
         if b:
             self.update_plot()
 
@@ -354,26 +355,20 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
 
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
-        """Set the input Transmission and update the plot if _update_live is True"""
+        """Set the input Transmission and update the plot if update_live is True"""
         super(HeatmapTracerWidget, self).set_input(transmission)
-        cols = self.transmission.df.columns
-        if set(self._previous_df_columns) != set(cols):
-            dcols, ccols, ucols = organize_dataframe_columns(cols)
-
-            self.control_widget.ui.comboBoxDataColumn.clear()
-            self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
-
-            self.control_widget.ui.comboBoxLabelsColumn.clear()
-            self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
-
-            self.control_widget.ui.comboBoxDPTCurveColumn.clear()
-            self.control_widget.ui.comboBoxDPTCurveColumn.addItems(dcols)
-
-        # self.transmission = transmission
-        self._previous_df_columns = cols
-
-        if self._update_live:
+        if self.update_live:
             self.update_plot()
+
+    def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
+        self.control_widget.ui.comboBoxDataColumn.clear()
+        self.control_widget.ui.comboBoxDataColumn.addItems(data_columns)
+
+        self.control_widget.ui.comboBoxLabelsColumn.clear()
+        self.control_widget.ui.comboBoxLabelsColumn.addItems(categorical_columns)
+
+        self.control_widget.ui.comboBoxDPTCurveColumn.clear()
+        self.control_widget.ui.comboBoxDPTCurveColumn.addItems(data_columns)
 
     def get_plot_opts(self, drop: bool = False) -> dict:
         """
@@ -386,6 +381,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
                  labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
                  datapoint_tracer_curve_column=self.control_widget.ui.comboBoxDPTCurveColumn.currentText(),
                  cmap=self.control_widget.ui.listWidgetColorMapsData.current_cmap,
+                 cmap_labels=self.control_widget.ui.listWidgetColorMapsLabels.current_cmap,
                  transmission=self.transmission,
                  ylabels_cmap=self.control_widget.ui.listWidgetColorMapsLabels.current_cmap)
         if drop:
@@ -406,6 +402,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.comboBoxDPTCurveColumn.setCurrentIndex(ix)
 
         self.control_widget.ui.listWidgetColorMapsData.set_cmap(opts['cmap'])
+        self.control_widget.ui.listWidgetColorMapsLabels.set_cmap(opts['cmap_labels'])
 
     def update_plot(self):
         """Calls set_data and passes dict from get_plot_opts() as keyword arguments"""
