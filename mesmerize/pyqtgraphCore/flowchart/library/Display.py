@@ -153,24 +153,20 @@ class ScatterPlot(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
-        self.plot_widget = None
-        self.ctrls['Show'].clicked.connect(self._open_plot_gui)
+        self.plot_widget = ScatterPlotWidget()
+        self.ctrls['Show'].clicked.connect(self.plot_widget.show)
 
     def process(self, **kwargs):
-        if (self.ctrls['Apply'].isChecked() is False) or self.plot_widget is None:
+        if not self.apply_checked():
             return
 
         transmissions = kwargs['In']
 
-        transmissions_list = merge_transmissions(transmissions)
+        tran_list = merge_transmissions(transmissions)
+        merged = Transmission.merge(tran_list)
 
-        self.plot_widget.update_input_transmissions(transmissions_list)
-
-    def _open_plot_gui(self):
-        if self.plot_widget is None:
-            self.plot_widget = ScatterPlotWidget()
-        self.plot_widget.show()
-
+        self.plot_widget.set_input(merged)
+        
 
 class BeeswarmPlots(CtrlNode):
     """Beeswarm and Violin plots"""
