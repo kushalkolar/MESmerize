@@ -131,7 +131,7 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
         self.previous_df_cols = cols
 
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
-        """Must be implemented in subclass"""
+        """Method for filling the control widget(s) when inputs are set. Must be implemented in subclass"""
         raise NotImplementedError("""Must be implemented in subclass""")
 
     def update_plot(self, *args, **kwargs):

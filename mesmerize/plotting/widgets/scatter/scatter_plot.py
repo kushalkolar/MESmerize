@@ -19,12 +19,13 @@ import numpy as np
 from ....pyqtgraphCore import GraphicsLayoutWidget, mkBrush
 from ....pyqtgraphCore.console import ConsoleWidget
 from ...utils import get_colormap
-from ... import DatapointTracerWidget
+from .. import DatapointTracerWidget
 import os
 from ....common.configuration import console_history_path
 from ....common import get_project_manager
 from uuid import UUID
 import pandas as pd
+
 
 class ControlDock(QtWidgets.QDockWidget):
     sig_changed = QtCore.pyqtSignal()
@@ -135,7 +136,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         super(ScatterPlotWidget, self).set_input(transmission)
-        if self.update__live:
+        if self.update_live:
             self.update_plot()
 
     @BasePlotWidget.signal_blocker
