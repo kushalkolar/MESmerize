@@ -42,20 +42,25 @@ class PgScatterPlot(QtCore.QObject):
         self.pseudo_plots = []
         # self.legend.addItem(self.plot, 'Legend')
         
-    def add_data(self, xs, ys, uuid_series: pd.Series, color: QtGui.QColor, **kwargs):
-        self.plot.addPoints(xs, ys, uuid=uuid_series, pen='k', brush=color, size=10, name='scatter', **kwargs)
+    def add_data(self, xs, ys, uuid_series: pd.Series, color: QtGui.QColor, size: int = 10, **kwargs):
+        self.plot.addPoints(xs, ys, uuid=uuid_series, pen='k', brush=color, size=size, name='scatter', **kwargs)
 
     def _clicked(self, plot, points):
         for i, p in enumerate(self.lastClicked):
             assert isinstance(p, SpotItem)
             p.setPen('k')#p._data['orig_pen'])
-            # p.setBrush(p._data['orig_brush'])
+            p.setBrush(p._data['orig_brush'])
             # p.setSymbol(p._data['orig_symbol'])
 
         if len(points) == 1:
             p = points[0]
             assert isinstance(p, SpotItem)
-            u = UUID(p.uuid)
+            if isinstance(p.uuid, str):
+                u = UUID(p.uuid)
+            elif isinstance(p.uuid, UUID):
+                u = p.uuid
+            else:
+                raise TypeError('spot uuid attribute must be either uuid.UUID or str')
             self.signal_spot_clicked.emit(u)
 
         for p in points:
@@ -63,7 +68,7 @@ class PgScatterPlot(QtCore.QObject):
             # p.setSymbol(p._data['orig_symbol'])
             p.setPen('w')
 
-            # p.setBrush('w')
+            p.setBrush('w')
 
         self.lastClicked = points
 
