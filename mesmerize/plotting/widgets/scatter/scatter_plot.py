@@ -237,6 +237,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.plot_variant.set_legend(colors_map, shapes_map)
 
     def set_current_datapoint(self, u: UUID):
+        self.current_datapoint = u
         u = str(UUID)
 
         r = self.transmission.df[self.transmission.df[self.control_widget.ui.comboBoxUUIDColumn.currentText()] == u]
@@ -245,7 +246,6 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         db_id = r._BLOCK_
         if isinstance(db_id, pd.Series):
             db_id = db_id.item()
-
         ht = self.transmission.history_trace.get_data_block_history(db_id)
 
         self.live_datapoint_tracer.set_widget(u, dpt_col, row=r, proj_path=get_project_manager().root_dir,
