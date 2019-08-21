@@ -240,10 +240,14 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.current_datapoint = u
         u = str(UUID)
 
-        r = self.transmission.df[self.transmission.df[self.control_widget.ui.comboBoxUUIDColumn.currentText()] == u]
+        uuid_column = self.control_widget.ui.comboBoxUUIDColumn.currentText()
+
+        r = self.transmission.df[self.transmission.df[uuid_column] == u]
         dpt_col = self.control_widget.ui.comboBoxDPTCurve.currentText()
 
-        db_id = r._BLOCK_
+        print(r)
+        db_id = r['_BLOCK_']
+        print(db_id)
         if isinstance(db_id, pd.Series):
             db_id = db_id.item()
         ht = self.transmission.history_trace.get_data_block_history(db_id)
