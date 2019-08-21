@@ -135,11 +135,12 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         super(ScatterPlotWidget, self).set_input(transmission)
+        if self.update__live:
+            self.update_plot()
 
     @BasePlotWidget.signal_blocker
     def fill_control_widget(self, **kwargs):
-        if set(self.previous_df_cols) != set(self.transmission.df.columns):
-            self.control_widget.fill_widget(**kwargs)
+        self.control_widget.fill_widget(**kwargs)
 
     def get_plot_opts(self, drop: bool = False) -> dict:
         d = {'data_column': self.control_widget.ui.comboBoxDataColumn.currentText(),
