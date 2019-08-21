@@ -69,7 +69,7 @@ class Manifold(CtrlNode):
 
 class LDA(CtrlNode):
     """Linear Discriminant Analysis, uses sklearn"""
-    nodedName = "LDA"
+    nodeName = "LDA"
     uiTemplate = [('data_columns', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection}),
                   ('labels', 'combo', {}),
                   ('solver', 'combo', {'items': ['svd', 'lsqr', 'eigen']}),
