@@ -233,7 +233,7 @@ BeeswarmPlots
 
 	Visualize data points as a pseudoscatter and as corresponding Violin Plots. This is commonly used to visualize peak features and compare different experimental groups.
 
-	For more information please see :ref:`plot_BeeswarmPlots`
+	For more information please see :ref:`Beeswarm Plots <plot_Beeswarm>`
 	
 	========== 	=================
 	Terminal		Description
@@ -252,7 +252,7 @@ Heatmap
 
 	Used for visualizing numerical arrays in the form of a heatmap. Also used for visualizing a hieararchical clustering tree (dendrogram) along with a heatmap with row order corresponding to the order leaves of the dendrogram.
 
-	For more information see :ref:`plot_Heatmap`
+	For more information see :ref:`Heat Plot <plot_Heatmap>`
 
 	========== 	=================
 	Terminal		Description
@@ -270,7 +270,7 @@ Heatmap
 CrossCorr
 ^^^^^^^^^
 
-	Perform Cross-Correlation analysis. See :ref:`plot_CrossCorrelation` for more information.
+	Perform Cross-Correlation analysis. See :ref:`CrossCorrelation Plot <plot_CrossCorrelation>` for more information.
 	
 
 .. _node_Plot:
@@ -303,7 +303,7 @@ Proportions
 
 	Plot stacked bar chart of one categorical variable vs. another categorical variable.
 	
-	For more information see :ref:`plot_Proportions`
+	For more information see :ref:`Proportions Plot <plot_Proportions>`
 
 .. _node_ScatterPlot:
 
@@ -312,9 +312,7 @@ ScatterPlot
 
 	Create scatter plot of a numerical data column containing [X, Y] values (arrays of size 2).
 	
-	For more information see :ref:`plot_ScatterPlot`
-
-
+	For more information see :ref:`Scatter Plot <plot_ScatterPlot>`
 
 .. _node_TimeSeries:
 
@@ -845,14 +843,9 @@ KMeans
 ^^^^^^
 
 	Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
-
-
-.. _node_LDA:
-
-LDA
-^^^
-
+    
 ----------------------
+
 
 .. _nodes_Hierarchical:
 
@@ -936,3 +929,55 @@ MaxIncStat
 
 MaxInconsistent
 ^^^^^^^^^^^^^^^
+
+----------------------
+
+
+
+.. _nodes_Transform:
+
+Transform
+---------
+
+Nodes for transforming data
+
+.. _node_LDA:
+
+LDA
+^^^
+
+    Perform Linear Discriminant Analysis. Uses `sklearn.discriminant_analysis.LinearDiscriminantAnalysis <https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html>`_
+    
+    =========   ==========================================================
+    Terminal    Description
+    =========   ==========================================================
+    In          Input Transmission
+    T           | Transmission with Transformed data and decision function. Output columns outlined below:
+                | **_LDA_TRANSFORM:** The transformed data, can be visualized with a :ref:`Scatter Plot <plot_ScatterPlot>` for instance
+                | **_LDA_DFUNC:** Decision function (confidence scores). Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
+    coef        | Transmission with LDA Coefficients. Output columns outlined below:
+                | **classes:** The categorical labels that were trained against
+                | **_COEF:** LDA Coefficients (weight vectors) for the classes. Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
+                
+    means       Transmission with LDA Means. Output columns outlined below:
+    
+                | **classes:** The categorical labels that were trained against
+                | **_MEANS:** LDA means for the classes. Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
+    =========   ==========================================================
+    
+    =============== ===================================================================
+    Parameter       Description
+    =============== ===================================================================
+    data_columns    Single or multiple data columns that contain the input features.
+    labels          Data column containing categorical labels to train to
+    solver          | *svd:* Singular Value Decomposition
+                    | *lsqr:* Least Squares solution
+                    | *eigen*: Eigen decomposition
+    shrinkage       Can be used with *lsqr* or *eigen* solvers.
+    shrinkage_val   shrinkage value if *shrinkage* is set to "value"
+    n_components    Number of components to output
+    tol             Tolereance threshold exponent. The used value is 10^<tol>
+    score           Displays mean score of the classification (read only)
+    =============== ===================================================================
+
+    

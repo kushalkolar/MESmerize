@@ -44,7 +44,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.vbox.addWidget(xs_label)
 
         self.xs_combo = QtWidgets.QComboBox(self)
-        self.xs_combo.currentIndexChanged.connect(self.update_plot)
+        self.xs_combo.currentIndexChanged.connect(lambda: self.update_plot())
         self.xs_combo.setMaximumHeight(30)
         self.vbox.addWidget(self.xs_combo)
 
@@ -55,13 +55,13 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.ys_combo = QtWidgets.QComboBox(self)
         self.ys_combo.setMaximumHeight(30)
-        self.ys_combo.currentTextChanged.connect(self.update_plot)
+        self.ys_combo.currentTextChanged.connect(lambda: self.update_plot())
         self.vbox.addWidget(self.ys_combo)
 
         self.checkbox_percent = QtWidgets.QCheckBox(self)
         self.checkbox_percent.setText('Show percentages')
         self.checkbox_percent.setChecked(True)
-        self.checkbox_percent.toggled.connect(self.update_plot)
+        self.checkbox_percent.toggled.connect(lambda: self.update_plot())
         self.checkbox_percent.setMaximumHeight(30)
         self.vbox.addWidget(self.checkbox_percent)
 
@@ -167,8 +167,10 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.checkbox_percent.setChecked(opts['percentages'])
 
     @present_exceptions('Plot error', 'Cannot plot, make sure you have selected appropriate data columns')
-    def update_plot(self, *args, **kwargs):
-        """Update the plot data and draw"""
+    def update_plot(self):
+        """
+        Update the plot data and draw
+        """
         self.ax.cla()
 
         opts = self.get_plot_opts()

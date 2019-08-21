@@ -83,7 +83,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.setWindowTitle('Scatter Plot')
 
         self.graphics_view = GraphicsLayoutWidget()
-        self.plot_variant = PgScatterPlot(self.graphics_view)
+        self.plot_variant = PgScatterPlot(self.graphics_view)  #: Instance of :ref:`PgScatterPlot <API_Variant_PgScatterPlot>` which is the actual plot area
         # self.view_box.addItem(self.plot_variant)
         self.setCentralWidget(self.graphics_view)
 
@@ -102,7 +102,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.update_live = self.control_widget.ui.checkBoxLiveUpdateFromFlowchart.isChecked()
         self.control_widget.ui.checkBoxLiveUpdateFromFlowchart.toggled.connect(self.set_update_live)
 
-        self.live_datapoint_tracer = DatapointTracerWidget()
+        self.live_datapoint_tracer = DatapointTracerWidget()  #: Instance of :ref:`DatapointTracer <API_DatapointTracer>`
         self.plot_variant.signal_spot_clicked.connect(self.set_current_datapoint)
 
         self.dockDatapointTracer = QtWidgets.QDockWidget(self)
@@ -141,6 +141,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
+        """Set the input transmission"""
         super(ScatterPlotWidget, self).set_input(transmission)
         if self.update_live:
             self.update_plot()
@@ -150,6 +151,11 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.control_widget.fill_widget(**kwargs)
 
     def get_plot_opts(self, drop: bool = False) -> dict:
+        """
+         Get the plot options
+
+         :param drop: no drop opts are specified for this plot
+         """
         d = {'data_column': self.control_widget.ui.comboBoxDataColumn.currentText(),
              'data_column_radio': self.control_widget.ui.radioButtonDataColumn.isChecked(),
              'x_column': self.control_widget.ui.comboBoxXColumn.currentText(),
@@ -172,6 +178,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
+        """Set all plot options from a dict"""
         self.control_widget.set_combo_box(self.control_widget.ui.comboBoxDataColumn, opts['data_column'])
         self.control_widget.ui.radioButtonDataColumn.setChecked(opts['data_column_radio'])
 
@@ -190,6 +197,8 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @present_exceptions('Error while plotting the data', 'Make sure you have selected appropriate columns')
     def update_plot(self):
+        """Update the plot data and draw"""
+
         self.plot_opts = self.get_plot_opts()
 
         if self.plot_opts['data_column_radio']:
@@ -243,6 +252,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.plot_variant.set_legend(colors_map, shapes_map)
 
     def set_current_datapoint(self, identifier: UUID):
+        """Set the UUID of the current datapoint and update the Datapoint Tracer"""
         self.current_datapoint = identifier
         u = str(self.current_datapoint)
 

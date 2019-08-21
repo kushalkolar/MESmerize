@@ -36,6 +36,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     @present_exceptions()
     def get_params(self, *args, **kwargs) -> dict:
+        """
+        Get a dict of the set parameters.
+        If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
+        Doesn't use any arguments
+
+        :return: parameters dict
+        :rtype: dict
+        """
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
             raise KeyError('No framerate for current image sequence!',
                            'You must set a framerate for the current image sequence. '
@@ -71,6 +79,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
         return d
 
     def set_params(self, d: dict):
+        """
+        Set all parameters from a dict. All keys must be present in the dict.
+
+        :param d: parameters dict
+        """
         self.ui.spinBoxP.setValue(d['p'])
         self.ui.spinBoxGnb.setValue(d['gnb'])
         self.ui.doubleSpinBoxMergeThresh.setValue(d['merge_thresh'])
@@ -99,6 +112,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.set_params(d)
 
     def add_to_batch_cnmf(self):
+        """
+        Add a CNMF batch item with the currently set parameters and the current work environment.
+        """
         input_workEnv = self.vi.viewer.workEnv
 
         d = self.get_params()

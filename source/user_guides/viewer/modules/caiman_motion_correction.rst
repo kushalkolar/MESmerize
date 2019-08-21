@@ -30,6 +30,8 @@ This module adds a "caiman motion correction" *item* to the batch. Set the desir
 
 .. note:: The parameters used for motion correction are stored in the work environment of the viewer and this log is carried over and saved in the :ref:`Project Sample <ProjectSample>` as well. To see the parameters that were used for motion correction in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the ``caiman_motion_correction`` entry.
 
+.. _MotCorScripts:
+
 Script Usage
 ============
 
@@ -42,7 +44,7 @@ Add items
 
 This example shows how to add all tiff files (of image sequences) from a directory as batch items with 3 different variants of parameters.
 
-.. seealso:: This example uses the :ref:`ViewerWorkEnv API <API_ViewerWorkEnv>` and :ref:`Batch Manager API <API_BatchManager>`
+.. seealso:: This example uses the :ref:`Caiman Motion Correction Module API <API_CaimanMotionCorrection>`, :ref:`ViewerWorkEnv API <API_ViewerWorkEnv>`, and :ref:`Batch Manager API <API_BatchManager>`
 
 .. code-block:: python
     :linenos:
@@ -123,6 +125,8 @@ Crop and add items
 ------------------
 
 This example shows how to crop videos prior to adding them as batch items. This is useful if you want to crop-out large unchanging regions of your movides. It uses either simple thresholding or spectral salieny on a standard deviation projection to determine the bounding box for cropping.
+
+.. seealso:: This example uses the :ref:`Caiman Motion Correction Module API <API_CaimanMotionCorrection>`, :ref:`ViewerWorkEnv API <API_ViewerWorkEnv>`, and :ref:`Batch Manager API <API_BatchManager>`
 
 .. code-block:: python
     :linenos:

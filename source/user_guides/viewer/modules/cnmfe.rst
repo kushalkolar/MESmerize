@@ -55,5 +55,65 @@ Script Usage
 
 A script can be used to add CNMFE batch items. This is much faster than using the GUI.
 
-.. seealso:: `Script Editor <module_ScriptEditor>`.
+.. seealso:: :ref:`Script Editor <module_ScriptEditor>`.
 
+Add Corr PNR items
+------------------
+
+Add Corr PNR batch items from a batch that contains motion corrected items. This example add 2 variants of parameters (just gSig) for each motion corrected item.
+
+.. seealso:: This example uses the :ref:`Caiman CNMFE module API <API_CNMFE>` and :ref:`Batch Manager API <API_BatchManager>`
+
+.. seealso:: :ref:`Caiman Motion Correction script usage examples <MotCorScripts>` for how to load images if you want to add Corr PNR items from images that are not in a batch.
+
+.. code-block:: python
+    :linenos:
+    
+    # Get the batch manager
+    bm = get_batch_manager()
+
+    # Get the CNMFE module
+    cnmfe_mod = get_module('cnmfe', hide=True)
+
+    # Start index to start processing the new items after they have been added
+    start_ix = bm.df.index.size + 1
+
+    for ix, r in bm.df.iterrows():
+            if ix == start_ix:
+                    break
+
+            # Get the name of the mot cor item
+            name = r['name']
+
+            # Load the output of the motion corrected batch item
+            # The output will load into the viewer that this script
+            # is running in.
+            bm.load_item_output(module='caiman_motion_correction', viewers=viewer, UUID=r['uuid'])
+
+            # Get the currently set params
+            # You just need the dict with all the correct keys
+            # You will just modify the "gSig" and "name_corr_pnr" keys
+            params = cnmfe_mod.get_params()
+
+            # Set the gSig and name params
+            params['gSig'] = 8
+            params['name_corr_pnr'] = name
+
+            # Set the params and add to batch
+            cnmfe_mod.set_params(params)
+            cnmfe_mod.add_to_batch_corr_pnr()
+
+            # Another variant of params
+            # Set the gSig and name params
+            params['gSig'] = 10
+            params['name_corr_pnr'] = name
+
+            # Set the params and add to batch
+            cnmfe_mod.set_params(params)
+            cnmfe_mod.add_to_batch_corr_pnr()
+
+    # Cleanup the work environment
+    vi._clear_workEnv()
+
+    # Start the batch from the start_ix
+    bm.process_batch(start_ix, clear_viewers=True)

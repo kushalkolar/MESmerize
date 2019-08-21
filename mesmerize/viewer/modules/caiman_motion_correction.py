@@ -81,6 +81,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.overlapsV = []
 
     def get_params(self) -> dict:
+        """
+        Get a dict of the set parameters
+        :return: parameters dict
+        :rtype: dict
+        """
         d = {'max_shifts_x':        self.ui.spinboxX.value(),
              'max_shifts_y':        self.ui.spinboxY.value(),
              'iters_rigid':         self.ui.spinboxIterRigid.value(),
@@ -95,6 +100,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
         return d
 
     def set_params(self, params: dict):
+        """
+        Set all parameters from a dict. All keys must be present in the dict and of the correct type.
+
+        :param params: dict of parameters
+        """
         self.ui.spinboxX.setValue(params['max_shifts_x'])
         self.ui.spinboxY.setValue(params['max_shifts_y'])
         self.ui.spinboxIterRigid.setValue(params['iters_rigid'])
@@ -124,6 +134,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         pass
 
     def add_to_batch_elas_corr(self):
+        """
+        Add a batch item with the currently set parameters and the current work environment.
+        """
         d = self.get_params()
 
         name = self.ui.lineEditNameElastic.text()
