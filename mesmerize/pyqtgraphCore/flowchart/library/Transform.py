@@ -71,22 +71,26 @@ class Manifold(CtrlNode):
 class LDA(CtrlNode):
     """Linear Discriminant Analysis, uses sklearn"""
     nodeName = "LDA"
-    uiTemplate = [('data_columns', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection}),
-                  ('labels', 'combo', {}),
+    uiTemplate = [('train_columns', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection}),
+                  ('train_labels', 'combo', {}),
                   ('solver', 'combo', {'items': ['svd', 'lsqr', 'eigen']}),
                   ('shrinkage', 'combo', {'items': ['None', 'auto', 'value']}),
                   ('shrinkage_val', 'doubleSpin', {'min': 0.0, 'max': 1.0, 'step': 0.1, 'value': 0.5}),
                   ('n_components', 'intSpin', {'min': 2, 'max': 1000, 'step': 1, 'value': 2}),
                   ('tol', 'intSpin', {'min': -50, 'max': 0, 'step': 1, 'value': -4}),
-                  ('Apply', 'check', {'applyBox': True, 'checked': False}),
-                  ('score', 'lineEdit', {})
+                  ('score', 'lineEdit', {}),
+                  ('predict_on', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
                   ]
 
     def __init__(self, name, **kwargs):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'},
+        CtrlNode.__init__(self, name, terminals={'train': {'io': 'in'},
+                                                 'predict': {'io', 'in'},
+
                                                  'T': {'io': 'out'},
                                                  'coef': {'io': 'out'},
                                                  'means': {'io': 'out'},
+                                                 'predicted': {'io': 'out'}
                                                  },
                           **kwargs)
         self.ctrls['score'].setReadOnly(True)
@@ -94,19 +98,20 @@ class LDA(CtrlNode):
     def process(self, **kwargs):
         return self.processData(**kwargs)
 
-    def processData(self, In: Transmission):
-        self.t = In.copy()
+    def processData(self, train: Transmission, predict: Transmission):
+        self.t = train.copy()  #: Transmisison instance containing the training data with the labels
+        self.to_predict = predict.copy()  #: Transmission instance containing the data to predict after fitting on the the training data
 
         dcols, ccols, ucols = organize_dataframe_columns(self.t.df.columns)
 
-        self.ctrls['data_columns'].setItems(dcols)
-        self.ctrls['labels'].setItems(ccols)
+        self.ctrls['train_columns'].setItems(dcols)
+        self.ctrls['train_labels'].setItems(ccols)
 
         if not self.apply_checked():
             return
 
-        data_columns = self.ctrls['data_columns'].getSelectedItems()
-        labels_column = self.ctrls['labels'].currentText()
+        train_columns = self.ctrls['train_columns'].getSelectedItems()
+        train_labels = self.ctrls['train_labels'].currentText()
 
         solver = self.ctrls['solver'].currentText()
 
@@ -121,7 +126,8 @@ class LDA(CtrlNode):
 
         store_covariance = True if solver == 'svd' else False
 
-        params = {'data_columns': data_columns,
+        params = {'train_columns': train_columns,
+                  'train_labels': train_labels,
                   'solver': solver,
                   'shrinkage': shrinkage,
                   'n_components': n_components,
@@ -130,13 +136,12 @@ class LDA(CtrlNode):
                   }
 
         kwargs = params.copy()
-        kwargs.pop('data_columns')
+        kwargs.pop('train_columns')
         self.lda = LinearDiscriminantAnalysis(**kwargs)
 
         # Make an array of all the data from the selected columns
-        self.X = np.hstack([np.vstack(self.t.df[data_column]) for data_column in data_columns])
-
-        self.y = self.t.df[labels_column]
+        self.X = np.hstack([np.vstack(self.t.df[train_column]) for train_column in train_columns])
+        self.y = self.t.df[train_labels]
 
         self.X_ = self.lda.fit_transform(self.X, self.y)
 
@@ -151,9 +156,6 @@ class LDA(CtrlNode):
         self.t.history_trace.add_operation('all', 'lda', params)
 
         self.t.df['_LDA_DFUNC'] = self.lda.decision_function(self.X).tolist()
-        # self.t.df['_LDA_COEF'] = self.lda.coef_.tolist()
-        # self.t.df['_LDA_MEANS'] = self.lda.means_.tolist()
-        # self.t.df['_LDA_CLASSES'] = self.lda.classes_.tolist()
 
         coef_df = pd.DataFrame({'classes': self.lda.classes_, '_COEF': self.lda.coef_.tolist()})
         t_coef = Transmission(df=coef_df, history_trace=self.t.history_trace)
@@ -161,7 +163,29 @@ class LDA(CtrlNode):
         means_df = pd.DataFrame({'classes': self.lda.classes_, '_MEANS': self.lda.means_.tolist()})
         t_means = Transmission(df=means_df, history_trace=self.t.history_trace)
 
-        return {'T': self.t, 'coef': t_coef, 'means': t_means}
+        out = {'T': self.t, 'coef': t_coef, 'means': t_means, 'predicted': None}
+
+        # Predict using the trained model
+        predict_columns = self.ctrls['predict_on'].getSelectedItems()
+
+        if not predict_columns:
+            return out
+
+        if predict_columns != train_columns:
+            QtWidgets.QMessageBox.warning('Predict and Train columns do not match',
+                                          'The selected train and predict columns are different')
+
+        predict_data = np.hstack([np.vstack(self.to_predict.df[predict_column]) for predict_column in predict_columns])
+        self.to_predict.df['LDA_PREDICTED_LABELS'] = self.lda.predict(predict_data)
+
+        params_predict = params.copy()
+        params_predict.update({'predict_columns': predict_columns})
+
+        self.to_predict.history_trace.add_operation('all', 'lda-predict', params_predict)
+
+        out.update({'predicted': self.to_predict})
+
+        return out
 
 
 class Decomposition(CtrlNode):
