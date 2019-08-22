@@ -1,7 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
 
-from PyQt5 import QtCore, QtWidgets
-
 
 class ListWidget(QtWidgets.QListWidget):
     """QListWidget with a signal blocker for set_items"""
