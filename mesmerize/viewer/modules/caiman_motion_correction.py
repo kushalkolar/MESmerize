@@ -87,7 +87,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         :rtype: dict
         """
 
-        gSig_filt = None if self.ui.spinBoxGSig_filt.value() == 0 else self.ui.spinBoxGSig_filt.value()
+        gSig_filt = None if self.ui.spinBoxGSig_filt.value() == 0 else (self.ui.spinBoxGSig_filt.value(), )*2
 
         d = {'max_shifts_x':        self.ui.spinboxX.value(),
              'max_shifts_y':        self.ui.spinboxY.value(),
