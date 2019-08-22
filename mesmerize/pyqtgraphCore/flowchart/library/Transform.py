@@ -71,21 +71,24 @@ class Manifold(CtrlNode):
 class LDA(CtrlNode):
     """Linear Discriminant Analysis, uses sklearn"""
     nodeName = "LDA"
-    uiTemplate = [('train_columns', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection}),
-                  ('train_labels', 'combo', {}),
+    uiTemplate = [('train_data', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection,
+                                                    'toolTip': 'Column containing the training data'}),
+                  ('train_labels', 'combo', {'toolTip': 'Column containing training labels'}),
                   ('solver', 'combo', {'items': ['svd', 'lsqr', 'eigen']}),
                   ('shrinkage', 'combo', {'items': ['None', 'auto', 'value']}),
                   ('shrinkage_val', 'doubleSpin', {'min': 0.0, 'max': 1.0, 'step': 0.1, 'value': 0.5}),
                   ('n_components', 'intSpin', {'min': 2, 'max': 1000, 'step': 1, 'value': 2}),
                   ('tol', 'intSpin', {'min': -50, 'max': 0, 'step': 1, 'value': -4}),
                   ('score', 'lineEdit', {}),
-                  ('predict_on', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection}),
+                  ('predict_on', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection,
+                                                 'toolTip': 'Data column of the input "predict" Transmission\n'
+                                                            'that is used for predicting from the model'}),
                   ('Apply', 'check', {'applyBox': True, 'checked': False})
                   ]
 
     def __init__(self, name, **kwargs):
         CtrlNode.__init__(self, name, terminals={'train': {'io': 'in'},
-                                                 'predict': {'io', 'in'},
+                                                 'predict': {'io': 'in'},
 
                                                  'T': {'io': 'out'},
                                                  'coef': {'io': 'out'},
@@ -104,14 +107,16 @@ class LDA(CtrlNode):
 
         dcols, ccols, ucols = organize_dataframe_columns(self.t.df.columns)
 
-        self.ctrls['train_columns'].setItems(dcols)
+        self.ctrls['train_data'].setItems(dcols)
         self.ctrls['train_labels'].setItems(ccols)
+
+        self.ctrls['predict_on'].setItems(dcols)
 
         if not self.apply_checked():
             return
 
-        train_columns = self.ctrls['train_columns'].getSelectedItems()
-        train_labels = self.ctrls['train_labels'].currentText()
+        train_columns = self.ctrls['train_data'].getSelectedItems()
+        labels = self.ctrls['train_labels'].currentText()
 
         solver = self.ctrls['solver'].currentText()
 
@@ -126,8 +131,8 @@ class LDA(CtrlNode):
 
         store_covariance = True if solver == 'svd' else False
 
-        params = {'train_columns': train_columns,
-                  'train_labels': train_labels,
+        params = {'train_data': train_columns,
+                  'train_labels': labels,
                   'solver': solver,
                   'shrinkage': shrinkage,
                   'n_components': n_components,
@@ -136,12 +141,13 @@ class LDA(CtrlNode):
                   }
 
         kwargs = params.copy()
-        kwargs.pop('train_columns')
+        kwargs.pop('train_data')
+        kwargs.pop('train_labels')
         self.lda = LinearDiscriminantAnalysis(**kwargs)
 
         # Make an array of all the data from the selected columns
         self.X = np.hstack([np.vstack(self.t.df[train_column]) for train_column in train_columns])
-        self.y = self.t.df[train_labels]
+        self.y = self.t.df[labels]
 
         self.X_ = self.lda.fit_transform(self.X, self.y)
 
