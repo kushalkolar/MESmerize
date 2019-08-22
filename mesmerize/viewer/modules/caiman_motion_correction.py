@@ -86,6 +86,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         :return: parameters dict
         :rtype: dict
         """
+
+        gSig_filt = None if self.ui.spinBoxGSig_filt.value() == 0 else self.ui.spinBoxGSig_filt.value()
+
         d = {'max_shifts_x':        self.ui.spinboxX.value(),
              'max_shifts_y':        self.ui.spinboxY.value(),
              'iters_rigid':         self.ui.spinboxIterRigid.value(),
@@ -95,7 +98,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'overlaps':            self.ui.sliderOverlaps.value(),
              'upsample':            self.ui.spinboxUpsample.value(),
              'name_elas':           self.ui.lineEditNameElastic.text(),
-             'output_bit_depth':    self.ui.comboBoxOutputBitDepth.currentText()
+             'output_bit_depth':    self.ui.comboBoxOutputBitDepth.currentText(),
+             'gSig_filt':           gSig_filt
              }
         return d
 
@@ -120,6 +124,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.comboBoxOutputBitDepth.setCurrentIndex(1)
         elif params['output_bit_depth'] == '16':
             self.ui.comboBoxOutputBitDepth.setCurrentIndex(2)
+        self.ui.spinBoxGSig_filt.setValue(params['gSig_filt'])
 
     def set_input_workEnv(self, workEnv):
         self._input_workEnv = workEnv
