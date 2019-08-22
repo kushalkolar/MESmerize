@@ -64,6 +64,7 @@ def run(batch_dir: str, UUID: str):
         splits_els = n_processes
         upsample_factor_grid = input_params['upsample']
         max_deviation_rigid = input_params['max_dev']
+        gSig_filt = input_params['gSig_filt']
 
         if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
             USE_CUDA = True
@@ -78,7 +79,7 @@ def run(batch_dir: str, UUID: str):
                            strides=strides, overlaps=overlaps, splits_els=splits_els,
                            upsample_factor_grid=upsample_factor_grid,
                            max_deviation_rigid=max_deviation_rigid,
-                           shifts_opencv=True, nonneg_movie=True, use_cuda=USE_CUDA)
+                           shifts_opencv=True, nonneg_movie=True, use_cuda=USE_CUDA, gSig_filt=gSig_filt)
 
         mc.motion_correct_pwrigid(save_movie=True)
         m_els = cm.load(mc.fname_tot_els)

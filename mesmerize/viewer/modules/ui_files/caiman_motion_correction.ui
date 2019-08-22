@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>253</width>
-    <height>546</height>
+    <width>257</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="floating">
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>CaImAn Motion Correction</string>
+   <string>&amp;CaImAn Motion Correction</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
      <widget class="QLabel" name="label_16">
       <property name="font">
        <font>
@@ -35,7 +35,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_21">
       <item>
        <widget class="QLabel" name="label_11">
@@ -71,7 +71,25 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>gSig_filt:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxGSig_filt">
+        <property name="toolTip">
+         <string>disabled if set to zero</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_12">
       <item>
        <widget class="QLabel" name="label_9">
@@ -101,7 +119,7 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_13">
       <item>
        <widget class="QLabel" name="label_13">
@@ -128,7 +146,7 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_14">
       <item>
        <widget class="QLabel" name="label_6">
@@ -177,14 +195,14 @@
       </item>
      </layout>
     </item>
-    <item row="5" column="0">
+    <item>
      <widget class="QLabel" name="label_20">
       <property name="text">
        <string>If do only rigid correction add here</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_15">
       <item>
        <widget class="QLineEdit" name="lineEditNameRigid">
@@ -202,14 +220,14 @@
       </item>
      </layout>
     </item>
-    <item row="7" column="0">
+    <item>
      <widget class="Line" name="line">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="8" column="0">
+    <item>
      <widget class="QLabel" name="label_17">
       <property name="font">
        <font>
@@ -226,7 +244,7 @@
       </property>
      </widget>
     </item>
-    <item row="9" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_16">
       <item>
        <widget class="QLabel" name="label_15">
@@ -250,7 +268,7 @@
       </item>
      </layout>
     </item>
-    <item row="10" column="0">
+    <item>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_17">
@@ -310,7 +328,7 @@
       </item>
      </layout>
     </item>
-    <item row="11" column="0">
+    <item>
      <layout class="QVBoxLayout" name="verticalLayout_6">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -370,7 +388,7 @@
       </item>
      </layout>
     </item>
-    <item row="12" column="0">
+    <item>
      <widget class="QPushButton" name="btnShowQuilt">
       <property name="maximumSize">
        <size>
@@ -379,14 +397,14 @@
        </size>
       </property>
       <property name="text">
-       <string>Show Quilt</string>
+       <string>Show Grid</string>
       </property>
       <property name="checkable">
        <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item row="13" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_19">
       <item>
        <widget class="QLabel" name="label_10">
@@ -426,7 +444,7 @@
       </item>
      </layout>
     </item>
-    <item row="14" column="0">
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_20">
       <item>
        <widget class="QLineEdit" name="lineEditNameElastic">
