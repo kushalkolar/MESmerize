@@ -393,10 +393,9 @@ class CNMFROI(BaseROI):
         if state is None:
             self.set_roi_graphics_object(contour)
             self.set_curve_data(curve_data)
-            self.cnmf_idx = cnmf_idx
+            self.cnmf_idx = cnmf_idx  #: original index of the ROI from cnmf idx_components
         else:
             self._restore_state(state)
-            #self.cnmf_idx = cnmf_idx
 
     def set_curve_data(self, y_vals):
         """Set the curve data"""
