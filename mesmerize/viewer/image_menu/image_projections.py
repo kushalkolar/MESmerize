@@ -1,5 +1,5 @@
 # from ...pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
-from ...pyqtgraphCore.imageview import ImageView
+from ...pyqtgraphCore.imageview.ImageView import ImageView
 import numpy as np
 
 
