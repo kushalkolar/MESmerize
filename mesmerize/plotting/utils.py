@@ -92,7 +92,7 @@ def map_labels_to_colors(labels: iter, cmap: str, **kwargs) -> list:
 class ColormapListWidget(QtWidgets.QListWidget):
     signal_colormap_changed = QtCore.pyqtSignal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QtWidgets.QListWidget.__init__(self, parent=parent)
         self.populate_colormaps()
         self.currentItemChanged.connect(self.emit_colormap_changed)

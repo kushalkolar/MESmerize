@@ -17,7 +17,8 @@ from ....analysis import Transmission, organize_dataframe_columns, get_proportio
 from math import sqrt
 from ..base import BasePlotWidget
 from ....common.qdialogs import *
-from ...utils import auto_colormap
+from ...utils import auto_colormap, ColormapListWidget
+from seaborn import heatmap
 
 
 class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
@@ -25,8 +26,6 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
     def __init__(self):
         super().__init__()
-        self.ax = self.fig.add_subplot(111)  #: The axis that is used for this plot
-
         self.message_label = QtWidgets.QLabel()
         self.message_label.setText('')
         self.message_label.setMaximumHeight(30)
@@ -65,6 +64,32 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.checkbox_percent.setMaximumHeight(30)
         self.vbox.addWidget(self.checkbox_percent)
 
+        self.radio_barplot = QtWidgets.QRadioButton(self)
+        self.radio_barplot.setText('bar plot')
+        self.radio_barplot.setChecked(True)
+        self.radio_barplot.toggled.connect(lambda: self.update_plot())
+        self.radio_barplot.setMaximumHeight(30)
+        self.vbox.addWidget(self.radio_barplot)
+
+        self.radio_heatmap = QtWidgets.QRadioButton(self)
+        self.radio_heatmap.setText('heatmap')
+        self.radio_heatmap.toggled.connect(lambda: self.update_plot())
+        self.radio_heatmap.toggled.connect(self.show_cmap_listwidget)
+        self.vbox.addWidget(self.radio_heatmap)
+
+        self.cmap_label = QtWidgets.QLabel(self)
+        self.cmap_label.setText('Colormap for heatmap')
+        self.cmap_label.setMaximumHeight(30)
+        self.cmap_label.hide()
+        self.vbox.addWidget(self.cmap_label)
+
+        self.cmap_listwidget = ColormapListWidget(self)
+        self.cmap_listwidget.set_cmap('viridis')
+        self.cmap_listwidget.currentRowChanged.connect(lambda: self.update_plot())
+        self.cmap_listwidget.hide()
+        self.cmap_listwidget.setMaximumHeight(100)
+        self.vbox.addWidget(self.cmap_listwidget)
+
         self.btn_swap_xy = QtWidgets.QPushButton(self)
         self.btn_swap_xy.setText('Swap X-Y')
         self.btn_swap_xy.clicked.connect(self.swap_x_y)
@@ -99,6 +124,10 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.props_df = None
 
         self.block_signals_list = [self.xs_combo, self.ys_combo, self.checkbox_percent, self.checkbox_update_live]
+
+    def show_cmap_listwidget(self, b: bool):
+        self.cmap_label.setVisible(b)
+        self.cmap_listwidget.setVisible(b)
 
     @BasePlotWidget.signal_blocker
     def set_update_live(self, b: bool):
@@ -149,7 +178,11 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         opts = dict(xs_name=xs_name, ys_name=ys_name,
                     xs=self.transmission.df[xs_name],
                     ys=self.transmission.df[ys_name],
-                    percentages=self.checkbox_percent.isChecked())
+                    percentages=self.checkbox_percent.isChecked(),
+                    use_barplot=self.radio_barplot.isChecked(),
+                    use_heatmap=self.radio_heatmap.isChecked(),
+                    heatmap_cmap=self.cmap_listwidget.current_cmap
+                    )
         if drop:
             for k in self.drop_opts:
                 opts.pop(k)
@@ -166,14 +199,26 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.checkbox_percent.setChecked(opts['percentages'])
 
+        try:
+            self.radio_barplot.setChecked(opts['use_barplot'])
+            self.radio_heatmap.setChecked(opts['use_heatmap'])
+            self.cmap_listwidget.set_cmap(opts['heatmap_cmap'])
+        except:
+            pass
+
     @present_exceptions('Plot error', 'Cannot plot, make sure you have selected appropriate data columns')
     def update_plot(self):
         """
         Update the plot data and draw
         """
-        self.ax.cla()
+        # self.ax.cla()
+        self.fig.clear()
+        self.ax = self.fig.add_subplot(111)  #: The axis that is used for this plot
 
         opts = self.get_plot_opts()
+        use_barplot = opts.pop('use_barplot')
+        use_heatmap = opts.pop('use_heatmap')
+        heatmap_cmap = opts.pop('heatmap_cmap')
 
         if opts['xs_name'] == opts['ys_name']:
             self.message_label.setText('Must choose different X and Y columns')
@@ -184,7 +229,8 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         show_percents = opts['percentages']
 
-        self.props_df = get_proportions(**opts)
+        self.props_df = get_proportions(**opts)  #: DataFrame instance containing proportions data according to the plot parameters
+        self.props_df.columns = self.props_df.columns.get_level_values(-1)
 
         n_labels = len(ys.unique())
 
@@ -200,18 +246,23 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         colors = auto_colormap(n_labels, cmap)
 
-        self.props_df.plot(kind='bar', stacked=True, ax=self.ax, color=colors)
-
         if show_percents:
             label = 'percentages'
         else:
             label = 'raw counts'
 
-        self.ax.set_ylabel(label)
-        self.ax.set_xlabel(opts['xs_name'])
+        if use_barplot:
+            self.props_df.plot(kind='bar', stacked=True, ax=self.ax, color=colors)
+            self.ax.set_xlabel(opts['xs_name'])
+            self.ax.set_ylabel(label)
+            # self.fig.tight_layout()
+            self.ax.legend(bbox_to_anchor=(0.0, 1.02, 1.0, 0.102), loc='upper center', ncol=int(sqrt(len(set(ys)))),
+                           mode='expand')
 
-        self.ax.legend(bbox_to_anchor=(0.0, 1.02, 1.0, 0.102), loc='upper center', ncol=int(sqrt(len(set(ys)))),
-                       mode='expand')
+        elif use_heatmap:
+            props_df = self.props_df.fillna(value=0.)
+            heatmap(props_df, ax=self.ax, cmap=heatmap_cmap, annot=True, fmt='.1f', cbar_kws={'label': label})
+            self.fig.tight_layout()
 
         self.draw()
         self.toolbar.update()
