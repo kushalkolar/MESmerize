@@ -1,10 +1,11 @@
 # from ...pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
-from ...pyqtgraphCore.imageview.ImageView import ImageView
+from ...pyqtgraphCore.imageview import ImageView
 import numpy as np
 
 
 def display_projection(projection: str, imgseq: np.ndarray, img_name: str):
-    iv = ImageView()
+    # Due to weird importing you must do this, not a big deal
+    iv = ImageView.ImageView()
     # ax = mw.fig.add_subplot(111)
 
     if projection == 'mean':
