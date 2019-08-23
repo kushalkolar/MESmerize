@@ -20,8 +20,9 @@ import h5py
 import json
 import pandas as pd
 from warnings import warn
-from tqdm import tqdm
 import traceback
+from PyQt5 import QtCore
+from functools import wraps
 
 def make_workdir(prefix: str = '') -> str:
     main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
@@ -260,3 +261,50 @@ class HdfTools:
             elif isinstance(item, h5py._hl.group.Group):
                 ans[key] = HdfTools._dicts_from_group(h5file, path + key + '/')
         return ans
+
+
+class _QRunnerSignals(QtCore.QObject):
+    result = QtCore.pyqtSignal(object)
+    finished = QtCore.pyqtSignal()
+    error = QtCore.pyqtSignal(str)
+
+
+class _QRunner(QtCore.QRunnable):
+    def __init__(self, func, *args, **kwargs):
+        super(_QRunner, self).__init__()
+        self.signals = _QRunnerSignals()
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    def run(self):
+        try:
+            result = self.func(*self.args, **self.kwargs)
+        except:
+            self.signals.error.emit(str(traceback.format_exc()))
+        else:
+            self.signals.result.emit(result)
+        finally:
+            self.signals.finished.emit()
+
+
+class QThreaded(QtCore.QObject):
+    def __init__(self, pre: callable, receiver: callable, error: callable):
+        super(QThreaded, self).__init__()
+        self.pre = pre
+        self.receiver = receiver
+        self.error = error
+
+    def __call__(self, func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            self.pre()
+            self.runner = _QRunner(func, *args, **kwargs)
+            self.runner.signals.result.connect(lambda x: self.receiver(x))
+            self.runner.signals.error.connect(self.error)
+
+            self.thread_pool = QtCore.QThreadPool()
+            self.thread_pool.setMaxThreadCount(46)
+            self.thread_pool.start(self.runner)
+
+        return wrapper
