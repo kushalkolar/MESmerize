@@ -3,7 +3,6 @@
 Nodes
 *****
 
-
 .. _nodes_Data:
 
 Data
@@ -17,6 +16,8 @@ LoadFile
 ^^^^^^^^
 
 	Loads a save Transmission file. If you have a Project open it will automatically set the project path according to the open project. Otherwise you must specify the project path. You can specify a different project path to the project that is currently open (this is untested, weird things could happen). You should not merge Transmissions originating from different projects.
+	
+	.. note:: You can also load a saved Transmission file by dragging & dropping it into the Flowchart area. It will create a LoadFile node with the name of the dropped.
 	
 	========== 	=================
 	Terminal		Description
@@ -788,7 +789,7 @@ ExtractStim
 	===================    ========================================
 	Output Data Column     Description
 	===================    ========================================
-	STIM_TYPE              Stimulus type, corresponds to your :ref:`ProjectConfig`
+	STIM_TYPE              Stimulus type, corresponds to your :ref:`Project Config <project-configuration>`
 	STIMULUS               Name of the stimulus.
 	_EXTRACT_STIM          The extracted array based on the parameters.
 	uuid_stim		  UUID for the extracted stimulus period
@@ -948,27 +949,30 @@ LDA
 
     Perform Linear Discriminant Analysis. Uses `sklearn.discriminant_analysis.LinearDiscriminantAnalysis <https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html>`_
     
-    =========   ==========================================================
-    Terminal    Description
-    =========   ==========================================================
-    In          Input Transmission
-    T           | Transmission with Transformed data and decision function. Output columns outlined below:
-                | **_LDA_TRANSFORM:** The transformed data, can be visualized with a :ref:`Scatter Plot <plot_ScatterPlot>` for instance
-                | **_LDA_DFUNC:** Decision function (confidence scores). Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
-    coef        | Transmission with LDA Coefficients. Output columns outlined below:
-                | **classes:** The categorical labels that were trained against
-                | **_COEF:** LDA Coefficients (weight vectors) for the classes. Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
-                
-    means       Transmission with LDA Means. Output columns outlined below:
-    
-                | **classes:** The categorical labels that were trained against
-                | **_MEANS:** LDA means for the classes. Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
-    =========   ==========================================================
+    ============    ==========================================================
+    Terminal        Description
+    ============    ==========================================================
+    train_data      Input Transmission containing the training data
+    predict         Input Transmission containing data on which to predict
+    T               | Transmission with Transformed data and decision function. Output columns outlined below:
+                    | **_LDA_TRANSFORM:** The transformed data, can be visualized with a :ref:`Scatter Plot <plot_ScatterPlot>` for instance
+                    | **_LDA_DFUNC:** Decision function (confidence scores). Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
+    coef            | Transmission with LDA Coefficients. Output columns outlined below:
+                    | **classes:** The categorical labels that were trained against
+                    | **_COEF:** LDA Coefficients (weight vectors) for the classes. Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
+    means           | Transmission with LDA Means. Output columns outlined below:
+                    | **classes:** The categorical labels that were trained against
+                    | **_MEANS:** LDA means for the classes. Can be visualized with a :ref:`Heatmap <plot_Heatmap>`
+    predicted       | Transmission containing predicted class labels for the data.
+                    | The class labels are placed in a column named **LDA_PREDICTED_LABELS**
+                    | The names of the class labels correspond to the labels from the training labels
+                    | *optional*
+    ============    ==========================================================
     
     =============== ===================================================================
     Parameter       Description
     =============== ===================================================================
-    data_columns    Single or multiple data columns that contain the input features.
+    train_data      Single or multiple data columns that contain the input features.
     labels          Data column containing categorical labels to train to
     solver          | *svd:* Singular Value Decomposition
                     | *lsqr:* Least Squares solution
@@ -978,6 +982,9 @@ LDA
     n_components    Number of components to output
     tol             Tolereance threshold exponent. The used value is 10^<tol>
     score           Displays mean score of the classification (read only)
+    predict_on      | Single or multiple data columns that contain the data that are used for predicting on
+                    | Usually the same name as the data column(s) used for the training data.
+                    | *optional*
     =============== ===================================================================
 
     
