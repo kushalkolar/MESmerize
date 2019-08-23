@@ -14,17 +14,26 @@ from stat import S_IEXEC
 from time import time
 from datetime import datetime
 from . import get_sys_config
-from typing import Optional, Union, Tuple
+from typing import *
 import numpy as np
 import h5py
 import json
 import pandas as pd
 from warnings import warn
 import traceback
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWidgets
 from functools import wraps
 
+
 def make_workdir(prefix: str = '') -> str:
+    """
+    Make a workdir within the mesmerize_tmp directory of the workdir specified in the configuration
+    The name of the created workdir is the date & time of its creation. You can add a prefix to this name.
+
+    :param prefix: Prefix for the workdir name
+    :return:    full workdir path
+
+    """
     main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
 
     if main_workdir == '':
@@ -107,10 +116,11 @@ class HdfTools:
         Save DataFrame to hdf5 file along with a meta data dict.
 
         Meta data dict can either be serialized with json and stored as a str in the hdf5 file, or recursively saved
-        into hdf5 groups if the dict contains types that hdf5 can deal with.
-        Experiment with both methods and see what works best
+        into hdf5 groups if the dict contains types that hdf5 can deal with. Experiment with both methods and see what works best
+
         Currently the hdf5 method can work with these types: [str, bytes, int, float, np.int, np.int8, np.int16,
         np.int32, np.int64, np.float, np.float16, np.float32, np.float64, np.float128, np.complex].
+
         If it encounters an object that is not of these types it will store whatever that object's __str__() method
         returns if on_meta_fail is False, else it will raise an exception.
 
@@ -175,6 +185,7 @@ class HdfTools:
     def save_dict(d: dict, filename: str, group: str, raise_type_fail=True):
         """
         Recursively save a dict to an hdf5 group.
+
         :param d:        dict to save
         :param filename: filename
         :param group:    group name to save the dict to
@@ -242,6 +253,7 @@ class HdfTools:
     def load_dict(filename: str, group: str) -> dict:
         """
         Recursively load a dict from an hdf5 group.
+
         :param filename: filename
         :param group:    group name of the dict
         :return:         dict recursively loaded from the hdf5 group
@@ -289,22 +301,79 @@ class _QRunner(QtCore.QRunnable):
 
 
 class QThreaded(QtCore.QObject):
-    def __init__(self, pre: callable, receiver: callable, error: callable):
+    def __init__(self, receiver: Union[Callable, str],
+                 pre: Union[Callable, str, None] = None,
+                 error: Union[Callable, str, None] = None):
+        """
+        Class for decorating functions to run in an external QThreadPool.
+        The arguments can either be callables or string names of a callable.
+        If the decorated function is a method within a class, pass the name (str) of the callable attribute to the decorator.
+
+        :param receiver:    Output of the decorated function is passed to this callable
+        :type receiver:     Union[Callable, str]
+
+        :param pre:         [Optional] Called right before the decorated function runs
+        :type pre:          Union[Callable, str, None]
+
+        :param error:       [Optional] traceback (str) is passed to this callable if an exception is raised in the decorated function.
+                            By default a QMesssageBox is used.
+        :type error:        Union[Callable, str, None]
+        """
+
         super(QThreaded, self).__init__()
-        self.pre = pre
+
         self.receiver = receiver
-        self.error = error
+
+        if pre is not None:
+            self.pre = pre
+        else:
+            self.pre = self.default_pre
+
+        if error is None:
+            self.error = self.present_error
+        else:
+            self.error = error
 
     def __call__(self, func):
+        """Instantiates the QRunnable and runs it in the QThreadPool instance"""
         @wraps(func)
         def wrapper(*args, **kwargs):
+            parent_instance = args[0]
+
+            if isinstance(self.receiver, str):
+                self.receiver = getattr(args[0], self.receiver)
+
+            if isinstance(self.pre, str):
+                self.pre = getattr(args[0], self.pre)
+
+            if isinstance(self.error, str):
+                self.error = getattr(args[0], self.error)
+
             self.pre()
             self.runner = _QRunner(func, *args, **kwargs)
-            self.runner.signals.result.connect(lambda x: self.receiver(x))
+            self.runner.signals.result.connect(self.result_wrapper)
             self.runner.signals.error.connect(self.error)
 
             self.thread_pool = QtCore.QThreadPool()
-            self.thread_pool.setMaxThreadCount(46)
+            self.thread_pool.setMaxThreadCount(get_sys_config()['_MESMERIZE_N_THREADS'])
             self.thread_pool.start(self.runner)
 
         return wrapper
+
+    def result_wrapper(self, result):
+        """Wrapper to unpack the result as args or kwargs if the result if a tuple or dict respectively"""
+        if isinstance(result, tuple):
+            self.receiver(*result)
+        elif isinstance(result, dict):
+            self.receiver(**result)
+        else:
+            self.receiver(result)
+
+    def present_error(self, msg: str):
+        """Presents the traceback in a QMessageBox if a specific error handling callable was not passed at instantiation"""
+        QtWidgets.QMessageBox('Exception from external thread(s)',
+                              f'The following error was raised from a background thread\n{msg}')
+
+    def default_pre(self):
+        """Just prints this message if a specific pre handling callable was not passed at instantiation"""
+        print("Starting QThreadPool...")

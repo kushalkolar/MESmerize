@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
+#@author: kushal
 
-@author: kushal
+#Chatzigeorgiou Group
+#Sars International Centre for Marine Molecular Biology
 
-Chatzigeorgiou Group
-Sars International Centre for Marine Molecular Biology
-
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-"""
+#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
 import traceback
@@ -17,7 +14,20 @@ from . import get_project_manager
 from typing import *
 
 
+"""
+Decorators for frequent Qt Dialog GUIs
+"""
+
+
 def present_exceptions(title: str = 'error', msg: str = 'The following error occurred.', help_func: callable = None):
+    """
+    Use to catch exceptions and present them to the user in a QMessageBox warning dialog.
+    The traceback from the exception is also shown.
+
+    :param title:       Title of the dialog box
+    :param msg:         Message to display above the traceback in the dialog box
+    :param help_func:   A helper function which is called if the user clicked the "Help" button
+    """
     def catcher(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
@@ -49,6 +59,13 @@ def _get_start_dir(start_dir) -> str:
 
 
 def use_open_file_dialog(title: str = 'Choose file', start_dir: Union[str, None] = None, exts: List[str] = None):
+    """
+    Use to pass a file path, for opening, into the decorated function using QFileDialog.getOpenFileName
+
+    :param title:       Title of the dialog box
+    :param start_dir:   Directory that is first shown in the dialog box.
+    :param exts:        List of file extensions to set the filter in the dialog box
+    """
     def wrapper(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
@@ -66,6 +83,13 @@ def use_open_file_dialog(title: str = 'Choose file', start_dir: Union[str, None]
 
 
 def use_save_file_dialog(title: str = 'Save file', start_dir: Union[str, None] = None, ext: str = None):
+    """
+    Use to pass a file path, for saving, into the decorated function using QFileDialog.getSaveFileName
+
+    :param title:       Title of the dialog box
+    :param start_dir:   Directory that is first shown in the dialog box.
+    :param exts:        List of file extensions to set the filter in the dialog box
+    """
     def wrapper(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
@@ -89,6 +113,12 @@ def use_save_file_dialog(title: str = 'Save file', start_dir: Union[str, None] =
 
 
 def use_open_dir_dialog(title: str = 'Open directory', start_dir: Union[str, None] = None):
+    """
+    Use to pass a dir path, to open, into the decorated function using QFileDialog.getExistingDirectory
+
+    :param title:       Title of the dialog box
+    :param start_dir:   Directory that is first shown in the dialog box.
+    """
     def wrapper(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
