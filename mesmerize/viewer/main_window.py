@@ -90,6 +90,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self._cms = []
         self._cms_actions = []
 
+        self.setAcceptDrops(True)
+
         if _import_custom_modules:
             self.set_custom_module_triggers()
 
@@ -414,3 +416,22 @@ class MainWindow(QtWidgets.QMainWindow):
             self.vi.viewer.ui.label_curr_img_seq_name.setText(sample_id)
 
         self.vi.viewer.workEnv.saved = True
+
+    def dragEnterEvent(self, QDragEnterEvent):
+        if QDragEnterEvent.mimeData().hasUrls():
+            QDragEnterEvent.accept()
+        else:
+            QDragEnterEvent.ignore()
+
+    def dropEvent(self, ev):
+        files = ev.mimeData().urls()
+        if len(files) == 1:
+            file = files[0].path()
+        else:
+            return
+
+        if file.endswith('.tiff') or file.endswith('.tif'):
+            tio = self.get_module('tiff_io')
+            assert isinstance(tio, tiff_io.ModuleGUI)
+            tio.tiff_file_path = file
+            tio.check_meta_path()

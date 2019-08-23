@@ -244,6 +244,10 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.resize(1500, 900)
 
+    def set_update_live(self, b: bool):
+        """Not used in this widget"""
+        pass
+
     @property
     def input_arrays(self) -> np.ndarray:
         """

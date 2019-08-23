@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>709</width>
+    <width>715</width>
     <height>560</height>
    </rect>
   </property>
@@ -292,6 +292,9 @@
         <item>
          <widget class="QListWidget" name="listWidgetRecentProjects"/>
         </item>
+        <item>
+         <widget class="QTreeView" name="treeViewFlowcharts"/>
+        </item>
        </layout>
       </item>
       <item>
@@ -304,7 +307,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidgetProjectPlots"/>
+         <widget class="QTreeView" name="treeViewProjectPlots"/>
         </item>
        </layout>
       </item>
@@ -324,8 +327,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>709</width>
-     <height>30</height>
+     <width>715</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConfiguration">

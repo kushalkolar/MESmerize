@@ -87,13 +87,16 @@ class LoadFile(CtrlNode):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
         if path == '':
             return
+        self.load_file(path[0])
+
+    def load_file(self, path: str):
         try:
-            self.t = Transmission.from_hdf5(path[0])
+            self.t = Transmission.from_hdf5(path)
         except:
             QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
 
-        self.ctrls['fname'].setText(os.path.basename(path[0]))
+        self.ctrls['fname'].setText(os.path.basename(path))
 
         proj_path = get_project_manager().root_dir
         if proj_path is not None:

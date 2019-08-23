@@ -13,13 +13,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtWidgets
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ....pyqtgraphCore.console import ConsoleWidget
 from ....pyqtgraphCore.widgets.ComboBox import ComboBox
 from ....analysis import Transmission, organize_dataframe_columns, get_proportions
 from math import sqrt
 from ..base import BasePlotWidget
 from ....common.qdialogs import *
+from ....common.configuration import console_history_path
 from ...utils import auto_colormap, ColormapListWidget
 from seaborn import heatmap
+import os
 
 
 class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
@@ -70,13 +73,16 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.radio_barplot.setChecked(True)
         self.radio_barplot.toggled.connect(lambda: self.update_plot())
         self.radio_barplot.setMaximumHeight(30)
-        self.vbox.addWidget(self.radio_barplot)
 
         self.radio_heatmap = QtWidgets.QRadioButton(self)
         self.radio_heatmap.setText('heatmap')
         self.radio_heatmap.toggled.connect(lambda: self.update_plot())
         self.radio_heatmap.toggled.connect(self.show_cmap_listwidget)
-        self.vbox.addWidget(self.radio_heatmap)
+
+        hlayout_radios_btns = QtWidgets.QHBoxLayout()
+        hlayout_radios_btns.addWidget(self.radio_barplot)
+        hlayout_radios_btns.addWidget(self.radio_heatmap)
+        self.vbox.addLayout(hlayout_radios_btns)
 
         self.cmap_label = QtWidgets.QLabel(self)
         self.cmap_label.setText('Colormap for heatmap')
@@ -91,17 +97,21 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.cmap_listwidget.setMaximumHeight(100)
         self.vbox.addWidget(self.cmap_listwidget)
 
+        hlayout2 = QtWidgets.QHBoxLayout()
+
         self.btn_update_plot = QtWidgets.QPushButton(self)
         self.btn_update_plot.setText('Update Plot')
         self.btn_update_plot.setMaximumHeight(30)
         self.btn_update_plot.clicked.connect(lambda: self.update_plot())
-        self.vbox.addWidget(self.btn_update_plot)
+        hlayout2.addWidget(self.btn_update_plot)
 
         self.btn_swap_xy = QtWidgets.QPushButton(self)
         self.btn_swap_xy.setText('Swap X-Y')
         self.btn_swap_xy.clicked.connect(self.swap_x_y)
         self.btn_swap_xy.setMaximumHeight(30)
-        self.vbox.addWidget(self.btn_swap_xy)
+        hlayout2.addWidget(self.btn_swap_xy)
+
+        self.vbox.addLayout(hlayout2)
 
         hlayout = QtWidgets.QHBoxLayout()
 
@@ -119,11 +129,46 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.vbox.addLayout(hlayout)
 
+        hlayout3 = QtWidgets.QHBoxLayout()
+
         btn_export = QtWidgets.QPushButton(self)
         btn_export.setText('Export CSV')
         btn_export.clicked.connect(self.export)
         btn_export.setMaximumHeight(30)
-        self.vbox.addWidget(btn_export)
+        hlayout3.addWidget(btn_export)
+
+        btn_show_console = QtWidgets.QPushButton(self)
+        btn_show_console.setText('Show Console')
+        btn_show_console.setCheckable(True)
+        btn_show_console.setChecked(False)
+        btn_show_console.setMaximumHeight(30)
+        hlayout3.addWidget(btn_show_console)
+
+        self.vbox.addLayout(hlayout3)
+
+        ns = {'this': self,
+              'get_fig': lambda: self.fig,
+              'get_ax': lambda: self.ax,
+              'get_dataframe': lambda: self.props_df,
+              }
+
+        txt = ["Namespaces",
+               "self as 'this'",
+               "get_fig() - get the current Figure instance",
+               "get_ax() - get the current Axes instance",
+               "get_dataframe() - get the current dataframe of proportions"
+               ]
+
+        txt = "\n".join(txt)
+
+        cmd_history_file = os.path.join(console_history_path, 'proportions_plot.pik')
+
+        self.console = ConsoleWidget(parent=self, namespace=ns, text=txt, historyFile=cmd_history_file)
+        self.console.setMaximumHeight(300)
+        self.console.setVisible(False)
+
+        self.vbox.addWidget(self.console)
+        btn_show_console.toggled.connect(self.console.setVisible)
 
         spacer = QtWidgets.QSpacerItem(0, 10, QtWidgets.QSizePolicy.Expanding)
         self.vbox.insertSpacerItem(0, spacer)
