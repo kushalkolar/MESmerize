@@ -80,8 +80,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._batch_manager = None
 
-        self.ui.listWidgetProjectPlots.setVisible(False)
+        self.ui.treeViewFlowcharts.setVisible(False)
         self.ui.labelProjectPlots.setVisible(False)
+        self.ui.treeViewProjectPlots.setVisible(False)
 
         self.plot_windows = []
 
@@ -198,36 +199,43 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def set_flowcharts_list(self):
         self.ui.labelRecentProjects.setText('Project flowcharts')
-        self.ui.listWidgetRecentProjects.clear()
+        self.ui.listWidgetRecentProjects.setVisible(False)
+        self.ui.treeViewFlowcharts.setVisible(True)
 
         self.flowcharts_dir = os.path.join(self.project_manager.root_dir, 'flowcharts')
-        path = os.path.join(self.flowcharts_dir, '*.fc')
+        model = QtWidgets.QFileSystemModel()
+        model.setRootPath(self.flowcharts_dir)
+        model.setFilter(QtCore.QDir.NoDotAndDotDot | QtCore.QDir.Files | QtCore.QDir.Dirs)
+        self.ui.treeViewFlowcharts.setModel(model)
+        self.ui.treeViewFlowcharts.setRootIndex(model.index(self.flowcharts_dir))
+        self.ui.treeViewFlowcharts.setColumnHidden(1, True)
+        self.ui.treeViewFlowcharts.setColumnHidden(2, True)
+        self.ui.treeViewFlowcharts.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
 
-        fcs = glob(path)
-        fc_files = []
-
-        for f in fcs:
-            fc_files.append(os.path.basename(f))
-
-        self.ui.listWidgetRecentProjects.addItems(fc_files)
-        self.ui.listWidgetRecentProjects.itemDoubleClicked.disconnect()
-        self.ui.listWidgetRecentProjects.itemDoubleClicked.connect(lambda item: self.open_new_flowchart(os.path.join(self.flowcharts_dir, item.text())))
+        self.ui.treeViewFlowcharts.doubleClicked.connect(lambda m_ix: self.open_new_flowchart(model.filePath(m_ix)))
 
     def set_plots_list(self):
-        self.ui.listWidgetProjectPlots.setVisible(True)
         self.ui.labelProjectPlots.setVisible(True)
+        self.ui.treeViewProjectPlots.setVisible(True)
 
         self.plots_dir = os.path.join(self.project_manager.root_dir, 'plots')
-        plot_files = []
 
-        for f in glob(os.path.join(self.plots_dir, '*.ptrn')):
-            plot_files.append(os.path.basename(f))
+        model = QtWidgets.QFileSystemModel()
+        model.setRootPath(self.plots_dir)
+        model.setFilter(QtCore.QDir.NoDotAndDotDot | QtCore.QDir.Files | QtCore.QDir.Dirs)
+        self.ui.treeViewProjectPlots.setModel(model)
+        self.ui.treeViewProjectPlots.setRootIndex(model.index(self.plots_dir))
+        self.ui.treeViewProjectPlots.setColumnHidden(1, True)
+        self.ui.treeViewProjectPlots.setColumnHidden(2, True)
+        self.ui.treeViewProjectPlots.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
 
-        self.ui.listWidgetProjectPlots.addItems(plot_files)
-        self.ui.listWidgetProjectPlots.itemDoubleClicked.connect(lambda item: self.open_plot(os.path.join(self.plots_dir, item.text())))
+        self.ui.treeViewProjectPlots.doubleClicked.connect(lambda m_ix: self.open_plot(model.filePath(m_ix)))
 
-    @present_exceptions('Could not open plot', 'The following error occurred when trying to open the plot')
+    @present_exceptions('Could not open plot', 'The selected file is probably not a valid plot file.\n'
+                                               'The following error occurred:\n')
     def open_plot(self, filename: str):
+        if not os.path.isfile(filename):
+            return
         plot = open_plot_file(filename)
         self.plot_windows.append(plot)
         plot.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -243,7 +251,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if filename is not None and not isinstance(filename, str):
             filename = None
         else:
-            filename = os.path.join(self.project_manager.root_dir, 'flowcharts', filename)
+            if not os.path.isfile(filename):
+                return
 
         w = get_window_manager().get_new_flowchart(filename, parent=self)
         w.show()

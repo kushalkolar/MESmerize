@@ -36,8 +36,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.radioButtonAsArrayMulti.clicked.connect(partial(self.set_load_method, 'asarray-multi'))
         self.ui.radioButtonImread.clicked.connect(partial(self.set_load_method, 'imread'))
 
-        self.tiff_file_path = ''
-        self.meta_file_path = ''
+        self._tiff_file_path = ''
+        self._meta_file_path = ''
         self._load_method = None
 
     @property
@@ -47,6 +47,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     @tiff_file_path.setter
     def tiff_file_path(self, path: str):
         self._tiff_file_path = path
+        self.ui.labelFileTiff.setText(self.tiff_file_path)
 
     @property
     def meta_file_path(self) -> str:
@@ -55,6 +56,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     @meta_file_path.setter
     def meta_file_path(self, path: str):
         self._meta_file_path = path
+        self.ui.labelFileMeta.setText(self.meta_file_path)
 
     def get_load_method(self) -> str:
         if self._load_method is None:
@@ -69,8 +71,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     @use_open_file_dialog('Choose tiff file', '', ['*.tiff', '*.tif'])
     def select_tiff_file(self, path, *args, **kwargs):
-        self._tiff_file_path = path
-        self.ui.labelFileTiff.setText(self.tiff_file_path)
+        self.tiff_file_path = path
         self.check_meta_path()
 
     def check_meta_path(self):
@@ -91,7 +92,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
     @use_open_file_dialog('Choose meta data file', '', ['*.json'])
     def select_meta_file(self, path, *args, **kwargs):
         self.meta_file_path = path
-        self.ui.labelFileMeta.setText(self.meta_file_path)
 
     @present_exceptions('Could not open file(s)', 'The following error occurred while trying to open the image file.')
     def load_tiff_file_slot(self, *args, **kwargs):
