@@ -13,6 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtWidgets
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ....pyqtgraphCore.widgets.ComboBox import ComboBox
 from ....analysis import Transmission, organize_dataframe_columns, get_proportions
 from math import sqrt
 from ..base import BasePlotWidget
@@ -42,7 +43,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         xs_label.setMaximumHeight(30)
         self.vbox.addWidget(xs_label)
 
-        self.xs_combo = QtWidgets.QComboBox(self)
+        self.xs_combo = ComboBox(self)
         self.xs_combo.currentIndexChanged.connect(lambda: self.update_plot())
         self.xs_combo.setMaximumHeight(30)
         self.vbox.addWidget(self.xs_combo)
@@ -52,7 +53,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         ys_label.setMaximumHeight(30)
         self.vbox.addWidget(ys_label)
 
-        self.ys_combo = QtWidgets.QComboBox(self)
+        self.ys_combo = ComboBox(self)
         self.ys_combo.setMaximumHeight(30)
         self.ys_combo.currentTextChanged.connect(lambda: self.update_plot())
         self.vbox.addWidget(self.ys_combo)
@@ -89,6 +90,12 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         self.cmap_listwidget.hide()
         self.cmap_listwidget.setMaximumHeight(100)
         self.vbox.addWidget(self.cmap_listwidget)
+
+        self.btn_update_plot = QtWidgets.QPushButton(self)
+        self.btn_update_plot.setText('Update Plot')
+        self.btn_update_plot.setMaximumHeight(30)
+        self.btn_update_plot.clicked.connect(lambda: self.update_plot())
+        self.vbox.addWidget(self.btn_update_plot)
 
         self.btn_swap_xy = QtWidgets.QPushButton(self)
         self.btn_swap_xy.setText('Swap X-Y')
@@ -160,11 +167,11 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
     @BasePlotWidget.signal_blocker
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
-        self.xs_combo.clear()
-        self.xs_combo.addItems(categorical_columns)
+        # self.xs_combo.clear()
+        self.xs_combo.setItems(categorical_columns)
 
-        self.ys_combo.clear()
-        self.ys_combo.addItems(categorical_columns)
+        # self.ys_combo.clear()
+        self.ys_combo.setItems(categorical_columns)
 
     def get_plot_opts(self, drop: bool = False):
         """
@@ -261,7 +268,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         elif use_heatmap:
             props_df = self.props_df.fillna(value=0.)
-            heatmap(props_df, ax=self.ax, cmap=heatmap_cmap, annot=True, fmt='.1f', cbar_kws={'label': label})
+            heatmap(props_df.T, ax=self.ax, cmap=heatmap_cmap, annot=True, fmt='.1f', cbar_kws={'label': label})
             self.fig.tight_layout()
 
         self.draw()

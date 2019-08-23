@@ -54,7 +54,7 @@ def run(batch_dir: str, UUID: str):
     try:
         fname = [file_path + '.tiff']
         input_params = pickle.load(open(file_path + '.params', 'rb'))
-
+        # TODO: Should just unpack the input params as kwargs
         niter_rig = input_params['iters_rigid']
         max_shifts = (input_params['max_shifts_x'], input_params['max_shifts_y'])
         splits_rig = n_processes
@@ -64,7 +64,11 @@ def run(batch_dir: str, UUID: str):
         splits_els = n_processes
         upsample_factor_grid = input_params['upsample']
         max_deviation_rigid = input_params['max_dev']
-        gSig_filt = input_params['gSig_filt']
+
+        if 'gSig_filt' in input_params.keys():
+            gSig_filt = input_params['gSig_filt']
+        else:
+            gSig_filt = None
 
         if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
             USE_CUDA = True
