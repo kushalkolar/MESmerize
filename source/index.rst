@@ -78,7 +78,8 @@ Welcome to Mesmerize's documentation!
 	:maxdepth: 2
 	:caption: API Reference
 	:glob:
-
+	
+	./api_reference/common
 	./api_reference/Viewer_data_types
 	./api_reference/viewer_modules/viewer_modules
 	./api_reference/viewer_modules/roi_manager
