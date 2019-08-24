@@ -36,6 +36,7 @@ from time import time
 if not sys.argv[0] == __file__:
     from ...core.common import ViewerUtils
     from ...core.viewer_work_environment import ViewerWorkEnv
+    from ....common.utils import QThreaded
 
 
 def run(batch_dir: str, UUID: str):
@@ -134,29 +135,40 @@ def run(batch_dir: str, UUID: str):
 
 class Output:
     def __init__(self, batch_path, UUID, viewer_ref):
-        vi = ViewerUtils(viewer_ref)
+        self.vi = ViewerUtils(viewer_ref)
 
-        if not vi.discard_workEnv():
+        if not self.vi.discard_workEnv():
             return
 
-        vi.viewer.status_bar_label.showMessage('Please wait, loading motion corrected image sequence...')
+        self.batch_path = batch_path
+        self.UUID = UUID
+
+        self.vi.viewer.status_bar_label.showMessage('Please wait, loading motion corrected image sequence...')
         pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
         tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
-        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pik_path, tiff_path)
-        #tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
-        #workEnv.imgdata.seq = tifffile.imread(tiff_path).T
-        vi.update_workEnv()
-        vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
+        self._load_data(pik_path, tiff_path)
 
-        input_params = pickle.load(open(batch_path + '/' + str(UUID) + '.params', 'rb'))
+    @QThreaded('_update_workEnv')
+    def _load_data(self, pik_path: str, tiff_path: str):
+        return ViewerWorkEnv.from_pickle(pik_path, tiff_path)
+
+    def _update_workEnv(self, workEnv):
+        self.vi.viewer.workEnv = workEnv
+
+        self.vi.update_workEnv()
+        self.vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
+
+        input_params = pickle.load(open(self.batch_path + '/' + str(self.UUID) + '.params', 'rb'))
 
         name = input_params['name_elas']
-        vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
-        bpx = json.load(open(batch_path + '/' + str(UUID) + '.out', 'r'))['bord_px']
-        input_params.update({'bord_px': bpx})
-        vi.viewer.workEnv.history_trace.append({'caiman_motion_correction': input_params})
-        vi.enable_ui(True)
 
+        self.vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
+
+        bpx = json.load(open(self.batch_path + '/' + str(self.UUID) + '.out', 'r'))['bord_px']
+        input_params.update({'bord_px': bpx})
+
+        self.vi.viewer.workEnv.history_trace.append({'caiman_motion_correction': input_params})
+        self.vi.enable_ui(True)
 
 class BitDepthConverter:
     """

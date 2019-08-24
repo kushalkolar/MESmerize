@@ -46,9 +46,10 @@ from time import time, sleep
 
 
 if not sys.argv[0] == __file__:
-    from ..roi_manager import ModuleGUI
+    from ..roi_manager import ModuleGUI as ROIManagerGUI
     from ...core import ViewerUtils, ViewerWorkEnv
     from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+    from ....common.utils import QThreaded
 
 
 def run(batch_dir: str, UUID: str):
@@ -353,38 +354,52 @@ class Output(QtWidgets.QWidget):
         # plt.show()
 
         # visualization.inspect_correlation_pnr(cn_filter, pnr)
+    @QThreaded('_import_results')
+    def get_cnmfe_results(self, batch_path, uuid, work_env_args: dict = None):
+        filename = os.path.join(batch_path, str(uuid))
 
-    def get_cnmfe_results(self):
-        filename = self.batch_dir + '/' + str(self.UUID)
-
-        self.cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
-        self.cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-        self.cnm_f = cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-        self.cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
-        self.cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-        self.idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
-        self.dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
-
-    def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
-        filename = self.batch_dir + '/' + str(self.UUID)
-
-        self.get_cnmfe_results()
-
-        Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
-
+        cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
         cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
         cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+        cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
         cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-        cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
-                                                                     self.cnmC[self.idx_components], cnmb, cnm_f,
-                                                                     self.dims[0], self.dims[1],
-                                                                     YrA=cnmYrA[self.idx_components], img=cn_filter)
-        #self.hide()
+        idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
+        dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
+
+        if work_env_args is not None:
+            workEnv = ViewerWorkEnv.from_pickle(**work_env_args)
+        else:
+            workEnv = None
+
+        return {'cnmA': cnmA,
+                'cnmb': cnmb,
+                'cnm_f': cnm_f,
+                'cnmC': cnmC,
+                'cnmYrA': cnmYrA,
+                'idx_components': idx_components,
+                'dims': dims,
+                'workEnv': workEnv
+                }
+
+    def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
+        pass
+    #     filename = self.batch_dir + '/' + str(self.UUID)
+    #
+    #     self.get_cnmfe_results(self.batch_dir, self.UUID)
+    #
+    #     Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
+    #
+    #     cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
+    #     cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+    #     cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+    #     cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+    #     self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
+    #                                                                  self.cnmC[self.idx_components], cnmb, cnm_f,
+    #                                                                  self.dims[0], self.dims[1],
+    #                                                                  YrA=cnmYrA[self.idx_components], img=cn_filter)
+    #     #self.hide()
 
     def import_cnmfe_into_viewer(self):
-        self.get_cnmfe_results()
-
         vi = ViewerUtils(self.viewer_ref)
 
         if not vi.discard_workEnv():
@@ -394,25 +409,34 @@ class Output(QtWidgets.QWidget):
         pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
         tiff_path = self.batch_dir + '/' + str(self.UUID) + '.tiff'
 
-        vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path, tiff_path)
+        self.get_cnmfe_results(self.batch_dir, self.UUID, work_env_args={'pickle_file_path': pickle_file_path,
+                                                                         'tiff_path': tiff_path})
+
+    def _import_results(self, cnmA, cnmb, cnm_f, cnmC, cnmYrA, idx_components, dims, workEnv: ViewerWorkEnv):
+        vi = ViewerUtils(self.viewer_ref)
+
+        vi.viewer.workEnv = workEnv
         vi.update_workEnv()
 
-        input_params = pickle.load(open(self.batch_dir + '/' + str(self.UUID) + '.params', 'rb'))
+        params_path = os.path.join(self.batch_dir, str(self.UUID) + '.params')
+        input_params = pickle.load(open(params_path, 'rb'))
 
         vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
 
-        self.viewer_ref.parent().ui.actionROI_Manager.trigger()
+        # self.viewer_ref.parent().ui.actionROI_Manager.trigger()
+
+        self.viewer_ref.parent().get_module('roi_manager')
 
         for m in self.viewer_ref.parent().running_modules:
-            if isinstance(m, ModuleGUI):
+            if isinstance(m, ROIManagerGUI):
                 m.start_cnmfe_mode()
-                m.add_all_cnmfe_components(cnmA=self.cnmA,
-                                           cnmb=self.cnmb,
-                                           cnmC=self.cnmC,
-                                           cnm_f=self.cnm_f,
-                                           cnmYrA=self.cnmYrA,
-                                           idx_components=self.idx_components,
-                                           dims=self.dims,
+                m.add_all_cnmfe_components(cnmA=cnmA,
+                                           cnmb=cnmb,
+                                           cnmC=cnmC,
+                                           cnm_f=cnm_f,
+                                           cnmYrA=cnmYrA,
+                                           idx_components=idx_components,
+                                           dims=dims,
                                            input_params_dict=input_params,
                                            calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
                                            )
@@ -422,7 +446,6 @@ class Output(QtWidgets.QWidget):
         else:
             name = ''
         vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + name)
-        #self.hide()
         self.close()
 
 
