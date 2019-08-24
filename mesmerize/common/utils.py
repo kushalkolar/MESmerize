@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: kushal
 
-Chatzigeorgiou Group
-Sars International Centre for Marine Molecular Biology
+#@author: kushal
 
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-"""
+#Chatzigeorgiou Group
+#Sars International Centre for Marine Molecular Biology
+
+#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
 
 import os
 from stat import S_IEXEC
@@ -109,6 +109,7 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
 
 
 class HdfTools:
+    """Functions for saving and loading HDF5 data"""
     @staticmethod
     def save_dataframe(path: str, dataframe: pd.DataFrame, metadata: Optional[dict] = None,
                        metadata_method: str = 'json', raise_meta_fail: bool = True):
@@ -301,14 +302,16 @@ class _QRunner(QtCore.QRunnable):
 
 
 class QThreaded(QtCore.QObject):
+    """
+    Class for decorating functions to run in an external QThreadPool.
+    The arguments can either be callables or string names of a callable.
+    If the decorated function is a method within a class, pass the name (str) of the callable attribute to the decorator.
+
+    """
     def __init__(self, receiver: Union[Callable, str],
                  pre: Union[Callable, str, None] = None,
                  error: Union[Callable, str, None] = None):
         """
-        Class for decorating functions to run in an external QThreadPool.
-        The arguments can either be callables or string names of a callable.
-        If the decorated function is a method within a class, pass the name (str) of the callable attribute to the decorator.
-
         :param receiver:    Output of the decorated function is passed to this callable
         :type receiver:     Union[Callable, str]
 

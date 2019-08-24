@@ -14,7 +14,9 @@ Data
 
 LoadFile
 ^^^^^^^^
-
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.LoadFile>`
+    
 	Loads a save Transmission file. If you have a Project open it will automatically set the project path according to the open project. Otherwise you must specify the project path. You can specify a different project path to the project that is currently open (this is untested, weird things could happen). You should not merge Transmissions originating from different projects.
 	
 	.. note:: You can also load a saved Transmission file by dragging & dropping it into the Flowchart area. It will create a LoadFile node with the name of the dropped.
@@ -36,11 +38,13 @@ LoadFile
 		The purpose of specifying the Project Path when you load a save Transmission file is so that 	interactive plots and the :ref:`DatapointTracer` can find raw data that correspond to datapoints.
 
 
-.. _node_Load_Proj_DF:
+.. _nodeLoadProjDF:
 
-Load_Proj_DF
-^^^^^^^^^^^^
-
+LoadProjDF
+^^^^^^^^^^
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.LoadProjDF>`
+    
 	Load the entire Project DataFrame (root) of the project that is currently open, or a sub-DataFrame that corresponds a tab that you have created in the :ref:`ProjectBrowser`.
 
 	**Output Data Column** *(numerical)*: _RAW_CURVE
@@ -70,7 +74,9 @@ Load_Proj_DF
 
 Save
 ^^^^
-
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.Save>`
+    
 	Save the input Transmission to a file so that the Transmission can be used re-loaded in the Flowchart for later use.
 
 	**Usage:** Connect an input Transmission to this node's **In** terminal, click the button to choose a path to save a new file to, and then click the Apply checkbox to save the input Transmission to the chosen file.
@@ -97,6 +103,8 @@ Save
 
 Merge
 ^^^^^
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.Merge>`
 
 	Merge multiple Transmissions into a single Transmission. The DataFrames of the individual Transmissions are concatenated using `pandas.concat <https://pandas.pydata.org/pandas-docs/version/0.24/user_guide/merging.html#concatenating-objects>`_ and History Traces are also merged. The History Trace of each indidual input Transmission is kept separately.
 
@@ -114,17 +122,21 @@ Merge
 
 .. _node_ViewData:
 
-ViewData
-^^^^^^^^
+ViewTransmission
+^^^^^^^^^^^^^^^^
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.ViewTransmission>`
 
 	View the input Transmission object using the spyder Object Editor. For example you can explore the Transmission DataFrame and HistoryTrace.
 
 
 .. _node_ViewHistoryTrace:
 
-ViewHistoryTrace
-^^^^^^^^^^^^^^^^
-
+ViewHistory
+^^^^^^^^^^^
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.ViewHistory>`
+    
 	View the HistoryTrace of the input Transmission in a nice Tree View GUI.
 
 
@@ -132,7 +144,9 @@ ViewHistoryTrace
 
 TextFilter
 ^^^^^^^^^^
-
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.TextFilter>`
+    
 	Include or Exclude Transmission DataFrame rows according to a text filter in a categorical column.
 
 	**Usage Example:** If you want to select all traces that are from photoreceptor cells and you have a categorical column, named cell_types for example, containing cell type labels, choose "cell_type" as the *Column* parameter and enter "photoreceptor" as the *filter* parameter, and select *Include*. If you want to select everything that are not photoreceptors select *Exclude*.
@@ -156,12 +170,16 @@ TextFilter
 	Exclude		Exclude all rows matching the text filter
 	Apply		Process data through this node
 	=========== 	===========
+	
+	**HistoryTrace output structure:** Dict of all the parameters for this node
 
 
 .. _node_SpliceArrays:
 
 SpliceArrays
 ^^^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.SpliceArrays>`
 
 	Splice arrays derived in the specified numerical data column and place the spliced output arrays in the output column.
 
@@ -185,9 +203,11 @@ SpliceArrays
 
 .. _node_DropNaNs:
 
-DropNaNs
-^^^^^^^^
-
+DropNa
+^^^^^^
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Data.DropNa>`
+    
 	Drop NaNs and Nones (null) from the Transmission DataFrame. Uses `DataFrame.dropna <https://pandas.pydata.org/pandas-docs/version/0.24/reference/api/pandas.DataFrame.dropna.html>`_ and `DataFrame.isna <https://pandas.pydata.org/pandas-docs/version/0.24/reference/api/pandas.DataFrame.isna.html>`_ methods.
 	
 	- If you choose "row" or "column" as axis, entire rows or columns will be dropped if any or all (see params) of the values are NaN/None.	
@@ -224,17 +244,33 @@ Display
 -------
 **These nodes connect input Transmission(s) to various plots for visualization**
 
+The actual Plot Widget instance that these nodes use can be accessed through the ``plot_widget`` attribute in the flowchart console.
 
+For example
+
+.. code-block:: python
+
+    # Get a heatmap node that is named "Heatmap.0"
+    >>> hn = get_nodes()['Heatmap.0']
+    
+    # the plot widget instance
+    >>> hn.plot_widget
+    
+    <mesmerize.plotting.widgets.heatmap.widget.HeatmapTracerWidget object at 0x7f26e5d29678>
+
+    
 .. _node_BeeswarmPlots:
 
 BeeswarmPlots
 ^^^^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.BeeswarmPlots>`
+
 	Based on pqytgraph Beeswarm plots.
 
 	Visualize data points as a pseudoscatter and as corresponding Violin Plots. This is commonly used to visualize peak features and compare different experimental groups.
 
-	For more information please see :ref:`Beeswarm Plots <plot_Beeswarm>`
+	For information on the plot widget see :ref:`Beeswarm Plots <plot_Beeswarm>`
 	
 	========== 	=================
 	Terminal		Description
@@ -250,10 +286,12 @@ BeeswarmPlots
 
 Heatmap
 ^^^^^^^
-
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.Heatmap>`
+    
 	Used for visualizing numerical arrays in the form of a heatmap. Also used for visualizing a hieararchical clustering tree (dendrogram) along with a heatmap with row order corresponding to the order leaves of the dendrogram.
 
-	For more information see :ref:`Heat Plot <plot_Heatmap>`
+	For information on the plot widget see :ref:`Heat Plot <plot_Heatmap>`
 
 	========== 	=================
 	Terminal		Description
@@ -271,7 +309,9 @@ Heatmap
 CrossCorr
 ^^^^^^^^^
 
-	Perform Cross-Correlation analysis. See :ref:`CrossCorrelation Plot <plot_CrossCorrelation>` for more information.
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.CrossCorr>`
+
+	Perform Cross-Correlation analysis. For information on the plot widget see :ref:`CrossCorrelation Plot <plot_CrossCorrelation>`
 	
 
 .. _node_Plot:
@@ -279,6 +319,10 @@ CrossCorr
 Plot
 ^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.Plot>`
+    
+    For information on the plot widget see :ref:`<plot_SimplePlot>`
+    
 	A simple plot.
 
 	========== 	=================
@@ -302,18 +346,22 @@ Plot
 Proportions
 ^^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.Proportions>`
+
 	Plot stacked bar chart of one categorical variable vs. another categorical variable.
 	
-	For more information see :ref:`Proportions Plot <plot_Proportions>`
+	For information on the plot widget see :ref:`Proportions Plot <plot_Proportions>`
 
 .. _node_ScatterPlot:
 
 ScatterPlot
 ^^^^^^^^^^^
 
-	Create scatter plot of a numerical data column containing [X, Y] values (arrays of size 2).
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.ScatterPlot>`
+
+	Create scatter plot of numerical data containing [X, Y] values
 	
-	For more information see :ref:`Scatter Plot <plot_ScatterPlot>`
+	For information on the plot widget see :ref:`Scatter Plot <plot_ScatterPlot>`
 
 .. _node_TimeSeries:
 
@@ -342,6 +390,9 @@ I recommend this book by Tom O'Haver if you are unfamiliar with basic signal pro
 Butterworth
 ^^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.Butterworth>`
+
+
 	Creates a Butterworth filter using `scipy.signal.butter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter>`_ and applies it using `scipy.signal.filtfilt <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html>`_. 
 
 	The Wn parameter of `scipy.signal.butter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter>`_ is calculated by dividing the sampling rate of the data by the *freq_divisor* parameter (see below).
@@ -369,6 +420,8 @@ Butterworth
 
 SavitzkyGolay
 ^^^^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.SavitzkyGolay>`
 
 	`Savitzky Golay filter <https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter>`_. Uses `scipy.signal.savgol_filter <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html>`_.
 
@@ -402,6 +455,8 @@ PowSpecDens
 Resample
 ^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.Resample>`
+
 	Resample the data in numerical arrays. Uses `scipy.signal.resample <https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample.html>`_.
 
 	**Output Data Column** *(numerical)*: _RESAMPLE
@@ -428,8 +483,10 @@ Resample
 
 .. _node_ScalerMeanVar:
 
-ScalerMeanVar
-^^^^^^^^^^^^^
+ScalerMeanVariance
+^^^^^^^^^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.ScalerMeanVariance>`
 
 	Uses `tslearn.preprocessing.TimeSeriesScalerMeanVariance <https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html>`_
 	
@@ -460,6 +517,8 @@ ScalerMeanVar
 Normalize
 ^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.Normalize>`
+
 	Normalize the signal so that all values are between 0 and 1 based on the min and max of the signal.
 
 	**Output Data Column** *(numerical)*: _NORMALIZE
@@ -482,6 +541,8 @@ Normalize
 
 RFFT
 ^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.RFFT>`
 
 	Uses `scipy.fftpack.rfft <https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.rfft.html>`_. "Discrete Fourier transform of a real sequence"
 
@@ -506,6 +567,9 @@ RFFT
 
 iRFFT
 ^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.iRFFT>`
+    
 	Uses `scipy.fftpack.irfft <https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.irfft.html>`_. "inverse discrete Fourier transform of real sequence x"
 
 	**Output Data Column** *(numerical)*: _IRFFT
@@ -515,6 +579,8 @@ iRFFT
 
 PeakDetect
 ^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakDetect>`
 
 	Simple Peak Detection using derivatives. The "Differentiation" chapter of Tom O'Haver's book has a section on Peak Detection which I recommend reading. https://terpconnect.umd.edu/~toh/spectrum/TOC.html
 
@@ -564,6 +630,8 @@ PeakDetect
 PeakFeatures
 ^^^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakFeatures>`
+
 	Compute peak features. The DataFrame of the ouput Transmission contains one row for each peak.
 	
 	============================    ========================================
@@ -607,6 +675,8 @@ Math
 Derivative
 ^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.Derivative>`
+
 	Computes the first derivative.
 	
 	**Output Data Column** *(numerical)*: _DERIVATIVE
@@ -632,6 +702,8 @@ Derivative
 TVDiff
 ^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.TVDiff>`
+
 	Based on `Numerical Differentiation of Noisy, Nonsmooth Data. Rick Chartrand. (2011). <http://dx.doi.org/10.5402/2011/164564>`_. Translated to Python by Simone Sturniolo.
 
 
@@ -640,6 +712,8 @@ TVDiff
 
 XpowerY
 ^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.XpowerY>`
 
 	Raises each element of the numerical arrays in the data_column to the exponent Y
 
@@ -666,6 +740,8 @@ XpowerY
 AbsoluteValue
 ^^^^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.AbsoluteValue>`
+
 	Element-wise absolute values of the input arrays. Computes root mean squares if input arrays are complex.
 
 	**Output Data Column** *(numerical)*: _ABSOLUTE_VALUE
@@ -689,6 +765,8 @@ AbsoluteValue
 
 LogTransform
 ^^^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.LogTransform>`
 
 	Perform Logarithmic transformation of the data.
 
@@ -720,6 +798,8 @@ LogTransform
 
 ArrayStats
 ^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.ArrayStats>`
 
     Perform a few basic statistical functions.
     
@@ -784,6 +864,8 @@ Biology
 ExtractStim
 ^^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.ExtractStim>`
+
 	Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it. It outputs one row per stimulus period.
 
 	===================    ========================================
@@ -819,6 +901,8 @@ ExtractStim
 DetrendDFoF
 ^^^^^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.DetrendDFoF>`
+
 	Uses the `detrend_df_f <http://flatironinstitute.github.io/CaImAn/core_functions.html#caiman.source_extraction.cnmf.utilities.detrend_df_f>`_ function from the CaImAn library. This node does not use any of the numerical data in a Transmission DataFrame to compute the detrended :math:`\Delta F / F_o`. It directly uses the CNMF output data for the Samples that are present in the Transmission DataFrame.
 
 	**Output Data Column** *(numerical)*: _DETREND_DF_O_F
@@ -836,12 +920,17 @@ Clustering
 
 KShape
 ^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Clustering.KShape>`
+    
 	Perform KShape clustering. For more information see :ref:`KShape plot <plot_KShape>`.
 
 .. _node_KMeans:
 
 KMeans
 ^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Clustering.KMeans>`
 
 	Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
     
@@ -866,6 +955,8 @@ If you are unfamiliar with Hierarchical Clustering I recommend going through thi
 Linkage
 ^^^^^^^
 
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.Linkage>`
+
 	Compute a linkage matrix which can be used to form flat clusters using the :ref:`node_FCluster` node.
 
 	Based on `scipy.cluster.hierarchy.linkage <https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.linkage.html>`_
@@ -874,7 +965,7 @@ Linkage
 	Terminal		Description
 	========== 	=================
 	In		Input Transmission
-	Out		Linkage matrix, **not a Transmission object**
+	Out		 dict containing the Linkage matrix and parameters, **not a Transmission object**
 	========== 	=================
 
 	============= 	=================
@@ -896,6 +987,8 @@ Linkage
 
 FCluster
 ^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.FCluster>`
 	
 	"Form flat clusters from the hierarchical clustering defined by the given linkage matrix."
 
@@ -912,6 +1005,11 @@ FCluster
 	Monocrit *(optinal)*	           Output from :ref:`node_MaxIncStat` or :ref:`node_MaxInconsistent`
 	Out                             Transmission with clustering data that can be visualized using the :ref:`node_Heatmap`
 	====================            =================
+	
+	**Parameters:** Exactly as desribed in `scipy.cluster.hierarchy.fcluster <https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.fcluster.html>`_
+	
+	
+	**HistoryTrace output structure:** Dict of all the parameters for this node, as well as the parameters used for creating the linkage matrix and the linkage matrix itself from the :ref:`Linkage node <node_Linkage>`.
 
 
 .. _node_Inconsistent:
@@ -946,6 +1044,8 @@ Nodes for transforming data
 
 LDA
 ^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Transform.LDA>`
 
     Perform Linear Discriminant Analysis. Uses `sklearn.discriminant_analysis.LinearDiscriminantAnalysis <https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html>`_
     
@@ -986,5 +1086,6 @@ LDA
                     | Usually the same name as the data column(s) used for the training data.
                     | *optional*
     =============== ===================================================================
-
+    
+    **HistoryTrace output structure:** Dict of all the parameters for this node
     

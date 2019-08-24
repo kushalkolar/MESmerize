@@ -364,6 +364,7 @@ class SelectColumns(CtrlNode):
 
 
 class TextFilter(CtrlNode):
+    """Simple string filtering in a specified column"""
     nodeName = 'TextFilter'
     uiTemplate = [('Column', 'combo', {'toolTip': 'Filter according to this column'}),
                   ('filter', 'lineEdit', {'toolTip': 'Filter to apply in selected column'}),
