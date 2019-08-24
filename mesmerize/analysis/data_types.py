@@ -207,7 +207,7 @@ class HistoryTrace:
         l = [next(iter(d)) for d in self.get_data_block_history(data_block_id)]
         return l
 
-    def get_operation_params(self, data_block_id: UUID, operation: str) -> dict:
+    def get_operation_params(self, data_block_id: Union[UUID, str], operation: str) -> dict:
         """Get the parameters dict for a specific operation that was performed on a specific data block"""
         # if isinstance(data_block_id, str):
         #     data_block_id = UUID(data_block_id)
@@ -351,19 +351,17 @@ class BaseTransmission:
 
         :param plot_state:      State of a plot, such as data and label columns. Used when saving interactive plots.
 
-        :ivar df:               Dataframe instance belonging to a Transmission instance
-        :ivar history_trace:    :class: `HistoryTrace` instance
-        :ivar proj_path:        project path
         :type proj_path:        str
         :ivar last_output:      Name of last data column that was the output of a node
         :type last_output:      str
         :ivar last_unit:        The data units corresponding to `last_output`
         :type last_unit:        str
+        :type plot_state:       dict
         """
-        self.df = df
+        self.df = df  # pandas.DataFrame instance
 
         if isinstance(history_trace, HistoryTrace):
-            self.history_trace = history_trace
+            self.history_trace = history_trace  #: :class:`HistoryTrace instance <mesmerize.analysis.data_types.HistoryTrace>`
         elif isinstance(history_trace, dict):
             self.history_trace = HistoryTrace(**history_trace)
 
@@ -371,8 +369,8 @@ class BaseTransmission:
         if proj_path is not None:
             self.set_proj_path(proj_path)
 
-        self.last_output = last_output
-        self.last_unit = last_unit
+        self.last_output = last_output  #: Name of the DataFrame column that contains data from the most recent node
+        self.last_unit = last_unit  #: The data units for the data in the column of 'last_output'
 
         if ROI_DEFS is None:
             self.ROI_DEFS = []
@@ -392,7 +390,7 @@ class BaseTransmission:
             assert isinstance(CUSTOM_COLUMNS, list)
             self.CUSTOM_COLUMNS = CUSTOM_COLUMNS
 
-        self.plot_state = plot_state
+        self.plot_state = plot_state  #: If used in a plot, dict containing information about the plot state
 
     def to_dict(self) -> dict:
         """
@@ -409,7 +407,7 @@ class BaseTransmission:
 
     def to_hickle(self, path):
         """
-        Save as an hdf5 file using hickle (not recommended, use to_hdf5)
+        Save as an hdf5 file using hickle (not recommended, use :func:`to_hdf5 <mesmerize.Transmission.to_hdf5>`)
 
         :param path: file path
         """
@@ -428,10 +426,9 @@ class BaseTransmission:
     @classmethod
     def from_hdf5(cls, path: str):
         """
-        Create Transmission from an hdf5 file. See :ref:`HdfTools` for information on the file structure.
+        Create Transmission from an hdf5 file. See :class:`HdfTools <mesmerize.common.utils.HdfTools>` for information on the file structure.
 
-        :param path: file path, usually ends in .trn
-        :return:
+        :param path: file path, usually ends in .trn (.ptrn for plots)
         """
         df, meta = HdfTools.load_dataframe(path)
         return cls(df, **meta)
@@ -442,7 +439,6 @@ class BaseTransmission:
         Create Transmission from hdf5 file saved using hickle.
 
         :param path: file path, usually ends in .trn
-        :return:
         """
         h = hickle.load(path)
         return cls(**h)
@@ -459,7 +455,7 @@ class BaseTransmission:
 
     def to_pickle(self, path: str):
         """
-        Svae Transmission as a pickle
+        Save Transmission as a pickle.  Not recommended for sharing data, use :func:`to_hdf5 <mesmerize.Transmission.to_hdf5>`
 
         :param path: file path, usually ends in .trn
         """
@@ -501,7 +497,7 @@ class BaseTransmission:
         """
         Set the project root dir for this transmission.
 
-        Used for appending relative paths (stored in the project DataFrame) to the various project files. For example, this is used by the Datapoint Tracer to find max and std projections of image sequeences.
+        Used for finding associated project files, for example the Datapoint Tracer uses it to find max and std projections of image sequences.
 
         :param path: Root directory of the project
         """
@@ -517,8 +513,7 @@ class BaseTransmission:
 
     def set_proj_config(self):
         """
-        Sets some project config related attributes.
-
+        Sets some project config related attributes from the project's config file.
         """
         proj_path = self.get_proj_path()
         if proj_path is None:
@@ -589,7 +584,13 @@ class Transmission(BaseTransmission):
         
         return pd.Series({'_RAW_CURVE': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
 
-    def get_data_block_dataframe(self, data_block_id: str):
+    def get_data_block_dataframe(self, data_block_id: Union[UUID, str]) -> pd.DataFrame:
+        """
+        Get the DataFrame rows corresponding to a single data block.
+
+        :param data_block_id: data block uuid
+        :return: DataFrame with rows from the specified data block
+        """
         if isinstance(data_block_id, UUID):
             data_block_id = str(data_block_id)
         assert isinstance(data_block_id, str)
