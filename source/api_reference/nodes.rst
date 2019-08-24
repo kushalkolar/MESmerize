@@ -65,3 +65,11 @@ Transform
     :exclude-members: process
     :no-undoc-members:
     
+CtrlNode
+========
+
+Base for all nodes
+
+.. autoclass:: mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode
+    :members:
+    :member-order: bysource
