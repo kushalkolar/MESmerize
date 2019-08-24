@@ -86,6 +86,7 @@ Welcome to Mesmerize's documentation!
 	./api_reference/viewer_modules/stimulus_mapping
 	./api_reference/Analysis_data_types
 	./api_reference/analysis
+	./api_reference/nodes
 	./api_reference/plotting/utils
 	./api_reference/plotting/widgets/*
 

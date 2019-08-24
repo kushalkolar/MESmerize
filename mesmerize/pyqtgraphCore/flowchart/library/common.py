@@ -151,6 +151,8 @@ class CtrlNode(Node):
     sigStateChanged = QtCore.Signal(object)
     
     def __init__(self, name, ui=None, terminals=None, **kwargs):
+        """:param terminals: Dict containing terminal names and specifying whether they are input or output terminals"""
+
         if ui is None:
             if hasattr(self, 'uiTemplate'):
                 ui = self.uiTemplate

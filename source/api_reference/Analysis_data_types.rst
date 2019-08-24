@@ -38,3 +38,4 @@ HistoryTrace
 	:special-members:
 	:members:
 	:private-members:
+	:member-order: bysource

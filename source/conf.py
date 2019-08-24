@@ -47,7 +47,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'sphinxcontrib.images'
+    'sphinxcontrib.images',
 ]
 napoleon_use_param = True
 set_type_checking_flag = True
