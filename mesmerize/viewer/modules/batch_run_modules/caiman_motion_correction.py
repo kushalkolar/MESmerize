@@ -133,97 +133,98 @@ def run(batch_dir: str, UUID: str):
     json.dump(output, open(file_path + '.out', 'w'))
 
 
-class Output:
-    def __init__(self, batch_path, UUID, viewer_ref):
-        self.vi = ViewerUtils(viewer_ref)
+if not sys.argv[0] == __file__:
+    class Output:
+        def __init__(self, batch_path, UUID, viewer_ref):
+            self.vi = ViewerUtils(viewer_ref)
 
-        if not self.vi.discard_workEnv():
-            return
+            if not self.vi.discard_workEnv():
+                return
 
-        self.batch_path = batch_path
-        self.UUID = UUID
+            self.batch_path = batch_path
+            self.UUID = UUID
 
-        self.vi.viewer.status_bar_label.showMessage('Please wait, loading motion corrected image sequence...')
-        pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
-        tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
-        self._load_data(pik_path, tiff_path)
+            self.vi.viewer.status_bar_label.showMessage('Please wait, loading motion corrected image sequence...')
+            pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
+            tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
+            self._load_data(pik_path, tiff_path)
 
-    @QThreaded('_update_workEnv')
-    def _load_data(self, pik_path: str, tiff_path: str):
-        return ViewerWorkEnv.from_pickle(pik_path, tiff_path)
+        @QThreaded('_update_workEnv')
+        def _load_data(self, pik_path: str, tiff_path: str):
+            return ViewerWorkEnv.from_pickle(pik_path, tiff_path)
 
-    def _update_workEnv(self, workEnv):
-        self.vi.viewer.workEnv = workEnv
+        def _update_workEnv(self, workEnv):
+            self.vi.viewer.workEnv = workEnv
 
-        self.vi.update_workEnv()
-        self.vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
+            self.vi.update_workEnv()
+            self.vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
 
-        input_params = pickle.load(open(self.batch_path + '/' + str(self.UUID) + '.params', 'rb'))
+            input_params = pickle.load(open(self.batch_path + '/' + str(self.UUID) + '.params', 'rb'))
 
-        name = input_params['name_elas']
+            name = input_params['name_elas']
 
-        self.vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
+            self.vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
 
-        bpx = json.load(open(self.batch_path + '/' + str(self.UUID) + '.out', 'r'))['bord_px']
-        input_params.update({'bord_px': bpx})
+            bpx = json.load(open(self.batch_path + '/' + str(self.UUID) + '.out', 'r'))['bord_px']
+            input_params.update({'bord_px': bpx})
 
-        self.vi.viewer.workEnv.history_trace.append({'caiman_motion_correction': input_params})
-        self.vi.enable_ui(True)
+            self.vi.viewer.workEnv.history_trace.append({'caiman_motion_correction': input_params})
+            self.vi.enable_ui(True)
 
-class BitDepthConverter:
-    """
-    Downscale the bit depth of image to uint8, uint16, or uint32 using a Look up table.
-    Usage example:
-
-    First create a LUT (look up table) of the bit depth you desire. Pass the min and max levels as a tuple or list:
-
-    lut_8_bit = create_lut(levels=[32, 2049], source=16, output=8)
-
-    Now use this LUT to downscale an image:
-
-    downscaled_img = apply_lut(img, lut_8_bit)
-    """
-    @staticmethod
-    def create_lut(levels, source, out):
+    class BitDepthConverter:
         """
-        :param levels:      min and max levels with which to create the LUT
-        :type levels:       tuple or list
-        :param source:      bit depth of the source. 16, 32, or 64
-        :type source:       int
-        :param output:      desired output bit depth
-        :type output:       int
-        :return:            LUT (Look up table) to use for downscaling the bit depth
-        :rtype:             np.ndarray
+        Downscale the bit depth of image to uint8, uint16, or uint32 using a Look up table.
+        Usage example:
+
+        First create a LUT (look up table) of the bit depth you desire. Pass the min and max levels as a tuple or list:
+
+        lut_8_bit = create_lut(levels=[32, 2049], source=16, output=8)
+
+        Now use this LUT to downscale an image:
+
+        downscaled_img = apply_lut(img, lut_8_bit)
         """
+        @staticmethod
+        def create_lut(levels, source, out):
+            """
+            :param levels:      min and max levels with which to create the LUT
+            :type levels:       tuple or list
+            :param source:      bit depth of the source. 16, 32, or 64
+            :type source:       int
+            :param output:      desired output bit depth
+            :type output:       int
+            :return:            LUT (Look up table) to use for downscaling the bit depth
+            :rtype:             np.ndarray
+            """
 
-        accepted_srcs = [16, 32, 64]
-        if source not in accepted_srcs:
-            raise TypeError('Can only convert from uint16, uint32, or uint64')
+            accepted_srcs = [16, 32, 64]
+            if source not in accepted_srcs:
+                raise TypeError('Can only convert from uint16, uint32, or uint64')
 
-        accepted_outs = [8, 16, 32]
-        if out not in accepted_outs:
-            raise TypeError('Can only output uint8, uint16, or uint32')
+            accepted_outs = [8, 16, 32]
+            if out not in accepted_outs:
+                raise TypeError('Can only output uint8, uint16, or uint32')
 
-        type_str = 'uint' + str(source)
-        lut = np.arange(2**source, dtype=type_str)
-        lut.clip(levels[0], levels[1], out=lut)
-        lut -= levels[0]
-        np.floor_divide(lut, (levels[1] - levels[0] + 1) / (2**out), out=lut, casting='unsafe')
+            type_str = 'uint' + str(source)
+            lut = np.arange(2**source, dtype=type_str)
+            lut.clip(levels[0], levels[1], out=lut)
+            lut -= levels[0]
+            np.floor_divide(lut, (levels[1] - levels[0] + 1) / (2**out), out=lut, casting='unsafe')
 
-        type_str = 'uint' + str(out)
-        return lut.astype(type_str)
+            type_str = 'uint' + str(out)
+            return lut.astype(type_str)
 
-    @staticmethod
-    def apply_lut(image, lut):
-        """
-        :param image:   The image upon which to apply the LUT (Look up table) and change its bit depth
-        :type image:    np.ndarray
-        :param lut:     The LUT to use for downscaling the bit depth. Generated by BitDepthConvert.create_LUT
-        :type lut:      np.ndarray
-        :return:        Downscaled image with the LUT (Look up table) applied to it
-        :rtype:         np.ndarray
-        """
-        return np.take(lut, image).astype(lut.dtype)
+        @staticmethod
+        def apply_lut(image, lut):
+            """
+            :param image:   The image upon which to apply the LUT (Look up table) and change its bit depth
+            :type image:    np.ndarray
+            :param lut:     The LUT to use for downscaling the bit depth. Generated by BitDepthConvert.create_LUT
+            :type lut:      np.ndarray
+            :return:        Downscaled image with the LUT (Look up table) applied to it
+            :rtype:         np.ndarray
+            """
+            return np.take(lut, image).astype(lut.dtype)
 
 if sys.argv[0] == __file__:
     run(sys.argv[1], sys.argv[2])
