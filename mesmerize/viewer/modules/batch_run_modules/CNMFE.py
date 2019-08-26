@@ -243,210 +243,211 @@ def run(batch_dir: str, UUID: str):
     json.dump(output, open(file_path + '.out', 'w'))
 
 
-class Output(QtWidgets.QWidget):
-    def __init__(self, batch_dir, UUID, viewer_ref):
-        # super(Output, self).__init__(self)
-        # QtWidgets.QWidget.__init__(self, parent=None)
-        self.batch_dir = batch_dir
-        self.UUID = UUID
-        self.viewer_ref = viewer_ref
-        self.cnmfe_results = {}
+if not sys.argv[0] == __file__:
+    class Output(QtWidgets.QWidget):
+        def __init__(self, batch_dir, UUID, viewer_ref):
+            # super(Output, self).__init__(self)
+            # QtWidgets.QWidget.__init__(self, parent=None)
+            self.batch_dir = batch_dir
+            self.UUID = UUID
+            self.viewer_ref = viewer_ref
+            self.cnmfe_results = {}
 
-        visualization.mpl.use('TkAgg')
+            visualization.mpl.use('TkAgg')
 
-        filename = batch_dir + '/' + str(UUID)
-        if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
-            print('showing corr pnr')
-            self.output_corr_pnr()
-        else:
-            QtWidgets.QWidget.__init__(self)
-            print('opening question box')
-            self.setWindowTitle('Show Correlation & PNR image or CNMFE')
-            layout = QtWidgets.QVBoxLayout()
+            filename = batch_dir + '/' + str(UUID)
+            if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
+                print('showing corr pnr')
+                self.output_corr_pnr()
+            else:
+                QtWidgets.QWidget.__init__(self)
+                print('opening question box')
+                self.setWindowTitle('Show Correlation & PNR image or CNMFE')
+                layout = QtWidgets.QVBoxLayout()
 
-            label = QtWidgets.QLabel(self)
-            label.setText('Would you like to look at the correlation & PNR image or view the CNMFE output?')
-            layout.addWidget(label)
+                label = QtWidgets.QLabel(self)
+                label.setText('Would you like to look at the correlation & PNR image or view the CNMFE output?')
+                layout.addWidget(label)
 
-            self.btnCP = QtWidgets.QPushButton()
-            self.btnCP.setText('Corr PNR Img')
-            layout.addWidget(self.btnCP)
+                self.btnCP = QtWidgets.QPushButton()
+                self.btnCP.setText('Corr PNR Img')
+                layout.addWidget(self.btnCP)
 
-            self.btnCNMFE = QtWidgets.QPushButton()
-            self.btnCNMFE.setText('CaImAn CNMFE visualization')
-            layout.addWidget(self.btnCNMFE)
+                self.btnCNMFE = QtWidgets.QPushButton()
+                self.btnCNMFE.setText('CaImAn CNMFE visualization')
+                layout.addWidget(self.btnCNMFE)
 
-            self.btnImportIntoViewer = QtWidgets.QPushButton()
-            self.btnImportIntoViewer.setText('Import CNMFE output into chosen Viewer')
-            layout.addWidget(self.btnImportIntoViewer)
+                self.btnImportIntoViewer = QtWidgets.QPushButton()
+                self.btnImportIntoViewer.setText('Import CNMFE output into chosen Viewer')
+                layout.addWidget(self.btnImportIntoViewer)
 
-            self.checkbox_calc_raw_min_max = QtWidgets.QCheckBox()
-            self.checkbox_calc_raw_min_max.setText('Calculate raw min and max of components')
-            self.checkbox_calc_raw_min_max.setChecked(True)
-            layout.addWidget(self.checkbox_calc_raw_min_max)
+                self.checkbox_calc_raw_min_max = QtWidgets.QCheckBox()
+                self.checkbox_calc_raw_min_max.setText('Calculate raw min and max of components')
+                self.checkbox_calc_raw_min_max.setChecked(True)
+                layout.addWidget(self.checkbox_calc_raw_min_max)
 
-            self.setLayout(layout)
+                self.setLayout(layout)
 
-            self.btnCP.clicked.connect(self.output_corr_pnr)
-            self.btnCNMFE.clicked.connect(self.output_cnmfe)
-            self.btnImportIntoViewer.clicked.connect(self.import_cnmfe_into_viewer)
-            self.show()
+                self.btnCP.clicked.connect(self.output_corr_pnr)
+                self.btnCNMFE.clicked.connect(self.output_cnmfe)
+                self.btnImportIntoViewer.clicked.connect(self.import_cnmfe_into_viewer)
+                self.show()
 
-    def output_corr_pnr(self):  # , batch_dir, UUID, viewer_ref):
-        filename = self.batch_dir + '/' + str(self.UUID)
-        print(self.batch_dir)
-        print(str(self.UUID))
-        print(filename)
-        cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        # try:
-        pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
-        # except:
-        #     try:
-        #         pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+        def output_corr_pnr(self):  # , batch_dir, UUID, viewer_ref):
+            filename = self.batch_dir + '/' + str(self.UUID)
+            print(self.batch_dir)
+            print(str(self.UUID))
+            print(filename)
+            cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+            # try:
+            pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
             # except:
-            #     return
+            #     try:
+            #         pnr = pickle.load(open(filename + 'pnr.pikl', 'rb'))
+                # except:
+                #     return
 
-        correlation_image_pnr = cn_filter
-        pnr_image = pnr
-        self.mw = MatplotlibWidget()
-        # fig = mw.getFigure()
-        self.mw.setWindowTitle(str(self.UUID))
-        #Adapted from CaImAn library's visualization module
-        # mw.plot = plt.figure(figsize=(10,4))
-        # fig = pl.figure(figsize=(10, 4))
-        self.cn_ax = self.mw.fig.add_axes([0.05, 0.2, 0.4, 0.7])
-        self.cn_img = self.cn_ax.imshow(cn_filter, cmap='jet')
-        # im_cn = plt.imshow(correlation_image_pnr, cmap='jet')
-        # plt.title('correlation image')
-        # self.cn_ax.colorbar()
-        self.pn_ax = self.mw.fig.add_axes([0.5, 0.2, 0.4, 0.7])
-        self.pn_img = self.pn_ax.imshow(pnr, cmap='jet')
-        # im_pnr = plt.imshow(pnr_image, cmap='jet')
-        # plt.title('PNR')
-        # plt.colorbar()
+            correlation_image_pnr = cn_filter
+            pnr_image = pnr
+            self.mw = MatplotlibWidget()
+            # fig = mw.getFigure()
+            self.mw.setWindowTitle(str(self.UUID))
+            #Adapted from CaImAn library's visualization module
+            # mw.plot = plt.figure(figsize=(10,4))
+            # fig = pl.figure(figsize=(10, 4))
+            self.cn_ax = self.mw.fig.add_axes([0.05, 0.2, 0.4, 0.7])
+            self.cn_img = self.cn_ax.imshow(cn_filter, cmap='jet')
+            # im_cn = plt.imshow(correlation_image_pnr, cmap='jet')
+            # plt.title('correlation image')
+            # self.cn_ax.colorbar()
+            self.pn_ax = self.mw.fig.add_axes([0.5, 0.2, 0.4, 0.7])
+            self.pn_img = self.pn_ax.imshow(pnr, cmap='jet')
+            # im_pnr = plt.imshow(pnr_image, cmap='jet')
+            # plt.title('PNR')
+            # plt.colorbar()
+            #
+            s_cn_max_ax = self.mw.fig.add_axes([0.05, 0.01, 0.35, 0.03])
+            s_cn_max = Slider(s_cn_max_ax, 'vmax',
+                              correlation_image_pnr.min(), correlation_image_pnr.max(), valinit=correlation_image_pnr.max())
+
+            s_cn_min_ax = self.mw.fig.add_axes([0.05, 0.07, 0.35, 0.03])
+            s_cn_min = Slider(s_cn_min_ax, 'vmin',
+                              correlation_image_pnr.min(), correlation_image_pnr.max(), valinit=correlation_image_pnr.min())
+
+            s_pnr_max_ax = self.mw.fig.add_axes([0.5, 0.01, 0.35, 0.03])
+            s_pnr_max = Slider(s_pnr_max_ax, 'vmax',
+                               pnr_image.min(), pnr_image.max(), valinit=pnr_image.max())
+            s_pnr_min_ax = self.mw.fig.add_axes([0.5, 0.07, 0.35, 0.03])
+            s_pnr_min = Slider(s_pnr_min_ax, 'vmin',
+                               pnr_image.min(), pnr_image.max(), valinit=pnr_image.min())
+            #
+            def update(val):
+                self.cn_img.set_clim([s_cn_min.val, s_cn_max.val])
+                self.pn_img.set_clim([s_pnr_min.val, s_pnr_max.val])
+                self.mw.canvas.draw_idle()
+            #
+            s_cn_max.on_changed(update)
+            s_cn_min.on_changed(update)
+            s_pnr_max.on_changed(update)
+            s_pnr_min.on_changed(update)
+            # plt.ion()
+            self.mw.show()
+            # plt.show()
+
+            # visualization.inspect_correlation_pnr(cn_filter, pnr)
+        @QThreaded('_import_results')
+        def get_cnmfe_results(self, batch_path, uuid, work_env_args: dict = None):
+            filename = os.path.join(batch_path, str(uuid))
+
+            cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
+            cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
+            cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+            cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
+            cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+            idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
+            dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
+
+            if work_env_args is not None:
+                workEnv = ViewerWorkEnv.from_pickle(**work_env_args)
+            else:
+                workEnv = None
+
+            return {'cnmA': cnmA,
+                    'cnmb': cnmb,
+                    'cnm_f': cnm_f,
+                    'cnmC': cnmC,
+                    'cnmYrA': cnmYrA,
+                    'idx_components': idx_components,
+                    'dims': dims,
+                    'workEnv': workEnv
+                    }
+
+        def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
+            pass
+        #     filename = self.batch_dir + '/' + str(self.UUID)
         #
-        s_cn_max_ax = self.mw.fig.add_axes([0.05, 0.01, 0.35, 0.03])
-        s_cn_max = Slider(s_cn_max_ax, 'vmax',
-                          correlation_image_pnr.min(), correlation_image_pnr.max(), valinit=correlation_image_pnr.max())
-
-        s_cn_min_ax = self.mw.fig.add_axes([0.05, 0.07, 0.35, 0.03])
-        s_cn_min = Slider(s_cn_min_ax, 'vmin',
-                          correlation_image_pnr.min(), correlation_image_pnr.max(), valinit=correlation_image_pnr.min())
-
-        s_pnr_max_ax = self.mw.fig.add_axes([0.5, 0.01, 0.35, 0.03])
-        s_pnr_max = Slider(s_pnr_max_ax, 'vmax',
-                           pnr_image.min(), pnr_image.max(), valinit=pnr_image.max())
-        s_pnr_min_ax = self.mw.fig.add_axes([0.5, 0.07, 0.35, 0.03])
-        s_pnr_min = Slider(s_pnr_min_ax, 'vmin',
-                           pnr_image.min(), pnr_image.max(), valinit=pnr_image.min())
+        #     self.get_cnmfe_results(self.batch_dir, self.UUID)
         #
-        def update(val):
-            self.cn_img.set_clim([s_cn_min.val, s_cn_max.val])
-            self.pn_img.set_clim([s_pnr_min.val, s_pnr_max.val])
-            self.mw.canvas.draw_idle()
+        #     Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
         #
-        s_cn_max.on_changed(update)
-        s_cn_min.on_changed(update)
-        s_pnr_max.on_changed(update)
-        s_pnr_min.on_changed(update)
-        # plt.ion()
-        self.mw.show()
-        # plt.show()
+        #     cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
+        #     cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
+        #     cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+        #     cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
+        #     self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
+        #                                                                  self.cnmC[self.idx_components], cnmb, cnm_f,
+        #                                                                  self.dims[0], self.dims[1],
+        #                                                                  YrA=cnmYrA[self.idx_components], img=cn_filter)
+        #     #self.hide()
 
-        # visualization.inspect_correlation_pnr(cn_filter, pnr)
-    @QThreaded('_import_results')
-    def get_cnmfe_results(self, batch_path, uuid, work_env_args: dict = None):
-        filename = os.path.join(batch_path, str(uuid))
+        def import_cnmfe_into_viewer(self):
+            vi = ViewerUtils(self.viewer_ref)
 
-        cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
-        cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-        cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-        cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
-        cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-        idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
-        dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
+            if not vi.discard_workEnv():
+                return
 
-        if work_env_args is not None:
-            workEnv = ViewerWorkEnv.from_pickle(**work_env_args)
-        else:
-            workEnv = None
+            vi.viewer.status_bar_label.showMessage('Loading CNMFE data, please wait...')
+            pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
+            tiff_path = self.batch_dir + '/' + str(self.UUID) + '.tiff'
 
-        return {'cnmA': cnmA,
-                'cnmb': cnmb,
-                'cnm_f': cnm_f,
-                'cnmC': cnmC,
-                'cnmYrA': cnmYrA,
-                'idx_components': idx_components,
-                'dims': dims,
-                'workEnv': workEnv
-                }
+            self.get_cnmfe_results(self.batch_dir, self.UUID, work_env_args={'pickle_file_path': pickle_file_path,
+                                                                             'tiff_path': tiff_path})
 
-    def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
-        pass
-    #     filename = self.batch_dir + '/' + str(self.UUID)
-    #
-    #     self.get_cnmfe_results(self.batch_dir, self.UUID)
-    #
-    #     Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
-    #
-    #     cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-    #     cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-    #     cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-    #     cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-    #     self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
-    #                                                                  self.cnmC[self.idx_components], cnmb, cnm_f,
-    #                                                                  self.dims[0], self.dims[1],
-    #                                                                  YrA=cnmYrA[self.idx_components], img=cn_filter)
-    #     #self.hide()
+        def _import_results(self, cnmA, cnmb, cnm_f, cnmC, cnmYrA, idx_components, dims, workEnv: ViewerWorkEnv):
+            vi = ViewerUtils(self.viewer_ref)
 
-    def import_cnmfe_into_viewer(self):
-        vi = ViewerUtils(self.viewer_ref)
+            vi.viewer.workEnv = workEnv
+            vi.update_workEnv()
 
-        if not vi.discard_workEnv():
-            return
+            params_path = os.path.join(self.batch_dir, str(self.UUID) + '.params')
+            input_params = pickle.load(open(params_path, 'rb'))
 
-        vi.viewer.status_bar_label.showMessage('Loading CNMFE data, please wait...')
-        pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
-        tiff_path = self.batch_dir + '/' + str(self.UUID) + '.tiff'
+            vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
 
-        self.get_cnmfe_results(self.batch_dir, self.UUID, work_env_args={'pickle_file_path': pickle_file_path,
-                                                                         'tiff_path': tiff_path})
+            # self.viewer_ref.parent().ui.actionROI_Manager.trigger()
 
-    def _import_results(self, cnmA, cnmb, cnm_f, cnmC, cnmYrA, idx_components, dims, workEnv: ViewerWorkEnv):
-        vi = ViewerUtils(self.viewer_ref)
+            self.viewer_ref.parent().get_module('roi_manager')
 
-        vi.viewer.workEnv = workEnv
-        vi.update_workEnv()
+            for m in self.viewer_ref.parent().running_modules:
+                if isinstance(m, ROIManagerGUI):
+                    m.start_cnmfe_mode()
+                    m.add_all_cnmfe_components(cnmA=cnmA,
+                                               cnmb=cnmb,
+                                               cnmC=cnmC,
+                                               cnm_f=cnm_f,
+                                               cnmYrA=cnmYrA,
+                                               idx_components=idx_components,
+                                               dims=dims,
+                                               input_params_dict=input_params,
+                                               calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
+                                               )
 
-        params_path = os.path.join(self.batch_dir, str(self.UUID) + '.params')
-        input_params = pickle.load(open(params_path, 'rb'))
-
-        vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
-
-        # self.viewer_ref.parent().ui.actionROI_Manager.trigger()
-
-        self.viewer_ref.parent().get_module('roi_manager')
-
-        for m in self.viewer_ref.parent().running_modules:
-            if isinstance(m, ROIManagerGUI):
-                m.start_cnmfe_mode()
-                m.add_all_cnmfe_components(cnmA=cnmA,
-                                           cnmb=cnmb,
-                                           cnmC=cnmC,
-                                           cnm_f=cnm_f,
-                                           cnmYrA=cnmYrA,
-                                           idx_components=idx_components,
-                                           dims=dims,
-                                           input_params_dict=input_params,
-                                           calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
-                                           )
-
-        if 'name_cnmfe' in input_params.keys():
-            name = input_params['name_cnmfe']
-        else:
-            name = ''
-        vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + name)
-        self.close()
+            if 'name_cnmfe' in input_params.keys():
+                name = input_params['name_cnmfe']
+            else:
+                name = ''
+            vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + name)
+            self.close()
 
 
 if sys.argv[0] == __file__:
