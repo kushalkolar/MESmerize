@@ -292,6 +292,8 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         # TODO: Replace the constant exception windows with a status bar that displays red text if something goes
         #  wrong and can be clicked to display the traceback
         self.status_label = QtWidgets.QLabel(self)
+        self.status_label.setMaximumHeight(36)
+        self.vlayout.addWidget(self.status_label)
 
         self.plot_variant.sig_selection_changed.connect(self.set_current_datapoint)
 

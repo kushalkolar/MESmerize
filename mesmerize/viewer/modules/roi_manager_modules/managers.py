@@ -225,8 +225,8 @@ class ManagerCNMFE(AbstractBaseManager):
                 mask = self.cnmA[:, idx_components[ix]].toarray().reshape(dims, order='F') > 0
                 # mask3d = np.array((mask,) * curve_data.shape[0])
 
-                max_ix = curve_data.argmin()
-                min_ix = curve_data.argmax()
+                max_ix = curve_data.argmax()
+                min_ix = curve_data.argmin()
 
                 array_at_max = img[max_ix, :, :].copy()
                 array_at_max = array_at_max[mask]
@@ -260,11 +260,12 @@ class ManagerCNMFE(AbstractBaseManager):
         out = {}
 
         for a, r in zip((array_at_max, array_at_min), ('raw_max', 'raw_min')):
-            out[r] = {'top_5': self.get_raw_mean(a, 5),
-                      'top_10': self.get_raw_mean(a, 10),
+            out[r] = {'top_5': self.get_raw_mean(a, min(5, a_size)),
+                      'top_10': self.get_raw_mean(a, min(10, a_size)),
                       'top_5p': self.get_raw_mean(a, p5),
                       'top_10p': self.get_raw_mean(a, p10),
-                      'top_25p': self.get_raw_mean(a, p25)
+                      'top_25p': self.get_raw_mean(a, p25),
+                      'full_mean': a.mean()
                       }
         return out
 

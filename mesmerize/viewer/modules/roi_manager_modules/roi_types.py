@@ -383,12 +383,10 @@ class CNMFROI(BaseROI):
         self.roi_xs = np.empty(0)  #: numpy array of the x values of the ROI's spatial coordinates
         self.roi_ys = np.empty(0)  #: numpy array of the y values of the ROI's spatial coordinates
 
-        if 'raw_min' in kwargs.keys() and 'raw_max' in kwargs.keys():
-            self.raw_min = kwargs.pop('raw_min')
-            self.raw_max = kwargs.pop('raw_max')
+        if 'raw_min_max' in kwargs.keys():
+            self.raw_min_max = kwargs.pop('raw_min_max')
         else:
-            self.raw_min = None
-            self.raw_max = None
+            self.raw_min_max = None
 
         if state is None:
             self.set_roi_graphics_object(contour)
@@ -446,8 +444,7 @@ class CNMFROI(BaseROI):
                  'tags':        self.get_all_tags(),
                  'roi_type':    'CNMFROI',
                  'cnmf_idx':    self.cnmf_idx,
-                 'raw_min':     self.raw_min,
-                 'raw_max':     self.raw_max
+                 'raw_min_max': self.raw_min_max
                  }
         return state
 
