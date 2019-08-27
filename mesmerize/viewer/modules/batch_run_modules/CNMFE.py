@@ -421,26 +421,25 @@ if not sys.argv[0] == __file__:
 
             params_path = os.path.join(self.batch_dir, str(self.UUID) + '.params')
             input_params = pickle.load(open(params_path, 'rb'))
-
+            print(input_params)
+            
             vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
 
             # self.viewer_ref.parent().ui.actionROI_Manager.trigger()
 
-            self.viewer_ref.parent().get_module('roi_manager')
+            m = self.viewer_ref.parent().get_module('roi_manager')
 
-            for m in self.viewer_ref.parent().running_modules:
-                if isinstance(m, ROIManagerGUI):
-                    m.start_cnmfe_mode()
-                    m.add_all_cnmfe_components(cnmA=cnmA,
-                                               cnmb=cnmb,
-                                               cnmC=cnmC,
-                                               cnm_f=cnm_f,
-                                               cnmYrA=cnmYrA,
-                                               idx_components=idx_components,
-                                               dims=dims,
-                                               input_params_dict=input_params,
-                                               calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
-                                               )
+            m.start_cnmfe_mode()
+            m.add_all_cnmfe_components(cnmA=cnmA,
+                                       cnmb=cnmb,
+                                       cnmC=cnmC,
+                                       cnm_f=cnm_f,
+                                       cnmYrA=cnmYrA,
+                                       idx_components=idx_components,
+                                       dims=dims,
+                                       input_params_dict=input_params,
+                                       calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
+                                       )
 
             if 'name_cnmfe' in input_params.keys():
                 name = input_params['name_cnmfe']
