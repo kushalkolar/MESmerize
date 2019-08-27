@@ -181,6 +181,8 @@ class ManagerCNMFE(AbstractBaseManager):
         self.cnm_f = None
         self.cnmYrA = None
 
+        self.raw_normalization_choices = ['top_5', 'top_10', 'top_5p', 'top_10p', 'top_25p']
+
     def create_roi_list(self):
         """Create empty CNMFROI list"""
         self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
@@ -209,7 +211,7 @@ class ManagerCNMFE(AbstractBaseManager):
         num_components = len(temporal_components)
 
         if calc_raw_min_max:
-            img = self.vi.viewer.workEnv.imgdata.seq.T.copy()
+            img = self.vi.viewer.workEnv.imgdata.seq.T
 
         for ix in range(num_components):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
@@ -219,23 +221,27 @@ class ManagerCNMFE(AbstractBaseManager):
             contour = contours[ix]
 
             if calc_raw_min_max:
-                # Get the raw min and max from the roi region
-                mask = self.cnmA[:, idx_components[ix]].toarray().reshape(dims) > 0
-                mask3d = np.array((mask,) * curve_data.shape[0])
+                # Get a binary mask
+                mask = self.cnmA[:, idx_components[ix]].toarray().reshape(dims, order='F') > 0
+                # mask3d = np.array((mask,) * curve_data.shape[0])
 
-                reg = img.copy().astype(np.float32)
-                reg[~mask3d] = np.nan
+                max_ix = curve_data.argmin()
+                min_ix = curve_data.argmax()
 
-                c = np.nanmean(reg, axis=(1, 2))
-                raw_min = c.min()
-                raw_max = c.max()
-                del reg
+                array_at_max = img[max_ix, :, :].copy()
+                array_at_max = array_at_max[mask]
+
+                array_at_min = img[min_ix, :, :].copy()
+                array_at_min = array_at_min[mask]
+
+                raw_min_max = self.get_raw_min_max(array_at_max=array_at_max,
+                                                   array_at_min=array_at_min)
+
             else:
-                raw_min = None
-                raw_max = None
+                raw_min_max = None
 
             roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), idx_components[ix], curve_data, contour,
-                          raw_min=raw_min, raw_max=raw_max)
+                          raw_min_max=raw_min_max)
 
             self.roi_list.append(roi)
 
@@ -244,6 +250,26 @@ class ManagerCNMFE(AbstractBaseManager):
 
         self.roi_list.reindex_colormap()
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
+
+    def get_raw_min_max(self, array_at_max, array_at_min):
+        a_size = array_at_max.size
+        p5 = int(a_size * 0.05)
+        p10 = p5 * 2
+        p25 = p5 * 5
+
+        out = {}
+
+        for a, r in zip((array_at_max, array_at_min), ('raw_max', 'raw_min')):
+            out[r] = {'top_5': self.get_raw_mean(a, 5),
+                      'top_10': self.get_raw_mean(a, 10),
+                      'top_5p': self.get_raw_mean(a, p5),
+                      'top_10p': self.get_raw_mean(a, p10),
+                      'top_25p': self.get_raw_mean(a, p25)
+                      }
+        return out
+
+    def get_raw_mean(self, array, num_items):
+        return np.partition(array, -num_items)[-num_items:].mean()
 
     def add_roi(self):
         """Not implemented, uses add_all_components to import all ROIs instead"""

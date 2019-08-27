@@ -19,11 +19,11 @@ from ..main_window import MainWindow as ViewerWindow
 from ..core.background_tiff_compressor import Compressor as TiffCompressor
 from ...common import get_sys_config, get_timestamp_str, get_window_manager
 from ...common.qdialogs import *
-from ...common.utils import make_runfile, make_workdir, QThreaded
+from ...common.utils import make_runfile, make_workdir
 from .pytemplates.batch_manager_pytemplate import *
 import json
 import pandas
-from .batch_run_modules import * # Import all the batch_run_modules
+from .batch_run_modules import * # DO NOT REMOVE THIS LINE
 import uuid
 import numpy as np
 # from .common import BatchRunInterface
@@ -217,7 +217,6 @@ class ModuleGUI(QtWidgets.QWidget):
             self.load_item_input(viewers[0], r)
 
     @present_exceptions('Cannot load input', 'The following occurred when trying to load the input')
-    @QThreaded(print, print)
     def load_item_input(self, viewers: Union[ViewerWindow, UserList], r: pandas.Series = None, UUID: uuid.UUID = None):
         """
         Pass either the batch DataFrame row or UUID of the item of which to load the input into a viewer
@@ -252,12 +251,15 @@ class ModuleGUI(QtWidgets.QWidget):
         if r['input_item'].item() is None:
             if not vi.discard_workEnv():
                 return
-            vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
-            name = 'Input of item: ' + r['name'].item()
             pikpath = os.path.join(self.batch_path, str(UUID) + '_workEnv.pik')
             tiffpath = os.path.join(self.batch_path, str(UUID) + '.tiff')
+            vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
             if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
-                self._load_item_input(name, vi, pikpath, tiffpath)
+                vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
+                vi.update_workEnv()
+                vi.enable_ui(True)
+                vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
+                vi.viewer.ui.label_curr_img_seq_name.setText('Input of item: ' + r['name'].item())
 
             else:
                 QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
@@ -266,18 +268,6 @@ class ModuleGUI(QtWidgets.QWidget):
         if self.lwd is not None:
             self.lwd.close()
             self.lwd = None
-
-    @QThreaded(receiver='_set_work_env')
-    def _load_item_input(self, name, vi: ViewerUtils,  pikpath: str, tiffpath: str):
-        work_env = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
-        return name, vi, work_env
-
-    def _set_work_env(self, name, vi: ViewerUtils, work_env: ViewerWorkEnv):
-        vi.viewer.workEnv = work_env
-        vi.update_workEnv()
-        vi.enable_ui(True)
-        vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
-        vi.viewer.ui.label_curr_img_seq_name.setText(name)
 
     def on_list_widget_batch_doubleclicked(self, s: QtWidgets.QListWidgetItem):
         self.ui.scrollAreaOutputInfo.show()
