@@ -3,12 +3,7 @@
 from .common import *
 from ....analysis.data_types import *
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
-
-
-def _static_dfof(F: np.ndarray) -> np.ndarray:
-    Fo = np.min(F)
-    d = ((F - Fo) / Fo) * np.sign(Fo)
-    return d
+from tslearn.preprocessing import TimeSeriesScalerMinMax
 
 
 class ExtractStim(CtrlNode):
@@ -344,12 +339,77 @@ class StaticDFoFo(CtrlNode):
         output_column = '_STATIC_DF_O_F'
         params = {'data_column': data_column}
 
-        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: _static_dfof(a))
+        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: self._static_dfof(a))
 
         self.t.history_trace.add_operation(data_block_id='all', operation='static_df_o_f', parameters=params)
         self.t.last_output = output_column
 
         return self.t
+
+    def _static_dfof(self, F: np.ndarray) -> np.ndarray:
+        Fo = np.min(F)
+        d = ((F - Fo) / Fo)
+        return d
+
+
+class NormRawMinMax(CtrlNode):
+    """Normalize between raw min and max values."""
+    nodeName = 'NormRawMinMax'
+    uiTemplate = [('option', 'combo', {'items': ['top_5', 'top_10', 'top_5p', 'top_10p', 'top_25p', 'full_mean']}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        t = transmission
+        dcols = organize_dataframe_columns(t.df.columns)[0]
+        if not self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+        output_column = '_NORMRAWMINMAX'
+
+        self.option = self.ctrls['option'].currentText()
+
+        params = {'data_column': '_RAW_CURVE',
+                  'option': self.option,
+                  'output_column': output_column}
+
+        self.proj_path = self.t.get_proj_path()
+
+        tqdm().pandas()
+
+        self.t.df[output_column] = self.t.df.progress_apply(lambda r: self._func(r['_RAW_CURVE'], r['ImgInfoPath'], r['ROI_State']), axis=1)
+
+        self.t.history_trace.add_operation('all', 'normrawminmax', params)
+        self.t.last_output = output_column
+
+        return self.t
+
+    def _func(self, data: np.ndarray, img_info_path: str, roi_state: dict) -> np.ndarray:
+        if 'raw_min_max' in roi_state.keys():
+            raw_min_max = roi_state['raw_min_max']
+
+        else:
+            cnmf_idx = roi_state['cnmf_idx']
+            img_info_path = os.path.join(self.proj_path, img_info_path)
+            roi_states = pickle.load(open(img_info_path, 'rb'))['roi_states']
+
+            idx_components = roi_states['cnmf_output']['idx_components']
+
+            list_ix = np.argwhere(idx_components == cnmf_idx).ravel().item()
+
+            state = roi_states['states'][list_ix]
+
+            if not state['cnmf_idx'] == cnmf_idx:
+                raise ValueError('cnmf_idx from ImgInfoPath dict and DataFrame ROI_State dict do not match.')
+
+            raw_min_max = state['raw_min_max']
+
+        raw_min = raw_min_max['raw_min'][self.option]
+        raw_max = raw_min_max['raw_max'][self.option]
+
+        return TimeSeriesScalerMinMax(min=raw_min, max=raw_max).fit_transform(data).ravel()
 
 
 class ManualDFoF(CtrlNode):

@@ -3,6 +3,8 @@ import numpy as np
 from ....analysis.math.tvregdiff import tv_reg_diff
 from .common import *
 from ....analysis.data_types import Transmission
+from scipy.stats import zscore as _zscore
+import pandas as pd
 
 
 class AbsoluteValue(CtrlNode):
@@ -208,3 +210,54 @@ class ArrayStats(CtrlNode):
 
         return self.t
 
+
+class ZScore(CtrlNode):
+    """
+    Z-Score the input data. Uses scipy.stats.zscore.
+    Computes over sub-DataFrames that are created according to the "group_by" column parameter
+    """
+    nodeName = 'ZScore'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('group_by', 'combo', {}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        ccols = organize_dataframe_columns(self.t.df.columns)[1]
+        self.ctrls['group_by'].setItems(ccols)
+
+        if not self.apply_checked():
+            return
+
+        self.t = transmission.copy()
+
+        group_by = self.ctrls['group_by'].currentText()
+        output_column = '_ZSCORE'
+
+        params = {'data_column': self.data_column,
+                  'group_by': group_by,
+                  'output_column': output_column
+                  }
+
+        out_dfs = []
+
+        # Per group
+        for group in self.t.df[group_by].unique():
+            sub_df = self.t.df[self.t.df[group_by] == group].copy()
+
+            data = np.vstack(sub_df[self.data_column].values)
+            zdata = _zscore(data, axis=None)
+
+            sub_df['_ZSCORE'] = zdata.tolist()
+
+            out_dfs.append(sub_df)
+
+        self.t.df = pd.concat(out_dfs)
+
+        self.t.history_trace.add_operation('all', 'zscore', params)
+        self.t.last_output = '_ZSCORE'
+
+        return self.t
