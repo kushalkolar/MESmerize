@@ -17,7 +17,6 @@ from .pytemplates.tiff_io_pytemplate import *
 from ..core.viewer_work_environment import ViewerWorkEnv
 import os
 from functools import partial
-from ...common.utils import QThreaded
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -103,14 +102,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         method = self.get_load_method()
         meta_path = self.meta_file_path
 
-        if not self.vi.discard_workEnv():
-            return
-
         self.load_tiff_file(tiff_path, meta_path, method)
-        # self.ui.btnLoadIntoWorkEnv.setEnabled(False)
-        self.vi.viewer.status_bar_label.showMessage('Please wait, loading tiff file, this may take a few minutes...')
 
-    @QThreaded(receiver='update_work_env')
     def load_tiff_file(self, tiff_path, meta_path, method):
         """
         Load a tiff file along with associated meta data
@@ -122,12 +115,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
                         "asarray-multi" is for multi-page tiffs
                         "imread" uses :meth:`tifffile.imread`
         """
-        return tiff_path, ViewerWorkEnv.from_tiff(path=tiff_path, method=method, meta_path=meta_path)
 
-    def update_work_env(self, tiff_path, work_env):
-        self.vi.viewer.workEnv = work_env
+        self.vi.viewer.status_bar_label.showMessage('Please wait, loading tiff file, this may take a few minutes...')
+
+        if not self.vi.discard_workEnv():
+            return
+
+        self.vi.viewer.workEnv = ViewerWorkEnv.from_tiff(path=tiff_path,
+                                                         method=method,
+                                                         meta_path=meta_path)
         self.vi.update_workEnv()
         self.vi.enable_ui(True)
-        # self.vi.viewer.ui.label_curr_img_seq_name.setText(os.path.basename(tiff_path))
+        self.vi.viewer.ui.label_curr_img_seq_name.setText(os.path.basename(tiff_path))
         self.vi.viewer.status_bar_label.showMessage('File loaded into work environment!')
-        # self.ui.btnLoadIntoWorkEnv.setEnabled(True)
