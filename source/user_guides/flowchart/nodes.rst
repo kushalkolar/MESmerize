@@ -815,40 +815,70 @@ ArrayStats
 	
 	The desired function is applied to each 1D array in the *data_column* and the output is placed in the Output Data Column.
 
-	============ 	=================
-	Parameter   	Description
-	============ 	=================
-	data_column	Data column containing numerical arrays
+	
+    ============    =================
+    Parameter       Description
+    ============    =================
+    data_column     Data column containing numerical arrays
+    function        | *amin*: Return the minimum of the input array
+    
+                    | *amax*: Return the maximum of the input array
+                    
+                    | *nanmin*: Return the minimum of the input array, ignore NaNs
+                    
+                    | *nanmax*: Return the maximum of the input array, ignore NaNs
+                    
+                    | *ptp*: Return the range (max - min) of the values of the input array
+                    
+                    | *median*: Return the median of the input array
+                    
+                    | *mean*: Return the mean of the input array
+                    
+                    | *std*: Return the standard deviation of the input array
+                    
+                    | *var*: Return the variance of the input array
+                    
+                    | *nanmedian*: Return the median of the input array, ignore NaNs
+                    
+                    | *nanmean*: Return the mean of the input array, ignore NaNs
 
-	function		*amin*: Return the minimum of the input array
+                    | *nanstd*: Return the standard deviation of the input array, ignore NaNs
 
-				| *amax*: Return the maximum of the input array
+                    | *nanvar*: Return the variance of the input array, ignore NaNs
+                    
+    output_col      Enter a name for the output column
+    Apply           Process data through this node
+    ============    =================
 
-				| *nanmin*: Return the minimum of the input array, ignore NaNs
 
-				| *nanmax*: Return the maximum of the input array, ignore NaNs
-				
-				| *ptp*: Return the range (max - min) of the values of the input array
-				
-				| *median*: Return the median of the input array
-				
-				| *mean*: Return the mean of the input array
-				
-				| *std*: Return the standard deviation of the input array
-				
-				| *var*: Return the variance of the input array
-				
-				| *nanmedian*: Return the median of the input array, ignore NaNs
-				
-				| *nanmean*: Return the mean of the input array, ignore NaNs
-				
-				| *nanstd*: Return the standard deviation of the input array, ignore NaNs
-				
-				| *nanvar*: Return the variance of the input array, ignore NaNs
 
-	Apply		Process data through this node
-	============ 	=================
+.. _node_ZScore:
 
+ZScore
+^^^^^^
+    
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.ZScore>`
+
+    Compute Z-Scores of the data. Uses `scipy.stats.zscore <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.zscore.html>`_. The input data are are divided into groups according to the *group_by* parameter. Z-Scores are computed for the data in each group with respect to the data only in that group.
+    
+    **Output Data Column** *(numerical)*: _ZSCORE
+    
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+	
+	=============  =============================================================
+	Parameter      Description
+	=============  =============================================================
+	data_column    Input data column containing numerical arrays
+	group_by       Categorial data column to group by.
+	Apply          Process data through this node
+	=============  =============================================================
+    
+    
 --------------------
 
 .. _nodes_Biology:
@@ -903,11 +933,68 @@ DetrendDFoF
 
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.DetrendDFoF>`
 
-	Uses the `detrend_df_f <http://flatironinstitute.github.io/CaImAn/core_functions.html#caiman.source_extraction.cnmf.utilities.detrend_df_f>`_ function from the CaImAn library. This node does not use any of the numerical data in a Transmission DataFrame to compute the detrended :math:`\Delta F / F_o`. It directly uses the CNMF output data for the Samples that are present in the Transmission DataFrame.
+	Uses the `detrend_df_f <http://flatironinstitute.github.io/CaImAn/core_functions.html#caiman.source_extraction.cnmf.utilities.detrend_df_f>`_ function from the CaImAn library. This node does not use any of the numerical data in a Transmission DataFrame to compute the detrended :math:`\Delta F / F_0`. It directly uses the CNMF output data for the Samples that are present in the Transmission DataFrame.
 
 	**Output Data Column** *(numerical)*: _DETREND_DF_O_F
 
+	
+.. _node_StaticDFoFo:
 
+StaticDFoFo
+^^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.StaticDFoFo>`
+    
+    Perform :math:`\frac{F - F_0}{F_0}` without a rolling window. :math:`F` is an input array and :math:`F_0` is the minimum value of the input array.
+    
+    **Output Data Column** *(numerical)*: _STATIC_DF_O_F
+    
+    ==========  =================
+    Terminal    Description
+    ==========  =================
+    In          Input Transmission
+    Out         Transmission with the result placed in the output column
+    ==========  =================
+
+    ============    =========================================
+    Parameter       Description
+    ============    =========================================
+    data_column     Data column containing numerical arrays
+    Apply           Process data through this node
+    ============    =========================================
+
+
+.. _node_NormRawMinMax:
+
+NormRawMinMax
+^^^^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.NormRawMinMax>`
+    
+    Scale the raw data such that the min and max values are set to the min and max values derived from the raw spatial regions of the image sequences they originate from. Only for CNMFE data.
+    
+    The arrays in the **_RAW_CURVE** column are scaled and the output is placed in a new column named **_NORMRAWMINMAX**
+    
+    ==========  =================
+    Terminal    Description
+    ==========  =================
+    In          Input Transmission
+    Out         Transmission with the result placed in the output column
+    ==========  =================
+
+    ========== ================================
+    Parameter  Description
+    ========== ================================
+    option      | Derive the raw min & max values from one of the following options:
+                | *top_5:* Top 5 brightest pixels
+                | *top_10:* Top 10 brighest pixels
+                | *top_5p:* Top 5% of brightest pixels
+                | *top_10p:* Top 10% of brightest pixels
+                | *top_25p:* Top 25% of brightest pixels
+                | *full_mean:* Full mean of the min and max array
+    Apply      Process data through this node
+    ========== ================================
+    
 ----------------------
 
 .. _nodes_Clustering:
