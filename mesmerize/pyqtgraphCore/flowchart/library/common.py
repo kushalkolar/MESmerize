@@ -221,7 +221,7 @@ class CtrlNode(Node):
     def set_data_column_combo_box(self):
         try:
             columns = self.t.df.columns
-            self.ctrls['data_column'].setItems(columns.to_list())
+            self.ctrls['data_column'].setItems(organize_dataframe_columns(columns.to_list())[0])
             ix = self.ctrls['data_column'].findText(self.t.last_output)
             if ix > 0:
                 self.ctrls['data_column'].setCurrentIndex(ix)
