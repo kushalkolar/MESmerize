@@ -90,7 +90,7 @@ class ComputePeakFeatures:
                '_pf_ampl_rel_b_mean': curve[p_ix] - np.mean((curve[b_ix_l], curve[b_ix_r])),
                '_pf_ampl_rel_zero': curve[p_ix],
                '_pf_area_rel_zero': simps(peak_curve),
-               '_pf_area_rel_min': simps((peak_curve + abs(np.min(peak_curve)))),
+               '_pf_area_rel_min': simps(peak_curve - np.min(peak_curve)),
                '_pf_rising_slope_avg': abs(curve[b_ix_l] - curve[p_ix]) / abs(p_ix - b_ix_l),
                '_pf_falling_slope_avg': abs(curve[b_ix_r] - curve[p_ix]) / abs(p_ix - b_ix_r),
                '_pf_duration_base': peak_curve.size,
