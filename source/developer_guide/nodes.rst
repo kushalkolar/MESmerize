@@ -19,7 +19,7 @@ The simplest type of node performs an operation on a user-specified data column 
     class MyNode(CtrlNode):
     """Doc String that is shown when node is clicked on"""
     nodeName = 'MyNode'
-    uiTemplate = [<list of tuples, see below>]
+    uiTemplate = <list of tuples, see below>
     
     def processData(self, transmission: Transmission):
         self.t = transmission.copy()  #: input to this node
@@ -168,11 +168,24 @@ Here is a trimmed down example from the :class:`LDA node <mesmerize.pyqtgraphCor
         
         # function from mesmerize.analysis.utils
         dcols, ccols, ucols = organize_dataframe_columns(self.t.df.columns)
-
+        
+        # Set available options for training data & labels
         self.ctrls['train_data'].setItems(dcols)
         self.ctrls['train_labels'].setItems(ccols)
-
+        
+        dcols = organize_dataframe_columns(self.to_predct.df.columns)
+        # Set available data column options for predicting on
         self.ctrls['predict_on'].setItems(dcols)
+        
+        # Process further only if Apply is checked
+        if not self.ctrls['Apply'].isChecked():
+            return
+        
+        # Get the user-set parameters
+        train_column = self.ctrls['train_data'].currentText()
+        
+        # ... get other params
+        n_components = self.ctrls['n_components'].value()
 
         # ... do stuff
         
@@ -181,10 +194,10 @@ Here is a trimmed down example from the :class:`LDA node <mesmerize.pyqtgraphCor
         self.t_coef.history_trace.add_operation('all', 'lda', params)
         self.t_means.history_trace.add_operation('all', 'lda', params)
         
-        # the to_predict transmission is logged differently
+        # the `to_predict` transmission is logged differently
         self.to_predict.history_trace.add_operations('all', 'lda-predict', params_predict)
         
-        # dict for organizing the output
+        # dict for organizing this node's outputs
         # The keys MUST be the same those specified for this node's output terminals
         out = {'T': self.t,
                'coef': self.t_coef,
