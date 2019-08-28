@@ -84,12 +84,12 @@ class BeeswarmPlotWindow(PlotWindow):
         tstart = None
         tend = None
 
-        if '_pfeature_ix_base_left_abs' in self.dataframe.columns:
-            tstart = self.dataframe[self.dataframe[self.uuid_column] == str(identifier)]['_pfeature_ix_base_left_abs']
+        if '_pf_b_ix_l' in self.dataframe.columns:
+            tstart = self.dataframe[self.dataframe[self.uuid_column] == str(identifier)]['_pf_b_ix_l']
             if isinstance(tstart, pd.Series):
                 tstart = tstart.item()
-        if '_pfeature_ix_base_right_abs' in self.dataframe.columns:
-            tend = self.dataframe[self.dataframe[self.uuid_column] == str(identifier)]['_pfeature_ix_base_right_abs']
+        if '_pf_b_ix_r' in self.dataframe.columns:
+            tend = self.dataframe[self.dataframe[self.uuid_column] == str(identifier)]['_pf_b_ix_r']
             if isinstance(tend, pd.Series):
                 tend = tend.item()
 
