@@ -4,7 +4,7 @@ from .common import *
 from ....analysis.data_types import *
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
 from tslearn.preprocessing import TimeSeriesScalerMinMax
-
+from PyQt5 import QtWidgets
 
 class ExtractStim(CtrlNode):
     """Extract portions of curves according to stimulus maps"""
@@ -379,10 +379,19 @@ class NormRawMinMax(CtrlNode):
 
         tqdm().pandas()
 
+        self.excluded = 0
+
         self.t.df[output_column] = self.t.df.progress_apply(lambda r: self._func(r['_RAW_CURVE'], r['ImgInfoPath'], r['ROI_State']), axis=1)
 
         self.t.history_trace.add_operation('all', 'normrawminmax', params)
         self.t.last_output = output_column
+
+        if self.excluded > 0:
+            QtWidgets.QMessageBox.warning(None, 'Curves excluded',
+                                          f'The following number of curves were excluded because '
+                                          f'the raw min value was larger than the max\n{self.excluded}')
+
+            self.t.df = self.t.df[~self.t.df[output_column].isna()]
 
         return self.t
 
@@ -409,7 +418,11 @@ class NormRawMinMax(CtrlNode):
         raw_min = raw_min_max['raw_min'][self.option]
         raw_max = raw_min_max['raw_max'][self.option]
 
-        return TimeSeriesScalerMinMax(min=raw_min, max=raw_max).fit_transform(data).ravel()
+        if raw_min > raw_max:
+            self.excluded += 1
+            return np.NaN
+
+        return TimeSeriesScalerMinMax(value_range=(raw_min, raw_max)).fit_transform(data).ravel()
 
 
 class ManualDFoF(CtrlNode):
