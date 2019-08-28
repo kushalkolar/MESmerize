@@ -43,6 +43,8 @@ class ControlDock(QtWidgets.QDockWidget):
         self.ui.comboBoxYColumn.currentTextChanged.connect(self.sig_changed.emit)
         self.ui.radioButtonDataColumn.toggled.connect(self.sig_changed.emit)
         self.ui.radioButtonXY.toggled.connect(self.sig_changed.emit)
+        self.ui.checkBoxLogX.toggled.connect(self.sig_changed.emit)
+        self.ui.checkBoxLogY.toggled.connect(self.sig_changed.emit)
         self.ui.comboBoxColorsColumn.currentTextChanged.connect(self.sig_changed.emit)
         self.ui.listWidgetColormap.currentRowChanged.connect(self.sig_changed.emit)
         self.ui.comboBoxShapesColumn.currentTextChanged.connect(self.sig_changed.emit)
@@ -160,6 +162,8 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
              'data_column_radio': self.control_widget.ui.radioButtonDataColumn.isChecked(),
              'x_column': self.control_widget.ui.comboBoxXColumn.currentText(),
              'y_column': self.control_widget.ui.comboBoxYColumn.currentText(),
+             'log_x': self.control_widget.ui.checkBoxLogX.isChecked(),
+             'log_y': self.control_widget.ui.checkBoxLogY.isChecked(),
              'xy_radio': self.control_widget.ui.radioButtonXY.isChecked(),
              'colors_column': self.control_widget.ui.comboBoxColorsColumn.currentText(),
              'cmap': self.control_widget.ui.listWidgetColormap.current_cmap,
@@ -185,6 +189,9 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.control_widget.set_combo_box(self.control_widget.ui.comboBoxXColumn, opts['x_column'])
         self.control_widget.set_combo_box(self.control_widget.ui.comboBoxYColumn, opts['y_column'])
         self.control_widget.ui.radioButtonXY.setChecked(opts['xy_radio'])
+
+        self.control_widget.ui.checkBoxLogX.setChecked(opts['log_x'])
+        self.control_widget.ui.checkBoxLogY.setChecked(opts['log_y'])
 
         self.control_widget.set_combo_box(self.control_widget.ui.comboBoxColorsColumn, opts['colors_column'])
         self.control_widget.ui.listWidgetColormap.set_cmap(opts['cmap'])
@@ -223,6 +230,11 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
             raise ValueError('Must choose either Data Column or X & Y option')
 
         self.plot_variant.clear()
+
+        if self.plot_opts['log_x']:
+            xs = np.log10(xs)
+        if self.plot_opts['log_y']:
+            ys = np.log10(ys)
 
         if self.plot_opts['colors_column'] != '------------':
             colors_map = get_colormap(self.transmission.df[self.plot_opts['colors_column']],
