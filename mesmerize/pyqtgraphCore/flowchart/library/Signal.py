@@ -3,15 +3,12 @@ import traceback
 from PyQt5 import QtWidgets
 from ....plotting.widgets.peak_editor import peak_editor
 from .common import *
-from ....analysis import Transmission, peak_feature_extraction
+from ....analysis import Transmission
 from scipy import signal
 from scipy import fftpack
 import pandas as pd
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
-from scipy.integrate import simps
-from scipy.signal import peak_prominences, peak_widths
-import uuid
-from multiprocessing import Pool
+from ....analysis.compute_peak_features import ComputePeakFeatures
 
 
 class ButterWorth(CtrlNode):
@@ -530,7 +527,7 @@ class PeakDetect(CtrlNode):
             return self.t
 
         columns = inputs['Curve'].df.columns.to_list()
-        self.ctrls['data_column'].setItems(columns)
+        self.ctrls['data_column'].setItems(organize_dataframe_columns(columns)[0])
 
         if self.data_modified is True:
             if QtWidgets.QMessageBox.question(None, 'Discard peak edits?',
@@ -634,80 +631,12 @@ class PeakDetect(CtrlNode):
         self.pbw.show()
 
 
-# class PeakFeatures(CtrlNode):
-#     """Extract peak features. Use this after the Peak_Detect node. This node does not operate live, you must
-#     click the "Extract" button to propogate newly computed peak features"""
-#     nodeName = 'PeakFeatures'
-#     uiTemplate = [('Compute', 'button', {'text': 'Compute'}),
-#                   ('Info', 'label', {'text': ''})]
-#
-#     # uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
-#     #               ('Stats', 'button', {'text': 'Statistics/Plotting'})
-#     #               ]
-#
-#     def __init__(self, name):
-#         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out', 'bypass': 'In'}})
-#         self.ctrls['Compute'].clicked.connect(self._compute)
-#         # self.ctrls['Stats'].setEnabled(False)
-#         # self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
-#         self.peak_results = None
-#
-#     def process(self, **kwargs):
-#         self.kwargs = kwargs.copy()
-#         merged = Transmission.merge(self.peak_results)
-#         return {'Out': merged}
-#
-#     def _compute(self):
-#         if self.kwargs is None:
-#             self.peak_results = None
-#             return
-#
-#         transmissions = self.kwargs['In']
-#
-#         if not len(transmissions) > 0:
-#             raise Exception('No incoming transmissions')
-#
-#         self.peak_results = []
-#         for t in transmissions.items():
-#             t = t[1]
-#             if t is None:
-#                 QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-#                 continue
-#             # elif not any('Peak_Detect' in d for d in t.src):
-#             #     raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
-#             #                      'a Peak_Detect node before this one.')
-#             # t = t.copy()
-#             try:
-#                 self.ctrls['Info'].setText('Please wait...')
-#                 pf = peak_feature_extraction.PeakFeaturesIter(t)
-#                 trans_with_features = pf.get_all()
-#
-#                 self.peak_results.append(trans_with_features)
-#
-#             except Exception as e:
-#                 QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak feature extraction:\n'
-#                                                                    + traceback.format_exc())
-#
-#         self.ctrls['Info'].setText('Finished!')
-#         self.changed()
-#
-#     #     self.ctrls['Stats'].setEnabled(True)
-#     #
-#     # def _open_stats_gui(self):
-#     #     if hasattr(self, 'stats_gui'):
-#     #         self.stats_gui.show()
-#     #         return
-#     #     self.stats_gui = StatsWindow()
-#     #     self.stats_gui.input_transmissions(self.peak_results)
-#     #     self.stats_gui.show()
-
-
 class PeakFeatures(CtrlNode):
     """Extract peak features after peak detection"""
     nodeName = 'PeakFeatures'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('Compute', 'button', {'text', 'compute'}),
-                  ('Apply', 'check', {'applyBox': True, 'checked': True})
+                  # ('Compute', 'button', {'text': 'compute'}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
                   ]
 
     def __init__(self, *args, **kwargs):
@@ -721,66 +650,9 @@ class PeakFeatures(CtrlNode):
         if not self.apply_checked():
             return
 
-        self.dfs = []
-        self.t = transmission.copy()
+        self.computer = ComputePeakFeatures()
 
-        with Pool(30) as pool:
-            out_df = list(tqdm(pool.imap(self._per_curve, self.t.df.iterrows()), total=self.t.df.index.size))
+        self.t = self.computer.compute(transmission=transmission.copy(), data_column=self.data_column)
 
-    def _per_curve(self, row: pd.Series):
-        row = row[1]
-        pb_df = row['peaks_bases']
+        return self.t
 
-        curve = row[self.data_column]
-
-        out_df = pb_df[pb_df.label == 'peak']
-
-        out_df[
-            [
-                'ampl_rel_b_ix_l',
-                'ampl_rel_b_ix_r',
-                'ampl_rel_b_mean',
-                'ampl_rel_zero',
-                'area_rel_zero',
-                'area_rel_min',
-                'rising_slope_avg',
-                'falling_slope_avg',
-                'duration_base',
-                'uuid'
-            ]
-
-        ] \
-            = out_df.apply(lambda row: self._per_peak(row, curve, pb_df), axis=1)
-
-        return out_df
-
-    def _per_peak(self, row, curve, pb_df):
-        p_ix = row.event  #: Peak index relative to the whole curve
-        ix = row.name
-
-        if pb_df.iloc[ix - 1].label != 'base' and pb_df.iloc[ix + 1].label != 'base':
-            raise ValueError(f'All peaks must be flanked by bases\n'
-                             f'The curve with the following UUID does not have a flanking base:\n'
-                             f'{row["uuid_curve"]}')
-
-        b_ix_l = pb_df.iloc[ix - 1].event  #: Left base index relative to the whole curve
-        b_ix_r = pb_df.iloc[ix + 1].event  #: Right base index relative to the whole curve
-
-        peak_curve = curve[b_ix_l:b_ix_r]
-
-        out = {'ampl_rel_b_ix_l': curve[p_ix] - curve[b_ix_l],
-               'ampl_rel_b_ix_r': curve[p_ix] - curve[b_ix_l],
-               'ampl_rel_b_mean': curve[p_ix] - np.mean((curve[b_ix_l], curve[b_ix_r])),
-               'ampl_rel_zero': curve[p_ix],
-               'area_rel_zero': simps(peak_curve),
-               'area_rel_min': simps((peak_curve + np.min(peak_curve))),
-               'rising_slope_avg': abs(curve[b_ix_l] - curve[p_ix]) / abs(p_ix - b_ix_l),
-               'falling_slope_avg': abs(curve[b_ix_r] - curve[p_ix]) / abs(p_ix - b_ix_r),
-               'duration_base': peak_curve.size,
-               'uuid': uuid.uuid4()
-               }
-
-        for k in out.keys():
-            out['_pf_' + k] = out.pop(k)
-
-        return pd.Series(out)
