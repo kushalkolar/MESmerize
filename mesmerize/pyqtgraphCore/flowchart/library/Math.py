@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import numpy as np
 from ....analysis.math.tvregdiff import tv_reg_diff
 from .common import *
 from ....analysis.data_types import Transmission
@@ -255,7 +254,10 @@ class ZScore(CtrlNode):
 
             out_dfs.append(sub_df)
 
-        self.t.df = pd.concat(out_dfs)
+        df = pd.concat(out_dfs).reset_index(drop=True)
+        df['_ZSCORE'] = df._ZSCORE.apply(lambda x: np.array(x))
+
+        self.t.df = df
 
         self.t.history_trace.add_operation('all', 'zscore', params)
         self.t.last_output = '_ZSCORE'
