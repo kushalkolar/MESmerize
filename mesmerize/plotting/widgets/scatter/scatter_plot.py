@@ -76,6 +76,24 @@ class ControlDock(QtWidgets.QDockWidget):
             cb.addItems(uuid_columns)
 
 
+class CentralWidget(QtWidgets.QWidget):
+    def __init__(self, parent):
+        QtWidgets.QWidget.__init__(self, parent=parent)
+        self.graphics_view = GraphicsLayoutWidget()
+        self.plot_variant = PgScatterPlot(self.graphics_view)  #: Instance of :ref:`PgScatterPlot <API_Variant_PgScatterPlot>` which is the actual plot area
+        # self.setCentralWidget(self.graphics_view)
+
+        self.vlayout = QtWidgets.QVBoxLayout()
+        self.vlayout.addWidget(self.graphics_view)
+
+        self.status_label = QtWidgets.QLabel(self)
+        self.status_label.setMaximumHeight(32)
+
+        self.vlayout.addWidget(self.status_label)
+
+        self.setLayout(self.vlayout)
+
+
 class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
     drop_opts = []
 
@@ -84,10 +102,15 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         BasePlotWidget.__init__(self)
         self.setWindowTitle('Scatter Plot')
 
-        self.graphics_view = GraphicsLayoutWidget()
-        self.plot_variant = PgScatterPlot(self.graphics_view)  #: Instance of :ref:`PgScatterPlot <API_Variant_PgScatterPlot>` which is the actual plot area
-        # self.view_box.addItem(self.plot_variant)
-        self.setCentralWidget(self.graphics_view)
+        self.central_widget = CentralWidget(self)
+        self.plot_variant = self.central_widget.plot_variant
+        self.graphics_view = self.central_widget.graphics_view
+        self.status_label = self.central_widget.status_label
+        self.status_label.mousePressEvent = self.show_exception_info
+
+        self.setCentralWidget(self.central_widget)
+
+        self.exception_holder = None  #: Used for holding exceptions that can be viewed by clicking on self.status_label
 
         self.control_widget = ControlDock(self)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.control_widget)
@@ -202,7 +225,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.control_widget.ui.spinBoxSpotSize.setValue(opts['spot_size'])
         self.control_widget.ui.doubleSpinBoxAlpha.setValue(opts['spot_alpha'])
 
-    @present_exceptions('Error while plotting the data', 'Make sure you have selected appropriate columns')
+    @exceptions_label('status_label', 'exception_holder', 'Error while setting data', 'Make sure you have selected appropriate columns')
     def update_plot(self):
         """Update the plot data and draw"""
 
@@ -280,3 +303,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.live_datapoint_tracer.set_widget(u, dpt_col, row=r, proj_path=get_project_manager().root_dir,
                                               history_trace=ht)
+
+    def show_exception_info(self, mouse_press_ev):
+        if self.exception_holder is not None:
+            QtWidgets.QMessageBox.warning(self, *self.exception_holder)
