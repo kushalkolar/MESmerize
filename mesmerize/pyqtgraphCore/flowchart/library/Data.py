@@ -3,11 +3,12 @@ from ...Qt import QtGui, QtCore, QtWidgets
 from spyder.widgets.variableexplorer.objecteditor import oedit
 from .common import *
 import traceback
-from functools import partial
 from ....analysis import Transmission
 from ....analysis.history_widget import HistoryTreeWidget
 from ....common import get_project_manager
 import os
+from tslearn.preprocessing import TimeSeriesScalerMinMax
+import pickle
 
 
 class LoadProjDF(CtrlNode):
@@ -410,3 +411,77 @@ class TextFilter(CtrlNode):
         self.t.history_trace.add_operation('all', operation='text_filter', parameters=params)
 
         return self.t
+
+
+class NormRawMinMax(CtrlNode):
+    """Normalize between raw min and max values."""
+    nodeName = 'NormRawMinMax'
+    uiTemplate = [('option', 'combo', {'items': ['top_5', 'top_10', 'top_5p', 'top_10p', 'top_25p', 'full_mean']}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        t = transmission
+        dcols = organize_dataframe_columns(t.df.columns)[0]
+        if not self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+        output_column = '_NORMRAWMINMAX'
+
+        self.option = self.ctrls['option'].currentText()
+
+        params = {'data_column': '_RAW_CURVE',
+                  'option': self.option,
+                  'output_column': output_column}
+
+        self.proj_path = self.t.get_proj_path()
+
+        tqdm().pandas()
+
+        self.excluded = 0
+
+        self.t.df[output_column] = self.t.df.progress_apply(lambda r: self._func(r['_RAW_CURVE'], r['ImgInfoPath'], r['ROI_State']), axis=1)
+
+        self.t.history_trace.add_operation('all', 'normrawminmax', params)
+        self.t.last_output = output_column
+
+        if self.excluded > 0:
+            QtWidgets.QMessageBox.warning(None, 'Curves excluded',
+                                          f'The following number of curves were excluded because '
+                                          f'the raw min value was larger than the max\n{self.excluded}')
+
+            self.t.df = self.t.df[~self.t.df[output_column].isna()]
+
+        return self.t
+
+    def _func(self, data: np.ndarray, img_info_path: str, roi_state: dict) -> np.ndarray:
+        if 'raw_min_max' in roi_state.keys():
+            raw_min_max = roi_state['raw_min_max']
+
+        else:
+            cnmf_idx = roi_state['cnmf_idx']
+            img_info_path = os.path.join(self.proj_path, img_info_path)
+            roi_states = pickle.load(open(img_info_path, 'rb'))['roi_states']
+
+            idx_components = roi_states['cnmf_output']['idx_components']
+
+            list_ix = np.argwhere(idx_components == cnmf_idx).ravel().item()
+
+            state = roi_states['states'][list_ix]
+
+            if not state['cnmf_idx'] == cnmf_idx:
+                raise ValueError('cnmf_idx from ImgInfoPath dict and DataFrame ROI_State dict do not match.')
+
+            raw_min_max = state['raw_min_max']
+
+        raw_min = raw_min_max['raw_min'][self.option]
+        raw_max = raw_min_max['raw_max'][self.option]
+
+        if raw_min > raw_max:
+            self.excluded += 1
+            return np.NaN
+
+        return TimeSeriesScalerMinMax(value_range=(raw_min, raw_max)).fit_transform(data).ravel()
+    
