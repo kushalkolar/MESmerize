@@ -94,7 +94,7 @@ Saving plots
 
 Some plots allow you to save them in an interactive form, along with the plot data and the plot state as a ".ptrn" file. If you save the file in the "plots" directory of your project it will be listed in the :ref:`WelcomeWindow` when you open your project.
 
-This is currently possible with the following plots: :ref:`plot_Heatmap`, :ref:`plot_KShape` and :ref:`plot_Proportions`.
+This is currently possible with the following plots: :ref:`plot_Heatmap`, :ref:`plot_KShape`, :ref:`plot_Proportions` and :ref:`plot_ScatterPlot`.
 
 
 .. _plot_Navbar:

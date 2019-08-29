@@ -421,7 +421,8 @@ class BaseTransmission:
 
     def to_hdf5(self, path: str):
         """
-        Save as an hdf5 file. Uses pytables to save the DataFrame an JSON to save the HistoryTrace. See :class:`HdfTools <mesmerize.common.utils.HdfTools>`
+        Save as an hdf5 file. Uses pytables to save the DataFrame, serielizes the HistoryTrace using JSON.
+        See :class:`HdfTools <mesmerize.common.utils.HdfTools>`
 
         :param path: file path, usually ends in .trn
         """
