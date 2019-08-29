@@ -413,7 +413,7 @@ class TextFilter(CtrlNode):
         return self.t
 
 
-class NormRawMinMax(CtrlNode):
+class NormRaw(CtrlNode):
     """Normalize between raw min and max values."""
     nodeName = 'NormRawMinMax'
     uiTemplate = [('option', 'combo', {'items': ['top_5', 'top_10', 'top_5p', 'top_10p', 'top_25p', 'full_mean']}),
@@ -428,7 +428,7 @@ class NormRawMinMax(CtrlNode):
 
         self.t = transmission.copy()
 
-        output_column = '_NORMRAWMINMAX'
+        output_column = '_NORMRAW'
 
         self.option = self.ctrls['option'].currentText()
 
@@ -484,4 +484,3 @@ class NormRawMinMax(CtrlNode):
             return np.NaN
 
         return TimeSeriesScalerMinMax(value_range=(raw_min, raw_max)).fit_transform(data).ravel()
-    
