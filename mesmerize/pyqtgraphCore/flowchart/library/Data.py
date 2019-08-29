@@ -415,7 +415,7 @@ class TextFilter(CtrlNode):
 
 class NormRaw(CtrlNode):
     """Normalize between raw min and max values."""
-    nodeName = 'NormRawMinMax'
+    nodeName = 'NormRaw'
     uiTemplate = [('option', 'combo', {'items': ['top_5', 'top_10', 'top_5p', 'top_10p', 'top_25p', 'full_mean']}),
                   ('Apply', 'check', {'applyBox': True, 'checked': False})
                   ]
@@ -479,7 +479,7 @@ class NormRaw(CtrlNode):
         raw_min = raw_min_max['raw_min'][self.option]
         raw_max = raw_min_max['raw_max'][self.option]
 
-        if raw_min > raw_max:
+        if raw_min >= raw_max:
             self.excluded += 1
             return np.NaN
 
