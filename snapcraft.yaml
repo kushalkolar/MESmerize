@@ -17,6 +17,7 @@ parts:
     python-version: python3
     source: .
     source-type: git
+    source-branch: snap
     # Cython is required for setup.py, python-dateutils is required by pandas and for whatever reason doesn't get installed automatically
     python-packages: [Cython, python-dateutil]
   mesmerize:
@@ -26,6 +27,7 @@ parts:
     python-version: python3
     source: .
     source-type: git
+    source-branch: snap
     build-packages:
       - python3
       - python3-tk
