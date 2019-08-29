@@ -103,14 +103,17 @@ class LDA(CtrlNode):
 
     def processData(self, train: Transmission, predict: Transmission):
         self.t = train.copy()  #: Transmisison instance containing the training data with the labels
-        self.to_predict = predict.copy()  #: Transmission instance containing the data to predict after fitting on the the training data
+        if predict is not None:
+            self.to_predict = predict.copy()  #: Transmission instance containing the data to predict after fitting on the the training data
 
         dcols, ccols, ucols = organize_dataframe_columns(self.t.df.columns)
 
         self.ctrls['train_data'].setItems(dcols)
         self.ctrls['train_labels'].setItems(ccols)
 
-        self.ctrls['predict_on'].setItems(dcols)
+        if predict is not None:
+            pdcols, ccols, ucols = organize_dataframe_columns(self.to_predict.df.columns)
+            self.ctrls['predict_on'].setItems(dcols)
 
         if not self.apply_checked():
             return
