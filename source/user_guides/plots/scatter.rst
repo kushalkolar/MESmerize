@@ -24,6 +24,8 @@ Layout
     Data Column         Data column containing numerical arrays of size 2, X & Y values [x, y]
     X                   Data column containing only X values
     Y                   Data column containing only Y values
+    log x               Use :math:`log_{10}` of the X data
+    log y               Use :math:`log_{10}` of the Y data
     Colors based on     Set spot colors based on categorical labels in this column
     Choose colormap     Colromap for the the spot colors
     Shapes based on     Set spot shapes based on categorical labels in this column
@@ -39,6 +41,8 @@ Layout
     Export data         Not implemented yet
     =================== ===================================================================
 
+**Below the plot:** Status label that display plotting issues. Click the label to see more information.
+    
 **Right:** :ref:`Datapoint Tracer <DatapointTracer>`. Click datapoints in the plot to set the Datapoint Tracer.
 
 **Bottom:** :ref:`Console <ConsoleOverview>`

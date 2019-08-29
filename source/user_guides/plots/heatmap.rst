@@ -20,6 +20,8 @@ Visualize numerical arrays in the form of a heatmap. Also used for visualization
 
 **Middle:** Plot controls.
 
+**Very bottom:** Status label - displays any issues that were raised while setting the plot data. Click on the status label to see more information about it.
+
 Parameters
 ==========
 

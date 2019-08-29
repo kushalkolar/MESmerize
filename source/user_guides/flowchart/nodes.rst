@@ -236,6 +236,40 @@ DropNa
 	=========== 	===========
 		
 
+
+.. _node_NormRawMinMax:
+
+NormRaw
+^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.NormRaw>`
+    
+    Scale the raw data such that the min and max values are set to the min and max values derived from the raw spatial regions of the image sequences they originate from. Only for CNMFE data.
+    
+    The arrays in the **_RAW_CURVE** column are scaled and the output is placed in a new column named **_NORMRAW**
+    
+    ==========  =================
+    Terminal    Description
+    ==========  =================
+    In          Input Transmission
+    Out         Transmission with the result placed in the output column
+    ==========  =================
+
+    ========== ================================
+    Parameter  Description
+    ========== ================================
+    option      | Derive the raw min & max values from one of the following options:
+                | *top_5:* Top 5 brightest pixels
+                | *top_10:* Top 10 brighest pixels
+                | *top_5p:* Top 5% of brightest pixels
+                | *top_10p:* Top 10% of brightest pixels
+                | *top_25p:* Top 25% of brightest pixels
+                | *full_mean:* Full mean of the min and max array
+    Apply      Process data through this node
+    ========== ================================
+    
+    .. note:: If the raw min value is higher than the raw max value the curve will be excluded in the output. You will be presented with a warning box with the number of curves that were excluded due to this.
+
 --------------------------
 
 .. _nodes_Display:
@@ -634,31 +668,42 @@ PeakFeatures
 
 	Compute peak features. The DataFrame of the ouput Transmission contains one row for each peak.
 	
-	============================    ========================================
-	Output Data Column              Description
-	============================    ========================================
-	_pfeature_peak_curve            array representing the peak
-	_pfeature_amplitude_abs         peak amplitude relative to the min value of the parent curve
-	_pfeature_amplitude_rel         peak amplitude relative to the min value of the peak curve
-	_pfeature_area                  area under the peak, `Simpson's Rule <https://en.wikipedia.org/wiki/Simpson%27s_rule>`_
-	_pfeature_rising_slope_avg      slope of the line drawn from the left base to the peak
-	_pfeature_falling_slope_avg     slope of the line drawn from the right base to the peak
-	_pfeature_duration_base         distance between the left and right base
-	_pfeature_peak_interval         ...
-	_pfeature_ix_peak_abs           index of the peak maxima in the parent curve
-	_pfeature_ix_peak_rel           index of the peak maxima in the peak curve (_pfeature_peak_curve)
-	_pfeature_uuid                  peak `UUID <https://en.wikipedia.org/wiki/Universally_unique_identifier>`_
-	_pfeature_ix_base_left_abs      index of the left base in the parent curve
-	_pfeature_ix_base_right_abs     index of the right base in the parent curve
-	============================    ========================================
+    =========================       ===========================================
+    Output Data Column              Description
+    =========================       ===========================================
+    _pf_peak_curve                  array representing the peak
+    _pf_ampl_rel_b_ix_l             peak amplitude relative to its left base
+    _pf_ampl_rel_b_ix_r             peak amplitude relative to its right base
+    _pf_ampl_rel_b_mean             peak amplitude relative to the mean of its bases
+    _pf_ampl_rel_zero               peak amplitude relative to zero
+    _pf_area_rel_zero               `Simpson's Rule Integral of the curve <https://en.wikipedia.org/wiki/Simpson%27s_rule>`_
+    _pf_area_rel_min                | `Simpson's Rule Integral <https://en.wikipedia.org/wiki/Simpson%27s_rule>`_ relative to the minimum value of the curve
+                                    | Substracts the minimum values of the peak curve before computing the integral
+    _pf_rising_slope_avg            slope of the line drawn from the left base to the peak
+    _pf_falling_slope_avg           slope of the line drawn from the right base to the peak
+    _pf_duration_base               distance between the left and right base
+    _pf_p_ix                        index of the peak maxima in the parent curve
+    _pf_uuid                        peak `UUID <https://en.wikipedia.org/wiki/Universally_unique_identifier>`_
+    _pf_b_ix_l                      index of the left base in the parent curve
+    _pf_b_ix_r                      index of the right base in the parent curve
+    =========================       ===========================================
+    
+    .. seealso:: ``mesmerize/analysis/compute_peak_features`` for the code that computes the peak features.
 
-	========== 	=================
-	Terminal		Description
-	========== 	=================
-	In		Input Transmission. Must contain *peak_bases* column containing peak_bases DataFrames.
-	Out		Transmission with peak features in various output columns
-	========== 	=================
-
+    ==========  =================
+    Terminal    Description
+    ==========  =================
+    In          Input Transmission. Must contain *peak_bases* column that contains peak_bases DataFrames.
+    Out         Transmission with peak features in various output columns
+    ==========  =================
+    
+    ============    =================
+    Parameter       Description
+    ============    =================
+    data_column     Data column containing numerical arrays.
+                    | Peak features are computed relative these curves.
+    Apply           Process data through this node
+    ===================== 	=================
 
 --------
 
@@ -963,37 +1008,6 @@ StaticDFoFo
     Apply           Process data through this node
     ============    =========================================
 
-
-.. _node_NormRawMinMax:
-
-NormRawMinMax
-^^^^^^^^^^^^^
-
-    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.NormRawMinMax>`
-    
-    Scale the raw data such that the min and max values are set to the min and max values derived from the raw spatial regions of the image sequences they originate from. Only for CNMFE data.
-    
-    The arrays in the **_RAW_CURVE** column are scaled and the output is placed in a new column named **_NORMRAWMINMAX**
-    
-    ==========  =================
-    Terminal    Description
-    ==========  =================
-    In          Input Transmission
-    Out         Transmission with the result placed in the output column
-    ==========  =================
-
-    ========== ================================
-    Parameter  Description
-    ========== ================================
-    option      | Derive the raw min & max values from one of the following options:
-                | *top_5:* Top 5 brightest pixels
-                | *top_10:* Top 10 brighest pixels
-                | *top_5p:* Top 5% of brightest pixels
-                | *top_10p:* Top 10% of brightest pixels
-                | *top_25p:* Top 25% of brightest pixels
-                | *full_mean:* Full mean of the min and max array
-    Apply      Process data through this node
-    ========== ================================
     
 ----------------------
 
