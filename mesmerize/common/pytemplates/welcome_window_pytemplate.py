@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/welcome_window_pytemplate.ui'
+# Form implementation generated from reading ui file './welcome_window_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(709, 560)
+        MainWindow.resize(715, 560)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -156,15 +156,18 @@ class Ui_MainWindow(object):
         self.listWidgetRecentProjects = QtWidgets.QListWidget(self.centralwidget)
         self.listWidgetRecentProjects.setObjectName("listWidgetRecentProjects")
         self.verticalLayout_6.addWidget(self.listWidgetRecentProjects)
+        self.treeViewFlowcharts = QtWidgets.QTreeView(self.centralwidget)
+        self.treeViewFlowcharts.setObjectName("treeViewFlowcharts")
+        self.verticalLayout_6.addWidget(self.treeViewFlowcharts)
         self.horizontalLayout_2.addLayout(self.verticalLayout_6)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.labelProjectPlots = QtWidgets.QLabel(self.centralwidget)
         self.labelProjectPlots.setObjectName("labelProjectPlots")
         self.verticalLayout_5.addWidget(self.labelProjectPlots)
-        self.listWidgetProjectPlots = QtWidgets.QListWidget(self.centralwidget)
-        self.listWidgetProjectPlots.setObjectName("listWidgetProjectPlots")
-        self.verticalLayout_5.addWidget(self.listWidgetProjectPlots)
+        self.treeViewProjectPlots = QtWidgets.QTreeView(self.centralwidget)
+        self.treeViewProjectPlots.setObjectName("treeViewProjectPlots")
+        self.verticalLayout_5.addWidget(self.treeViewProjectPlots)
         self.horizontalLayout_2.addLayout(self.verticalLayout_5)
         self.verticalLayout_7.addLayout(self.horizontalLayout_2)
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -172,7 +175,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addWidget(self.label)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 709, 30))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 715, 22))
         self.menubar.setObjectName("menubar")
         self.menuConfiguration = QtWidgets.QMenu(self.menubar)
         self.menuConfiguration.setObjectName("menuConfiguration")

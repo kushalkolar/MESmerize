@@ -104,7 +104,6 @@ class ComboBox(QtGui.QComboBox):
     def blockForced(func):
         # Same as blockIfUnchanged but forced blocking
         def fn(self, *args, **kwds):
-            prevVal = self.value()
             blocked = self.signalsBlocked()
             self.blockSignals(True)
             try:

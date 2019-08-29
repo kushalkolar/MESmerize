@@ -15,6 +15,7 @@ import sys
 
 sys.setrecursionlimit(10000)
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QCursor
 from ..pyqtgraphCore.flowchart import Flowchart
 import numpy as np
 import pandas as pd
@@ -60,3 +61,25 @@ class Window(QtWidgets.QMainWindow, uiWin.Ui_MainWindow):
 
         if filename is not None:
             self.fc.loadFile(filename)
+
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, QDragEnterEvent):
+        if QDragEnterEvent.mimeData().hasUrls():
+            QDragEnterEvent.accept()
+        else:
+            QDragEnterEvent.ignore()
+
+    def dropEvent(self, ev):
+        files = ev.mimeData().urls()
+        if len(files) == 1:
+            file = files[0].path()
+        else:
+            return
+
+        if file.endswith('.trn') or file.endswith('.ptrn'):
+            fname = os.path.splitext(os.path.basename(file))[0]
+            from_global = self.fc_widget.chartWidget.view.mapFromGlobal(QCursor().pos())
+            pos = self.fc_widget.chartWidget.view.mapToScene(from_global)
+            self.fc.createNode('LoadFile', name=fname, pos=pos)
+            self.fc.nodes()[fname].load_file(file)

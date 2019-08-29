@@ -3,13 +3,8 @@
 from .common import *
 from ....analysis.data_types import *
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
-
-
-def _static_dfof(F: np.ndarray) -> np.ndarray:
-    Fo = np.min(F)
-    d = ((F - Fo) / Fo) * np.sign(Fo)
-    return d
-
+from tslearn.preprocessing import TimeSeriesScalerMinMax
+from PyQt5 import QtWidgets
 
 class ExtractStim(CtrlNode):
     """Extract portions of curves according to stimulus maps"""
@@ -344,12 +339,17 @@ class StaticDFoFo(CtrlNode):
         output_column = '_STATIC_DF_O_F'
         params = {'data_column': data_column}
 
-        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: _static_dfof(a))
+        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: self._static_dfof(a))
 
         self.t.history_trace.add_operation(data_block_id='all', operation='static_df_o_f', parameters=params)
         self.t.last_output = output_column
 
         return self.t
+
+    def _static_dfof(self, F: np.ndarray) -> np.ndarray:
+        Fo = np.min(F)
+        d = ((F - Fo) / Fo)
+        return d
 
 
 class ManualDFoF(CtrlNode):

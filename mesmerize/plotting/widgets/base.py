@@ -11,7 +11,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from PyQt5 import QtWidgets
 import abc
-from ...analysis import Transmission
+from ...analysis import Transmission, organize_dataframe_columns
 from ...common.qdialogs import *
 from ...common import InheritDocs
 from typing import *
@@ -57,6 +57,11 @@ class _AbstractBasePlotWidget(metaclass=InheritDocs):
         pass
 
     @abc.abstractmethod
+    def set_update_live(self, b: bool):
+        "Method to set if the plot updates with live input"
+        pass
+
+    @abc.abstractmethod
     def get_plot_opts(self) -> dict:
         """Package all necessary plot parameters that in combination with the transmission property are sufficient to restore the plot"""
         pass
@@ -92,6 +97,8 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
         super().__init__()
         self._transmission = None
         self.block_signals_list = []  #: List of QObjects included in dynamic signal blocking. Used for storing plot parameter widgets so that changing all of them quickly (like when restoring a plot) doesn't cause the plot to constantly update.
+        self.previous_df_cols = []
+        self.update_live = True
 
     def __init_subclass__(cls, **kwargs):
         if not hasattr(cls, 'drop_opts'):
@@ -112,7 +119,26 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
     def set_input(self, transmission: Transmission):
         self.transmission = transmission
 
+        cols = set(self.transmission.df.columns)
+
+        if set(self.previous_df_cols) != cols:
+            dcols, ccols, ucols = organize_dataframe_columns(self.transmission.df.columns)
+
+            cols = {'data_columns': dcols, 'categorical_columns': ccols, 'uuid_columns': ucols}
+
+            self.fill_control_widget(**cols)
+
+        self.previous_df_cols = cols
+
+    def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
+        """Method for filling the control widget(s) when inputs are set. Must be implemented in subclass"""
+        raise NotImplementedError("""Must be implemented in subclass""")
+
     def update_plot(self, *args, **kwargs):
+        """Must be implemented in subclass"""
+        raise NotImplementedError('Must be implemented in subclass')
+
+    def set_update_live(self, b: bool):
         """Must be implemented in subclass"""
         raise NotImplementedError('Must be implemented in subclass')
 
@@ -196,8 +222,13 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
         ptrn.set_proj_path(proj_path)
         ptrn.set_proj_config()
 
+        update_state = self.update_live
+
+        self.set_update_live(False)
         self.set_input(ptrn)
         self.set_plot_opts(plot_state)
+        self.set_update_live(update_state)
+
         self.update_plot()
 
         return ptrn_path, proj_path

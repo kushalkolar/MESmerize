@@ -393,11 +393,12 @@ class ImageView(QtWidgets.QWidget):
         profiler()
 
         self.ui.roiPlot.showAxis('left')
-        mn = self.tVals.min()
-        mx = self.tVals.max()
-        self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
-        self.timeLine.show()
-        self.timeLine.setBounds([mn, mx])
+        if hasattr(self, 'tVals'):
+            mn = self.tVals.min()
+            mx = self.tVals.max()
+            self.ui.roiPlot.setXRange(mn, mx, padding=0.01)
+            self.timeLine.show()
+            self.timeLine.setBounds([mn, mx])
 
     def clear(self):
         self.setImage(np.zeros((2, 2, 1)))

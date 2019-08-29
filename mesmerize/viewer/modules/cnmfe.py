@@ -37,6 +37,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     @present_exceptions()
     def get_params(self, *args, **kwargs) -> dict:
+        """
+        Get a dict of the set parameters.
+        If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
+        Doesn't use any arguments
+
+        :return: parameters dict
+        :rtype: dict
+        """
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
             raise KeyError('No framerate for current image sequence!',
                            'You must set a framerate for the current image sequence. '
@@ -84,6 +92,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.set_params(d)
 
     def set_params(self, params: dict):
+        """
+        Set all parameters from a dict. All keys must be present in the dict.
+
+        :param params: parameters dict
+        """
         self.ui.comboBoxInput.setCurrentText(params['Input'])
         self.ui.spinBoxGSig.setValue(params['gSig'])
         self.ui.doubleSpinBoxMinCorr.setValue(params['min_corr'])
@@ -102,6 +115,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.lineEditAin.setText(params['Ain'])
 
     def add_to_batch_corr_pnr(self):
+        """
+        Add a Corr PNR batch item with the currently set parameters and the current work environment.
+
+        """
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
             if self.vi.viewer.workEnv.isEmpty:
                 QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
@@ -135,6 +152,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.clear_line_edits()
 
     def add_to_batch_cnmfe(self):
+        """
+        Add a CNMFE batch item with the currently set parameters and the current work environment.
+        """
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
             if self.vi.viewer.workEnv.isEmpty:
                 QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '

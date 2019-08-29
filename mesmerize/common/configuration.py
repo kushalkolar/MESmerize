@@ -59,6 +59,23 @@ default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       }
 
 
+class SysConfig:
+    def __init__(self, n_threads: int,
+                 use_cuda: bool,
+                 python_call: str,
+                 prefix_commands: str,
+                 custom_modules_dir: str,
+                 workdir: str,
+                 recent_projects: list):
+        self.n_threads = n_threads
+        self.use_cuda = use_cuda
+        self.python_call = python_call
+        self.prefix_commands = prefix_commands
+        self.custom_modules_dir = custom_modules_dir
+        self.workdir = workdir
+        self.recent_projects = recent_projects
+
+
 def create_new_sys_config() -> dict:
     if not os.path.isdir(sys_cfg_dir):
         os.makedirs(sys_cfg_dir)

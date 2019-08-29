@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from typing import Optional, Union
 from ....common.configuration import console_history_path
-from ....common.qdialogs import present_exceptions
+from ....common.qdialogs import present_exceptions, exceptions_label
 from ....pyqtgraphCore.console import ConsoleWidget
 from warnings import warn
 import os
@@ -289,14 +289,16 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.pushButtonShowHideConsole.toggled.connect(self.console_widget.setVisible)
         self.vlayout.addWidget(self.console_widget)
 
-        # TODO: Replace the constant exception windows with a status bar that displays red text if something goes
-        #  wrong and can be clicked to display the traceback
         self.status_label = QtWidgets.QLabel(self)
+        self.status_label.setMaximumHeight(32)
+        self.status_label.mousePressEvent = self.show_exception_info
+        self.vlayout.addWidget(self.status_label)
+
+        self.exception_holder = None  #: Used for holding exceptions that can be viewed by clicking on self.status_label
 
         self.plot_variant.sig_selection_changed.connect(self.set_current_datapoint)
 
         self.datapoint_tracer_curve_column = None
-        self._previous_df_columns = []
 
         self.control_widget.ui.listWidgetColorMapsData.set_cmap('jet')
 
@@ -307,16 +309,18 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
         self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
 
-        self._update_live = False
+        self.update_live = False
         self.block_signals_list = [self.control_widget]
 
         self.is_clustering = False
 
         self.control_widget.sig_changed.connect(self.update_plot)
 
+    @BasePlotWidget.signal_blocker
     def set_update_live(self, b: bool):
         """Set whether the plot should update live with changes in the flowchart"""
-        self._update_live = b
+        self.update_live = b
+        self.control_widget.ui.checkBoxLiveUpdate.setChecked(b)
         if b:
             self.update_plot()
 
@@ -354,26 +358,20 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
 
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
-        """Set the input Transmission and update the plot if _update_live is True"""
+        """Set the input Transmission and update the plot if update_live is True"""
         super(HeatmapTracerWidget, self).set_input(transmission)
-        cols = self.transmission.df.columns
-        if set(self._previous_df_columns) != set(cols):
-            dcols, ccols, ucols = organize_dataframe_columns(cols)
-
-            self.control_widget.ui.comboBoxDataColumn.clear()
-            self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
-
-            self.control_widget.ui.comboBoxLabelsColumn.clear()
-            self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
-
-            self.control_widget.ui.comboBoxDPTCurveColumn.clear()
-            self.control_widget.ui.comboBoxDPTCurveColumn.addItems(dcols)
-
-        # self.transmission = transmission
-        self._previous_df_columns = cols
-
-        if self._update_live:
+        if self.update_live:
             self.update_plot()
+
+    def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
+        self.control_widget.ui.comboBoxDataColumn.clear()
+        self.control_widget.ui.comboBoxDataColumn.addItems(data_columns)
+
+        self.control_widget.ui.comboBoxLabelsColumn.clear()
+        self.control_widget.ui.comboBoxLabelsColumn.addItems(categorical_columns)
+
+        self.control_widget.ui.comboBoxDPTCurveColumn.clear()
+        self.control_widget.ui.comboBoxDPTCurveColumn.addItems(data_columns)
 
     def get_plot_opts(self, drop: bool = False) -> dict:
         """
@@ -406,6 +404,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.comboBoxDPTCurveColumn.setCurrentIndex(ix)
 
         self.control_widget.ui.listWidgetColorMapsData.set_cmap(opts['cmap'])
+        self.control_widget.ui.listWidgetColorMapsLabels.set_cmap(opts['ylabels_cmap'])
 
     def update_plot(self):
         """Calls set_data and passes dict from get_plot_opts() as keyword arguments"""
@@ -420,7 +419,7 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         ck = dict(row_linkage=linkage, row_cluster=True, col_cluster=False, cluster_labels=cluster_labels)
         return ck
 
-    @present_exceptions('Error while setting data', 'Make sure you have selected appropriate columns.', help_func)
+    @exceptions_label('status_label', 'exception_holder', 'Error while setting data', 'Make sure you have selected appropriate columns')
     def set_data(self, *args, datapoint_tracer_curve_column: str = None, **kwargs):
         """
         Set the plot data, parameters and draw the plot.
@@ -431,6 +430,9 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         :param datapoint_tracer_curve_column: Data column containing curves to use in the datapoint tracer
         :param kwargs:  keyword arguments, passed to superclass set_data() method
         """
+        self.exception_holder = None
+        self.status_label.clear()
+
         if self.transmission.last_output == 'fcluster':
             self.comboBoxSortColumn.setDisabled(True)
             self.is_clustering = True
@@ -441,4 +443,6 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
 
         self.datapoint_tracer_curve_column = datapoint_tracer_curve_column
 
-
+    def show_exception_info(self, mouse_press_ev):
+        if self.exception_holder is not None:
+            QtWidgets.QMessageBox.warning(self, *self.exception_holder)
