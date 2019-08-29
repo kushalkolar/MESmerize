@@ -7,7 +7,7 @@
 
 #GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QLabel
 import traceback
 from functools import wraps
 from . import get_project_manager
@@ -40,6 +40,37 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
                     help_func(e, tb)
                 else:
                     QMessageBox.warning(*args)
+        return fn
+    return catcher
+
+
+def exceptions_label(label: str, exception_holder: str = None,
+                     title: str = 'error', msg: str = 'The following error occured'):
+    """
+    Use a label to display an exception instead of a QMessageBox
+
+    :param label: name of a QLabel instance
+    :param exception_holder: name of an exception_holder attribute where the exception message is stored.
+                             This can be used to view the whole exception when the label is clicked on for example.
+    :param title: title supplied for the QMessageBox (if used later)
+    :param msg: message supplied for the QMessageBox (if used later)
+    """
+    def catcher(func):
+        @wraps(func)
+        def fn(self, *args, **kwargs):
+            try:
+                return func(self, *args, **kwargs)
+            except Exception as e:
+                tb = traceback.format_exc()
+                exc = f'{e.__class__.__name__}: {e}'
+
+                qlabel = getattr(self, label)
+                qlabel.setText(exc)
+                qlabel.setStyleSheet("font-weight: bold; color: red")
+
+                if exception_holder is not None:
+                    args = (title, msg + f'\n\n{exc}\n\n{tb}', QMessageBox.Ok)
+                    setattr(self, exception_holder, args)
         return fn
     return catcher
 
