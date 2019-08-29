@@ -27,9 +27,9 @@ class ComputePeakFeatures:
         self.t.df.reset_index(drop=True, inplace=True)
         self.data_column = data_column
         with Pool(get_sys_config()['_MESMERIZE_N_THREADS']) as pool:
-            out_df = list(tqdm(pool.imap(self._per_curve, self.t.df.iterrows()), total=self.t.df.index.size))
+            dfs = list(tqdm(pool.imap(self._per_curve, self.t.df.iterrows()), total=self.t.df.index.size))
 
-        self.t.df = pd.concat(out_df).reset_index(drop=True)
+        self.t.df = pd.concat([df for df in dfs if df is not None]).reset_index(drop=True)
 
         self.t.last_output = None
         self.t.history_trace.add_operation('all', 'peak_features', {})
@@ -44,6 +44,9 @@ class ComputePeakFeatures:
 
         out_df = pb_df[pb_df.label == 'peak']
 
+        if out_df.empty:
+            return None
+
         pd.options.mode.chained_assignment = None
 
         out_df[
@@ -57,7 +60,7 @@ class ComputePeakFeatures:
                 '_pf_rising_slope_avg',
                 '_pf_falling_slope_avg',
                 '_pf_duration_base',
-                '_pf_peak_curve'
+                '_pf_peak_curve',
                 '_pf_uuid',
                 '_pf_p_ix',
                 '_pf_b_ix_l',
