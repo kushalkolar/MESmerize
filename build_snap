@@ -1,0 +1,3 @@
+snapcraft build
+cp ./parts/mesmerize/install/lib/python3.6/site-packages/mesmerize-0.1-py3.6.egg-info/SOURCES.txt ./parts/setup/install/lib/python3.6/site-packages/mesmerize-0.1-py3.6.egg-info/SOURCES.txt
+snapcraft snap
