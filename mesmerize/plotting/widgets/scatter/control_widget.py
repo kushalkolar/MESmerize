@@ -154,7 +154,7 @@ class Ui_DockWidgetControls(object):
         self.spinBoxSpotSize.setSizePolicy(sizePolicy)
         self.spinBoxSpotSize.setMinimum(1)
         self.spinBoxSpotSize.setMaximum(999)
-        self.spinBoxSpotSize.setSingleStep(10)
+        self.spinBoxSpotSize.setSingleStep(1)
         self.spinBoxSpotSize.setProperty("value", 10)
         self.spinBoxSpotSize.setObjectName("spinBoxSpotSize")
         self.horizontalLayout_5.addWidget(self.spinBoxSpotSize)

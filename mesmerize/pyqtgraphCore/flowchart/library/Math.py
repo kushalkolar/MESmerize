@@ -255,7 +255,7 @@ class ZScore(CtrlNode):
             out_dfs.append(sub_df)
 
         df = pd.concat(out_dfs).reset_index(drop=True)
-        df['_ZSCORE'] = df._ZSCORE.apply(lambda x: np.array(x))
+        df['_ZSCORE'] = df._ZSCORE.apply(np.array)
 
         self.t.df = df
 
