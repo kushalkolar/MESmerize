@@ -229,6 +229,9 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def update_plot(self):
         """Update the plot data and draw"""
 
+        self.exception_holder = None
+        self.status_label.clear()
+
         self.plot_opts = self.get_plot_opts()
 
         if self.plot_opts['data_column_radio']:
