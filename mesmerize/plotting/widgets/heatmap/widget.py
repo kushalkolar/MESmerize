@@ -359,9 +359,10 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         """Set the input Transmission and update the plot if update_live is True"""
-        super(HeatmapTracerWidget, self).set_input(transmission)
-        if self.update_live:
-            self.update_plot()
+        if (self._transmission is None) or self.update_live:
+            super(HeatmapTracerWidget, self).set_input(transmission)
+            if self.update_live:
+                self.update_plot()
 
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
         self.control_widget.ui.comboBoxDataColumn.clear()

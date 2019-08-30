@@ -41,7 +41,7 @@ Layout
     Export data         Not implemented yet
     =================== ===================================================================
 
-**Below the plot:** Status label that display plotting issues. Click the label to see more information.
+**Below the plot:** Status label that displays plotting issues. Click the label to see more information.
     
 **Right:** :ref:`Datapoint Tracer <DatapointTracer>`. Click datapoints in the plot to set the Datapoint Tracer.
 

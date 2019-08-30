@@ -155,6 +155,7 @@ class LDA(CtrlNode):
         self.X_ = self.lda.fit_transform(self.X, self.y)
 
         self.t.df['_LDA_TRANSFORM'] = self.X_.tolist()
+        self.t.df['_LDA_TRANSFORM'] = self.t.df['_LDA_TRANSFORM'].apply(np.array)
 
         params.update({'score': self.lda.score(self.X, self.y),
                        'classes': self.lda.classes_.tolist()
@@ -186,6 +187,8 @@ class LDA(CtrlNode):
 
         predict_data = np.hstack([np.vstack(self.to_predict.df[predict_column]) for predict_column in predict_columns])
         self.to_predict.df['LDA_PREDICTED_LABELS'] = self.lda.predict(predict_data)
+        self.to_predict.df['_LDA_TRANSFORM'] = self.lda.transform(predict_data).tolist()
+        self.to_predict.df['_LDA_TRANSFORM'] = self.to_predict.df['_LDA_TRANSFORM'].apply(np.array)
 
         params_predict = params.copy()
         params_predict.update({'predict_columns': predict_columns})
