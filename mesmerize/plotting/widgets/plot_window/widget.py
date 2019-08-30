@@ -152,6 +152,7 @@ class PlotWindow(QtWidgets.QMainWindow):
         self.ui.tabWidget.widget(i).setLayout(QtWidgets.QVBoxLayout())
 
     def update_params(self):
+        self.data_columns.clear()
         self.data_columns = [item.text() for item in self.ui.listWidgetDataColumns.selectedItems()]
 
         for col in self.data_columns:

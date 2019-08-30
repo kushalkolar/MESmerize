@@ -169,6 +169,7 @@ class TVDiff(CtrlNode):
 class Integrate(CtrlNode):
     pass
 
+
 class ArrayStats(CtrlNode):
     """Perform various statistical functions"""
     nodeName = 'ArrayStats'
@@ -193,7 +194,7 @@ class ArrayStats(CtrlNode):
         if not output_column.startswith('_'):
             output_column = '_' + output_column
 
-        function = self.ctrls['function']
+        function = self.ctrls['function'].currentText()
 
         params = {'data_column': self.data_column,
                   'output_column': output_column,
