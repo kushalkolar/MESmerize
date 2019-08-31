@@ -93,6 +93,7 @@ class KShapeMeansPlot(MatplotlibWidget):
         MatplotlibWidget.__init__(self)
         self.axs = None  #: array of axis objects used for drawing the means plots, shape is [nrows, ncols]
         self.setParent(parent)
+        self.n_cols = 3
 
     def set_plots(self, input_arrays: np.ndarray, n_clusters: int, y_pred: np.ndarray, xzero_pos: str, error_band):
         """
@@ -104,7 +105,10 @@ class KShapeMeansPlot(MatplotlibWidget):
         :param xzero_pos: set the zero position as the 'zero' position of the input array or the 'maxima' of the input array
         :param error_band: Type of error band to show, one of either 'ci' or 'std'
         """
-        nrows, ncols = (int(ceil(sqrt(n_clusters))), int(sqrt(n_clusters)))
+        # nrows, ncols = (int(ceil(sqrt(n_clusters))), int(sqrt(n_clusters)))
+
+        nrows = ceil(n_clusters / self.n_cols)
+        ncols = self.n_cols
 
         if n_clusters < 11:
             cmap = 'tab10'
