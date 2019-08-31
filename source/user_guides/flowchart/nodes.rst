@@ -849,6 +849,7 @@ ArrayStats
     Perform a few basic statistical functions.
     
     **Output Data Column** *(numerical)*: Customizable by user entry
+    
     Output data are single numbers, not arrays
     
 	========== 	=================
