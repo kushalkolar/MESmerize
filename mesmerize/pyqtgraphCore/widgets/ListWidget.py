@@ -37,3 +37,11 @@ class ListWidget(QtWidgets.QListWidget):
 
     def getSelectedItems(self) -> list:
         return [item.text() for item in self.selectedItems()]
+
+    def setSelectedItems(self, items: list):
+        for item in items:
+            item = self.findItems(item, QtCore.Qt.MatchExactly)
+            if len(item) == 0:
+                continue
+            item = item[0]
+            item.setSelected(True)

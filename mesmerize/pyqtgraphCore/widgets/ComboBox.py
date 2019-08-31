@@ -129,6 +129,11 @@ class ComboBox(QtGui.QComboBox):
         try:
             self.clear()
             self.addItems(items)
+
+            if isinstance(prevVal, str):
+                ix = self.findText(prevVal)
+                self.setCurrentIndex(ix)
+
         finally:
             self.blockSignals(False)
 
