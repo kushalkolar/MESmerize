@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/cnmfe_pytemplate.ui'
+# Form implementation generated from reading ui file './cnmfe_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -12,7 +12,7 @@ class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(499, 1053)
+        DockWidget.resize(500, 1153)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -262,6 +262,20 @@ class Ui_DockWidget(object):
         spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_21.addItem(spacerItem11)
         self.verticalLayout.addLayout(self.horizontalLayout_21)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.label_4 = QtWidgets.QLabel(self.dockWidgetContents)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_5.addWidget(self.label_4)
+        self.comboBoxDeconv = QtWidgets.QComboBox(self.dockWidgetContents)
+        self.comboBoxDeconv.setObjectName("comboBoxDeconv")
+        self.comboBoxDeconv.addItem("")
+        self.comboBoxDeconv.addItem("")
+        self.comboBoxDeconv.addItem("")
+        self.horizontalLayout_5.addWidget(self.comboBoxDeconv)
+        spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_5.addItem(spacerItem12)
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
         self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
         self.label_18 = QtWidgets.QLabel(self.dockWidgetContents)
@@ -277,8 +291,8 @@ class Ui_DockWidget(object):
         self.btnAddToBatchCNMFE = QtWidgets.QPushButton(self.dockWidgetContents)
         self.btnAddToBatchCNMFE.setObjectName("btnAddToBatchCNMFE")
         self.horizontalLayout_11.addWidget(self.btnAddToBatchCNMFE)
-        spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_11.addItem(spacerItem12)
+        spacerItem13 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_11.addItem(spacerItem13)
         self.verticalLayout.addLayout(self.horizontalLayout_11)
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
@@ -348,6 +362,10 @@ class Ui_DockWidget(object):
         self.label_29.setText(_translate("DockWidget", "nb_patch:"))
         self.label_32.setText(_translate("DockWidget", "Number of neurons/cell per patch"))
         self.label_31.setText(_translate("DockWidget", "k:"))
+        self.label_4.setText(_translate("DockWidget", "deconvolution: "))
+        self.comboBoxDeconv.setItemText(0, _translate("DockWidget", "oasis"))
+        self.comboBoxDeconv.setItemText(1, _translate("DockWidget", "cvxpy"))
+        self.comboBoxDeconv.setItemText(2, _translate("DockWidget", "SKIP"))
         self.label_18.setText(_translate("DockWidget", "Perform CNMF-E:"))
         self.lineEdName.setPlaceholderText(_translate("DockWidget", "Enter name"))
         self.btnAddToBatchCNMFE.setText(_translate("DockWidget", "Add to batch"))

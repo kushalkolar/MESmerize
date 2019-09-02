@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
-    <height>1053</height>
+    <width>500</width>
+    <height>1153</height>
    </rect>
   </property>
   <property name="floating">
@@ -611,6 +611,49 @@ If lower more components will be accepted, potentially with worse quality</strin
       </item>
       <item>
        <spacer name="horizontalSpacer_14">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>deconvolution: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBoxDeconv">
+        <item>
+         <property name="text">
+          <string>oasis</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>cvxpy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SKIP</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
