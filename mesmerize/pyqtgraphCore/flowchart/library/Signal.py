@@ -656,3 +656,26 @@ class PeakFeatures(CtrlNode):
 
         return self.t
 
+
+class SigmaMAD(CtrlNode):
+    nodeName = 'SigmaMAD'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': True})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        dcols = organize_dataframe_columns(transmission.df.columns)[0]
+        self.ctrls['data_column'].setItems(dcols)
+
+        if not self.apply_checked():
+            return
+
+        self.t = transmission.copy()
+
+        output_column = '_' + self.__class__.__name__.upper()
+        params = {'data_column': self.data_column}
+
+        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: np.median(np.abs(x - np.median(x))))
+        self.t.history_trace.add_operation('all', self.__class__.__name__.lower(), params)
+
+        return self.t
