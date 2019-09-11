@@ -113,7 +113,7 @@ class LDA(CtrlNode):
 
         if predict is not None:
             pdcols, ccols, ucols = organize_dataframe_columns(self.to_predict.df.columns)
-            self.ctrls['predict_on'].setItems(dcols)
+            self.ctrls['predict_on'].setItems(pdcols)
 
         if not self.apply_checked():
             return
