@@ -118,15 +118,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
             if d[stim_type] is None:
                 continue
 
-            # if d[stim_type]['units'] == 'seconds':
-            #     fps = self.vi.viewer.workEnv.meta['fps']
-            #     d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'] * fps
-            #     d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'].astype(int)
-            #
-            #     d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
-                # d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
+            if d[stim_type]['units'] == 'seconds':
+                fps = self.vi.viewer.workEnv.meta['fps']
+                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'] * fps
+                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'].astype(int)
 
-            # d[stim_type] = d[stim_type]['dataframe']
+                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
+                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
+
+            d[stim_type] = d[stim_type]['dataframe']
 
         self.vi.viewer.workEnv.stim_maps = d
 
