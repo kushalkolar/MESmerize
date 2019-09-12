@@ -100,8 +100,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def set_all_data(self, dataframes_dict: dict):
         self.reset()
         for stim_type in dataframes_dict.keys():
+            if dataframes_dict[stim_type] is None:
+                continue
+                
             tab = self.tabs[stim_type]
-            assert isinstance(tab, Page)
             tab.set_data(dataframes_dict[stim_type])#['dataframe'])
             # if dataframes_dict[stim_type]['units'] == 'seconds':
             tab.ui.comboBoxTimeUnits.setCurrentIndex(0)
