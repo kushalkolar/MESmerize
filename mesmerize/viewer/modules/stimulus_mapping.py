@@ -141,23 +141,24 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.timeline_stimulus_display.clear_all()
             return
 
-        tab_page = self.tabs[stim_type]
-        assert isinstance(tab_page, Page)
+        # tab_page = self.tabs[stim_type]
+        # assert isinstance(tab_page, Page)
 
         try:
-            df = tab_page.get_dataframe()
+            # df = tab_page.get_dataframe()
+            df = self.vi.viewer.workEnv.stim_maps[stim_type]
         except IndexError as ie:
             QtWidgets.QMessageBox.information(self, 'IndexError', str(ie))
             return
 
-        units = self.vi.viewer.workEnv.stim_maps[stim_type]['units']
-
-        if units == 'seconds':
-            fps = self.vi.viewer.workEnv.meta['fps']
-            df['start'] = df['start'] * fps
-            df['start'] = df['start'].astype(int)
-            df['end'] = df['end'] * fps
-            df['end'] = df['end'].astype(int)
+        # units = self.vi.viewer.workEnv.stim_maps[stim_type]['units']
+        #
+        # if units == 'seconds':
+        #     fps = self.vi.viewer.workEnv.meta['fps']
+        #     df['start'] = df['start'] * fps
+        #     df['start'] = df['start'].astype(int)
+        #     df['end'] = df['end'] * fps
+        #     df['end'] = df['end'].astype(int)
 
         self.timeline_stimulus_display.set_from_stimulus_mapping(df)
 
