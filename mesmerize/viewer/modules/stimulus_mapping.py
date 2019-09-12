@@ -102,11 +102,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
         for stim_type in dataframes_dict.keys():
             tab = self.tabs[stim_type]
             assert isinstance(tab, Page)
-            tab.set_data(dataframes_dict[stim_type]['dataframe'])
-            if dataframes_dict[stim_type]['units'] == 'seconds':
-                tab.ui.comboBoxTimeUnits.setCurrentIndex(0)
-            elif dataframes_dict[stim_type]['units'] == 'frames':
-                tab.ui.comboBoxTimeUnits.setCurrentIndex(1)
+            tab.set_data(dataframes_dict[stim_type])#['dataframe'])
+            # if dataframes_dict[stim_type]['units'] == 'seconds':
+            tab.ui.comboBoxTimeUnits.setCurrentIndex(0)
+            # elif dataframes_dict[stim_type]['units'] == 'frames':
+            #     tab.ui.comboBoxTimeUnits.setCurrentIndex(1)
 
     def set_all_maps(self):
         self.set_timeline(self.ui.comboBoxShowTimelineChoice.currentIndex())
