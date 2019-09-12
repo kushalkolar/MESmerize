@@ -264,7 +264,8 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         if self.plot_opts['colors_column'] != '------------':
             colors_map = get_colormap(self.transmission.df[self.plot_opts['colors_column']],
-                                       self.plot_opts['cmap'], output='pyqt')
+                                       self.plot_opts['cmap'], output='pyqt', alpha=self.plot_opts['spot_alpha'])
+
             colors = list(map(colors_map.get, self.transmission.df[self.plot_opts['colors_column']]))
             brushes_list = list(map(mkBrush, colors))
         else:

@@ -11,7 +11,7 @@ qual_cmaps = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1', 'Set2',
               'tab20c']
 
 
-def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing: str = 'uniform') -> List[Union[QtGui.QColor, np.ndarray]]:
+def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing: str = 'uniform', alpha: float = 1.0) -> List[Union[QtGui.QColor, np.ndarray]]:
     """
     If non-qualitative map: returns list of colors evenly spread through the chosen colormap.
     If qualitative map: returns subsequent colors from the chosen colormap
@@ -22,9 +22,22 @@ def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing
                      option: 'pyqt' returns QtGui.QColor instances that correspond to the RGBA values
     :param spacing:  option: 'uniform' returns evenly spaced colors across the entire cmap range
                      option: 'subsequent' returns subsequent colors from the cmap
+    :param alpha:    alpha level, 0.0 - 1.0
 
     :return:         List of colors as either QColor or numpy array with length n_colors
     """
+
+    valid = ['mpl', 'pyqt']
+    if output not in valid:
+        raise ValueError(f'output must be one {valid}')
+
+    valid = ['uniform', 'subsequent']
+    if spacing not in valid:
+        raise ValueError(f'spacing must be one of either {valid}')
+
+    if alpha < 0.0 or alpha > 1.0:
+        raise ValueError('alpha must be within 0.0 and 1.0')
+
     cm = matplotlib_color_map.get_cmap(cmap)
     cm._init()
 
@@ -32,6 +45,8 @@ def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing
         lut = (cm._lut * 255).view(np.ndarray)
     else:
         lut = (cm._lut).view(np.ndarray)
+
+    lut[:, 3] *= alpha
 
     if spacing == 'uniform':
         if not cmap in qual_cmaps:
