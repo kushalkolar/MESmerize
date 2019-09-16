@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; Mesmerize 1 documentation</title>
+  <title>Index &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -26,6 +26,9 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -34,6 +37,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
     <link href="_static/style.css" rel="stylesheet" type="text/css">
@@ -60,6 +64,10 @@
           
             
             
+              <div class="version">
+                0.1
+              </div>
+            
           
 
           
@@ -81,21 +89,83 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="Overview.html">Overview</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guides:</span></p>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/overview.html">Viewer overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -171,43 +241,122 @@
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
  
 </div>
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.__init__">__init__() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__del__">__del__() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__delitem__">__delitem__() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__getitem__">__getitem__() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.__init__">__init__() (mesmerize.analysis.data_types.BaseTransmission method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.__init__">(analyser.DataTypes.HistoryTrace method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.__init__">(mesmerize.Transmission method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.__init__">(viewer.core.mesfile.MES method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.__init__">(mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.__init__">(viewer.core.viewer_work_environment.ViewerWorkEnv method)</a>
+        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.__init__">(mesmerize.analysis.math.cross_correlation.CC_Data method)</a>
 </li>
-      </ul></li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.__weakref__">__weakref__ (analyser.DataTypes.BaseTransmission attribute)</a>
-
-      <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.__weakref__">(analyser.DataTypes.HistoryTrace attribute)</a>
+        <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.__init__">(mesmerize.plotting.HeatmapSplitterWidget method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.__weakref__">(viewer.core.mesfile.MES attribute)</a>
+        <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.__init__">(mesmerize.plotting.variants.Heatmap method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.__weakref__">(viewer.core.viewer_work_environment.ViewerWorkEnv attribute)</a>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.__init__">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.__init__">(mesmerize.viewer.core.ViewerUtils method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.__init__">(mesmerize.viewer.core.ViewerWorkEnv method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.data_types.ImgData.__init__">(mesmerize.viewer.core.data_types.ImgData method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.__init__">(mesmerize.viewer.core.mesfile.MES method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.__init__">(mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.__init__">[1]</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.__init__">(mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__init__">(mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.__init__">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.__init__">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__init__">(mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.__init__">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.__init__">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.__init__">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.__init__">(mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission._load_files">_load_files() (analyser.DataTypes.Transmission static method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.__weakref__">__weakref__ (mesmerize.analysis.data_types.HistoryTrace attribute)</a>
+
+      <ul>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.__weakref__">(mesmerize.viewer.core.ViewerUtils attribute)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission._make_dict">_make_dict() (analyser.DataTypes.BaseTransmission method)</a>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.__weakref__">(mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace._to_uuid">_to_uuid() (analyser.DataTypes.HistoryTrace method)</a>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.__weakref__">(mesmerize.viewer.core.mesfile.MES attribute)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__weakref__">(mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager attribute)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__weakref__">(mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.__weakref__">(mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget">_AbstractBasePlotWidget (class in mesmerize.plotting.widgets.base)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI">_AbstractBaseROI (class in mesmerize.viewer.modules.roi_manager_modules.roi_types)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace._add_data_block">_add_data_block() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils._clear_workEnv">_clear_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI._create_scatter_plot">_create_scatter_plot() (mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._hide_all_graphics_objects">_hide_all_graphics_objects() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._hide_graphics_object">_hide_graphics_object() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission._load_files">_load_files() (mesmerize.Transmission static method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv._organize_meta">_organize_meta() (mesmerize.viewer.core.ViewerWorkEnv static method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._reindex_list_widget">_reindex_list_widget() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget._set_sort_order">_set_sort_order() (mesmerize.plotting.HeatmapSplitterWidget method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._show_all_graphics_objects">_show_all_graphics_objects() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._show_graphics_object">_show_graphics_object() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace._to_uuid">_to_uuid() (mesmerize.analysis.data_types.HistoryTrace static method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv._UUID">_UUID (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -215,11 +364,51 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.add_data_block">add_data_block() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager">AbstractBaseManager (class in mesmerize.viewer.modules.roi_manager_modules.managers)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.add_all_cnmfe_components">add_all_cnmfe_components() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_all_components">add_all_components() (mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item">add_item() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item">[1]</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.add_manual_roi">add_manual_roi() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.add_operation">add_operation() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.add_roi">add_roi() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_roi">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.add_roi">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.add_row">add_row() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.add_operation">add_operation() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.add_stimulus_indicator">add_stimulus_indicator() (mesmerize.plotting.variants.Heatmap method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.add_to_viewer">add_to_viewer() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.add_to_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.add_to_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.add_to_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.append">append() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/plotting/utils.html#mesmerize.plotting.utils.auto_colormap">auto_colormap() (in module mesmerize.plotting.utils)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.ax">ax (mesmerize.plotting.ProportionsWidget attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapePlot.ax_curves">ax_curves (mesmerize.plotting.widgets.kshape.widget.KShapePlot attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.axs">axs (mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -227,7 +416,15 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission">BaseTransmission (class in analyser.DataTypes)</a>
+      <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget">BasePlotWidget (class in mesmerize.plotting.widgets.base)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI">BaseROI (class in mesmerize.viewer.modules.roi_manager_modules.roi_types)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission">BaseTransmission (class in mesmerize.analysis.data_types)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.block_signals_list">block_signals_list (mesmerize.plotting.widgets.base.BasePlotWidget attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -235,11 +432,55 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.check_operation_exists">check_operation_exists() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data">CC_Data (class in mesmerize.analysis.math.cross_correlation)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.ccs">ccs (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.check_operation_exists">check_operation_exists() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.clear">clear() (mesmerize.viewer.core.ViewerWorkEnv method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.clear">(mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.clear">(mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.clear_">clear_() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.cluster_centers">cluster_centers (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.cluster_means">cluster_means (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI">CNMFROI (class in mesmerize.viewer.modules.roi_manager_modules.roi_types)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.create_data_block">create_data_block() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.compute_cc_data">compute_cc_data() (in module mesmerize.analysis.math.cross_correlation)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.compute_ccs">compute_ccs() (in module mesmerize.analysis.math.cross_correlation)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.create_data_block">create_data_block() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.create_roi_list">create_roi_list() (mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.create_roi_list">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.current_index">current_index (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.curve_data">curve_data (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI attribute)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.curve_data">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI attribute)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.curve_data">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI attribute)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.curve_data">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.curve_uuids">curve_uuids (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -247,15 +488,49 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.data_blocks">data_blocks (analyser.DataTypes.HistoryTrace attribute)</a>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.data">data (mesmerize.plotting.variants.Heatmap attribute)</a>
 </li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.data_blocks">data_blocks (mesmerize.analysis.data_types.HistoryTrace attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget">DatapointTracerWidget (class in mesmerize.plotting)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.clustering_metrics.davies_bouldin_score">davies_bouldin_score() (in module mesmerize.analysis.clustering_metrics)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.delete_row">delete_row() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df">df (mesmerize.viewer.modules.batch_manager.ModuleGUI attribute)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df">[1]</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.discard_workEnv">discard_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.disconnect_all">disconnect_all() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.drop_opts">drop_opts (mesmerize.plotting.HeatmapTracerWidget attribute)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.drop_opts">(mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.drop_opts">(mesmerize.plotting.ProportionsWidget attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.empty_df">empty_df() (analyser.DataTypes.BaseTransmission static method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.empty_df">empty_df() (mesmerize.analysis.data_types.BaseTransmission static method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.empty_df">(mesmerize.Transmission static method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.eventFilter">eventFilter() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.export">export() (mesmerize.plotting.ProportionsWidget method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -263,23 +538,51 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.from_json">from_json() (analyser.DataTypes.HistoryTrace class method)</a>
-</li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_mesfile">from_mesfile() (viewer.core.viewer_work_environment.ViewerWorkEnv class method)</a>
-</li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.from_pickle">from_pickle() (analyser.DataTypes.BaseTransmission class method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_dict">from_dict() (mesmerize.analysis.data_types.HistoryTrace static method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.from_pickle">(analyser.DataTypes.HistoryTrace class method)</a>
+        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.from_dict">(mesmerize.analysis.math.cross_correlation.CC_Data class method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_pickle">(viewer.core.viewer_work_environment.ViewerWorkEnv class method)</a>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_hdf5">from_hdf5() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_hdf5">(mesmerize.Transmission class method)</a>
+</li>
+        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.from_hdf5">(mesmerize.analysis.math.cross_correlation.CC_Data class method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_hickle">from_hickle() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_json">from_json() (mesmerize.analysis.data_types.HistoryTrace class method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_mesfile">from_mesfile() (mesmerize.viewer.core.ViewerWorkEnv class method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_pickle">from_pickle() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_pickle">(mesmerize.Transmission class method)</a>
+</li>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_pickle">(mesmerize.analysis.data_types.HistoryTrace class method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_pickle">(mesmerize.viewer.core.ViewerWorkEnv class method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission.from_proj">from_proj() (analyser.DataTypes.Transmission class method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_proj">from_proj() (mesmerize.Transmission class method)</a>
 </li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.from_tiff">from_tiff() (viewer.core.viewer_work_environment.ViewerWorkEnv class method)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.from_state">from_state() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI class method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.from_state">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI class method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.from_state">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI class method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.from_state">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI class method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_tiff">from_tiff() (mesmerize.viewer.core.ViewerWorkEnv class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -287,23 +590,113 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_all_data_blocks_history">get_all_data_blocks_history() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_all_data_blocks_history">get_all_data_blocks_history() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.get_array_size">get_array_size() (in module analyser.DataTypes)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_all_states">get_all_states() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.get_all_states">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_data_block_history">get_data_block_history() (analyser.DataTypes.HistoryTrace method)</a>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.get_all_states">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
 </li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.get_image_references">get_image_references() (viewer.core.mesfile.MES method)</a>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_all_tags">get_all_tags() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_all_tags">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_all_tags">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_all_tags">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.get_array_size">get_array_size() (in module mesmerize.analysis)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.clustering_metrics.get_centerlike">get_centerlike() (in module mesmerize.analysis.clustering_metrics)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.clustering_metrics.get_cluster_radius">get_cluster_radius() (in module mesmerize.analysis.clustering_metrics)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_color">get_color() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/utils.html#mesmerize.plotting.utils.get_colormap">get_colormap() (in module mesmerize.plotting.utils)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_data_block_history">get_data_block_history() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.get_dataframe">get_dataframe() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_epsilon">get_epsilon() (in module mesmerize.analysis.math.cross_correlation)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_epsilon_matrix">get_epsilon_matrix() (in module mesmerize.analysis.math.cross_correlation)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.get_image_references">get_image_references() (mesmerize.viewer.core.mesfile.MES method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index">get_item_index() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index">[1]</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_lag">get_lag() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_operation_params">get_operation_params() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_lag_matrix">get_lag_matrix() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.get_operations_list">get_operations_list() (analyser.DataTypes.HistoryTrace method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_omega">get_omega() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.get_proj_path">get_proj_path() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_operation_params">get_operation_params() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.get_sampling_rate">get_sampling_rate() (in module analyser.DataTypes)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_operations_list">get_operations_list() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_plot_item">get_plot_item() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.get_plot_opts">get_plot_opts() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.get_plot_opts">(mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.get_plot_opts">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.get_plot_opts">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.get_proj_path">get_proj_path() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.get_proj_path">(mesmerize.Transmission method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_roi_graphics_object">get_roi_graphics_object() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_roi_graphics_object">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_roi_graphics_object">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_roi_graphics_object">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.get_sampling_rate">get_sampling_rate() (in module mesmerize.analysis)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_tag">get_tag() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_tag">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_tag">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_tag">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.get_threshold_matrix">get_threshold_matrix() (mesmerize.analysis.math.cross_correlation.CC_Data method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.get_transmission">get_transmission() (mesmerize.plotting.HeatmapSplitterWidget method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.get_units">get_units() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -311,11 +704,65 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.history">history (analyser.DataTypes.HistoryTrace attribute)</a>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap">Heatmap (class in mesmerize.plotting.variants)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget">HeatmapSplitterWidget (class in mesmerize.plotting)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget">HeatmapTracerWidget (class in mesmerize.plotting)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_curve">highlight_curve() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace">HistoryTrace (class in analyser.DataTypes)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_roi">highlight_roi() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.highlight_row">highlight_row() (mesmerize.plotting.HeatmapSplitterWidget method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.history">history (mesmerize.analysis.data_types.HistoryTrace attribute)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.history_trace">history_trace (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace">HistoryTrace (class in mesmerize.analysis.data_types)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.data_types.ImgData">ImgData (class in mesmerize.viewer.core.data_types)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.imgdata">imgdata (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.import_from_imagej">import_from_imagej() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.import_from_imagej">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.input_arrays">input_arrays (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.is_empty">is_empty() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.isEmpty">isEmpty (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.ks">ks (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot">KShapeMeansPlot (class in mesmerize.plotting.widgets.kshape.widget)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapePlot">KShapePlot (class in mesmerize.plotting.widgets.kshape.widget)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget">KShapeWidget (class in mesmerize.plotting)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -323,11 +770,27 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES.load_img">load_img() (viewer.core.mesfile.MES method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.labels">labels (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.lag_matrix">lag_matrix (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget">list_widget (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget_tags">list_widget_tags (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.live_datapoint_tracer">live_datapoint_tracer (mesmerize.plotting.HeatmapTracerWidget attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.load_mesfile">load_mesfile() (viewer.core.viewer_work_environment.ViewerWorkEnv static method)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.load_img">load_img() (mesmerize.viewer.core.mesfile.MES method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input">load_item_input() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input">[1]</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_output">load_item_output() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_output">[1]</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.load_mesfile">load_mesfile() (mesmerize.viewer.core.ViewerWorkEnv static method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.tiff_io.ModuleGUI.load_tiff_file">load_tiff_file() (mesmerize.viewer.modules.tiff_io.ModuleGUI method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -335,15 +798,155 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.merge">merge() (analyser.DataTypes.HistoryTrace class method)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.manager">manager (mesmerize.viewer.modules.roi_manager.ModuleGUI attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE">ManagerCNMFE (class in mesmerize.viewer.modules.roi_manager_modules.managers)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual">ManagerManual (class in mesmerize.viewer.modules.roi_manager_modules.managers)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI">ManualROI (class in mesmerize.viewer.modules.roi_manager_modules.roi_types)</a>
+</li>
+      <li><a href="api_reference/plotting/utils.html#mesmerize.plotting.utils.map_labels_to_colors">map_labels_to_colors() (in module mesmerize.plotting.utils)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimulus_mapping.ModuleGUI.maps">maps (mesmerize.viewer.modules.stimulus_mapping.ModuleGUI attribute)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.merge">merge() (mesmerize.analysis.data_types.HistoryTrace class method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission.merge">(analyser.DataTypes.Transmission class method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.merge">(mesmerize.Transmission class method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.mesfile.MES">MES (class in viewer.core.mesfile)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES">MES (class in mesmerize.viewer.core.mesfile)</a>
+</li>
+      <li><a href="api_reference/analysis.html#module-mesmerize.analysis.clustering_metrics">mesmerize.analysis.clustering_metrics (module)</a>
+</li>
+      <li><a href="api_reference/analysis.html#module-mesmerize.analysis.math.cross_correlation">mesmerize.analysis.math.cross_correlation (module)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI">ModuleGUI (class in mesmerize.viewer.modules.batch_manager)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI">[1]</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI">(class in mesmerize.viewer.modules.roi_manager)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimulus_mapping.ModuleGUI">(class in mesmerize.viewer.modules.stimulus_mapping)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.tiff_io.ModuleGUI">(class in mesmerize.viewer.modules.tiff_io)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.n_clusters">n_clusters (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.ncc_c">ncc_c() (in module mesmerize.analysis.math.cross_correlation)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget.open_in_viewer">open_in_viewer() (mesmerize.plotting.DatapointTracerWidget method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.open_plot">open_plot() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.open_plot">(mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.open_plot">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.open_plot">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.open_plot_dialog">open_plot_dialog() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.open_plot_dialog">(mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.open_plot_dialog">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.package_for_project">package_for_project() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.pad_input_data">pad_input_data() (mesmerize.plotting.KShapeWidget method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page">Page (class in mesmerize.viewer.modules.stimmap_modules.page)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.params">params (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.plot">plot (mesmerize.plotting.variants.Heatmap attribute)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapePlot.plot">(mesmerize.plotting.widgets.kshape.widget.KShapePlot attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.plot_manual_roi_regions">plot_manual_roi_regions() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.previous_index">previous_index (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch">process_batch() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch">[1]</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget">ProportionsWidget (class in mesmerize.plotting)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.reindex_colormap">reindex_colormap() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.remove_from_viewer">remove_from_viewer() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.remove_from_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.remove_from_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.remove_from_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.reset_color">reset_color() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.reset_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.reset_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.reset_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.restore_from_states">restore_from_states() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.restore_from_states">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.restore_from_states">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.roi_list">roi_list (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager attribute)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.roi_manager">roi_manager (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList">ROIList (class in mesmerize.viewer.modules.roi_manager_modules.roi_list)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -351,7 +954,157 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.set_proj_path">set_proj_path() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.sample_id">sample_id (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.save_plot">save_plot() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.save_plot">(mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.save_plot">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.save_plot">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.save_plot_dialog">save_plot_dialog() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.save_plot_dialog">(mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.save_plot_dialog">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.selector">selector (mesmerize.plotting.variants.Heatmap attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.set">set() (mesmerize.plotting.variants.Heatmap method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.set_all_from_states">set_all_from_states() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_color">set_color() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_current_datapoint">set_current_datapoint() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_current_index">set_current_index() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_curve_data">set_curve_data() (mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.set_data">set_data() (mesmerize.plotting.HeatmapSplitterWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_data">(mesmerize.plotting.HeatmapTracerWidget method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.set_data">(mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget.set_image">set_image() (mesmerize.plotting.DatapointTracerWidget method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.set_input">set_input() (mesmerize.plotting.KShapeWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.set_input">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.set_input">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_list_widget_tags">set_list_widget_tags() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_original_color">set_original_color() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_original_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_original_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_original_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_pg_roi_plot">set_pg_roi_plot() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.set_plot_opts">set_plot_opts() (mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.set_plot_opts">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.set_plots">set_plots() (mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_previous_index">set_previous_index() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.set_proj_config">set_proj_config() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.set_proj_path">set_proj_path() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.set_proj_path">(mesmerize.Transmission method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_roi_graphics_object">set_roi_graphics_object() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_roi_graphics_object">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_roi_graphics_object">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_roi_graphics_object">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_tag">set_tag() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_tag">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_tag">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_tag">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_text">set_text() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_text">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_text">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_text">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.set_transmission">set_transmission() (mesmerize.plotting.HeatmapSplitterWidget method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.set_units">set_units() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_update_live">set_update_live() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget.set_widget">set_widget() (mesmerize.plotting.DatapointTracerWidget method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.show_item_info">show_item_info() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.show_item_info">[1]</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.sig_output_changed">sig_output_changed (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.sig_selection_changed">sig_selection_changed (mesmerize.plotting.variants.Heatmap attribute)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.signal_blocker">signal_blocker() (mesmerize.plotting.widgets.base.BasePlotWidget class method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.slot_delete_roi_menu">slot_delete_roi_menu() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.slot_show_all_checkbox_clicked">slot_show_all_checkbox_clicked() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.start_cnmfe_mode">start_cnmfe_mode() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.start_manual_mode">start_manual_mode() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.start_process">start_process() (mesmerize.plotting.KShapeWidget method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.stim_maps">stim_maps (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -359,21 +1112,91 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.to_json">to_json() (analyser.DataTypes.HistoryTrace method)</a>
-</li>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pandas">to_pandas() (viewer.core.viewer_work_environment.ViewerWorkEnv method)</a>
-</li>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.BaseTransmission.to_pickle">to_pickle() (analyser.DataTypes.BaseTransmission method)</a>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_dict">to_dict() (mesmerize.analysis.data_types.BaseTransmission method)</a>
 
       <ul>
-        <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.HistoryTrace.to_pickle">(analyser.DataTypes.HistoryTrace method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_dict">(mesmerize.Transmission method)</a>
 </li>
-        <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pickle">(viewer.core.viewer_work_environment.ViewerWorkEnv method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.to_dict">(mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_hdf5">to_hdf5() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_hdf5">(mesmerize.Transmission method)</a>
+</li>
+        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.to_hdf5">(mesmerize.analysis.math.cross_correlation.CC_Data method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_hickle">to_hickle() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_hickle">(mesmerize.Transmission method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.to_json">to_json() (mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.to_pandas">to_pandas() (mesmerize.viewer.core.ViewerWorkEnv method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_pickle">to_pickle() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+
+      <ul>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_pickle">(mesmerize.Transmission method)</a>
+</li>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.to_pickle">(mesmerize.analysis.data_types.HistoryTrace method)</a>
+</li>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.to_pickle">(mesmerize.viewer.core.ViewerWorkEnv method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#analyser.DataTypes.Transmission">Transmission (class in analyser.DataTypes)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.to_state">to_state() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.to_state">(mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.to_state">(mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.to_state">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.train_data">train_data (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission">Transmission (class in mesmerize)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.transmission">transmission (mesmerize.plotting.HeatmapTracerWidget attribute)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.transmission">(mesmerize.plotting.ProportionsWidget attribute)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.transmission">(mesmerize.plotting.widgets.base.BasePlotWidget attribute)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.transmission">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.update_idx_components">update_idx_components() (mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.update_plot">update_plot() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.update_plot">(mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.update_plot">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.update_plot">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.update_roi_defs_from_configuration">update_roi_defs_from_configuration() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.update_workEnv">update_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -381,7 +1204,31 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Viewer_data_types.html#viewer.core.viewer_work_environment.ViewerWorkEnv">ViewerWorkEnv (class in viewer.core.viewer_work_environment)</a>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.vi">vi (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.viewer">viewer (mesmerize.viewer.core.ViewerUtils attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils">ViewerUtils (class in mesmerize.viewer.core)</a>
+</li>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv">ViewerWorkEnv (class in mesmerize.viewer.core)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.work_env">work_env (mesmerize.viewer.core.ViewerUtils attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.y_pred">y_pred (mesmerize.plotting.KShapeWidget attribute)</a>
 </li>
   </ul></td>
 </tr></table>

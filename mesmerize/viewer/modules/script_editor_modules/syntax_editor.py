@@ -16,7 +16,7 @@ def hex2QColor(c):
 class ViewerLexer(Python3Lexer):
     extra_vars = {'vi', 'all_modules', 'image_utils', 'viewer'}
     extra_callables = {'update_workEnv', 'clear_workEnv', 'get_module', 'get_batch_manager', 'get_workEnv', 'get_image, get_meta'}
-    extra_classes = {'ViewerWorkEnv'}
+    extra_classes = {'ViewerWorkEnv', 'ImgData'}
 
     def get_tokens_unprocessed(self, text):
         for index, token, value in Python3Lexer.get_tokens_unprocessed(self, text):

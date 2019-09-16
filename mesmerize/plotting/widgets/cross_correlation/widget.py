@@ -10,7 +10,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtCore, QtWidgets
-from .compute_cc import compute_cc_data, CC_Data
+from ....analysis.math.cross_correlation import compute_cc_data, CC_Data
 from .control_widget_pytemplate import Ui_CrossCorrelationControls
 from .. import HeatmapSplitterWidget
 from ...variants import TimeseriesPlot
@@ -19,6 +19,8 @@ import numpy as np
 from ....pyqtgraphCore import PlotDataItem, mkPen
 from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColor
 import pandas as pd
+from ....common.qdialogs import *
+from ....common.utils import HdfTools
 
 
 class ControlWidget(QtWidgets.QWidget):
@@ -46,7 +48,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.sample_list = None
         self.cc_data = None
 
-        self.plot_widget.sig_selection_changed.connect(self.set_lineplots)
+        self.plot_variant.sig_selection_changed.connect(self.set_lineplots)
 
         # self.plot_widget.ax_ylabel_bar.set_axis_on()
         # self.plot_widget.ax_heatmap.get_yaxis().set_visible(True)
@@ -58,6 +60,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.graphicsViewCurve2.addItem(self.curve_plot_2)
 
         self.control_widget.ui.pushButtonComputeAllData.clicked.connect(self.compute_dataframe)
+        self.control_widget.ui.pushButtonExportAllData.clicked.connect(self.export_data)
 
         self.control_widget.ui.radioButtonMaxima.clicked.connect(self.set_heatmap)
         self.control_widget.ui.radioButtonLag.clicked.connect(self.set_heatmap)
@@ -90,21 +93,26 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         plot_data = self.cc_data[sample_id].get_threshold_matrix(matrix_type=opt, lag_thr=lt, max_thr=mt, lag_thr_abs=abs_val)
 
-        labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
-        ylabels = self.transmission.df[labels_col]
+        sub_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
 
-        self.plot_widget.set(plot_data, cmap=cmap, ylabels=ylabels)
+        labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
+        ylabels = sub_df[labels_col]
+
+        # Since it's just same curve vs. same curves in the cc_matrix
+        xlabels = ylabels
+
+        self.plot_variant.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels, linewidths=.5, linecolor='k')
         # self.plot_widget.ax_ylabel_bar.set_axis_off()
 
-        self.plot_widget.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
-        self.plot_widget.plot.ax_heatmap.set_ylabel('Curve 2, cyan')
+        self.plot_variant.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
+        self.plot_variant.plot.ax_heatmap.set_ylabel('Curve 2, cyan')
 
-        self.plot_widget.draw()
+        self.plot_variant.draw()
 
     def set_lineplots(self, indices):
-        if self.plot_widget.selector.multi_select_mode:
+        if self.plot_variant.selector.multi_select_mode:
             nccs = []
-            for ix in self.plot_widget.selector.multi_selection_list:
+            for ix in self.plot_variant.selector.multi_selection_list:
                 # x = self.data[ix[0]]
                 # y = self.data[ix[1]]
                 i = ix[0]
@@ -150,8 +158,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
             self.control_widget.ui.lineEditCurve1UUID.setText(ux)
             self.control_widget.ui.lineEditCurve2UUID.setText(uy)
 
-            self.curve_plot_1.setData(x, pen=mkPen(color='m', width=2))
-            self.curve_plot_2.setData(y, pen=mkPen(color='c', width=2))
+            self.curve_plot_1.setData(x=np.linspace(0, (len(x) / self.sampling_rate), len(x)), y=x, pen=mkPen(color='m', width=2))
+            self.curve_plot_2.setData(x=np.linspace(0, (len(y) / self.sampling_rate), len(y)), y=y, pen=mkPen(color='c', width=2))
 
             ncc = self.cc_data[self.current_sample_id].ccs[i, j, :]
 
@@ -215,6 +223,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
     def compute_dataframe(self):
         self.data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
+        labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
 
         self.cc_data = dict.fromkeys(self.sample_list)
 
@@ -227,5 +236,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
             self.cc_data[sample_id] = compute_cc_data(data)
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
+            self.cc_data[sample_id].curve_uuids = np.array(list(map(str, sub_df['uuid_curve'].values))) # convert all UUIDs to str representation
+            self.cc_data[sample_id].labels = sub_df[labels_col].values.astype(np.unicode)
 
         self.set_current_sample()
+
+    @use_save_file_dialog('Save file as', None, '.hdf5')
+    @present_exceptions()
+    def export_data(self, path, *args, **kwargs):
+        HdfTools.save_dict(self.cc_data, path, group='cross_corr_data')

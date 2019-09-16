@@ -17,6 +17,7 @@ except:
     HAVE_METAARRAY = False
 
 from ...widgets.ComboBox import ComboBox as QComboBox
+from ...widgets.ListWidget import ListWidget
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
 from ....analysis import organize_dataframe_columns
 
@@ -84,6 +85,13 @@ def generateUi(opts):
             if 'items' in o.keys():
                 w.setItems(o['items'])
 
+        elif t == 'list_widget':
+            w = ListWidget()
+            if 'items' in o.keys():
+                w.setItems(o['items'])
+            if 'selection_mode' in o.keys():
+                w.setSelectionMode(o['selection_mode'])
+
         elif t == 'lineEdit':
             w = QtGui.QLineEdit()
             if 'placeHolder' in o:
@@ -143,6 +151,8 @@ class CtrlNode(Node):
     sigStateChanged = QtCore.Signal(object)
     
     def __init__(self, name, ui=None, terminals=None, **kwargs):
+        """:param terminals: Dict containing terminal names and specifying whether they are input or output terminals"""
+
         if ui is None:
             if hasattr(self, 'uiTemplate'):
                 ui = self.uiTemplate
@@ -211,7 +221,7 @@ class CtrlNode(Node):
     def set_data_column_combo_box(self):
         try:
             columns = self.t.df.columns
-            self.ctrls['data_column'].setItems(columns.to_list())
+            self.ctrls['data_column'].setItems(organize_dataframe_columns(columns.to_list())[0])
             ix = self.ctrls['data_column'].findText(self.t.last_output)
             if ix > 0:
                 self.ctrls['data_column'].setCurrentIndex(ix)
@@ -229,6 +239,9 @@ class CtrlNode(Node):
     @data_column.setter
     def data_column(self, d):
         pass
+
+    def apply_checked(self) -> bool:
+        return self.ctrls['Apply'].isChecked()
 
 
 class PlottingCtrlNode(CtrlNode):

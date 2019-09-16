@@ -62,6 +62,14 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.listwBatch.itemDoubleClicked.connect(self.on_list_widget_batch_doubleclicked)
 
+        self.ui.listwBatch.currentRowChanged.connect(self.ui.listWidgetItemNumbers.setCurrentRow)
+        self.ui.listWidgetItemNumbers.currentRowChanged.connect(self.ui.listwBatch.setCurrentRow)
+
+        self.ui.listwBatch.verticalScrollBar().valueChanged.connect(self.ui.listWidgetItemNumbers.verticalScrollBar().setValue)
+        self.ui.listWidgetItemNumbers.verticalScrollBar().valueChanged.connect(self.ui.listwBatch.verticalScrollBar().setValue)
+
+        self.ui.listWidgetItemNumbers.verticalScrollBar().setVisible(False)
+
         self.ui.btnStart.clicked.connect(self.process_batch)
         self.ui.btnStart.setDisabled(True)
         self.ui.btnStartAtSelection.clicked.connect(lambda: self.process_batch(
@@ -189,7 +197,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.df.to_pickle(os.path.join(self.batch_path, 'dataframe.batch'))
 
         self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
-        self.ui.labelBatchPath.setText(os.path.dirname(self.batch_path))
+        self.ui.labelBatchPath.setText(self.batch_path)
         self.show()
 
     def btn_view_input_slot(self):
@@ -615,6 +623,7 @@ class ModuleGUI(QtWidgets.QWidget):
         item = self.ui.listwBatch.item(n - 1)
         assert isinstance(item, QtWidgets.QListWidgetItem)
         item.setData(3, UUID)
+        self.set_line_numbers()
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
         return UUID
@@ -654,11 +663,19 @@ class ModuleGUI(QtWidgets.QWidget):
 
         ix = self.ui.listwBatch.indexFromItem(s).row()
         self.ui.listwBatch.takeItem(ix)
+        self.set_line_numbers()
 
         for file in glob(self.batch_path + '/*' + str(UUID) + '*'):
             os.remove(file)
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
+
+    def set_line_numbers(self):
+        self.ui.listWidgetItemNumbers.clear()
+        items = list(map(str, range(self.df.index.size)))
+        self.ui.listWidgetItemNumbers.addItems(items)
+
+        self.ui.listWidgetItemNumbers.setCurrentRow(self.ui.listwBatch.currentRow())
 
     def save_batch(self):
         path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Batch as', '', '(*.batch)')
@@ -706,7 +723,7 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.df['compressed'] = False * self.df.index.size
             self.batch_path = path
             self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
-            self.ui.labelBatchPath.setText(os.path.dirname(self.batch_path))
+            self.ui.labelBatchPath.setText(self.batch_path)
 
             self.ui.listwBatch.clear()
 
@@ -726,6 +743,8 @@ class ModuleGUI(QtWidgets.QWidget):
                 else:
                     self.ui.listwBatch.item(n - 1).setBackground(
                         QtGui.QBrush(QtGui.QColor('#fe0d00'))) # red
+
+            self.set_line_numbers()
 
         except Exception as e:
             QtWidgets.QMessageBox.warning(self, 'File open Error!',

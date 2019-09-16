@@ -3,13 +3,8 @@
 from .common import *
 from ....analysis.data_types import *
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
-
-
-def _static_dfof(F: np.ndarray) -> np.ndarray:
-    Fo = np.min(F)
-    d = ((F - Fo) / Fo) * np.sign(Fo)
-    return d
-
+from tslearn.preprocessing import TimeSeriesScalerMinMax
+from PyQt5 import QtWidgets
 
 class ExtractStim(CtrlNode):
     """Extract portions of curves according to stimulus maps"""
@@ -18,8 +13,8 @@ class ExtractStim(CtrlNode):
     uiTemplate = [('data_column', 'combo', {}),
                   ('Stim_Type', 'combo', {}),
                   ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus', 'text': ''}),
-                  ('start_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
-                  ('end_offset', 'doubleSpin', {'min': 0, 'max': 999999.99, 'value': 0, 'step': 1}),
+                  ('start_offset', 'doubleSpin', {'min': -999999.0, 'max': 999999.99, 'value': 0, 'step': 1}),
+                  ('end_offset', 'doubleSpin', {'min': -999999.0, 'max': 999999.99, 'value': 0, 'step': 1}),
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
@@ -91,7 +86,7 @@ class ExtractStim(CtrlNode):
 
                 elif zero_pos == 'stim_end':
                     tstart = stim_end
-                    tend = min(tstart + end_offset, len(curve) - 1)
+                    tend = min(stim_end + end_offset, len(curve) - 1)
 
                 elif zero_pos == 'stim_center':
                     tstart = int(((stim_start + stim_end) / 2)) + start_offset
@@ -102,8 +97,8 @@ class ExtractStim(CtrlNode):
                 stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
 
                 rn['_EXTRACT_STIM'] = stim_extract
-                rn['_STIM_TYPE'] = stim_def
-                rn['_STIMULUS'] = stim_tag
+                rn['STIM_TYPE'] = stim_def
+                rn['STIMULUS'] = stim_tag
 
                 df.loc[df.index.size] = rn
 
@@ -344,12 +339,17 @@ class StaticDFoFo(CtrlNode):
         output_column = '_STATIC_DF_O_F'
         params = {'data_column': data_column}
 
-        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: _static_dfof(a))
+        self.t.df[output_column] = self.t.df[data_column].apply(lambda a: self._static_dfof(a))
 
         self.t.history_trace.add_operation(data_block_id='all', operation='static_df_o_f', parameters=params)
         self.t.last_output = output_column
 
         return self.t
+
+    def _static_dfof(self, F: np.ndarray) -> np.ndarray:
+        Fo = np.min(F)
+        d = ((F - Fo) / Fo)
+        return d
 
 
 class ManualDFoF(CtrlNode):

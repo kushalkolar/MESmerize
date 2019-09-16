@@ -146,7 +146,9 @@ def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[
     :return:        (data_columns, categorical_columns, uuid_columns)
     """
     columns = list(columns)
-    columns.remove('_BLOCK_')
+    if '_BLOCK_' in columns:
+        columns.remove('_BLOCK_')
+
     dcols = [c for c in columns if c.startswith('_')]
 
     ucols = [c for c in columns if ('uuid' in c) or ('UUID' in c)]
@@ -158,3 +160,56 @@ def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[
     dcols.sort();ccols.sort();ucols.sort()
 
     return dcols, ccols, ucols
+
+
+def pad_arrays(self, a: np.ndarray, method: str = 'random', output_size: int = None, mode: str = 'minimum',
+               constant: Any = None) -> np.ndarray:
+    """
+    Pad all the input arrays so that are of the same length. The length is determined by the largest input array.
+    The padding value for each input array is the minimum value in that array.
+
+    Padding for each input array is either done after the array's last index to fill up to the length of the
+    largest input array (method 'fill-size') or the padding is randomly flanked to the input array (method 'random')
+    for easier visualization.
+
+    :param a: 1D array of input arrays where each element is a sample array
+    :param method: one of 'fill-size' or 'random', see docstring for details
+    :return: Arrays padded according to the method.
+    """
+    l = 0  # size of largest time series
+
+    # Get size of largest time series
+    for c in a:
+        s = c.size
+        if s > l:
+            l = s
+
+    if (output_size is not None) and (output_size < l):
+        raise ValueError('Output size must be equal to larger than the size of the largest input array')
+    else:
+        l = output_size
+
+    # pre-allocate output array
+    p = np.zeros(shape=(a.size, l), dtype=a[0].dtype)
+
+    # pad each 1D time series
+    for i in range(p.shape[0]):
+        s = a[i].size
+
+        if s == l:
+            p[i, :] = a[i]
+            continue
+
+        max_pad_en_ix = l - s
+
+        if method == 'random':
+            pre = np.random.randint(0, max_pad_en_ix)
+        elif method == 'fill-size':
+            pre = 0
+        else:
+            raise ValueError('Must specific method as either "random" or "fill-size"')
+
+        post = l - (pre + s)
+        p[i, :] = np.pad(a[i], (pre, post), 'minimum')
+
+    return p

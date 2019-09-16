@@ -57,6 +57,7 @@ class Ui_column_template(object):
     def retranslateUi(self, column_template):
         _translate = QtCore.QCoreApplication.translate
         column_template.setWindowTitle(_translate("column_template", "Form"))
+        self.lineEdit.setPlaceholderText(_translate("column_template", "Filter"))
         self.btnReset.setText(_translate("column_template", "Reset"))
         self.btnApply.setText(_translate("column_template", "Apply"))
 

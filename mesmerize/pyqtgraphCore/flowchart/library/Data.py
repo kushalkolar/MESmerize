@@ -3,11 +3,12 @@ from ...Qt import QtGui, QtCore, QtWidgets
 from spyder.widgets.variableexplorer.objecteditor import oedit
 from .common import *
 import traceback
-from functools import partial
 from ....analysis import Transmission
 from ....analysis.history_widget import HistoryTreeWidget
 from ....common import get_project_manager
 import os
+from tslearn.preprocessing import TimeSeriesScalerMinMax
+import pickle
 
 
 class LoadProjDF(CtrlNode):
@@ -84,16 +85,19 @@ class LoadFile(CtrlNode):
         self._loadNode = True
 
     def file_dialog_trn_file(self):
-        path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn)')
+        path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
         if path == '':
             return
+        self.load_file(path[0])
+
+    def load_file(self, path: str):
         try:
-            self.t = Transmission.from_hdf5(path[0])
+            self.t = Transmission.from_hdf5(path)
         except:
             QtWidgets.QMessageBox.warning(None, 'File open Error!', 'Could not open the chosen file.\n' + traceback.format_exc())
             return
 
-        self.ctrls['fname'].setText(os.path.basename(path[0]))
+        self.ctrls['fname'].setText(os.path.basename(path))
 
         proj_path = get_project_manager().root_dir
         if proj_path is not None:
@@ -200,7 +204,7 @@ class ViewTransmission(CtrlNode):
 
     def processData(self, transmission: Transmission):
         self.t = transmission.copy()
-        oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace})
+        oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace.history})
         # if self.edited is not None:
         #     self.edited.add_operation('all', 'object_editor', {})
         #     return self.edited
@@ -234,7 +238,7 @@ class DropNa(CtrlNode):
         if self.ctrls['axis'].currentIndex() < 2:
             if axis == 'row':
                 axis = 0
-            elif axis == 'columsn':
+            elif axis == 'columns':
                 axis = 1
 
             how = self.ctrls['how'].currentText()
@@ -265,20 +269,21 @@ class ViewHistory(CtrlNode):
 class iloc(CtrlNode):
     """Pass only one or multiple DataFrame Indices"""
     nodeName = 'iloc'
-    uiTemplate = [('Index', 'intSpin', {'min': 0, 'step': 1, 'value': 0}),
-                  ('Indices', 'lineEdit', {'text': '0', 'toolTip': 'Index numbers separated by commas'})
+    uiTemplate = [('Index', 'intSpin', {'min': 0, 'step': 1, 'value': 0})
+                  # ('Indices', 'lineEdit', {'text': '0', 'toolTip': 'Index numbers separated by commas'})
                   ]
 
     def processData(self, transmission):
-        self.ctrls['Index'].setMaximum(len(transmission.df.index) - 1)
-        self.ctrls['Index'].valueChanged.connect(
-            partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
+        self.ctrls['Index'].setMaximum(transmission.df.index.size - 1)
+        # self.ctrls['Index'].valueChanged.connect(
+        #     partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
 
-        indices = [int(ix.strip()) for ix in self.ctrls['Indices'].text().split(',')]
-        t = transmission.copy()
-        t.df = t.df.iloc[indices, :]
-        t.src.append({'DF_IDX': {'indices': indices}})
-        return t
+        # indices = [int(ix.strip()) for ix in self.ctrls['Indices'].text().split(',')]
+        i = self.ctrls['Index'].value()
+        self.t = transmission.copy()
+        self.t.df = self.t.df.iloc[i]
+        # self.t.src.append({'iloc': {'index': i}})
+        return self.t
 
 
 class SpliceArrays(CtrlNode):
@@ -326,6 +331,32 @@ class SpliceArrays(CtrlNode):
         return self.t
 
 
+class PadArrays(CtrlNode):
+    """Pad 1-D numpy arrays in a particular column"""
+    nodeName = 'PadArrays'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('output_size', 'intSpin', {'min': -1, 'max': 9999999, 'step': 100, 'value': -1}),
+                  ('method', 'combo', {'items': ['fill-size', 'random']}),
+                  ('mode', 'combo', {'items': ['minimum', 'constant', 'edge', 'maximum',
+                                               'mean', 'median', 'reflect', 'symmetric', 'wrap'], 'toolTip': 'Passed to numpy.pad "mode" parameter'}),
+                  ('constant', 'doubleSpin', {'min': -9999999.9, 'max': 9999999.9, 'value': 1.0, 'step': 10.0,
+                                              'tooltip': 'Value to use if "mode" is set to "constant"'}),
+                  ('Apply', 'check', {'checked': False, 'applyBox': True})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+    def _pad(self):
+        pass
+
+
 class SelectRows(CtrlNode):
     pass
 
@@ -335,6 +366,7 @@ class SelectColumns(CtrlNode):
 
 
 class TextFilter(CtrlNode):
+    """Simple string filtering in a specified column"""
     nodeName = 'TextFilter'
     uiTemplate = [('Column', 'combo', {'toolTip': 'Filter according to this column'}),
                   ('filter', 'lineEdit', {'toolTip': 'Filter to apply in selected column'}),
@@ -346,7 +378,7 @@ class TextFilter(CtrlNode):
     #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
     #     self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
-    def processData(self, transmission):
+    def processData(self, transmission: Transmission):
         ccols = organize_dataframe_columns(transmission.df.columns.to_list())[1]
         self.ctrls['Column'].setItems(ccols)
         col = self.ctrls['Column'].currentText()
@@ -379,3 +411,76 @@ class TextFilter(CtrlNode):
         self.t.history_trace.add_operation('all', operation='text_filter', parameters=params)
 
         return self.t
+
+
+class NormRaw(CtrlNode):
+    """Normalize between raw min and max values."""
+    nodeName = 'NormRaw'
+    uiTemplate = [('option', 'combo', {'items': ['top_5', 'top_10', 'top_5p', 'top_10p', 'top_25p', 'full_mean']}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        t = transmission
+        dcols = organize_dataframe_columns(t.df.columns)[0]
+        if not self.ctrls['Apply'].isChecked():
+            return
+
+        self.t = transmission.copy()
+
+        output_column = '_NORMRAW'
+
+        self.option = self.ctrls['option'].currentText()
+
+        params = {'data_column': '_RAW_CURVE',
+                  'option': self.option,
+                  'output_column': output_column}
+
+        self.proj_path = self.t.get_proj_path()
+
+        tqdm().pandas()
+
+        self.excluded = 0
+
+        self.t.df[output_column] = self.t.df.progress_apply(lambda r: self._func(r['_RAW_CURVE'], r['ImgInfoPath'], r['ROI_State']), axis=1)
+
+        self.t.history_trace.add_operation('all', 'normrawminmax', params)
+        self.t.last_output = output_column
+
+        if self.excluded > 0:
+            QtWidgets.QMessageBox.warning(None, 'Curves excluded',
+                                          f'The following number of curves were excluded because '
+                                          f'the raw min value was larger than the max\n{self.excluded}')
+
+            self.t.df = self.t.df[~self.t.df[output_column].isna()]
+
+        return self.t
+
+    def _func(self, data: np.ndarray, img_info_path: str, roi_state: dict) -> np.ndarray:
+        if 'raw_min_max' in roi_state.keys():
+            raw_min_max = roi_state['raw_min_max']
+
+        else:
+            cnmf_idx = roi_state['cnmf_idx']
+            img_info_path = os.path.join(self.proj_path, img_info_path)
+            roi_states = pickle.load(open(img_info_path, 'rb'))['roi_states']
+
+            idx_components = roi_states['cnmf_output']['idx_components']
+
+            list_ix = np.argwhere(idx_components == cnmf_idx).ravel().item()
+
+            state = roi_states['states'][list_ix]
+
+            if not state['cnmf_idx'] == cnmf_idx:
+                raise ValueError('cnmf_idx from ImgInfoPath dict and DataFrame ROI_State dict do not match.')
+
+            raw_min_max = state['raw_min_max']
+
+        raw_min = raw_min_max['raw_min'][self.option]
+        raw_max = raw_min_max['raw_max'][self.option]
+
+        if raw_min >= raw_max:
+            self.excluded += 1
+            return np.NaN
+
+        return TimeSeriesScalerMinMax(value_range=(raw_min, raw_max)).fit_transform(data).ravel()

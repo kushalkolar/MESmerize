@@ -25,6 +25,7 @@ from uuid import UUID as UUID_type
 import json
 from typing import Optional, Tuple
 
+
 class ViewerWorkEnv:
     def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
                  roi_manager=None, roi_states=None, comments='', origin_file='',
@@ -54,31 +55,30 @@ class ViewerWorkEnv:
         """
 
         if imgdata is not None:
-            self.isEmpty = False
+            self.isEmpty = False  #: Return True if the work environment is empty
             self.imgdata = imgdata
             if isinstance(self.imgdata, ImgData):
                 if meta is not None:
                     self.imgdata.meta = meta
         else:
-            self.imgdata = ImgData()
+            self.imgdata = ImgData()  #: ImgData instance
             self.isEmpty = True
         self.meta = meta
 
         if history_trace is None:
-            self.history_trace = []
+            self.history_trace = []  #: history log
         else:
             self.history_trace = history_trace
 
-        self.stim_maps = stim_maps
+        self.stim_maps = stim_maps  #: Stimulus maps
 
         if 'stimMaps' in kwargs.keys():
             self.stim_maps = kwargs['stimMaps']
 
-        self.sample_id = sample_id
+        self.sample_id = sample_id  #: SampleID, if opened from a project Sample
 
-        self.roi_manager = roi_manager
+        self.roi_manager = roi_manager  #: reference to the back-end ROI Manager that is currently in use
 
-        self._saved = True
         self.changed_items = []
         self.roi_states = roi_states
         self.comments = comments
@@ -99,7 +99,9 @@ class ViewerWorkEnv:
         else:
             self.misc = {}
 
-        self._UUID = UUID
+        self._UUID = UUID  #: UUID, if opened from a project Sample refers to the ImgUUID
+
+        self._saved = True
 
     # def get_imgdata(self):
     #     return self.imgdata
@@ -122,6 +124,7 @@ class ViewerWorkEnv:
         return self._UUID
 
     def clear(self):
+        """Cleanup of the work environment"""
         self.isEmpty = True
         del self.imgdata.seq
         self.imgdata = None
@@ -368,7 +371,7 @@ class ViewerWorkEnv:
         image is saved in a pickle.
         """
         filename, data = self._prepare_export(dir_path, filename, save_img_seq, UUID)
-        
+
         pickle.dump(data, open(f'{filename}.pik', 'wb'), protocol=4)
 
         self.saved = True
@@ -377,6 +380,8 @@ class ViewerWorkEnv:
 
     def to_pandas(self, proj_path: str, modify_options: Optional[dict] = None) -> list:
         """
+        Used for saving the work environment as a project Sample.
+
         :param      proj_path:      Root path of the current project
         :param      modify_options:
         :return:    list of dicts that each correspond to a single curve that can be appended

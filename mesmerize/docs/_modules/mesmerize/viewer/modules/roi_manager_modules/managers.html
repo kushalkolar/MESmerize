@@ -1,0 +1,580 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mesmerize.viewer.modules.roi_manager_modules.managers &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mesmerize.viewer.modules.roi_manager_modules.managers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mesmerize.viewer.modules.roi_manager_modules.managers</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on May 13 2018</span>
+
+<span class="sd">@author: kushal</span>
+
+<span class="sd">Chatzigeorgiou Group</span>
+<span class="sd">Sars International Centre for Marine Molecular Biology</span>
+
+<span class="sd">GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">caiman.utils.visualization</span> <span class="k">import</span> <span class="n">get_contours</span> <span class="k">as</span> <span class="n">caiman_get_contours</span>
+<span class="kn">from</span> <span class="nn">....viewer.modules.roi_manager_modules.roi_list</span> <span class="k">import</span> <span class="n">ROIList</span>
+<span class="kn">from</span> <span class="nn">.roi_types</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">...core.common</span> <span class="k">import</span> <span class="n">ViewerUtils</span>
+<span class="kn">from</span> <span class="nn">....</span> <span class="k">import</span> <span class="n">pyqtgraphCore</span> <span class="k">as</span> <span class="n">pg</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">.read_imagej</span> <span class="k">import</span> <span class="n">read_roi_zip</span> <span class="k">as</span> <span class="n">read_imagej</span>
+
+
+<div class="viewcode-block" id="AbstractBaseManager"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager">[docs]</a><span class="k">class</span> <span class="nc">AbstractBaseManager</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base ROI Manager&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="AbstractBaseManager.__init__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">viewer_interface</span><span class="p">:</span> <span class="n">ViewerUtils</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the common attributes</span>
+
+<span class="sd">        :param parent: The ModuleGUI QDockWidget instance</span>
+<span class="sd">        :param ui:  The ui of the ModuleGUI QDockWidget instance,</span>
+<span class="sd">        :param viewer_interface:    A ViewerUtils instance for accessing the Viewer the parent QDockWidget belongs to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">ui</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vi</span> <span class="o">=</span> <span class="n">viewer_interface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#: The ROIList instance that stores the list of ROIs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span></div>
+
+<div class="viewcode-block" id="AbstractBaseManager.add_roi"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.add_roi">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">add_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method for adding an ROI, must be implemented in subclass&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractBaseManager.is_empty"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.is_empty">[docs]</a>    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return true if the ROI list is empty, else return False&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;roi_list&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="AbstractBaseManager.get_all_states"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_all_states">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_states</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the ROI states for all ROIs in self.roi_list so that they can be restored.</span>
+<span class="sd">        The appropriate manager is instantiated based on the &#39;roi_type&#39; key of the returned dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;Saving ROIs...&#39;</span><span class="p">)</span>
+        <span class="c1"># the key &#39;roi_type&#39; determines which Manager subclass should be used, and &#39;states&#39; are the actual ROI states</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;roi_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">roi_types</span><span class="p">,</span> <span class="s1">&#39;states&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">for</span> <span class="n">roi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">to_state</span><span class="p">()</span>
+            <span class="n">states</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;ROIs saved!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">states</span></div>
+
+<div class="viewcode-block" id="AbstractBaseManager.restore_from_states"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.restore_from_states">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">restore_from_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Restore ROIs from their states&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractBaseManager.get_plot_item"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_plot_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_plot_item</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the viewer plot item that is associated to these ROIs&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">roiPlot</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractBaseManager.clear"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleanup of all ROIs in the list&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;roi_list&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">clear_</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span></div>
+
+<div class="viewcode-block" id="AbstractBaseManager.__del__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__del__">[docs]</a>    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleanup of all ROIs in the list and deletes the manager instance. Used when switching modes.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
+        <span class="c1"># self.roi_list.list_widget.clear()</span>
+        <span class="c1"># self.roi_list.list_widget_tags.clear()</span>
+        <span class="c1"># self.roi_list.disconnect_all()</span>
+        <span class="c1"># for i in range(len(self.roi_list)):</span>
+
+
+<div class="viewcode-block" id="ManagerManual"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual">[docs]</a><span class="k">class</span> <span class="nc">ManagerManual</span><span class="p">(</span><span class="n">AbstractBaseManager</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The Manager for the Manual mode&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ManagerManual.__init__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">viewer_interface</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ManagerManual</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">viewer_interface</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_roi_list</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ManagerManual.create_roi_list"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.create_roi_list">[docs]</a>    <span class="k">def</span> <span class="nf">create_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new empty ROI list instance for storing Manual ROIs&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span> <span class="o">=</span> <span class="n">ROIList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span> <span class="s1">&#39;ManualROI&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ManagerManual.add_roi"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.add_roi">[docs]</a>    <span class="k">def</span> <span class="nf">add_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an ROI to the list</span>
+
+<span class="sd">        :param shape: either &quot;PolyLineROI&quot; or &quot;EllipseROI&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;roi_list&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_roi_list</span><span class="p">()</span>
+
+        <span class="n">dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">workEnv</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="n">ManualROI</span><span class="o">.</span><span class="n">get_generic_roi_graphics_object</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>
+
+        <span class="n">roi</span> <span class="o">=</span> <span class="n">ManualROI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_item</span><span class="p">(),</span> <span class="n">roi_graphics_object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">getView</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">reindex_colormap</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ManagerManual.restore_from_states"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.restore_from_states">[docs]</a>    <span class="k">def</span> <span class="nf">restore_from_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Restore ROIs from states&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;roi_list&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_roi_list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">]:</span>
+            <span class="n">roi</span> <span class="o">=</span> <span class="n">ManualROI</span><span class="o">.</span><span class="n">from_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_item</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">getView</span><span class="p">(),</span> <span class="n">state</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="c1"># ix = 0</span>
+        <span class="c1"># for state in states[&#39;states&#39;]:</span>
+        <span class="c1">#     self.roi_list[ix].set_roi_graphics_object_state(state[&#39;roi_graphics_object_state&#39;])</span>
+        <span class="c1">#     ix += 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">reindex_colormap</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ManagerManual.get_all_states"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.get_all_states">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_states</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the ROI states so that they can be restored later&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;Saving ROIs...&#39;</span><span class="p">)</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;roi_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">roi_types</span><span class="p">,</span> <span class="s1">&#39;states&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+        <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">set_pg_roi_plot</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">to_state</span><span class="p">()</span>
+            <span class="n">states</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;Finished saving ROIs!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">states</span></div>
+
+<div class="viewcode-block" id="ManagerManual.import_from_imagej"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.import_from_imagej">[docs]</a>    <span class="k">def</span> <span class="nf">import_from_imagej</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses read-roi package created by Hadrien Mary.</span>
+<span class="sd">        https://pypi.org/project/read-roi/</span>
+
+<span class="sd">        :param path: Full path to the ImageJ ROIs zip file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ij_roi</span> <span class="o">=</span> <span class="n">read_imagej</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ij_roi</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="n">ij_roi</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+            <span class="n">ys</span> <span class="o">=</span> <span class="n">ij_roi</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+            <span class="n">ps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">))</span>
+
+            <span class="n">roi</span> <span class="o">=</span> <span class="n">ManualROI</span><span class="o">.</span><span class="n">from_positions</span><span class="p">(</span><span class="n">positions</span><span class="o">=</span><span class="n">ps</span><span class="p">,</span>
+                                           <span class="n">curve_plot_item</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_item</span><span class="p">(),</span>
+                                           <span class="n">view_box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">getView</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">reindex_colormap</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="ManagerCNMFE"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE">[docs]</a><span class="k">class</span> <span class="nc">ManagerCNMFE</span><span class="p">(</span><span class="n">AbstractBaseManager</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Manager for ROIs imported from CNMF or CNMFE outputs&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ManagerCNMFE.__init__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">viewer_interface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instantiate necessary attributes&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ManagerCNMFE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">viewer_interface</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_roi_list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_widget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">list_widget</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_params_dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Keep track of components if the user manually want to remove some</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_idx_components</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># List of components prior to any manual deletion by the user</span>
+
+        <span class="c1"># These correspond to the caiman.source_extraction.cnmf attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmb</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnm_f</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmYrA</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ManagerCNMFE.create_roi_list"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.create_roi_list">[docs]</a>    <span class="k">def</span> <span class="nf">create_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create empty CNMFROI list&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span> <span class="o">=</span> <span class="n">ROIList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span> <span class="s1">&#39;CNMFROI&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ManagerCNMFE.add_all_components"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_all_components">[docs]</a>    <span class="k">def</span> <span class="nf">add_all_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cnmA</span><span class="p">,</span> <span class="n">cnmb</span><span class="p">,</span> <span class="n">cnmC</span><span class="p">,</span> <span class="n">cnm_f</span><span class="p">,</span> <span class="n">cnmYrA</span><span class="p">,</span> <span class="n">idx_components</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">input_params_dict</span><span class="p">,</span> <span class="n">dfof</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                           <span class="n">calc_raw_min_max</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;roi_list&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_roi_list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span> <span class="o">=</span> <span class="n">cnmA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmb</span> <span class="o">=</span> <span class="n">cnmb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span> <span class="o">=</span> <span class="n">cnmC</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnm_f</span> <span class="o">=</span> <span class="n">cnm_f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmYrA</span> <span class="o">=</span> <span class="n">cnmYrA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span> <span class="o">=</span> <span class="n">idx_components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_idx_components</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">idx_components</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_params_dict</span> <span class="o">=</span> <span class="n">input_params_dict</span>
+
+        <span class="c1"># spatial components</span>
+        <span class="n">contours</span> <span class="o">=</span> <span class="n">caiman_get_contours</span><span class="p">(</span><span class="n">cnmA</span><span class="p">[:,</span> <span class="n">idx_components</span><span class="p">],</span> <span class="n">dims</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dfof</span><span class="p">:</span>
+            <span class="n">temporal_components</span> <span class="o">=</span> <span class="n">cnmC</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temporal_components</span> <span class="o">=</span> <span class="n">cnmC</span><span class="p">[</span><span class="n">idx_components</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_params_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_params_dict</span>
+        <span class="n">num_components</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">temporal_components</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">calc_raw_min_max</span><span class="p">:</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">workEnv</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_components</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;Please wait, adding component #: &#39;</span>
+                                                        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; / &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_components</span><span class="p">))</span>
+
+            <span class="n">curve_data</span> <span class="o">=</span> <span class="n">temporal_components</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+            <span class="n">contour</span> <span class="o">=</span> <span class="n">contours</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">calc_raw_min_max</span><span class="p">:</span>
+                <span class="c1"># Get the raw min and max from the roi region</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span><span class="p">[:,</span> <span class="n">idx_components</span><span class="p">[</span><span class="n">ix</span><span class="p">]]</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="n">mask3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">mask</span><span class="p">,)</span> <span class="o">*</span> <span class="n">curve_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="n">reg</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">reg</span><span class="p">[</span><span class="o">~</span><span class="n">mask3d</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+                <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">raw_min</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">raw_max</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+                <span class="k">del</span> <span class="n">reg</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">raw_min</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">raw_max</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">roi</span> <span class="o">=</span> <span class="n">CNMFROI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_item</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">getView</span><span class="p">(),</span> <span class="n">idx_components</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span> <span class="n">curve_data</span><span class="p">,</span> <span class="n">contour</span><span class="p">,</span>
+                          <span class="n">raw_min</span><span class="o">=</span><span class="n">raw_min</span><span class="p">,</span> <span class="n">raw_max</span><span class="o">=</span><span class="n">raw_max</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">calc_raw_min_max</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">img</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">reindex_colormap</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;Finished adding all components!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ManagerCNMFE.add_roi"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_roi">[docs]</a>    <span class="k">def</span> <span class="nf">add_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Not implemented, uses add_all_components to import all ROIs instead&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Not implemented for CNMFE ROIs&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ManagerCNMFE.restore_from_states"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.restore_from_states">[docs]</a>    <span class="k">def</span> <span class="nf">restore_from_states</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Restore from states, such as when these ROIs are saved with a Project Sample&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;roi_list&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_roi_list</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">]:</span>
+            <span class="n">roi</span> <span class="o">=</span> <span class="n">CNMFROI</span><span class="o">.</span><span class="n">from_state</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plot_item</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">getView</span><span class="p">(),</span> <span class="n">state</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_params_dict</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;input_params_cnmfe&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;cnmA&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmb</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;cnmb&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;cnmC&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnm_f</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;cnm_f&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmYrA</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;cnmYrA&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;idx_components&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig_idx_components</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;orig_idx_components&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">reindex_colormap</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ManagerCNMFE.get_all_states"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.get_all_states">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_states</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get all states so that they can be restored&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;roi_list&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_roi_list</span><span class="p">()</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ManagerCNMFE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_all_states</span><span class="p">()</span>
+
+        <span class="c1"># If the user has manually deleted some ROIs</span>
+        <span class="n">new_idx_components</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">roi</span><span class="o">.</span><span class="n">cnmf_idx</span> <span class="k">for</span> <span class="n">roi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+        <span class="c1"># Make sure nothing weird happened</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnm_f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmYrA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_idx_components</span><span class="p">,</span> <span class="n">new_idx_components</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">l</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;One or more pieces of CNMF(E) data are missing&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Store the actual cnmf attributes as well.</span>
+        <span class="n">input_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;input_params_cnmfe&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_params_dict</span><span class="p">,</span>
+                      <span class="s1">&#39;cnmf_output&#39;</span><span class="p">:</span>
+                          <span class="p">{</span>
+                              <span class="s1">&#39;cnmA&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span><span class="p">,</span>
+                              <span class="s1">&#39;cnmb&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmb</span><span class="p">,</span>
+                              <span class="s1">&#39;cnmC&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span><span class="p">,</span>
+                              <span class="s1">&#39;cnm_f&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnm_f</span><span class="p">,</span>
+                              <span class="s1">&#39;cnmYrA&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmYrA</span><span class="p">,</span>
+                              <span class="s1">&#39;idx_components&#39;</span><span class="p">:</span> <span class="n">new_idx_components</span><span class="p">,</span>
+                              <span class="s1">&#39;orig_idx_components&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig_idx_components</span>
+                          <span class="p">}</span>
+                      <span class="p">}</span>
+
+        <span class="n">states</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">states</span></div>
+
+<div class="viewcode-block" id="ManagerCNMFE.update_idx_components"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.update_idx_components">[docs]</a>    <span class="k">def</span> <span class="nf">update_idx_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update idx_components if the user manually delete an ROI&quot;&quot;&quot;</span>
+        <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="o">.</span><span class="n">current_index</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span> <span class="o">==</span> <span class="n">roi</span><span class="o">.</span><span class="n">cnmf_idx</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">set_spot_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">roi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_list</span><span class="p">:</span>
+            <span class="n">roi</span><span class="o">.</span><span class="n">get_roi_graphics_object</span><span class="p">()</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

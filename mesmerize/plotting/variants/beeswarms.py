@@ -71,8 +71,8 @@ class BeeswarmPlot(QtCore.QObject):
     def _clicked(self, plot, points):
         for i, p in enumerate(self.lastClicked):
             assert isinstance(p, SpotItem)
-            p.setPen('w')
-            # p.setBrush(p._data['orig_brush'])
+            p.setPen('k')
+            p.setBrush(p._data['orig_brush'])
 
         if len(points) == 1:
             p = points[0]
@@ -81,8 +81,8 @@ class BeeswarmPlot(QtCore.QObject):
 
         for p in points:
             assert isinstance(p, SpotItem)
-            p.setPen('k')
-            # p.setBrush('w')
+            p.setPen('w')
+            p.setBrush('w')
 
         self.lastClicked = points
 
@@ -109,39 +109,6 @@ class BeeswarmPlot(QtCore.QObject):
         for name in self.color_legend_items:
             self.legend.removeItem(name)
         self.color_legend_items.clear()
-
-
-    @property
-    def spot_color(self, group: str):
-        pass
-
-    @spot_color.setter
-    def spot_color(self, d: dict):
-        pass
-    
-    @property
-    def spot_outline(self):
-        pass
-    
-    @spot_outline.setter
-    def spot_outline(self, color):
-        pass
-            
-    @property
-    def title(self) -> str:
-        return self._title
-    
-    @title.setter
-    def title(self, title: str):
-        pass
-    
-    @property
-    def spot_size(self) -> int:
-        pass
-    
-    @spot_size.setter
-    def spot_size(self, size: int):
-        pass
     
     def clear_plots(self):
         for plot in self.plots:
@@ -151,18 +118,3 @@ class BeeswarmPlot(QtCore.QObject):
         self.plots = []
         del self.scatter_plots
         self.scatter_plots = []
-
-    def export_all_plots(self):
-        pass
-    
-    def export_plot(self, column: str, filetype: str = 'svg', title: str = None, error_bars: str = 'mean', spots_color=None, spots_outline='black', background_color='black', axis_color='white'):
-        pass
-   
-
-## Start Qt event loop unless running in interactive mode or using pyside.
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-    bp = BeeswarmPlot()
-    bp.set_data(df, 'bah_title', ['a', 'b', 'c'])
-    bp.show()
-    app.exec()

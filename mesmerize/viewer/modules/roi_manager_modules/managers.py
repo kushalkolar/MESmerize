@@ -21,17 +21,27 @@ from .read_imagej import read_roi_zip as read_imagej
 
 
 class AbstractBaseManager(metaclass=abc.ABCMeta):
+    """Base ROI Manager"""
     def __init__(self, parent, ui, viewer_interface: ViewerUtils):
+        """
+        Set the common attributes
+
+        :param parent: The ModuleGUI QDockWidget instance
+        :param ui:  The ui of the ModuleGUI QDockWidget instance,
+        :param viewer_interface:    A ViewerUtils instance for accessing the Viewer the parent QDockWidget belongs to
+        """
         self.ui = ui
         self.vi = viewer_interface
-        self.roi_list = None
+        self.roi_list = None  #: The ROIList instance that stores the list of ROIs
         self.parent = parent
 
     @abc.abstractmethod
     def add_roi(self, *args, **kwargs):
+        """Method for adding an ROI, must be implemented in subclass"""
         pass
 
     def is_empty(self) -> bool:
+        """Return true if the ROI list is empty, else return False"""
         if not hasattr(self, 'roi_list'):
             return True
         if self.roi_list is None:
@@ -42,28 +52,37 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
             return False
 
     def get_all_states(self) -> dict:
+        """
+        Get the ROI states for all ROIs in self.roi_list so that they can be restored.
+        The appropriate manager is instantiated based on the 'roi_type' key of the returned dict
+        """
         self.vi.viewer.status_bar_label.showMessage('Saving ROIs...')
+        # the key 'roi_type' determines which Manager subclass should be used, and 'states' are the actual ROI states
         states = {'roi_type': self.roi_list.roi_types, 'states': []}
         for roi in self.roi_list:
             state = roi.to_state()
             states['states'].append(state)
-        self.vi.viewer.status_bar_label.showMessage('Finished saving ROIs!')
+        self.vi.viewer.status_bar_label.showMessage('ROIs saved!')
         return states
 
     @abc.abstractmethod
     def restore_from_states(self, states: list):
+        """Restore ROIs from their states"""
         pass
 
     def get_plot_item(self) -> pg.PlotDataItem:
+        """Get the viewer plot item that is associated to these ROIs"""
         return self.vi.viewer.ui.roiPlot.plot()
 
     def clear(self):
+        """Cleanup of all ROIs in the list"""
         if not hasattr(self, 'roi_list'):
             return
         self.roi_list.clear_()
         del self.roi_list
 
     def __del__(self):
+        """Cleanup of all ROIs in the list and deletes the manager instance. Used when switching modes."""
         self.clear()
         # self.roi_list.list_widget.clear()
         # self.roi_list.list_widget_tags.clear()
@@ -72,14 +91,34 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
 
 
 class ManagerManual(AbstractBaseManager):
+    """The Manager for the Manual mode"""
     def __init__(self, parent, ui, viewer_interface):
         super(ManagerManual, self).__init__(parent, ui, viewer_interface)
         self.create_roi_list()
 
     def create_roi_list(self):
+        """Create a new empty ROI list instance for storing Manual ROIs"""
         self.roi_list = ROIList(self.ui, 'ManualROI', self.vi)
 
+    def add_roi(self, shape: str):
+        """
+        Add an ROI to the list
+
+        :param shape: either "PolyLineROI" or "EllipseROI"
+        """
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
+        dims = self.vi.viewer.workEnv.imgdata.seq.shape
+        roi_graphics_object = ManualROI.get_generic_roi_graphics_object(shape, dims)
+
+        roi = ManualROI(self.get_plot_item(), roi_graphics_object, self.vi.viewer.getView())
+
+        self.roi_list.append(roi)
+        self.roi_list.reindex_colormap()
+
     def restore_from_states(self, states: dict):
+        """Restore ROIs from states"""
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
@@ -92,10 +131,23 @@ class ManagerManual(AbstractBaseManager):
         #     ix += 1
         self.roi_list.reindex_colormap()
 
+    def get_all_states(self) -> dict:
+        """Get the ROI states so that they can be restored later"""
+        self.vi.viewer.status_bar_label.showMessage('Saving ROIs...')
+        states = {'roi_type': self.roi_list.roi_types, 'states': []}
+        for ix in range(len(self.roi_list)):
+            self.roi_list.set_pg_roi_plot(ix)
+            state = self.roi_list[ix].to_state()
+            states['states'].append(state)
+        self.vi.viewer.status_bar_label.showMessage('Finished saving ROIs!')
+        return states
+
     def import_from_imagej(self, path: str):
         """
         Uses read-roi package created by Hadrien Mary.
-        For licence see MESmerize/viewer/modules/roi_manager_modules/read_imagej/LICENSE
+        https://pypi.org/project/read-roi/
+
+        :param path: Full path to the ImageJ ROIs zip file
         """
         ij_roi = read_imagej(path)
         for k in ij_roi.keys():
@@ -109,49 +161,35 @@ class ManagerManual(AbstractBaseManager):
             self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
-    def get_all_states(self) -> dict:
-        self.vi.viewer.status_bar_label.showMessage('Saving ROIs...')
-        states = {'roi_type': self.roi_list.roi_types, 'states': []}
-        for ix in range(len(self.roi_list)):
-            self.roi_list.set_pg_roi_plot(ix)
-            state = self.roi_list[ix].to_state()
-            states['states'].append(state)
-        self.vi.viewer.status_bar_label.showMessage('Finished saving ROIs!')
-        return states
-
-    def add_roi(self, shape: str):
-        if not hasattr(self, 'roi_list'):
-            self.create_roi_list()
-
-        dims = self.vi.viewer.workEnv.imgdata.seq.shape
-        roi_graphics_object = ManualROI.get_generic_roi_graphics_object(shape, dims)
-
-        roi = ManualROI(self.get_plot_item(), roi_graphics_object, self.vi.viewer.getView())
-
-        self.roi_list.append(roi)
-        self.roi_list.reindex_colormap()
-
 
 class ManagerCNMFE(AbstractBaseManager):
+    """Manager for ROIs imported from CNMF or CNMFE outputs"""
     def __init__(self, parent, ui, viewer_interface):
+        """Instantiate necessary attributes"""
         super(ManagerCNMFE, self).__init__(parent, ui, viewer_interface)
 
         self.create_roi_list()
         self.list_widget = self.roi_list.list_widget
         self.input_params_dict = None
-        self.idx_components = None
-        self.orig_idx_components = None
+        self.idx_components = None  # Keep track of components if the user manually want to remove some
+        self.orig_idx_components = None  # List of components prior to any manual deletion by the user
 
+        # These correspond to the caiman.source_extraction.cnmf attributes
         self.cnmA = None
         self.cnmb = None
         self.cnmC = None
         self.cnm_f = None
         self.cnmYrA = None
 
+        self.raw_normalization_choices = ['top_5', 'top_10', 'top_5p', 'top_10p', 'top_25p']
+
     def create_roi_list(self):
+        """Create empty CNMFROI list"""
         self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
 
-    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict, dfof=False):
+    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict, dfof=False,
+                           calc_raw_min_max=False):
+        """Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs"""
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
         self.cnmA = cnmA
@@ -163,6 +201,7 @@ class ManagerCNMFE(AbstractBaseManager):
         self.orig_idx_components = deepcopy(idx_components)
         self.input_params_dict = input_params_dict
 
+        # spatial components
         contours = caiman_get_contours(cnmA[:, idx_components], dims)
         if dfof:
             temporal_components = cnmC
@@ -170,22 +209,75 @@ class ManagerCNMFE(AbstractBaseManager):
             temporal_components = cnmC[idx_components]
         self.input_params_dict = self.input_params_dict
         num_components = len(temporal_components)
+
+        if calc_raw_min_max:
+            img = self.vi.viewer.workEnv.imgdata.seq.T
+
         for ix in range(num_components):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
                                                         + str(ix) + ' / ' + str(num_components))
 
             curve_data = temporal_components[ix]
             contour = contours[ix]
-            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), idx_components[ix], curve_data, contour)
+
+            if calc_raw_min_max:
+                # Get a binary mask
+                mask = self.cnmA[:, idx_components[ix]].toarray().reshape(dims, order='F') > 0
+                # mask3d = np.array((mask,) * curve_data.shape[0])
+
+                max_ix = curve_data.argmax()
+                min_ix = curve_data.argmin()
+
+                array_at_max = img[max_ix, :, :].copy()
+                array_at_max = array_at_max[mask]
+
+                array_at_min = img[min_ix, :, :].copy()
+                array_at_min = array_at_min[mask]
+
+                raw_min_max = self.get_raw_min_max(array_at_max=array_at_max,
+                                                   array_at_min=array_at_min)
+
+            else:
+                raw_min_max = None
+
+            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), idx_components[ix], curve_data, contour,
+                          raw_min_max=raw_min_max)
+
             self.roi_list.append(roi)
+
+        if calc_raw_min_max:
+            del img
 
         self.roi_list.reindex_colormap()
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
 
+    def get_raw_min_max(self, array_at_max, array_at_min):
+        a_size = array_at_max.size
+        p5 = int(a_size * 0.05)
+        p10 = p5 * 2
+        p25 = p5 * 5
+
+        out = {}
+
+        for a, r in zip((array_at_max, array_at_min), ('raw_max', 'raw_min')):
+            out[r] = {'top_5': self.get_raw_mean(a, min(5, a_size)),
+                      'top_10': self.get_raw_mean(a, min(10, a_size)),
+                      'top_5p': self.get_raw_mean(a, p5),
+                      'top_10p': self.get_raw_mean(a, p10),
+                      'top_25p': self.get_raw_mean(a, p25),
+                      'full_mean': a.mean()
+                      }
+        return out
+
+    def get_raw_mean(self, array, num_items):
+        return np.partition(array, -num_items)[-num_items:].mean()
+
     def add_roi(self):
+        """Not implemented, uses add_all_components to import all ROIs instead"""
         raise NotImplementedError('Not implemented for CNMFE ROIs')
 
     def restore_from_states(self, states: dict):
+        """Restore from states, such as when these ROIs are saved with a Project Sample"""
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
@@ -203,16 +295,20 @@ class ManagerCNMFE(AbstractBaseManager):
         self.roi_list.reindex_colormap()
 
     def get_all_states(self) -> dict:
+        """Get all states so that they can be restored"""
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
         states = super(ManagerCNMFE, self).get_all_states()
 
+        # If the user has manually deleted some ROIs
         new_idx_components = np.array([roi.cnmf_idx for roi in self.roi_list], dtype=np.int64)
 
+        # Make sure nothing weird happened
         l = [self.cnmA, self.cnmb, self.cnmC, self.cnm_f, self.cnmYrA, self.orig_idx_components, new_idx_components]
         if any(item is None for item in l):
             raise ValueError('One or more pieces of CNMF(E) data are missing')
 
+        # Store the actual cnmf attributes as well.
         input_dict = {'input_params_cnmfe': self.input_params_dict,
                       'cnmf_output':
                           {
@@ -230,5 +326,10 @@ class ManagerCNMFE(AbstractBaseManager):
         return states
 
     def update_idx_components(self, ix: int):
+        """Update idx_components if the user manually delete an ROI"""
         roi = self.roi_list[self.roi_list.current_index]
         self.idx_components = np.delete(self.idx_components, np.where(self.idx_components == roi.cnmf_idx)[0])
+
+    def set_spot_size(self, size: int):
+        for roi in self.roi_list:
+            roi.get_roi_graphics_object().setSize(size)

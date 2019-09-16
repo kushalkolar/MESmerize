@@ -12,11 +12,20 @@ from typing import Union
 
 
 class ROIList(list):
+    """A list for holding ROIs of one type"""
     def __init__(self, ui, roi_types: str, viewer_interface: ViewerUtils):
+        """
+        Instantiate
+
+        :param ui: The ui from the parent ModuleGUI, used to interact with the ROI list widget etc.
+        :param roi_types: The type of ROI that this list will hold
+        :param viewer_interface: ViewerUtils instance for interacting with the parent Viewer
+
+        """
         super(ROIList, self).__init__()
 
         assert isinstance(ui.listWidgetROIs, QtWidgets.QListWidget)
-        self.list_widget = ui.listWidgetROIs
+        self.list_widget = ui.listWidgetROIs  #: ROI list widget
         self.list_widget.clear()
         self.list_widget.currentRowChanged.connect(self.set_current_index)
 
@@ -31,7 +40,7 @@ class ROIList(list):
         # self.list_widget.customContextMenuRequested.connect(self.bulid_delete_menu)
 
         assert isinstance(ui.listWidgetROITags, QtWidgets.QListWidget)
-        self.list_widget_tags = ui.listWidgetROITags
+        self.list_widget_tags = ui.listWidgetROITags  #: Tags list widget
         self.list_widget_tags.clear()
 
         self.roi_types = roi_types
@@ -60,20 +69,22 @@ class ROIList(list):
         assert isinstance(ui.lineEditROITag, QtWidgets.QLineEdit)
         self.line_edit_tag = ui.lineEditROITag
 
-        self.vi = viewer_interface
+        self.vi = viewer_interface  #: ViewrUtils instance
 
-        self.current_index = -1
-        self.previous_index = -1
+        self.current_index = -1  #: Current index (int)
+        self.previous_index = -1  #: Previous index (int)
 
         get_project_manager().signal_project_config_changed.connect(self.update_roi_defs_from_configuration)
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
     def append(self, roi: Union[CNMFROI, ManualROI]):
+        """Add an ROI instance to the list"""
         roi.add_to_viewer()
 
         roi_graphics_object = roi.get_roi_graphics_object()
 
+        # If it's a pyqtgraph based ROI (ManualROI)
         if isinstance(roi_graphics_object, tuple(pg.ROI.__subclasses__())):
             roi_graphics_object.sigHoverEvent.connect(partial(self.highlight_roi, roi))
             roi_graphics_object.sigHoverEnd.connect(roi.reset_color)
@@ -102,6 +113,7 @@ class ROIList(list):
     #     pg_roi.setState(state)
 
     def clear_(self):
+        """Cleanup of the list"""
         self.list_widget.clear()
         self.list_widget_tags.clear()
         self.disconnect_all()
@@ -110,6 +122,7 @@ class ROIList(list):
             self.__delitem__(0)
 
     def __delitem__(self, key):
+        """Delete an ROI from the list and cleanup from the viewer, reindex the colors etc."""
         if isinstance(key, ManualROI):
             key = self.index(key)
         elif key is None:
@@ -144,6 +157,7 @@ class ROIList(list):
     #     pass
 
     def disconnect_all(self):
+        """Disconnect signals from the parent GUI"""
         self.list_widget.currentRowChanged.disconnect(self.set_current_index)
         # self.list_widget.customContextMenuRequested.disconnect(self.bulid_delete_menu)
         # self.action_delete_roi.triggered.disconnect(self.__delitem__)
@@ -152,10 +166,12 @@ class ROIList(list):
         self.btn_set_tag.clicked.disconnect(self.slot_btn_set_tag)
 
     def _reindex_list_widget(self):
+        """Reindex ROI list"""
         for i in range(self.list_widget.count()):
             self.list_widget.item(i).setText(str(i))
 
     def reindex_colormap(self):
+        """Reindex the colors so they sequentially follow the HSV colormap"""
         cm = matplotlib_color_map.get_cmap('hsv')
         cm._init()
         lut = (cm._lut * 255).view(np.ndarray)
@@ -176,9 +192,11 @@ class ROIList(list):
             roi.set_color(c)
 
     def __getitem__(self, item) -> Union[ManualROI, CNMFROI]:
+        """Get an item (ROI) from the list"""
         return super(ROIList, self).__getitem__(item)
 
     def set_current_index(self, ix: int):
+        """Set the current index"""
         if ix < 0:
             return
         if ix > self.__len__():
@@ -196,15 +214,18 @@ class ROIList(list):
         self.set_list_widget_tags()
 
     def highlight_roi(self, roi: Union[ManualROI, CNMFROI]):
+        """Highlight an ROI in white, both the spatial visualization and the curve"""
         ix = self.index(roi)
         self.highlight_curve(ix)
         self.list_widget.setCurrentRow(ix)
 
     def highlight_curve(self, ix: int):
+        """Highlight the curve corresponding to the ROI at the passed index"""
         roi = self.__getitem__(ix)
         roi.set_color('w', width=2)
 
     def set_previous_index(self):
+        """Set the previous_index attribute"""
         if self.previous_index == -1:
             self.previous_index = self.current_index
             return
@@ -217,6 +238,7 @@ class ROIList(list):
         roi.reset_color()
 
     def slot_show_all_checkbox_clicked(self, b: bool):
+        """Show all ROIs in the viewer overlay visualization and curves"""
         if b:
             self._show_all_graphics_objects()
         else:
@@ -225,6 +247,7 @@ class ROIList(list):
             self._show_graphics_object(ix)
 
     def _show_graphics_object(self, ix: int):
+        """Show the ROI at the passed index in the viewer overlay visualization"""
         try:
             roi = self.__getitem__(ix)
         except IndexError:
@@ -234,16 +257,19 @@ class ROIList(list):
         roi.curve_plot_item.show()
 
     def _hide_graphics_object(self, ix: int):
+        """Hide the ROI at the passed index in the viewer overlay visualization"""
         roi = self.__getitem__(ix)
         roi_graphics_object = roi.get_roi_graphics_object()
         roi_graphics_object.hide()
         roi.curve_plot_item.hide()
 
     def _show_all_graphics_objects(self):
+        """Show all ROIs in the viewer overlay visualization"""
         for ix in range(self.__len__()):
             self._show_graphics_object(ix)
 
     def _hide_all_graphics_objects(self):
+        """Hide all ROIs in the viewer overlay visualization"""
         for ix in range(self.__len__()):
             self._hide_graphics_object(ix)
 
@@ -260,6 +286,7 @@ class ROIList(list):
         self.set_pg_roi_plot(ix)
 
     def plot_manual_roi_regions(self):
+        """Plot the ROI curves from the regions of all ManualROI instances in the list"""
         for ix in range(self.__len__()):
             roi = self.__getitem__(ix)
             pg_roi = roi.get_roi_graphics_object()
@@ -270,6 +297,7 @@ class ROIList(list):
             self._show_graphics_object(self.current_index)
 
     def set_pg_roi_plot(self, ix: int):
+        """Plot the ROI curve from the region of the ManualROI instance at the passed index"""
         image = self.vi.viewer.getProcessedImage()
 
         if image.ndim == 2:
@@ -325,6 +353,7 @@ class ROIList(list):
         return roi.get_all_tags()
 
     def set_list_widget_tags(self):
+        """Set the tags list for the ROI at the current index"""
         self.list_widget_tags.clear()
         ix = self.current_index
         try:
@@ -344,6 +373,7 @@ class ROIList(list):
             self.list_widget_tags.setCurrentRow(0)
 
     def update_roi_defs_from_configuration(self):
+        """Update ROI_DEFs in the Tags list from the project configuration"""
         roi_defs = configuration.proj_cfg.options('ROI_DEFS')
 
         for roi in self:

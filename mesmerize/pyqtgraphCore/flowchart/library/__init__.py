@@ -17,8 +17,8 @@ getNodeTree = LIBRARY.getNodeTree
 getNodeType = LIBRARY.getNodeType
 
 # Add all nodes to the default library
-from . import Data, Display, Signal, Math, Definitions, Clustering, Hierarchical, Neighbors, Transform, Metrics
-for mod in [Data, Display, Signal, Math, Definitions, Clustering, Hierarchical, Neighbors, Transform, Metrics]:
+from . import Data, Display, Signal, Math, Biology, Clustering, Hierarchical, Neighbors, Transform, Metrics
+for mod in [Data, Display, Signal, Math, Biology, Clustering, Hierarchical, Neighbors, Transform, Metrics]:
     nodes = [getattr(mod, name) for name in dir(mod) if isNodeClass(getattr(mod, name))]
     for node in nodes:
         LIBRARY.addNodeType(node, [(mod.__name__.split('.')[-1],)])

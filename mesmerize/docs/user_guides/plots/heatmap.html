@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Heatmap &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="KShape" href="kshape.html" />
+    <link rel="prev" title="Datapoint Tracer" href="datapoint_tracer.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Heatmap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#console">Console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#namespace">Namespace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Heatmap</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user_guides/plots/heatmap.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="heatmap">
+<span id="plot-heatmap"></span><h1>Heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html#api-heatmaptracerwidget"><span class="std std-ref">API Reference</span></a></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This plot can be saved in an interactive form, see <a class="reference internal" href="../general/misc.html#save-ptrn"><span class="std std-ref">Saving plots</span></a></p>
+</div>
+<p>Visualize numerical arrays in the form of a heatmap. Also used for visualization of Hierarchical clusterting dendrograms. <a class="reference internal" href="datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a> is embedded.</p>
+<p><strong>Layout</strong></p>
+<a class=""
+               data-lightbox="group-bcdd5b67-7bac-40e5-aca5-48e2d131b36a"
+               href="../../_images/heatmap_layout1.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/heatmap_layout1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p><strong>Left:</strong> The heatmap. Clicking the heatmap highlights the selected row and upates the <a class="reference internal" href="datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a>. Right click on the heatmap to clear the selection highlight on the heatmap. You can zoom and pan the heatmap using the tools above the plot area. You can zoom/pan in the legend and heatmap. The up and down keys on your keyboard can be used to move the current row selection.</p>
+<p><strong>Bottom left:</strong> Set the row order of the heatmap according to a categorical column.</p>
+<p><strong>Middle:</strong> Plot controls.</p>
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p><strong>Data column:</strong> Data column, numerical arrays, that contain the data for the heatmap. Each row of this data column (a 1D array) is represented as a row on the heatmap.</p>
+<p><strong>Labels column:</strong> Column containing categorical labels that are used to create the row legend for the heatmap.</p>
+<p><strong>DPT curve column:</strong> Data column, containing numerical arrays, that is shown in the <a class="reference internal" href="datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a>.</p>
+<p><strong>Data colormap:</strong> Colormap used for representing the data in the heatmap. Default is ‘jet’.</p>
+<p><strong>Legend colormap:</strong> Colormap used for the row legend.</p>
+<p><strong>Live update from input transmission:</strong> If checked this plots receives live updates from the <a class="reference internal" href="../flowchart/overview.html#flowchartoverview"><span class="std std-ref">flowchart</span></a>.</p>
+<p><strong>Plot:</strong> Updates data input from the flowchart.</p>
+<p><strong>Save:</strong> <cite>Save the plot data and state in an interactive form &lt;save_ptrn&gt;</cite></p>
+<p><strong>Load:</strong> Load a plot that has been saved as a “.ptrn” file.</p>
+<p><strong>Layout to visualize Hierarchical Clustering</strong></p>
+<a class=""
+               data-lightbox="group-c9fc2f81-cf93-4fd3-9dc9-8e529ab35a90"
+               href="../../_images/heatmap_clustering1.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/heatmap_clustering1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p>This plot widget can also be used to visualize a dendrogram on top of a heatmap of data.</p>
+<p>The differences are:</p>
+<ol class="arabic">
+<li><p class="first">There are two legend bars</p>
+<blockquote>
+<div><ul class="simple">
+<li>Left: Cluster label</li>
+<li>Right: Corresponds to Labels column parameter.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">You can also zoom/pan the dendrogram in addition to the legends and heatmap.</p>
+</li>
+<li><p class="first">Sorting the heatmap rows is disabled because this wouldn’t make sense</p>
+</li>
+</ol>
+</div>
+<div class="section" id="console">
+<h2>Console<a class="headerlink" href="#console" title="Permalink to this headline">¶</a></h2>
+<p>You can directly access the heatmap widget through the console. This is useful for plot customization and exporting with specific parameters.</p>
+<p>Toggle the console’s visibility by clicking on the “Show/Hide Console” button at the bottom of the controls.</p>
+<div class="section" id="namespace">
+<h3>Namespace<a class="headerlink" href="#namespace" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">reference</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>this</td>
+<td>The higher-level <a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html#api-heatmaptracerwidget"><span class="std std-ref">HeatmapTracerWidget</span></a> instance, i.e. the entire widget</td>
+</tr>
+<tr class="row-odd"><td>get_plot_area()</td>
+<td>Returns the lower-level <a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html#api-variant-heatmap"><span class="std std-ref">Heatmap</span></a> variant instance, basically the actual plot area</td>
+</tr>
+<tr class="row-even"><td>get_plot()</td>
+<td>Returns the seaborn ClusterGrid instance containing the axes</td>
+</tr>
+<tr class="row-odd"><td>get_fig()</td>
+<td>Returns the matplotlib <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib-figure-figure">Figure</a> instance</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p><strong>Export as an SVG with specific dimensions and DPI</strong></p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">matplotlib API for: <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.savefig">Figure.savefig</a>, <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.set_size_inches">Figure.set_size_inches</a>, <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.get_size_inches">Figure.get_size_inches</a></p>
+</div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Desired size (width, height)</span>
+<span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
+
+<span class="c1"># original size to reset the figure after we save it</span>
+<span class="n">orig_size</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span>
+
+<span class="c1"># Get the figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">get_fig</span><span class="p">()</span>
+
+<span class="c1">#Set the desired size</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+<span class="c1"># Save the figure as an svg file with 600 dpi</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/share/data/temp/kushal/amazing_heatmap.svg&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+
+<span class="c1"># Reset the figure size</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">orig_size</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The entire plot area might go gray after the figure is reset to the original size. I suspect this is a Qt-matplotlib issue. Simply resize the window a bit and the plot will be visible again!</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kshape.html" class="btn btn-neutral float-right" title="KShape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="datapoint_tracer.html" class="btn btn-neutral float-left" title="Datapoint Tracer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
