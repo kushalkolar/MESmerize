@@ -28,8 +28,13 @@ import numpy as np
 
 
 class ImgData:
+    """Object that stores the image sequence and meta data from the imaging source"""
     def __init__(self, seq: np.ndarray = None, meta: dict = None):
-        self.seq = seq
+        """
+        :param seq:     Image sequence as a numpy array, shape is [x, y, t]
+        :param meta:    Meta data dict from the imaging source.
+        """
+        self.seq = seq  #: image sequence, shape is [x, y, t]
         if meta is None:
             meta = {'origin': 'unknown',
                     'fps': 0,
@@ -37,4 +42,4 @@ class ImgData:
                     'orig_meta': None
                     }
 
-        self.meta = meta.copy()
+        self.meta = meta.copy()  #: Meta data dict from the imaging source

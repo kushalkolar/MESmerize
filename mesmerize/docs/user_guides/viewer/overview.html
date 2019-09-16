@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Viewer overview &mdash; Mesmerize 1 documentation</title>
+  <title>Viewer overview &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -25,6 +25,9 @@
         <script type="text/javascript" src="../../_static/underscore.js"></script>
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -33,10 +36,11 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Add a Sample to the Project" href="add_to_project.html" />
-    <link rel="prev" title="Create a New Project" href="../project_organization/new_project/new_project.html" />
+    <link rel="next" title="Convert Meta Data" href="../convert_meta_data.html" />
+    <link rel="prev" title="Project Browser" href="../project_organization/project_browser/project_browser.html" />
     <link href="../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -61,6 +65,10 @@
           
             
             
+              <div class="version">
+                0.1
+              </div>
+            
           
 
           
@@ -82,26 +90,130 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guides:</span></p>
-<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#viewer-layout">Viewer layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#opening-images">Opening Images</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exploring-the-work-environment">Exploring the work environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#layout">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#work-environment">Work Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#menubar">Menubar</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#file">File</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#add-to-project">Add to Project</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#open-work-environment">Open Work Environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#save-work-environment">Save Work Environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clear-work-environment">Clear Work Environment</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="add_to_project.html">Add a Sample to the Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edit">Edit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#image">Image</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reset-scale">Reset Scale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resize">Resize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#crop">Crop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#measure">Measure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#change-dtype">Change dtype</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#projections">Projections</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#modules">Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plugins">Plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view">View</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#work-envionment-editor">Work Envionment Editor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#console">Console</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#help">Help</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#open-docs">Open docs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#viewerconsole">Console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#namespace">Namespace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#view-meta-data">View meta data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#view-history-trace">View history trace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#open-image">Open image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#splice-img-seq">Splice img seq</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#running-scripts">Running scripts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -167,49 +279,157 @@
            <div itemprop="articleBody">
             
   <div class="section" id="viewer-overview">
-<h1>Viewer overview<a class="headerlink" href="#viewer-overview" title="Permalink to this headline">¶</a></h1>
+<span id="vieweroverview"></span><h1>Viewer overview<a class="headerlink" href="#viewer-overview" title="Permalink to this headline">¶</a></h1>
+<p>Based on the <a class="reference external" href="http://www.pyqtgraph.org/documentation/widgets/imageview.html">pyqtgraph ImageView</a> widget.</p>
 <p><strong>The Viewer allows you to do the following things:</strong></p>
 <ul class="simple">
 <li>Examine your calcium movies</li>
-<li>Use a lot of modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.</li>
+<li>Use modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.</li>
 <li>You can also make modifications to an existing Sample in your project by opening it in the Viewer. See Modify Sample and Overwrite guide.</li>
 </ul>
-<div class="section" id="viewer-layout">
-<h2>Viewer layout<a class="headerlink" href="#viewer-layout" title="Permalink to this headline">¶</a></h2>
-<img alt="../../_images/12.png" src="../../_images/12.png" />
-<p>To access Viewer modules choose the module you want to run from the Modules menu at the top. All modules, except the Batch Manager, are small floating windows which you can dock into the Viewer by dragging them to an edge of the viewer.</p>
+<div class="section" id="layout">
+<h2>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h2>
+<a class=""
+               data-lightbox="group-5c3f597e-b160-4c1f-a18c-6b627c8b3c24"
+               href="../../_images/1.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p>To access Viewer modules choose the module you want to run from the Modules menu at the top. All modules, except the Batch Manager, are small floating windows which you can dock into the Viewer by dragging them to an edge of the viewer.</p>
 </div>
-<div class="section" id="opening-images">
-<h2>Opening Images<a class="headerlink" href="#opening-images" title="Permalink to this headline">¶</a></h2>
-<p>You can open <em>tiff</em> files and <em>mes</em> files in the Viewer.
-To open a tiff file go to Modules -&gt; Load Images -&gt; Tiff files.</p>
-<p>To open tiff files just click the “Select file” button and choose your file.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">To open files from our whole brain brain you must choose the “asarray” option.</p>
+<div class="section" id="work-environment">
+<span id="viewerworkenv"></span><h2>Work Environment<a class="headerlink" href="#work-environment" title="Permalink to this headline">¶</a></h2>
+<p>Everything in the viewer is stored in a Work Environment object. The main data attributes of the viewer work environment are outlined below.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-viewerworkenv"><span class="std std-ref">ViewerWorkEnv API</span></a></p>
 </div>
-<img alt="../../_images/21.png" src="../../_images/21.png" />
-<p>When you choose tiff files from the whole brain, it will automatically locate and find the associated .json meta data if it has the same name as that tiff file.</p>
-<img alt="../../_images/41.png" src="../../_images/41.png" />
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">If the name of the tiff file and .json meta data file are different, you must specify the .json meta data file using the <em>Select meta data</em> button.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Attribute</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>imgdata</td>
+<td><a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-imgdata"><span class="std std-ref">ImgData object</span></a> containing the Image Sequence and meta data from the imaging source</td>
+</tr>
+<tr class="row-odd"><td>roi_manager</td>
+<td>The back-end <a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html#api-roimanagers"><span class="std std-ref">ROI Manager</span></a> that is currently in use</td>
+</tr>
+<tr class="row-even"><td>sample_id</td>
+<td>SampleID, if opened from a project Sample</td>
+</tr>
+<tr class="row-odd"><td>stim_maps</td>
+<td>Stimulus maps, if any are defined</td>
+</tr>
+<tr class="row-even"><td>history_trace</td>
+<td>History log, currently used for logging <a class="reference internal" href="modules/caiman_motion_correction.html#module-caimanmotioncorrection"><span class="std std-ref">caiman motion correction</span></a>, <a class="reference internal" href="modules/cnmf.html#module-cnmf"><span class="std std-ref">CNMF</span></a> and <a class="reference internal" href="modules/cnmfe.html#module-cnmfe"><span class="std std-ref">CNMFE</span></a> history.</td>
+</tr>
+<tr class="row-odd"><td>UUID</td>
+<td>If opened from a project Sample, it refers to the ImgUUID</td>
+</tr>
+</tbody>
+</table>
+<p>You can view everything in the current work environment by going to View -&gt; Work Environment Editor. You cannot edit through this GUI at this time.</p>
 </div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last"><strong>You cannot perform any analysis without the meta data file since you need the framerate of the video (usually 10 Hz) and it is specified in the meta data file.</strong></p>
+<div class="section" id="menubar">
+<h2>Menubar<a class="headerlink" href="#menubar" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="file">
+<h3>File<a class="headerlink" href="#file" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="add-to-project">
+<h4>Add to Project<a class="headerlink" href="#add-to-project" title="Permalink to this headline">¶</a></h4>
+<p>Add the current <a class="reference internal" href="#viewerworkenv"><span class="std std-ref">work environment</span></a> as a Sample to the project.</p>
 </div>
-<p>Click the “Load into workEnv” button to load this image into your work environment.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If you have an unsaved work environment open (such as a video with ROIs for example) it will prompt you to confirm that you want to clear the work environment before loading the chosen image into the work environment.</p>
+<div class="section" id="open-work-environment">
+<h4>Open Work Environment<a class="headerlink" href="#open-work-environment" title="Permalink to this headline">¶</a></h4>
+<p>Deprecated</p>
+</div>
+<div class="section" id="save-work-environment">
+<h4>Save Work Environment<a class="headerlink" href="#save-work-environment" title="Permalink to this headline">¶</a></h4>
+<p>Deprecated</p>
+</div>
+<div class="section" id="clear-work-environment">
+<h4>Clear Work Environment<a class="headerlink" href="#clear-work-environment" title="Permalink to this headline">¶</a></h4>
+<p>Clear the current <a class="reference internal" href="#viewerworkenv"><span class="std std-ref">work environment</span></a>. Useful for freeing up RAM.</p>
 </div>
 </div>
-<div class="section" id="exploring-the-work-environment">
-<h2>Exploring the work environment<a class="headerlink" href="#exploring-the-work-environment" title="Permalink to this headline">¶</a></h2>
-<p>You can explore everything, such as meta data, in your work environment by going to View - &gt; Work Environment Editor..</p>
-<img alt="../../_images/8.png" src="../../_images/8.png" />
-<div class="admonition note">
+<div class="section" id="edit">
+<h3>Edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h3>
+<p>Deprecated</p>
+</div>
+<div class="section" id="image">
+<h3>Image<a class="headerlink" href="#image" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="reset-scale">
+<h4>Reset Scale<a class="headerlink" href="#reset-scale" title="Permalink to this headline">¶</a></h4>
+<p>Reset the scale of the image ViewBox</p>
+</div>
+<div class="section" id="resize">
+<h4>Resize<a class="headerlink" href="#resize" title="Permalink to this headline">¶</a></h4>
+<p>Resize the image sequence using interpolation.</p>
+</div>
+<div class="section" id="crop">
+<h4>Crop<a class="headerlink" href="#crop" title="Permalink to this headline">¶</a></h4>
+<p>Crop the image sequence.</p>
+<p><strong>Usage</strong></p>
+<ol class="arabic simple">
+<li>When you click this option a square crop region will appear in the top left corner of the image sequence.</li>
+<li>You can change its shape using the handle in the bottom right corner.</li>
+<li>To crop to the selection, in the menubar go to Image -&gt; Crop. To cancel cropping right click in the crop region and click “Remove ROI”.</li>
+</ol>
+</div>
+<div class="section" id="measure">
+<h4>Measure<a class="headerlink" href="#measure" title="Permalink to this headline">¶</a></h4>
+<p>Measure the distance (in pixels) between two points in the image sequence.</p>
+<p><strong>Usage</strong></p>
+<ol class="arabic simple">
+<li>After clicking this option in the menubar, click on a point in the image sequence. You will not see anything yet.</li>
+<li>Click on a second point in the image sequence, a line will appear connecting the first and second points that you clicked.</li>
+<li>You can use the handles at the endpoints of the line to change the line.</li>
+<li>To measure the distance of the line go to Image -&gt; Measure. A window will pop up displaying the change in x, y, and length of the line in pixels.</li>
+</ol>
+</div>
+<div class="section" id="change-dtype">
+<h4>Change dtype<a class="headerlink" href="#change-dtype" title="Permalink to this headline">¶</a></h4>
+<p>Not implemented yet. You can change the dtype through the console.</p>
+</div>
+<div class="section" id="projections">
+<h4>Projections<a class="headerlink" href="#projections" title="Permalink to this headline">¶</a></h4>
+<p>View Mean, Max, and Standard Deviation projections of the current image sequence in the work environment.</p>
+</div>
+</div>
+<div class="section" id="modules">
+<h3>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h3>
+<p>Default Viewer Modules. These are explained in more details in the Viewer Modules chapters.</p>
+</div>
+<div class="section" id="plugins">
+<h3>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h3>
+<p>Custom viewer modules.</p>
+</div>
+<div class="section" id="view">
+<h3>View<a class="headerlink" href="#view" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="work-envionment-editor">
+<h4>Work Envionment Editor<a class="headerlink" href="#work-envionment-editor" title="Permalink to this headline">¶</a></h4>
+<p>Explore the data in your work environment using a GUI.</p>
+<a class=""
+               data-lightbox="group-d12a4b3d-bb98-49cc-befe-b244c8653994"
+               href="../../_images/81.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/81.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This is read only, you cannot edit via this GUI.</p>
 </div>
@@ -217,10 +437,209 @@ To open a tiff file go to Modules -&gt; Load Images -&gt; Tiff files.</p>
 <img alt="../../_images/9.png" src="../../_images/9.png" />
 <p>If you double click on “meta” above you can see your meta data.</p>
 <img alt="../../_images/10.png" src="../../_images/10.png" />
-<p>A faster way to explore your meta data is through the console.</p>
+<p>You can view your meta data more quickly using the console.</p>
 <p>Open the console by going to View -&gt; Console.
-You can then type the following to see the meta data: <code class="docutils literal notranslate"><span class="pre">viewer.workEnv.imgdata.meta</span></code></p>
-<img alt="../../_images/111.png" src="../../_images/111.png" />
+You can then call <code class="docutils literal notranslate"><span class="pre">get_meta()</span></code> to print the meta data dict.</p>
+<a class=""
+               data-lightbox="group-dd44b0ee-adfb-4dd1-8ca9-d431d0a8e7bf"
+               href="../../_images/112.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/112.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a></div>
+<div class="section" id="console">
+<h4>Console<a class="headerlink" href="#console" title="Permalink to this headline">¶</a></h4>
+<p>View/hide the viewer console</p>
+</div>
+</div>
+<div class="section" id="help">
+<h3>Help<a class="headerlink" href="#help" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="open-docs">
+<h4>Open docs<a class="headerlink" href="#open-docs" title="Permalink to this headline">¶</a></h4>
+<p>Open these docs</p>
+</div>
+</div>
+</div>
+<div class="section" id="viewerconsole">
+<span id="id1"></span><h2>Console<a class="headerlink" href="#viewerconsole" title="Permalink to this headline">¶</a></h2>
+<p>You can interact directly with the <a class="reference internal" href="#viewerworkenv"><span class="std std-ref">work environment</span></a> using the console.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-viewercore"><span class="std std-ref">Viewer Core API</span></a>, <a class="reference internal" href="../general/misc.html#consoleoverview"><span class="std std-ref">Overview on consoles</span></a></p>
+</div>
+<div class="section" id="namespace">
+<h3>Namespace<a class="headerlink" href="#namespace" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Reference</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>vi</td>
+<td>Instance of <a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-viewerutils"><span class="std std-ref">ViewerUtils</span></a>. Use this to interact with the viewer.</td>
+</tr>
+<tr class="row-odd"><td>all_modules</td>
+<td>List all available modules (includes default and any available plugins/custom modules)</td>
+</tr>
+<tr class="row-even"><td>ViewerWorkEnv</td>
+<td>Use for creating new instances of <a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-viewerworkenv"><span class="std std-ref">ViewerWorkEnv</span></a></td>
+</tr>
+<tr class="row-odd"><td>ImgData</td>
+<td>Use for creating new instances of <a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-imgdata"><span class="std std-ref">ImgData</span></a></td>
+</tr>
+<tr class="row-even"><td>get_workEnv()</td>
+<td>Get the current viewer <a class="reference internal" href="#viewerworkenv"><span class="std std-ref">work environment</span></a> (instance of <a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-viewerworkenv"><span class="std std-ref">ViewerWorkEnv</span></a>)</td>
+</tr>
+<tr class="row-odd"><td>get_image()</td>
+<td>Get the current image sequence (returns current <a class="reference internal" href="../../api_reference/Viewer_data_types.html#api-viewerworkenv"><span class="std std-ref">ViewerWorkEnv.imgdata.seq</span></a>)</td>
+</tr>
+<tr class="row-even"><td>get_meta()</td>
+<td>Get the current meta data</td>
+</tr>
+<tr class="row-odd"><td>get_module(&lt;name&gt;)</td>
+<td>Pass the name of a module as a string. Returns that module if it is available.</td>
+</tr>
+<tr class="row-even"><td>get_batch_manager()</td>
+<td>Get the batch manager.</td>
+</tr>
+<tr class="row-odd"><td>update_workEnv()</td>
+<td>Update the viewer GUI with the viewer work environment (vi.viewer.workEnv)</td>
+</tr>
+<tr class="row-even"><td>clear_workEnv()</td>
+<td>Clear the current work envionment, cleanup the GUI and free the RAM</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="view-meta-data">
+<h4>View meta data<a class="headerlink" href="#view-meta-data" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_meta</span><span class="p">()</span>
+
+<span class="go">{&#39;origin&#39;: &#39;AwesomeImager&#39;, &#39;version&#39;: &#39;4107ff58a0c3d4d5d3c15c3d6a69f8798a20e3de&#39;, &#39;fps&#39;: 10.0, &#39;date&#39;: &#39;20190426_152034&#39;, &#39;vmin&#39;: 323, &#39;vmax&#39;: 1529, &#39;orig_meta&#39;: {&#39;source&#39;: &#39;AwesomeImager&#39;, &#39;version&#39;: &#39;4107ff58a0c3d4d5d3c15c3d6a69f8798a20e3de&#39;, &#39;level_min&#39;: 323, &#39;stims&#39;: {}, &#39;time&#39;: &#39;152034&#39;, &#39;date&#39;: &#39;20190426&#39;, &#39;framerate&#39;: 10.0, &#39;level_max&#39;: 1529}}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="view-history-trace">
+<h4>View history trace<a class="headerlink" href="#view-history-trace" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_workEnv</span><span class="p">()</span><span class="o">.</span><span class="n">history_trace</span>
+
+<span class="go">[{&#39;caiman_motion_correction&#39;: {&#39;max_shifts_x&#39;: 32, &#39;max_shifts_y&#39;: 32, &#39;iters_rigid&#39;: 1, &#39;name_rigid&#39;: &#39;Does not matter&#39;, &#39;max_dev&#39;: 20, &#39;strides&#39;: 196, &#39;overlaps&#39;: 98, &#39;upsample&#39;: 4, &#39;name_elas&#39;: &#39;a1_t2&#39;, &#39;output_bit_depth&#39;: &#39;Do not convert&#39;, &#39;bord_px&#39;: 5}}, {&#39;cnmfe&#39;: {&#39;Input&#39;: &#39;Current Work Environment&#39;, &#39;frate&#39;: 10.0, &#39;gSig&#39;: 10, &#39;bord_px&#39;: 5, &#39;min_corr&#39;: 0.9600000000000001, &#39;min_pnr&#39;: 10, &#39;min_SNR&#39;: 1, &#39;r_values_min&#39;: 0.7, &#39;decay_time&#39;: 2, &#39;rf&#39;: 80, &#39;stride&#39;: 40, &#39;gnb&#39;: 8, &#39;nb_patch&#39;: 8, &#39;k&#39;: 8, &#39;name_corr_pnr&#39;: &#39;a8_t1&#39;, &#39;name_cnmfe&#39;: &#39;a1_t2&#39;, &#39;do_corr_pnr&#39;: False, &#39;do_cnmfe&#39;: True}}, {&#39;cnmfe&#39;: {&#39;Input&#39;: &#39;Current Work Environment&#39;, &#39;frate&#39;: 10.0, &#39;gSig&#39;: 10, &#39;bord_px&#39;: 5, &#39;min_corr&#39;: 0.9600000000000001, &#39;min_pnr&#39;: 14, &#39;min_SNR&#39;: 1, &#39;r_values_min&#39;: 0.7, &#39;decay_time&#39;: 4, &#39;rf&#39;: 80, &#39;stride&#39;: 40, &#39;gnb&#39;: 8, &#39;nb_patch&#39;: 8, &#39;k&#39;: 8, &#39;name_corr_pnr&#39;: &#39;&#39;, &#39;name_cnmfe&#39;: &#39;a1_t2&#39;, &#39;do_corr_pnr&#39;: False, &#39;do_cnmfe&#39;: True}}]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="open-image">
+<h4>Open image<a class="headerlink" href="#open-image" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Get the tiff module</span>
+<span class="n">tio</span> <span class="o">=</span> <span class="n">get_module</span><span class="p">(</span><span class="s1">&#39;tiff_io&#39;</span><span class="p">)</span>
+
+<span class="c1"># Set the tiff and meta file paths</span>
+<span class="n">tiff_path</span> <span class="o">=</span> <span class="s1">&#39;/path_to_tiff_file.tiff&#39;</span>
+<span class="n">meta_path</span> <span class="o">=</span> <span class="s1">&#39;/path_to_meta_file.json&#39;</span>
+
+<span class="n">tio</span><span class="o">.</span><span class="n">load_tiff</span><span class="p">(</span><span class="n">tiff_path</span><span class="p">,</span> <span class="n">meta_path</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;asarray&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html#api-tiffmodule"><span class="std std-ref">Tiff IO API</span></a>, Information on the <a class="reference internal" href="../convert_meta_data.html#convertmetadata"><span class="std std-ref">meta data format</span></a></p>
+</div>
+<p><strong>Use the ViewerCore API to open any arbitrary image</strong></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tifffile</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="c1"># Open an image file in whatever way you require</span>
+<span class="n">seq</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;/path_to_tiff_file&#39;</span><span class="p">)</span>
+
+<span class="n">meta</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1"># Create ImgData instance</span>
+<span class="c1"># Image sequence must be numpy array of shape [x, y, t]</span>
+<span class="n">imgdata</span> <span class="o">=</span> <span class="n">ImgData</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">meta</span><span class="p">)</span>
+
+<span class="c1"># Create a work environment instance</span>
+<span class="n">work_env</span> <span class="o">=</span> <span class="n">ViewerWorkEnv</span><span class="p">(</span><span class="n">imgdata</span><span class="p">)</span>
+
+<span class="c1"># Set this new work environment instance as the viewer work environment</span>
+<span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">workEnv</span> <span class="o">=</span> <span class="n">work_end</span>
+
+<span class="c1"># Update the viewer GUI with the new work envionment</span>
+<span class="n">update_workEnv</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="splice-img-seq">
+<h4>Splice img seq<a class="headerlink" href="#splice-img-seq" title="Permalink to this headline">¶</a></h4>
+<p>Extract the image sequence between frame 1000 and 2000. Image sequences are simply numpy arrays.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html">Numpy array indexing</a></p>
+</div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Get the current image sequence</span>
+<span class="n">seq</span> <span class="o">=</span> <span class="n">get_image</span><span class="p">()</span>
+
+<span class="c1"># Trim the image sequence</span>
+<span class="n">trim</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1000</span><span class="p">:</span><span class="mi">2000</span><span class="p">]</span>
+
+<span class="c1"># Set the viewer work environment image sequence to the trim one</span>
+<span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">workEnv</span><span class="o">.</span><span class="n">imgdata</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="n">trim</span>
+
+<span class="c1"># Update the GUI with the new work environment</span>
+<span class="n">update_workEnv</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="running-scripts">
+<h3>Running scripts<a class="headerlink" href="#running-scripts" title="Permalink to this headline">¶</a></h3>
+<p>You can use the <a class="reference internal" href="modules/script_editor.html#module-scripteditor"><span class="std std-ref">Script Editor</span></a> to run scripts in the Viewer console for automating tasks such as batch creation. It basically allows you to use the <a class="reference internal" href="#viewerconsole"><span class="std std-ref">viewer console</span></a> more conveniently with a text editor.</p>
+</div>
 </div>
 </div>
 
@@ -232,10 +651,10 @@ You can then type the following to see the meta data: <code class="docutils lite
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="add_to_project.html" class="btn btn-neutral float-right" title="Add a Sample to the Project" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../convert_meta_data.html" class="btn btn-neutral float-right" title="Convert Meta Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../project_organization/new_project/new_project.html" class="btn btn-neutral float-left" title="Create a New Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../project_organization/project_browser/project_browser.html" class="btn btn-neutral float-left" title="Project Browser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

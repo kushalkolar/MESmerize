@@ -1,29 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: kushal
 
-Chatzigeorgiou Group
-Sars International Centre for Marine Molecular Biology
+#@author: kushal
 
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-"""
+#Chatzigeorgiou Group
+#Sars International Centre for Marine Molecular Biology
+
+#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
 
 import os
 from stat import S_IEXEC
 from time import time
 from datetime import datetime
 from . import get_sys_config
-from typing import Optional, Union, Tuple
+from typing import *
 import numpy as np
 import h5py
 import json
 import pandas as pd
 from warnings import warn
-from tqdm import tqdm
+import traceback
+from PyQt5 import QtCore, QtWidgets
+from functools import wraps
 
 
 def make_workdir(prefix: str = '') -> str:
+    """
+    Make a workdir within the mesmerize_tmp directory of the workdir specified in the configuration
+    The name of the created workdir is the date & time of its creation. You can add a prefix to this name.
+
+    :param prefix: Prefix for the workdir name
+    :return:    full workdir path
+
+    """
     main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
 
     if main_workdir == '':
@@ -99,6 +109,7 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
 
 
 class HdfTools:
+    """Functions for saving and loading HDF5 data"""
     @staticmethod
     def save_dataframe(path: str, dataframe: pd.DataFrame, metadata: Optional[dict] = None,
                        metadata_method: str = 'json', raise_meta_fail: bool = True):
@@ -106,10 +117,11 @@ class HdfTools:
         Save DataFrame to hdf5 file along with a meta data dict.
 
         Meta data dict can either be serialized with json and stored as a str in the hdf5 file, or recursively saved
-        into hdf5 groups if the dict contains types that hdf5 can deal with.
-        Experiment with both methods and see what works best
+        into hdf5 groups if the dict contains types that hdf5 can deal with. Experiment with both methods and see what works best
+
         Currently the hdf5 method can work with these types: [str, bytes, int, float, np.int, np.int8, np.int16,
         np.int32, np.int64, np.float, np.float16, np.float32, np.float64, np.float128, np.complex].
+
         If it encounters an object that is not of these types it will store whatever that object's __str__() method
         returns if on_meta_fail is False, else it will raise an exception.
 
@@ -171,15 +183,20 @@ class HdfTools:
         return (df, metadata)
 
     @staticmethod
-    def save_dict(d: dict, filename: str, group: str):
+    def save_dict(d: dict, filename: str, group: str, raise_type_fail=True):
         """
         Recursively save a dict to an hdf5 group.
+
         :param d:        dict to save
         :param filename: filename
         :param group:    group name to save the dict to
+        :param raise_type_fail: whether to raise if saving a piece of data fails
         """
+        if os.path.isfile(filename):
+            raise FileExistsError
+
         with h5py.File(filename, 'w') as h5file:
-            HdfTools._dicts_to_group(h5file, f'{group}/', d, raise_meta_fail=True)
+            HdfTools._dicts_to_group(h5file, f'{group}/', d, raise_meta_fail=raise_type_fail)
 
     @staticmethod
     def _dicts_to_group(h5file: h5py.File, path: str, d: dict, raise_meta_fail: bool):
@@ -188,23 +205,40 @@ class HdfTools:
             if isinstance(item, np.ndarray):
 
                 if item.dtype == np.dtype('O'):
-                    msg = f"numpy dtype 'O' for item: {item} not supported not supported by HDF5"
+                    # see if h5py is ok with it
+                    try:
+                        h5file[path + key] = item
+                        # h5file[path + key].attrs['dtype'] = item.dtype.str
+                    except:
+                        msg = f"numpy dtype 'O' for item: {item} not supported by HDF5\n{traceback.format_exc()}"
 
-                    if raise_meta_fail:
-                        raise TypeError(msg)
-                    else:
-                        h5file[path + key] = str(item)
-                        warn(f"{msg}, storing whatever str(obj) returns.")
+                        if raise_meta_fail:
+                            raise TypeError(msg)
+                        else:
+                            h5file[path + key] = str(item)
+                            warn(f"{msg}, storing whatever str(obj) returns.")
 
+                # numpy array of unicode strings
+                elif item.dtype.str.startswith('<U'):
+                    h5file[path + key] = item.astype(h5py.special_dtype(vlen=str))
+                    h5file[path + key].attrs['dtype'] = item.dtype.str  # h5py doesn't restore the right dtype for str types
+
+                # other types
                 else:
                     h5file[path + key] = item
+                    # h5file[path + key].attrs['dtype'] = item.dtype.str
 
+            # single pieces of data
             elif isinstance(item, (str, bytes, int, float, np.int, np.int8, np.int16, np.int32, np.int64, np.float,
                                    np.float16, np.float32, np.float64, np.float128, np.complex)):
                 h5file[path + key] = item
 
             elif isinstance(item, dict):
                 HdfTools._dicts_to_group(h5file, path + key + '/', item, raise_meta_fail)
+
+            # last resort, try to convert this object to a dict and save its attributes
+            elif hasattr(item, '__dict__'):
+                HdfTools._dicts_to_group(h5file, path + key + '/', item.__dict__, raise_meta_fail)
 
             else:
                 msg = f"{type(item)} for item: {item} not supported not supported by HDF5"
@@ -220,6 +254,7 @@ class HdfTools:
     def load_dict(filename: str, group: str) -> dict:
         """
         Recursively load a dict from an hdf5 group.
+
         :param filename: filename
         :param group:    group name of the dict
         :return:         dict recursively loaded from the hdf5 group
@@ -232,7 +267,10 @@ class HdfTools:
         ans = {}
         for key, item in h5file[path].items():
             if isinstance(item, h5py._hl.dataset.Dataset):
-                ans[key] = item[()]
+                if item.attrs.__contains__('dtype'):
+                    ans[key] = item[()].astype(item.attrs['dtype'])
+                else:
+                    ans[key] = item[()]
             elif isinstance(item, h5py._hl.group.Group):
                 ans[key] = HdfTools._dicts_from_group(h5file, path + key + '/')
         return ans

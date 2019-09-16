@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1146</width>
+    <width>1176</width>
     <height>661</height>
    </rect>
   </property>
@@ -495,8 +495,8 @@ relative maxima</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1146</width>
-     <height>22</height>
+     <width>1176</width>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuView">
@@ -541,6 +541,46 @@ relative maxima</string>
     <string>&amp;Transmissions dock</string>
    </property>
   </action>
+  <action name="actionmodeView">
+   <property name="text">
+    <string>modeView</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionmodeDrag">
+   <property name="text">
+    <string>modeDrag</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionmodeAddPeak">
+   <property name="text">
+    <string>modeAddPeak</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionmodeAddBase">
+   <property name="text">
+    <string>modeAddBase</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionmodeDelete">
+   <property name="text">
+    <string>modeDelete</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -572,12 +612,12 @@ relative maxima</string>
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>720</x>
-     <y>508</y>
+     <x>405</x>
+     <y>247</y>
     </hint>
     <hint type="destinationlabel">
-     <x>630</x>
-     <y>478</y>
+     <x>356</x>
+     <y>221</y>
     </hint>
    </hints>
   </connection>
@@ -592,8 +632,8 @@ relative maxima</string>
      <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>893</x>
-     <y>305</y>
+     <x>1175</x>
+     <y>335</y>
     </hint>
    </hints>
   </connection>

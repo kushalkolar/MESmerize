@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ROI Manager &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Caiman Motion Correction" href="caiman_motion_correction.html" />
+    <link rel="prev" title="Stimulus Mapping" href="stimulus_mapping.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ROI Manager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#layout">Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-roi-mode">Manual ROI Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#console">Console</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+      <li>ROI Manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/user_guides/viewer/modules/roi_manager.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="roi-manager">
+<span id="roimanager"></span><h1>ROI Manager<a class="headerlink" href="#roi-manager" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html#api-roimanager"><span class="std std-ref">API Reference</span></a></p>
+<p><strong>Manage and annotate ROIs</strong></p>
+<a class=""
+               data-lightbox="group-7c3b4470-436b-41b5-ae7b-8cdf763409b5"
+               href="../../../_images/roi_manager_viewer1.png"
+               title=""
+               data-title=""
+               ><img src="../../../_images/roi_manager_viewer1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p>The ROI Manager has a manual mode, to draw ROIs manually, and a CNMF(E) mode where ROIs can be imported from CNMF(E) outputs.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><span class="xref std std-ref">CNMF Usage</span> and <a class="reference internal" href="cnmfe.html#module-cnmfe-usage"><span class="std std-ref">CNMFE Usage</span></a>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You cannot combine manual and CNMF(E) ROIs in the same sample.</p>
+</div>
+<p>The ImageJ ROI import uses the read-roi package by Hadrien Mary <a class="reference external" href="https://pypi.org/project/read-roi/">https://pypi.org/project/read-roi/</a></p>
+<div class="section" id="layout">
+<h2>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h2>
+<img alt="../../../_images/roi_manager.png" src="../../../_images/roi_manager.png" />
+<p><strong>Controls</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">UI</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Add ROI button</td>
+<td><p class="first">Add Polygon ROI (Manual mode)</p>
+<div class="last line-block">
+<div class="line">Right click this button to add an elliptical ROI</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>Show all</td>
+<td>Show all ROIs in the viewer</td>
+</tr>
+<tr class="row-even"><td>Live plot</td>
+<td>Live update of the curve plot with changes (Manual mode)</td>
+</tr>
+<tr class="row-odd"><td>Plot</td>
+<td>Plot the curves (Manual mode)</td>
+</tr>
+<tr class="row-even"><td>Import from ImageJ</td>
+<td>Import ROIs from an ImageJ ROIs zip file (Manual mode)</td>
+</tr>
+<tr class="row-odd"><td>Switch to manual …</td>
+<td>Switch to Manual mode. Clears CNMF(E) ROIs.</td>
+</tr>
+<tr class="row-even"><td>ROIs list</td>
+<td><p class="first">Color-coded list of ROIs.</p>
+<div class="line-block">
+<div class="line">Left click to highlight the ROI in the viewer</div>
+</div>
+<div class="last line-block">
+<div class="line">Right click to show the context menu allowing you to delete the selected ROI</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>Tags list</td>
+<td><p class="first">List of tags for the selected ROI</p>
+<div class="last line-block">
+<div class="line">Correspond to the <a class="reference internal" href="../../project_organization/new_project/new_project.html#roitypecolumns"><span class="std std-ref">ROI Type Columns of the Project Configuration</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>Add Tag to ROI Def…</td>
+<td>Set the tag for the current selection in the Tags list</td>
+</tr>
+<tr class="row-odd"><td>Set ROI Tag</td>
+<td>Click to set the tag, or just press return in the text entry above</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Keyboard shortcuts</strong>.</p>
+<p>These only work when the ROI manager is docked within the Viewer and while you are typing in the <em>Add Tag to ROI Definition</em> text entry.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Page Up</td>
+<td>Select previous ROI</td>
+</tr>
+<tr class="row-odd"><td>Page Down</td>
+<td>Select next ROI</td>
+</tr>
+<tr class="row-even"><td>Right Arrow</td>
+<td>Play the video at high speed</td>
+</tr>
+<tr class="row-odd"><td>Left Arrow</td>
+<td>Play the video backwards at high speed</td>
+</tr>
+<tr class="row-even"><td>Home</td>
+<td>Go to the beginning of the video</td>
+</tr>
+<tr class="row-odd"><td>End</td>
+<td>Go to the end of the video</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="manual-roi-mode">
+<h2>Manual ROI Mode<a class="headerlink" href="#manual-roi-mode" title="Permalink to this headline">¶</a></h2>
+<p>When you click the “Add ROI” button to add a Manual Polygon ROI, a new rectangular ROI will be add in the top left corner of the image. You can add new vertices to this polygon by clicking on any of its edges. You can drag the vertices to change the shape of the polygon, and you can drag the entire ROI as well by clicking and dragging within the ROI region. Similarly you can reshape elliptical ROIs.</p>
+<p>Hovering over the ROI selects it in the ROI list.</p>
+</div>
+<div class="section" id="console">
+<h2>Console<a class="headerlink" href="#console" title="Permalink to this headline">¶</a></h2>
+<p>Access the back-end ROI Manager through the viewer console or <span class="xref std std-ref">Script editor</span> to interact with the ROIs.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html#api-roimanagers"><span class="std std-ref">Back-end ROI Manager APIs</span></a>, <a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html#api-roilist"><span class="std std-ref">ROIList API</span></a>, <a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html#api-roitypes"><span class="std std-ref">ROI Type APIs</span></a></p>
+</div>
+<p>Get the back-end ROI Manager, see <a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html#api-roimanagers"><span class="std std-ref">ROI Manager APIs</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_workEnv</span><span class="p">()</span><span class="o">.</span><span class="n">roi_manager</span>
+
+<span class="go">&lt;mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE object at 0x7f01b8780668&gt;``</span>
+</pre></div>
+</div>
+<p>Get the ROI List, see <a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html#api-roilist"><span class="std std-ref">ROIList API</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_workEnv</span><span class="p">()</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">roi_list</span>
+
+<span class="go">[&lt;mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc78b278&gt;, &lt;mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc817630&gt;, &lt;mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc817668&gt;, &lt;mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc7c5438&gt;, &lt;mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI object at 0x7f01bc7c5208&gt;]</span>
+</pre></div>
+</div>
+<p>Work with an ROI object, see <a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html#api-roitypes"><span class="std std-ref">ROI Type APIs</span></a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the curve data of an ROI</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">get_workEnv</span><span class="p">()</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">roi_list</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">curve_data</span>
+
+<span class="p">(</span><span class="n">array</span><span class="p">([</span>   <span class="mi">0</span><span class="p">,</span>    <span class="mi">1</span><span class="p">,</span>    <span class="mi">2</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="mi">2995</span><span class="p">,</span> <span class="mi">2996</span><span class="p">,</span> <span class="mi">2997</span><span class="p">]),</span> <span class="n">array</span><span class="p">([</span> <span class="o">-</span><span class="mf">207.00168389</span><span class="p">,</span>  <span class="o">-</span><span class="mf">161.78229208</span><span class="p">,</span>  <span class="o">-</span><span class="mf">157.62522988</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mf">1017.73174502</span><span class="p">,</span>
+   <span class="o">-</span><span class="mf">1030.27047731</span><span class="p">,</span> <span class="o">-</span><span class="mf">1042.26989668</span><span class="p">]))</span>
+
+<span class="c1"># Get the tags of an ROI</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">get_workEnv</span><span class="p">()</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">roi_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_all_tags</span><span class="p">()</span>
+
+<span class="p">{</span><span class="s1">&#39;anatomical_location&#39;</span><span class="p">:</span> <span class="s1">&#39;tail&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_name&#39;</span><span class="p">:</span> <span class="s1">&#39;dcen&#39;</span><span class="p">,</span> <span class="s1">&#39;morphology&#39;</span><span class="p">:</span> <span class="s1">&#39;untagged&#39;</span><span class="p">}</span>
+
+<span class="c1"># Get a single tag</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">get_workEnv</span><span class="p">()</span><span class="o">.</span><span class="n">roi_manager</span><span class="o">.</span><span class="n">roi_list</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cell_name&#39;</span><span class="p">)</span>
+
+<span class="s1">&#39;dcen&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="caiman_motion_correction.html" class="btn btn-neutral float-right" title="Caiman Motion Correction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="stimulus_mapping.html" class="btn btn-neutral float-left" title="Stimulus Mapping" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

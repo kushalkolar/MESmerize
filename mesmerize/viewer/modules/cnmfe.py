@@ -37,6 +37,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     @present_exceptions()
     def get_params(self, *args, **kwargs) -> dict:
+        """
+        Get a dict of the set parameters.
+        If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
+        Doesn't use any arguments
+
+        :return: parameters dict
+        :rtype: dict
+        """
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
             raise KeyError('No framerate for current image sequence!',
                            'You must set a framerate for the current image sequence. '
@@ -57,7 +65,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'min_pnr':         self.ui.spinBoxMinPNR.value(),
              'min_SNR':         self.ui.spinBoxMinSNR.value(),
              'r_values_min':    self.ui.doubleSpinBoxRValuesMin.value(),
-             'decay_time':      self.ui.spinBoxDecayTime.value(),
+             'decay_time':      self.ui.doubleSpinBoxDecayTime.value(),
              'rf':              self.ui.spinBoxRf.value(),
              'stride':          self.ui.spinBoxOverlap.value(),
              'gnb':             self.ui.spinBoxGnb.value(),
@@ -76,7 +84,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             d = self.get_params()
             json.dump(d, f)
 
-    @use_open_file_dialog('Open CNMFE parameters file', None, ['.json'])
+    @use_open_file_dialog('Open CNMFE parameters file', None, ['*.json'])
     @present_exceptions('Cannot import parameters', 'Make sure it is a CNMFE parameters file')
     def import_params(self, path, *args, **kwargs):
         with open(path, 'r') as f:
@@ -84,13 +92,18 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.set_params(d)
 
     def set_params(self, params: dict):
+        """
+        Set all parameters from a dict. All keys must be present in the dict.
+
+        :param params: parameters dict
+        """
         self.ui.comboBoxInput.setCurrentText(params['Input'])
         self.ui.spinBoxGSig.setValue(params['gSig'])
         self.ui.doubleSpinBoxMinCorr.setValue(params['min_corr'])
         self.ui.spinBoxMinPNR.setValue(params['min_pnr'])
         self.ui.spinBoxMinSNR.setValue(params['min_SNR'])
         self.ui.doubleSpinBoxRValuesMin.setValue(params['r_values_min'])
-        self.ui.spinBoxDecayTime.setValue(params['decay_time'])
+        self.ui.doubleSpinBoxDecayTime.setValue(params['decay_time'])
         self.ui.spinBoxRf.setValue(params['rf'])
         self.ui.spinBoxOverlap.setValue(params['stride'])
         self.ui.spinBoxGnb.setValue(params['gnb'])
@@ -102,6 +115,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.lineEditAin.setText(params['Ain'])
 
     def add_to_batch_corr_pnr(self):
+        """
+        Add a Corr PNR batch item with the currently set parameters and the current work environment.
+
+        """
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
             if self.vi.viewer.workEnv.isEmpty:
                 QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
@@ -135,6 +152,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.clear_line_edits()
 
     def add_to_batch_cnmfe(self):
+        """
+        Add a CNMFE batch item with the currently set parameters and the current work environment.
+        """
         if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
             if self.vi.viewer.workEnv.isEmpty:
                 QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '

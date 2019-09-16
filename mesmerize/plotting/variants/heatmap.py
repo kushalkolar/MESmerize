@@ -30,6 +30,7 @@ from functools import partial
 
 
 class CustomClusterGrid(ClusterGrid):
+    """Slightly modified from Seaborn ClusterGrid so that an existing figure instance can be used"""
     def __init__(self, data, fig, pivot_kws=None, z_score=None, standard_scale=None,
                  figsize=None, row_colors=None, col_colors=None, mask=None):
         """Grid object for organizing clustered heatmap input on to axes"""
@@ -96,23 +97,27 @@ class CustomClusterGrid(ClusterGrid):
 
 
 class Heatmap(MatplotlibWidget):
-    # signal_row_selection_changed = QtCore.pyqtSignal(tuple)
-    sig_selection_changed = QtCore.pyqtSignal(tuple)
+    """Heatmap plot variant"""
+    sig_selection_changed = QtCore.pyqtSignal(tuple)  #: Emits indices of data coordinates (x, y) from mouse-click events on the heatmap
 
     def __init__(self, highlight_mode='row'):
+        """
+
+        :param highlight_mode: The selection mode for the heatmap. One of either 'row' or 'item'
+        """
         MatplotlibWidget.__init__(self)
         rcParams['image.interpolation'] = None
 
-        self.data = None
+        self.data = None  #: 2D numpy array of the heatmap data
 
-        self.selector = Selection()
+        self.selector = Selection()  #: Selection instance that organizes mouse click events on the heatmap
         self.selector.sig_selection_changed.connect(self.sig_selection_changed.emit)
         self.selector.sig_selection_changed.connect(self.scroll_selector)
 
         self.stimulus_indicators = []
-        self.highlight_mode = highlight_mode
+        self.highlight_mode = highlight_mode  #: selection mode, either 'row' or 'item
 
-        self.plot = None
+        self.plot = None  #: ClusterGrid object instance containing the plot Axes
 
         self.cid_heatmap = None
         self.cid_ax_row_colors = None
@@ -132,6 +137,9 @@ class Heatmap(MatplotlibWidget):
         """
         :param data:    2D numpy array
         :param args:    Additional args that are passed to sns.heatmap()
+        :param ylabels: Labels used to create the ylabels bar
+        :param ylabels_cmap: colormap for the ylabels bar
+        :param cluster_kwargs: keywoard arguments for visualizing hierarchical clustering
         :param kwargs:  Additional kwargs that are passed to sns.heatmap()
         """
         self.data = data
@@ -141,9 +149,19 @@ class Heatmap(MatplotlibWidget):
         if ylabels is not None:
             mapper = get_colormap(ylabels, ylabels_cmap)
             row_colors = list(map(mapper.get, ylabels))
-
         else:
             row_colors = None
+
+        if 'xlabels' in kwargs.keys():
+            xlabels = kwargs.pop('xlabels')
+
+            if isinstance(xlabels, Series):
+                xlabels = xlabels.values
+
+            xlabels_mapper = get_colormap(xlabels, ylabels_cmap)
+            col_colors = list(map(xlabels_mapper.get, xlabels))
+        else:
+            col_colors = None
 
         cluster_kwarg_keys = ['row_cluster', 'row_linkage', 'col_cluster', 'col_linkage', 'colorbar_kws', 'metric', 'method']
 
@@ -168,7 +186,7 @@ class Heatmap(MatplotlibWidget):
         if self.fig is not None:
             self.fig.clear()
 
-        self.plot = CustomClusterGrid(data=data, fig=self.fig, figsize=None, row_colors=row_colors, col_colors=None,
+        self.plot = CustomClusterGrid(data=data, fig=self.fig, figsize=None, row_colors=row_colors, col_colors=col_colors,
                                       z_score=None, standard_scale=None, mask=None)
         self.plot.plot(*args, **cluster_kwargs, **kwargs)
 
@@ -199,6 +217,7 @@ class Heatmap(MatplotlibWidget):
         # self.selector = Selection(self, mode=self.highlight_mode)
 
     def block_callbacks(func):
+        """Block callbacks, used when the plot x and y limits change due to user interaction"""
         def fn(self, *args, **kwargs):
             self.disconnect_xlim_callbacks()
             self.disconnect_ylim_callbacks()
@@ -271,6 +290,13 @@ class Heatmap(MatplotlibWidget):
         self.plot.ax_col_dendrogram.get_yaxis().set_visible(False)
 
     def add_stimulus_indicator(self, start: int, end: int, color: str):
+        """
+        Add lines to indicate the start and end of a stimulus or behavioral period
+
+        :param start: start index
+        :param end: end index
+        :param color: line color
+        """
         for t in [start, end]:
             x = np.array([t, t])
             y = np.array([0, self.data.shape[0]])

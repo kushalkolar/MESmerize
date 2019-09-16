@@ -1,0 +1,1582 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ROI Manager &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Stimulus Mapping" href="stimulus_mapping.html" />
+    <link rel="prev" title="Viewer Modules" href="viewer_modules.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ROI Manager</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#modulegui">ModuleGUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#managers">Managers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#abstractbasemanager">AbstractBaseManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#managermanual">ManagerManual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#managercnmfe">ManagerCNMFE</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#roi-list">ROI List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#roi-types">ROI Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#abstractbaseroi">AbstractBaseROI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#baseroi">BaseROI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manualroi">ManualROI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cnmfroi">CNMFROI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>ROI Manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api_reference/viewer_modules/roi_manager.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="roi-manager">
+<span id="api-roimanager"></span><h1>ROI Manager<a class="headerlink" href="#roi-manager" title="Permalink to this headline">¶</a></h1>
+<p>The GUI QDockWidget that communicates with the <a class="reference internal" href="#api-roimanagers"><span class="std std-ref">back-end managers</span></a></p>
+<div class="section" id="modulegui">
+<h2>ModuleGUI<a class="headerlink" href="#modulegui" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager.</code><code class="descname">ModuleGUI</code><span class="sig-paren">(</span><em>parent</em>, <em>viewer_reference</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>The GUI front-end for the ROI Manager module</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent</em>, <em>viewer_reference</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate attributes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.manager">
+<code class="descname">manager</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>The back-end manager instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.eventFilter">
+<code class="descname">eventFilter</code><span class="sig-paren">(</span><em>QObject</em>, <em>QEvent</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.eventFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.eventFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set some keyboard shortcuts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.slot_delete_roi_menu">
+<code class="descname">slot_delete_roi_menu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.slot_delete_roi_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.slot_delete_roi_menu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the currently selected ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.start_cnmfe_mode">
+<code class="descname">start_cnmfe_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.start_cnmfe_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.start_cnmfe_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start in CNMFE mode. Creates a new back-end manager instance (uses ManagerCNMFE)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.add_all_cnmfe_components">
+<code class="descname">add_all_cnmfe_components</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.add_all_cnmfe_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.add_all_cnmfe_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import CNMF(E) output data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.start_manual_mode">
+<code class="descname">start_manual_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.start_manual_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.start_manual_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start in manual mode. Creates a new back-end manager instance (Uses ManagerManual)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.add_manual_roi">
+<code class="descname">add_manual_roi</code><span class="sig-paren">(</span><em>shape: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.add_manual_roi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.add_manual_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a manual ROI. Just calls ManagerManual.add_roi</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.package_for_project">
+<code class="descname">package_for_project</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.package_for_project"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.package_for_project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all the ROI states so that they can be packaged along with the rest of the work environment to be saved as a project Sample</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.set_all_from_states">
+<code class="descname">set_all_from_states</code><span class="sig-paren">(</span><em>states: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.set_all_from_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.set_all_from_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all the ROIs from a states dict. Instantiates the appropriate back-end Manager</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager.ModuleGUI.import_from_imagej">
+<code class="descname">import_from_imagej</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager.html#ModuleGUI.import_from_imagej"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager.ModuleGUI.import_from_imagej" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import ROIs from ImageJ zip file</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="managers">
+<span id="api-roimanagers"></span><h2>Managers<a class="headerlink" href="#managers" title="Permalink to this headline">¶</a></h2>
+<p>The back-end managers that are used by the <a class="reference internal" href="#api-roimanager"><span class="std std-ref">ROI Manager ModuleGUI</span></a></p>
+<p>The managers hold instances of <a class="reference internal" href="#api-roitypes"><span class="std std-ref">ROIs</span></a> in an instance of <a class="reference internal" href="#api-roilist"><span class="std std-ref">ROIList</span></a></p>
+<div class="section" id="abstractbasemanager">
+<h3>AbstractBaseManager<a class="headerlink" href="#abstractbasemanager" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.managers.</code><code class="descname">AbstractBaseManager</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface: mesmerize.viewer.core.common.ViewerUtils</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base ROI Manager</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface: mesmerize.viewer.core.common.ViewerUtils</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the common attributes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> – The ModuleGUI QDockWidget instance</li>
+<li><strong>ui</strong> – The ui of the ModuleGUI QDockWidget instance,</li>
+<li><strong>viewer_interface</strong> – A ViewerUtils instance for accessing the Viewer the parent QDockWidget belongs to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.roi_list">
+<code class="descname">roi_list</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.roi_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ROIList instance that stores the list of ROIs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.add_roi">
+<code class="descname">add_roi</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.add_roi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.add_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for adding an ROI, must be implemented in subclass</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.is_empty">
+<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true if the ROI list is empty, else return False</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_all_states">
+<code class="descname">get_all_states</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.get_all_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_all_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the ROI states for all ROIs in self.roi_list so that they can be restored.
+The appropriate manager is instantiated based on the ‘roi_type’ key of the returned dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.restore_from_states">
+<code class="descname">restore_from_states</code><span class="sig-paren">(</span><em>states: list</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.restore_from_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.restore_from_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore ROIs from their states</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_plot_item">
+<code class="descname">get_plot_item</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.get_plot_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_plot_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the viewer plot item that is associated to these ROIs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup of all ROIs in the list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__del__">
+<code class="descname">__del__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#AbstractBaseManager.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup of all ROIs in the list and deletes the manager instance. Used when switching modes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="managermanual">
+<h3>ManagerManual<a class="headerlink" href="#managermanual" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.managers.</code><code class="descname">ManagerManual</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager" title="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager</span></code></a></p>
+<p>The Manager for the Manual mode</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the common attributes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>parent</strong> – The ModuleGUI QDockWidget instance</li>
+<li><strong>ui</strong> – The ui of the ModuleGUI QDockWidget instance,</li>
+<li><strong>viewer_interface</strong> – A ViewerUtils instance for accessing the Viewer the parent QDockWidget belongs to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.create_roi_list">
+<code class="descname">create_roi_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual.create_roi_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.create_roi_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new empty ROI list instance for storing Manual ROIs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.add_roi">
+<code class="descname">add_roi</code><span class="sig-paren">(</span><em>shape: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual.add_roi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.add_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an ROI to the list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shape</strong> – either “PolyLineROI” or “EllipseROI”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.restore_from_states">
+<code class="descname">restore_from_states</code><span class="sig-paren">(</span><em>states: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual.restore_from_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.restore_from_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore ROIs from states</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.get_all_states">
+<code class="descname">get_all_states</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual.get_all_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.get_all_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the ROI states so that they can be restored later</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.import_from_imagej">
+<code class="descname">import_from_imagej</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual.import_from_imagej"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.import_from_imagej" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses read-roi package created by Hadrien Mary.
+<a class="reference external" href="https://pypi.org/project/read-roi/">https://pypi.org/project/read-roi/</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – Full path to the ImageJ ROIs zip file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="managercnmfe">
+<h3>ManagerCNMFE<a class="headerlink" href="#managercnmfe" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.managers.</code><code class="descname">ManagerCNMFE</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager" title="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager</span></code></a></p>
+<p>Manager for ROIs imported from CNMF or CNMFE outputs</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate necessary attributes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.create_roi_list">
+<code class="descname">create_roi_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE.create_roi_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.create_roi_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create empty CNMFROI list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_all_components">
+<code class="descname">add_all_components</code><span class="sig-paren">(</span><em>cnmA</em>, <em>cnmb</em>, <em>cnmC</em>, <em>cnm_f</em>, <em>cnmYrA</em>, <em>idx_components</em>, <em>dims</em>, <em>input_params_dict</em>, <em>dfof=False</em>, <em>calc_raw_min_max=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE.add_all_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_all_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_roi">
+<code class="descname">add_roi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE.add_roi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented, uses add_all_components to import all ROIs instead</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.restore_from_states">
+<code class="descname">restore_from_states</code><span class="sig-paren">(</span><em>states: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE.restore_from_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.restore_from_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore from states, such as when these ROIs are saved with a Project Sample</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.get_all_states">
+<code class="descname">get_all_states</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE.get_all_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.get_all_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all states so that they can be restored</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.update_idx_components">
+<code class="descname">update_idx_components</code><span class="sig-paren">(</span><em>ix: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE.update_idx_components"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.update_idx_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update idx_components if the user manually delete an ROI</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="roi-list">
+<span id="api-roilist"></span><h2>ROI List<a class="headerlink" href="#roi-list" title="Permalink to this headline">¶</a></h2>
+<p>Used for holding instance of <a class="reference internal" href="#api-roitypes"><span class="std std-ref">ROIs</span></a></p>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_list.</code><code class="descname">ROIList</code><span class="sig-paren">(</span><em>ui</em>, <em>roi_types: str</em>, <em>viewer_interface: mesmerize.viewer.core.common.ViewerUtils</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list for holding ROIs of one type</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>ui</em>, <em>roi_types: str</em>, <em>viewer_interface: mesmerize.viewer.core.common.ViewerUtils</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ui</strong> – The ui from the parent ModuleGUI, used to interact with the ROI list widget etc.</li>
+<li><strong>roi_types</strong> – The type of ROI that this list will hold</li>
+<li><strong>viewer_interface</strong> – ViewerUtils instance for interacting with the parent Viewer</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget">
+<code class="descname">list_widget</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>ROI list widget</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget_tags">
+<code class="descname">list_widget_tags</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tags list widget</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.vi">
+<code class="descname">vi</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.vi" title="Permalink to this definition">¶</a></dt>
+<dd><p>ViewrUtils instance</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.current_index">
+<code class="descname">current_index</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.current_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current index (int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.previous_index">
+<code class="descname">previous_index</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.previous_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Previous index (int)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>roi: Union[mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI, mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an ROI instance to the list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.clear_">
+<code class="descname">clear_</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.clear_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.clear_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup of the list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__delitem__">
+<code class="descname">__delitem__</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.__delitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__delitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete an ROI from the list and cleanup from the viewer, reindex the colors etc.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.disconnect_all">
+<code class="descname">disconnect_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.disconnect_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.disconnect_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect signals from the parent GUI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._reindex_list_widget">
+<code class="descname">_reindex_list_widget</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList._reindex_list_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._reindex_list_widget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reindex ROI list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.reindex_colormap">
+<code class="descname">reindex_colormap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.reindex_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.reindex_colormap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reindex the colors so they sequentially follow the HSV colormap</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__getitem__">
+<code class="descname">__getitem__</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span> &#x2192; Union[mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI, mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI]<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an item (ROI) from the list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_current_index">
+<code class="descname">set_current_index</code><span class="sig-paren">(</span><em>ix: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.set_current_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_current_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current index</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_roi">
+<code class="descname">highlight_roi</code><span class="sig-paren">(</span><em>roi: Union[mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI, mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.highlight_roi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highlight an ROI in white, both the spatial visualization and the curve</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_curve">
+<code class="descname">highlight_curve</code><span class="sig-paren">(</span><em>ix: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.highlight_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highlight the curve corresponding to the ROI at the passed index</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_previous_index">
+<code class="descname">set_previous_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.set_previous_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_previous_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the previous_index attribute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.slot_show_all_checkbox_clicked">
+<code class="descname">slot_show_all_checkbox_clicked</code><span class="sig-paren">(</span><em>b: bool</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.slot_show_all_checkbox_clicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.slot_show_all_checkbox_clicked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show all ROIs in the viewer overlay visualization and curves</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._show_graphics_object">
+<code class="descname">_show_graphics_object</code><span class="sig-paren">(</span><em>ix: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList._show_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._show_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show the ROI at the passed index in the viewer overlay visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._hide_graphics_object">
+<code class="descname">_hide_graphics_object</code><span class="sig-paren">(</span><em>ix: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList._hide_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._hide_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hide the ROI at the passed index in the viewer overlay visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._show_all_graphics_objects">
+<code class="descname">_show_all_graphics_objects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList._show_all_graphics_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._show_all_graphics_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show all ROIs in the viewer overlay visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._hide_all_graphics_objects">
+<code class="descname">_hide_all_graphics_objects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList._hide_all_graphics_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._hide_all_graphics_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hide all ROIs in the viewer overlay visualization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.plot_manual_roi_regions">
+<code class="descname">plot_manual_roi_regions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.plot_manual_roi_regions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.plot_manual_roi_regions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the ROI curves from the regions of all ManualROI instances in the list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_pg_roi_plot">
+<code class="descname">set_pg_roi_plot</code><span class="sig-paren">(</span><em>ix: int</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.set_pg_roi_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_pg_roi_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the ROI curve from the region of the ManualROI instance at the passed index</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_list_widget_tags">
+<code class="descname">set_list_widget_tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.set_list_widget_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_list_widget_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the tags list for the ROI at the current index</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.update_roi_defs_from_configuration">
+<code class="descname">update_roi_defs_from_configuration</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_list.html#ROIList.update_roi_defs_from_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.update_roi_defs_from_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update ROI_DEFs in the Tags list from the project configuration</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="roi-types">
+<span id="api-roitypes"></span><h2>ROI Types<a class="headerlink" href="#roi-types" title="Permalink to this headline">¶</a></h2>
+<p>A list of these are held by an instance of <a class="reference internal" href="#api-roilist"><span class="std std-ref">ROIList</span></a></p>
+<div class="section" id="abstractbaseroi">
+<h3>AbstractBaseROI<a class="headerlink" href="#abstractbaseroi" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_types.</code><code class="descname">_AbstractBaseROI</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem, view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox, state: Optional[dict]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class defining an ROI that works with the ROIList and ROI Managers.
+Inherit from this or BaseROI to make a new ROI class</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem, view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox, state: Optional[dict]</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum required attributes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curve_plot_item</strong> – The plot item that is used for display the curves in the viewer</li>
+<li><strong>view_box</strong> – ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</li>
+<li><strong>state</strong> – ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.curve_data">
+<code class="descname">curve_data</code><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.curve_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The curve data for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_roi_graphics_object">
+<code class="descname">get_roi_graphics_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; PyQt5.QtWidgets.QGraphicsObject<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.get_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_roi_graphics_object">
+<code class="descname">set_roi_graphics_object</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.set_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.reset_color">
+<code class="descname">reset_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.reset_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.reset_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the color of this ROI back to the original color</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_original_color">
+<code class="descname">set_original_color</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.set_original_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_original_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the original color for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_color">
+<code class="descname">get_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.get_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_color">
+<code class="descname">set_color</code><span class="sig-paren">(</span><em>color</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.set_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_text">
+<code class="descname">set_text</code><span class="sig-paren">(</span><em>text: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.set_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_tag">
+<code class="descname">set_tag</code><span class="sig-paren">(</span><em>roi_def: str</em>, <em>tag: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.set_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a tag for the passed roi_def</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>roi_def</strong> – The ROI_DEF that should be tagged</li>
+<li><strong>tag</strong> – The tag to label for the passed ROI_DEF/ROI Type</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_tag">
+<code class="descname">get_tag</code><span class="sig-paren">(</span><em>roi_def</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.get_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tag that is set to the passed ‘roi_def’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_all_tags">
+<code class="descname">get_all_tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.get_all_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_all_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the tags for all the ROI_DEFs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.add_to_viewer">
+<code class="descname">add_to_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.add_to_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.add_to_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add this ROI to the viewer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.remove_from_viewer">
+<code class="descname">remove_from_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.remove_from_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.remove_from_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this ROI from the viewer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.to_state">
+<code class="descname">to_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.to_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.to_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current state for this ROI so that it can be restored later</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.from_state">
+<em class="property">classmethod </em><code class="descname">from_state</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#_AbstractBaseROI.from_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.from_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore this ROI from a state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curve_plot_item</strong> – The plot item that is used for display the curves in the viewer</li>
+<li><strong>view_box</strong> – ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</li>
+<li><strong>state</strong> – ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="baseroi">
+<h3>BaseROI<a class="headerlink" href="#baseroi" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_types.</code><code class="descname">BaseROI</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: Optional[dict] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI" title="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI</span></code></a></p>
+<p>A base class that is used by ManualROI and CNMFEROI
+Inherit from this to make a new ROI class</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: Optional[dict] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate common attributes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curve_plot_item</strong> – The plot item that is used for display the curves in the viewer</li>
+<li><strong>view_box</strong> – ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</li>
+<li><strong>state</strong> – ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.curve_data">
+<code class="descname">curve_data</code><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.curve_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The curve data for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_roi_graphics_object">
+<code class="descname">get_roi_graphics_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; PyQt5.QtWidgets.QGraphicsObject<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.get_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_roi_graphics_object">
+<code class="descname">set_roi_graphics_object</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.set_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.reset_color">
+<code class="descname">reset_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.reset_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.reset_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the color of this ROI back to the original color</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_original_color">
+<code class="descname">set_original_color</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.set_original_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_original_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the original color for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_color">
+<code class="descname">get_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.get_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_color">
+<code class="descname">set_color</code><span class="sig-paren">(</span><em>color: Union[numpy.ndarray, str], *args, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.set_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_text">
+<code class="descname">set_text</code><span class="sig-paren">(</span><em>text: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.set_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_tag">
+<code class="descname">set_tag</code><span class="sig-paren">(</span><em>roi_def: str</em>, <em>tag: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.set_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a tag for the passed roi_def</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>roi_def</strong> – The ROI_DEF that should be tagged</li>
+<li><strong>tag</strong> – The tag to label for the passed ROI_DEF/ROI Type</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_tag">
+<code class="descname">get_tag</code><span class="sig-paren">(</span><em>roi_def</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.get_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tag that is set to the passed ‘roi_def’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_all_tags">
+<code class="descname">get_all_tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.get_all_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_all_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the tags for all the ROI_DEFs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.add_to_viewer">
+<code class="descname">add_to_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.add_to_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.add_to_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add this ROI to the viewer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.remove_from_viewer">
+<code class="descname">remove_from_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.remove_from_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.remove_from_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this ROI from the viewer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.to_state">
+<code class="descname">to_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.to_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.to_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must be implemented in subclass</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.from_state">
+<em class="property">classmethod </em><code class="descname">from_state</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI.from_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.from_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore this ROI from a state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curve_plot_item</strong> – The plot item that is used for display the curves in the viewer</li>
+<li><strong>view_box</strong> – ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</li>
+<li><strong>state</strong> – ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="manualroi">
+<h3>ManualROI<a class="headerlink" href="#manualroi" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_types.</code><code class="descname">ManualROI</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>roi_graphics_object: mesmerize.pyqtgraphCore.graphicsItems.ROI.ROI</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: Optional[dict] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#ManualROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI" title="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI</span></code></a></p>
+<p>A class manually drawn ROIs</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>roi_graphics_object: mesmerize.pyqtgraphCore.graphicsItems.ROI.ROI</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: Optional[dict] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#ManualROI.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_roi_graphics_object">
+<code class="descname">get_roi_graphics_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; mesmerize.pyqtgraphCore.graphicsItems.ROI.ROI<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#ManualROI.get_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_roi_graphics_object">
+<code class="descname">set_roi_graphics_object</code><span class="sig-paren">(</span><em>graphics_object: mesmerize.pyqtgraphCore.graphicsItems.ROI.ROI</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#ManualROI.set_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.to_state">
+<code class="descname">to_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#ManualROI.to_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.to_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must be implemented in subclass</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.from_state">
+<em class="property">classmethod </em><code class="descname">from_state</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#ManualROI.from_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.from_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore this ROI from a state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curve_plot_item</strong> – The plot item that is used for display the curves in the viewer</li>
+<li><strong>view_box</strong> – ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</li>
+<li><strong>state</strong> – ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.add_to_viewer">
+<code class="descname">add_to_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.add_to_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add this ROI to the viewer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.curve_data">
+<code class="descname">curve_data</code><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.curve_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The curve data for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_all_tags">
+<code class="descname">get_all_tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_all_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the tags for all the ROI_DEFs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_color">
+<code class="descname">get_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_tag">
+<code class="descname">get_tag</code><span class="sig-paren">(</span><em>roi_def</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tag that is set to the passed ‘roi_def’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.remove_from_viewer">
+<code class="descname">remove_from_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.remove_from_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this ROI from the viewer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.reset_color">
+<code class="descname">reset_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.reset_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the color of this ROI back to the original color</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_color">
+<code class="descname">set_color</code><span class="sig-paren">(</span><em>color: Union[numpy.ndarray, str], *args, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_original_color">
+<code class="descname">set_original_color</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_original_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the original color for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_tag">
+<code class="descname">set_tag</code><span class="sig-paren">(</span><em>roi_def: str</em>, <em>tag: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a tag for the passed roi_def</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>roi_def</strong> – The ROI_DEF that should be tagged</li>
+<li><strong>tag</strong> – The tag to label for the passed ROI_DEF/ROI Type</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_text">
+<code class="descname">set_text</code><span class="sig-paren">(</span><em>text: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cnmfroi">
+<h3>CNMFROI<a class="headerlink" href="#cnmfroi" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_types.</code><code class="descname">CNMFROI</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>cnmf_idx: int = None</em>, <em>curve_data=None</em>, <em>contour=None</em>, <em>state: Optional[dict] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI" title="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI</span></code></a></p>
+<p>A class for ROIs imported from CNMF(E) output data</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>cnmf_idx: int = None</em>, <em>curve_data=None</em>, <em>contour=None</em>, <em>state: Optional[dict] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><p class="first">curve_data:  np.ndarray</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curve_data</strong> – 1D numpy array of y values</li>
+<li><strong>cnmf_idx</strong> – original index of the ROI from cnmf idx_components</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.add_to_viewer">
+<code class="descname">add_to_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.add_to_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add this ROI to the viewer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.curve_data">
+<code class="descname">curve_data</code><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.curve_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The curve data for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_all_tags">
+<code class="descname">get_all_tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_all_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the tags for all the ROI_DEFs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_color">
+<code class="descname">get_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_tag">
+<code class="descname">get_tag</code><span class="sig-paren">(</span><em>roi_def</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tag that is set to the passed ‘roi_def’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.remove_from_viewer">
+<code class="descname">remove_from_viewer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.remove_from_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this ROI from the viewer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.reset_color">
+<code class="descname">reset_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.reset_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the color of this ROI back to the original color</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_color">
+<code class="descname">set_color</code><span class="sig-paren">(</span><em>color: Union[numpy.ndarray, str], *args, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current color of this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_original_color">
+<code class="descname">set_original_color</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_original_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the original color for this ROI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>color</strong> – 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_tag">
+<code class="descname">set_tag</code><span class="sig-paren">(</span><em>roi_def: str</em>, <em>tag: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a tag for the passed roi_def</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>roi_def</strong> – The ROI_DEF that should be tagged</li>
+<li><strong>tag</strong> – The tag to label for the passed ROI_DEF/ROI Type</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_text">
+<code class="descname">set_text</code><span class="sig-paren">(</span><em>text: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_curve_data">
+<code class="descname">set_curve_data</code><span class="sig-paren">(</span><em>y_vals</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI.set_curve_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_curve_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the curve data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_roi_graphics_object">
+<code class="descname">get_roi_graphics_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; mesmerize.pyqtgraphCore.graphicsItems.ScatterPlotItem.ScatterPlotItem<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI.get_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_roi_graphics_object">
+<code class="descname">set_roi_graphics_object</code><span class="sig-paren">(</span><em>contour: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI.set_roi_graphics_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_roi_graphics_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the QGraphicsObject used for visualization of the spatial localization of the ROI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI._create_scatter_plot">
+<code class="descname">_create_scatter_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI._create_scatter_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI._create_scatter_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the scatter plot that is used for visualization of the spatial localization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.to_state">
+<code class="descname">to_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI.to_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.to_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must be implemented in subclass</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.from_state">
+<em class="property">classmethod </em><code class="descname">from_state</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI.from_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.from_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore this ROI from a state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>curve_plot_item</strong> – The plot item that is used for display the curves in the viewer</li>
+<li><strong>view_box</strong> – ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</li>
+<li><strong>state</strong> – ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="stimulus_mapping.html" class="btn btn-neutral float-right" title="Stimulus Mapping" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="viewer_modules.html" class="btn btn-neutral float-left" title="Viewer Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

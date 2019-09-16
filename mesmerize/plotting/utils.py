@@ -13,12 +13,13 @@ qual_cmaps = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1', 'Set2',
 
 def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing: str = 'uniform') -> List[Union[QtGui.QColor, np.ndarray]]:
     """
-    Returns colors evenly spread through the chosen colormap.
+    If non-qualitative map: returns list of colors evenly spread through the chosen colormap.
+    If qualitative map: returns subsequent colors from the chosen colormap
 
     :param n_colors: Numbers of colors to return
     :param cmap:     name of colormap
     :param output:   option: 'mpl' returns RGBA values between 0-1 which matplotlib likes,
-                     option: 'pyqt' returns QtGui.QColor instances corresponding to the RGBA values
+                     option: 'pyqt' returns QtGui.QColor instances that correspond to the RGBA values
     :param spacing:  option: 'uniform' returns evenly spaced colors across the entire cmap range
                      option: 'subsequent' returns subsequent colors from the cmap
 
@@ -53,11 +54,15 @@ def auto_colormap(n_colors: int, cmap: str = 'hsv', output: str = 'mpl', spacing
     return colors
 
 
-def get_colormap(labels: iter, cmap: str) -> OrderedDict:
+def get_colormap(labels: iter, cmap: str, **kwargs) -> OrderedDict:
     """
-    Get dict for mapping labels onto colors
+    Get a dict for mapping labels onto colors
+
+    Any kwargs are passed to auto_colormap()
+
     :param labels:  labels for creating a colormap. Order is maintained if it is a list of unique elements.
     :param cmap:    name of colormap
+
     :return:        dict of labels as keys and colors as values
     """
     if not len(set(labels)) == len(labels):
@@ -65,26 +70,29 @@ def get_colormap(labels: iter, cmap: str) -> OrderedDict:
     else:
         labels = list(labels)
 
-    colors = auto_colormap(len(labels), cmap)
+    colors = auto_colormap(len(labels), cmap, **kwargs)
 
     return OrderedDict(zip(labels, colors))
 
 
-def map_labels_to_colors(labels: iter, cmap: str):
+def map_labels_to_colors(labels: iter, cmap: str, **kwargs) -> list:
     """
-    Map labels into colors according to chosen colormap
+    Map labels onto colors according to chosen colormap
+
+    Any kwargs are passed to auto_colormap()
+
     :param labels:  labels for mapping onto a colormap
     :param cmap:    name of colormap
     :return:        list of colors mapped onto the labels
     """
-    mapper = get_colormap(labels, cmap)
+    mapper = get_colormap(labels, cmap, **kwargs)
     return list(map(mapper.get, labels))
 
 
 class ColormapListWidget(QtWidgets.QListWidget):
     signal_colormap_changed = QtCore.pyqtSignal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QtWidgets.QListWidget.__init__(self, parent=parent)
         self.populate_colormaps()
         self.currentItemChanged.connect(self.emit_colormap_changed)

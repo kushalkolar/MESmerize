@@ -1,0 +1,729 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mesmerize.viewer.modules.roi_manager_modules.roi_types &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mesmerize.viewer.modules.roi_manager_modules.roi_types</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mesmerize.viewer.modules.roi_manager_modules.roi_types</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on June 20 2018</span>
+
+<span class="sd">@author: kushal</span>
+
+<span class="sd">Chatzigeorgiou Group</span>
+<span class="sd">Sars International Centre for Marine Molecular Biology</span>
+
+<span class="sd">GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="k">import</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">....</span> <span class="k">import</span> <span class="n">pyqtgraphCore</span> <span class="k">as</span> <span class="n">pg</span>
+<span class="c1"># from typing import Type, TypeVar</span>
+<span class="kn">from</span> <span class="nn">....common</span> <span class="k">import</span> <span class="n">get_proj_config</span><span class="p">,</span> <span class="n">NoProjectOpen</span><span class="p">,</span> <span class="n">InheritDocs</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="_AbstractBaseROI"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI">[docs]</a><span class="k">class</span> <span class="nc">_AbstractBaseROI</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">InheritDocs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract base class defining an ROI that works with the ROIList and ROI Managers.</span>
+<span class="sd">    Inherit from this or BaseROI to make a new ROI class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="_AbstractBaseROI.__init__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.__init__">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Minimum required attributes</span>
+
+<span class="sd">        :param curve_plot_item: The plot item that is used for display the curves in the viewer</span>
+<span class="sd">        :param view_box:        ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</span>
+<span class="sd">        :param state:           ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">curve_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The curve data for this ROI</span>
+
+<span class="sd">        :return: (x, y), [np.ndarray, np.ndarray]</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@curve_data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">curve_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the curve data for this ROI</span>
+
+<span class="sd">        :param data: (x, y), [np.ndarray, np.ndarray]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="_AbstractBaseROI.get_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_roi_graphics_object">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsObject</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the QGraphicsObject used for visualization of the spatial localization of the ROI&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.set_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_roi_graphics_object">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the QGraphicsObject used for visualization of the spatial localization of the ROI&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.reset_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.reset_color">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">reset_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset the color of this ROI back to the original color&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.set_original_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_original_color">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_original_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the original color for this ROI</span>
+
+<span class="sd">        :param color: 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.get_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_color">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the current color of this ROI</span>
+
+<span class="sd">        :return: 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.set_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_color">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the current color of this ROI</span>
+
+<span class="sd">        :param color: 1D numpy array of 4 floating point numbers (range 0 - 255) in RBGA format, [R, G, B, A]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.set_text"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_text">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Not implemented&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.set_tag"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_tag">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_def</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set a tag for the passed roi_def</span>
+
+<span class="sd">        :param roi_def: The ROI_DEF that should be tagged</span>
+<span class="sd">        :param tag:     The tag to label for the passed ROI_DEF/ROI Type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.get_tag"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_tag">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_def</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the tag that is set to the passed &#39;roi_def&#39;</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.get_all_tags"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_all_tags">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_all_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all the tags for all the ROI_DEFs</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.add_to_viewer"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.add_to_viewer">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">add_to_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add this ROI to the viewer.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.remove_from_viewer"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.remove_from_viewer">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">remove_from_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove this ROI from the viewer&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.to_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.to_state">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the current state for this ROI so that it can be restored later&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="_AbstractBaseROI.from_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.from_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">from_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restore this ROI from a state</span>
+
+<span class="sd">        :param curve_plot_item: The plot item that is used for display the curves in the viewer</span>
+<span class="sd">        :param view_box:        ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</span>
+<span class="sd">        :param state:           ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="BaseROI"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI">[docs]</a><span class="k">class</span> <span class="nc">BaseROI</span><span class="p">(</span><span class="n">_AbstractBaseROI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class that is used by ManualROI and CNMFEROI</span>
+<span class="sd">    Inherit from this to make a new ROI class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BaseROI.__init__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiate common attributes</span>
+
+<span class="sd">        :param curve_plot_item: The plot item that is used for display the curves in the viewer</span>
+<span class="sd">        :param view_box:        ViewBox containing the image sequence, used for overlaying the ROIs on top of the image</span>
+<span class="sd">        :param state:           ROI state, used for restoring the ROIs. Pass None is not restoring an ROI from a state dict</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">curve_plot_item</span><span class="p">,</span> <span class="n">view_box</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">curve_plot_item</span><span class="p">,</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span> <span class="o">=</span> <span class="n">curve_plot_item</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span><span class="o">.</span><span class="n">setZValue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Set the Tags list from the project configuration</span>
+                <span class="n">roi_defs</span> <span class="o">=</span> <span class="n">get_proj_config</span><span class="p">()</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;ROI_DEFS&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">roi_defs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">NoProjectOpen</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="c1"># If a project isn&#39;t open</span>
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;BaseROI subclass instance cannot load ROI_DEFS, no Project open.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Restore states</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_data</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;curve_data&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">view_box</span> <span class="o">=</span> <span class="n">view_box</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_color</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">curve_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+
+    <span class="nd">@curve_data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">curve_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">zValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ZValue of the curve plot graphics object and roi_graphics_object&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zValue</span>
+
+    <span class="nd">@zValue</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">zValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zValue</span> <span class="o">=</span> <span class="n">val</span>
+
+<div class="viewcode-block" id="BaseROI.get_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_roi_graphics_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGraphicsObject</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="BaseROI.set_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_roi_graphics_object">[docs]</a>    <span class="k">def</span> <span class="nf">set_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="BaseROI.reset_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.reset_color">[docs]</a>    <span class="k">def</span> <span class="nf">reset_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_original_color</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseROI.set_original_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_original_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_original_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_color</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BaseROI.get_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_color">[docs]</a>    <span class="k">def</span> <span class="nf">get_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color</span></div>
+
+<div class="viewcode-block" id="BaseROI.set_color"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_color">[docs]</a>    <span class="k">def</span> <span class="nf">set_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">pen</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">mkPen</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span><span class="p">,</span> <span class="n">pg</span><span class="o">.</span><span class="n">ScatterPlotItem</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">mkBrush</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">color</span></div>
+
+<div class="viewcode-block" id="BaseROI.set_text"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_text">[docs]</a>    <span class="k">def</span> <span class="nf">set_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">text_item</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">TextItem</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+        <span class="c1"># self.view_box.addItem()</span>
+
+<div class="viewcode-block" id="BaseROI.set_tag"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.set_tag">[docs]</a>    <span class="k">def</span> <span class="nf">set_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_def</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">[</span><span class="n">roi_def</span><span class="p">]</span> <span class="o">=</span> <span class="n">tag</span></div>
+
+<div class="viewcode-block" id="BaseROI.get_tag"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">roi_def</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">[</span><span class="n">roi_def</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">[</span><span class="n">roi_def</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="BaseROI.get_all_tags"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.get_all_tags">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+<div class="viewcode-block" id="BaseROI.add_to_viewer"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.add_to_viewer">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view_box</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_roi_graphics_object</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="BaseROI.remove_from_viewer"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.remove_from_viewer">[docs]</a>    <span class="k">def</span> <span class="nf">remove_from_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">roi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_roi_graphics_object</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view_box</span><span class="o">.</span><span class="n">removeItem</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">curve_plot_item</span>
+        <span class="k">del</span> <span class="n">roi</span></div>
+
+<div class="viewcode-block" id="BaseROI.to_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.to_state">[docs]</a>    <span class="k">def</span> <span class="nf">to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Must be implemented in subclass&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Must be implemented in subclasses&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseROI.from_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI.from_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Must be implemented in subclasses&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ManualROI"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI">[docs]</a><span class="k">class</span> <span class="nc">ManualROI</span><span class="p">(</span><span class="n">BaseROI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class manually drawn ROIs&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ManualROI.__init__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span>
+                 <span class="n">roi_graphics_object</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ROI</span><span class="p">,</span>
+                 <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span>
+                 <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type state: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">roi_graphics_object</span><span class="p">,</span> <span class="n">pg</span><span class="o">.</span><span class="n">ROI</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">ManualROI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">curve_plot_item</span><span class="p">,</span> <span class="n">view_box</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_graphics_object</span><span class="p">(</span><span class="n">roi_graphics_object</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_to_viewer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_roi_graphics_object_state</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;roi_graphics_object_state&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="ManualROI.get_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_roi_graphics_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pg</span><span class="o">.</span><span class="n">ROI</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span></div>
+
+<div class="viewcode-block" id="ManualROI.set_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_roi_graphics_object">[docs]</a>    <span class="k">def</span> <span class="nf">set_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graphics_object</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ROI</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="n">graphics_object</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_roi_graphics_object_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span><span class="o">.</span><span class="n">setState</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ManualROI.to_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.to_state">[docs]</a>    <span class="k">def</span> <span class="nf">to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span><span class="p">,</span> <span class="n">pg</span><span class="o">.</span><span class="n">PolyLineROI</span><span class="p">):</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="s1">&#39;PolyLineROI&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span><span class="p">,</span> <span class="n">pg</span><span class="o">.</span><span class="n">EllipseROI</span><span class="p">):</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="s1">&#39;EllipseROI&#39;</span>
+
+        <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;curve_data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">curve_data</span><span class="p">,</span>
+                 <span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="n">shape</span><span class="p">,</span>
+                 <span class="s1">&#39;roi_graphics_object_state&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span><span class="o">.</span><span class="n">saveState</span><span class="p">(),</span>
+                 <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_tags</span><span class="p">(),</span>
+                 <span class="s1">&#39;roi_type&#39;</span><span class="p">:</span> <span class="s1">&#39;ManualROI&#39;</span>
+                 <span class="p">}</span>
+        <span class="k">return</span> <span class="n">state</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_generic_roi_graphics_object</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dims</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pg</span><span class="o">.</span><span class="n">ROI</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get a generic pg.ROI instance to add to the viewer. Its state can later be set from a saved state or it can be modified by the user&quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;PolyLineROI&#39;</span><span class="p">:</span>
+            <span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">PolyLineROI</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                                  <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span>
+                                                  <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">y</span><span class="p">)],</span>
+                                                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">y</span><span class="p">)]],</span>
+                                                 <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">removable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">roi_graphics_object</span>
+
+        <span class="k">elif</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;EllipseROI&#39;</span><span class="p">:</span>
+            <span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">EllipseROI</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">removable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">roi_graphics_object</span>
+
+<div class="viewcode-block" id="ManualROI.from_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.from_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="n">ManualROI</span><span class="o">.</span><span class="n">get_generic_roi_graphics_object</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">],</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">curve_plot_item</span><span class="o">=</span><span class="n">curve_plot_item</span><span class="p">,</span> <span class="n">roi_graphics_object</span><span class="o">=</span><span class="n">roi_graphics_object</span><span class="p">,</span> <span class="n">view_box</span><span class="o">=</span><span class="n">view_box</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_positions</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">positions</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        From a list of positions. Used if importing ImageJ ROIs, can be used for other purposes as well.</span>
+
+<span class="sd">        :param positions: list of (x, y) tuples; [(x1, y1), (x2, y2), ... (xn, yn)]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">PolyLineROI</span><span class="p">(</span><span class="n">positions</span><span class="o">=</span><span class="n">positions</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">removable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">curve_plot_item</span><span class="o">=</span><span class="n">curve_plot_item</span><span class="p">,</span> <span class="n">roi_graphics_object</span><span class="o">=</span><span class="n">roi_graphics_object</span><span class="p">,</span> <span class="n">view_box</span><span class="o">=</span><span class="n">view_box</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CNMFROI"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI">[docs]</a><span class="k">class</span> <span class="nc">CNMFROI</span><span class="p">(</span><span class="n">BaseROI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A class for ROIs imported from CNMF(E) output data&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CNMFROI.__init__"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span>
+                 <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">cnmf_idx</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">curve_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contour</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiate attributes.</span>
+
+<span class="sd">        :type: curve_data:  np.ndarray</span>
+<span class="sd">        :param curve_data:  1D numpy array of y values</span>
+<span class="sd">        :type  contour:     np.ndarray</span>
+<span class="sd">        :type  state:       dict</span>
+<span class="sd">        :param cnmf_idx:    original index of the ROI from cnmf idx_components</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CNMFROI</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">curve_plot_item</span><span class="p">,</span> <span class="n">view_box</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1">#: numpy array of the x values of the ROI&#39;s spatial coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1">#: numpy array of the y values of the ROI&#39;s spatial coordinates</span>
+
+        <span class="k">if</span> <span class="s1">&#39;raw_min&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="s1">&#39;raw_max&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_min</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;raw_min&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;raw_max&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_min</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_max</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_roi_graphics_object</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_curve_data</span><span class="p">(</span><span class="n">curve_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cnmf_idx</span> <span class="o">=</span> <span class="n">cnmf_idx</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_restore_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+            <span class="c1">#self.cnmf_idx = cnmf_idx</span>
+
+<div class="viewcode-block" id="CNMFROI.set_curve_data"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_curve_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_curve_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_vals</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the curve data&quot;&quot;&quot;</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_vals</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curve_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">xs</span><span class="p">,</span> <span class="n">y_vals</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_restore_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_xs</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;roi_xs&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_ys</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;roi_ys&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_scatter_plot</span><span class="p">()</span>
+        <span class="c1"># self.curve_data = state[&#39;curve_data&#39;]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmf_idx</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;cnmf_idx&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;raw_min&#39;</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="s1">&#39;raw_max&#39;</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_min</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;raw_min&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_max</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;raw_max&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_min</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_max</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="CNMFROI.get_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.get_roi_graphics_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pg</span><span class="o">.</span><span class="n">ScatterPlotItem</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Must call set_roi_graphics_object() first&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span></div>
+
+<div class="viewcode-block" id="CNMFROI.set_roi_graphics_object"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_roi_graphics_object">[docs]</a>    <span class="k">def</span> <span class="nf">set_roi_graphics_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">cors</span> <span class="o">=</span> <span class="n">contour</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
+        <span class="n">cors</span> <span class="o">=</span> <span class="n">cors</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cors</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="n">xs</span> <span class="o">=</span> <span class="n">cors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">ys</span> <span class="o">=</span> <span class="n">cors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_ys</span> <span class="o">=</span> <span class="n">ys</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_scatter_plot</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CNMFROI._create_scatter_plot"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI._create_scatter_plot">[docs]</a>    <span class="k">def</span> <span class="nf">_create_scatter_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create the scatter plot that is used for visualization of the spatial localization&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">roi_graphics_object</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">ScatterPlotItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_xs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_ys</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CNMFROI.to_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.to_state">[docs]</a>    <span class="k">def</span> <span class="nf">to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;roi_xs&#39;</span><span class="p">:</span>      <span class="bp">self</span><span class="o">.</span><span class="n">roi_xs</span><span class="p">,</span>
+                 <span class="s1">&#39;roi_ys&#39;</span><span class="p">:</span>      <span class="bp">self</span><span class="o">.</span><span class="n">roi_ys</span><span class="p">,</span>
+                 <span class="s1">&#39;curve_data&#39;</span><span class="p">:</span>  <span class="bp">self</span><span class="o">.</span><span class="n">curve_data</span><span class="p">,</span>
+                 <span class="s1">&#39;tags&#39;</span><span class="p">:</span>        <span class="bp">self</span><span class="o">.</span><span class="n">get_all_tags</span><span class="p">(),</span>
+                 <span class="s1">&#39;roi_type&#39;</span><span class="p">:</span>    <span class="s1">&#39;CNMFROI&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;cnmf_idx&#39;</span><span class="p">:</span>    <span class="bp">self</span><span class="o">.</span><span class="n">cnmf_idx</span><span class="p">,</span>
+                 <span class="s1">&#39;raw_min&#39;</span><span class="p">:</span>     <span class="bp">self</span><span class="o">.</span><span class="n">raw_min</span><span class="p">,</span>
+                 <span class="s1">&#39;raw_max&#39;</span><span class="p">:</span>     <span class="bp">self</span><span class="o">.</span><span class="n">raw_max</span>
+                 <span class="p">}</span>
+        <span class="k">return</span> <span class="n">state</span></div>
+
+<div class="viewcode-block" id="CNMFROI.from_state"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.from_state">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_state</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">curve_plot_item</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">PlotDataItem</span><span class="p">,</span> <span class="n">view_box</span><span class="p">:</span> <span class="n">pg</span><span class="o">.</span><span class="n">ViewBox</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">curve_plot_item</span><span class="o">=</span><span class="n">curve_plot_item</span><span class="p">,</span> <span class="n">view_box</span><span class="o">=</span><span class="n">view_box</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

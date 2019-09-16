@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Viewer classes &mdash; Mesmerize 1 documentation</title>
+  <title>Viewer Core &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -25,6 +25,9 @@
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
         <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -33,10 +36,11 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Data types used for analysis" href="Analysis_data_types.html" />
-    <link rel="prev" title="FAQs" href="../user_guides/faq.html" />
+    <link rel="next" title="Viewer Modules" href="viewer_modules/viewer_modules.html" />
+    <link rel="prev" title="Viewer Modules" href="../developer_guide/viewer_modules.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -61,6 +65,10 @@
           
             
             
+              <div class="version">
+                0.1
+              </div>
+            
           
 
           
@@ -82,25 +90,89 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
-</ul>
-<p class="caption"><span class="caption-text">User Guides:</span></p>
+              <p class="caption"><span class="caption-text">Overview</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../Overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/overview.html">Viewer overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation_guide.html">Citation guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference:</span></p>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer classes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#viewer-work-environment">Viewer Work Environment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer Core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#viewerworkenv">ViewerWorkEnv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#imgdata">ImgData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewerutils">ViewerUtils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mesfile">Mesfile</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/proportions.html">Proportions</a></li>
 </ul>
 
             
@@ -146,7 +218,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Viewer classes</li>
+      <li>Viewer Core</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -165,16 +237,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="viewer-classes">
-<h1>Viewer classes<a class="headerlink" href="#viewer-classes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="viewer-work-environment">
-<h2>Viewer Work Environment<a class="headerlink" href="#viewer-work-environment" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="viewer-core">
+<span id="api-viewercore"></span><h1>Viewer Core<a class="headerlink" href="#viewer-core" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="viewerworkenv">
+<span id="api-viewerworkenv"></span><h2>ViewerWorkEnv<a class="headerlink" href="#viewerworkenv" title="Permalink to this headline">¶</a></h2>
+<p>This objects stores the data that the <a class="reference internal" href="../user_guides/viewer/overview.html#vieweroverview"><span class="std std-ref">Viewer</span></a> interacts with.</p>
 <dl class="class">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv">
-<em class="property">class </em><code class="descclassname">viewer.core.viewer_work_environment.</code><code class="descname">ViewerWorkEnv</code><span class="sig-paren">(</span><em>imgdata=None</em>, <em>sample_id=''</em>, <em>UUID=None</em>, <em>meta=None</em>, <em>stim_maps=None</em>, <em>roi_manager=None</em>, <em>roi_states=None</em>, <em>comments=''</em>, <em>origin_file=''</em>, <em>custom_cols=None</em>, <em>history_trace: list = None</em>, <em>additional_data: dict = None</em>, <em>misc: dict = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>imgdata=None</em>, <em>sample_id=''</em>, <em>UUID=None</em>, <em>meta=None</em>, <em>stim_maps=None</em>, <em>roi_manager=None</em>, <em>roi_states=None</em>, <em>comments=''</em>, <em>origin_file=''</em>, <em>custom_cols=None</em>, <em>history_trace: list = None</em>, <em>additional_data: dict = None</em>, <em>misc: dict = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.ViewerWorkEnv">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.core.</code><code class="descname">ViewerWorkEnv</code><span class="sig-paren">(</span><em>imgdata=None</em>, <em>sample_id=''</em>, <em>UUID=None</em>, <em>meta=None</em>, <em>stim_maps=None</em>, <em>roi_manager=None</em>, <em>roi_states=None</em>, <em>comments=''</em>, <em>origin_file=''</em>, <em>custom_cols=None</em>, <em>history_trace: list = None</em>, <em>additional_data: dict = None</em>, <em>misc: dict = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv._UUID">
+<code class="descname">_UUID</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv._UUID" title="Permalink to this definition">¶</a></dt>
+<dd><p>UUID, if opened from a project Sample refers to the ImgUUID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>imgdata=None</em>, <em>sample_id=''</em>, <em>UUID=None</em>, <em>meta=None</em>, <em>stim_maps=None</em>, <em>roi_manager=None</em>, <em>roi_states=None</em>, <em>comments=''</em>, <em>origin_file=''</em>, <em>custom_cols=None</em>, <em>history_trace: list = None</em>, <em>additional_data: dict = None</em>, <em>misc: dict = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class that encapsulates the main work environment objects (img sequence, ROIs, and ROI associated curves) of
 the viewer. Allows for a work environment to be easily spawned from different types of sources and allows for
 a work environment to be easily saved in different ways regardless of the type of original data source.</p>
@@ -183,9 +262,9 @@ a work environment to be easily saved in different ways regardless of the type o
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>roi_states</strong> (<em>dict</em>) – roi states from ROI Manager module</li>
-<li><strong>stim_maps</strong> (<em>dict</em>) – {‘units’: str, ‘dataframe’: pd.DataFrame}</li>
-<li><strong>history_trace</strong> (<em>list</em>) – list of dicts containing a traceable history of what what done with the work environment,
+<li><strong>roi_states</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – roi states from ROI Manager module</li>
+<li><strong>stim_maps</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – {‘units’: str, ‘dataframe’: pd.DataFrame}</li>
+<li><strong>history_trace</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – list of dicts containing a traceable history of what what done with the work environment,
 such as params used from modules to process the data</li>
 </ul>
 </td>
@@ -195,21 +274,48 @@ such as params used from modules to process the data</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.__weakref__">
-<code class="descname">__weakref__</code><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.__weakref__" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
-<dl class="classmethod">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.from_mesfile">
-<em class="property">classmethod </em><code class="descname">from_mesfile</code><span class="sig-paren">(</span><em>mesfile_object: viewer.core.mesfile.MES</em>, <em>img_reference: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv.from_mesfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.from_mesfile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
-MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.</p>
+<dl class="staticmethod">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv._organize_meta">
+<em class="property">static </em><code class="descname">_organize_meta</code><span class="sig-paren">(</span><em>meta: dict</em>, <em>origin: str</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv._organize_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv._organize_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Organize input meta data dict into a uniform structure
+:param meta:    meta data dict, origin from a json file for example
+:param origin:  name of the origin source of the meta data, such a program or microscope etc.
+:return:        dict organized with keys that are used throughout Mesmerize.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup of the work environment</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.from_pickle">
-<em class="property">classmethod </em><code class="descname">from_pickle</code><span class="sig-paren">(</span><em>pickle_file_path: str</em>, <em>tiff_path: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv.from_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.from_pickle" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.from_mesfile">
+<em class="property">classmethod </em><code class="descname">from_mesfile</code><span class="sig-paren">(</span><em>mesfile_object: mesmerize.viewer.core.mesfile.MES</em>, <em>img_reference: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.from_mesfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.from_mesfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance of work environment with MesmerizeCore.ImgData class object using seq returned from
+MES.load_img from MesmerizeCore.FileInput module and any stimulus map that the user may have specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mesfile_object</strong> – MES object, created from .mes file</li>
+<li><strong>img_reference</strong> – image reference to load, see <a class="reference internal" href="#mesmerize.viewer.core.mesfile.MES.get_image_references" title="mesmerize.viewer.core.mesfile.MES.get_image_references"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mesmerize.viewer.core.mesfile.MES.get_image_references()</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.from_pickle">
+<em class="property">classmethod </em><code class="descname">from_pickle</code><span class="sig-paren">(</span><em>pickle_file_path: str</em>, <em>tiff_path: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.from_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.from_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get pickled image data from a pickle file &amp; image sequence from a npz or tiff. Used after motion correction
 &amp; to view a sample from a project DataFrame. Create ImgData class object (See MesmerizeCore.DataTypes) and
 return instance of the work environment.</p>
@@ -226,14 +332,46 @@ return instance of the work environment.</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.from_tiff">
-<em class="property">classmethod </em><code class="descname">from_tiff</code><span class="sig-paren">(</span><em>path: str</em>, <em>method: str</em>, <em>meta_path: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv.from_tiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.from_tiff" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return instance of work environment with ImgData.seq set from tifffile.imread.</p>
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.from_tiff">
+<em class="property">classmethod </em><code class="descname">from_tiff</code><span class="sig-paren">(</span><em>path: str</em>, <em>method: str</em>, <em>meta_path: Optional[str] = ''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.from_tiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.from_tiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance of work environment with ImgData.seq set from the tiff file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> – path to the tiff file</li>
+<li><strong>method</strong> – one of ‘imread’, ‘asarray’, or ‘asarray-multi’. Refers to usage of either tifffile.imread
+or tifffile.asarray. ‘asarray-multi’ will load multi-page tiff files.</li>
+<li><strong>meta_path</strong> – path to a json file containing meta data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.history_trace">
+<code class="descname">history_trace</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.history_trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>history log</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.imgdata">
+<code class="descname">imgdata</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.imgdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>ImgData instance</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.isEmpty">
+<code class="descname">isEmpty</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.isEmpty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the work environment is empty</p>
 </dd></dl>
 
 <dl class="staticmethod">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.load_mesfile">
-<em class="property">static </em><code class="descname">load_mesfile</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span> &#x2192; viewer.core.mesfile.MES<a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv.load_mesfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.load_mesfile" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.load_mesfile">
+<em class="property">static </em><code class="descname">load_mesfile</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span> &#x2192; mesmerize.viewer.core.mesfile.MES<a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.load_mesfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.load_mesfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just passes the path of a .mes file to the constructor of class MES in MesmerizeCore.FileInput.
 Loads .mes file &amp; constructs MES obj from which individual images &amp; their respective metadata can be loaded
 to construct viewer work environments using the classmethod viewerWorkEnv.from_mesfile.</p>
@@ -247,25 +385,49 @@ to construct viewer work environments using the classmethod viewerWorkEnv.from_m
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.roi_manager">
+<code class="descname">roi_manager</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.roi_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the back-end ROI Manager that is currently in use</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.sample_id">
+<code class="descname">sample_id</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.sample_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>SampleID, if opened from a project Sample</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.stim_maps">
+<code class="descname">stim_maps</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.stim_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stimulus maps</p>
+</dd></dl>
+
 <dl class="method">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.to_pandas">
-<code class="descname">to_pandas</code><span class="sig-paren">(</span><em>proj_path: str</em>, <em>overwrite: bool = False</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv.to_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pandas" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.to_pandas">
+<code class="descname">to_pandas</code><span class="sig-paren">(</span><em>proj_path: str</em>, <em>modify_options: Optional[dict] = None</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.to_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.to_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used for saving the work environment as a project Sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>proj_path</strong> – Root path of the current project</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>proj_path</strong> – Root path of the current project</li>
+<li><strong>modify_options</strong> – </li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of dicts that each correspond to a single curve that can be appended
-as rows to the project dataframe</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of dicts that each correspond to a single curve that can be appended
+as rows to the project dataframe</p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="viewer.core.viewer_work_environment.ViewerWorkEnv.to_pickle">
-<code class="descname">to_pickle</code><span class="sig-paren">(</span><em>dir_path: str</em>, <em>filename: str = None</em>, <em>save_img_seq=True</em>, <em>UUID=None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/viewer/core/viewer_work_environment.html#ViewerWorkEnv.to_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.viewer_work_environment.ViewerWorkEnv.to_pickle" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.ViewerWorkEnv.to_pickle">
+<code class="descname">to_pickle</code><span class="sig-paren">(</span><em>dir_path: str</em>, <em>filename: Optional[str] = None</em>, <em>save_img_seq=True</em>, <em>UUID=None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/mesmerize/viewer/core/viewer_work_environment.html#ViewerWorkEnv.to_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerWorkEnv.to_pickle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Package the current work Env ImgData class object (See MesmerizeCore.DataTypes) and any paramteres such as
 for motion correction and package them into a pickle &amp; image seq array. Used for batch motion correction and
 for saving current sample to the project. Image sequence is saved as a tiff and other information about the
@@ -275,11 +437,94 @@ image is saved in a pickle.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="mesfile">
-<h2>Mesfile<a class="headerlink" href="#mesfile" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="imgdata">
+<span id="api-imgdata"></span><h2>ImgData<a class="headerlink" href="#imgdata" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="viewer.core.mesfile.MES">
-<em class="property">class </em><code class="descclassname">viewer.core.mesfile.</code><code class="descname">MES</code><span class="sig-paren">(</span><em>filename: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/mesfile.html#MES"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.mesfile.MES" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.data_types.ImgData">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.core.data_types.</code><code class="descname">ImgData</code><span class="sig-paren">(</span><em>seq: numpy.ndarray = None</em>, <em>meta: dict = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/data_types.html#ImgData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.data_types.ImgData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object that stores the image sequence and meta data from the imaging source</p>
+<dl class="method">
+<dt id="mesmerize.viewer.core.data_types.ImgData.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>seq: numpy.ndarray = None</em>, <em>meta: dict = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/data_types.html#ImgData.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.data_types.ImgData.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>seq</strong> – Image sequence as a numpy array, shape is [x, y, t]</li>
+<li><strong>meta</strong> – Meta data dict from the imaging source.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="viewerutils">
+<span id="api-viewerutils"></span><h2>ViewerUtils<a class="headerlink" href="#viewerutils" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="../user_guides/viewer/overview.html#vieweroverview"><span class="std std-ref">Viewer</span></a> is usually not interacted with directly from modules outside of the viewer (such as viewer modules. They instead use the ViewerUtils class which includes helper functions and a reference to the viewer.</p>
+<dl class="class">
+<dt id="mesmerize.viewer.core.ViewerUtils">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.core.</code><code class="descname">ViewerUtils</code><span class="sig-paren">(</span><em>viewer_reference: &lt;module 'mesmerize.pyqtgraphCore.imageview.ImageView' from '/home/kushal/MESmerize/mesmerize/pyqtgraphCore/imageview/ImageView.py'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/common.html#ViewerUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="mesmerize.viewer.core.ViewerUtils.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>viewer_reference: &lt;module 'mesmerize.pyqtgraphCore.imageview.ImageView' from '/home/kushal/MESmerize/mesmerize/pyqtgraphCore/imageview/ImageView.py'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/common.html#ViewerUtils.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some utility functions for interfacing viewer.core.ViewerWorkEnv with the pyqtgraphCore.ImageView widget</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerUtils.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.core.ViewerUtils._clear_workEnv">
+<code class="descname">_clear_workEnv</code><span class="sig-paren">(</span><em>clear_sample_id=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/common.html#ViewerUtils._clear_workEnv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils._clear_workEnv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleanup of the ViewerWorkEnv and ImageView widget</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.core.ViewerUtils.discard_workEnv">
+<code class="descname">discard_workEnv</code><span class="sig-paren">(</span><em>clear_sample_id=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/common.html#ViewerUtils.discard_workEnv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils.discard_workEnv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask the user if they want to discard their work environment. If Yes, calls _clear_workEnv()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.core.ViewerUtils.update_workEnv">
+<code class="descname">update_workEnv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/common.html#ViewerUtils.update_workEnv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils.update_workEnv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the ImageView widget with the ViewerWorkEnv</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerUtils.viewer">
+<code class="descname">viewer</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils.viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the pyqtgraph ImageView widget instance (viewer)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.core.ViewerUtils.work_env">
+<code class="descname">work_env</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.core.ViewerUtils.work_env" title="Permalink to this definition">¶</a></dt>
+<dd><p>ViewerWorkEnv instance</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="mesfile">
+<span id="api-mesfile"></span><h2>Mesfile<a class="headerlink" href="#mesfile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="mesmerize.viewer.core.mesfile.MES">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.core.mesfile.</code><code class="descname">MES</code><span class="sig-paren">(</span><em>filename: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/mesfile.html#MES"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.mesfile.MES" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handles of opening .mes files and organizing the images and meta data.
 The load_img() method returns a 3D array (dims are [time, cols, rows])
 of the image sequence and its associated meta data.</p>
@@ -292,8 +537,8 @@ to the load_img method:</p>
 <blockquote>
 <div>img_array, meta_dict = mesfile.load_img(‘IF0001_0001’)</div></blockquote>
 <dl class="method">
-<dt id="viewer.core.mesfile.MES.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/mesfile.html#MES.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.mesfile.MES.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.mesfile.MES.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/mesfile.html#MES.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.mesfile.MES.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -305,27 +550,27 @@ to the load_img method:</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="viewer.core.mesfile.MES.__weakref__">
-<code class="descname">__weakref__</code><a class="headerlink" href="#viewer.core.mesfile.MES.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.mesfile.MES.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.viewer.core.mesfile.MES.__weakref__" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="viewer.core.mesfile.MES.get_image_references">
-<code class="descname">get_image_references</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/viewer/core/mesfile.html#MES.get_image_references"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.mesfile.MES.get_image_references" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.mesfile.MES.get_image_references">
+<code class="descname">get_image_references</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/viewer/core/mesfile.html#MES.get_image_references"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.mesfile.MES.get_image_references" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a list of all image references available in the instance</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="viewer.core.mesfile.MES.load_img">
-<code class="descname">load_img</code><span class="sig-paren">(</span><em>img_reference: str) -&gt; (&lt;class 'numpy.ndarray'&gt;</em>, <em>&lt;class 'dict'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/viewer/core/mesfile.html#MES.load_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#viewer.core.mesfile.MES.load_img" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.viewer.core.mesfile.MES.load_img">
+<code class="descname">load_img</code><span class="sig-paren">(</span><em>img_reference: str) -&gt; (&lt;class 'numpy.ndarray'&gt;</em>, <em>&lt;class 'dict'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/viewer/core/mesfile.html#MES.load_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.core.mesfile.MES.load_img" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>img_reference</strong> – The image reference, usually something like IFxxxx_xxxx or Ifxxxx_xxxx</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array of the image sequence, dict of metadata</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(image sequence array, meta data dict)</td>
 </tr>
 </tbody>
 </table>
@@ -344,10 +589,10 @@ to the load_img method:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Analysis_data_types.html" class="btn btn-neutral float-right" title="Data types used for analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="viewer_modules/viewer_modules.html" class="btn btn-neutral float-right" title="Viewer Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../user_guides/faq.html" class="btn btn-neutral float-left" title="FAQs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../developer_guide/viewer_modules.html" class="btn btn-neutral float-left" title="Viewer Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

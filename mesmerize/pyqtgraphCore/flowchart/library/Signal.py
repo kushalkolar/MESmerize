@@ -3,11 +3,12 @@ import traceback
 from PyQt5 import QtWidgets
 from ....plotting.widgets.peak_editor import peak_editor
 from .common import *
-from ....analysis import Transmission, peak_feature_extraction
+from ....analysis import Transmission
 from scipy import signal
 from scipy import fftpack
 import pandas as pd
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
+from ....analysis.compute_peak_features import ComputePeakFeatures
 
 
 class ButterWorth(CtrlNode):
@@ -18,6 +19,8 @@ class ButterWorth(CtrlNode):
                   ('freq_divisor', 'doubleSpin', {'min': 0.01, 'max': 100.00, 'step': 0.05, 'value': 2.00}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
+
+    output_column = '_BUTTERWORTH'
 
     def _func(self, x: np.ndarray, meta: dict):
         N = self.ctrls['order'].value()
@@ -37,8 +40,6 @@ class ButterWorth(CtrlNode):
             return
 
         self.t = transmission.copy()
-
-        self.output_column = '_BUTTERWORTH'
 
         self.order = self.ctrls['order'].value()
         self.freq_divisor = self.ctrls['freq_divisor'].value()
@@ -108,7 +109,7 @@ class SavitzkyGolay(CtrlNode):  # Savitzky-Golay filter for example
 
 class PowerSpectralDensity(CtrlNode):
     """Return the Power Spectral Density of a curve."""
-    nodeName = 'PowSpectDens'
+    nodeName = 'PowSpecDens'
     uiTemplate = [('data_column', 'combo', {}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
@@ -204,7 +205,7 @@ class Resample(CtrlNode):
 class ScalerMeanVariance(CtrlNode):
     """Scaler for time series. Scales time series so that their mean (resp. standard deviation) in each dimension is mu (resp. std).\n
     See https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html#tslearn.preprocessing.TimeSeriesScalerMeanVariance"""
-    nodeName = 'ScalerMeanVariance'
+    nodeName = 'ScalerMeanVar'
     uiTemplate = [('data_column', 'combo', {}),
                    ('mu', 'doubleSpin', {'value': 0.0, 'step': 0.1, 'toolTip': 'Mean of the output time series'}),
                    ('std', 'doubleSpin', {'value': 1.0, 'step': 1.0, 'toolTip': 'Standard deviation of the output time series'}),
@@ -370,7 +371,7 @@ class iRFFT(CtrlNode):
 
 class PeakDetect(CtrlNode):
     """Detect peaks & bases by finding local maxima & minima. Use this after the Derivative Filter"""
-    nodeName = 'Peak_Detect'
+    nodeName = 'PeakDetect'
     uiTemplate = [('data_column', 'combo', {}),
                   ('Fictional_Bases', 'check', {'checked': True}),
                   ('Edit', 'button', {'text': 'Open GUI'}),
@@ -526,7 +527,7 @@ class PeakDetect(CtrlNode):
             return self.t
 
         columns = inputs['Curve'].df.columns.to_list()
-        self.ctrls['data_column'].setItems(columns)
+        self.ctrls['data_column'].setItems(organize_dataframe_columns(columns)[0])
 
         if self.data_modified is True:
             if QtWidgets.QMessageBox.question(None, 'Discard peak edits?',
@@ -631,68 +632,27 @@ class PeakDetect(CtrlNode):
 
 
 class PeakFeatures(CtrlNode):
-    """Extract peak features. Use this after the Peak_Detect node. This node does not operate live, you must
-    click the "Extract" button to propogate newly computed peak features"""
-    nodeName = 'Peak_Features'
-    uiTemplate = [('Compute', 'button', {'text': 'Compute'}),
-                  ('Info', 'label', {'text': ''})]
+    """Extract peak features after peak detection"""
+    nodeName = 'PeakFeatures'
+    uiTemplate = [('data_column', 'combo', {}),
+                  # ('Compute', 'button', {'text': 'compute'}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
+                  ]
 
-    # uiTemplate = [('Extract', 'button', {'text': 'Compute'}),
-    #               ('Stats', 'button', {'text': 'Statistics/Plotting'})
-    #               ]
-
-    def __init__(self, name):
-        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out', 'bypass': 'In'}})
-        self.ctrls['Compute'].clicked.connect(self._compute)
-        # self.ctrls['Stats'].setEnabled(False)
-        # self.ctrls['Stats'].clicked.connect(self._open_stats_gui)
+    def __init__(self, *args, **kwargs):
+        super(PeakFeatures, self).__init__(*args, **kwargs)
         self.peak_results = None
 
-    def process(self, **kwargs):
-        self.kwargs = kwargs.copy()
-        merged = Transmission.merge(self.peak_results)
-        return {'Out': merged}
+    def processData(self, transmission: Transmission):
+        dcols = organize_dataframe_columns(transmission.df.columns)[0]
+        self.ctrls['data_column'].setItems(dcols)
 
-    def _compute(self):
-        if self.kwargs is None:
-            self.peak_results = None
+        if not self.apply_checked():
             return
 
-        transmissions = self.kwargs['In']
+        self.computer = ComputePeakFeatures()
 
-        if not len(transmissions) > 0:
-            raise Exception('No incoming transmissions')
+        self.t = self.computer.compute(transmission=transmission.copy(), data_column=self.data_column)
 
-        self.peak_results = []
-        for t in transmissions.items():
-            t = t[1]
-            if t is None:
-                QtWidgets.QMessageBox.warning(None, 'None transmission', 'One of your transmissions is None')
-                continue
-            # elif not any('Peak_Detect' in d for d in t.src):
-            #     raise IndexError('Peak data not found in incoming DataFrame! You must first pass through '
-            #                      'a Peak_Detect node before this one.')
-            # t = t.copy()
-            try:
-                self.ctrls['Info'].setText('Please wait...')
-                pf = peak_feature_extraction.PeakFeaturesIter(t)
-                trans_with_features = pf.get_all()
+        return self.t
 
-                self.peak_results.append(trans_with_features)
-
-            except Exception as e:
-                QtWidgets.QMessageBox.warning(None, 'Error computing', 'The following error occured during peak feature extraction:\n'
-                                                                   + traceback.format_exc())
-
-        self.ctrls['Info'].setText('Finished!')
-        self.changed()
-
-    #     self.ctrls['Stats'].setEnabled(True)
-    #
-    # def _open_stats_gui(self):
-    #     if hasattr(self, 'stats_gui'):
-    #         self.stats_gui.show()
-    #         return
-    #     self.stats_gui = StatsWindow()
-    #     self.stats_gui.input_transmissions(self.peak_results)
-    #     self.stats_gui.show()

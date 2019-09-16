@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Batch Manager &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/lda.html">LDA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/proportions.html">Proportions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Batch Manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api_reference/viewer_modules/batch_manager.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="batch-manager">
+<h1>Batch Manager<a class="headerlink" href="#batch-manager" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.batch_manager.</code><code class="descname">ModuleGUI</code><span class="sig-paren">(</span><em>parent</em>, <em>run_batch: list = None</em>, <em>testing: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>GUI for the Batch Manager</p>
+<dl class="method">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent</em>, <em>run_batch: list = None</em>, <em>testing: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item">
+<code class="descname">add_item</code><span class="sig-paren">(</span><em>module: str</em>, <em>input_workEnv: mesmerize.viewer.core.viewer_work_environment.ViewerWorkEnv</em>, <em>input_params: dict</em>, <em>name: str = ''</em>, <em>info: dict = ''</em><span class="sig-paren">)</span> &#x2192; uuid.UUID<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI.add_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an item to the currently open batch</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>module</strong> – The module to run from /batch_run_modules.</li>
+<li><strong>input_workEnv</strong> – Input workEnv that the module will use</li>
+<li><strong>input_params</strong> – Input params that the module will use. Depends on your subclass of BatchRunInterface.process() method</li>
+<li><strong>name</strong> – A name for the batch item</li>
+<li><strong>info</strong> – A dictionary with any metadata information to display in the scroll area label.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">UUID of the added item</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.df">
+<code class="descname">df</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.df" title="Permalink to this definition">¶</a></dt>
+<dd><p>pandas.DataFrame that stores a “database” of information on the batch</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index">
+<code class="descname">get_item_index</code><span class="sig-paren">(</span><em>u: Union[uuid.UUID, str]</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI.get_item_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get DataFrame index from UUID</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>u</strong> – UUID or str representing UUID</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numerical index of the DataFrame corresponding to the UUID</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input">
+<code class="descname">load_item_input</code><span class="sig-paren">(</span><em>viewers: Union[mesmerize.viewer.main_window.MainWindow, collections.UserList], r: pandas.core.series.Series = None, UUID: uuid.UUID = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI.load_item_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pass either the batch DataFrame row or UUID of the item of which to load the input into a viewer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>viewers</strong> – ViewerWindow or list of ImageView</li>
+<li><strong>r</strong> – Row of batch DataFrame corresponding to the selected item</li>
+<li><strong>UUID</strong> – UUID of the item to load input from</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_output">
+<code class="descname">load_item_output</code><span class="sig-paren">(</span><em>module: str, viewers: Union[mesmerize.viewer.main_window.MainWindow, mesmerize.pyqtgraphCore.imageview.ImageView.ImageView, collections.UserList], UUID: uuid.UUID</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI.load_item_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls subclass of BatchRunInterface.show_output()</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>module</strong> – The module name under /batch_run_modules that the batch item is from</li>
+<li><strong>viewers</strong> – ViewerWindow, ImageView, or list of ViewerWindows</li>
+<li><strong>UUID</strong> – UUID of the item to load input from</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch">
+<code class="descname">process_batch</code><span class="sig-paren">(</span><em>start_ix: Union[int</em>, <em>uuid.UUID] = 0</em>, <em>clear_viewers=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI.process_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start_ix</strong> – Either DataFrame index (int) or UUID of the item to start from.</li>
+<li><strong>clear_viewers</strong> – Clear work environments in all viewers that are open</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.batch_manager.ModuleGUI.show_item_info">
+<code class="descname">show_item_info</code><span class="sig-paren">(</span><em>s: PyQt5.QtWidgets.QListWidgetItem</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/batch_manager.html#ModuleGUI.show_item_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.batch_manager.ModuleGUI.show_item_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows any info (such as the batch module’s params) in the meta-info label</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
