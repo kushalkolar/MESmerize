@@ -177,7 +177,7 @@ class Ui_DockWidgetControls(object):
         self.horizontalLayout_6.addWidget(self.doubleSpinBoxAlpha)
         self.verticalLayout_2.addLayout(self.horizontalLayout_6)
         self.checkBoxLiveUpdateFromFlowchart = QtWidgets.QCheckBox(self.dockWidgetContents)
-        self.checkBoxLiveUpdateFromFlowchart.setChecked(False)
+        self.checkBoxLiveUpdateFromFlowchart.setChecked(True)
         self.checkBoxLiveUpdateFromFlowchart.setObjectName("checkBoxLiveUpdateFromFlowchart")
         self.verticalLayout_2.addWidget(self.checkBoxLiveUpdateFromFlowchart)
         self.pushButtonUpdatePlot = QtWidgets.QPushButton(self.dockWidgetContents)

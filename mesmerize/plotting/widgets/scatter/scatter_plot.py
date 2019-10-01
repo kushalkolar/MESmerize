@@ -62,18 +62,40 @@ class ControlDock(QtWidgets.QDockWidget):
         comboBox.setCurrentIndex(ix)
 
     def fill_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
+        # Set the selected options after filling the widget if they are present in the new lists
+        p_dcol = self.ui.comboBoxDataColumn.currentText()
+        p_xcol = self.ui.comboBoxXColumn.currentText()
+        p_ycol = self.ui.comboBoxYColumn.currentText()
+        p_colors_col = self.ui.comboBoxColorsColumn.currentText()
+        p_shape_col = self.ui.comboBoxShapesColumn.currentText()
+        p_ucol = self.ui.comboBoxUUIDColumn.currentText()
+
         for cb in self.data_controls:
             cb.clear()
             cb.addItems(data_columns)
+
+        if p_dcol in data_columns:
+            self.set_combo_box(self.ui.comboBoxDataColumn, p_dcol)
+            self.set_combo_box(self.ui.comboBoxXColumn, p_xcol)
+            self.set_combo_box(self.ui.comboBoxYColumn, p_ycol)
 
         for cb in self.categorial_controls:
             cb.clear()
             cb.addItem('------------')
             cb.addItems(categorical_columns)
 
+        if p_colors_col in categorical_columns:
+            self.set_combo_box(self.ui.comboBoxColorsColumn, p_colors_col)
+
+        if p_shape_col in self.categorial_controls:
+            self.set_combo_box(self.ui.comboBoxShapesColumn, p_shape_col)
+
         for cb in self.uuid_controls:
             cb.clear()
             cb.addItems(uuid_columns)
+
+        if p_ucol in uuid_columns:
+            self.set_combo_box(self.ui.comboBoxUUIDColumn, p_ucol)
 
 
 class CentralWidget(QtWidgets.QWidget):
@@ -167,8 +189,8 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         """Set the input transmission"""
-        super(ScatterPlotWidget, self).set_input(transmission)
         if self.update_live:
+            super(ScatterPlotWidget, self).set_input(transmission)
             self.update_plot()
 
     @BasePlotWidget.signal_blocker
