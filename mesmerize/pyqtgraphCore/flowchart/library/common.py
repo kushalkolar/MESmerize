@@ -100,6 +100,8 @@ def generateUi(opts):
                 w.setPlaceholderText(o['placeHolder'])
             if 'text' in o:
                 w.setText(o['text'])
+            if 'readOnly' in o:
+                w.setReadOnly(True)
 
         elif t == 'plainTextEdit':
             w = QtGui.QPlainTextEdit()
