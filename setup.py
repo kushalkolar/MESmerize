@@ -40,7 +40,7 @@ s = dict(
     setup_requires=['cython', 'numpy', 'scipy', 'scikit-learn'],
     url='https://kushalkolar.github.io/MESmerize/',
     license='GNU General Public License v3.0',
-    author='Kushal Kolar',
+    author='Kushal Kolar, Daniel Dondorp',
     author_email='kushalkolar@gmail.com',
     description='Calcium imaging analysis platform'
 )
@@ -48,8 +48,11 @@ s = dict(
 if is_building():
     try:
         from Cython.Distutils import build_ext as _build_ext
+        list_pyx = ['cydtw', 'cygak', 'cysax', 'cycc', 'soft_dtw_fast']
+        numpy_include = pkg_resources.resource_filename('numpy', 'core/include')
+        ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
 
-        ext = [Extension("caiman.source_extraction.cnmf.oasis",
+        ext += [Extension("caiman.source_extraction.cnmf.oasis",
                                  sources=["caiman/source_extraction/cnmf/oasis.pyx"],
                                  include_dirs=[numpy_include],
                                  language="c++")]
