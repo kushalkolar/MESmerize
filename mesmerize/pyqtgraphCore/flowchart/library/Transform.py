@@ -2,6 +2,7 @@
 from PyQt5 import QtWidgets
 from sklearn import manifold
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn import decomposition
 from .common import *
 from ....analysis import organize_dataframe_columns
 import pandas as pd
@@ -72,7 +73,7 @@ class LDA(CtrlNode):
     """Linear Discriminant Analysis, uses sklearn"""
     nodeName = "LDA"
     uiTemplate = [('train_data', 'list_widget', {'selection_mode': QtWidgets.QAbstractItemView.ExtendedSelection,
-                                                    'toolTip': 'Column containing the training data'}),
+                                                 'toolTip': 'Column containing the training data'}),
                   ('train_labels', 'combo', {'toolTip': 'Column containing training labels'}),
                   ('solver', 'combo', {'items': ['svd', 'lsqr', 'eigen']}),
                   ('shrinkage', 'combo', {'items': ['None', 'auto', 'value']}),
@@ -130,7 +131,7 @@ class LDA(CtrlNode):
             shrinkage = None
 
         n_components = self.ctrls['n_components'].value()
-        tol = 10**self.ctrls['tol'].value()
+        tol = 10 ** self.ctrls['tol'].value()
 
         store_covariance = True if solver == 'svd' else False
 
@@ -200,6 +201,79 @@ class LDA(CtrlNode):
         return out
 
 
-class Decomposition(CtrlNode):
-    """Decomposition methods for dimensionality reduction"""
-    pass
+class PCA(CtrlNode):
+    """Principal component analysis. Uses sklearn.decomposition.PCA"""
+    nodeName = 'PCA'
+    uiTemplate = [('data_column', 'combo', {}),
+
+                  ('n_components', 'intSpin', {'min': 2, 'max': 999, 'value': 2, 'step': 1}),
+
+                  ('whiten', 'check', {'chcked': False}),
+
+                  ('svd_solver', 'combo', {'items': ['auto', 'full', 'arpack', 'randomized']}),
+
+                  ('tol', 'doubleSpin', {'min': 0.0, 'max': 999.0, 'value': 0, 'step': 0.05}),
+
+                  ('iterated_power', 'intSpin', {'min': -1, 'max': 999, 'value': -1, 'step': 1,
+                                                 'toolTip': 'If value is -1 then iterated power is set to "auto"'}),
+                  ('exp_var', 'lineEdit', {'readOnly': True, 'toolTip': 'Variance explained by each component'}),
+
+                  ('exp_var_p', 'lineEdit', {'readOnly': True,
+                                             'toolTip': 'Percentage of variance explained by each component'}),
+
+                  ('sing_vals', 'lineEdit', {'readOnly': True, 'toolTip': 'Singular values for each component'}),
+
+                  ('Apply', 'check', {'applyBox': True})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if self.ctrls['Apply'].isChecked() is False:
+            return
+
+        self.t = transmission.copy()
+
+        output_column = '_PCA_TRANSFORM'
+
+        n_components = self.ctrls['n_components'].value()
+        whiten = self.ctrls['whiten'].isChecked()
+        svd_solver = self.ctrls['svd_solver'].currentText()
+        tol = self.ctrls['tol'].value()
+        iterated_power = self.ctrls['iterated_power'].value()
+        if iterated_power == -1:
+            iterated_power = 'auto'
+
+        params = {'n_components': n_components,
+                  'whiten': whiten,
+                  'svd_solver': svd_solver,
+                  'tol': tol,
+                  iterated_power: iterated_power
+                  }
+
+        pca = decomposition.PCA(n_components=n_components, whiten=whiten, svd_solver=svd_solver, tol=tol,
+                                iterated_power=iterated_power)
+
+        self.X = np.vstack(self.t.df[self.data_column].values)
+
+        self.X_ = pca.fit_transform(self.X)
+
+        exp_var = pca.explained_variance_
+        exp_var_p = pca.explained_variance_ratio_
+
+        params.update({**params,
+                       'exp_var': exp_var,
+                       'exp_var_p': exp_var_p
+                       })
+
+        self.t.df[output_column] = self.X_.tolist()
+        self.t.df[output_column] = self.t.df['_PCA_TRANSFORM'].apply(np.array)
+
+        self.t.history_trace.add_operation('all', 'pca', params)
+
+        self.ctrls['exp_var'].setText(str(exp_var))
+        self.ctrls['exp_var_p'].setText(str(exp_var_p))
+        self.ctrls['sing_vals'].setText(str(pca.singular_values_))
+
+        return self.t
