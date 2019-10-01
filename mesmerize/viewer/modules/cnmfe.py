@@ -57,6 +57,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         except StopIteration:
             bord_px = 0
 
+        deconv = self.ui.comboBoxDeconv.currentText()
+        if deconv == 'SKIP':
+            method_deconvolution = None
+            deconv_flag = False
+        else:
+            deconv_flag = True
+            method_deconvolution = deconv
+
         d = {'Input':           self.ui.comboBoxInput.currentText(),
              'frate':           self.vi.viewer.workEnv.imgdata.meta['fps'],
              'gSig':            self.ui.spinBoxGSig.value(),
@@ -73,7 +81,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
              'k':               self.ui.spinBoxK.value(),
              'name_corr_pnr':   self.ui.lineEdCorrPNRName.text(),
              'name_cnmfe':      self.ui.lineEdName.text(),
-             'Ain':             self.ui.lineEditAin.text().replace(' ', '').strip('\n')
+             'Ain':             self.ui.lineEditAin.text().replace(' ', '').strip('\n'),
+             'deconv_flag':     deconv_flag,
+             'method_deconvolution': method_deconvolution
              }
 
         return d

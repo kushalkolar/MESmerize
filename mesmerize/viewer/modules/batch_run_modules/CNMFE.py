@@ -102,6 +102,16 @@ def run(batch_dir: str, UUID: str):
     else:
         Ain = None
 
+    if 'method_deconvolution' in input_params.keys():
+        method_deconvolution = input_params['method_deconvolution']
+    else:
+        method_deconvolution = 'oasis'
+
+    if 'deconv_flag' in input_params.keys():
+        deconv_flag = input_params['deconv_flag']
+    else:
+        deconv_flag = True
+
     filename = [filename]
 
     print('*********** Creating Process Pool ***********')
@@ -180,7 +190,8 @@ def run(batch_dir: str, UUID: str):
                         only_init_patch=True,  # just leave it as is
                         gnb=gnb,  # number of background components
                         nb_patch=nb_patch,  # number of background components per patch
-                        method_deconvolution='oasis',  # could use 'cvxpy' alternatively
+                        method_deconvolution=method_deconvolution,  # could use 'cvxpy' alternatively
+                        deconv_flag=deconv_flag,
                         low_rank_background=True,  # leave as is
                         # sometimes setting to False improve the results
                         update_background_components=True,

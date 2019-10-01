@@ -20,6 +20,7 @@ from ...widgets.ComboBox import ComboBox as QComboBox
 from ...widgets.ListWidget import ListWidget
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
 from ....analysis import organize_dataframe_columns
+from PyQt5.QtWidgets import QLineEdit
 
 
 def generateUi(opts):
@@ -93,11 +94,14 @@ def generateUi(opts):
                 w.setSelectionMode(o['selection_mode'])
 
         elif t == 'lineEdit':
-            w = QtGui.QLineEdit()
+            # w = QtGui.QLineEdit()
+            w = QLineEdit()
             if 'placeHolder' in o:
                 w.setPlaceholderText(o['placeHolder'])
             if 'text' in o:
                 w.setText(o['text'])
+            if 'readOnly' in o:
+                w.setReadOnly(True)
 
         elif t == 'plainTextEdit':
             w = QtGui.QPlainTextEdit()

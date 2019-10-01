@@ -165,7 +165,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                         'end': tend_frame,
                                         'color': color
                                         })
-                stimulus_dataframes[stim_type] = {'units': 'frames', 'dataframe': pd.DataFrame(current_map)}
+                # stimulus_dataframes[stim_type] = {'units': 'frames', 'dataframe': pd.DataFrame(current_map)}
+                stimulus_dataframes[stim_type] = pd.DataFrame(current_map)
 
             except (KeyError, IndexError):
                 QtWidgets.QMessageBox.information(None, 'FYI: Missing channels in current image',

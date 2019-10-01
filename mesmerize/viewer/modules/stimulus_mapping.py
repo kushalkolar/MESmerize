@@ -100,13 +100,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def set_all_data(self, dataframes_dict: dict):
         self.reset()
         for stim_type in dataframes_dict.keys():
+            if dataframes_dict[stim_type] is None:
+                continue
+                
             tab = self.tabs[stim_type]
-            assert isinstance(tab, Page)
-            tab.set_data(dataframes_dict[stim_type]['dataframe'])
-            if dataframes_dict[stim_type]['units'] == 'seconds':
-                tab.ui.comboBoxTimeUnits.setCurrentIndex(0)
-            elif dataframes_dict[stim_type]['units'] == 'frames':
-                tab.ui.comboBoxTimeUnits.setCurrentIndex(1)
+            tab.set_data(dataframes_dict[stim_type])#['dataframe'])
+            # if dataframes_dict[stim_type]['units'] == 'seconds':
+            tab.ui.comboBoxTimeUnits.setCurrentIndex(0)
+            # elif dataframes_dict[stim_type]['units'] == 'frames':
+            #     tab.ui.comboBoxTimeUnits.setCurrentIndex(1)
 
     def set_all_maps(self):
         self.set_timeline(self.ui.comboBoxShowTimelineChoice.currentIndex())
@@ -118,15 +120,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
             if d[stim_type] is None:
                 continue
 
-            # if d[stim_type]['units'] == 'seconds':
-            #     fps = self.vi.viewer.workEnv.meta['fps']
-            #     d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'] * fps
-            #     d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'].astype(int)
-            #
-            #     d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
-                # d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
+            if d[stim_type]['units'] == 'seconds':
+                fps = self.vi.viewer.workEnv.meta['fps']
+                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'] * fps
+                d[stim_type]['dataframe']['start'] = d[stim_type]['dataframe']['start'].astype(int)
 
-            # d[stim_type] = d[stim_type]['dataframe']
+                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'] * fps
+                d[stim_type]['dataframe']['end'] = d[stim_type]['dataframe']['end'].astype(int)
+
+            d[stim_type] = d[stim_type]['dataframe']
 
         self.vi.viewer.workEnv.stim_maps = d
 
@@ -141,23 +143,24 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.timeline_stimulus_display.clear_all()
             return
 
-        tab_page = self.tabs[stim_type]
-        assert isinstance(tab_page, Page)
+        # tab_page = self.tabs[stim_type]
+        # assert isinstance(tab_page, Page)
 
         try:
-            df = tab_page.get_dataframe()
+            # df = tab_page.get_dataframe()
+            df = self.vi.viewer.workEnv.stim_maps[stim_type]
         except IndexError as ie:
             QtWidgets.QMessageBox.information(self, 'IndexError', str(ie))
             return
 
-        units = self.vi.viewer.workEnv.stim_maps[stim_type]['units']
-
-        if units == 'seconds':
-            fps = self.vi.viewer.workEnv.meta['fps']
-            df['start'] = df['start'] * fps
-            df['start'] = df['start'].astype(int)
-            df['end'] = df['end'] * fps
-            df['end'] = df['end'].astype(int)
+        # units = self.vi.viewer.workEnv.stim_maps[stim_type]['units']
+        #
+        # if units == 'seconds':
+        #     fps = self.vi.viewer.workEnv.meta['fps']
+        #     df['start'] = df['start'] * fps
+        #     df['start'] = df['start'].astype(int)
+        #     df['end'] = df['end'] * fps
+        #     df['end'] = df['end'].astype(int)
 
         self.timeline_stimulus_display.set_from_stimulus_mapping(df)
 

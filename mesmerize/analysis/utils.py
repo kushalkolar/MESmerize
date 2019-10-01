@@ -162,7 +162,7 @@ def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[
     return dcols, ccols, ucols
 
 
-def pad_arrays(self, a: np.ndarray, method: str = 'random', output_size: int = None, mode: str = 'minimum',
+def pad_arrays(a: np.ndarray, method: str = 'random', output_size: int = None, mode: str = 'minimum',
                constant: Any = None) -> np.ndarray:
     """
     Pad all the input arrays so that are of the same length. The length is determined by the largest input array.
@@ -186,8 +186,6 @@ def pad_arrays(self, a: np.ndarray, method: str = 'random', output_size: int = N
 
     if (output_size is not None) and (output_size < l):
         raise ValueError('Output size must be equal to larger than the size of the largest input array')
-    else:
-        l = output_size
 
     # pre-allocate output array
     p = np.zeros(shape=(a.size, l), dtype=a[0].dtype)
@@ -210,6 +208,10 @@ def pad_arrays(self, a: np.ndarray, method: str = 'random', output_size: int = N
             raise ValueError('Must specific method as either "random" or "fill-size"')
 
         post = l - (pre + s)
-        p[i, :] = np.pad(a[i], (pre, post), 'minimum')
+
+        if mode == 'constant':
+            p[i, :] = np.pad(a[i], (pre, post), 'constant', constant_values=constant)
+        else:
+            p[i, :] = np.pad(a[i], (pre, post), 'minimum')
 
     return p
