@@ -11,7 +11,6 @@ def is_building():
 	be passed to the setup() function.
 	"""
     if len(sys.argv) < 2:
-        # User forgot to give an argument probably, let setuptools handle that.
         return True
 
     info_commands = ['--help-commands', '--name', '--version', '-V',
@@ -20,8 +19,7 @@ def is_building():
                      '--contact-email', '--url', '--license', '--description',
                      '--long-description', '--platforms', '--classifiers',
                      '--keywords', '--provides', '--requires', '--obsoletes']
-    # Add commands that do more than print info, but also don't need
-    # any build step.
+
     info_commands.extend(['egg_info', 'install_egg_info', 'rotate'])
 
     for command in info_commands:
@@ -37,7 +35,7 @@ s = dict(
     packages=find_packages(exclude=['use_cases', 'use_cases.*', 'tests']),
     include_package_data=True,
     entry_points={'console_scripts': ['mesmerize=mesmerize.__main__:main']},
-    setup_requires=['cython', 'numpy', 'scipy', 'scikit-learn'],
+    setup_requires=['cython', 'numpy', 'scipy', 'scikit-learn', 'numba', 'joblib'],
     url='https://kushalkolar.github.io/MESmerize/',
     license='GNU General Public License v3.0',
     author='Kushal Kolar, Daniel Dondorp',
@@ -48,7 +46,7 @@ s = dict(
 if is_building():
     try:
         from Cython.Distutils import build_ext as _build_ext
-        list_pyx = ['cydtw', 'cygak', 'cysax', 'cycc', 'soft_dtw_fast']
+        list_pyx = ['cygak', 'cysax', 'cycc', 'soft_dtw_fast']
         numpy_include = pkg_resources.resource_filename('numpy', 'core/include')
         ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
 

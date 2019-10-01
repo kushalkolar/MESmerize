@@ -4,22 +4,75 @@ The :mod:`tslearn.utils` module includes various utilities.
 
 import numpy
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils import column_or_1d
+from sklearn.utils.validation import check_is_fitted
+import warnings
 
 __author__ = 'Romain Tavenard romain.tavenard[at]univ-rennes2.fr'
 
 
+def check_dims(X, X_fit=None, extend=True):
+    """Reshapes X to a 3-dimensional array of X.shape[0] univariate
+    timeseries of length X.shape[1] if X is 2-dimensional and extend
+    is True. Then checks whether the dimensions, except the first one,
+    of X_fit and X match.
+
+    Parameters
+    ----------
+    X : array-like
+        The first array to be compared.
+    X_fit : array-like or None (default: None)
+        The second array to be compared, which is created during fit.
+        If None, then only perform reshaping of X, if necessary.
+    extend : boolean (default: True)
+        Whether to reshape X, if it is 2-dimensional.
+
+    Returns
+    -------
+    array
+        Reshaped X array
+
+    Examples
+    --------
+    >>> X = numpy.empty((10, 3))
+    >>> check_dims(X).shape
+    (10, 3, 1)
+    >>> X = numpy.empty((10, 3, 1))
+    >>> check_dims(X).shape
+    (10, 3, 1)
+    >>> X_fit = numpy.empty((5, 3, 1))
+    >>> check_dims(X, X_fit).shape
+    (10, 3, 1)
+    >>> X_fit = numpy.empty((5, 3, 2))
+    >>> check_dims(X, X_fit)  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    ValueError: Dimensions (except first) must match! ((5, 3, 2) and (10, 3, 1)
+    are passed shapes)
+
+    Raises
+    ------
+    ValueError
+        Will raise exception if X is None or (if X_fit is provided) one of the
+        dimensions, except the first, does not match.
+    """
+    if X is None:
+        raise ValueError('X is equal to None!')
+
+    if extend and len(X.shape) == 2:
+        warnings.warn('2-Dimensional data passed. Assuming these are '
+                      '{} 1-dimensional timeseries'.format(X.shape[0]))
+        X = X.reshape((X.shape) + (1,))
+
+    if X_fit is not None and X_fit.shape[1:] != X.shape[1:]:
+        raise ValueError('Dimensions (except first) must match!'
+                         ' ({} and {} are passed shapes)'.format(X_fit.shape,
+                                                                 X.shape))
+
+    return X
+
+
 def _arraylike_copy(arr):
     """Duplicate content of arr into a numpy array.
-
-     Examples
-     --------
-     >>> X_npy = numpy.array([1, 2, 3])
-     >>> numpy.alltrue(_arraylike_copy(X_npy) == X_npy)
-     True
-     >>> _arraylike_copy(X_npy) is X_npy
-     False
-     >>> numpy.alltrue(_arraylike_copy([1, 2, 3]) == X_npy)
-     True
      """
     if type(arr) != numpy.ndarray:
         return numpy.array(arr)
@@ -28,7 +81,8 @@ def _arraylike_copy(arr):
 
 
 def bit_length(n):
-    """Returns the number of bits necessary to represent an integer in binary, excluding the sign and leading zeros.
+    """Returns the number of bits necessary to represent an integer in binary,
+    excluding the sign and leading zeros.
 
     This function is provided for Python 2.6 compatibility.
 
@@ -36,10 +90,10 @@ def bit_length(n):
     --------
     >>> bit_length(0)
     0
-    >>> bit_length(2)
-    2
     >>> bit_length(1)
     1
+    >>> bit_length(2)
+    2
     """
     k = 0
     try:
@@ -51,33 +105,35 @@ def bit_length(n):
 
 
 def to_time_series(ts, remove_nans=False):
-    """Transforms a time series so that it fits the format used in ``tslearn`` models.
+    """Transforms a time series so that it fits the format used in ``tslearn``
+    models.
 
     Parameters
     ----------
     ts : array-like
         The time series to be transformed.
     remove_nans : bool (default: False)
-        Whether trailing NaNs at the end of the time series should be removed or not
+        Whether trailing NaNs at the end of the time series should be removed
+        or not
 
     Returns
     -------
     numpy.ndarray of shape (sz, d)
         The transformed time series.
-    
-    Example
-    -------
-    >>> to_time_series([1, 2]) # doctest: +NORMALIZE_WHITESPACE
-    array([[ 1.],
-           [ 2.]])
-    >>> to_time_series([1, 2, numpy.nan]) # doctest: +NORMALIZE_WHITESPACE
+
+    Examples
+    --------
+    >>> to_time_series([1, 2])
+    array([[1.],
+           [2.]])
+    >>> to_time_series([1, 2, numpy.nan])
     array([[ 1.],
            [ 2.],
-           [ nan]])
-    >>> to_time_series([1, 2, numpy.nan], remove_nans=True) # doctest: +NORMALIZE_WHITESPACE
-    array([[ 1.],
-           [ 2.]])
-    
+           [nan]])
+    >>> to_time_series([1, 2, numpy.nan], remove_nans=True)
+    array([[1.],
+           [2.]])
+
     See Also
     --------
     to_time_series_dataset : Transforms a dataset of time series
@@ -93,7 +149,8 @@ def to_time_series(ts, remove_nans=False):
 
 
 def to_time_series_dataset(dataset, dtype=numpy.float):
-    """Transforms a time series dataset so that it fits the format used in ``tslearn`` models.
+    """Transforms a time series dataset so that it fits the format used in
+    ``tslearn`` models.
 
     Parameters
     ----------
@@ -106,25 +163,27 @@ def to_time_series_dataset(dataset, dtype=numpy.float):
     -------
     numpy.ndarray of shape (n_ts, sz, d)
         The transformed dataset of time series.
-    
-    Example
-    -------
-    >>> to_time_series_dataset([[1, 2]]) # doctest: +NORMALIZE_WHITESPACE
+
+    Examples
+    --------
+    >>> to_time_series_dataset([[1, 2]])
+    array([[[1.],
+            [2.]]])
+    >>> to_time_series_dataset([[1, 2], [1, 4, 3]])
     array([[[ 1.],
-            [ 2.]]])
-    >>> to_time_series_dataset([[1, 2], [1, 4, 3]]) # doctest: +NORMALIZE_WHITESPACE
-    array([[[  1.],
-            [  2.],
-            [ nan]],
+            [ 2.],
+            [nan]],
     <BLANKLINE>
-           [[  1.],
-            [  4.],
-            [  3.]]])
-    
+           [[ 1.],
+            [ 4.],
+            [ 3.]]])
+
     See Also
     --------
     to_time_series : Transforms a single time series
     """
+    if len(dataset) == 0:
+        return numpy.zeros((0, 0, 0))
     if numpy.array(dataset[0]).ndim == 0:
         dataset = [dataset]
     n_ts = len(dataset)
@@ -147,19 +206,24 @@ def to_sklearn_dataset(dataset, dtype=numpy.float, return_dim=False):
         The dataset of time series to be transformed.
     dtype : data type (default: numpy.float)
         Data type for the returned dataset.
+    return_dim : boolean  (optional, default: False)
+        Whether the dimensionality (third dimension should be returned together
+        with the transformed dataset).
 
     Returns
     -------
     numpy.ndarray of shape (n_ts, sz * d)
         The transformed dataset of time series.
+    int (optional, if return_dim=True)
+        The dimensionality of the original tslearn dataset (third dimension)
 
-    Example
-    -------
-    >>> to_sklearn_dataset([[1, 2]], return_dim=True) # doctest: +NORMALIZE_WHITESPACE
-    (array([[ 1., 2.]]), 1)
-    >>> to_sklearn_dataset([[1, 2], [1, 4, 3]]) # doctest: +NORMALIZE_WHITESPACE
+    Examples
+    --------
+    >>> to_sklearn_dataset([[1, 2]], return_dim=True)
+    (array([[1., 2.]]), 1)
+    >>> to_sklearn_dataset([[1, 2], [1, 4, 3]])
     array([[ 1.,  2., nan],
-           [ 1.,  4., 3.]])
+           [ 1.,  4.,  3.]])
 
     See Also
     --------
@@ -176,7 +240,8 @@ def to_sklearn_dataset(dataset, dtype=numpy.float, return_dim=False):
 
 
 def timeseries_to_str(ts, fmt="%.18e"):
-    """Transforms a time series to its representation as a string (used when saving time series to disk).
+    """Transforms a time series to its representation as a string (used when
+    saving time series to disk).
 
     Parameters
     ----------
@@ -192,9 +257,9 @@ def timeseries_to_str(ts, fmt="%.18e"):
 
     Examples
     --------
-    >>> timeseries_to_str([1, 2, 3, 4], fmt="%.1f")  # doctest: +NORMALIZE_WHITESPACE
+    >>> timeseries_to_str([1, 2, 3, 4], fmt="%.1f")
     '1.0 2.0 3.0 4.0'
-    >>> timeseries_to_str([[1, 3], [2, 4]], fmt="%.1f")  # doctest: +NORMALIZE_WHITESPACE
+    >>> timeseries_to_str([[1, 3], [2, 4]], fmt="%.1f")
     '1.0 2.0|3.0 4.0'
 
     See Also
@@ -213,7 +278,8 @@ def timeseries_to_str(ts, fmt="%.18e"):
 
 
 def str_to_timeseries(ts_str):
-    """Reads a time series from its string representation (used when loading time series from disk).
+    """Reads a time series from its string representation (used when loading
+    time series from disk).
 
     Parameters
     ----------
@@ -227,14 +293,14 @@ def str_to_timeseries(ts_str):
 
     Examples
     --------
-    >>> str_to_timeseries("1 2 3 4")  # doctest: +NORMALIZE_WHITESPACE
-    array([[ 1.],
-           [ 2.],
-           [ 3.],
-           [ 4.]])
-    >>> str_to_timeseries("1 2|3 4")  # doctest: +NORMALIZE_WHITESPACE
-    array([[ 1., 3.],
-           [ 2., 4.]])
+    >>> str_to_timeseries("1 2 3 4")
+    array([[1.],
+           [2.],
+           [3.],
+           [4.]])
+    >>> str_to_timeseries("1 2|3 4")
+    array([[1., 3.],
+           [2., 4.]])
 
     See Also
     --------
@@ -257,6 +323,11 @@ def save_timeseries_txt(fname, dataset, fmt="%.18e"):
         The dataset of time series to be saved.
     fmt : string (default: "%.18e")
         Format to be used to write each value.
+
+    Examples
+    --------
+    >>> dataset = to_time_series_dataset([[1, 2, 3, 4], [1, 2, 3]])
+    >>> save_timeseries_txt("tmp-tslearn-test.txt", dataset)
 
     See Also
     --------
@@ -286,13 +357,6 @@ def load_timeseries_txt(fname):
     >>> dataset = to_time_series_dataset([[1, 2, 3, 4], [1, 2, 3]])
     >>> save_timeseries_txt("tmp-tslearn-test.txt", dataset)
     >>> reloaded_dataset = load_timeseries_txt("tmp-tslearn-test.txt")
-    >>> [numpy.alltrue((ts0[:ts_size(ts0)] - ts1[:ts_size(ts1)]) < 1e-6) for ts0, ts1 in zip(dataset, reloaded_dataset)]
-    [True, True]
-    >>> dataset = to_time_series_dataset([[1, 2, 4], [1, 2, 3]])
-    >>> save_timeseries_txt("tmp-tslearn-test.txt", dataset)
-    >>> reloaded_dataset = load_timeseries_txt("tmp-tslearn-test.txt")
-    >>> [numpy.alltrue((ts0 - ts1) < 1e-6) for ts0, ts1 in zip(dataset, reloaded_dataset)]
-    [True, True]
 
     See Also
     --------
@@ -341,7 +405,8 @@ def check_equal_size(dataset):
 def ts_size(ts):
     """Returns actual time series size.
 
-    Final timesteps that have NaN values for all dimensions will be removed from the count.
+    Final timesteps that have NaN values for all dimensions will be removed
+    from the count.
 
     Parameters
     ----------
@@ -361,7 +426,11 @@ def ts_size(ts):
     1
     >>> ts_size([numpy.nan])
     0
-    >>> ts_size([[1, 2], [2, 3], [3, 4], [numpy.nan, 2], [numpy.nan, numpy.nan]])
+    >>> ts_size([[1, 2],
+    ...          [2, 3],
+    ...          [3, 4],
+    ...          [numpy.nan, 2],
+    ...          [numpy.nan, numpy.nan]])
     4
     """
     ts_ = to_time_series(ts)
@@ -389,9 +458,9 @@ def ts_zeros(sz, d=1):
     Examples
     --------
     >>> ts_zeros(3, 2)  # doctest: +NORMALIZE_WHITESPACE
-    array([[ 0., 0.],
-           [ 0., 0.],
-           [ 0., 0.]])
+    array([[0., 0.],
+           [0., 0.],
+           [0., 0.]])
     >>> ts_zeros(5).shape
     (5, 1)
     """
@@ -407,42 +476,46 @@ class LabelCategorizer(BaseEstimator, TransformerMixin):
         If true, generate a single column for binary classification case.
         Otherwise, will generate 2.
         If there are more than 2 labels, thie option will not change anything.
+    forward_match : dict
+        A dictionary that maps each element that occurs in the label vector
+        on a index {y_i : i} with i in [0, C - 1], C the total number of
+        unique labels and y_i the ith unique label.
+    backward_match : array-like
+        An array that maps an index back to the original label. Where
+        backward_match[i] results in y_i.
 
     Examples
     --------
     >>> y = numpy.array([-1, 2, 1, 1, 2])
     >>> lc = LabelCategorizer()
-    >>> lc.fit_transform(y)  # doctest: +NORMALIZE_WHITESPACE
-    array([[ 1., 0., 0.],
-           [ 0., 0., 1.],
-           [ 0., 1., 0.],
-           [ 0., 1., 0.],
-           [ 0., 0., 1.]])
-    >>> lc.inverse_transform([[0, 1, 0], [0, 0, 1], [1, 0, 0]])  # doctest: +NORMALIZE_WHITESPACE
-    array([ 1., 2., -1.])
-    >>> import pickle
-    >>> s = pickle.dumps(lc)
-    >>> lc2 = pickle.loads(s)
-    >>> lc2.inverse_transform([[0, 1, 0], [0, 0, 1], [1, 0, 0]])  # doctest: +NORMALIZE_WHITESPACE
-    array([ 1., 2., -1.])
+    >>> lc.fit_transform(y)
+    array([[1., 0., 0.],
+           [0., 0., 1.],
+           [0., 1., 0.],
+           [0., 1., 0.],
+           [0., 0., 1.]])
+    >>> lc.inverse_transform([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
+    array([ 1.,  2., -1.])
     >>> y = numpy.array([-1, 2, -1, -1, 2])
     >>> lc = LabelCategorizer(single_column_if_binary=True)
-    >>> lc.fit_transform(y)  # doctest: +NORMALIZE_WHITESPACE
-    array([[ 1.],
-           [ 0.],
-           [ 1.],
-           [ 1.],
-           [ 0.]])
-    >>> lc.inverse_transform(lc.transform(y))  # doctest: +NORMALIZE_WHITESPACE
+    >>> lc.fit_transform(y)
+    array([[1.],
+           [0.],
+           [1.],
+           [1.],
+           [0.]])
+    >>> lc.inverse_transform(lc.transform(y))
     array([-1.,  2., -1., -1.,  2.])
 
     References
     ----------
     .. [1] J. Grabocka et al. Learning Time-Series Shapelets. SIGKDD 2014.
     """
-    def __init__(self, single_column_if_binary=False):
+    def __init__(self, single_column_if_binary=False, forward_match=None,
+                 backward_match=None):
         self.single_column_if_binary = single_column_if_binary
-        self._init()
+        self.forward_match = forward_match
+        self.backward_match = backward_match
 
     def _init(self):
         self.forward_match = {}
@@ -450,6 +523,7 @@ class LabelCategorizer(BaseEstimator, TransformerMixin):
 
     def fit(self, y):
         self._init()
+        y = column_or_1d(y, warn=True)
         values = sorted(set(y))
         for i, v in enumerate(values):
             self.forward_match[v] = i
@@ -457,6 +531,8 @@ class LabelCategorizer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, y):
+        check_is_fitted(self, ['backward_match', 'forward_match'])
+        y = column_or_1d(y, warn=True)
         n_classes = len(self.backward_match)
         n = len(y)
         y_out = numpy.zeros((n, n_classes))
@@ -468,6 +544,7 @@ class LabelCategorizer(BaseEstimator, TransformerMixin):
             return y_out
 
     def inverse_transform(self, y):
+        check_is_fitted(self, ['backward_match', 'forward_match'])
         y_ = numpy.array(y)
         n, n_c = y_.shape
         if n_c == 1 and self.single_column_if_binary:
@@ -490,5 +567,10 @@ class LabelCategorizer(BaseEstimator, TransformerMixin):
             Parameter names mapped to their values.
         """
         out = BaseEstimator.get_params(self, deep=deep)
+        out["single_column_if_binary"] = self.single_column_if_binary
         out["forward_match"] = self.forward_match
         out["backward_match"] = self.backward_match
+        return out
+
+    def _get_tags(self):
+        return {'X_types': ['1dlabels']}
