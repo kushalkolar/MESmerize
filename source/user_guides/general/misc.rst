@@ -133,7 +133,7 @@ This window is accessible through the :ref:`Welcome Window <WelcomeWindow>` menu
 
 **Python call:** Many parts of Mesmerize, such as the :ref:`Batch Manager <BatchManager>` use external processes to run a python script. This setting sets which python call should be used. The default setting of "python3" should work for both :ref:`snap <snap_install>` and :ref:`pip <pip_install>` installations unless you have written a custom expansion that uses python2.
 
-**Use CUDA:** Use CUDA accerlation if you have a GPU with CUDA cores. Only works with the :ref:`pip installation <pip_install>`, and you must have pycuda and scikit-cuda (as well as the :ref:`nvidia CUDA toolkit <https://developer.nvidia.com/cuda-toolkit>`) installed. In Mesmerize CUDA is currently used only by :ref:`Caiman Motion Correction <module_caiman_motion_correction>`. We plan to expand CUDA support to computationally intensive tasks that are performed by flowchart nodes.
+**Use CUDA:** Use CUDA accerlation if you have a GPU with CUDA cores. Only works with the :ref:`pip installation <pip_install>`, and you must have pycuda and scikit-cuda (as well as the `nvidia CUDA toolkit <https://developer.nvidia.com/cuda-toolkit>`_) installed. In Mesmerize CUDA is currently used only by :ref:`Caiman Motion Correction <module_caiman_motion_correction>`. We plan to expand CUDA support to computationally intensive tasks that are performed by flowchart nodes.
 
 **Work dir:** Many parts of Mesmerize use a working directory for temporary files. If you have a fast filesystem you can use that for this purpose.
 
