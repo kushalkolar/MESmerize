@@ -8,6 +8,7 @@ Welcome to Mesmerize's documentation!
 
 | GitHub: https://github.com/kushalkolar/MESmerize
 | Help forum: https://groups.google.com/d/forum/mesmerize
+| Contact: kushalkolar@alumni.ubc.ca
 
 .. toctree::
 	:maxdepth: 1
