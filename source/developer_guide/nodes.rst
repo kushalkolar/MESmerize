@@ -248,6 +248,7 @@ list_widget     | *items (list):* default list of items that will be set in the 
                 | *selection_mode:* One of the accepted `QAbstractItemView selection modes <https://doc.qt.io/qtforpython/PySide2/QtWidgets/QAbstractItemView.html#PySide2.QtWidgets.PySide2.QtWidgets.QAbstractItemView.SelectionMode>`_
 lineEdit        | *text (str):* default text in the line edit
                 | *placeHolder (str):* placeholder text
+                | *readOnly (bool):* set as read only
 plainTextEdit   | *text (str):* default text in the text edit
                 | *placeHolder (str):* placeholder text
 label           | *text (str):* default text
