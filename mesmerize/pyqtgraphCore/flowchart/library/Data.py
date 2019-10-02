@@ -9,6 +9,7 @@ from ....common import get_project_manager
 import os
 from tslearn.preprocessing import TimeSeriesScalerMinMax
 import pickle
+from glob import glob
 
 
 class LoadProjDF(CtrlNode):
@@ -71,6 +72,7 @@ class LoadFile(CtrlNode):
     """Load Transmission data object from pickled file"""
     nodeName = 'LoadFile'
     uiTemplate = [('load_trn', 'button', {'text': 'Open .trn File'}),
+                  ('proj_trns', 'combo', {}),
                   ('fname', 'label', {'text': ''}),
                   ('proj_path', 'button', {'text': 'Project Path'}),
                   ('proj_path_label', 'label', {'text': ''})
@@ -83,6 +85,14 @@ class LoadFile(CtrlNode):
 
         self.t = None
         self._loadNode = True
+
+        proj_path = get_project_manager().root_dir
+        
+        if proj_path is not None:
+            trns = os.path.join(proj_path, 'trns', '*.trn')
+            trns_names = [os.path.basename(f) for f in trns]
+            self.ctrls['proj_trns'].setItems(trns_names)
+            self.ctrls['proj_trns'].currentTextChanged.connect(lambda fname: self.load_file(os.path.join(proj_path, 'trns', fname)))
 
     def file_dialog_trn_file(self):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
