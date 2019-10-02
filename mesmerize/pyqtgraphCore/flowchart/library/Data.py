@@ -89,10 +89,10 @@ class LoadFile(CtrlNode):
         proj_path = get_project_manager().root_dir
         
         if proj_path is not None:
-            trns = os.path.join(proj_path, 'trns', '*.trn')
-            trns_names = [os.path.basename(f) for f in trns]
+            trns = glob(os.path.join(proj_path, 'trns', '*.trn'))
+            trns_names = [""] + [os.path.basename(f) for f in trns]
             self.ctrls['proj_trns'].setItems(trns_names)
-            self.ctrls['proj_trns'].currentTextChanged.connect(lambda fname: self.load_file(os.path.join(proj_path, 'trns', fname)))
+            self.ctrls['proj_trns'].currentTextChanged.connect(lambda fname: self.load_file(os.path.join(get_project_manager().root_dir, 'trns', fname) if fname else False))
 
     def file_dialog_trn_file(self):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
@@ -101,6 +101,8 @@ class LoadFile(CtrlNode):
         self.load_file(path[0])
 
     def load_file(self, path: str):
+        if not path:
+            return
         try:
             self.t = Transmission.from_hdf5(path)
         except:
