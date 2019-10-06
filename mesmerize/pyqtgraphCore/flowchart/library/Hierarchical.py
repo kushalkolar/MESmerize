@@ -42,7 +42,7 @@ class Linkage(CtrlNode):
         if metric == 'wasserstein':
             self.data += np.abs(self.data.min())
             distM = pairwise_distances(self.data, metric=emd_1d, n_jobs=get_sys_config()['_MESMERIZE_N_THREADS'])
-            condensed = squareform(distM)
+            condensed = squareform(distM, checks=False)
             self.linkage = hierarchy.linkage(condensed, method=method, optimal_ordering=optimal_ordering)
         else:
             metric_ = metric
