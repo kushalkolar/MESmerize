@@ -256,13 +256,14 @@ class AnalysisGraph(CtrlNode):
             fname = os.path.join(workdir, f"{db}")
             g = Digraph('G', filename=fname, format='pdf', node_attr={'shape': 'record'})
 
-            operations = self.t.history_trace.get_operations_list(db)
+            db_history = self.t.history_trace.get_data_block_history(db)
 
             o_encounters = []
             o_n_l = []
 
-            for o in operations:
-                params = self.t.history_trace.get_operation_params(db, o)
+            for op in db_history:
+                o = list(op.keys())[0]
+                params = op[o]
                 params = cleanup_params(o, params)
                 s = []
                 for k in params.keys():
