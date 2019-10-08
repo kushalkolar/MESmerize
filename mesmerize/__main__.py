@@ -35,8 +35,8 @@ def main():
         if sys.argv[2] == 'batch':
             app.window_manager.welcome_window = MainWindow()
             app.window_manager.welcome_window.show()
-            bm = app.window_manager.get_batch_manager()
-            bm.run([sys.argv[3], sys.argv[4]])
+            bm = app.window_manager.get_batch_manager(run_batch=[sys.argv[3], sys.argv[4]])
+            # bm.run()
 
     # elif sys.argv[1].endswith('.tiff') or sys.argv[1].endswith('.tif'):
     #     start.viewer(sys.argv[1])
