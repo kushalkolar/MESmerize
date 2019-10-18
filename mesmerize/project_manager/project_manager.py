@@ -65,12 +65,16 @@ class ProjectManager(QtCore.QObject):
         configuration.save_proj_config()
 
     def setup_new_project(self):
-        os.makedirs(os.path.join(self.root_dir, 'dataframes'))
-        os.mkdir(os.path.join(self.root_dir, 'batches'))
-        os.mkdir(os.path.join(self.root_dir, 'images'))
-        os.mkdir(os.path.join(self.root_dir, 'curves'))
-        os.mkdir(os.path.join(self.root_dir, 'plots'))
-        os.mkdir(os.path.join(self.root_dir, 'flowcharts'))
+        subdirs = ['dataframes',
+                   'batches',
+                   'images',
+                   'curves',
+                   'flowcharts',
+                   'trns',
+                   'plots']
+
+        for d in subdirs:
+            os.makedirs(os.path.join(self.root_dir, d))
 
         configuration.create_new_proj_config()
 
@@ -80,14 +84,6 @@ class ProjectManager(QtCore.QObject):
 
     def open_project(self):
         is_mesmerize_project(self.root_dir)
-        # if not os.path.isdir(self.root_dir + '/dataframes'):
-        #     raise NotADirectoryError('dataframes directory not found')
-        #
-        # if not os.path.isdir(self.root_dir + '/images'):
-        #     raise NotADirectoryError('images directory not found')
-        #
-        # if not os.path.isdir(self.root_dir + '/curves'):
-        #     raise NotADirectoryError('curves directory not found')
 
         df_path = os.path.join(self.root_dir, 'dataframes', 'root.dfr')
         self.dataframe = pd.read_hdf(df_path, key='project_dataframe', mode='r')
