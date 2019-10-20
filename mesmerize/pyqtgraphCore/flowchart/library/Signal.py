@@ -392,6 +392,7 @@ class PeakDetect(CtrlNode):
         self.pbw = None
         self.ctrls['Edit'].clicked.connect(self._peak_editor)
         self.t = None
+        self.params = {}
 
     def _get_zero_crossings(self, d1: np.ndarray, sig: np.ndarray, norm_sig: np.ndarray, fictional_bases: bool = False) -> pd.DataFrame:
         """
@@ -606,12 +607,15 @@ class PeakDetect(CtrlNode):
                   'units': self.t.last_unit
                   }
 
+        self.params = params
+
         self.t.history_trace.add_operation('all', operation='peak_detect', parameters=params)
 
         return self.t
 
     def _set_editor_output(self, edited_transmission: Transmission):
         self.t = edited_transmission
+        self.t.history_trace.add_operation('all', operation='peak_detect', parameters=self.params)
         self.editor_output = True
         self.data_modified = True
         # self.pbw.close()
@@ -653,6 +657,9 @@ class PeakFeatures(CtrlNode):
         self.computer = ComputePeakFeatures()
 
         self.t = self.computer.compute(transmission=transmission.copy(), data_column=self.data_column)
+
+        params = {'data_column': self.data_column}
+        self.t.history_trace.add_operation('all', 'peak-features', params)
 
         return self.t
 
