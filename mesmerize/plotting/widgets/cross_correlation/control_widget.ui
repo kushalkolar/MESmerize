@@ -19,7 +19,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayoutLeftMain">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -72,36 +72,6 @@
                </item>
                <item>
                 <widget class="QComboBox" name="comboBoxLabelsColumn"/>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Pre-normalization:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QComboBox" name="comboBoxPreNormalize">
-                 <item>
-                  <property name="text">
-                   <string>0-1</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Z-score</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>None</string>
-                  </property>
-                 </item>
-                </widget>
                </item>
               </layout>
              </item>
