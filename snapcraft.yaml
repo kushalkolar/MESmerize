@@ -39,6 +39,7 @@ parts:
       - libopenblas-dev
       - liblapack-dev
       - cython3
+      - graphviz
 #      - qtbase5-dev
 #      - libqt5gui5
 #      - libqt5svg5
