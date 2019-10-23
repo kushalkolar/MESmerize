@@ -96,7 +96,6 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.output_widgets = []
         self.df = pandas.DataFrame() #: pandas.DataFrame that stores a "database" of information on the batch
-        self.init_batch(run_batch)
 
         self.move_processes = []
 
@@ -107,6 +106,8 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.lineEditFindItem.textEdited.connect(self.higlight_items)
         self.previous_list_widget_colors = None
+        
+        self.init_batch(run_batch)
 
     def higlight_items(self):
         self.reset_list_widget_colors()

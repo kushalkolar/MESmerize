@@ -33,7 +33,7 @@ class ViolinsPlot(MatplotlibWidget):
             self.axes.append(ax)
             sns.violinplot(x=x_column, y=data_column, hue=sub_group_column, order=x_order, palette='muted',
                                 data=sub_dataframe[sub_dataframe[data_column].notna()], ax=self.axes[i])
-            ax.set_xticklabels(list(sub_dataframe[x_column].unique()), rotation=label_rotation)
+            ax.set_xticklabels(x_order, rotation=label_rotation)
         self.fig.tight_layout()
         self.draw()
 

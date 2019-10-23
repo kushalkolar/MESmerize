@@ -288,7 +288,7 @@ class DetrendDFoF(CtrlNode):
 
                 self.current_sample_id = row['SampleID']
 
-                pikPath = proj_path + row['ImgInfoPath']
+                pikPath = os.path.join(proj_path, row['ImgInfoPath'])
                 pik = pickle.load(open(pikPath, 'rb'))
 
                 cnmA = pik['roi_states']['cnmf_output']['cnmA']

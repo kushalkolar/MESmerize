@@ -94,11 +94,11 @@ Example
     # Desired size (width, height)
     size = (2.0, 2.5)
     
-    # original size to reset the figure after we save it
-    orig_size = fig.get_size_inches()
-    
     # Get the figure
     fig = get_fig()
+    
+    # original size to reset the figure after we save it
+    orig_size = fig.get_size_inches()
     
     #Set the desired size
     fig.set_size_inches(size)

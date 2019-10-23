@@ -4,6 +4,10 @@ from scipy.stats import wasserstein_distance
 from ....analysis import Transmission
 from .common import *
 from typing import *
+from ....analysis.math.emd import emd_1d
+from sklearn.metrics import pairwise_distances
+from scipy.spatial.distance import squareform
+from ....common import get_sys_config
 
 
 class Linkage(CtrlNode):
@@ -36,11 +40,14 @@ class Linkage(CtrlNode):
         optimal_ordering = self.ctrls['optimal_order'].isChecked()
 
         if metric == 'wasserstein':
-            metric_ = wasserstein_distance
+            self.data += np.abs(self.data.min())
+            distM = pairwise_distances(self.data, metric=emd_1d, n_jobs=get_sys_config()['_MESMERIZE_N_THREADS'])
+            condensed = squareform(distM, checks=False)
+            self.linkage = hierarchy.linkage(condensed, method=method, optimal_ordering=optimal_ordering)
         else:
             metric_ = metric
+            self.linkage = hierarchy.linkage(self.data, method=method, metric=metric_, optimal_ordering=optimal_ordering)
 
-        self.linkage = hierarchy.linkage(self.data, method=method, metric=metric_, optimal_ordering=optimal_ordering)
         params = {'method': method, 'metric': metric, 'optimal_ordering': optimal_ordering}
 
         return {'linkage': self.linkage, 'params': params}

@@ -6,7 +6,11 @@ import numpy as np
 import pandas as pd
 from ....plotting.widgets import HeatmapTracerWidget, ScatterPlotWidget, BeeswarmPlotWindow, ProportionsWidget, CrossCorrelationWidget
 from ....plotting.variants.timeseries import TimeseriesPlot
-
+from graphviz import Digraph
+from ....common.utils import make_workdir
+import os
+import subprocess
+from random import randrange
 
 class Plot(CtrlNode):
     """Plot curves and/or scatter points"""
@@ -227,3 +231,74 @@ class CrossCorr(CtrlNode):
         self.t = Transmission.merge(self.transmissions_list)
 
         self.plot_widget.set_input(self.t)
+
+
+class AnalysisGraph(CtrlNode):
+    """Graph of the analysis log"""
+    nodeName = 'AnalysisGraph'
+    uiTemplate = [('data_blocks', 'list_widget', {'toolTip': 'Double click a data block to open the pdf'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.ctrls['data_blocks'].itemDoubleClicked.connect(self.open_file)
+
+    def process(self, **kwargs):
+        self.transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(self.transmissions)
+
+        self.t = Transmission.merge(self.transmissions_list)
+
+        workdir = make_workdir(f'analysis_graphs{randrange(1000, 9999)}')
+
+        self.fnames = []
+
+        for db in self.t.history_trace.data_blocks:
+            fname = os.path.join(workdir, f"{db}")
+            g = Digraph('G', filename=fname, format='pdf', node_attr={'shape': 'record'})
+
+            db_history = self.t.history_trace.get_data_block_history(db)
+
+            o_encounters = []
+            o_n_l = []
+
+            for op in db_history:
+                o = list(op.keys())[0]
+                params = op[o]
+                params = cleanup_params(o, params)
+                s = []
+                for k in params.keys():
+                    p = str(params[k]).replace("{", "\\n   --\> ").replace("}", "").replace("|", "\|")  # .replace("[", " ").replace("(", " ").replace(")", " ")
+                    s.append(f"{k}: {p}")
+
+                o_n = f"{o}.{o_encounters.count(o)}"
+                o_n_l.append(o_n)
+                s = '{ ' + o_n + ' | ' + '\\n'.join(s) + ' }'
+
+                g.node(o_n, s)
+                o_encounters.append(o)
+
+            es = []
+            for i in range(1, len(o_n_l)):
+                es.append((o_n_l[i - 1], o_n_l[i]))
+
+            g.edges(es)
+            g.render(view=False)
+
+            self.fnames.append(fname + '.pdf')
+
+        self.ctrls['data_blocks'].setItems(list(map(str, range(len(self.fnames)))))
+
+    def open_file(self, item):
+        ix = self.ctrls['data_blocks'].currentRow()
+        subprocess.call(["xdg-open", self.fnames[ix]])
+
+
+def cleanup_params(operation, params):
+    log = params.copy()
+    if operation == 'rfft':
+        log.pop('frequencies')
+    elif operation =='fcluster':
+        log.pop('linkage_matrix')
+
+    return log
+
