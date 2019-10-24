@@ -31,6 +31,7 @@ LoadFile
 	Parameters		Description
 	=========== 	===========
 	load_trn		Button to choose a .trn file (Transmission) to load
+	proj_trns		Load transmission file located in the project's "trns" directory
 	proj_path 		Button to select the Mesmerize project that corresponds to the chosen .trn file.
 	=========== 	===========
 
