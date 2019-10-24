@@ -107,7 +107,7 @@ class HistoryTrace:
             for i in range(len(data_blocks)):
                 data_blocks[i] = self._to_uuid(data_blocks[i])
             self.data_blocks = data_blocks
-            for k in history.keys():
+            for k in list(history.keys()):
                 history[self._to_uuid(k)] = history.pop(k)
             self.history = history
 
