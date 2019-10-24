@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 from typing import *
 from . import Transmission
+from itertools import product
 
 
 def get_proportions(xs: Union[pd.Series, np.ndarray, list], ys: Union[pd.Series, np.ndarray, pd.Series],
@@ -98,6 +99,42 @@ def get_sampling_rate(transmission: Transmission, tolerance: Optional[float] = 0
     framerate = float(np.mean(sampling_rates))
 
     return framerate
+
+
+def get_frequency_linspace(transmission: Transmission) -> Tuple[np.ndarray, float]:
+    """
+    Get the frequency linspace.
+    Throwns an exception if all datablocks do not have the same linspace & Nyquist frequencies
+
+    :param transmission: Transmission containing data from which to get frequency linspace
+    :return: tuple: (frequency linspace as a 1D numpy array, nyquist frequency)
+    """
+    
+    # Check that all sampling rates are equal
+    get_sampling_rate(transmission)
+
+    fs = []
+    nqs = []
+
+    for db in transmission.history_trace.data_blocks:
+        params = transmission.history_trace.get_operation_params(db, 'rfft')
+
+        f = params['frequencies']
+        fs.append(np.array(f))
+
+        nqs.append(params['nyquist_frequency'])
+
+    if len(set(nqs)) > 1:
+        raise ValueError("Nyquist frequency of all data blocks must match exactly")
+
+    # Check that the discrete frequencies of all datablocks match exactly
+    for i, j in product(*(range(len(fs)), )*2):
+        if i == j:
+            continue
+        if not np.array_equal(fs[i], fs[j]):
+            raise ValueError("Discrete frequencies of all data blocks must match exactly")
+
+    return fs[0], nqs[0]
 
 
 def get_array_size(transmission: Transmission, data_column: str) -> int:
