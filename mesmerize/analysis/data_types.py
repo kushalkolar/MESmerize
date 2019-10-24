@@ -27,6 +27,7 @@ from configparser import RawConfigParser
 from ..common.utils import HdfTools
 from ..common import get_proj_config
 from tqdm import tqdm
+from graphviz import Digraph
 
 
 class _HistoryTraceExceptions(Exception):
@@ -333,6 +334,46 @@ class HistoryTrace:
             history.update(d)
 
         return cls(history=history, data_blocks=data_blocks)
+
+    def draw_graph(self, data_block_id: Union[str, UUID], filename: str, view: bool = False) -> None:
+        g = Digraph('G', filename=filename, format='pdf', node_attr={'shape': 'record'})
+
+        db_history = self.get_data_block_history(data_block_id)
+
+        o_encounters = []
+        o_n_l = []
+
+        for op in db_history:
+            o = list(op.keys())[0]
+            params = op[o]
+            params = self._cleanup_params(o, params)
+            s = []
+            for k in params.keys():
+                p = str(params[k]).replace("{", "\\n   --\> ").replace("}", "").replace("|", "\|")  # .replace("[", " ").replace("(", " ").replace(")", " ")
+                s.append(f"{k}: {p}")
+
+            o_n = f"{o}.{o_encounters.count(o)}"
+            o_n_l.append(o_n)
+            s = '{ ' + o_n + ' | ' + '\\n'.join(s) + ' }'
+
+            g.node(o_n, s)
+            o_encounters.append(o)
+
+        es = []
+        for i in range(1, len(o_n_l)):
+            es.append((o_n_l[i - 1], o_n_l[i]))
+
+        g.edges(es)
+        g.render(view=view)
+
+    def _cleanup_params(self, operation, params):
+        log = params.copy()
+        if operation == 'rfft':
+            log.pop('frequencies')
+        elif operation == 'fcluster':
+            log.pop('linkage_matrix')
+
+        return log
 
 
 class BaseTransmission:
