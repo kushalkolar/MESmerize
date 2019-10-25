@@ -295,6 +295,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def ks(self) -> kshape_process.KShape:
         """
         KShape object
+
         :rtype: kshape_process.KShape
         """
 
@@ -315,6 +316,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def n_clusters(self) -> int:
         """
         Number of clusters
+
         :rtype: int
         """
 
