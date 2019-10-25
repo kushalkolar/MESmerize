@@ -1,12 +1,17 @@
 Common
 ******
 
+.. automodule:: mesmerize.common
+    :members: get_proj_config, get_project_manager, get_window_manager, get_sys_config
+
+
+
 .. _common-utils:
 
 Utils
 =====
 
-**Some frequently used utilityfunctions and classes**
+**Some frequently used utility functions**
 
 .. automodule:: mesmerize.common.utils
     :members:

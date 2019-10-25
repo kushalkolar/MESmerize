@@ -20,15 +20,6 @@ BaseTransmission
 	:exclude-members: __weakref__
 	:private-members:
 
-.. _API_Transmission_helper_functions:
-
-Helper functions
-================
-
-.. autofunction:: mesmerize.analysis.get_sampling_rate
-
-.. autofunction:: mesmerize.analysis.get_array_size
-
 .. _API_HistoryTrace:
 
 

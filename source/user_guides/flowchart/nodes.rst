@@ -701,10 +701,9 @@ PeakFeatures
     ============    =================
     Parameter       Description
     ============    =================
-    data_column     Data column containing numerical arrays.
-                    | Peak features are computed relative these curves.
+    data_column     Data column containing numerical arrays from which to compute peak features.
     Apply           Process data through this node
-    ===================== 	=================
+    ============    =================
 
 --------
 
