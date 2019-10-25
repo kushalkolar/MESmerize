@@ -1,4 +1,4 @@
-.. API_PlotBases::
+.. _API_PlotBases:
 
 Plot Bases
 **********
