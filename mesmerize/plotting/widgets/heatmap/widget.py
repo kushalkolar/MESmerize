@@ -269,15 +269,13 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.add_to_splitter(self.live_datapoint_tracer)
 
         ns = {'this': self,
-              'get_plot_area': lambda: self.plot_variant,
-              'get_plot': lambda: self.plot_variant.plot,
-              'get_fig': lambda: self.plot_variant.fig
+              'get_plot_area': lambda: self.plot_variant
               }
 
         txt = ["Namespaces",
                "self as 'this'",
                "Usefull callables, see docs for details:",
-               "get_plot_area(), get_plot(), get_fig()"
+               "get_plot_area()"
                ]
 
         txt = "\n".join(txt)
