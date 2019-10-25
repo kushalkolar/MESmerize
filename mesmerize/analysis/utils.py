@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: kushal
+#@author: kushal
 
-Chatzigeorgiou Group
-Sars International Centre for Marine Molecular Biology
+#Chatzigeorgiou Group
+#Sars International Centre for Marine Molecular Biology
 
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-"""
+#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+
 import numpy as np
 import pandas as pd
 from typing import *
@@ -19,7 +19,9 @@ def get_proportions(xs: Union[pd.Series, np.ndarray, list], ys: Union[pd.Series,
                     xs_name: str = 'xs', ys_name: str = 'ys',
                     swap: bool = False, percentages: bool = True) -> pd.DataFrame:
     """
-    Get the proportions of xs vs ys. xs & ys are categorical data.
+    Get the proportions of xs vs ys.
+
+    xs & ys are categorical data.
 
     :param xs: data plotted on the x axis
     :type xs: Union[pd.Series, np.ndarray]
@@ -104,12 +106,15 @@ def get_sampling_rate(transmission: Transmission, tolerance: Optional[float] = 0
 def get_frequency_linspace(transmission: Transmission) -> Tuple[np.ndarray, float]:
     """
     Get the frequency linspace.
+
     Throwns an exception if all datablocks do not have the same linspace & Nyquist frequencies
 
     :param transmission: Transmission containing data from which to get frequency linspace
+
     :return: tuple: (frequency linspace as a 1D numpy array, nyquist frequency)
+    :rtype:  Tuple[np.ndarray, float]
     """
-    
+
     # Check that all sampling rates are equal
     get_sampling_rate(transmission)
 
@@ -164,7 +169,9 @@ def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[
     Organizes DataFrame columns into data column, categorical label columns, and uuid columns.
 
     :param columns: All DataFrame columns
+
     :return:        (data_columns, categorical_columns, uuid_columns)
+    :rtype:         Tuple[List[str], List[str], List[str]]
     """
     columns = list(columns)
     if '_BLOCK_' in columns:
