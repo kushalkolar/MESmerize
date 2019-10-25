@@ -74,14 +74,14 @@ class KShapePlot(QtWidgets.QDockWidget):
     def __init__(self, parent):
         """"""
         QtWidgets.QDockWidget.__init__(self, parent=parent)
-        self.plot = MatplotlibWidget()  #: MatplotlibWidget() instancehu
+        self.plot = MatplotlibWidget()  #: MatplotlibWidget() instance
         self.setWidget(self.plot)
 
         self.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable)
         self.setMinimumSize(QtCore.QSize(300, 300))
 
         self.fig = self.plot.fig
-        self.ax = self.fig.add_subplot(111)  #: The axis on which the curves are drawn
+        self.ax = self.fig.add_subplot(111)  #: The Axes object for this plot
         self.draw = self.plot.draw
         self.setWindowTitle('Samples of raw curves in a cluster')
 

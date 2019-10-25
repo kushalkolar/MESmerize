@@ -1,3 +1,11 @@
+#@author: kushal
+
+#Chatzigeorgiou Group
+#Sars International Centre for Marine Molecular Biology
+
+#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+
 import os
 from webbrowser import open_new_tab as open_new_web_browser_tab
 import configparser
@@ -23,6 +31,7 @@ def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
     """
     :param proj_path: Full project path
     """
+
     if proj_path is None:
         proj_path = get_project_manager().root_dir
         if proj_path is None:
@@ -49,6 +58,7 @@ for k in doc_pages.keys():
 
 class InheritDocs(ABCMeta):
     """Inherit doc string from superclass if not present in subclass"""
+
     def __new__(mcls, classname, bases, cls_dict):
         cls = super().__new__(mcls, classname, bases, cls_dict)
         for name, member in cls_dict.items():
@@ -71,6 +81,7 @@ def is_app() -> bool:
 
 
 def get_project_manager():
+    """Get the project manager for this Mesmerize instance"""
     if not is_app():
         raise NotInApplicationError
 
@@ -86,6 +97,8 @@ def set_project_manager(project_manager):
 
 
 def get_window_manager():
+    """Get the Window Manager for this Mesmerize instance"""
+
     if not is_app():
         raise NotInApplicationError
     return getattr(QApplication.instance(), 'window_manager')
