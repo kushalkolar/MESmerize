@@ -31,9 +31,6 @@ class ComputePeakFeatures:
 
         self.t.df = pd.concat([df for df in dfs if df is not None]).reset_index(drop=True)
 
-        self.t.last_output = None
-        self.t.history_trace.add_operation('all', 'peak_features', {})
-
         return self.t
 
     def _per_curve(self, row: pd.Series):

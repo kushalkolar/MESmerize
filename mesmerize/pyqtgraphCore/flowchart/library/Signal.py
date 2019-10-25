@@ -661,6 +661,10 @@ class PeakFeatures(CtrlNode):
         params = {'data_column': self.data_column}
         self.t.history_trace.add_operation('all', 'peak-features', params)
 
+        # Data units cannot be relied on anymore since any user specifid data column
+        # can be used for computing peak features
+        self.t.last_output = None
+
         return self.t
 
 
