@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './control_widget.ui'
+# Form implementation generated from reading ui file 'control_widget.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_KShapeControl(object):
     def setupUi(self, KShapeControl):
         KShapeControl.setObjectName("KShapeControl")
-        KShapeControl.resize(321, 834)
+        KShapeControl.resize(321, 989)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.dockWidgetContents)
@@ -323,8 +323,8 @@ class Ui_KShapeControl(object):
         self.textBrowser.setHtml(_translate("KShapeControl", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Noto Sans\';\"><br /></p></body></html>"))
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.groupBoxPlotParams.setTitle(_translate("KShapeControl", "Plot Options"))
         self.label_7.setText(_translate("KShapeControl", "Plot cluster:"))
         self.label_12.setText(_translate("KShapeControl", "Raw plots"))
@@ -332,12 +332,12 @@ class Ui_KShapeControl(object):
         self.label_9.setText(_translate("KShapeControl", "max num curves:"))
         self.label_13.setText(_translate("KShapeControl", "Mean plots"))
         self.label_10.setText(_translate("KShapeControl", "Error band"))
-        self.comboBoxErrorBand.setItemText(0, _translate("KShapeControl", "confidence interval"))
-        self.comboBoxErrorBand.setItemText(1, _translate("KShapeControl", "standard deviation"))
+        self.comboBoxErrorBand.setItemText(0, _translate("KShapeControl", "standard deviation"))
+        self.comboBoxErrorBand.setItemText(1, _translate("KShapeControl", "confidence interval"))
         self.comboBoxErrorBand.setItemText(2, _translate("KShapeControl", "None"))
         self.label_14.setText(_translate("KShapeControl", "Set x = 0 at:"))
-        self.radioButtonXZeroZero.setText(_translate("KShapeControl", "Zero"))
-        self.radioButtonXZeroMaxima.setText(_translate("KShapeControl", "Maxima"))
+        self.radioButtonXZeroZero.setText(_translate("KShapeControl", "&Zero"))
+        self.radioButtonXZeroMaxima.setText(_translate("KShapeControl", "&Maxima"))
         self.pushButtonApplyPlotOptions.setText(_translate("KShapeControl", "Apply Options"))
         self.pushButtonSave.setText(_translate("KShapeControl", "Save"))
         self.pushButtonLoad.setText(_translate("KShapeControl", "Load"))
