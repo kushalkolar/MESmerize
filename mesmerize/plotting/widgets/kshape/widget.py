@@ -135,7 +135,7 @@ class KShapeMeansPlot(MatplotlibWidget):
             ys = input_arrays[y_pred == c_ix]
 
             if ys.size == 0:
-                self.axs[i].text(0.5, 0.5, 'empty cluster', ha='center')
+                self.axs[i].set_title(f"cluster {c_ix}, EMPTY")
                 continue
 
             xs = []
@@ -194,7 +194,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self._input_arrays = None
         self._params = None
-        self.n_clusters = None
+        self._n_clusters = None
         self._ks = None
         self._train_data = None
         self._y_pred = None
