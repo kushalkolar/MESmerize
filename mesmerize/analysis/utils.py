@@ -1,27 +1,45 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-@author: kushal
+#@author: kushal
 
-Chatzigeorgiou Group
-Sars International Centre for Marine Molecular Biology
+#Chatzigeorgiou Group
+#Sars International Centre for Marine Molecular Biology
 
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
-"""
+#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+
 import numpy as np
 import pandas as pd
 from typing import *
 from . import Transmission
+from itertools import product
 
 
 def get_proportions(xs: Union[pd.Series, np.ndarray, list], ys: Union[pd.Series, np.ndarray, pd.Series],
-                    xs_name: str = 'xs', ys_name: str = 'ys', swap = False, percentages: bool = True) -> pd.DataFrame:
+                    xs_name: str = 'xs', ys_name: str = 'ys',
+                    swap: bool = False, percentages: bool = True) -> pd.DataFrame:
     """
-    Get the proportions of xs vs ys
+    Get the proportions of xs vs ys.
+
+    xs & ys are categorical data.
+
     :param xs: data plotted on the x axis
+    :type xs: Union[pd.Series, np.ndarray]
+
     :param ys: proportions of unique elements in ys are calculated per xs
-    :param invert: swap x and y
+    :type ys: Union[pd.Series, np.ndarray]
+
+    :param xs_name: name for the xs data, useful for labeling the axis in plots
+    :type xs_name: str
+
+    :param ys_name: name for the ys data, useful for labeling the axis in plots
+    :type ys_name: str
+
+    :param swap: swap x and y
+    :type swap: bool
+
     :return:   DataFrame that can be plotted in a proportions bar graph
+    :rtype: pd.DataFrame
     """
 
     if len(xs) != len(ys):
@@ -41,44 +59,13 @@ def get_proportions(xs: Union[pd.Series, np.ndarray, list], ys: Union[pd.Series,
 
     df = pd.DataFrame({xs_name: xs, ys_name: ys})
     if percentages:
-        return df.groupby([xs_name, ys_name]).agg({ys_name: 'count'}).groupby(by=xs_name).apply(lambda x: (x / x.sum()) * 100).unstack()
+        props_df = df.groupby([xs_name, ys_name]).agg({ys_name: 'count'}).groupby(by=xs_name).apply(lambda x: (x / x.sum()) * 100).unstack()
+        props_df.columns = props_df.columns.get_level_values(-1)
     else:
-        return df.groupby([xs_name, ys_name]).agg({ys_name: 'count'}).unstack()
+        props_df = df.groupby([xs_name, ys_name]).agg({ys_name: 'count'}).unstack()
+        props_df.columns = props_df.columns.get_level_values(-1)
 
-
-# def get_cluster_proportions(cluster_labels: Union[pd.Series, list, set],
-#                             group_labels: Union[pd.Series, list, set]) -> pd.DataFrame:
-#     if isinstance(cluster_labels, pd.Series):
-#         clusters = cluster_labels.unique().tolist()
-#     else:
-#         clusters = list(set(cluster_labels))
-#
-#     if isinstance(group_labels, pd.Series):
-#         groups = group_labels.unique().tolist()
-#     else:
-#         groups = list(set(group_labels))
-#
-#     cluster_dict = dict.fromkeys(clusters)
-#
-#     for k in cluster_dict.keys():
-#         cluster_dict[k] = []
-#
-#     for ix, cluster in enumerate(cluster_labels):
-#         cluster_dict[cluster].append(group_labels[ix])
-#
-#     group_proportions = dict.fromkeys(groups)
-#
-#     groups_order = []
-#
-#     for g in group_proportions.keys():
-#         groups_order.append(g)
-#         group_proportions[g] = []
-#         for cl in clusters:
-#             count = cluster_dict[cl].count(g)
-#             percentage = count / len(cluster_dict[cl])
-#             group_proportions[g].append(percentage)
-#
-#     return pd.DataFrame(group_proportions)
+    return props_df
 
 
 def get_sampling_rate(transmission: Transmission, tolerance: Optional[float] = 0.1) -> float:
@@ -116,6 +103,45 @@ def get_sampling_rate(transmission: Transmission, tolerance: Optional[float] = 0
     return framerate
 
 
+def get_frequency_linspace(transmission: Transmission) -> Tuple[np.ndarray, float]:
+    """
+    Get the frequency linspace.
+
+    Throwns an exception if all datablocks do not have the same linspace & Nyquist frequencies
+
+    :param transmission: Transmission containing data from which to get frequency linspace
+
+    :return: tuple: (frequency linspace as a 1D numpy array, nyquist frequency)
+    :rtype:  Tuple[np.ndarray, float]
+    """
+
+    # Check that all sampling rates are equal
+    get_sampling_rate(transmission)
+
+    fs = []
+    nqs = []
+
+    for db in transmission.history_trace.data_blocks:
+        params = transmission.history_trace.get_operation_params(db, 'rfft')
+
+        f = params['frequencies']
+        fs.append(np.array(f))
+
+        nqs.append(params['nyquist_frequency'])
+
+    if len(set(nqs)) > 1:
+        raise ValueError("Nyquist frequency of all data blocks must match exactly")
+
+    # Check that the discrete frequencies of all datablocks match exactly
+    for i, j in product(*(range(len(fs)), )*2):
+        if i == j:
+            continue
+        if not np.array_equal(fs[i], fs[j]):
+            raise ValueError("Discrete frequencies of all data blocks must match exactly")
+
+    return fs[0], nqs[0]
+
+
 def get_array_size(transmission: Transmission, data_column: str) -> int:
     """Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match
 
@@ -143,7 +169,9 @@ def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[
     Organizes DataFrame columns into data column, categorical label columns, and uuid columns.
 
     :param columns: All DataFrame columns
+
     :return:        (data_columns, categorical_columns, uuid_columns)
+    :rtype:         Tuple[List[str], List[str], List[str]]
     """
     columns = list(columns)
     if '_BLOCK_' in columns:
@@ -172,10 +200,26 @@ def pad_arrays(a: np.ndarray, method: str = 'random', output_size: int = None, m
     largest input array (method 'fill-size') or the padding is randomly flanked to the input array (method 'random')
     for easier visualization.
 
-    :param a: 1D array of input arrays where each element is a sample array
+    :param a: 1D array where each element is a 1D array
+    :type a: np.ndarray
+
     :param method: one of 'fill-size' or 'random', see docstring for details
-    :return: Arrays padded according to the method.
+    :type method: str
+
+    :param output_size: not used
+
+    :param mode: one of either 'constant' or 'minimum'.
+                 If 'minimum' the min value of the array is used as the padding value.
+                 If 'constant' the values passed to the "constant" argument is used as the padding value.
+    :type mode: str
+
+    :param constant: padding value if 'mode' is set to 'constant'
+    :type constant: Any
+
+    :return: Arrays padded according to the chosen method. 2D array of shape [n_arrays, size of largest input array]
+    :rtype: np.ndarray
     """
+
     l = 0  # size of largest time series
 
     # Get size of largest time series

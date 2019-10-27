@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>321</width>
-    <height>834</height>
+    <height>989</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -359,8 +359,8 @@
        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans';&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
@@ -511,12 +511,12 @@ p, li { white-space: pre-wrap; }
           <widget class="QComboBox" name="comboBoxErrorBand">
            <item>
             <property name="text">
-             <string>confidence interval</string>
+             <string>standard deviation</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>standard deviation</string>
+             <string>confidence interval</string>
             </property>
            </item>
            <item>
@@ -555,7 +555,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QRadioButton" name="radioButtonXZeroZero">
              <property name="text">
-              <string>Zero</string>
+              <string>&amp;Zero</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -565,7 +565,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QRadioButton" name="radioButtonXZeroMaxima">
              <property name="text">
-              <string>Maxima</string>
+              <string>&amp;Maxima</string>
              </property>
             </widget>
            </item>

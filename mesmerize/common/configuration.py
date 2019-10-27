@@ -86,6 +86,8 @@ def create_new_sys_config() -> dict:
 
 
 def get_sys_config() -> dict:
+    """Get the user-set system configuration"""
+
     if not os.path.isfile(sys_cfg_file):
         return create_new_sys_config()
 
