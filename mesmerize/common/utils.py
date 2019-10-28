@@ -30,10 +30,12 @@ def make_workdir(prefix: str = '') -> str:
     Make a workdir within the mesmerize_tmp directory of the workdir specified in the configuration
     The name of the created workdir is the date & time of its creation. You can add a prefix to this name.
 
-    :param prefix: Prefix for the workdir name
-    :return:    full workdir path
+    :param prefix: Prefix for the workdir namec
 
+    :return:    full workdir path
+    :rtype:     str
     """
+
     main_workdir = get_sys_config()['_MESMERIZE_WORKDIR']
 
     if main_workdir == '':
@@ -52,15 +54,30 @@ def make_workdir(prefix: str = '') -> str:
 def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None, filename: Optional[str] = None,
                  pre_run: Optional[str] = None, post_run: Optional[str] = None) -> str:
     """
+    Make an executable bash script. Used for running python scripts in external processes.
+
     :param module_path: absolute module path
+    :type module_path:  str
+
     :param args_str:    str of args that is directly passed with the python command in the bash script
+    :type args_str:     str
+
     :param savedir:     working directory
+    :type savedir:      Optional[str]
+
     :param filename:    optional, specific filename for the script
+    :type filename:     Optional[str]
+
     :param pre_run:     optional, str to run before module is ran
+    :type pre_run:      Optional[str]
+
     :param post_run:    optional, str to run after module has run
+    :type post_run:     Optional[str]
 
     :return: path to the shell script that can be run
+    :rtype:  str
     """
+
     if filename is None:
         sh_file = os.path.join(savedir, 'run.sh')
     else:
@@ -110,6 +127,7 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
 
 class HdfTools:
     """Functions for saving and loading HDF5 data"""
+
     @staticmethod
     def save_dataframe(path: str, dataframe: pd.DataFrame, metadata: Optional[dict] = None,
                        metadata_method: str = 'json', raise_meta_fail: bool = True):
@@ -126,11 +144,22 @@ class HdfTools:
         returns if on_meta_fail is False, else it will raise an exception.
 
         :param path:            path to save the file to
+        :type path:             str
+
         :param dataframe:       DataFrame to save in the hdf5 file
+        :type dataframe:        pd.DataFrame
+
         :param metadata:        Any associated meta data to store along with the DataFrame in the hdf5 file
+        :type metadata:         Optional[dict]
+
         :param metadata_method: method for storing the metadata dict, either 'json' or 'recursive'
+        :type metadata_method:  str
+
         :param raise_meta_fail: raise an exception if recursive metadata saving encounters an unsupported object
+                                If false, it will save the unsupported object's __str__() return value
+        :type raise_meta_fail:  bool
         """
+
         if os.path.isfile(path):
             raise FileExistsError
 
@@ -154,7 +183,6 @@ class HdfTools:
                     bad_keys = '\n'.join(bad_keys)
                     raise TypeError(f"The following meta data keys are not JSON serializable\n{bad_keys}")
 
-
             elif metadata_method == 'recursive':
                 HdfTools._dicts_to_group(h5file=f, path='META/', d=metadata, raise_meta_fail=raise_meta_fail)
 
@@ -164,6 +192,16 @@ class HdfTools:
 
     @staticmethod
     def load_dataframe(filepath: str) -> Tuple[pd.DataFrame, Union[dict, None]]:
+        """
+        Load a DataFrame along with meta data that were saved using ``HdfTools.save_dataframe``
+
+        :param filepath: file path to the hdf5 file
+        :type filepath:  str
+
+        :return: tuple, (DataFrame, meta data dict if present else None)
+        :rtype: Tuple[pd.DataFrame, Union[dict, None]]
+        """
+
         with h5py.File(filepath, 'r') as f:
             if 'META' in f.keys():
 
@@ -188,10 +226,18 @@ class HdfTools:
         Recursively save a dict to an hdf5 group.
 
         :param d:        dict to save
+        :type d:         dict
+
         :param filename: filename
+        :type filename:  str
+
         :param group:    group name to save the dict to
+        :type group:     str
+
         :param raise_type_fail: whether to raise if saving a piece of data fails
+        :type raise_type_fail:  bool
         """
+
         if os.path.isfile(filename):
             raise FileExistsError
 
@@ -256,9 +302,15 @@ class HdfTools:
         Recursively load a dict from an hdf5 group.
 
         :param filename: filename
+        :type filename:  str
+
         :param group:    group name of the dict
+        :type group:     str
+
         :return:         dict recursively loaded from the hdf5 group
+        :rtype:          dict
         """
+
         with h5py.File(filename, 'r') as h5file:
             return HdfTools._dicts_from_group(h5file, f'{group}/')
 
