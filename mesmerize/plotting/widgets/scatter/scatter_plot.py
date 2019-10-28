@@ -189,7 +189,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         """Set the input transmission"""
-        if self.update_live:
+        if (self._transmission is None) or self.update_live:
             super(ScatterPlotWidget, self).set_input(transmission)
             self.update_plot()
 
