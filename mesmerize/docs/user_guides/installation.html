@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -132,11 +133,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plots/scatter.html">Scatter</a></li>
@@ -160,17 +161,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -259,6 +264,18 @@ Ubuntu 16.04 and later usually come pre-installed with snapd.</p>
 <p>If you have trouble installing Mesmerize via snap you might need to install <a class="reference external" href="https://snapcraft.io/core18">core18</a> first:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">snap</span> <span class="n">install</span> <span class="n">core18</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>You might get the following warnings when you launch the snap, this is normal. Just be patient and wait a few minutes:</p>
+<p>/snap/mesmerize/x1/lib/python3.6/site-packages/tifffile/tifffile.py:8211: UserWarning: No module named ‘numpy.core._multiarray_umath’
+Functionality might be degraded or be slow.</p>
+<p class="last">warnings.warn(‘%s%s’ % (e, warn))
+/snap/mesmerize/x1/lib/python3.6/site-packages/matplotlib/font_manager.py:281: UserWarning: Matplotlib is building the font cache using fc-list. This may take a moment.
+‘Matplotlib is building the font cache using fc-list. ‘
+Bokeh could not be loaded. Either it is not installed or you are not running within a notebook
+Loading, please wait…
+Qt: Session management error: None of the authentication protocols specified are supported</p>
 </div>
 </div>
 <div class="section" id="pypi">

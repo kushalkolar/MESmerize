@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>&lt;no title&gt; &mdash; Mesmerize 0.1.0 documentation</title>
+  <title>Scatter Plot &mdash; Mesmerize 0.1.0 documentation</title>
   
 
   
@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -39,6 +40,8 @@
   <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="simple_plot.html" />
+    <link rel="prev" title="Proportions" href="proportions.html" />
     <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -126,11 +129,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -153,18 +156,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Scatter Plot</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scatterplotwidget">ScatterPlotWidget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variant">Variant</a></li>
+</ul>
+</li>
 </ul>
 
             
@@ -210,7 +221,7 @@
     
       <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
-      <li>&lt;no title&gt;</li>
+      <li>Scatter Plot</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -229,12 +240,255 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
+  <div class="section" id="scatter-plot">
+<span id="api-scatterplot"></span><h1>Scatter Plot<a class="headerlink" href="#scatter-plot" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="scatterplotwidget">
+<span id="api-scatterplotwidget"></span><h2>ScatterPlotWidget<a class="headerlink" href="#scatterplotwidget" title="Permalink to this headline">¶</a></h2>
+<p>Higher level widget that is directly used by the end-user.
+Scatter plot with docked Control Widget, <a class="reference internal" href="datapoint_tracer.html#api-datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a>, and Console.</p>
+<dl class="class">
+<dt id="mesmerize.plotting.ScatterPlotWidget">
+<em class="property">class </em><code class="descclassname">mesmerize.plotting.</code><code class="descname">ScatterPlotWidget</code><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/scatter/scatter_plot.html#ScatterPlotWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="bases.html#mesmerize.plotting.widgets.base.BasePlotWidget" title="mesmerize.plotting.widgets.base.BasePlotWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.plotting.widgets.base.BasePlotWidget</span></code></a></p>
+<dl class="attribute">
+<dt id="mesmerize.plotting.ScatterPlotWidget.live_datapoint_tracer">
+<code class="descname">live_datapoint_tracer</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.live_datapoint_tracer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of <a class="reference internal" href="datapoint_tracer.html#api-datapointtracer"><span class="std std-ref">DatapointTracer</span></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.set_update_live">
+<code class="descname">set_update_live</code><span class="sig-paren">(</span><em>b: bool</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/scatter/scatter_plot.html#ScatterPlotWidget.set_update_live"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.set_update_live" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must be implemented in subclass</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.set_input">
+<code class="descname">set_input</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.set_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the input Transmission with data to plot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transmission</strong> – Input transmission</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_input</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span></dt>
+<dd><p>Set the input Transmission with data to plot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transmission</strong> – Input transmission</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.get_plot_opts">
+<code class="descname">get_plot_opts</code><span class="sig-paren">(</span><em>drop: bool = False</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/scatter/scatter_plot.html#ScatterPlotWidget.get_plot_opts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.get_plot_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the plot options</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>drop</strong> – no drop opts are specified for this plot</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.set_plot_opts">
+<code class="descname">set_plot_opts</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.set_plot_opts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must be implemented in subclass</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.update_plot">
+<code class="descname">update_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/scatter/scatter_plot.html#ScatterPlotWidget.update_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the plot data and draw</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.set_current_datapoint">
+<code class="descname">set_current_datapoint</code><span class="sig-paren">(</span><em>identifier: uuid.UUID</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/widgets/scatter/scatter_plot.html#ScatterPlotWidget.set_current_datapoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.set_current_datapoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the UUID of the current datapoint and update the Datapoint Tracer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.open_plot">
+<code class="descname">open_plot</code><span class="sig-paren">(</span><em>ptrn_path: str</em>, <em>proj_path: str</em><span class="sig-paren">)</span> &#x2192; Optional[Tuple[str, str]]<a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.open_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a plot saved by the save_plot() method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ptrn_path</strong> – Path to the HDF5 Transmission file. By convention file extension is “.ptrn”</li>
+<li><strong>proj_path</strong> – Project path of the associated plot data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.open_plot_dialog">
+<code class="descname">open_plot_dialog</code><span class="sig-paren">(</span><em>filepath</em>, <em>dirpath</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.open_plot_dialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open plot dialog</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.save_plot">
+<code class="descname">save_plot</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.save_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the plot as a Transmission in an HDF5 file. Plot parameters are stored as a JSON string within the HDF5 file.
+See Transmission.to_hdf5</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – Path to save the file to. For easy identification use “.ptrn” extension.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.ScatterPlotWidget.save_plot_dialog">
+<code class="descname">save_plot_dialog</code><span class="sig-paren">(</span><em>path</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.save_plot_dialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot save dialog</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.plotting.ScatterPlotWidget.transmission">
+<code class="descname">transmission</code><a class="headerlink" href="#mesmerize.plotting.ScatterPlotWidget.transmission" title="Permalink to this definition">¶</a></dt>
+<dd><p>The input transmission</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../../Analysis_data_types.html#mesmerize.Transmission" title="mesmerize.Transmission">Transmission</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="variant">
+<span id="api-variant-pgscatterplot"></span><h2>Variant<a class="headerlink" href="#variant" title="Permalink to this headline">¶</a></h2>
+<p>Lower level widget that interfaces with pqytgraph.ScatterPlotItem and has some helper methods.</p>
+<dl class="class">
+<dt id="mesmerize.plotting.variants.PgScatterPlot">
+<em class="property">class </em><code class="descclassname">mesmerize.plotting.variants.</code><code class="descname">PgScatterPlot</code><span class="sig-paren">(</span><em>graphics_view: mesmerize.pyqtgraphCore.widgets.GraphicsLayoutWidget.GraphicsLayoutWidget</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/variants/pgscatter.html#PgScatterPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<dl class="attribute">
+<dt id="mesmerize.plotting.variants.PgScatterPlot.signal_spot_clicked">
+<code class="descname">signal_spot_clicked</code><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot.signal_spot_clicked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emits the UUID of a spot when it is clicked</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.variants.PgScatterPlot.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>graphics_view: mesmerize.pyqtgraphCore.widgets.GraphicsLayoutWidget.GraphicsLayoutWidget</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/variants/pgscatter.html#PgScatterPlot.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>graphics_view</strong> – This plot will instantiate within this GraphicsLayoutWidget</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.variants.PgScatterPlot.add_data">
+<code class="descname">add_data</code><span class="sig-paren">(</span><em>xs: numpy.ndarray, ys: numpy.ndarray, uuid_series: pandas.core.series.Series, color: Union[str, PyQt5.QtGui.QColor, PyQt5.QtGui.QBrush, List[Union[PyQt5.QtGui.QBrush, PyQt5.QtGui.QColor, str]]], size: int = 10, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/variants/pgscatter.html#PgScatterPlot.add_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot.add_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add data to the plot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xs</strong> (<em>np.ndarray</em>) – array of x values, indices must correspond to the “ys” array</li>
+<li><strong>ys</strong> (<em>np.ndarray</em>) – array of y values, indices must correspond to the “xs” array</li>
+<li><strong>uuid_series</strong> (<em>pd.Series</em>) – series of UUID values.
+Each SpotItem on the plot is tagged with these UUIDs, therefore
+the indices must correspond to the “xs” and “ys” arrays.</li>
+<li><strong>color</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>QtGui.QColor</em><em>, </em><em>QtGui.QBrush</em><em>, </em><em>List</em><em>[</em><em>Union</em><em>[</em><em>QtGui.QBrush</em><em>, </em><em>QtGui.QColor</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>]</em><em>]</em><em>]</em>) – Either a single color or list of colors that pqytgraph.fn.mkBrush() can accept</li>
+<li><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – spot size</li>
+<li><strong>kwargs</strong> – any additional kwargs that are passed to ScatterPlotItem.addPoints()</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.variants.PgScatterPlot._clicked">
+<code class="descname">_clicked</code><span class="sig-paren">(</span><em>plot</em>, <em>points</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/variants/pgscatter.html#PgScatterPlot._clicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot._clicked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the plot is clicked</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.variants.PgScatterPlot.set_legend">
+<code class="descname">set_legend</code><span class="sig-paren">(</span><em>colors: dict</em>, <em>shapes: dict = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/variants/pgscatter.html#PgScatterPlot.set_legend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot.set_legend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the legend.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>colors</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>Union</em><em>[</em><em>QtGui.QColor</em><em>, </em><em>QtGui.QBrush</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>]</em><em>]</em>) – dict mapping of labels onto their corresponding colors {‘label’: QtGui.QColor}</li>
+<li><strong>shapes</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>]</em>) – dict mapping of labels onto their corresponding shapes {‘label’: &lt;shape as a str&gt;}</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.variants.PgScatterPlot.clear_legend">
+<code class="descname">clear_legend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/variants/pgscatter.html#PgScatterPlot.clear_legend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot.clear_legend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the legend</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.variants.PgScatterPlot.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/mesmerize/plotting/variants/pgscatter.html#PgScatterPlot.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.variants.PgScatterPlot.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the plot</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="simple_plot.html" class="btn btn-neutral float-right" title="&lt;no title&gt;" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="proportions.html" class="btn btn-neutral float-left" title="Proportions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

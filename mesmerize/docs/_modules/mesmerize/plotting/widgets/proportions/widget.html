@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -126,11 +127,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -154,17 +155,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -243,11 +248,17 @@
 
 <span class="kn">from</span> <span class="nn">PyQt5</span> <span class="k">import</span> <span class="n">QtWidgets</span>
 <span class="kn">from</span> <span class="nn">....pyqtgraphCore.widgets.MatplotlibWidget</span> <span class="k">import</span> <span class="n">MatplotlibWidget</span>
+<span class="kn">from</span> <span class="nn">....pyqtgraphCore.console</span> <span class="k">import</span> <span class="n">ConsoleWidget</span>
+<span class="kn">from</span> <span class="nn">....pyqtgraphCore.widgets.ComboBox</span> <span class="k">import</span> <span class="n">ComboBox</span>
 <span class="kn">from</span> <span class="nn">....analysis</span> <span class="k">import</span> <span class="n">Transmission</span><span class="p">,</span> <span class="n">organize_dataframe_columns</span><span class="p">,</span> <span class="n">get_proportions</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">BasePlotWidget</span>
 <span class="kn">from</span> <span class="nn">....common.qdialogs</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">auto_colormap</span>
+<span class="kn">from</span> <span class="nn">....common.configuration</span> <span class="k">import</span> <span class="n">console_history_path</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">auto_colormap</span><span class="p">,</span> <span class="n">ColormapListWidget</span>
+<span class="kn">from</span> <span class="nn">seaborn</span> <span class="k">import</span> <span class="n">heatmap</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">matplotlib.axes</span> <span class="k">import</span> <span class="n">Axes</span>
 
 
 <div class="viewcode-block" id="ProportionsWidget"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget">[docs]</a><span class="k">class</span> <span class="nc">ProportionsWidget</span><span class="p">(</span><span class="n">BasePlotWidget</span><span class="p">,</span> <span class="n">MatplotlibWidget</span><span class="p">):</span>
@@ -255,20 +266,24 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>  <span class="c1">#: The axis that is used for this plot</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">message_label</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message_label</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_update_live</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_update_live</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Live update from flowchart&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_update_live</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_update_live</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_update_live</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkbox_update_live</span><span class="p">)</span>
 
         <span class="n">xs_label</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">xs_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;X column&#39;</span><span class="p">)</span>
         <span class="n">xs_label</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">xs_label</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span> <span class="o">=</span> <span class="n">ComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="p">)</span>
 
@@ -277,23 +292,62 @@
         <span class="n">ys_label</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">ys_label</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span> <span class="o">=</span> <span class="n">ComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Show percentages&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;bar plot&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_heatmap</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_heatmap</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;heatmap&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_heatmap</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radio_heatmap</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_cmap_listwidget</span><span class="p">)</span>
+
+        <span class="n">hlayout_radios_btns</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">hlayout_radios_btns</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span><span class="p">)</span>
+        <span class="n">hlayout_radios_btns</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radio_heatmap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hlayout_radios_btns</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_label</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Colormap for heatmap&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_label</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_label</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmap_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span> <span class="o">=</span> <span class="n">ColormapListWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="o">.</span><span class="n">currentRowChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="p">)</span>
+
+        <span class="n">hlayout2</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_update_plot</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_update_plot</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Update Plot&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_update_plot</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_update_plot</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">())</span>
+        <span class="n">hlayout2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_update_plot</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_swap_xy</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_swap_xy</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Swap X-Y&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_swap_xy</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">swap_x_y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_swap_xy</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_swap_xy</span><span class="p">)</span>
+        <span class="n">hlayout2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_swap_xy</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hlayout2</span><span class="p">)</span>
 
         <span class="n">hlayout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
 
@@ -311,18 +365,81 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hlayout</span><span class="p">)</span>
 
+        <span class="n">hlayout3</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+
         <span class="n">btn_export</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">btn_export</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Export CSV&#39;</span><span class="p">)</span>
         <span class="n">btn_export</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">)</span>
         <span class="n">btn_export</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btn_export</span><span class="p">)</span>
+        <span class="n">hlayout3</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btn_export</span><span class="p">)</span>
+
+        <span class="n">btn_show_console</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">btn_show_console</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Show Console&#39;</span><span class="p">)</span>
+        <span class="n">btn_show_console</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">btn_show_console</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">btn_show_console</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">hlayout3</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btn_show_console</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hlayout3</span><span class="p">)</span>
+
+        <span class="n">ns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;this&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>
+              <span class="s1">&#39;get_fig&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span>
+              <span class="s1">&#39;get_ax&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="p">,</span>
+              <span class="s1">&#39;get_dataframe&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">props_df</span><span class="p">,</span>
+              <span class="p">}</span>
+
+        <span class="n">txt</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Namespaces&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;self as &#39;this&#39;&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;get_fig() - get the current Figure instance&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;get_ax() - get the current Axes instance&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;get_dataframe() - get the current dataframe of proportions&quot;</span>
+               <span class="p">]</span>
+
+        <span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+
+        <span class="n">cmd_history_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">console_history_path</span><span class="p">,</span> <span class="s1">&#39;proportions_plot.pik&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span> <span class="o">=</span> <span class="n">ConsoleWidget</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">txt</span><span class="p">,</span> <span class="n">historyFile</span><span class="o">=</span><span class="n">cmd_history_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="p">)</span>
+        <span class="n">btn_show_console</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">setVisible</span><span class="p">)</span>
 
         <span class="n">spacer</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpacerItem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">insertSpacerItem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">spacer</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">props_df</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">block_signals_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_signals_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_update_live</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Axes</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The Axes object for this plot</span>
+
+<span class="sd">        :return: The Axes object for this plot</span>
+<span class="sd">        :rtype: AXes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Axes not set&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span>
+
+    <span class="k">def</span> <span class="nf">show_cmap_listwidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_label</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
+    <span class="k">def</span> <span class="nf">set_update_live</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_update_live</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span> <span class="o">=</span> <span class="n">b</span>
+
+        <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
 
     <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
     <span class="k">def</span> <span class="nf">swap_x_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -342,15 +459,16 @@
     <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
     <span class="k">def</span> <span class="nf">set_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ProportionsWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
 
-        <span class="n">dcols</span><span class="p">,</span> <span class="n">ccols</span><span class="p">,</span> <span class="n">ucols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+    <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
+    <span class="k">def</span> <span class="nf">fill_control_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">uuid_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="c1"># self.xs_combo.clear()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">categorical_columns</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">xs_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
+        <span class="c1"># self.ys_combo.clear()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ys_combo</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">categorical_columns</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ProportionsWidget.get_plot_opts"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.get_plot_opts">[docs]</a>    <span class="k">def</span> <span class="nf">get_plot_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -364,7 +482,11 @@
         <span class="n">opts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">xs_name</span><span class="o">=</span><span class="n">xs_name</span><span class="p">,</span> <span class="n">ys_name</span><span class="o">=</span><span class="n">ys_name</span><span class="p">,</span>
                     <span class="n">xs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">xs_name</span><span class="p">],</span>
                     <span class="n">ys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">ys_name</span><span class="p">],</span>
-                    <span class="n">percentages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span>
+                    <span class="n">percentages</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                    <span class="n">use_barplot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                    <span class="n">use_heatmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">radio_heatmap</span><span class="o">.</span><span class="n">isChecked</span><span class="p">(),</span>
+                    <span class="n">heatmap_cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="o">.</span><span class="n">current_cmap</span>
+                    <span class="p">)</span>
         <span class="k">if</span> <span class="n">drop</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_opts</span><span class="p">:</span>
                 <span class="n">opts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
@@ -381,12 +503,26 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">checkbox_percent</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;percentages&#39;</span><span class="p">])</span>
 
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">radio_barplot</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;use_barplot&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">radio_heatmap</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;use_heatmap&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmap_listwidget</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;heatmap_cmap&#39;</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
 <div class="viewcode-block" id="ProportionsWidget.update_plot"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.update_plot">[docs]</a>    <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Plot error&#39;</span><span class="p">,</span> <span class="s1">&#39;Cannot plot, make sure you have selected appropriate data columns&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Update the plot data and draw&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the plot data and draw</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.ax.cla()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>  <span class="c1">#: The axis that is used for this plot</span>
 
         <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plot_opts</span><span class="p">()</span>
+        <span class="n">use_barplot</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_barplot&#39;</span><span class="p">)</span>
+        <span class="n">use_heatmap</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;use_heatmap&#39;</span><span class="p">)</span>
+        <span class="n">heatmap_cmap</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;heatmap_cmap&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;xs_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;ys_name&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">message_label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Must choose different X and Y columns&#39;</span><span class="p">)</span>
@@ -397,7 +533,7 @@
 
         <span class="n">show_percents</span> <span class="o">=</span> <span class="n">opts</span><span class="p">[</span><span class="s1">&#39;percentages&#39;</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">props_df</span> <span class="o">=</span> <span class="n">get_proportions</span><span class="p">(</span><span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">props_df</span> <span class="o">=</span> <span class="n">get_proportions</span><span class="p">(</span><span class="o">**</span><span class="n">opts</span><span class="p">)</span>  <span class="c1">#: DataFrame instance containing proportions data according to the plot parameters</span>
 
         <span class="n">n_labels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ys</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
 
@@ -413,18 +549,23 @@
 
         <span class="n">colors</span> <span class="o">=</span> <span class="n">auto_colormap</span><span class="p">(</span><span class="n">n_labels</span><span class="p">,</span> <span class="n">cmap</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">props_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
-
         <span class="k">if</span> <span class="n">show_percents</span><span class="p">:</span>
             <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;percentages&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;raw counts&#39;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;xs_name&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">use_barplot</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">props_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;xs_name&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="c1"># self.fig.tight_layout()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ys</span><span class="p">)))),</span>
+                           <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;expand&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.102</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper center&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ys</span><span class="p">)))),</span>
-                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;expand&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">use_heatmap</span><span class="p">:</span>
+            <span class="n">props_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props_df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+            <span class="n">heatmap</span><span class="p">(</span><span class="n">props_df</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">heatmap_cmap</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.1f&#39;</span><span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">label</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>

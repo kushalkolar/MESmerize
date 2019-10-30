@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mesmerize.pyqtgraphCore.flowchart.library.Data &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/consoles.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mesmerize.pyqtgraphCore.flowchart.library.Data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mesmerize.pyqtgraphCore.flowchart.library.Data</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">...Qt</span> <span class="k">import</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">spyder.widgets.variableexplorer.objecteditor</span> <span class="k">import</span> <span class="n">oedit</span>
+<span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">....analysis</span> <span class="k">import</span> <span class="n">Transmission</span>
+<span class="kn">from</span> <span class="nn">....analysis.history_widget</span> <span class="k">import</span> <span class="n">HistoryTreeWidget</span>
+<span class="kn">from</span> <span class="nn">....common</span> <span class="k">import</span> <span class="n">get_project_manager</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">tslearn.preprocessing</span> <span class="k">import</span> <span class="n">TimeSeriesScalerMinMax</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
+
+
+<div class="viewcode-block" id="LoadProjDF"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.LoadProjDF">[docs]</a><span class="k">class</span> <span class="nc">LoadProjDF</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load raw project DataFrames as Transmission&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;Load_Proj_DF&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;DF_Name&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s1">&#39;Update&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;Update&#39;</span><span class="p">,</span> <span class="s1">&#39;toolTip&#39;</span><span class="p">:</span> <span class="s1">&#39;When clicked this node will update&#39;</span>
+                                                                     <span class="s1">&#39; from the project DataFrame&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;PinDF&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;Yes&#39;</span><span class="p">,</span> <span class="s1">&#39;toolTip&#39;</span><span class="p">:</span> <span class="s1">&#39;Pin the DataFrame to the flowchart, this way</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                                                <span class="s1">&#39;you can open another project and still propogate</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                                                <span class="s1">&#39;the data from this node.&#39;</span><span class="p">})]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">CtrlNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">terminals</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">}})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loadNode</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">child_df_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">child_dataframes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;DF_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">child_df_names</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Update&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">)</span>
+        <span class="c1"># print(&#39;Node Refs:&#39;)</span>
+        <span class="c1"># print(configuration.df_refs)</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+
+        <span class="c1"># print(&#39;#######Weak Refs Dict########&#39;)</span>
+        <span class="c1"># print(configuration.df_refs)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;PinDF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;PinDF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="c1"># self.t = self.t.copy()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;PinDF&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Update&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">}</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;DF_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="n">child_df_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;DF_Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">child_df_name</span> <span class="o">==</span> <span class="s1">&#39;root&#39;</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">dataframe</span>
+                <span class="n">filter_history</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">child_dataframes</span><span class="p">[</span><span class="n">child_df_name</span><span class="p">][</span><span class="s1">&#39;dataframe&#39;</span><span class="p">]</span>
+                <span class="n">filter_history</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">child_dataframes</span><span class="p">[</span><span class="n">child_df_name</span><span class="p">][</span><span class="s1">&#39;filter_history&#39;</span><span class="p">]</span>
+            <span class="n">proj_path</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">root_dir</span>
+            <span class="c1"># print(&#39;*****************config df ref hex ID:*****************&#39;)</span>
+            <span class="c1"># print(hex(id(df)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Transmission</span><span class="o">.</span><span class="n">from_proj</span><span class="p">(</span><span class="n">proj_path</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">sub_dataframe_name</span><span class="o">=</span><span class="n">child_df_name</span><span class="p">,</span>
+                                            <span class="n">dataframe_filter_history</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dataframe_filter_history&#39;</span><span class="p">:</span> <span class="n">filter_history</span><span class="p">})</span>
+
+            <span class="c1"># print(&#39;Tranmission dataframe hexID:&#39;)</span>
+            <span class="c1"># print(hex(id(self.t.df)))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="LoadFile"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.LoadFile">[docs]</a><span class="k">class</span> <span class="nc">LoadFile</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load Transmission data object from pickled file&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;LoadFile&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;load_trn&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;Open .trn File&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;proj_trns&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;fname&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;proj_path&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;Project Path&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;proj_path_label&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">})</span>
+                  <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">CtrlNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">terminals</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">}})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;load_trn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_dialog_trn_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;proj_path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_dialog_proj_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loadNode</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">proj_path</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">root_dir</span>
+        
+        <span class="k">if</span> <span class="n">proj_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">trns</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">proj_path</span><span class="p">,</span> <span class="s1">&#39;trns&#39;</span><span class="p">,</span> <span class="s1">&#39;*.trn&#39;</span><span class="p">))</span>
+            <span class="n">trns_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">trns</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;proj_trns&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">trns_names</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;proj_trns&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fname</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;trns&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="k">if</span> <span class="n">fname</span> <span class="k">else</span> <span class="kc">False</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">file_dialog_trn_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Import Transmission object&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;(*.trn *.ptrn)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Transmission</span><span class="o">.</span><span class="n">from_hdf5</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;File open Error!&#39;</span><span class="p">,</span> <span class="s1">&#39;Could not open the chosen file.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;fname&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+        <span class="n">proj_path</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">root_dir</span>
+        <span class="k">if</span> <span class="n">proj_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_proj_path</span><span class="p">(</span><span class="n">proj_path</span><span class="p">)</span>
+
+        <span class="c1"># print(self.transmission)</span>
+        <span class="c1"># self.update()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_proj_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;proj_path_label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">set_proj_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">set_proj_config</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">dir_dialog_proj_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Select Project Folder&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_proj_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">NotADirectoryError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Invalid Project Folder&#39;</span><span class="p">,</span> <span class="s1">&#39;This is not a valid Mesmerize project</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">get_proj_path</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Save"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.Save">[docs]</a><span class="k">class</span> <span class="nc">Save</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save Transmission data object&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;Save&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;saveBtn&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;OpenFileDialog&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span> <span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+                  <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># super(Save, self).__init__(name, terminals={&#39;data&#39;: {&#39;io&#39;: &#39;in&#39;}})</span>
+        <span class="n">CtrlNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">terminals</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;In&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;in&#39;</span><span class="p">}})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bypass</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bypassButton</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;saveBtn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileDialog</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saveNode</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveValue</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">In</span><span class="p">,</span> <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">In</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">In</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;No incoming transmission to save!&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_fileDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Save Transmission as&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;(*.trn)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.trn&#39;</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.trn&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">):</span>
+        <span class="c1"># self.ctrls[&#39;saveBtn&#39;].clicked.connect(self._fileDialog)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">transmission</span><span class="o">.</span><span class="n">to_hdf5</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;File save error&#39;</span><span class="p">,</span> <span class="s1">&#39;Could not save the transmission to file.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="Merge"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.Merge">[docs]</a><span class="k">class</span> <span class="nc">Merge</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Merge transmissions&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;Merge&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;no controls&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">CtrlNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">terminals</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;In&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;multi&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">}})</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmissions</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;In&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmissions_list</span> <span class="o">=</span> <span class="n">merge_transmissions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmissions</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Transmission</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmissions_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="ViewTransmission"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.ViewTransmission">[docs]</a><span class="k">class</span> <span class="nc">ViewTransmission</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;View transmission using the spyder object editor&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;ViewData&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;no controls&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">CtrlNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">terminals</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;In&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;in&#39;</span><span class="p">}})</span>
+        <span class="c1"># self.edited_transmission = None</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">oedit</span><span class="p">({</span><span class="s1">&#39;dataframe&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;history_trace&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">history</span><span class="p">})</span></div>
+        <span class="c1"># if self.edited is not None:</span>
+        <span class="c1">#     self.edited.add_operation(&#39;all&#39;, &#39;object_editor&#39;, {})</span>
+        <span class="c1">#     return self.edited</span>
+
+        <span class="c1"># return self.t</span>
+
+
+<div class="viewcode-block" id="DropNa"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.DropNa">[docs]</a><span class="k">class</span> <span class="nc">DropNa</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Drop NaNs from the DataFrame&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;DropNaNs&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;axis&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="s1">&#39;columns&#39;</span><span class="p">],</span> <span class="s1">&#39;toolTip&#39;</span><span class="p">:</span> <span class="s1">&#39;Choose to drop NaNs from according to all &#39;</span>
+                                                                              <span class="s1">&#39;rows, columns, or a specific column&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;how&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;any&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">],</span> <span class="s1">&#39;toolTip&#39;</span><span class="p">:</span> <span class="s1">&#39;any: drop from chosen axis if any element is NaN</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                                                         <span class="s1">&#39;all: drop from chosen axis if all elements are NaN&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DropNa</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;row&#39;</span><span class="p">,</span> <span class="s1">&#39;columns&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;---------&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;axis&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;row&#39;</span><span class="p">:</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;columns&#39;</span><span class="p">:</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">how</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;how&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="n">how</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">how</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;dropna&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;axis&#39;</span><span class="p">:</span> <span class="n">axis</span><span class="p">,</span> <span class="s1">&#39;how&#39;</span><span class="p">:</span> <span class="n">how</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="ViewHistory"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.ViewHistory">[docs]</a><span class="k">class</span> <span class="nc">ViewHistory</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;View History Trace of the input Transmission&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;ViewHistory&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Show&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ViewHistory</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_widget</span> <span class="o">=</span> <span class="n">HistoryTreeWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Show&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history_widget</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history_widget</span><span class="o">.</span><span class="n">fill_widget</span><span class="p">(</span><span class="n">transmission</span><span class="o">.</span><span class="n">history_trace</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="iloc"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.iloc">[docs]</a><span class="k">class</span> <span class="nc">iloc</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pass only one or multiple DataFrame Indices&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;iloc&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Index&#39;</span><span class="p">,</span> <span class="s1">&#39;intSpin&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+                  <span class="c1"># (&#39;Indices&#39;, &#39;lineEdit&#39;, {&#39;text&#39;: &#39;0&#39;, &#39;toolTip&#39;: &#39;Index numbers separated by commas&#39;})</span>
+                  <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># self.ctrls[&#39;Index&#39;].valueChanged.connect(</span>
+        <span class="c1">#     partial(self.ctrls[&#39;Indices&#39;].setText, str(self.ctrls[&#39;Index&#39;].value())))</span>
+
+        <span class="c1"># indices = [int(ix.strip()) for ix in self.ctrls[&#39;Indices&#39;].text().split(&#39;,&#39;)]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1"># self.t.src.append({&#39;iloc&#39;: {&#39;index&#39;: i}})</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="SpliceArrays"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.SpliceArrays">[docs]</a><span class="k">class</span> <span class="nc">SpliceArrays</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Splice 1-D numpy arrays in a particular column.&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;SpliceArrays&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;data_column&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;indices&#39;</span><span class="p">,</span> <span class="s1">&#39;lineEdit&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;placeHolder&#39;</span><span class="p">:</span> <span class="s1">&#39;start_ix:end_ix&#39;</span><span class="p">})]</span>
+    <span class="n">output_column</span> <span class="o">=</span> <span class="s1">&#39;_SPLICE_ARRAYS&#39;</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data_column_combo_box</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;indices&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">indices</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="s1">&#39;:&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+        <span class="n">start_ix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">end_ix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">data_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;data_column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="p">[</span><span class="n">start_ix</span><span class="p">:</span><span class="n">end_ix</span><span class="p">])</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data_column&#39;</span><span class="p">:</span> <span class="n">data_column</span><span class="p">,</span>
+                  <span class="s1">&#39;start_ix&#39;</span><span class="p">:</span> <span class="n">start_ix</span><span class="p">,</span>
+                  <span class="s1">&#39;end_ix&#39;</span><span class="p">:</span> <span class="n">end_ix</span><span class="p">,</span>
+                  <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">last_unit</span>
+                  <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="n">data_block_id</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;splice_arrays&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">last_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="PadArrays"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.PadArrays">[docs]</a><span class="k">class</span> <span class="nc">PadArrays</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pad 1-D numpy arrays in a particular column&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;PadArrays&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;data_column&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;output_size&#39;</span><span class="p">,</span> <span class="s1">&#39;intSpin&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mi">9999999</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fill-size&#39;</span><span class="p">,</span> <span class="s1">&#39;random&#39;</span><span class="p">]}),</span>
+                  <span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;minimum&#39;</span><span class="p">,</span> <span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="s1">&#39;maximum&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39;reflect&#39;</span><span class="p">,</span> <span class="s1">&#39;symmetric&#39;</span><span class="p">,</span> <span class="s1">&#39;wrap&#39;</span><span class="p">],</span> <span class="s1">&#39;toolTip&#39;</span><span class="p">:</span> <span class="s1">&#39;Passed to numpy.pad &quot;mode&quot; parameter&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="s1">&#39;doubleSpin&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9999999.9</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mf">9999999.9</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>
+                                              <span class="s1">&#39;tooltip&#39;</span><span class="p">:</span> <span class="s1">&#39;Value to use if &quot;mode&quot; is set to &quot;constant&quot;&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+                  <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data_column_combo_box</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_pad</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SelectRows"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.SelectRows">[docs]</a><span class="k">class</span> <span class="nc">SelectRows</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SelectColumns"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.SelectColumns">[docs]</a><span class="k">class</span> <span class="nc">SelectColumns</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TextFilter"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.TextFilter">[docs]</a><span class="k">class</span> <span class="nc">TextFilter</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple string filtering in a specified column&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;TextFilter&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Column&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;toolTip&#39;</span><span class="p">:</span> <span class="s1">&#39;Filter according to this column&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span> <span class="s1">&#39;lineEdit&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;toolTip&#39;</span><span class="p">:</span> <span class="s1">&#39;Filter to apply in selected column&#39;</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Include&#39;</span><span class="p">,</span> <span class="s1">&#39;radioBtn&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Exclude&#39;</span><span class="p">,</span> <span class="s1">&#39;radioBtn&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})]</span>
+
+    <span class="c1"># def __init__(self, name):</span>
+    <span class="c1">#     CtrlNode.__init__(self, name, terminals={&#39;In&#39;: {&#39;io&#39;: &#39;in&#39;}, &#39;Out&#39;: {&#39;io&#39;: &#39;out&#39;, &#39;bypass&#39;: &#39;In&#39;}})</span>
+    <span class="c1">#     self.ctrls[&#39;ROI_Type&#39;].returnPressed.connect(self._setAvailTags)</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="n">ccols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">completer</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCompleter</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setCompleter</span><span class="p">(</span><span class="n">completer</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">include</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Include&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Exclude&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;column&#39;</span><span class="p">:</span> <span class="n">col</span><span class="p">,</span>
+                  <span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="n">filt</span><span class="p">,</span>
+                  <span class="s1">&#39;include&#39;</span><span class="p">:</span> <span class="n">include</span><span class="p">,</span>
+                  <span class="s1">&#39;exclude&#39;</span><span class="p">:</span> <span class="n">exclude</span>
+                  <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">include</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">==</span> <span class="n">filt</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">exclude</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">!=</span> <span class="n">filt</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">operation</span><span class="o">=</span><span class="s1">&#39;text_filter&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="NormRaw"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.NormRaw">[docs]</a><span class="k">class</span> <span class="nc">NormRaw</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Normalize between raw min and max values.&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;NormRaw&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;top_5&#39;</span><span class="p">,</span> <span class="s1">&#39;top_10&#39;</span><span class="p">,</span> <span class="s1">&#39;top_5p&#39;</span><span class="p">,</span> <span class="s1">&#39;top_10p&#39;</span><span class="p">,</span> <span class="s1">&#39;top_25p&#39;</span><span class="p">,</span> <span class="s1">&#39;full_mean&#39;</span><span class="p">]}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+                  <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span>
+        <span class="n">dcols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">output_column</span> <span class="o">=</span> <span class="s1">&#39;_NORMRAW&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">option</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;option&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data_column&#39;</span><span class="p">:</span> <span class="s1">&#39;_RAW_CURVE&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;option&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">option</span><span class="p">,</span>
+                  <span class="s1">&#39;output_column&#39;</span><span class="p">:</span> <span class="n">output_column</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">get_proj_path</span><span class="p">()</span>
+
+        <span class="n">tqdm</span><span class="p">()</span><span class="o">.</span><span class="n">pandas</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">excluded</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">progress_apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_RAW_CURVE&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;ImgInfoPath&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;ROI_State&#39;</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;normrawminmax&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">last_output</span> <span class="o">=</span> <span class="n">output_column</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">excluded</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Curves excluded&#39;</span><span class="p">,</span>
+                                          <span class="n">f</span><span class="s1">&#39;The following number of curves were excluded because &#39;</span>
+                                          <span class="n">f</span><span class="s1">&#39;the raw min value was larger than the max</span><span class="se">\n</span><span class="si">{self.excluded}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">output_column</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+
+    <span class="k">def</span> <span class="nf">_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">img_info_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">roi_state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;raw_min_max&#39;</span> <span class="ow">in</span> <span class="n">roi_state</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">raw_min_max</span> <span class="o">=</span> <span class="n">roi_state</span><span class="p">[</span><span class="s1">&#39;raw_min_max&#39;</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cnmf_idx</span> <span class="o">=</span> <span class="n">roi_state</span><span class="p">[</span><span class="s1">&#39;cnmf_idx&#39;</span><span class="p">]</span>
+            <span class="n">img_info_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj_path</span><span class="p">,</span> <span class="n">img_info_path</span><span class="p">)</span>
+            <span class="n">roi_states</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">img_info_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))[</span><span class="s1">&#39;roi_states&#39;</span><span class="p">]</span>
+
+            <span class="n">idx_components</span> <span class="o">=</span> <span class="n">roi_states</span><span class="p">[</span><span class="s1">&#39;cnmf_output&#39;</span><span class="p">][</span><span class="s1">&#39;idx_components&#39;</span><span class="p">]</span>
+
+            <span class="n">list_ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">idx_components</span> <span class="o">==</span> <span class="n">cnmf_idx</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+            <span class="n">state</span> <span class="o">=</span> <span class="n">roi_states</span><span class="p">[</span><span class="s1">&#39;states&#39;</span><span class="p">][</span><span class="n">list_ix</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;cnmf_idx&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cnmf_idx</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;cnmf_idx from ImgInfoPath dict and DataFrame ROI_State dict do not match.&#39;</span><span class="p">)</span>
+
+            <span class="n">raw_min_max</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;raw_min_max&#39;</span><span class="p">]</span>
+
+        <span class="n">raw_min</span> <span class="o">=</span> <span class="n">raw_min_max</span><span class="p">[</span><span class="s1">&#39;raw_min&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">option</span><span class="p">]</span>
+        <span class="n">raw_max</span> <span class="o">=</span> <span class="n">raw_min_max</span><span class="p">[</span><span class="s1">&#39;raw_max&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">option</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">raw_min</span> <span class="o">&gt;=</span> <span class="n">raw_max</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">excluded</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+
+        <span class="k">return</span> <span class="n">TimeSeriesScalerMinMax</span><span class="p">(</span><span class="n">value_range</span><span class="o">=</span><span class="p">(</span><span class="n">raw_min</span><span class="p">,</span> <span class="n">raw_max</span><span class="p">))</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

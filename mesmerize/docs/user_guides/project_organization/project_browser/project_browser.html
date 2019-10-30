@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -146,11 +147,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plots/scatter.html">Scatter</a></li>
@@ -174,17 +175,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -253,7 +258,7 @@
 <span id="projectbrowser"></span><h1>Project Browser<a class="headerlink" href="#project-browser" title="Permalink to this headline">¶</a></h1>
 <p><strong>Browse, edit and sort the project DataFrame</strong></p>
 <p>You can open the Project Browser from the <a class="reference internal" href="../../general/misc.html#welcomewindow"><span class="std std-ref">Welcome Window</span></a> after you have opened a project.</p>
-<img alt="../../../_images/overview1.png" src="../../../_images/overview1.png" />
+<img alt="../../../_images/overview.png" src="../../../_images/overview.png" />
 <p>The columns that are visible in the Project Browser Window correspond to the <a class="reference internal" href="../new_project/new_project.html#project-configuration"><span class="std std-ref">Project Configuration</span></a>. For each column you will see a list which is a set of unique elements from that column in the project DataFrame.</p>
 <p>Functions</p>
 <div class="section" id="open-sample">
@@ -280,14 +285,14 @@
 <div class="section" id="partial-match">
 <h3>Partial match<a class="headerlink" href="#partial-match" title="Permalink to this headline">¶</a></h3>
 <p>To filter out a group based on partial text matches just enter the text into the filter text entry below the column(s) of interest and click “Apply”</p>
-<img alt="../../../_images/simple_filter1.png" src="../../../_images/simple_filter1.png" />
+<img alt="../../../_images/simple_filter.png" src="../../../_images/simple_filter.png" />
 <p>Since this is filtering out of the root tab, you will be prompted to give a name for a new tab that will be created based on the filter you have entered.</p>
 <img alt="../../../_images/tab_name_prompt.png" src="../../../_images/tab_name_prompt.png" />
 <p>The result is a DataFrame containing all rows where the cell_name contains ‘aten’</p>
-<img alt="../../../_images/simple_filter_result1.png" src="../../../_images/simple_filter_result1.png" />
+<img alt="../../../_images/simple_filter_result.png" src="../../../_images/simple_filter_result.png" />
 <p>If you go to View -&gt; Current dataframe you can see the whole dataframe.</p>
 <a class=""
-               data-lightbox="group-80fd348f-8c59-4071-8551-30496efac24b"
+               data-lightbox="group-5a8c05f6-c064-4985-bf42-487f2fec321d"
                href="../../../_images/simple_filter_result_21.png"
                title=""
                data-title=""
@@ -321,7 +326,7 @@
 <img alt="../../../_images/multiple_columns_filter_history.png" src="../../../_images/multiple_columns_filter_history.png" />
 <p>The dataframe</p>
 <a class=""
-               data-lightbox="group-3232d4d0-a1c4-4af6-abef-371275ef653d"
+               data-lightbox="group-e659f8f5-f154-439b-be3f-6060da5577db"
                href="../../../_images/multiple_columns_result_dataframe1.png"
                title=""
                data-title=""
@@ -371,7 +376,7 @@
 <h2>Editor<a class="headerlink" href="#editor" title="Permalink to this headline">¶</a></h2>
 <p>You can view and edit the Project DataFrame directly in a GUI using the DataFrame editor.</p>
 <a class=""
-               data-lightbox="group-ad3033f6-d5f2-4c08-b7d3-77ab1dee4a3e"
+               data-lightbox="group-b90c2887-0ebb-43c6-b26b-527d6c042cd7"
                href="../../../_images/dataframe_editor1.png"
                title=""
                data-title=""
