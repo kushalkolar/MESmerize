@@ -5,7 +5,7 @@ To open a tiff file go to Modules -> Load Images -> Tiff files.
 
 .. note:: You can also use this module through the console and scripts. See :ref:`API_TiffModule`
 
-To open tiff files just click the “Select file” button and choose your file.
+To open tiff files just click the “Select file” button and choose your file. You can also drag and drop a tiff file.
 
 .. image:: ./2.png
 

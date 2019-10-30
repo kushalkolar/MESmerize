@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -128,11 +129,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/scatter.html">Scatter</a></li>
@@ -156,6 +157,7 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="viewer_modules/roi_manager.html">ROI Manager</a></li>
@@ -163,16 +165,18 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data types used for analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#transmission">Transmission</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basetransmission">BaseTransmission</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#helper-functions">Helper functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#historytrace">HistoryTrace</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -255,30 +259,22 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> – Transmission dataframe</li>
-<li><strong>history_trace</strong> – HistoryTrace object, keeps track of the nodes &amp; node parameters
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – Transmission dataframe</li>
+<li><strong>history_trace</strong> (<a class="reference internal" href="#mesmerize.analysis.data_types.HistoryTrace" title="mesmerize.analysis.data_types.HistoryTrace"><em>HistoryTrace</em></a>) – HistoryTrace object, keeps track of the nodes &amp; node parameters
 the transmission has been processed through</li>
-<li><strong>proj_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Project path, necessary for the datapoint tracer</li>
-<li><strong>last_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Last data column that was appended via a node’s operation</li>
-<li><strong>last_unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Current units of the data. Refers to the units of column in last_output</li>
-<li><strong>plot_state</strong> – State of a plot, such as data and label columns. Used when saving interactive plots.</li>
+<li><strong>proj_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Project path, necessary for the datapoint tracer</li>
+<li><strong>last_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Last data column that was appended via a node’s operation</li>
+<li><strong>last_unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Current units of the data. Refers to the units of column in last_output</li>
+<li><strong>plot_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – State of a plot, such as data and label columns. Used when saving interactive plots.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference internal" href="viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df" title="mesmerize.viewer.modules.batch_manager.ModuleGUI.df"><strong>df</strong></a> – Dataframe instance belonging to a Transmission instance</li>
-<li><a class="reference internal" href="Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.history_trace" title="mesmerize.viewer.core.ViewerWorkEnv.history_trace"><strong>history_trace</strong></a> – <table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">class:</th><td class="field-body"><cite>HistoryTrace</cite> instance</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><strong>proj_path</strong> – project path</li>
-<li><strong>last_output</strong> – Name of last data column that was the output of a node</li>
-<li><strong>last_unit</strong> – The data units corresponding to <cite>last_output</cite></li>
+<li><a class="reference internal" href="viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df" title="mesmerize.viewer.modules.batch_manager.ModuleGUI.df"><strong>df</strong></a> – DataFrame instance</li>
+<li><a class="reference internal" href="Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.history_trace" title="mesmerize.viewer.core.ViewerWorkEnv.history_trace"><strong>history_trace</strong></a> – <a class="reference internal" href="#mesmerize.analysis.data_types.HistoryTrace" title="mesmerize.analysis.data_types.HistoryTrace"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistoryTrace</span> <span class="pre">instance</span></code></a></li>
+<li><strong>last_output</strong> – Name of the DataFrame column that contains data from the most recent node</li>
+<li><strong>last_unit</strong> – The data units for the data in the column of ‘last_output’</li>
+<li><a class="reference internal" href="#mesmerize.analysis.data_types.BaseTransmission.plot_state" title="mesmerize.analysis.data_types.BaseTransmission.plot_state"><strong>plot_state</strong></a> – State of a plot, containing user entered plot parameters. Used for storing interactive plot states.</li>
 </ul>
 </td>
 </tr>
@@ -310,14 +306,12 @@ the transmission has been processed through</li>
 <dl class="classmethod">
 <dt id="mesmerize.Transmission.from_hdf5">
 <em class="property">classmethod </em><code class="descname">from_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.Transmission.from_hdf5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create Transmission from an hdf5 file. See <span class="xref std std-ref">HdfTools</span> for information on the file structure.</p>
+<dd><p>Create Transmission from an hdf5 file. See <a class="reference internal" href="common.html#mesmerize.common.utils.HdfTools" title="mesmerize.common.utils.HdfTools"><code class="xref py py-class docutils literal notranslate"><span class="pre">HdfTools</span></code></a> for information on the file structure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path, usually ends in .trn</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path, usually ends in .trn (.ptrn for plots)</td>
 </tr>
 </tbody>
 </table>
@@ -355,7 +349,7 @@ the transmission has been processed through</li>
 <dt id="mesmerize.Transmission.set_proj_path">
 <code class="descname">set_proj_path</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.Transmission.set_proj_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the project root dir for this transmission.</p>
-<p>Used for appending relative paths (stored in the project DataFrame) to the various project files. For example, this is used by the Datapoint Tracer to find max and std projections of image sequeences.</p>
+<p>Used for finding associated project files, for example the Datapoint Tracer uses it to find max and std projections of image sequences.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -375,7 +369,8 @@ the transmission has been processed through</li>
 <dl class="method">
 <dt id="mesmerize.Transmission.to_hdf5">
 <code class="descname">to_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.Transmission.to_hdf5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save as an hdf5 file. Uses pytables to save the DataFrame an JSON to save the HistoryTrace. See <span class="xref std std-ref">HdfTools</span> for information on the file structure.</p>
+<dd><p>Save as an hdf5 file. Uses pytables to save the DataFrame, serielizes the HistoryTrace using JSON.
+See <a class="reference internal" href="common.html#mesmerize.common.utils.HdfTools" title="mesmerize.common.utils.HdfTools"><code class="xref py py-class docutils literal notranslate"><span class="pre">HdfTools</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -389,7 +384,7 @@ the transmission has been processed through</li>
 <dl class="method">
 <dt id="mesmerize.Transmission.to_hickle">
 <code class="descname">to_hickle</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.Transmission.to_hickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save as an hdf5 file using hickle (not recommended, use to_hdf5)</p>
+<dd><p>Save as an hdf5 file using hickle (not recommended, use <a class="reference internal" href="#mesmerize.Transmission.to_hdf5" title="mesmerize.Transmission.to_hdf5"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_hdf5()</span></code></a>)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -403,7 +398,7 @@ the transmission has been processed through</li>
 <dl class="method">
 <dt id="mesmerize.Transmission.to_pickle">
 <code class="descname">to_pickle</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.Transmission.to_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Svae Transmission as a pickle</p>
+<dd><p>Save Transmission as a pickle.  Not recommended for sharing data, use <a class="reference internal" href="#mesmerize.Transmission.to_hdf5" title="mesmerize.Transmission.to_hdf5"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_hdf5()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -474,35 +469,33 @@ HistoryTrace objects are also merged using HistoryTrace.merge.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> – Transmission dataframe</li>
-<li><strong>history_trace</strong> – HistoryTrace object, keeps track of the nodes &amp; node parameters
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – Transmission dataframe</li>
+<li><strong>history_trace</strong> (<a class="reference internal" href="#mesmerize.analysis.data_types.HistoryTrace" title="mesmerize.analysis.data_types.HistoryTrace"><em>HistoryTrace</em></a>) – HistoryTrace object, keeps track of the nodes &amp; node parameters
 the transmission has been processed through</li>
-<li><strong>proj_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Project path, necessary for the datapoint tracer</li>
-<li><strong>last_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Last data column that was appended via a node’s operation</li>
-<li><strong>last_unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Current units of the data. Refers to the units of column in last_output</li>
-<li><strong>plot_state</strong> – State of a plot, such as data and label columns. Used when saving interactive plots.</li>
+<li><strong>proj_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Project path, necessary for the datapoint tracer</li>
+<li><strong>last_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Last data column that was appended via a node’s operation</li>
+<li><strong>last_unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Current units of the data. Refers to the units of column in last_output</li>
+<li><strong>plot_state</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – State of a plot, such as data and label columns. Used when saving interactive plots.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference internal" href="viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df" title="mesmerize.viewer.modules.batch_manager.ModuleGUI.df"><strong>df</strong></a> – Dataframe instance belonging to a Transmission instance</li>
-<li><a class="reference internal" href="Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.history_trace" title="mesmerize.viewer.core.ViewerWorkEnv.history_trace"><strong>history_trace</strong></a> – <table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">class:</th><td class="field-body"><cite>HistoryTrace</cite> instance</td>
-</tr>
-</tbody>
-</table>
-</li>
-<li><strong>proj_path</strong> – project path</li>
-<li><strong>last_output</strong> – Name of last data column that was the output of a node</li>
-<li><strong>last_unit</strong> – The data units corresponding to <cite>last_output</cite></li>
+<li><a class="reference internal" href="viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df" title="mesmerize.viewer.modules.batch_manager.ModuleGUI.df"><strong>df</strong></a> – DataFrame instance</li>
+<li><a class="reference internal" href="Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.history_trace" title="mesmerize.viewer.core.ViewerWorkEnv.history_trace"><strong>history_trace</strong></a> – <a class="reference internal" href="#mesmerize.analysis.data_types.HistoryTrace" title="mesmerize.analysis.data_types.HistoryTrace"><code class="xref py py-class docutils literal notranslate"><span class="pre">HistoryTrace</span> <span class="pre">instance</span></code></a></li>
+<li><strong>last_output</strong> – Name of the DataFrame column that contains data from the most recent node</li>
+<li><strong>last_unit</strong> – The data units for the data in the column of ‘last_output’</li>
+<li><a class="reference internal" href="#mesmerize.analysis.data_types.BaseTransmission.plot_state" title="mesmerize.analysis.data_types.BaseTransmission.plot_state"><strong>plot_state</strong></a> – State of a plot, containing user entered plot parameters. Used for storing interactive plot states.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.analysis.data_types.BaseTransmission.plot_state">
+<code class="descname">plot_state</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.data_types.BaseTransmission.plot_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>If used in a plot, dict containing information about the plot state</p>
 </dd></dl>
 
 <dl class="method">
@@ -514,7 +507,7 @@ the transmission has been processed through</li>
 <dl class="method">
 <dt id="mesmerize.analysis.data_types.BaseTransmission.to_hickle">
 <code class="descname">to_hickle</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#BaseTransmission.to_hickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.BaseTransmission.to_hickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save as an hdf5 file using hickle (not recommended, use to_hdf5)</p>
+<dd><p>Save as an hdf5 file using hickle (not recommended, use <a class="reference internal" href="#mesmerize.analysis.data_types.BaseTransmission.to_hdf5" title="mesmerize.analysis.data_types.BaseTransmission.to_hdf5"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_hdf5()</span></code></a>)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -528,7 +521,8 @@ the transmission has been processed through</li>
 <dl class="method">
 <dt id="mesmerize.analysis.data_types.BaseTransmission.to_hdf5">
 <code class="descname">to_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#BaseTransmission.to_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.BaseTransmission.to_hdf5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save as an hdf5 file. Uses pytables to save the DataFrame an JSON to save the HistoryTrace. See <span class="xref std std-ref">HdfTools</span> for information on the file structure.</p>
+<dd><p>Save as an hdf5 file. Uses pytables to save the DataFrame, serielizes the HistoryTrace using JSON.
+See <a class="reference internal" href="common.html#mesmerize.common.utils.HdfTools" title="mesmerize.common.utils.HdfTools"><code class="xref py py-class docutils literal notranslate"><span class="pre">HdfTools</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -542,14 +536,12 @@ the transmission has been processed through</li>
 <dl class="classmethod">
 <dt id="mesmerize.analysis.data_types.BaseTransmission.from_hdf5">
 <em class="property">classmethod </em><code class="descname">from_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#BaseTransmission.from_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.BaseTransmission.from_hdf5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create Transmission from an hdf5 file. See <span class="xref std std-ref">HdfTools</span> for information on the file structure.</p>
+<dd><p>Create Transmission from an hdf5 file. See <a class="reference internal" href="common.html#mesmerize.common.utils.HdfTools" title="mesmerize.common.utils.HdfTools"><code class="xref py py-class docutils literal notranslate"><span class="pre">HdfTools</span></code></a> for information on the file structure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path, usually ends in .trn</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path, usually ends in .trn (.ptrn for plots)</td>
 </tr>
 </tbody>
 </table>
@@ -564,8 +556,6 @@ the transmission has been processed through</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path, usually ends in .trn</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -588,7 +578,7 @@ the transmission has been processed through</li>
 <dl class="method">
 <dt id="mesmerize.analysis.data_types.BaseTransmission.to_pickle">
 <code class="descname">to_pickle</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#BaseTransmission.to_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.BaseTransmission.to_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Svae Transmission as a pickle</p>
+<dd><p>Save Transmission as a pickle.  Not recommended for sharing data, use <a class="reference internal" href="#mesmerize.analysis.data_types.BaseTransmission.to_hdf5" title="mesmerize.analysis.data_types.BaseTransmission.to_hdf5"><code class="xref py py-func docutils literal notranslate"><span class="pre">to_hdf5()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -638,7 +628,7 @@ the transmission has been processed through</li>
 <dt id="mesmerize.analysis.data_types.BaseTransmission.set_proj_path">
 <code class="descname">set_proj_path</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#BaseTransmission.set_proj_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.BaseTransmission.set_proj_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the project root dir for this transmission.</p>
-<p>Used for appending relative paths (stored in the project DataFrame) to the various project files. For example, this is used by the Datapoint Tracer to find max and std projections of image sequeences.</p>
+<p>Used for finding associated project files, for example the Datapoint Tracer uses it to find max and std projections of image sequences.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -652,60 +642,9 @@ the transmission has been processed through</li>
 <dl class="method">
 <dt id="mesmerize.analysis.data_types.BaseTransmission.set_proj_config">
 <code class="descname">set_proj_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#BaseTransmission.set_proj_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.BaseTransmission.set_proj_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets some project config related attributes.</p>
+<dd><p>Sets some project config related attributes from the project’s config file.</p>
 </dd></dl>
 
-</dd></dl>
-
-</div>
-<div class="section" id="helper-functions">
-<span id="api-transmission-helper-functions"></span><h2>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="mesmerize.analysis.get_sampling_rate">
-<code class="descclassname">mesmerize.analysis.</code><code class="descname">get_sampling_rate</code><span class="sig-paren">(</span><em>transmission: mesmerize.analysis.data_types.Transmission</em>, <em>tolerance: Optional[float] = 0.1</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#get_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.get_sampling_rate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>transmission</strong> (<a class="reference internal" href="#mesmerize.Transmission" title="mesmerize.Transmission"><em>Transmission</em></a>) – Transmission object of the data from which sampling rate is obtained.</li>
-<li><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – Maximum tolerance (in Hertz) of sampling rate variation between different samples</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mean sampling rate of all data in the Transmission</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.7)">float</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="mesmerize.analysis.get_array_size">
-<code class="descclassname">mesmerize.analysis.</code><code class="descname">get_array_size</code><span class="sig-paren">(</span><em>transmission: mesmerize.analysis.data_types.Transmission</em>, <em>data_column: str</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#get_array_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.get_array_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>transmission</strong> (<a class="reference internal" href="#mesmerize.Transmission" title="mesmerize.Transmission"><em>Transmission</em></a>) – Desired Transmission</li>
-<li><strong>data_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Data column of the Transmission from which to retrieve the size</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Size of the 1D arrays of the specified data column</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a></p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>
@@ -770,28 +709,54 @@ Each operation_dict has a single key which is the name of the operation and the 
 </div></blockquote>
 <p><strong>The main dict illustrated above should never be worked with directly.</strong></p>
 <p><strong>You must use the helper methods of this class to query or add information</strong></p>
-<table class="docutils field-list" frame="void" rules="none">
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>history: Dict[Union[uuid.UUID, str], List[Dict]] = None, data_blocks: List[Union[uuid.UUID, str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>_history</strong> – The dict of the actual data, as illustrated above. Should not be accessed directly. Use the <cite>history</cite> property or call <cite>get_all_data_blocks_history()</cite>.</li>
-<li><strong>_data_blocks</strong> – List of all data blocks. Should not be called directly, use the property <cite>data_blocks</cite> instead.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>history</strong> – Dict containing a data block UUIDs as keys. The values are a list of dicts containing operation parameters.</li>
+<li><strong>data_blocks</strong> – List of data block UUIDs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>_history</strong> – The dict of the actual data, as illustrated above. Should not be accessed directly. Use the <a class="reference internal" href="#mesmerize.analysis.data_types.HistoryTrace.history" title="mesmerize.analysis.data_types.HistoryTrace.history"><code class="xref py py-attr docutils literal notranslate"><span class="pre">history</span></code></a> property or call <cite>get_all_data_blocks_history()</cite>.</li>
+<li><strong>_data_blocks</strong> – List of all data blocks. Should not be accessed directly, use the <a class="reference internal" href="#mesmerize.analysis.data_types.HistoryTrace.data_blocks" title="mesmerize.analysis.data_types.HistoryTrace.data_blocks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data_blocks</span></code></a> property instead.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>history: Dict[Union[uuid.UUID, str], List[Dict]] = None, data_blocks: List[Union[uuid.UUID, str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.__weakref__">
-<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
+<dt id="mesmerize.analysis.data_types.HistoryTrace.data_blocks">
+<code class="descname">data_blocks</code><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.data_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of UUIDs that allow you to pin down the history of specific rows of the dataframe to their history
+as stored in the history trace data structure (self.history)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.history">
+<code class="descname">history</code><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.history" title="Permalink to this definition">¶</a></dt>
+<dd><p>The analysis log that is stored in the structure outlined in the doc string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.create_data_block">
+<code class="descname">create_data_block</code><span class="sig-paren">(</span><em>dataframe: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; Tuple[pandas.core.frame.DataFrame, uuid.UUID]<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.create_data_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.create_data_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new UUID, assigns it to the input dataframe by setting the UUID in the _BLOCK_ column</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataframe</strong> – Assigns a block ID to this entire DataFrame.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -799,13 +764,6 @@ Each operation_dict has a single key which is the name of the operation and the 
 <code class="descname">_add_data_block</code><span class="sig-paren">(</span><em>data_block_id: uuid.UUID</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace._add_data_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace._add_data_block" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds new datablock UUID to the list of datablocks in this instance.
 Throws exception if UUID already exists.</p>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="mesmerize.analysis.data_types.HistoryTrace._to_uuid">
-<em class="property">static </em><code class="descname">_to_uuid</code><span class="sig-paren">(</span><em>u: Union[str, uuid.UUID]</em><span class="sig-paren">)</span> &#x2192; uuid.UUID<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace._to_uuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace._to_uuid" title="Permalink to this definition">¶</a></dt>
-<dd><p>If argument ‘u’ is type &lt;str&gt; that can be formatted as a UUID, return it as UUID type.
-If argument ‘u’ is a UUID, just return it.</p>
 </dd></dl>
 
 <dl class="method">
@@ -829,37 +787,54 @@ Added to all or specific datablock(s), depending on which datablock(s) the node 
 </dd></dl>
 
 <dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.get_data_block_history">
+<code class="descname">get_data_block_history</code><span class="sig-paren">(</span><em>data_block_id: uuid.UUID</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_data_block_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_data_block_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the full history trace of a single data block</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.get_all_data_blocks_history">
+<code class="descname">get_all_data_blocks_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_all_data_blocks_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_all_data_blocks_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns history trace of all datablocks</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.get_operations_list">
+<code class="descname">get_operations_list</code><span class="sig-paren">(</span><em>data_block_id: Union[uuid.UUID, str]</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_operations_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_operations_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns just a simple list of operations in the order that they were performed on the given datablock.
+To get the operations along with their parameters call get_data_block_history()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.get_operation_params">
+<code class="descname">get_operation_params</code><span class="sig-paren">(</span><em>data_block_id: Union[uuid.UUID, str], operation: str</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_operation_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_operation_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parameters dict for a specific operation that was performed on a specific data block</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="mesmerize.analysis.data_types.HistoryTrace.check_operation_exists">
 <code class="descname">check_operation_exists</code><span class="sig-paren">(</span><em>data_block_id: uuid.UUID</em>, <em>operation: str</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.check_operation_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.check_operation_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a specific operation was performed on a specific datablock</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.create_data_block">
-<code class="descname">create_data_block</code><span class="sig-paren">(</span><em>dataframe: pandas.core.frame.DataFrame</em><span class="sig-paren">)</span> &#x2192; Tuple[pandas.core.frame.DataFrame, uuid.UUID]<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.create_data_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.create_data_block" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a new UUID, assigns it to the input dataframe by setting the UUID in the _BLOCK_ column</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dataframe</strong> – Assigns a block ID to this entire DataFrame.</td>
-</tr>
-</tbody>
-</table>
+<dl class="staticmethod">
+<dt id="mesmerize.analysis.data_types.HistoryTrace._to_uuid">
+<em class="property">static </em><code class="descname">_to_uuid</code><span class="sig-paren">(</span><em>u: Union[str, uuid.UUID]</em><span class="sig-paren">)</span> &#x2192; uuid.UUID<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace._to_uuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace._to_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>If argument ‘u’ is type &lt;str&gt; that can be formatted as a UUID, return it as UUID type.
+If argument ‘u’ is a UUID, just return it.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.data_blocks">
-<code class="descname">data_blocks</code><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.data_blocks" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of UUIDs that allow you to pin down the history of specific rows of the dataframe to their history
-as stored in the history trace data structure (self.history) and outlined in the doc string</p>
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Package the HistoryTrace instance as a dict. Converts all UUIDs to &lt;str&gt; representation for JSON compatibility.</p>
 </dd></dl>
 
 <dl class="staticmethod">
 <dt id="mesmerize.analysis.data_types.HistoryTrace.from_dict">
 <em class="property">static </em><code class="descname">from_dict</code><span class="sig-paren">(</span><em>d: dict</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.from_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format a dict stored using HistoryTrace.to_dict so that it can be used to create a HistoryTrace instance.
-Converts all the &lt;str&gt; representations of UUID back to &lt;uuid.UUID&gt; types.</p>
+Converts all the &lt;str&gt; representations of UUID back to <code class="xref py py-class docutils literal notranslate"><span class="pre">&lt;uuid.UUID&gt;</span></code> types.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -872,10 +847,10 @@ Converts all the &lt;str&gt; representations of UUID back to &lt;uuid.UUID&gt; t
 </table>
 </dd></dl>
 
-<dl class="classmethod">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.from_json">
-<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.from_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instantiate HistoryTrace from JSON file (that was saved using HistoryTrace.to_json)</p>
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save HistoryTrace to a JSON file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -887,75 +862,9 @@ Converts all the &lt;str&gt; representations of UUID back to &lt;uuid.UUID&gt; t
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.from_pickle">
-<em class="property">classmethod </em><code class="descname">from_pickle</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.from_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.from_pickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load HistoryTrace that was pickled</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.get_all_data_blocks_history">
-<code class="descname">get_all_data_blocks_history</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_all_data_blocks_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_all_data_blocks_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns history trace of all datablocks</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.get_data_block_history">
-<code class="descname">get_data_block_history</code><span class="sig-paren">(</span><em>data_block_id: uuid.UUID</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_data_block_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_data_block_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the full history trace of a single data block</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.get_operation_params">
-<code class="descname">get_operation_params</code><span class="sig-paren">(</span><em>data_block_id: uuid.UUID</em>, <em>operation: str</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_operation_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_operation_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the parameters dict for a specific operation that was performed on a specific data block</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.get_operations_list">
-<code class="descname">get_operations_list</code><span class="sig-paren">(</span><em>data_block_id: Union[uuid.UUID, str]</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_operations_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_operations_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns just a simple list of operations in the order that they were performed on the given datablock.
-To get the operations along with their parameters call get_data_block_history()</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.history">
-<code class="descname">history</code><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.history" title="Permalink to this definition">¶</a></dt>
-<dd><p>The analysis log that is stored in the structure outlined in the doc string</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.merge">
-<em class="property">classmethod </em><code class="descname">merge</code><span class="sig-paren">(</span><em>history_traces: list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.merge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merge a list of HistoryTrace instances into one HistoryTrace instance.
-Useful when merging Transmission objects.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>history_traces</strong> – list of HistoryTrace instances</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.to_dict">
-<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.to_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Package the HistoryTrace instance as a dict. Converts all UUIDs to &lt;str&gt; representation for JSON compatibility.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="mesmerize.analysis.data_types.HistoryTrace.to_json">
-<code class="descname">to_json</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.to_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save HistoryTrace to a JSON file.</p>
+<dt id="mesmerize.analysis.data_types.HistoryTrace.from_json">
+<em class="property">classmethod </em><code class="descname">from_json</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate HistoryTrace from JSON file (that was saved using HistoryTrace.to_json)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -978,6 +887,41 @@ Useful when merging Transmission objects.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.from_pickle">
+<em class="property">classmethod </em><code class="descname">from_pickle</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.from_pickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.from_pickle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load HistoryTrace that was pickled</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> – file path</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.merge">
+<em class="property">classmethod </em><code class="descname">merge</code><span class="sig-paren">(</span><em>history_traces: list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge a list of HistoryTrace instances into one HistoryTrace instance.
+Useful when merging Transmission objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>history_traces</strong> – list of HistoryTrace instances</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
 </dd></dl>
 
 </dd></dl>

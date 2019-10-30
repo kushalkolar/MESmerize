@@ -74,14 +74,14 @@ class KShapePlot(QtWidgets.QDockWidget):
     def __init__(self, parent):
         """"""
         QtWidgets.QDockWidget.__init__(self, parent=parent)
-        self.plot = MatplotlibWidget()  #: MatplotlibWidget() instancehu
+        self.plot = MatplotlibWidget()  #: MatplotlibWidget() instance
         self.setWidget(self.plot)
 
         self.setFeatures(QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable)
         self.setMinimumSize(QtCore.QSize(300, 300))
 
         self.fig = self.plot.fig
-        self.ax_curves = self.fig.add_subplot(111)  #: The axis on which the curves are drawn
+        self.ax = self.fig.add_subplot(111)  #: The Axes object for this plot
         self.draw = self.plot.draw
         self.setWindowTitle('Samples of raw curves in a cluster')
 
@@ -93,7 +93,8 @@ class KShapeMeansPlot(MatplotlibWidget):
         MatplotlibWidget.__init__(self)
         self.axs = None  #: array of axis objects used for drawing the means plots, shape is [nrows, ncols]
         self.setParent(parent)
-        self.n_cols = 3
+        self.ncols = 3
+        self.nrows = None
 
     def set_plots(self, input_arrays: np.ndarray, n_clusters: int, y_pred: np.ndarray, xzero_pos: str, error_band):
         """
@@ -107,8 +108,7 @@ class KShapeMeansPlot(MatplotlibWidget):
         """
         # nrows, ncols = (int(ceil(sqrt(n_clusters))), int(sqrt(n_clusters)))
 
-        nrows = ceil(n_clusters / self.n_cols)
-        ncols = self.n_cols
+        self.nrows = ceil(n_clusters / self.ncols)
 
         if n_clusters < 11:
             cmap = 'tab10'
@@ -123,14 +123,23 @@ class KShapeMeansPlot(MatplotlibWidget):
         colors = auto_colormap(n_clusters, cmap, 'mpl', 'subsequent')
 
         self.fig.clear()
-        self.axs = self.fig.subplots(nrows, ncols)
+        self.axs = self.fig.subplots(self.nrows, self.ncols)
         self.fig.tight_layout()
 
-        for c_ix, i in enumerate(iter_product(range(nrows), range(ncols))):
+        for c_ix, i in enumerate(iter_product(range(self.nrows), range(self.ncols))):
             if c_ix == n_clusters:
-                return
+                break
+
+            self.axs[i].set_title(f"cluster {c_ix}")
+
             ys = input_arrays[y_pred == c_ix]
+
+            if ys.size == 0:
+                self.axs[i].set_title(f"cluster {c_ix}, EMPTY")
+                continue
+
             xs = []
+
             for y in ys:
                 if xzero_pos == 'zero':
                     zero_ix = 0
@@ -139,10 +148,11 @@ class KShapeMeansPlot(MatplotlibWidget):
                 else:
                     raise ValueError('xzer_post argument accepts only either "zero" or "maxima"')
                 xs.append(np.arange((0 - zero_ix), y.size - zero_ix))
+
             xsh = np.hstack(xs)
             ysh = np.hstack(ys)
+
             lineplot(x=xsh, y=ysh, ax=self.axs[i], err_style='band', color=colors[c_ix], ci=error_band)
-            self.axs[i].set_title(f"cluster {c_ix}")
 
         self.draw()
 
@@ -184,7 +194,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self._input_arrays = None
         self._params = None
-
+        self._n_clusters = None
         self._ks = None
         self._train_data = None
         self._y_pred = None
@@ -193,6 +203,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.data_column = None
         self.input_connected = True
+
+        self.train_percentage = None
 
         self.std_out = deque(maxlen=500)
 
@@ -210,13 +222,13 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.control_widget.ui.pushButtonReconnectFlowchartInput.clicked.connect(self.input_connect)
         self.control_widget.ui.pushButtonReconnectFlowchartInput.setVisible(False)
 
-        self.plot = KShapePlot(parent=self)  #: The single curve plots
+        self.plot_raw = KShapePlot(parent=self)  #: The single curve plots
 
         self.plot_means = KShapeMeansPlot(parent=self)  #: The means plots
 
         self.setCentralWidget(self.plot_means)
 
-        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.plot)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.plot_raw)
         self.dockConsole = QtWidgets.QDockWidget(self)
         self.dockConsole.setWindowTitle('Console')
         self.dockConsole.setFeatures(
@@ -225,20 +237,14 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         cmd_history_file = os.path.join(console_history_path, 'kshape.pik')
 
         ns = {'this': self,
-              'plot': self.plot,
-              'ax_curves': self.plot.ax_curves,
-              'plot_props': self.plot_proportions,
-              'plot_means': self.plot_means,
+              'get_plot_means': lambda: self.plot_means,
+              'get_plot_raw': lambda: self.plot_raw,
+              'get_plot_proportions': lambda: self.plot_proportions
               }
 
         txt = ["Namespaces",
                "self as 'this'",
-               "raw curves plots: plot",
-               "axes for raw curve plots: plot.ax_curves",
-               "proportions plot: plot_props",
-               "axes for proportions plot: plot_props.ax",
-               "means plot: plot_means",
-               "axes for means plot: plot_means.ax"
+               "Useful callables: get_plot_means(), get_plot_raw(), get_plot_proportions()"
                ]
 
         txt = "\n".join(txt)
@@ -260,8 +266,10 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         :return: 2D array, shape is [num_samples, padded_peak_curve_length]
         :rtype: np.ndarray
         """
+
         if self._input_arrays is None:
             raise ValueError('Input array not set')
+
         return self._input_arrays
 
     @input_arrays.setter
@@ -269,12 +277,15 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         """
         Set the input arrays
 
-        :param a: 2D array, [num_samples, padded_peak_curve_length]
+        :param a: 1D array of all input arrays, shape is (num_samples, )
         """
+
         if isinstance(a, list):
             a = np.array(a)
+
         if not isinstance(a, np.ndarray):
             raise TypeError('Must pass np.ndarray or list')
+
         elif a.ndim > 2:
             raise ValueError('Array must be 2D')
 
@@ -284,31 +295,42 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def ks(self) -> kshape_process.KShape:
         """
         KShape object
+
+        :rtype: kshape_process.KShape
         """
+
         if self._ks is None:
             raise ValueError('KShape not instantiated')
+
         return self._ks
 
     @ks.setter
     def ks(self, ks: kshape_process.KShape):
+
         if not isinstance(ks, kshape_process.KShape):
             raise TypeError('Must pass KShape instance')
+
         self._ks = ks
 
     @property
     def n_clusters(self) -> int:
         """
         Number of clusters
+
         :rtype: int
         """
+
         if self._n_clusters is None:
             raise ValueError('Must finish clustering first')
+
         return self._n_clusters
 
     @n_clusters.setter
     def n_clusters(self, n: int):
+
         if type(n) is not int:
             raise TypeError('n_clusters must be int')
+
         self._n_clusters = n
 
     @property
@@ -316,19 +338,24 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         """
         The training data for clustering
 
-        :return: Training data as a 2D array, [num_samples, padded_peak_curve_length]
+        :return: Training data as a 2D array, shape is [n_samples, padded_curve_length]
         :rtype: np.ndarray
         """
+
         if self._train_data is None:
             raise ValueError('Must run clustering first')
+
         return self._train_data
 
     @train_data.setter
     def train_data(self, data: Union[np.ndarray, list]):
+
         if isinstance(data, list):
             data = np.array(data)
+
         if not isinstance(data, np.ndarray):
             raise ValueError('Must pass numpy array or list')
+
         self._train_data = data
 
     @property
@@ -339,8 +366,10 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         :return: 1D array of cluster labels that correspond to the input_data
         :rtype: np.ndarray
         """
+
         if self._y_pred is None:
             raise ValueError('No predictions have been fit')
+
         return self._y_pred
 
     @y_pred.setter
@@ -349,27 +378,39 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         Predictions of cluster members, i.e. cluster labels
 
         :param y_pred:
-        :rtype: np.ndarray
         """
+
         if isinstance(y_pred, list):
             y_pred = np.array(y_pred)
+
         if not isinstance(y_pred, np.ndarray):
             raise TypeError('Must pass numpy array or list')
+
         self._y_pred = y_pred
 
     @property
     def cluster_centers(self) -> np.ndarray:
-        """Cluster centroids"""
+        """
+        Cluster centroids
+
+        :return: 2D array, shape is [n_clusters, centroid_array]
+        :rtype: np.ndarray
+        """
+
         if self._cluster_centers is None:
             raise ValueError('Must finish clustering first')
+
         return self._cluster_centers
 
     @cluster_centers.setter
     def cluster_centers(self, c: Union[np.ndarray, list]):
+
         if isinstance(c, list):
             c = np.array(c)
+
         if not isinstance(c, np.ndarray):
             raise TypeError('Must pass numpy array or list')
+
         self._cluster_centers = c
 
     @property
@@ -377,18 +418,24 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         """
         The cluster means
 
-        :return: 2D array, [cluster_label, cluster_mean_array]
+        :return: 2D array, shape is [cluster_label, mean_array]
+        :rtype: np.ndarray
         """
+
         if self._cluster_means is None:
             raise ValueError('No predictions have been fit')
+
         return self._cluster_centers
 
     @cluster_means.setter
     def cluster_means(self, cms: Union[np.ndarray, list]):
+
         if isinstance(cms, list):
-            self.cms = np.array(cms)
+            cms = np.array(cms)
+
         if not isinstance(cms, np.ndarray):
             raise TypeError('Must pass np.ndarray or list')
+
         self._cluster_means = cms
 
     @property
@@ -398,8 +445,10 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         :rtype: dict
         """
+
         if self._params is None:
             raise ValueError('Params not set')
+
         return self._params
 
     @params.setter
@@ -482,7 +531,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
                                              QtWidgets.QMessageBox.Yes,
                                              QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
                 return
-            self.plot.ax_curves.cla()
+            self.plot_raw.ax.cla()
 
         self.finished = False
         self.input_disconnect()
@@ -594,6 +643,14 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.n_clusters = self.params['kwargs']['n_clusters']
         self.cluster_centers = self.ks.cluster_centers_
 
+        padded = self.pad_input_data(self.input_arrays)
+        scaled = TimeSeriesScalerMeanVariance().fit_transform(padded)[:, :, 0]
+        means = []
+        for c_ix in range(self.n_clusters):
+            members = scaled[self.y_pred == c_ix]
+            means.append(np.mean(members, axis=0))
+        self.cluster_means = np.array(means)
+
         self.set_n_clusters_list()
 
         self.transmission.df['KSHAPE_CLUSTER'] = self.y_pred
@@ -607,10 +664,25 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     def send_output_transmission(self):
         """Send output Transmission containing cluster labels"""
-        t = self.transmission.copy()
         params = self.params['kwargs']
+        params.update({'data_column': self.data_column})
+
+        t = self.transmission.copy()
         t.history_trace.add_operation('all', operation='kshape', parameters=params)
+
         self.sig_output_changed.emit(t)
+
+    def save_plot(self, path):
+        t = self.transmission.copy()
+
+        params = self.params['kwargs']
+        params.update({'data_column': self.data_column})
+
+        self.transmission.history_trace.add_operation('all', operation='kshape', parameters=params)
+
+        super(KShapeWidget, self).save_plot(path)
+
+        self.transmission = t
 
     def set_n_clusters_list(self):
         self.control_widget.ui.listWidgetClusterNumber.clear()
@@ -643,15 +715,17 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     def get_plot_opts(self, drop: bool) -> dict:
         """
-        Get the plot options
+        Get the plot_raw options
 
         :param drop: Unused for this Plot Widget, doesn't matter
         """
         opts = {'proportion_opts':  self.plot_proportions.get_plot_opts(drop=True),
+                'params':           self.params,
                 'n_clusters':       self.n_clusters,
                 'train_data':       self.train_data.tolist(),
                 'y_pred':           self.y_pred.tolist(),
                 'cluster_centers':  self.cluster_centers.tolist(),
+                'cluster_means':    self.cluster_means.tolist(),
                 'ui_state':
                                 {'data_column':     self.data_column,
                                  'show_centers':    self.control_widget.ui.checkBoxShowKShapeCenters.isChecked(),
@@ -672,31 +746,31 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         cluster_num = int(self.control_widget.ui.listWidgetClusterNumber.currentItem().text())
 
-        self.plot.ax_curves.cla()
+        self.plot_raw.ax.cla()
 
         padded = self.pad_input_data(self.input_arrays)
         scaled = TimeSeriesScalerMeanVariance().fit_transform(padded)[:, :, 0]
 
         members = scaled[self.y_pred == cluster_num]
-        # Plot only 'max_num_curves' to prevent the plot from being overcrowded and hard to visualize
+        # Plot only 'max_num_curves' to prevent the plot_raw from being overcrowded and hard to visualize
         n_samples = min(members.shape[0], max_num_curves)
         samples = members[np.random.choice(members.shape[0], size=n_samples, replace=False)]
 
         for sample in samples:
-            self.plot.ax_curves.plot(sample.ravel(), 'k-', alpha=0.2)
+            self.plot_raw.ax.plot(sample.ravel(), 'k-', alpha=0.2)
 
         if show_centers:
             center = self.cluster_centers[cluster_num].ravel()
-            self.plot.ax_curves.plot(center, 'r-')
+            self.plot_raw.ax.plot(center, 'r-')
 
         low = np.min(samples)
         high = np.max(samples)
 
-        self.plot.ax_curves.set_ylim(low, high)
+        self.plot_raw.ax.set_ylim(low, high)
 
-        self.plot.ax_curves.set_title('Cluster ' + str(cluster_num))
+        self.plot_raw.ax.set_title('Cluster ' + str(cluster_num))
 
-        self.plot.draw()
+        self.plot_raw.draw()
 
     @present_exceptions('Plotting error', 'The following error occurred when plotting the means')
     def update_plot_means(self, *args, **kwargs):

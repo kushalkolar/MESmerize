@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -39,7 +40,7 @@
   <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="LDA" href="lda.html" />
+    <link rel="next" title="Peak Editor" href="peak_editor.html" />
     <link rel="prev" title="Heatmap" href="heatmap.html" />
     <link href="../../_static/style.css" rel="stylesheet" type="text/css">
 
@@ -128,15 +129,25 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">Heatmap</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">KShape</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#kshape-parameters">KShape Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plot-options">Plot Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#console">Console</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#namespace">Namespace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#set-axis-ranges">Set axis ranges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#x-tick-labels">x tick labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export">Export</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lda.html">LDA</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scatter.html">Scatter</a></li>
@@ -160,17 +171,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -250,7 +265,7 @@
 </div>
 <p><strong>Layout</strong></p>
 <a class=""
-               data-lightbox="group-037e7101-7da4-4bf4-aa9d-309b9c8ace8a"
+               data-lightbox="group-4a7d6bc5-1da5-4fc5-b74e-9176d758282b"
                href="../../_images/kshape1.png"
                title=""
                data-title=""
@@ -291,6 +306,260 @@
 <p><strong>set x = 0 at:</strong> The zero position of a means plots with respect to the cluster members in the plot.</p>
 <p><strong>Save:</strong> <a class="reference internal" href="../general/misc.html#save-ptrn"><span class="std std-ref">Save the plot data and state in an interactive form</span></a></p>
 </div>
+<div class="section" id="console">
+<h2>Console<a class="headerlink" href="#console" title="Permalink to this headline">¶</a></h2>
+<p>The console can be useful for formatting plots, inspecting the underlying data etc.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html#api-kshape"><span class="std std-ref">API reference</span></a></p>
+</div>
+<div class="section" id="namespace">
+<h3>Namespace<a class="headerlink" href="#namespace" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="20%" />
+<col width="80%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">reference</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>this</td>
+<td>The higher-level <a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html#api-kshape"><span class="std std-ref">KShape</span></a> widget instance, i.e. the entire widget</td>
+</tr>
+<tr class="row-odd"><td>this.transmission</td>
+<td>Current input <a class="reference internal" href="../flowchart/overview.html#concept-transmission"><span class="std std-ref">Transmission</span></a></td>
+</tr>
+<tr class="row-even"><td>get_plot_means()</td>
+<td>Returns the means plot</td>
+</tr>
+<tr class="row-odd"><td>get_plot_raw()</td>
+<td>Returns the raw plot</td>
+</tr>
+<tr class="row-even"><td>get_plot_proportions()</td>
+<td>Returns the proportions plot, which is an instance of <a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html#api-proportions"><span class="std std-ref">Proportions Widget</span></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://matplotlib.org/2.1.2/api/axes_api.html">matplotlib Axes</a></p>
+</div>
+<div class="section" id="set-axis-ranges">
+<h4>Set axis ranges<a class="headerlink" href="#set-axis-ranges" title="Permalink to this headline">¶</a></h4>
+<p>Set equal x &amp; y axis ranges for the means plots. Also removes the top &amp; right spines.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+
+<span class="c1"># Get the means plot</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">get_plot_means</span><span class="p">()</span>
+
+<span class="c1"># Get the indices of the subplots</span>
+<span class="n">ixs</span> <span class="o">=</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">nrows</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">ncols</span><span class="p">))</span>
+
+<span class="c1"># Set the same x &amp; y axis limits for all subplots</span>
+<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">ixs</span><span class="p">:</span>
+
+    <span class="c1"># The subplot axes</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">axs</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+
+    <span class="c1"># Set the y limits</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">15.5</span><span class="p">])</span>
+
+    <span class="c1"># Set the x limits</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">1000</span><span class="p">])</span>
+
+    <span class="c1"># Remove the top &amp; right plot spins</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c1"># Set a tight layout</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># Draw the plot</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You may need to resize the dock widget that the plot is present in to display the newly drawn plot, this is a Qt-matplotlib issue.</p>
+</div>
+</div>
+<div class="section" id="x-tick-labels">
+<h4>x tick labels<a class="headerlink" href="#x-tick-labels" title="Permalink to this headline">¶</a></h4>
+<p>Set the x tick labels in time units instead of frames</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.axes.Axes.set_xticklabels.html#matplotlib.axes.Axes.set_xticklabels">matplotlib.axes.Axes.set_xticklabels</a> | <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.axes.Axes.set_xticks.html#matplotlib.axes.Axes.set_xticks">matplotlib.axes.Axes.set_xticks</a>.</p>
+</div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">mesmerize.analysis</span> <span class="kn">import</span> <span class="n">get_sampling_rate</span>
+
+<span class="c1"># Get the sampling rate of the data</span>
+<span class="n">sampling_rate</span> <span class="o">=</span> <span class="n">get_sampling_rate</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">transmission</span><span class="p">)</span>
+
+<span class="c1"># Get the padded number of frames that are shown in the plots</span>
+<span class="n">num_frames</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">cluster_centers</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># Set an appropriate interval</span>
+<span class="n">interval</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># This is in seconds, not frames</span>
+
+<span class="c1"># Convert the padded frame number to time units</span>
+<span class="n">total_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_frames</span> <span class="o">/</span> <span class="n">sampling_rate</span><span class="p">)</span>
+
+<span class="n">ixs</span> <span class="o">=</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c1"># Set these time units for all the means plots</span>
+<span class="c1"># For the raw plots just remove the loop</span>
+<span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">ixs</span><span class="p">:</span>
+    <span class="c1"># Get the axes</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">get_plot_means</span><span class="p">()</span><span class="o">.</span><span class="n">axs</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+
+    <span class="c1"># Set the new ticks</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_frames</span><span class="p">,</span> <span class="n">interval</span> <span class="o">*</span> <span class="n">sampling_rate</span><span class="p">))</span>
+
+    <span class="c1"># Set the tick labels</span>
+    <span class="c1"># You can change the fontsize here</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_time</span><span class="p">,</span> <span class="n">interval</span><span class="p">),</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+
+    <span class="c1"># Set a title for the x axis. You can change the fontsize here</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (seconds)&#39;</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">})</span>
+
+    <span class="c1"># Set ylabel as well</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;z-score&#39;</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;fontsize&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">})</span>
+
+<span class="c1"># Set a tight layout</span>
+<span class="n">get_plot_means</span><span class="p">()</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+<span class="c1"># Draw the plot with these changes</span>
+<span class="n">get_plot_means</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You may need to resize the dock widget that the plot is present in to display the newly drawn plot, this is a Qt-matplotlib issue.</p>
+</div>
+</div>
+<div class="section" id="export">
+<h4>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h4>
+<p>You can export any of the plots with a specific size &amp; DPI.</p>
+<p>Replace the <code class="docutils literal notranslate"><span class="pre">get_&lt;plot&gt;().fig</span></code> on <cite>line 5</cite> with the desired plot.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Desired size (width, height)</span>
+<span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
+
+<span class="c1"># Get the figure</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">get_</span><span class="o">&lt;</span><span class="n">plot</span><span class="o">&gt;</span><span class="p">()</span><span class="o">.</span><span class="n">fig</span>
+
+<span class="c1"># original size to reset the figure after we save it</span>
+<span class="n">orig_size</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">get_size_inches</span><span class="p">()</span>
+
+<span class="c1">#Set the desired size</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+<span class="c1"># Save the figure as an png file with 600 dpi</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/share/data/temp/kushal/amazing_shapes.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Reset the figure size</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">orig_size</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The entire plot area might go gray after the figure is reset to the original size. I think this is a Qt-matplotlib issue. Just resize the window a bit and the plot will be visible again!</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -301,7 +570,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="lda.html" class="btn btn-neutral float-right" title="LDA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="peak_editor.html" class="btn btn-neutral float-right" title="Peak Editor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="heatmap.html" class="btn btn-neutral float-left" title="Heatmap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

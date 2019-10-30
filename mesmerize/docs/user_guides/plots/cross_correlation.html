@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -40,7 +41,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Datapoint Tracer" href="datapoint_tracer.html" />
-    <link rel="prev" title="Beeswarm" href="beeswarm.html" />
+    <link rel="prev" title="Consoles" href="consoles.html" />
     <link href="../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -128,6 +129,7 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="consoles.html">Consoles</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Cross Correlation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#layout">Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lag-matrix">Lag Matrix</a></li>
@@ -141,7 +143,6 @@
 <li class="toctree-l1"><a class="reference internal" href="datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scatter.html">Scatter</a></li>
@@ -165,17 +166,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -245,7 +250,7 @@
 <p>Explore <a class="reference external" href="https://en.wikipedia.org/wiki/Cross-correlation">Cross-correlation functions</a> of all curves from a sample. Normalized cross-correlations are computed using <code class="docutils literal notranslate"><span class="pre">tslearn.cycc.normalized_cc</span></code></p>
 <p>This is an interactive widget. You can click on the individual cells in the heatmap to view the individual curves, the cross-correlation function of the two curves, and the spatial localization of the ROI that they originate from.</p>
 <a class=""
-               data-lightbox="group-e395ac3d-c2c0-45a7-b13f-0980e872aab0"
+               data-lightbox="group-0e933a84-a7d7-4f0d-a61e-c6394c66bb77"
                href="../../_images/cross_cor1.gif"
                title=""
                data-title=""
@@ -258,7 +263,7 @@
 <h2>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><a class=""
-               data-lightbox="group-f2e1c4b1-a37d-452d-92b4-77a2cd0b1688"
+               data-lightbox="group-c8a2f358-3553-4b63-8201-b506a6ffa809"
                href="../../_images/cross_correlation_layout1.png"
                title=""
                data-title=""
@@ -315,7 +320,7 @@
         <a href="datapoint_tracer.html" class="btn btn-neutral float-right" title="Datapoint Tracer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="beeswarm.html" class="btn btn-neutral float-left" title="Beeswarm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="consoles.html" class="btn btn-neutral float-left" title="Consoles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

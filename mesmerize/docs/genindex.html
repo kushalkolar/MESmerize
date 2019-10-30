@@ -29,6 +29,7 @@
         <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -127,11 +128,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/scatter.html">Scatter</a></li>
@@ -155,17 +156,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -254,7 +259,9 @@
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
  | <a href="#Y"><strong>Y</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -266,18 +273,20 @@
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.__getitem__">__getitem__() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
 </li>
-      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.__init__">__init__() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.__init__">__init__() (mesmerize.analysis.cross_correlation.CC_Data method)</a>
 
       <ul>
         <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.__init__">(mesmerize.Transmission method)</a>
 </li>
-        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.__init__">(mesmerize.analysis.data_types.HistoryTrace method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.__init__">(mesmerize.analysis.data_types.BaseTransmission method)</a>
 </li>
-        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.__init__">(mesmerize.analysis.math.cross_correlation.CC_Data method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.__init__">(mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.__init__">(mesmerize.plotting.HeatmapSplitterWidget method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.__init__">(mesmerize.plotting.variants.Heatmap method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot.__init__">(mesmerize.plotting.variants.PgScatterPlot method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.__init__">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
@@ -336,6 +345,8 @@
 </li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils._clear_workEnv">_clear_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
 </li>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot._clicked">_clicked() (mesmerize.plotting.variants.PgScatterPlot method)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI._create_scatter_plot">_create_scatter_plot() (mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList._hide_all_graphics_objects">_hide_all_graphics_objects() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
@@ -364,11 +375,15 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.AbsoluteValue">AbsoluteValue (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager">AbstractBaseManager (class in mesmerize.viewer.modules.roi_manager_modules.managers)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.add_all_cnmfe_components">add_all_cnmfe_components() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.add_all_components">add_all_components() (mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot.add_data">add_data() (mesmerize.plotting.variants.PgScatterPlot method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item">add_item() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.add_item">[1]</a>
 </li>
@@ -386,9 +401,17 @@
       </ul></li>
       <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.add_row">add_row() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
 </li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.add_stimulus_indicator">add_stimulus_indicator() (mesmerize.plotting.variants.Heatmap method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmf.ModuleGUI.add_to_batch_cnmf">add_to_batch_cnmf() (mesmerize.viewer.modules.cnmf.ModuleGUI method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.add_stimulus_indicator">add_stimulus_indicator() (mesmerize.plotting.variants.Heatmap method)</a>
+      <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmfe.ModuleGUI.add_to_batch_cnmfe">add_to_batch_cnmfe() (mesmerize.viewer.modules.cnmfe.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmfe.ModuleGUI.add_to_batch_corr_pnr">add_to_batch_corr_pnr() (mesmerize.viewer.modules.cnmfe.ModuleGUI method)</a>
+</li>
+      <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.add_to_batch_elas_corr">add_to_batch_elas_corr() (mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.add_to_viewer">add_to_viewer() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
 
@@ -400,14 +423,20 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.add_to_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.AnalysisGraph">AnalysisGraph (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.append">append() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.ArrayStats">ArrayStats (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
 </li>
       <li><a href="api_reference/plotting/utils.html#mesmerize.plotting.utils.auto_colormap">auto_colormap() (in module mesmerize.plotting.utils)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.ax">ax (mesmerize.plotting.ProportionsWidget attribute)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapePlot.ax">(mesmerize.plotting.widgets.kshape.widget.KShapePlot attribute)</a>
 </li>
-      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapePlot.ax_curves">ax_curves (mesmerize.plotting.widgets.kshape.widget.KShapePlot attribute)</a>
-</li>
+      </ul></li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.axs">axs (mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot attribute)</a>
 </li>
   </ul></td>
@@ -420,11 +449,15 @@
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI">BaseROI (class in mesmerize.viewer.modules.roi_manager_modules.roi_types)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission">BaseTransmission (class in mesmerize.analysis.data_types)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.BeeswarmPlots">BeeswarmPlots (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.block_signals_list">block_signals_list (mesmerize.plotting.widgets.base.BasePlotWidget attribute)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.ButterWorth">ButterWorth (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -432,15 +465,17 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data">CC_Data (class in mesmerize.analysis.math.cross_correlation)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data">CC_Data (class in mesmerize.analysis.cross_correlation)</a>
 </li>
-      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.ccs">ccs (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.ccs">ccs (mesmerize.analysis.cross_correlation.CC_Data attribute)</a>
 </li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.check_operation_exists">check_operation_exists() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
-      <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.clear">clear() (mesmerize.viewer.core.ViewerWorkEnv method)</a>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot.clear">clear() (mesmerize.plotting.variants.PgScatterPlot method)</a>
 
       <ul>
+        <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.clear">(mesmerize.viewer.core.ViewerWorkEnv method)</a>
+</li>
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.clear">(mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
 </li>
         <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.clear">(mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
@@ -448,16 +483,18 @@
       </ul></li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.clear_">clear_() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
 </li>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot.clear_legend">clear_legend() (mesmerize.plotting.variants.PgScatterPlot method)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.cluster_centers">cluster_centers (mesmerize.plotting.KShapeWidget attribute)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.cluster_means">cluster_means (mesmerize.plotting.KShapeWidget attribute)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI">CNMFROI (class in mesmerize.viewer.modules.roi_manager_modules.roi_types)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.compute_cc_data">compute_cc_data() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.compute_ccs">compute_ccs() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.create_data_block">create_data_block() (mesmerize.analysis.data_types.HistoryTrace method)</a>
@@ -468,6 +505,12 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.create_roi_list">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.CrossCorr">CrossCorr (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode">CtrlNode (class in mesmerize.pyqtgraphCore.flowchart.library.common)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode.ctrlWidget">ctrlWidget() (mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode method)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.current_index">current_index (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.curve_data">curve_data (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI attribute)</a>
@@ -480,7 +523,7 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.curve_data">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.curve_uuids">curve_uuids (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.curve_uuids">curve_uuids (mesmerize.analysis.cross_correlation.CC_Data attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -498,6 +541,10 @@
 </li>
       <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.delete_row">delete_row() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
 </li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.Derivative">Derivative (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.DetrendDFoF">DetrendDFoF (class in mesmerize.pyqtgraphCore.flowchart.library.Biology)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df">df (mesmerize.viewer.modules.batch_manager.ModuleGUI attribute)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.df">[1]</a>
@@ -514,6 +561,8 @@
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.drop_opts">(mesmerize.plotting.ProportionsWidget attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.DropNa">DropNa (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -526,11 +575,15 @@
         <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.empty_df">(mesmerize.Transmission static method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.eventFilter">eventFilter() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/common.html#mesmerize.common.qdialogs.exceptions_label">exceptions_label() (in module mesmerize.common.qdialogs)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.export">export() (mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.ExtractStim">ExtractStim (class in mesmerize.pyqtgraphCore.flowchart.library.Biology)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -538,24 +591,32 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_dict">from_dict() (mesmerize.analysis.data_types.HistoryTrace static method)</a>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.FCluster">FCluster (class in mesmerize.pyqtgraphCore.flowchart.library.Hierarchical)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.fill_control_widget">fill_control_widget() (mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.FrequencyDomainMagnitude">FrequencyDomainMagnitude (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.from_dict">from_dict() (mesmerize.analysis.cross_correlation.CC_Data class method)</a>
 
       <ul>
-        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.from_dict">(mesmerize.analysis.math.cross_correlation.CC_Data class method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_dict">(mesmerize.analysis.data_types.HistoryTrace static method)</a>
 </li>
       </ul></li>
-      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_hdf5">from_hdf5() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.from_hdf5">from_hdf5() (mesmerize.analysis.cross_correlation.CC_Data class method)</a>
 
       <ul>
         <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_hdf5">(mesmerize.Transmission class method)</a>
 </li>
-        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.from_hdf5">(mesmerize.analysis.math.cross_correlation.CC_Data class method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_hdf5">(mesmerize.analysis.data_types.BaseTransmission class method)</a>
 </li>
       </ul></li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_hickle">from_hickle() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
 </li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.from_json">from_json() (mesmerize.analysis.data_types.HistoryTrace class method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_mesfile">from_mesfile() (mesmerize.viewer.core.ViewerWorkEnv class method)</a>
 </li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.from_pickle">from_pickle() (mesmerize.analysis.data_types.BaseTransmission class method)</a>
@@ -568,8 +629,6 @@
         <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.from_pickle">(mesmerize.viewer.core.ViewerWorkEnv class method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.from_proj">from_proj() (mesmerize.Transmission class method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.from_state">from_state() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI class method)</a>
@@ -610,7 +669,7 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_all_tags">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
 </li>
       </ul></li>
-      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.get_array_size">get_array_size() (in module mesmerize.analysis)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.utils.get_array_size">get_array_size() (in module mesmerize.analysis.utils)</a>
 </li>
       <li><a href="api_reference/analysis.html#mesmerize.analysis.clustering_metrics.get_centerlike">get_centerlike() (in module mesmerize.analysis.clustering_metrics)</a>
 </li>
@@ -636,14 +695,14 @@
 </li>
       <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_epsilon_matrix">get_epsilon_matrix() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.utils.get_frequency_linspace">get_frequency_linspace() (in module mesmerize.analysis.utils)</a>
+</li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.get_image_references">get_image_references() (mesmerize.viewer.core.mesfile.MES method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index">get_item_index() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.get_item_index">[1]</a>
 </li>
       <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_lag">get_lag() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_lag_matrix">get_lag_matrix() (in module mesmerize.analysis.math.cross_correlation)</a>
 </li>
       <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.get_omega">get_omega() (in module mesmerize.analysis.math.cross_correlation)</a>
@@ -652,6 +711,16 @@
 </li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.get_operations_list">get_operations_list() (mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.get_params">get_params() (mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmf.ModuleGUI.get_params">(mesmerize.viewer.modules.cnmf.ModuleGUI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmfe.ModuleGUI.get_params">(mesmerize.viewer.modules.cnmfe.ModuleGUI method)</a>
+</li>
+      </ul></li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.get_plot_item">get_plot_item() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.get_plot_opts">get_plot_opts() (mesmerize.plotting.HeatmapTracerWidget method)</a>
@@ -659,17 +728,25 @@
       <ul>
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.get_plot_opts">(mesmerize.plotting.ProportionsWidget method)</a>
 </li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.get_plot_opts">(mesmerize.plotting.ScatterPlotWidget method)</a>
+</li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.get_plot_opts">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.get_plot_opts">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/common.html#mesmerize.common.get_proj_config">get_proj_config() (in module mesmerize.common)</a>
+</li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.get_proj_path">get_proj_path() (mesmerize.analysis.data_types.BaseTransmission method)</a>
 
       <ul>
         <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.get_proj_path">(mesmerize.Transmission method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/common.html#mesmerize.common.get_project_manager">get_project_manager() (in module mesmerize.common)</a>
+</li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.utils.get_proportions">get_proportions() (in module mesmerize.analysis.utils)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_roi_graphics_object">get_roi_graphics_object() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
 
       <ul>
@@ -680,7 +757,9 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_roi_graphics_object">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
 </li>
       </ul></li>
-      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.get_sampling_rate">get_sampling_rate() (in module mesmerize.analysis)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.utils.get_sampling_rate">get_sampling_rate() (in module mesmerize.analysis.utils)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.get_sys_config">get_sys_config() (in module mesmerize.common)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.get_tag">get_tag() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
 
@@ -692,11 +771,13 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.get_tag">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
 </li>
       </ul></li>
-      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.get_threshold_matrix">get_threshold_matrix() (mesmerize.analysis.math.cross_correlation.CC_Data method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.get_threshold_matrix">get_threshold_matrix() (mesmerize.analysis.cross_correlation.CC_Data method)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.get_transmission">get_transmission() (mesmerize.plotting.HeatmapSplitterWidget method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.get_units">get_units() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.get_window_manager">get_window_manager() (in module mesmerize.common)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -704,16 +785,22 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap">Heatmap (class in mesmerize.plotting.variants)</a>
+      <li><a href="api_reference/common.html#mesmerize.common.utils.HdfTools">HdfTools (class in mesmerize.common.utils)</a>
 </li>
+      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap">Heatmap (class in mesmerize.plotting.variants)</a>
+
+      <ul>
+        <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.Heatmap">(class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
+      </ul></li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget">HeatmapSplitterWidget (class in mesmerize.plotting)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget">HeatmapTracerWidget (class in mesmerize.plotting)</a>
 </li>
-      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_curve">highlight_curve() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_curve">highlight_curve() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.highlight_roi">highlight_roi() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapSplitterWidget.highlight_row">highlight_row() (mesmerize.plotting.HeatmapSplitterWidget method)</a>
@@ -730,6 +817,8 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.iloc">iloc (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.data_types.ImgData">ImgData (class in mesmerize.viewer.core.data_types)</a>
 </li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.imgdata">imgdata (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
@@ -742,7 +831,13 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.Inconsistent">Inconsistent (class in mesmerize.pyqtgraphCore.flowchart.library.Hierarchical)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.input_arrays">input_arrays (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.Integrate">Integrate (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.iRFFT">iRFFT (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.is_empty">is_empty() (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager method)</a>
 </li>
@@ -754,12 +849,16 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Clustering.KMeans">KMeans (class in mesmerize.pyqtgraphCore.flowchart.library.Clustering)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.ks">ks (mesmerize.plotting.KShapeWidget attribute)</a>
 </li>
-      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot">KShapeMeansPlot (class in mesmerize.plotting.widgets.kshape.widget)</a>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Clustering.KShape">KShape (class in mesmerize.pyqtgraphCore.flowchart.library.Clustering)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot">KShapeMeansPlot (class in mesmerize.plotting.widgets.kshape.widget)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapePlot">KShapePlot (class in mesmerize.plotting.widgets.kshape.widget)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget">KShapeWidget (class in mesmerize.plotting)</a>
@@ -770,18 +869,30 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.labels">labels (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.labels">labels (mesmerize.analysis.cross_correlation.CC_Data attribute)</a>
 </li>
-      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.lag_matrix">lag_matrix (mesmerize.analysis.math.cross_correlation.CC_Data attribute)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.lag_matrix">lag_matrix (mesmerize.analysis.cross_correlation.CC_Data attribute)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Transform.LDA">LDA (class in mesmerize.pyqtgraphCore.flowchart.library.Transform)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.Linkage">Linkage (class in mesmerize.pyqtgraphCore.flowchart.library.Hierarchical)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget">list_widget (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.list_widget_tags">list_widget_tags (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.live_datapoint_tracer">live_datapoint_tracer (mesmerize.plotting.HeatmapTracerWidget attribute)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.live_datapoint_tracer">(mesmerize.plotting.ScatterPlotWidget attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api_reference/common.html#mesmerize.common.utils.HdfTools.load_dataframe">load_dataframe() (mesmerize.common.utils.HdfTools static method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/common.html#mesmerize.common.utils.HdfTools.load_dict">load_dict() (mesmerize.common.utils.HdfTools static method)</a>
+</li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES.load_img">load_img() (mesmerize.viewer.core.mesfile.MES method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input">load_item_input() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.load_item_input">[1]</a>
@@ -792,17 +903,31 @@
 </li>
       <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.tiff_io.ModuleGUI.load_tiff_file">load_tiff_file() (mesmerize.viewer.modules.tiff_io.ModuleGUI method)</a>
 </li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.LoadFile">LoadFile (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.LoadProjDF">LoadProjDF (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.LogTransform">LogTransform (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/common.html#mesmerize.common.utils.make_runfile">make_runfile() (in module mesmerize.common.utils)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.utils.make_workdir">make_workdir() (in module mesmerize.common.utils)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.manager">manager (mesmerize.viewer.modules.roi_manager.ModuleGUI attribute)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE">ManagerCNMFE (class in mesmerize.viewer.modules.roi_manager_modules.managers)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual">ManagerManual (class in mesmerize.viewer.modules.roi_manager_modules.managers)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Transform.Manifold">Manifold (class in mesmerize.pyqtgraphCore.flowchart.library.Transform)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.ManualDFoF">ManualDFoF (class in mesmerize.pyqtgraphCore.flowchart.library.Biology)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI">ManualROI (class in mesmerize.viewer.modules.roi_manager_modules.roi_types)</a>
 </li>
@@ -810,23 +935,59 @@
 </li>
       <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimulus_mapping.ModuleGUI.maps">maps (mesmerize.viewer.modules.stimulus_mapping.ModuleGUI attribute)</a>
 </li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.MaxInconsistent">MaxInconsistent (class in mesmerize.pyqtgraphCore.flowchart.library.Hierarchical)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.MaxIncStat">MaxIncStat (class in mesmerize.pyqtgraphCore.flowchart.library.Hierarchical)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.Merge">Merge (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.merge">merge() (mesmerize.analysis.data_types.HistoryTrace class method)</a>
 
       <ul>
         <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.merge">(mesmerize.Transmission class method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.mesfile.MES">MES (class in mesmerize.viewer.core.mesfile)</a>
 </li>
       <li><a href="api_reference/analysis.html#module-mesmerize.analysis.clustering_metrics">mesmerize.analysis.clustering_metrics (module)</a>
 </li>
       <li><a href="api_reference/analysis.html#module-mesmerize.analysis.math.cross_correlation">mesmerize.analysis.math.cross_correlation (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/analysis.html#module-mesmerize.analysis.utils">mesmerize.analysis.utils (module)</a>
+</li>
+      <li><a href="api_reference/common.html#module-mesmerize.common">mesmerize.common (module)</a>
+</li>
+      <li><a href="api_reference/common.html#module-mesmerize.common.qdialogs">mesmerize.common.qdialogs (module)</a>
+</li>
+      <li><a href="api_reference/common.html#module-mesmerize.common.utils">mesmerize.common.utils (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Biology">mesmerize.pyqtgraphCore.flowchart.library.Biology (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Clustering">mesmerize.pyqtgraphCore.flowchart.library.Clustering (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Data">mesmerize.pyqtgraphCore.flowchart.library.Data (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Display">mesmerize.pyqtgraphCore.flowchart.library.Display (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Hierarchical">mesmerize.pyqtgraphCore.flowchart.library.Hierarchical (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Math">mesmerize.pyqtgraphCore.flowchart.library.Math (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Signal">mesmerize.pyqtgraphCore.flowchart.library.Signal (module)</a>
+</li>
+      <li><a href="api_reference/nodes.html#module-mesmerize.pyqtgraphCore.flowchart.library.Transform">mesmerize.pyqtgraphCore.flowchart.library.Transform (module)</a>
+</li>
       <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI">ModuleGUI (class in mesmerize.viewer.modules.batch_manager)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI">[1]</a>
 
       <ul>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI">(class in mesmerize.viewer.modules.caiman_motion_correction)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmf.ModuleGUI">(class in mesmerize.viewer.modules.cnmf)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmfe.ModuleGUI">(class in mesmerize.viewer.modules.cnmfe)</a>
+</li>
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI">(class in mesmerize.viewer.modules.roi_manager)</a>
 </li>
         <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimulus_mapping.ModuleGUI">(class in mesmerize.viewer.modules.stimulus_mapping)</a>
@@ -842,9 +1003,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.n_clusters">n_clusters (mesmerize.plotting.KShapeWidget attribute)</a>
 </li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.ncc_c">ncc_c() (in module mesmerize.analysis.math.cross_correlation)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.ncc_c">ncc_c() (in module mesmerize.analysis.math.cross_correlation)</a>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.Normalize">Normalize (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.NormRaw">NormRaw (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -859,6 +1024,8 @@
       <ul>
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.open_plot">(mesmerize.plotting.ProportionsWidget method)</a>
 </li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.open_plot">(mesmerize.plotting.ScatterPlotWidget method)</a>
+</li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.open_plot">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.open_plot">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
@@ -871,9 +1038,13 @@
       <ul>
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.open_plot_dialog">(mesmerize.plotting.ProportionsWidget method)</a>
 </li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.open_plot_dialog">(mesmerize.plotting.ScatterPlotWidget method)</a>
+</li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.open_plot_dialog">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.utils.organize_dataframe_columns">organize_dataframe_columns() (in module mesmerize.analysis.utils)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -882,25 +1053,49 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.package_for_project">package_for_project() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
 </li>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.utils.pad_arrays">pad_arrays() (in module mesmerize.analysis.utils)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.pad_input_data">pad_input_data() (mesmerize.plotting.KShapeWidget method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.PadArrays">PadArrays (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
 </li>
       <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page">Page (class in mesmerize.viewer.modules.stimmap_modules.page)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.params">params (mesmerize.plotting.KShapeWidget attribute)</a>
 </li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Transform.PCA">PCA (class in mesmerize.pyqtgraphCore.flowchart.library.Transform)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakDetect">PeakDetect (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakFeatures">PeakFeatures (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot">PgScatterPlot (class in mesmerize.plotting.variants)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.Plot">Plot (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.plot">plot (mesmerize.plotting.variants.Heatmap attribute)</a>
 
       <ul>
         <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapePlot.plot">(mesmerize.plotting.widgets.kshape.widget.KShapePlot attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.plot_manual_roi_regions">plot_manual_roi_regions() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.plot_state">plot_state (mesmerize.analysis.data_types.BaseTransmission attribute)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.PowerSpectralDensity">PowerSpectralDensity (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.qdialogs.present_exceptions">present_exceptions() (in module mesmerize.common.qdialogs)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.previous_index">previous_index (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList attribute)</a>
 </li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode.process">process() (mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode method)</a>
+</li>
       <li><a href="api_reference/viewer_modules/batch_manager.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch">process_batch() (mesmerize.viewer.modules.batch_manager.ModuleGUI method)</a>, <a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.batch_manager.ModuleGUI.process_batch">[1]</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.Proportions">Proportions (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget">ProportionsWidget (class in mesmerize.plotting)</a>
 </li>
@@ -922,6 +1117,8 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.remove_from_viewer">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.Resample">Resample (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.reset_color">reset_color() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
 
       <ul>
@@ -942,6 +1139,10 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.restore_from_states">(mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode.restoreState">restoreState() (mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.RFFT">RFFT (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager.roi_list">roi_list (mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager attribute)</a>
 </li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.roi_manager">roi_manager (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
@@ -956,10 +1157,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.sample_id">sample_id (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
 </li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.Save">Save (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.utils.HdfTools.save_dataframe">save_dataframe() (mesmerize.common.utils.HdfTools static method)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.utils.HdfTools.save_dict">save_dict() (mesmerize.common.utils.HdfTools static method)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.save_plot">save_plot() (mesmerize.plotting.HeatmapTracerWidget method)</a>
 
       <ul>
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.save_plot">(mesmerize.plotting.ProportionsWidget method)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.save_plot">(mesmerize.plotting.ScatterPlotWidget method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.save_plot">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
@@ -971,10 +1180,26 @@
       <ul>
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.save_plot_dialog">(mesmerize.plotting.ProportionsWidget method)</a>
 </li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.save_plot_dialog">(mesmerize.plotting.ScatterPlotWidget method)</a>
+</li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.save_plot_dialog">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode.saveState">saveState() (mesmerize.pyqtgraphCore.flowchart.library.common.CtrlNode method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.SavitzkyGolay">SavitzkyGolay (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.ScalerMeanVariance">ScalerMeanVariance (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.ScatterPlot">ScatterPlot (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget">ScatterPlotWidget (class in mesmerize.plotting)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.SelectColumns">SelectColumns (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.selector">selector (mesmerize.plotting.variants.Heatmap attribute)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.SelectRows">SelectRows (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.set">set() (mesmerize.plotting.variants.Heatmap method)</a>
 </li>
@@ -991,7 +1216,11 @@
 </li>
       </ul></li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_current_datapoint">set_current_datapoint() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+
+      <ul>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.set_current_datapoint">(mesmerize.plotting.ScatterPlotWidget method)</a>
 </li>
+      </ul></li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_current_index">set_current_index() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.set_curve_data">set_curve_data() (mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI method)</a>
@@ -1009,11 +1238,15 @@
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.set_input">set_input() (mesmerize.plotting.KShapeWidget method)</a>
 
       <ul>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.set_input">(mesmerize.plotting.ScatterPlotWidget method)</a>, <a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.set_input">[1]</a>
+</li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.set_input">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.set_input">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot.set_legend">set_legend() (mesmerize.plotting.variants.PgScatterPlot method)</a>
+</li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_list_widget_tags">set_list_widget_tags() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI.set_original_color">set_original_color() (mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI method)</a>
@@ -1026,16 +1259,26 @@
         <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.set_original_color">(mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.set_params">set_params() (mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI method)</a>
+
+      <ul>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmf.ModuleGUI.set_params">(mesmerize.viewer.modules.cnmf.ModuleGUI method)</a>
+</li>
+        <li><a href="api_reference/viewer_modules/viewer_modules.html#mesmerize.viewer.modules.cnmfe.ModuleGUI.set_params">(mesmerize.viewer.modules.cnmfe.ModuleGUI method)</a>
+</li>
+      </ul></li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_pg_roi_plot">set_pg_roi_plot() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
 </li>
-      <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.set_plot_opts">set_plot_opts() (mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.set_plot_opts">set_plot_opts() (mesmerize.plotting.ScatterPlotWidget method)</a>
 
       <ul>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.set_plot_opts">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
+        <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.set_plot_opts">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
+</li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot.set_plots">set_plots() (mesmerize.plotting.widgets.kshape.widget.KShapeMeansPlot method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.set_previous_index">set_previous_index() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
@@ -1082,7 +1325,7 @@
 </li>
       <li><a href="api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.set_units">set_units() (mesmerize.viewer.modules.stimmap_modules.page.Page method)</a>
 </li>
-      <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_update_live">set_update_live() (mesmerize.plotting.HeatmapTracerWidget method)</a>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.set_update_live">set_update_live() (mesmerize.plotting.ScatterPlotWidget method)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/datapoint_tracer.html#mesmerize.plotting.DatapointTracerWidget.set_widget">set_widget() (mesmerize.plotting.DatapointTracerWidget method)</a>
 </li>
@@ -1092,17 +1335,25 @@
 </li>
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.variants.Heatmap.sig_selection_changed">sig_selection_changed (mesmerize.plotting.variants.Heatmap attribute)</a>
 </li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.SigmaMAD">SigmaMAD (class in mesmerize.pyqtgraphCore.flowchart.library.Signal)</a>
+</li>
       <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.signal_blocker">signal_blocker() (mesmerize.plotting.widgets.base.BasePlotWidget class method)</a>
+</li>
+      <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.variants.PgScatterPlot.signal_spot_clicked">signal_spot_clicked (mesmerize.plotting.variants.PgScatterPlot attribute)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.slot_delete_roi_menu">slot_delete_roi_menu() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList.slot_show_all_checkbox_clicked">slot_show_all_checkbox_clicked() (mesmerize.viewer.modules.roi_manager_modules.roi_list.ROIList method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.SpliceArrays">SpliceArrays (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.start_cnmfe_mode">start_cnmfe_mode() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
 </li>
       <li><a href="api_reference/viewer_modules/roi_manager.html#mesmerize.viewer.modules.roi_manager.ModuleGUI.start_manual_mode">start_manual_mode() (mesmerize.viewer.modules.roi_manager.ModuleGUI method)</a>
 </li>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.start_process">start_process() (mesmerize.plotting.KShapeWidget method)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.StaticDFoFo">StaticDFoFo (class in mesmerize.pyqtgraphCore.flowchart.library.Biology)</a>
 </li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv.stim_maps">stim_maps (mesmerize.viewer.core.ViewerWorkEnv attribute)</a>
 </li>
@@ -1112,6 +1363,10 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.TextFilter">TextFilter (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.Timeseries">Timeseries (class in mesmerize.pyqtgraphCore.flowchart.library.Display)</a>
+</li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_dict">to_dict() (mesmerize.analysis.data_types.BaseTransmission method)</a>
 
       <ul>
@@ -1120,12 +1375,12 @@
         <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.HistoryTrace.to_dict">(mesmerize.analysis.data_types.HistoryTrace method)</a>
 </li>
       </ul></li>
-      <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_hdf5">to_hdf5() (mesmerize.analysis.data_types.BaseTransmission method)</a>
+      <li><a href="api_reference/analysis.html#mesmerize.analysis.cross_correlation.CC_Data.to_hdf5">to_hdf5() (mesmerize.analysis.cross_correlation.CC_Data method)</a>
 
       <ul>
         <li><a href="api_reference/Analysis_data_types.html#mesmerize.Transmission.to_hdf5">(mesmerize.Transmission method)</a>
 </li>
-        <li><a href="api_reference/analysis.html#mesmerize.analysis.math.cross_correlation.CC_Data.to_hdf5">(mesmerize.analysis.math.cross_correlation.CC_Data method)</a>
+        <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_hdf5">(mesmerize.analysis.data_types.BaseTransmission method)</a>
 </li>
       </ul></li>
       <li><a href="api_reference/Analysis_data_types.html#mesmerize.analysis.data_types.BaseTransmission.to_hickle">to_hickle() (mesmerize.analysis.data_types.BaseTransmission method)</a>
@@ -1167,13 +1422,19 @@
       <li><a href="api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.transmission">transmission (mesmerize.plotting.HeatmapTracerWidget attribute)</a>
 
       <ul>
+        <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.transmission">(mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.transmission">(mesmerize.plotting.ProportionsWidget attribute)</a>
+</li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.transmission">(mesmerize.plotting.ScatterPlotWidget attribute)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.transmission">(mesmerize.plotting.widgets.base.BasePlotWidget attribute)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.transmission">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.TVDiff">TVDiff (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1187,6 +1448,8 @@
       <ul>
         <li><a href="api_reference/plotting/widgets/proportions.html#mesmerize.plotting.ProportionsWidget.update_plot">(mesmerize.plotting.ProportionsWidget method)</a>
 </li>
+        <li><a href="api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.update_plot">(mesmerize.plotting.ScatterPlotWidget method)</a>
+</li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base.BasePlotWidget.update_plot">(mesmerize.plotting.widgets.base.BasePlotWidget method)</a>
 </li>
         <li><a href="api_reference/plotting/widgets/bases.html#mesmerize.plotting.widgets.base._AbstractBasePlotWidget.update_plot">(mesmerize.plotting.widgets.base._AbstractBasePlotWidget method)</a>
@@ -1198,6 +1461,12 @@
 </li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.update_workEnv">update_workEnv() (mesmerize.viewer.core.ViewerUtils method)</a>
 </li>
+      <li><a href="api_reference/common.html#mesmerize.common.qdialogs.use_open_dir_dialog">use_open_dir_dialog() (in module mesmerize.common.qdialogs)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.qdialogs.use_open_file_dialog">use_open_file_dialog() (in module mesmerize.common.qdialogs)</a>
+</li>
+      <li><a href="api_reference/common.html#mesmerize.common.qdialogs.use_save_file_dialog">use_save_file_dialog() (in module mesmerize.common.qdialogs)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1208,11 +1477,15 @@
 </li>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils.viewer">viewer (mesmerize.viewer.core.ViewerUtils attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerUtils">ViewerUtils (class in mesmerize.viewer.core)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/Viewer_data_types.html#mesmerize.viewer.core.ViewerWorkEnv">ViewerWorkEnv (class in mesmerize.viewer.core)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.ViewHistory">ViewHistory (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
+</li>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.ViewTransmission">ViewTransmission (class in mesmerize.pyqtgraphCore.flowchart.library.Data)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1225,10 +1498,26 @@
   </ul></td>
 </tr></table>
 
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.XpowerY">XpowerY (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="Y">Y</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api_reference/plotting/widgets/kshape.html#mesmerize.plotting.KShapeWidget.y_pred">y_pred (mesmerize.plotting.KShapeWidget attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.ZScore">ZScore (class in mesmerize.pyqtgraphCore.flowchart.library.Math)</a>
 </li>
   </ul></td>
 </tr></table>

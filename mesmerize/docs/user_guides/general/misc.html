@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -128,11 +129,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/scatter.html">Scatter</a></li>
@@ -156,17 +157,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -245,11 +250,11 @@
 <p class="last"><a class="reference internal" href="../project_organization/new_project/new_project.html#createnewproject"><span class="std std-ref">User guide on creating new projects</span></a> and <a class="reference internal" href="#consoleoverview"><span class="std std-ref">Consoles</span></a></p>
 </div>
 <a class=""
-               data-lightbox="group-f3165c6d-36c2-459c-a5e5-48adf436a193"
-               href="../../_images/welcome_window1.png"
+               data-lightbox="group-d5198356-da06-4a10-a1b7-92799a55ecae"
+               href="../../_images/welcome_window2.png"
                title=""
                data-title=""
-               ><img src="../../_images/welcome_window1.png"
+               ><img src="../../_images/welcome_window2.png"
                      class=""
                      width="100%"
                      height="auto"
@@ -327,7 +332,7 @@
 <div class="section" id="saving-plots">
 <span id="save-ptrn"></span><h1>Saving plots<a class="headerlink" href="#saving-plots" title="Permalink to this headline">¶</a></h1>
 <p>Some plots allow you to save them in an interactive form, along with the plot data and the plot state as a “.ptrn” file. If you save the file in the “plots” directory of your project it will be listed in the <a class="reference internal" href="#welcomewindow"><span class="std std-ref">Welcome Window</span></a> when you open your project.</p>
-<p>This is currently possible with the following plots: <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a>, <a class="reference internal" href="../plots/kshape.html#plot-kshape"><span class="std std-ref">KShape</span></a> and <a class="reference internal" href="../plots/proportions.html#plot-proportions"><span class="std std-ref">Proportions</span></a>.</p>
+<p>This is currently possible with the following plots: <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a>, <a class="reference internal" href="../plots/kshape.html#plot-kshape"><span class="std std-ref">KShape</span></a>, <a class="reference internal" href="../plots/proportions.html#plot-proportions"><span class="std std-ref">Proportions</span></a> and <a class="reference internal" href="../plots/scatter.html#plot-scatterplot"><span class="std std-ref">Scatter</span></a>.</p>
 </div>
 <div class="section" id="plot-navbar">
 <span id="id1"></span><h1>Plot Navbar<a class="headerlink" href="#plot-navbar" title="Permalink to this headline">¶</a></h1>
@@ -347,7 +352,7 @@
 <img alt="../../_images/system_config_window.png" src="../../_images/system_config_window.png" />
 <p><strong>Maximum number of threads to use:</strong> The maximum number of threads that Mesmerize is allowed to use, this includes proccesses started by the <span class="xref std std-ref">Batch Manager</span>, various analysis proccesses in the flowchart, and the viewer as well.</p>
 <p><strong>Python call:</strong> Many parts of Mesmerize, such as the <span class="xref std std-ref">Batch Manager</span> use external processes to run a python script. This setting sets which python call should be used. The default setting of “python3” should work for both <a class="reference internal" href="../installation.html#snap-install"><span class="std std-ref">snap</span></a> and <a class="reference internal" href="../installation.html#pip-install"><span class="std std-ref">pip</span></a> installations unless you have written a custom expansion that uses python2.</p>
-<p><strong>Use CUDA:</strong> Use CUDA accerlation if you have a GPU with CUDA cores. Only works with the <a class="reference internal" href="../installation.html#pip-install"><span class="std std-ref">pip installation</span></a>, and you must have pycuda and scikit-cuda (as well as the <span class="xref std std-ref">nvidia CUDA toolkit</span>) installed. In Mesmerize CUDA is currently used only by <span class="xref std std-ref">Caiman Motion Correction</span>. We plan to expand CUDA support to computationally intensive tasks that are performed by flowchart nodes.</p>
+<p><strong>Use CUDA:</strong> Use CUDA accerlation if you have a GPU with CUDA cores. Only works with the <a class="reference internal" href="../installation.html#pip-install"><span class="std std-ref">pip installation</span></a>, and you must have pycuda and scikit-cuda (as well as the <a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">nvidia CUDA toolkit</a>) installed. In Mesmerize CUDA is currently used only by <span class="xref std std-ref">Caiman Motion Correction</span>. We plan to expand CUDA support to computationally intensive tasks that are performed by flowchart nodes.</p>
 <p><strong>Work dir:</strong> Many parts of Mesmerize use a working directory for temporary files. If you have a fast filesystem you can use that for this purpose.</p>
 <p><strong>Pre-run commands (large text entry):</strong> Mesmerize runs some computationally intensive tasks in subprocesses. These commands are run prior to the python script that performs the task.</p>
 <blockquote>

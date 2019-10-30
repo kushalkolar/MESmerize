@@ -23,6 +23,7 @@ from ....common.configuration import console_history_path
 from ...utils import auto_colormap, ColormapListWidget
 from seaborn import heatmap
 import os
+from matplotlib.axes import Axes
 
 
 class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
@@ -177,6 +178,22 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
 
         self.block_signals_list = [self.xs_combo, self.ys_combo, self.checkbox_percent, self.checkbox_update_live]
 
+        self._ax = None
+
+    @property
+    def ax(self) -> Axes:
+        """
+        The Axes object for this plot
+
+        :return: The Axes object for this plot
+        :rtype: AXes
+        """
+
+        if self._ax is None:
+            TypeError("Axes not set")
+
+        return self._ax
+
     def show_cmap_listwidget(self, b: bool):
         self.cmap_label.setVisible(b)
         self.cmap_listwidget.setVisible(b)
@@ -265,7 +282,7 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         """
         # self.ax.cla()
         self.fig.clear()
-        self.ax = self.fig.add_subplot(111)  #: The axis that is used for this plot
+        self._ax = self.fig.add_subplot(111)  #: The axis that is used for this plot
 
         opts = self.get_plot_opts()
         use_barplot = opts.pop('use_barplot')
@@ -282,7 +299,6 @@ class ProportionsWidget(BasePlotWidget, MatplotlibWidget):
         show_percents = opts['percentages']
 
         self.props_df = get_proportions(**opts)  #: DataFrame instance containing proportions data according to the plot parameters
-        self.props_df.columns = self.props_df.columns.get_level_values(-1)
 
         n_labels = len(ys.unique())
 
