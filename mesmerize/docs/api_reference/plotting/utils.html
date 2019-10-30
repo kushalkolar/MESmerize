@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -40,7 +41,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Plot Bases" href="widgets/bases.html" />
-    <link rel="prev" title="Analysis" href="../analysis.html" />
+    <link rel="prev" title="Nodes" href="../nodes.html" />
     <link href="../../_static/style.css" rel="stylesheet" type="text/css">
 
 </head>
@@ -128,11 +129,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -156,17 +157,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nodes.html">Nodes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -236,8 +241,9 @@
 <p>A few useful helper functions</p>
 <dl class="function">
 <dt id="mesmerize.plotting.utils.get_colormap">
-<code class="descclassname">mesmerize.plotting.utils.</code><code class="descname">get_colormap</code><span class="sig-paren">(</span><em>labels: iter</em>, <em>cmap: str</em><span class="sig-paren">)</span> &#x2192; collections.OrderedDict<a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#get_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.get_colormap" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">mesmerize.plotting.utils.</code><code class="descname">get_colormap</code><span class="sig-paren">(</span><em>labels: iter</em>, <em>cmap: str</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; collections.OrderedDict<a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#get_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.get_colormap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a dict for mapping labels onto colors</p>
+<p>Any kwargs are passed to auto_colormap()</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -257,8 +263,9 @@
 
 <dl class="function">
 <dt id="mesmerize.plotting.utils.map_labels_to_colors">
-<code class="descclassname">mesmerize.plotting.utils.</code><code class="descname">map_labels_to_colors</code><span class="sig-paren">(</span><em>labels: iter</em>, <em>cmap: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#map_labels_to_colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.map_labels_to_colors" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">mesmerize.plotting.utils.</code><code class="descname">map_labels_to_colors</code><span class="sig-paren">(</span><em>labels: iter</em>, <em>cmap: str</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#map_labels_to_colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.map_labels_to_colors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map labels onto colors according to chosen colormap</p>
+<p>Any kwargs are passed to auto_colormap()</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -278,7 +285,7 @@
 
 <dl class="function">
 <dt id="mesmerize.plotting.utils.auto_colormap">
-<code class="descclassname">mesmerize.plotting.utils.</code><code class="descname">auto_colormap</code><span class="sig-paren">(</span><em>n_colors: int</em>, <em>cmap: str = 'hsv'</em>, <em>output: str = 'mpl'</em>, <em>spacing: str = 'uniform'</em><span class="sig-paren">)</span> &#x2192; List[Union[PyQt5.QtGui.QColor, numpy.ndarray]]<a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#auto_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.auto_colormap" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">mesmerize.plotting.utils.</code><code class="descname">auto_colormap</code><span class="sig-paren">(</span><em>n_colors: int</em>, <em>cmap: str = 'hsv'</em>, <em>output: str = 'mpl'</em>, <em>spacing: str = 'uniform'</em>, <em>alpha: float = 1.0</em><span class="sig-paren">)</span> &#x2192; List[Union[PyQt5.QtGui.QColor, numpy.ndarray]]<a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#auto_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.auto_colormap" title="Permalink to this definition">¶</a></dt>
 <dd><p>If non-qualitative map: returns list of colors evenly spread through the chosen colormap.
 If qualitative map: returns subsequent colors from the chosen colormap</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -292,6 +299,7 @@ If qualitative map: returns subsequent colors from the chosen colormap</p>
 option: ‘pyqt’ returns QtGui.QColor instances that correspond to the RGBA values</li>
 <li><strong>spacing</strong> – option: ‘uniform’ returns evenly spaced colors across the entire cmap range
 option: ‘subsequent’ returns subsequent colors from the cmap</li>
+<li><strong>alpha</strong> – alpha level, 0.0 - 1.0</li>
 </ul>
 </td>
 </tr>
@@ -315,7 +323,7 @@ option: ‘subsequent’ returns subsequent colors from the cmap</li>
         <a href="widgets/bases.html" class="btn btn-neutral float-right" title="Plot Bases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../analysis.html" class="btn btn-neutral float-left" title="Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../nodes.html" class="btn btn-neutral float-left" title="Nodes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

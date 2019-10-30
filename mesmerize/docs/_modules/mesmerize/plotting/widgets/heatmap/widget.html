@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -126,11 +127,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -154,17 +155,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -250,7 +255,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">....common.configuration</span> <span class="k">import</span> <span class="n">console_history_path</span>
-<span class="kn">from</span> <span class="nn">....common.qdialogs</span> <span class="k">import</span> <span class="n">present_exceptions</span>
+<span class="kn">from</span> <span class="nn">....common.qdialogs</span> <span class="k">import</span> <span class="n">present_exceptions</span><span class="p">,</span> <span class="n">exceptions_label</span>
 <span class="kn">from</span> <span class="nn">....pyqtgraphCore.console</span> <span class="k">import</span> <span class="n">ConsoleWidget</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -499,15 +504,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_to_splitter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live_datapoint_tracer</span><span class="p">)</span>
 
         <span class="n">ns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;this&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>
-              <span class="s1">&#39;get_plot_area&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="p">,</span>
-              <span class="s1">&#39;get_plot&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">plot</span><span class="p">,</span>
-              <span class="s1">&#39;get_fig&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">fig</span>
+              <span class="s1">&#39;get_plot_area&#39;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span>
               <span class="p">}</span>
 
         <span class="n">txt</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Namespaces&quot;</span><span class="p">,</span>
                <span class="s2">&quot;self as &#39;this&#39;&quot;</span><span class="p">,</span>
                <span class="s2">&quot;Usefull callables, see docs for details:&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;get_plot_area(), get_plot(), get_fig()&quot;</span>
+               <span class="s2">&quot;get_plot_area()&quot;</span>
                <span class="p">]</span>
 
         <span class="n">txt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
@@ -519,14 +522,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonShowHideConsole</span><span class="o">.</span><span class="n">toggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console_widget</span><span class="o">.</span><span class="n">setVisible</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console_widget</span><span class="p">)</span>
 
-        <span class="c1"># TODO: Replace the constant exception windows with a status bar that displays red text if something goes</span>
-        <span class="c1">#  wrong and can be clicked to display the traceback</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">mousePressEvent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_exception_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception_holder</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#: Used for holding exceptions that can be viewed by clicking on self.status_label</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span><span class="o">.</span><span class="n">sig_selection_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_current_datapoint</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">datapoint_tracer_curve_column</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_df_columns</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsData</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="s1">&#39;jet&#39;</span><span class="p">)</span>
 
@@ -537,18 +542,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonSave</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_plot_dialog</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonLoad</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_plot_dialog</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_live</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">block_signals_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">is_clustering</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">sig_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HeatmapTracerWidget.set_update_live"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_update_live">[docs]</a>    <span class="k">def</span> <span class="nf">set_update_live</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
+    <span class="k">def</span> <span class="nf">set_update_live</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set whether the plot should update live with changes in the flowchart&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_live</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">checkBoxLiveUpdate</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HeatmapTracerWidget.set_current_datapoint"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_current_datapoint">[docs]</a>    <span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_current_datapoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -584,26 +591,21 @@
 
     <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
     <span class="k">def</span> <span class="nf">set_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the input Transmission and update the plot if _update_live is True&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span>
-        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
-        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_previous_df_columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
-            <span class="n">dcols</span><span class="p">,</span> <span class="n">ccols</span><span class="p">,</span> <span class="n">ucols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Set the input Transmission and update the plot if update_live is True&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transmission</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">dcols</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fill_control_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">uuid_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">data_columns</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxLabelsColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">categorical_columns</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">dcols</span><span class="p">)</span>
-
-        <span class="c1"># self.transmission = transmission</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_df_columns</span> <span class="o">=</span> <span class="n">cols</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_live</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">data_columns</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HeatmapTracerWidget.get_plot_opts"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.get_plot_opts">[docs]</a>    <span class="k">def</span> <span class="nf">get_plot_opts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -636,6 +638,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurveColumn</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsData</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;cmap&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetColorMapsLabels</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">opts</span><span class="p">[</span><span class="s1">&#39;ylabels_cmap&#39;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="HeatmapTracerWidget.update_plot"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.update_plot">[docs]</a>    <span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calls set_data and passes dict from get_plot_opts() as keyword arguments&quot;&quot;&quot;</span>
@@ -650,7 +653,7 @@
         <span class="n">ck</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row_linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span> <span class="n">row_cluster</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">col_cluster</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cluster_labels</span><span class="o">=</span><span class="n">cluster_labels</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ck</span>
 
-<div class="viewcode-block" id="HeatmapTracerWidget.set_data"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_data">[docs]</a>    <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Error while setting data&#39;</span><span class="p">,</span> <span class="s1">&#39;Make sure you have selected appropriate columns.&#39;</span><span class="p">,</span> <span class="n">help_func</span><span class="p">)</span>
+<div class="viewcode-block" id="HeatmapTracerWidget.set_data"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/heatmap.html#mesmerize.plotting.HeatmapTracerWidget.set_data">[docs]</a>    <span class="nd">@exceptions_label</span><span class="p">(</span><span class="s1">&#39;status_label&#39;</span><span class="p">,</span> <span class="s1">&#39;exception_holder&#39;</span><span class="p">,</span> <span class="s1">&#39;Error while setting data&#39;</span><span class="p">,</span> <span class="s1">&#39;Make sure you have selected appropriate columns&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">datapoint_tracer_curve_column</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the plot data, parameters and draw the plot.</span>
@@ -661,6 +664,9 @@
 <span class="sd">        :param datapoint_tracer_curve_column: Data column containing curves to use in the datapoint tracer</span>
 <span class="sd">        :param kwargs:  keyword arguments, passed to superclass set_data() method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exception_holder</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="o">.</span><span class="n">last_output</span> <span class="o">==</span> <span class="s1">&#39;fcluster&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">comboBoxSortColumn</span><span class="o">.</span><span class="n">setDisabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_clustering</span> <span class="o">=</span> <span class="kc">True</span>
@@ -669,9 +675,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">is_clustering</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cluster_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">datapoint_tracer_curve_column</span> <span class="o">=</span> <span class="n">datapoint_tracer_curve_column</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datapoint_tracer_curve_column</span> <span class="o">=</span> <span class="n">datapoint_tracer_curve_column</span></div>
 
-
+    <span class="k">def</span> <span class="nf">show_exception_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouse_press_ev</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exception_holder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exception_holder</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

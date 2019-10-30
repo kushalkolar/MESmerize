@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -128,11 +129,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -156,6 +157,7 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ROI Manager</a><ul>
@@ -179,11 +181,14 @@
 <li class="toctree-l1"><a class="reference internal" href="stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -418,7 +423,7 @@ The appropriate manager is instantiated based on the ‘roi_type’ key of the r
 <dl class="class">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual">
 <em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.managers.</code><code class="descname">ManagerManual</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerManual"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager" title="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager</span></code></p>
 <p>The Manager for the Manual mode</p>
 <dl class="method">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerManual.__init__">
@@ -494,7 +499,7 @@ The appropriate manager is instantiated based on the ‘roi_type’ key of the r
 <dl class="class">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE">
 <em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.managers.</code><code class="descname">ManagerCNMFE</code><span class="sig-paren">(</span><em>parent</em>, <em>ui</em>, <em>viewer_interface</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/managers.html#ManagerCNMFE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager" title="mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager</span></code></p>
 <p>Manager for ROIs imported from CNMF or CNMFE outputs</p>
 <dl class="method">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE.__init__">
@@ -766,7 +771,7 @@ Inherit from this or BaseROI to make a new ROI class</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a></td>
 </tr>
 </tbody>
 </table>
@@ -866,7 +871,7 @@ Inherit from this or BaseROI to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -880,7 +885,7 @@ Inherit from this or BaseROI to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -937,7 +942,7 @@ Inherit from this or BaseROI to make a new ROI class</p>
 <dl class="class">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI">
 <em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_types.</code><code class="descname">BaseROI</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: Optional[dict] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#BaseROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI" title="mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types._AbstractBaseROI</span></code></p>
 <p>A base class that is used by ManualROI and CNMFEROI
 Inherit from this to make a new ROI class</p>
 <dl class="method">
@@ -969,7 +974,7 @@ Inherit from this to make a new ROI class</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a></td>
 </tr>
 </tbody>
 </table>
@@ -1069,7 +1074,7 @@ Inherit from this to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1083,7 +1088,7 @@ Inherit from this to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -1134,7 +1139,7 @@ Inherit from this to make a new ROI class</p>
 <dl class="class">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI">
 <em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_types.</code><code class="descname">ManualROI</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>roi_graphics_object: mesmerize.pyqtgraphCore.graphicsItems.ROI.ROI</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>state: Optional[dict] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#ManualROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI" title="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI</span></code></p>
 <p>A class manually drawn ROIs</p>
 <dl class="method">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.ManualROI.__init__">
@@ -1200,7 +1205,7 @@ Inherit from this to make a new ROI class</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a></td>
 </tr>
 </tbody>
 </table>
@@ -1214,7 +1219,7 @@ Inherit from this to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -1244,7 +1249,7 @@ Inherit from this to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -1322,7 +1327,7 @@ Inherit from this to make a new ROI class</p>
 <dl class="class">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI">
 <em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.roi_manager_modules.roi_types.</code><code class="descname">CNMFROI</code><span class="sig-paren">(</span><em>curve_plot_item: mesmerize.pyqtgraphCore.graphicsItems.PlotDataItem.PlotDataItem</em>, <em>view_box: mesmerize.pyqtgraphCore.graphicsItems.ViewBox.ViewBox.ViewBox</em>, <em>cnmf_idx: int = None</em>, <em>curve_data=None</em>, <em>contour=None</em>, <em>state: Optional[dict] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/roi_manager_modules/roi_types.html#CNMFROI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI" title="mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI</span></code></p>
 <p>A class for ROIs imported from CNMF(E) output data</p>
 <dl class="method">
 <dt id="mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI.__init__">
@@ -1361,7 +1366,7 @@ Inherit from this to make a new ROI class</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(x, y), [np.ndarray, np.ndarray]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a></td>
 </tr>
 </tbody>
 </table>
@@ -1375,7 +1380,7 @@ Inherit from this to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -1405,7 +1410,7 @@ Inherit from this to make a new ROI class</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
 </tr>
 </tbody>
 </table>

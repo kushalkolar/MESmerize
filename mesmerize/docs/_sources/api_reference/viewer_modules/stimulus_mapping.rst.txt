@@ -12,6 +12,8 @@ ModuleGUI
 Page
 ====
 
+**Each Page instance contains the mapping data for one stimulus type**
+
 .. autoclass:: mesmerize.viewer.modules.stimmap_modules.page.Page
     :members: set_data, get_dataframe, set_units, get_units, add_row, delete_row, clear
     :member-order: bysource

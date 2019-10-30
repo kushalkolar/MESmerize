@@ -665,14 +665,19 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def send_output_transmission(self):
         """Send output Transmission containing cluster labels"""
         params = self.params['kwargs']
+        params.update({'data_column': self.data_column})
+
         t = self.transmission.copy()
-        t.transmission.history_trace.add_operation('all', operation='kshape', parameters=params)
+        t.history_trace.add_operation('all', operation='kshape', parameters=params)
+
         self.sig_output_changed.emit(t)
 
     def save_plot(self, path):
         t = self.transmission.copy()
 
         params = self.params['kwargs']
+        params.update({'data_column': self.data_column})
+
         self.transmission.history_trace.add_operation('all', operation='kshape', parameters=params)
 
         super(KShapeWidget, self).save_plot(path)

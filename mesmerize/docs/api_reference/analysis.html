@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -39,7 +40,7 @@
   <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Plotting utils" href="plotting/utils.html" />
+    <link rel="next" title="Nodes" href="nodes.html" />
     <link rel="prev" title="Data types used for analysis" href="Analysis_data_types.html" />
     <link href="../_static/style.css" rel="stylesheet" type="text/css">
 
@@ -128,11 +129,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/scatter.html">Scatter</a></li>
@@ -156,12 +157,14 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-mesmerize.analysis.utils">Utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cross-correlation">Cross correlation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#functions">functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#cc-data">CC_Data</a></li>
@@ -170,11 +173,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-mesmerize.analysis.clustering_metrics">Clustering metrics</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -241,7 +247,156 @@
             
   <div class="section" id="analysis">
 <h1>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h1>
-<p>Analysis back-ends</p>
+<p>Analysis helper functions</p>
+<div class="section" id="module-mesmerize.analysis.utils">
+<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-mesmerize.analysis.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="mesmerize.analysis.utils.get_array_size">
+<code class="descclassname">mesmerize.analysis.utils.</code><code class="descname">get_array_size</code><span class="sig-paren">(</span><em>transmission: mesmerize.analysis.data_types.Transmission</em>, <em>data_column: str</em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#get_array_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.utils.get_array_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of the 1D arrays in the specified data column. Throws an exception if they do not match</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>transmission</strong> (<a class="reference internal" href="Analysis_data_types.html#mesmerize.Transmission" title="mesmerize.Transmission"><em>Transmission</em></a>) – Desired Transmission</li>
+<li><strong>data_column</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Data column of the Transmission from which to retrieve the size</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Size of the 1D arrays of the specified data column</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesmerize.analysis.utils.get_frequency_linspace">
+<code class="descclassname">mesmerize.analysis.utils.</code><code class="descname">get_frequency_linspace</code><span class="sig-paren">(</span><em>transmission: mesmerize.analysis.data_types.Transmission</em><span class="sig-paren">)</span> &#x2192; Tuple[numpy.ndarray, float]<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#get_frequency_linspace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.utils.get_frequency_linspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the frequency linspace.</p>
+<p>Throwns an exception if all datablocks do not have the same linspace &amp; Nyquist frequencies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transmission</strong> – Transmission containing data from which to get frequency linspace</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple: (frequency linspace as a 1D numpy array, nyquist frequency)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Tuple[np.ndarray, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesmerize.analysis.utils.get_proportions">
+<code class="descclassname">mesmerize.analysis.utils.</code><code class="descname">get_proportions</code><span class="sig-paren">(</span><em>xs: Union[pandas.core.series.Series, numpy.ndarray, list], ys: Union[pandas.core.series.Series, numpy.ndarray], xs_name: str = 'xs', ys_name: str = 'ys', swap: bool = False, percentages: bool = True</em><span class="sig-paren">)</span> &#x2192; pandas.core.frame.DataFrame<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#get_proportions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.utils.get_proportions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the proportions of xs vs ys.</p>
+<p>xs &amp; ys are categorical data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>xs</strong> (<em>Union</em><em>[</em><em>pd.Series</em><em>, </em><em>np.ndarray</em><em>]</em>) – data plotted on the x axis</li>
+<li><strong>ys</strong> (<em>Union</em><em>[</em><em>pd.Series</em><em>, </em><em>np.ndarray</em><em>]</em>) – proportions of unique elements in ys are calculated per xs</li>
+<li><strong>xs_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name for the xs data, useful for labeling the axis in plots</li>
+<li><strong>ys_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name for the ys data, useful for labeling the axis in plots</li>
+<li><strong>swap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – swap x and y</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">DataFrame that can be plotted in a proportions bar graph</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesmerize.analysis.utils.get_sampling_rate">
+<code class="descclassname">mesmerize.analysis.utils.</code><code class="descname">get_sampling_rate</code><span class="sig-paren">(</span><em>transmission: mesmerize.analysis.data_types.Transmission</em>, <em>tolerance: Optional[float] = 0.1</em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#get_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.utils.get_sampling_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mean sampling rate of all data in a Transmission if it is within the specified tolerance. Otherwise throws an exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>transmission</strong> (<a class="reference internal" href="Analysis_data_types.html#mesmerize.Transmission" title="mesmerize.Transmission"><em>Transmission</em></a>) – Transmission object of the data from which sampling rate is obtained.</li>
+<li><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum tolerance (in Hertz) of sampling rate variation between different samples</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mean sampling rate of all data in the Transmission</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesmerize.analysis.utils.organize_dataframe_columns">
+<code class="descclassname">mesmerize.analysis.utils.</code><code class="descname">organize_dataframe_columns</code><span class="sig-paren">(</span><em>columns: Iterable[str]</em><span class="sig-paren">)</span> &#x2192; Tuple[List[str], List[str], List[str]]<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#organize_dataframe_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.utils.organize_dataframe_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Organizes DataFrame columns into data column, categorical label columns, and uuid columns.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>columns</strong> – All DataFrame columns</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(data_columns, categorical_columns, uuid_columns)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Tuple[List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>], List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>], List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>]]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="mesmerize.analysis.utils.pad_arrays">
+<code class="descclassname">mesmerize.analysis.utils.</code><code class="descname">pad_arrays</code><span class="sig-paren">(</span><em>a: numpy.ndarray</em>, <em>method: str = 'random'</em>, <em>output_size: int = None</em>, <em>mode: str = 'minimum'</em>, <em>constant: Any = None</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/mesmerize/analysis/utils.html#pad_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.utils.pad_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad all the input arrays so that are of the same length. The length is determined by the largest input array.
+The padding value for each input array is the minimum value in that array.</p>
+<p>Padding for each input array is either done after the array’s last index to fill up to the length of the
+largest input array (method ‘fill-size’) or the padding is randomly flanked to the input array (method ‘random’)
+for easier visualization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> (<em>np.ndarray</em>) – 1D array where each element is a 1D array</li>
+<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – one of ‘fill-size’ or ‘random’, see docstring for details</li>
+<li><strong>output_size</strong> – not used</li>
+<li><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – one of either ‘constant’ or ‘minimum’.
+If ‘minimum’ the min value of the array is used as the padding value.
+If ‘constant’ the values passed to the “constant” argument is used as the padding value.</li>
+<li><strong>constant</strong> (<em>Any</em>) – padding value if ‘mode’ is set to ‘constant’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Arrays padded according to the chosen method. 2D array of shape [n_arrays, size of largest input array]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.ndarray</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="cross-correlation">
 <h2>Cross correlation<a class="headerlink" href="#cross-correlation" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="functions">
@@ -406,7 +561,7 @@
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">cross correlation data for the input curves as a CC_Data instance</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#mesmerize.analysis.math.cross_correlation.CC_Data" title="mesmerize.analysis.math.cross_correlation.CC_Data">CC_Data</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#mesmerize.analysis.cross_correlation.CC_Data" title="mesmerize.analysis.cross_correlation.CC_Data">CC_Data</a></td>
 </tr>
 </tbody>
 </table>
@@ -437,11 +592,11 @@
 <p class="last">All arguments MUST be numpy.ndarray type for CC_Data for the save to be saveable as an hdf5 file. Set <code class="docutils literal notranslate"><span class="pre">numpy.unicode</span></code> as the <strong>dtype</strong> for the <code class="docutils literal notranslate"><span class="pre">curve_uuids</span></code> and <code class="docutils literal notranslate"><span class="pre">labels</span></code> arrays. If the <strong>dtype</strong> is <code class="docutils literal notranslate"><span class="pre">'O'</span></code> (object) the <strong>to_hdf5()</strong> method will fail.</p>
 </div>
 <dl class="class">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data">
-<em class="property">class </em><code class="descclassname">mesmerize.analysis.math.cross_correlation.</code><code class="descname">CC_Data</code><span class="sig-paren">(</span><em>ccs: numpy.ndarray = None</em>, <em>lag_matrix: numpy.ndarray = None</em>, <em>epsilon_matrix: numpy.ndarray = None</em>, <em>curve_uuids: numpy.ndarray = None</em>, <em>labels: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/math/cross_correlation.html#CC_Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data">
+<em class="property">class </em><code class="descclassname">mesmerize.analysis.cross_correlation.</code><code class="descname">CC_Data</code><span class="sig-paren">(</span><em>ccs: numpy.ndarray = None</em>, <em>lag_matrix: numpy.ndarray = None</em>, <em>epsilon_matrix: numpy.ndarray = None</em>, <em>curve_uuids: numpy.ndarray = None</em>, <em>labels: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>ccs: numpy.ndarray = None</em>, <em>lag_matrix: numpy.ndarray = None</em>, <em>epsilon_matrix: numpy.ndarray = None</em>, <em>curve_uuids: numpy.ndarray = None</em>, <em>labels: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/math/cross_correlation.html#CC_Data.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>ccs: numpy.ndarray = None</em>, <em>lag_matrix: numpy.ndarray = None</em>, <em>epsilon_matrix: numpy.ndarray = None</em>, <em>curve_uuids: numpy.ndarray = None</em>, <em>labels: numpy.ndarray = None</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object for organizing cross-correlation data</p>
 <p>types must be numpy.ndarray to be compatible with hdf5</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -462,32 +617,32 @@
 </dd></dl>
 
 <dl class="attribute">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.ccs">
-<code class="descname">ccs</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.ccs" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.ccs">
+<code class="descname">ccs</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.ccs" title="Permalink to this definition">¶</a></dt>
 <dd><p>array of cross-correlation functions</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.lag_matrix">
-<code class="descname">lag_matrix</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.lag_matrix" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.lag_matrix">
+<code class="descname">lag_matrix</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.lag_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>lag matrix</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.curve_uuids">
-<code class="descname">curve_uuids</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.curve_uuids" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.curve_uuids">
+<code class="descname">curve_uuids</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.curve_uuids" title="Permalink to this definition">¶</a></dt>
 <dd><p>uuids for each curve</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.labels">
-<code class="descname">labels</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.labels" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.labels">
+<code class="descname">labels</code><em class="property"> = None</em><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>labels for each curve</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.get_threshold_matrix">
-<code class="descname">get_threshold_matrix</code><span class="sig-paren">(</span><em>matrix_type: str</em>, <em>lag_thr: float</em>, <em>max_thr: float</em>, <em>lag_thr_abs: bool = True</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/mesmerize/analysis/math/cross_correlation.html#CC_Data.get_threshold_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.get_threshold_matrix" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.get_threshold_matrix">
+<code class="descname">get_threshold_matrix</code><span class="sig-paren">(</span><em>matrix_type: str</em>, <em>lag_thr: float</em>, <em>max_thr: float</em>, <em>lag_thr_abs: bool = True</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.get_threshold_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get lag or maxima matrix with thresholds applied. Values outside the threshold are set to NaN</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -512,14 +667,14 @@
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.from_dict">
-<em class="property">classmethod </em><code class="descname">from_dict</code><span class="sig-paren">(</span><em>d: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/math/cross_correlation.html#CC_Data.from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.from_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.from_dict">
+<em class="property">classmethod </em><code class="descname">from_dict</code><span class="sig-paren">(</span><em>d: dict</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.from_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load data from a dict</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.to_hdf5">
-<code class="descname">to_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/math/cross_correlation.html#CC_Data.to_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.to_hdf5" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.to_hdf5">
+<code class="descname">to_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.to_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save as an HDF5 file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -532,8 +687,8 @@
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="mesmerize.analysis.math.cross_correlation.CC_Data.from_hdf5">
-<em class="property">classmethod </em><code class="descname">from_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mesmerize/analysis/math/cross_correlation.html#CC_Data.from_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.math.cross_correlation.CC_Data.from_hdf5" title="Permalink to this definition">¶</a></dt>
+<dt id="mesmerize.analysis.cross_correlation.CC_Data.from_hdf5">
+<em class="property">classmethod </em><code class="descname">from_hdf5</code><span class="sig-paren">(</span><em>path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#mesmerize.analysis.cross_correlation.CC_Data.from_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load cross-correlation data from an hdf5 file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -629,7 +784,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="plotting/utils.html" class="btn btn-neutral float-right" title="Plotting utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="nodes.html" class="btn btn-neutral float-right" title="Nodes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Analysis_data_types.html" class="btn btn-neutral float-left" title="Data types used for analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

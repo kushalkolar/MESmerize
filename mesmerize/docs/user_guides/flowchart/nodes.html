@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -125,14 +126,15 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Nodes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#data">Data</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#loadfile">LoadFile</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#load-proj-df">Load_Proj_DF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loadprojdf">LoadProjDF</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#save">Save</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#merge">Merge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#viewdata">ViewData</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#viewhistorytrace">ViewHistoryTrace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewtransmission">ViewTransmission</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewhistory">ViewHistory</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#textfilter">TextFilter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#splicearrays">SpliceArrays</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dropnans">DropNaNs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dropna">DropNa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normraw">NormRaw</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#display">Display</a><ul>
@@ -150,7 +152,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#savitzkygolay">SavitzkyGolay</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#powspecdens">PowSpecDens</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#resample">Resample</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#scalermeanvar">ScalerMeanVar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scalermeanvariance">ScalerMeanVariance</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#normalize">Normalize</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#rfft">RFFT</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#irfft">iRFFT</a></li>
@@ -165,17 +167,18 @@
 <li class="toctree-l3"><a class="reference internal" href="#absolutevalue">AbsoluteValue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#logtransform">LogTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arraystats">ArrayStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#zscore">ZScore</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#biology">Biology</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#extractstim">ExtractStim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#detrenddfof">DetrendDFoF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#staticdfofo">StaticDFoFo</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#clustering">Clustering</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#kshape">KShape</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kmeans">KMeans</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#lda">LDA</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#hierarchical">Hierarchical</a><ul>
@@ -186,6 +189,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#maxinconsistent">MaxInconsistent</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#transform">Transform</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lda">LDA</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -193,11 +200,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/scatter.html">Scatter</a></li>
@@ -221,17 +228,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -304,7 +315,13 @@
 <div class="section" id="loadfile">
 <span id="node-loadfile"></span><h3>LoadFile<a class="headerlink" href="#loadfile" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.LoadFile" title="mesmerize.pyqtgraphCore.flowchart.library.Data.LoadFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div><p>Loads a save Transmission file. If you have a Project open it will automatically set the project path according to the open project. Otherwise you must specify the project path. You can specify a different project path to the project that is currently open (this is untested, weird things could happen). You should not merge Transmissions originating from different projects.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can also load a saved Transmission file by dragging &amp; dropping it into the Flowchart area. It will create a LoadFile node with the name of the dropped.</p>
+</div>
 <table border="1" class="docutils">
 <colgroup>
 <col width="19%" />
@@ -335,7 +352,10 @@
 <tr class="row-even"><td>load_trn</td>
 <td>Button to choose a .trn file (Transmission) to load</td>
 </tr>
-<tr class="row-odd"><td>proj_path</td>
+<tr class="row-odd"><td>proj_trns</td>
+<td>Load transmission file located in the project’s “trns” directory</td>
+</tr>
+<tr class="row-even"><td>proj_path</td>
 <td>Button to select the Mesmerize project that corresponds to the chosen .trn file.</td>
 </tr>
 </tbody>
@@ -345,9 +365,12 @@
 <p class="last">The purpose of specifying the Project Path when you load a save Transmission file is so that    interactive plots and the <a class="reference internal" href="../plots/datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a> can find raw data that correspond to datapoints.</p>
 </div>
 </div></blockquote>
+</div></blockquote>
 </div>
-<div class="section" id="load-proj-df">
-<span id="node-load-proj-df"></span><h3>Load_Proj_DF<a class="headerlink" href="#load-proj-df" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="loadprojdf">
+<span id="nodeloadprojdf"></span><h3>LoadProjDF<a class="headerlink" href="#loadprojdf" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.LoadProjDF" title="mesmerize.pyqtgraphCore.flowchart.library.Data.LoadProjDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Load the entire Project DataFrame (root) of the project that is currently open, or a sub-DataFrame that corresponds a tab that you have created in the <a class="reference internal" href="../project_organization/project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a>.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _RAW_CURVE</p>
@@ -396,9 +419,12 @@
 <p class="last">The <strong>DF_Name</strong> options do not update live with the removal or creation of tabs in the <a class="reference internal" href="../project_organization/project_browser/project_browser.html#projectbrowser"><span class="std std-ref">Project Browser</span></a>, you must create a new node to reflect these types of changes.</p>
 </div>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="save">
 <span id="node-save"></span><h3>Save<a class="headerlink" href="#save" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.Save" title="mesmerize.pyqtgraphCore.flowchart.library.Data.Save"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Save the input Transmission to a file so that the Transmission can be used re-loaded in the Flowchart for later use.</p>
 <p><strong>Usage:</strong> Connect an input Transmission to this node’s <strong>In</strong> terminal, click the button to choose a path to save a new file to, and then click the Apply checkbox to save the input Transmission to the chosen file.</p>
@@ -442,9 +468,12 @@
 <p class="last">You must always save a Transmission to a new file (pandas with hdf5 exihibts weird behavior if you overwrite, this is the easiest workaround). If you try to overwrite the file you will be presented with an error saying that the file already exists.</p>
 </div>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="merge">
 <span id="node-merge"></span><h3>Merge<a class="headerlink" href="#merge" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.Merge" title="mesmerize.pyqtgraphCore.flowchart.library.Data.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Merge multiple Transmissions into a single Transmission. The DataFrames of the individual Transmissions are concatenated using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.24/user_guide/merging.html#concatenating-objects">pandas.concat</a> and History Traces are also merged. The History Trace of each indidual input Transmission is kept separately.</p>
 <div class="admonition warning">
@@ -471,19 +500,28 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
-<div class="section" id="viewdata">
-<span id="node-viewdata"></span><h3>ViewData<a class="headerlink" href="#viewdata" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="viewtransmission">
+<span id="node-viewdata"></span><h3>ViewTransmission<a class="headerlink" href="#viewtransmission" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.ViewTransmission" title="mesmerize.pyqtgraphCore.flowchart.library.Data.ViewTransmission"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div>View the input Transmission object using the spyder Object Editor. For example you can explore the Transmission DataFrame and HistoryTrace.</div></blockquote>
+</div></blockquote>
 </div>
-<div class="section" id="viewhistorytrace">
-<span id="node-viewhistorytrace"></span><h3>ViewHistoryTrace<a class="headerlink" href="#viewhistorytrace" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="viewhistory">
+<span id="node-viewhistorytrace"></span><h3>ViewHistory<a class="headerlink" href="#viewhistory" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.ViewHistory" title="mesmerize.pyqtgraphCore.flowchart.library.Data.ViewHistory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div>View the HistoryTrace of the input Transmission in a nice Tree View GUI.</div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="textfilter">
 <span id="node-textfilter"></span><h3>TextFilter<a class="headerlink" href="#textfilter" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.TextFilter" title="mesmerize.pyqtgraphCore.flowchart.library.Data.TextFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Include or Exclude Transmission DataFrame rows according to a text filter in a categorical column.</p>
 <p><strong>Usage Example:</strong> If you want to select all traces that are from photoreceptor cells and you have a categorical column, named cell_types for example, containing cell type labels, choose “cell_type” as the <em>Column</em> parameter and enter “photoreceptor” as the <em>filter</em> parameter, and select <em>Include</em>. If you want to select everything that are not photoreceptors select <em>Exclude</em>.</p>
@@ -538,10 +576,14 @@
 </tr>
 </tbody>
 </table>
+<p><strong>HistoryTrace output structure:</strong> Dict of all the parameters for this node</p>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="splicearrays">
 <span id="node-splicearrays"></span><h3>SpliceArrays<a class="headerlink" href="#splicearrays" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.SpliceArrays" title="mesmerize.pyqtgraphCore.flowchart.library.Data.SpliceArrays"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Splice arrays derived in the specified numerical data column and place the spliced output arrays in the output column.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _SPLICE_ARRAYS</p>
@@ -587,9 +629,12 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
-<div class="section" id="dropnans">
-<span id="node-dropnans"></span><h3>DropNaNs<a class="headerlink" href="#dropnans" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="dropna">
+<span id="node-dropnans"></span><h3>DropNa<a class="headerlink" href="#dropna" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Data.DropNa" title="mesmerize.pyqtgraphCore.flowchart.library.Data.DropNa"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Drop NaNs and Nones (null) from the Transmission DataFrame. Uses <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.24/reference/api/pandas.DataFrame.dropna.html">DataFrame.dropna</a> and <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.24/reference/api/pandas.DataFrame.isna.html">DataFrame.isna</a> methods.</p>
 <ul class="simple">
@@ -645,18 +690,91 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="normraw">
+<span id="node-normrawminmax"></span><h3>NormRaw<a class="headerlink" href="#normraw" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></p>
+<p>Scale the raw data such that the min and max values are set to the min and max values derived from the raw spatial regions of the image sequences they originate from. Only for CNMFE data.</p>
+<p>The arrays in the <strong>_RAW_CURVE</strong> column are scaled and the output is placed in a new column named <strong>_NORMRAW</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>option</td>
+<td><div class="first last line-block">
+<div class="line">Derive the raw min &amp; max values from one of the following options:</div>
+<div class="line"><em>top_5:</em> Top 5 brightest pixels</div>
+<div class="line"><em>top_10:</em> Top 10 brighest pixels</div>
+<div class="line"><em>top_5p:</em> Top 5% of brightest pixels</div>
+<div class="line"><em>top_10p:</em> Top 10% of brightest pixels</div>
+<div class="line"><em>top_25p:</em> Top 25% of brightest pixels</div>
+<div class="line"><em>full_mean:</em> Full mean of the min and max array</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the raw min value is higher than the raw max value the curve will be excluded in the output. You will be presented with a warning box with the number of curves that were excluded due to this.</p>
+</div>
+</div></blockquote>
 <hr class="docutils" />
 </div>
 </div>
 <div class="section" id="display">
 <span id="nodes-display"></span><h2>Display<a class="headerlink" href="#display" title="Permalink to this headline">¶</a></h2>
 <p><strong>These nodes connect input Transmission(s) to various plots for visualization</strong></p>
+<p>The actual Plot Widget instance that these nodes use can be accessed through the <code class="docutils literal notranslate"><span class="pre">plot_widget</span></code> attribute in the flowchart console.</p>
+<p>For example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a heatmap node that is named &quot;Heatmap.0&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hn</span> <span class="o">=</span> <span class="n">get_nodes</span><span class="p">()[</span><span class="s1">&#39;Heatmap.0&#39;</span><span class="p">]</span>
+
+<span class="c1"># the plot widget instance</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hn</span><span class="o">.</span><span class="n">plot_widget</span>
+
+<span class="o">&lt;</span><span class="n">mesmerize</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">heatmap</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">HeatmapTracerWidget</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7f26e5d29678</span><span class="o">&gt;</span>
+</pre></div>
+</div>
 <div class="section" id="beeswarmplots">
 <span id="node-beeswarmplots"></span><h3>BeeswarmPlots<a class="headerlink" href="#beeswarmplots" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.BeeswarmPlots" title="mesmerize.pyqtgraphCore.flowchart.library.Display.BeeswarmPlots"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div><p>Based on pqytgraph Beeswarm plots.</p>
 <p>Visualize data points as a pseudoscatter and as corresponding Violin Plots. This is commonly used to visualize peak features and compare different experimental groups.</p>
-<p>For more information please see <span class="xref std std-ref">plot_BeeswarmPlots</span></p>
+<p>For information on the plot widget see <a class="reference internal" href="../plots/beeswarm.html#plot-beeswarm"><span class="std std-ref">Beeswarm Plots</span></a></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
@@ -678,12 +796,15 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="heatmap">
 <span id="node-heatmap"></span><h3>Heatmap<a class="headerlink" href="#heatmap" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.Heatmap" title="mesmerize.pyqtgraphCore.flowchart.library.Display.Heatmap"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div><p>Used for visualizing numerical arrays in the form of a heatmap. Also used for visualizing a hieararchical clustering tree (dendrogram) along with a heatmap with row order corresponding to the order leaves of the dendrogram.</p>
-<p>For more information see <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a></p>
+<p>For information on the plot widget see <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heat Plot</span></a></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
@@ -709,14 +830,21 @@
 <p class="last">Arrays in the DataFrame column(s) of interest <strong>must</strong> be of the same length. If they are not, you must splice them using the <a class="reference internal" href="#node-splicearrays"><span class="std std-ref">SpliceArrays</span></a> node.</p>
 </div>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="crosscorr">
 <span id="node-crosscorr"></span><h3>CrossCorr<a class="headerlink" href="#crosscorr" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div>Perform Cross-Correlation analysis. See <a class="reference internal" href="../plots/cross_correlation.html#plot-crosscorrelation"><span class="std std-ref">Cross Correlation</span></a> for more information.</div></blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.CrossCorr" title="mesmerize.pyqtgraphCore.flowchart.library.Display.CrossCorr"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
+<div>Perform Cross-Correlation analysis. For information on the plot widget see <a class="reference internal" href="../plots/cross_correlation.html#plot-crosscorrelation"><span class="std std-ref">CrossCorrelation Plot</span></a></div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="plot">
 <span id="node-plot"></span><h3>Plot<a class="headerlink" href="#plot" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.Plot" title="mesmerize.pyqtgraphCore.flowchart.library.Display.Plot"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<p>For information on the plot widget see <span class="xref std std-ref">&lt;plot_SimplePlot&gt;</span></p>
 <blockquote>
 <div><p>A simple plot.</p>
 <table border="1" class="docutils">
@@ -758,19 +886,26 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="proportions">
 <span id="node-proportions"></span><h3>Proportions<a class="headerlink" href="#proportions" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.Proportions" title="mesmerize.pyqtgraphCore.flowchart.library.Display.Proportions"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div><p>Plot stacked bar chart of one categorical variable vs. another categorical variable.</p>
-<p>For more information see <a class="reference internal" href="../plots/proportions.html#plot-proportions"><span class="std std-ref">Proportions</span></a></p>
+<p>For information on the plot widget see <a class="reference internal" href="../plots/proportions.html#plot-proportions"><span class="std std-ref">Proportions Plot</span></a></p>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="scatterplot">
 <span id="node-scatterplot"></span><h3>ScatterPlot<a class="headerlink" href="#scatterplot" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Create scatter plot of a numerical data column containing [X, Y] values (arrays of size 2).</p>
-<p>For more information see <span class="xref std std-ref">plot_ScatterPlot</span></p>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.ScatterPlot" title="mesmerize.pyqtgraphCore.flowchart.library.Display.ScatterPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
+<div><p>Create scatter plot of numerical data containing [X, Y] values</p>
+<p>For information on the plot widget see <a class="reference internal" href="../plots/scatter.html#plot-scatterplot"><span class="std std-ref">Scatter Plot</span></a></p>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="timeseries">
@@ -788,6 +923,8 @@
 <p>I recommend this book by Tom O’Haver if you are unfamiliar with basic signal processing: <a class="reference external" href="https://terpconnect.umd.edu/~toh/spectrum/TOC.html">https://terpconnect.umd.edu/~toh/spectrum/TOC.html</a></p>
 <div class="section" id="butterworth">
 <span id="node-butterworth"></span><h3>Butterworth<a class="headerlink" href="#butterworth" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></p>
 <blockquote>
 <div><p>Creates a Butterworth filter using <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter">scipy.signal.butter</a> and applies it using <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.filtfilt.html">scipy.signal.filtfilt</a>.</p>
 <p>The Wn parameter of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html?highlight=signal%20butter">scipy.signal.butter</a> is calculated by dividing the sampling rate of the data by the <em>freq_divisor</em> parameter (see below).</p>
@@ -837,9 +974,12 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="savitzkygolay">
 <span id="node-savitzkygolay"></span><h3>SavitzkyGolay<a class="headerlink" href="#savitzkygolay" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.SavitzkyGolay" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.SavitzkyGolay"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p><a class="reference external" href="https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter">Savitzky Golay filter</a>. Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.savgol_filter.html">scipy.signal.savgol_filter</a>.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _SAVITZKY_GOLAY</p>
@@ -888,12 +1028,15 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="powspecdens">
 <span id="node-powspecdens"></span><h3>PowSpecDens<a class="headerlink" href="#powspecdens" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="resample">
 <span id="node-resample"></span><h3>Resample<a class="headerlink" href="#resample" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.Resample" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.Resample"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Resample the data in numerical arrays. Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample.html">scipy.signal.resample</a>.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _RESAMPLE</p>
@@ -946,9 +1089,12 @@
 <p class="last">If Tu = 1, then Rs is the new sampling rate in Hertz.</p>
 </div>
 </div></blockquote>
+</div></blockquote>
 </div>
-<div class="section" id="scalermeanvar">
-<span id="node-scalermeanvar"></span><h3>ScalerMeanVar<a class="headerlink" href="#scalermeanvar" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="scalermeanvariance">
+<span id="node-scalermeanvar"></span><h3>ScalerMeanVariance<a class="headerlink" href="#scalermeanvariance" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.ScalerMeanVariance" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.ScalerMeanVariance"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Uses <a class="reference external" href="https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html">tslearn.preprocessing.TimeSeriesScalerMeanVariance</a></p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _SCALER_MEAN_VARIANCE</p>
@@ -1001,9 +1147,12 @@
 <p class="last">if mu = 0 and std = 1, the output is the z-score of the signal.</p>
 </div>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="normalize">
 <span id="node-normalize"></span><h3>Normalize<a class="headerlink" href="#normalize" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.Normalize" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.Normalize"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Normalize the signal so that all values are between 0 and 1 based on the min and max of the signal.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _NORMALIZE</p>
@@ -1046,9 +1195,12 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="rfft">
 <span id="node-rfft"></span><h3>RFFT<a class="headerlink" href="#rfft" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.RFFT" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.RFFT"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.rfft.html">scipy.fftpack.rfft</a>. “Discrete Fourier transform of a real sequence”</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _RFFT</p>
@@ -1091,16 +1243,22 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="irfft">
 <span id="node-irfft"></span><h3>iRFFT<a class="headerlink" href="#irfft" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.iRFFT" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.iRFFT"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div><p>Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.fftpack.irfft.html">scipy.fftpack.irfft</a>. “inverse discrete Fourier transform of real sequence x”</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _IRFFT</p>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="peakdetect">
 <span id="node-peakdetect"></span><h3>PeakDetect<a class="headerlink" href="#peakdetect" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakDetect" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakDetect"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Simple Peak Detection using derivatives. The “Differentiation” chapter of Tom O’Haver’s book has a section on Peak Detection which I recommend reading. <a class="reference external" href="https://terpconnect.umd.edu/~toh/spectrum/TOC.html">https://terpconnect.umd.edu/~toh/spectrum/TOC.html</a></p>
 <p><strong>Output Data Column</strong> <em>(DataFrame)</em>: peaks_bases</p>
@@ -1191,15 +1349,18 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="peakfeatures">
 <span id="node-peakfeatures"></span><h3>PeakFeatures<a class="headerlink" href="#peakfeatures" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Compute peak features. The DataFrame of the ouput Transmission contains one row for each peak.</p>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakFeatures" title="mesmerize.pyqtgraphCore.flowchart.library.Signal.PeakFeatures"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
+<div>Compute peak features. The DataFrame of the ouput Transmission contains one row for each peak.</div></blockquote>
 <table border="1" class="docutils">
 <colgroup>
-<col width="24%" />
-<col width="76%" />
+<col width="17%" />
+<col width="83%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Output Data Column</th>
@@ -1207,47 +1368,58 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>_pfeature_peak_curve</td>
+<tr class="row-even"><td>_pf_peak_curve</td>
 <td>array representing the peak</td>
 </tr>
-<tr class="row-odd"><td>_pfeature_amplitude_abs</td>
-<td>peak amplitude relative to the min value of the parent curve</td>
+<tr class="row-odd"><td>_pf_ampl_rel_b_ix_l</td>
+<td>peak amplitude relative to its left base</td>
 </tr>
-<tr class="row-even"><td>_pfeature_amplitude_rel</td>
-<td>peak amplitude relative to the min value of the peak curve</td>
+<tr class="row-even"><td>_pf_ampl_rel_b_ix_r</td>
+<td>peak amplitude relative to its right base</td>
 </tr>
-<tr class="row-odd"><td>_pfeature_area</td>
-<td>area under the peak, <a class="reference external" href="https://en.wikipedia.org/wiki/Simpson%27s_rule">Simpson’s Rule</a></td>
+<tr class="row-odd"><td>_pf_ampl_rel_b_mean</td>
+<td>peak amplitude relative to the mean of its bases</td>
 </tr>
-<tr class="row-even"><td>_pfeature_rising_slope_avg</td>
+<tr class="row-even"><td>_pf_ampl_rel_zero</td>
+<td>peak amplitude relative to zero</td>
+</tr>
+<tr class="row-odd"><td>_pf_area_rel_zero</td>
+<td><a class="reference external" href="https://en.wikipedia.org/wiki/Simpson%27s_rule">Simpson’s Rule Integral of the curve</a></td>
+</tr>
+<tr class="row-even"><td>_pf_area_rel_min</td>
+<td><div class="first last line-block">
+<div class="line"><a class="reference external" href="https://en.wikipedia.org/wiki/Simpson%27s_rule">Simpson’s Rule Integral</a> relative to the minimum value of the curve</div>
+<div class="line">Substracts the minimum values of the peak curve before computing the integral</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>_pf_rising_slope_avg</td>
 <td>slope of the line drawn from the left base to the peak</td>
 </tr>
-<tr class="row-odd"><td>_pfeature_falling_slope_avg</td>
+<tr class="row-even"><td>_pf_falling_slope_avg</td>
 <td>slope of the line drawn from the right base to the peak</td>
 </tr>
-<tr class="row-even"><td>_pfeature_duration_base</td>
+<tr class="row-odd"><td>_pf_duration_base</td>
 <td>distance between the left and right base</td>
 </tr>
-<tr class="row-odd"><td>_pfeature_peak_interval</td>
-<td>…</td>
-</tr>
-<tr class="row-even"><td>_pfeature_ix_peak_abs</td>
+<tr class="row-even"><td>_pf_p_ix</td>
 <td>index of the peak maxima in the parent curve</td>
 </tr>
-<tr class="row-odd"><td>_pfeature_ix_peak_rel</td>
-<td>index of the peak maxima in the peak curve (_pfeature_peak_curve)</td>
-</tr>
-<tr class="row-even"><td>_pfeature_uuid</td>
+<tr class="row-odd"><td>_pf_uuid</td>
 <td>peak <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a></td>
 </tr>
-<tr class="row-odd"><td>_pfeature_ix_base_left_abs</td>
+<tr class="row-even"><td>_pf_b_ix_l</td>
 <td>index of the left base in the parent curve</td>
 </tr>
-<tr class="row-even"><td>_pfeature_ix_base_right_abs</td>
+<tr class="row-odd"><td>_pf_b_ix_r</td>
 <td>index of the right base in the parent curve</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">mesmerize/analysis/compute_peak_features</span></code> for the code that computes the peak features.</p>
+</div>
 <table border="1" class="docutils">
 <colgroup>
 <col width="10%" />
@@ -1260,10 +1432,29 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>In</td>
-<td>Input Transmission. Must contain <em>peak_bases</em> column containing peak_bases DataFrames.</td>
+<td>Input Transmission. Must contain <em>peak_bases</em> column that contains peak_bases DataFrames.</td>
 </tr>
 <tr class="row-odd"><td>Out</td>
 <td>Transmission with peak features in various output columns</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="86%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays from which to compute peak features.</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
 </tr>
 </tbody>
 </table>
@@ -1276,6 +1467,8 @@
 <p><strong>Nodes for performing basic Math functions</strong></p>
 <div class="section" id="derivative">
 <span id="node-derivative"></span><h3>Derivative<a class="headerlink" href="#derivative" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.Derivative" title="mesmerize.pyqtgraphCore.flowchart.library.Math.Derivative"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Computes the first derivative.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _DERIVATIVE</p>
@@ -1318,14 +1511,20 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="tvdiff">
 <span id="node-tvdiff"></span><h3>TVDiff<a class="headerlink" href="#tvdiff" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.TVDiff" title="mesmerize.pyqtgraphCore.flowchart.library.Math.TVDiff"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div>Based on <a class="reference external" href="http://dx.doi.org/10.5402/2011/164564">Numerical Differentiation of Noisy, Nonsmooth Data. Rick Chartrand. (2011).</a>. Translated to Python by Simone Sturniolo.</div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="xpowery">
 <span id="node-xpowery"></span><h3>XpowerY<a class="headerlink" href="#xpowery" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.XpowerY" title="mesmerize.pyqtgraphCore.flowchart.library.Math.XpowerY"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Raises each element of the numerical arrays in the data_column to the exponent Y</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _X_POWER_Y</p>
@@ -1371,9 +1570,12 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="absolutevalue">
 <span id="node-absolutevalue"></span><h3>AbsoluteValue<a class="headerlink" href="#absolutevalue" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.AbsoluteValue" title="mesmerize.pyqtgraphCore.flowchart.library.Math.AbsoluteValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Element-wise absolute values of the input arrays. Computes root mean squares if input arrays are complex.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _ABSOLUTE_VALUE</p>
@@ -1416,9 +1618,12 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="logtransform">
 <span id="node-logtransform"></span><h3>LogTransform<a class="headerlink" href="#logtransform" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.LogTransform" title="mesmerize.pyqtgraphCore.flowchart.library.Math.LogTransform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Perform Logarithmic transformation of the data.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _LOG_TRANSFORM</p>
@@ -1474,13 +1679,15 @@
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="arraystats">
 <h3>ArrayStats<a class="headerlink" href="#arraystats" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Perform a few basic statistical functions.</p>
-<p><strong>Output Data Column</strong> <em>(numerical)</em>: Customizable by user entry
-Output data are single numbers, not arrays</p>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.ArrayStats" title="mesmerize.pyqtgraphCore.flowchart.library.Math.ArrayStats"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<p>Perform a few basic statistical functions.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: Customizable by user entry</p>
+<p>Output data are single numbers, not arrays</p>
 <blockquote>
 <div><table border="1" class="docutils">
 <colgroup>
@@ -1502,10 +1709,11 @@ Output data are single numbers, not arrays</p>
 </tbody>
 </table>
 <p>The desired function is applied to each 1D array in the <em>data_column</em> and the output is placed in the Output Data Column.</p>
+</div></blockquote>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="87%" />
+<col width="14%" />
+<col width="86%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Parameter</th>
@@ -1517,7 +1725,9 @@ Output data are single numbers, not arrays</p>
 <td>Data column containing numerical arrays</td>
 </tr>
 <tr class="row-odd"><td>function</td>
-<td><p class="first"><em>amin</em>: Return the minimum of the input array</p>
+<td><div class="first line-block">
+<div class="line"><em>amin</em>: Return the minimum of the input array</div>
+</div>
 <div class="line-block">
 <div class="line"><em>amax</em>: Return the maximum of the input array</div>
 </div>
@@ -1556,6 +1766,59 @@ Output data are single numbers, not arrays</p>
 </div>
 </td>
 </tr>
+<tr class="row-even"><td>output_col</td>
+<td>Enter a name for the output column</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="zscore">
+<span id="node-zscore"></span><h3>ZScore<a class="headerlink" href="#zscore" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.ZScore" title="mesmerize.pyqtgraphCore.flowchart.library.Math.ZScore"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<p>Compute Z-Scores of the data. Uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.zscore.html">scipy.stats.zscore</a>. The input data are are divided into groups according to the <em>group_by</em> parameter. Z-Scores are computed for the data in each group with respect to the data only in that group.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _ZSCORE</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Input data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>group_by</td>
+<td>Categorial data column to group by.</td>
+</tr>
 <tr class="row-even"><td>Apply</td>
 <td>Process data through this node</td>
 </tr>
@@ -1572,11 +1835,13 @@ Output data are single numbers, not arrays</p>
 <div class="section" id="extractstim">
 <span id="node-extractstim"></span><h3>ExtractStim<a class="headerlink" href="#extractstim" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.ExtractStim" title="mesmerize.pyqtgraphCore.flowchart.library.Biology.ExtractStim"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div><p>Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it. It outputs one row per stimulus period.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="26%" />
-<col width="74%" />
+<col width="19%" />
+<col width="81%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Output Data Column</th>
@@ -1585,7 +1850,7 @@ Output data are single numbers, not arrays</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>STIM_TYPE</td>
-<td>Stimulus type, corresponds to your <span class="xref std std-ref">ProjectConfig</span></td>
+<td>Stimulus type, corresponds to your <a class="reference internal" href="../project_organization/new_project/new_project.html#project-configuration"><span class="std std-ref">Project Config</span></a></td>
 </tr>
 <tr class="row-odd"><td>STIMULUS</td>
 <td>Name of the stimulus.</td>
@@ -1640,12 +1905,62 @@ Output data are single numbers, not arrays</p>
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="detrenddfof">
 <span id="node-detrenddfof"></span><h3>DetrendDFoF<a class="headerlink" href="#detrenddfof" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Uses the <a class="reference external" href="http://flatironinstitute.github.io/CaImAn/core_functions.html#caiman.source_extraction.cnmf.utilities.detrend_df_f">detrend_df_f</a> function from the CaImAn library. This node does not use any of the numerical data in a Transmission DataFrame to compute the detrended <span class="math notranslate nohighlight">\(\Delta F / F_o\)</span>. It directly uses the CNMF output data for the Samples that are present in the Transmission DataFrame.</p>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.DetrendDFoF" title="mesmerize.pyqtgraphCore.flowchart.library.Biology.DetrendDFoF"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
+<div><p>Uses the <a class="reference external" href="http://flatironinstitute.github.io/CaImAn/core_functions.html#caiman.source_extraction.cnmf.utilities.detrend_df_f">detrend_df_f</a> function from the CaImAn library. This node does not use any of the numerical data in a Transmission DataFrame to compute the detrended <span class="math notranslate nohighlight">\(\Delta F / F_0\)</span>. It directly uses the CNMF output data for the Samples that are present in the Transmission DataFrame.</p>
 <p><strong>Output Data Column</strong> <em>(numerical)</em>: _DETREND_DF_O_F</p>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="staticdfofo">
+<span id="node-staticdfofo"></span><h3>StaticDFoFo<a class="headerlink" href="#staticdfofo" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.StaticDFoFo" title="mesmerize.pyqtgraphCore.flowchart.library.Biology.StaticDFoFo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<p>Perform <span class="math notranslate nohighlight">\(\frac{F - F_0}{F_0}\)</span> without a rolling window. <span class="math notranslate nohighlight">\(F\)</span> is an input array and <span class="math notranslate nohighlight">\(F_0\)</span> is the minimum value of the input array.</p>
+<p><strong>Output Data Column</strong> <em>(numerical)</em>: _STATIC_DF_O_F</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing numerical arrays</td>
+</tr>
+<tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
 </div></blockquote>
 <hr class="docutils" />
 </div>
@@ -1655,15 +1970,18 @@ Output data are single numbers, not arrays</p>
 <div class="section" id="kshape">
 <span id="node-kshape"></span><h3>KShape<a class="headerlink" href="#kshape" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Clustering.KShape" title="mesmerize.pyqtgraphCore.flowchart.library.Clustering.KShape"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div>Perform KShape clustering. For more information see <a class="reference internal" href="../plots/kshape.html#plot-kshape"><span class="std std-ref">KShape plot</span></a>.</div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="kmeans">
 <span id="node-kmeans"></span><h3>KMeans<a class="headerlink" href="#kmeans" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Clustering.KMeans" title="mesmerize.pyqtgraphCore.flowchart.library.Clustering.KMeans"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div>Basically <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html">sklearn.cluster.KMeans</a>.</div></blockquote>
-</div>
-<div class="section" id="lda">
-<span id="node-lda"></span><h3>LDA<a class="headerlink" href="#lda" title="Permalink to this headline">¶</a></h3>
+</div></blockquote>
 <hr class="docutils" />
 </div>
 </div>
@@ -1678,12 +1996,14 @@ Output data are single numbers, not arrays</p>
 <div class="section" id="linkage">
 <span id="node-linkage"></span><h3>Linkage<a class="headerlink" href="#linkage" title="Permalink to this headline">¶</a></h3>
 <blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.Linkage" title="mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.Linkage"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<blockquote>
 <div><p>Compute a linkage matrix which can be used to form flat clusters using the <a class="reference internal" href="#node-fcluster"><span class="std std-ref">FCluster</span></a> node.</p>
 <p>Based on <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.linkage.html">scipy.cluster.hierarchy.linkage</a></p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="82%" />
+<col width="11%" />
+<col width="89%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Terminal</th>
@@ -1695,7 +2015,7 @@ Output data are single numbers, not arrays</p>
 <td>Input Transmission</td>
 </tr>
 <tr class="row-odd"><td>Out</td>
-<td>Linkage matrix, <strong>not a Transmission object</strong></td>
+<td>dict containing the Linkage matrix and parameters, <strong>not a Transmission object</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1732,9 +2052,12 @@ Output data are single numbers, not arrays</p>
 </tbody>
 </table>
 </div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="fcluster">
 <span id="node-fcluster"></span><h3>FCluster<a class="headerlink" href="#fcluster" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.FCluster" title="mesmerize.pyqtgraphCore.flowchart.library.Hierarchical.FCluster"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>“Form flat clusters from the hierarchical clustering defined by the given linkage matrix.”</p>
 <p>Based on <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.fcluster.html">scipy.cluster.hierarchy.fcluster</a></p>
@@ -1767,6 +2090,9 @@ Output data are single numbers, not arrays</p>
 </tr>
 </tbody>
 </table>
+<p><strong>Parameters:</strong> Exactly as desribed in <a class="reference external" href="https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.fcluster.html">scipy.cluster.hierarchy.fcluster</a></p>
+<p><strong>HistoryTrace output structure:</strong> Dict of all the parameters for this node, as well as the parameters used for creating the linkage matrix and the linkage matrix itself from the <a class="reference internal" href="#node-linkage"><span class="std std-ref">Linkage node</span></a>.</p>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="inconsistent">
@@ -1777,6 +2103,121 @@ Output data are single numbers, not arrays</p>
 </div>
 <div class="section" id="maxinconsistent">
 <span id="node-maxinconsistent"></span><h3>MaxInconsistent<a class="headerlink" href="#maxinconsistent" title="Permalink to this headline">¶</a></h3>
+<hr class="docutils" />
+</div>
+</div>
+<div class="section" id="transform">
+<span id="nodes-transform"></span><h2>Transform<a class="headerlink" href="#transform" title="Permalink to this headline">¶</a></h2>
+<p>Nodes for transforming data</p>
+<div class="section" id="lda">
+<span id="node-lda"></span><h3>LDA<a class="headerlink" href="#lda" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Transform.LDA" title="mesmerize.pyqtgraphCore.flowchart.library.Transform.LDA"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<p>Perform Linear Discriminant Analysis. Uses <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html">sklearn.discriminant_analysis.LinearDiscriminantAnalysis</a></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>train_data</td>
+<td>Input Transmission containing the training data</td>
+</tr>
+<tr class="row-odd"><td>predict</td>
+<td>Input Transmission containing data on which to predict</td>
+</tr>
+<tr class="row-even"><td>T</td>
+<td><div class="first last line-block">
+<div class="line">Transmission with Transformed data and decision function. Output columns outlined below:</div>
+<div class="line"><strong>_LDA_TRANSFORM:</strong> The transformed data, can be visualized with a <a class="reference internal" href="../plots/scatter.html#plot-scatterplot"><span class="std std-ref">Scatter Plot</span></a> for instance</div>
+<div class="line"><strong>_LDA_DFUNC:</strong> Decision function (confidence scores). Can be visualized with a <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>coef</td>
+<td><div class="first last line-block">
+<div class="line">Transmission with LDA Coefficients. Output columns outlined below:</div>
+<div class="line"><strong>classes:</strong> The categorical labels that were trained against</div>
+<div class="line"><strong>_COEF:</strong> LDA Coefficients (weight vectors) for the classes. Can be visualized with a <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>means</td>
+<td><div class="first last line-block">
+<div class="line">Transmission with LDA Means. Output columns outlined below:</div>
+<div class="line"><strong>classes:</strong> The categorical labels that were trained against</div>
+<div class="line"><strong>_MEANS:</strong> LDA means for the classes. Can be visualized with a <a class="reference internal" href="../plots/heatmap.html#plot-heatmap"><span class="std std-ref">Heatmap</span></a></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>predicted</td>
+<td><div class="first last line-block">
+<div class="line">Transmission containing predicted class labels for the data.</div>
+<div class="line">The class labels are placed in a column named <strong>LDA_PREDICTED_LABELS</strong></div>
+<div class="line">The names of the class labels correspond to the labels from the training labels</div>
+<div class="line"><em>optional</em></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>train_data</td>
+<td>Single or multiple data columns that contain the input features.</td>
+</tr>
+<tr class="row-odd"><td>labels</td>
+<td>Data column containing categorical labels to train to</td>
+</tr>
+<tr class="row-even"><td>solver</td>
+<td><div class="first last line-block">
+<div class="line"><em>svd:</em> Singular Value Decomposition</div>
+<div class="line"><em>lsqr:</em> Least Squares solution</div>
+<div class="line"><em>eigen</em>: Eigen decomposition</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>shrinkage</td>
+<td>Can be used with <em>lsqr</em> or <em>eigen</em> solvers.</td>
+</tr>
+<tr class="row-even"><td>shrinkage_val</td>
+<td>shrinkage value if <em>shrinkage</em> is set to “value”</td>
+</tr>
+<tr class="row-odd"><td>n_components</td>
+<td>Number of components to output</td>
+</tr>
+<tr class="row-even"><td>tol</td>
+<td>Tolereance threshold exponent. The used value is 10^&lt;tol&gt;</td>
+</tr>
+<tr class="row-odd"><td>score</td>
+<td>Displays mean score of the classification (read only)</td>
+</tr>
+<tr class="row-even"><td>predict_on</td>
+<td><div class="first last line-block">
+<div class="line">Single or multiple data columns that contain the data that are used for predicting on</div>
+<div class="line">Usually the same name as the data column(s) used for the training data.</div>
+<div class="line"><em>optional</em></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>HistoryTrace output structure:</strong> Dict of all the parameters for this node</p>
+</div></blockquote>
 </div>
 </div>
 </div>

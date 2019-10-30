@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -126,11 +127,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -154,17 +155,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -231,6 +236,7 @@
 <span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">pairwise_distances</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">get_sys_config</span>
 
 
 <div class="viewcode-block" id="get_centerlike"><a class="viewcode-back" href="../../../api_reference/analysis.html#mesmerize.analysis.clustering_metrics.get_centerlike">[docs]</a><span class="k">def</span> <span class="nf">get_centerlike</span><span class="p">(</span><span class="n">cluster_members</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -245,7 +251,7 @@
 <span class="sd">    :return:                The cluster member which is most centerlike, and its index in the cluster_members array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dist_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dist_matrix</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">cluster_members</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+        <span class="n">dist_matrix</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">cluster_members</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">get_sys_config</span><span class="p">()[</span><span class="s1">&#39;_MESMERIZE_N_THREADS&#39;</span><span class="p">])</span>
 
     <span class="n">c_ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dist_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">cluster_members</span><span class="p">[</span><span class="n">c_ix</span><span class="p">,</span> <span class="p">:]</span>
@@ -265,7 +271,7 @@
 <span class="sd">    :return:                 The cluster radius, average between the most centerlike member and all other members</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dist_matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">dist_matrix</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">cluster_members</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+        <span class="n">dist_matrix</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">cluster_members</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">get_sys_config</span><span class="p">()[</span><span class="s1">&#39;_MESMERIZE_N_THREADS&#39;</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">centerlike_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">c_ix</span> <span class="o">=</span> <span class="n">get_centerlike</span><span class="p">(</span><span class="n">cluster_members</span><span class="p">,</span> <span class="n">dist_matrix</span><span class="p">)</span>
@@ -291,12 +297,12 @@
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">cluster_labels</span><span class="p">)):</span>
         <span class="n">members</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cluster_labels</span> <span class="o">==</span> <span class="n">c</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">dist_m</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+        <span class="n">dist_m</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">get_sys_config</span><span class="p">()[</span><span class="s1">&#39;_MESMERIZE_N_THREADS&#39;</span><span class="p">])</span>
 
         <span class="n">centroids</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">c_ix</span> <span class="o">=</span> <span class="n">get_centerlike</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">dist_matrix</span><span class="o">=</span><span class="n">dist_m</span><span class="p">)</span>
         <span class="n">radii</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_cluster_radius</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">dist_matrix</span><span class="o">=</span><span class="n">dist_m</span><span class="p">,</span> <span class="n">centerlike_index</span><span class="o">=</span><span class="n">c_ix</span><span class="p">)</span>
 
-    <span class="n">centroid_distances</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">centroids</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+    <span class="n">centroid_distances</span> <span class="o">=</span> <span class="n">pairwise_distances</span><span class="p">(</span><span class="n">centroids</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">get_sys_config</span><span class="p">()[</span><span class="s1">&#39;_MESMERIZE_N_THREADS&#39;</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">radii</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">centroid_distances</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
         <span class="k">return</span> <span class="mf">0.0</span>
@@ -306,7 +312,6 @@
     <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">combined_intra_dists</span> <span class="o">/</span> <span class="n">centroid_distances</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span></div>
-
 </pre></div>
 
            </div>
