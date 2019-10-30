@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -128,11 +129,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -156,21 +157,28 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer Modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#batch-manager">Batch Manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tiff-module">Tiff Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caiman-motion-correction">Caiman Motion Correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cnmf">CNMF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cnmfe">CNMFE</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -362,7 +370,7 @@
 </div>
 <div class="section" id="tiff-module">
 <span id="api-tiffmodule"></span><h2>Tiff Module<a class="headerlink" href="#tiff-module" title="Permalink to this headline">¶</a></h2>
-<p>Uses the tifffile package created by Christoph Gohlke: <a class="reference external" href="https://pypi.org/project/tifffile/">https://pypi.org/project/tifffile/</a></p>
+<p><strong>Uses the tifffile package created by Christoph Gohlke:</strong> <a class="reference external" href="https://pypi.org/project/tifffile/">https://pypi.org/project/tifffile/</a></p>
 <p>Can be used with scripts within Mesmerize for loading tiff files without using the API of <a class="reference internal" href="../Viewer_data_types.html#api-viewercore"><span class="std std-ref">Viewer Core</span></a></p>
 <dl class="class">
 <dt id="mesmerize.viewer.modules.tiff_io.ModuleGUI">
@@ -387,6 +395,158 @@
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="caiman-motion-correction">
+<span id="api-caimanmotioncorrection"></span><h2>Caiman Motion Correction<a class="headerlink" href="#caiman-motion-correction" title="Permalink to this headline">¶</a></h2>
+<p>Front-end for <a class="reference external" href="https://doi.org/10.7554/eLife.38173">Caiman</a> NoRMCorre parameters entry</p>
+<p>Can be used with scripts for adding batch items.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../user_guides/viewer/modules/caiman_motion_correction.html#module-caimanmotioncorrection"><span class="std std-ref">User guide</span></a></p>
+</div>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.caiman_motion_correction.</code><code class="descname">ModuleGUI</code><span class="sig-paren">(</span><em>parent</em>, <em>viewer_reference</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/caiman_motion_correction.html#ModuleGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/caiman_motion_correction.html#ModuleGUI.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dict of the set parameters
+:return: parameters dict
+:rtype: dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>params: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/caiman_motion_correction.html#ModuleGUI.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all parameters from a dict. All keys must be present in the dict and of the correct type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> – dict of parameters</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.add_to_batch_elas_corr">
+<code class="descname">add_to_batch_elas_corr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/caiman_motion_correction.html#ModuleGUI.add_to_batch_elas_corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.caiman_motion_correction.ModuleGUI.add_to_batch_elas_corr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a batch item with the currently set parameters and the current work environment.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cnmf">
+<span id="api-cnmf"></span><h2>CNMF<a class="headerlink" href="#cnmf" title="Permalink to this headline">¶</a></h2>
+<p>Front-end for <a class="reference external" href="https://doi.org/10.7554/eLife.38173">Caiman</a> CNMF parameter entry</p>
+<p>Can be used with scripts for adding batch items.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../user_guides/viewer/modules/cnmf.html#module-cnmf"><span class="std std-ref">User guide</span></a></p>
+</div>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.cnmf.ModuleGUI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.cnmf.</code><code class="descname">ModuleGUI</code><span class="sig-paren">(</span><em>parent</em>, <em>viewer_reference</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmf.html#ModuleGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmf.ModuleGUI" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="mesmerize.viewer.modules.cnmf.ModuleGUI.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmf.html#ModuleGUI.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmf.ModuleGUI.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dict of the set parameters.
+If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
+Doesn’t use any arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">parameters dict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.cnmf.ModuleGUI.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>d: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmf.html#ModuleGUI.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmf.ModuleGUI.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all parameters from a dict. All keys must be present in the dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>d</strong> – parameters dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.cnmf.ModuleGUI.add_to_batch_cnmf">
+<code class="descname">add_to_batch_cnmf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmf.html#ModuleGUI.add_to_batch_cnmf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmf.ModuleGUI.add_to_batch_cnmf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a CNMF batch item with the currently set parameters and the current work environment.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cnmfe">
+<span id="api-cnmfe"></span><h2>CNMFE<a class="headerlink" href="#cnmfe" title="Permalink to this headline">¶</a></h2>
+<p>Front-end for <a class="reference external" href="https://doi.org/10.7554/eLife.38173">Caiman</a> CNMFE parameter entry</p>
+<p>Can be used with scripts for adding batch items.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../../user_guides/viewer/modules/cnmfe.html#module-cnmfe"><span class="std std-ref">User guide</span></a></p>
+</div>
+<dl class="class">
+<dt id="mesmerize.viewer.modules.cnmfe.ModuleGUI">
+<em class="property">class </em><code class="descclassname">mesmerize.viewer.modules.cnmfe.</code><code class="descname">ModuleGUI</code><span class="sig-paren">(</span><em>parent</em>, <em>viewer_reference</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmfe.html#ModuleGUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmfe.ModuleGUI" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="mesmerize.viewer.modules.cnmfe.ModuleGUI.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmfe.html#ModuleGUI.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmfe.ModuleGUI.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dict of the set parameters.
+If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
+Doesn’t use any arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">parameters dict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.cnmfe.ModuleGUI.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>params: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmfe.html#ModuleGUI.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmfe.ModuleGUI.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all parameters from a dict. All keys must be present in the dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> – parameters dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.cnmfe.ModuleGUI.add_to_batch_corr_pnr">
+<code class="descname">add_to_batch_corr_pnr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmfe.html#ModuleGUI.add_to_batch_corr_pnr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmfe.ModuleGUI.add_to_batch_corr_pnr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a Corr PNR batch item with the currently set parameters and the current work environment.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.viewer.modules.cnmfe.ModuleGUI.add_to_batch_cnmfe">
+<code class="descname">add_to_batch_cnmfe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/viewer/modules/cnmfe.html#ModuleGUI.add_to_batch_cnmfe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.viewer.modules.cnmfe.ModuleGUI.add_to_batch_cnmfe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a CNMFE batch item with the currently set parameters and the current work environment.</p>
 </dd></dl>
 
 </dd></dl>

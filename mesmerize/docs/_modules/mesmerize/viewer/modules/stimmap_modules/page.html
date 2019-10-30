@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -126,11 +127,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
@@ -154,17 +155,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -249,8 +254,8 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">Union</span>
 
 
-<div class="viewcode-block" id="Page"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page">[docs]</a><span class="k">class</span> <span class="nc">Page</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">stim_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="Page"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page">[docs]</a><span class="k">class</span> <span class="nc">Page</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="Page.__init__"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">stim_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">Ui_TabPage</span><span class="p">()</span>
@@ -258,9 +263,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">stim_type</span> <span class="o">=</span> <span class="n">stim_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1">#: List of row objects, each row holds one stimulus period.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnAddRow</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_row</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnAddRow</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_row</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="Page.set_data"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<div class="viewcode-block" id="Page.set_data"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the stimulus map</span>
 
@@ -270,7 +275,7 @@
         <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">series</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">series</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Page.get_dataframe"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.get_dataframe">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<div class="viewcode-block" id="Page.get_dataframe"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.get_dataframe">[docs]</a>    <span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the stimulus map as a DataFrame</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -282,7 +287,7 @@
             <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get_dict</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">l</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Page.set_units"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.set_units">[docs]</a>    <span class="k">def</span> <span class="nf">set_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="Page.set_units"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.set_units">[docs]</a>    <span class="k">def</span> <span class="nf">set_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the time units</span>
 
@@ -298,13 +303,13 @@
         <span class="k">elif</span> <span class="n">units</span> <span class="o">==</span> <span class="s1">&#39;frames&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxTimeUnits</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Page.get_units"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.get_units">[docs]</a>    <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="Page.get_units"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.get_units">[docs]</a>    <span class="k">def</span> <span class="nf">get_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the time units</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxTimeUnits</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Page.add_row"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.add_row">[docs]</a>    <span class="k">def</span> <span class="nf">add_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pd_series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Page.add_row"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.add_row">[docs]</a>    <span class="k">def</span> <span class="nf">add_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pd_series</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a row to the stimulus map</span>
 
@@ -316,7 +321,7 @@
         <span class="n">row</span><span class="o">.</span><span class="n">btn_remove</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_row</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">verticalLayout</span><span class="o">.</span><span class="n">insertLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">verticalLayout</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">hlayout</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Page.delete_row"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.delete_row">[docs]</a>    <span class="k">def</span> <span class="nf">delete_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Row</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
+<div class="viewcode-block" id="Page.delete_row"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.delete_row">[docs]</a>    <span class="k">def</span> <span class="nf">delete_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Row</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete a row from the stimulus map</span>
 
@@ -334,7 +339,7 @@
         <span class="n">row</span><span class="o">.</span><span class="n">hlayout</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
         <span class="n">row</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Page.clear"><a class="viewcode-back" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html#mesmerize.viewer.modules.stimmap_modules.page.Page.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Page.clear"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.stimmap_modules.html#mesmerize.viewer.modules.stimmap_modules.page.Page.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear the stimulus map&quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">delete_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>

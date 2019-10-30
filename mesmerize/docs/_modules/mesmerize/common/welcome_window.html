@@ -1,0 +1,566 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mesmerize.common.welcome_window &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/consoles.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../common.html">mesmerize.common</a> &raquo;</li>
+        
+      <li>mesmerize.common.welcome_window</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mesmerize.common.welcome_window</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on June 5 2018</span>
+
+<span class="sd">@author: kushal</span>
+
+<span class="sd">Chatzigeorgiou Group</span>
+<span class="sd">Sars International Centre for Marine Molecular Biology</span>
+
+<span class="sd">GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">..pyqtgraphCore.console</span> <span class="k">import</span> <span class="n">ConsoleWidget</span>
+<span class="kn">from</span> <span class="nn">.pytemplates.welcome_window_pytemplate</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># from ..project_manager import ProjectManager</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">system_config_window</span><span class="p">,</span> <span class="n">doc_pages</span><span class="p">,</span> <span class="n">get_project_manager</span><span class="p">,</span> <span class="n">set_project_manager</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">get_window_manager</span><span class="p">,</span> <span class="n">is_mesmerize_project</span>
+<span class="c1"># from viewer.modules import batch_manager</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">start</span>
+<span class="kn">from</span> <span class="nn">..viewer.modules.batch_manager</span> <span class="k">import</span> <span class="n">ModuleGUI</span> <span class="k">as</span> <span class="n">BatchModuleGUI</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
+<span class="kn">from</span> <span class="nn">..plotting</span> <span class="k">import</span> <span class="n">open_plot_file</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">.qdialogs</span> <span class="k">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="MainWindow"><a class="viewcode-back" href="../../../mesmerize.common.html#mesmerize.common.welcome_window.MainWindow">[docs]</a><span class="k">class</span> <span class="nc">MainWindow</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">):</span>
+<div class="viewcode-block" id="MainWindow.__init__"><a class="viewcode-back" href="../../../mesmerize.common.html#mesmerize.common.welcome_window.MainWindow.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">Ui_MainWindow</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Mesmerize - Welcome Window&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_manager</span> <span class="o">=</span> <span class="n">get_window_manager</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnProjectBrowser</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelProjectBrowser</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">mpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+        <span class="n">mdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">mpath</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnProjectBrowser</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="n">mdir</span> <span class="o">+</span> <span class="s1">&#39;/icons/noun_917603_cc.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnProjectBrowser</span><span class="o">.</span><span class="n">setIconSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnProjectBrowser</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_project_browser</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnNewProject</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="n">mdir</span> <span class="o">+</span> <span class="s1">&#39;/icons/noun_1327089_cc.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnNewProject</span><span class="o">.</span><span class="n">setIconSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnNewProject</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">create_new_project</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnOpenProject</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="n">mdir</span> <span class="o">+</span> <span class="s1">&#39;/icons/noun_1327109_cc.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnOpenProject</span><span class="o">.</span><span class="n">setIconSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnOpenProject</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_project_dialog</span><span class="p">)</span>
+
+        <span class="n">sys_cfg</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">get_sys_config</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetRecentProjects</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;recent_projects&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetRecentProjects</span><span class="o">.</span><span class="n">itemDoubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_project</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnViewer</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="n">mdir</span> <span class="o">+</span> <span class="s1">&#39;/icons/noun_38902_cc.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnViewer</span><span class="o">.</span><span class="n">setIconSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnViewer</span><span class="o">.</span><span class="n">setIconSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnViewer</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_new_viewer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnFlowchart</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="n">mdir</span> <span class="o">+</span> <span class="s1">&#39;/icons/noun_907242_cc.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnFlowchart</span><span class="o">.</span><span class="n">setIconSize</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnFlowchart</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_new_flowchart</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionDocs_homepage</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">doc_pages</span><span class="p">[</span><span class="s1">&#39;home&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionNew_Project_Docs</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">doc_pages</span><span class="p">[</span><span class="s1">&#39;new_project&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sys_config_gui</span> <span class="o">=</span> <span class="n">system_config_window</span><span class="o">.</span><span class="n">SystemConfigGUI</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionSystem_Configuration</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sys_config_gui</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize_console_widget</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">914</span><span class="p">,</span> <span class="mi">900</span><span class="p">)</span>
+        <span class="c1"># configuration.projPath = &#39;/home/kushal/mesmerize_test_proj&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelProjectPlots</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_windows</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowcharts_dir</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots_dir</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">initialize_console_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;configuration&#39;</span><span class="p">:</span> <span class="n">configuration</span><span class="p">,</span>
+              <span class="s1">&#39;get_window_manager&#39;</span><span class="p">:</span> <span class="n">get_window_manager</span><span class="p">,</span>
+              <span class="s1">&#39;this&#39;</span><span class="p">:</span> <span class="bp">self</span>
+              <span class="p">}</span>
+
+        <span class="n">txt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;Namespaces:&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;self as this&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;callables:&quot;</span><span class="p">,</span>
+                         <span class="s2">&quot;get_window_manager()&quot;</span><span class="p">])</span>
+
+        <span class="n">cmd_history_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">console_history_path</span><span class="p">,</span> <span class="s1">&#39;welcome_window.pik&#39;</span><span class="p">)</span>
+        <span class="n">console</span> <span class="o">=</span> <span class="n">ConsoleWidget</span><span class="p">(</span><span class="n">namespace</span><span class="o">=</span><span class="n">ns</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">txt</span><span class="p">,</span> <span class="n">historyFile</span><span class="o">=</span><span class="n">cmd_history_file</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">centralwidget</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">console</span><span class="p">)</span>
+        <span class="c1"># self.ui.centralwidget.layout().addWidget(spacer)</span>
+        <span class="c1"># self.ui.dockConsole.setWidget(console)</span>
+
+        <span class="c1"># self.resizeDocks([self.ui.dockConsole], [235], QtCore.Qt.Vertical)</span>
+        <span class="c1"># console.resize(self.ui.dockConsole.width(), 100)</span>
+        <span class="c1"># self.ui.dockConsole.resize(self.ui.dockConsole.width(), 150)</span>
+        <span class="c1"># console.input.resize(console.input.width(), 80)</span>
+
+        <span class="c1"># self.ui.dockConsole.hide()</span>
+
+    <span class="k">def</span> <span class="nf">append_recent_projects_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sys_cfg</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">get_sys_config</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">root_dir</span> <span class="ow">in</span> <span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;recent_projects&#39;</span><span class="p">]:</span>
+            <span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;recent_projects&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span>
+        <span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;recent_projects&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;recent_projects&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;recent_projects&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys_cfg</span><span class="p">[</span><span class="s1">&#39;recent_projects&#39;</span><span class="p">][:</span><span class="mi">10</span><span class="p">]</span>
+
+        <span class="n">configuration</span><span class="o">.</span><span class="n">save_sys_config</span><span class="p">(</span><span class="n">sys_cfg</span><span class="p">)</span>
+
+    <span class="nd">@use_open_dir_dialog</span><span class="p">(</span><span class="s1">&#39;Choose location for a new project&#39;</span><span class="p">)</span>
+    <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Could not create new project&#39;</span><span class="p">,</span> <span class="s1">&#39;The following error occurred while creating a new project&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">create_new_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="c1"># path = QtWidgets.QFileDialog.getExistingDirectory(self, &#39;Choose location for a new project&#39;)</span>
+        <span class="c1"># if path == &#39;&#39;:</span>
+        <span class="c1">#     return</span>
+
+        <span class="n">name</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Project Name:&#39;</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="o">.</span><span class="n">Normal</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">]):</span>
+            <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Invalid Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Project Name can only contain alphanumeric characters&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># try:</span>
+            <span class="n">proj_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">proj_dir</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">setup_new_project</span><span class="p">()</span>
+            <span class="c1"># except Exception:</span>
+            <span class="c1">#     QtWidgets.QMessageBox.warning(self, &#39;Error!&#39;,</span>
+            <span class="c1">#                                   &#39;Could not create a new project.\n&#39; +</span>
+            <span class="c1">#                                   traceback.format_exc())</span>
+            <span class="c1">#     return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionProject_Configuration</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionProject_Configuration</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">show_config_window</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_proj_buttons_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append_recent_projects_list</span><span class="p">()</span>
+
+        <span class="c1"># self.initialize_project_browser()</span>
+
+    <span class="nd">@use_open_dir_dialog</span><span class="p">(</span><span class="s1">&#39;Select Project Directory&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">open_project_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_project</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Cannot open project&#39;</span><span class="p">,</span> <span class="s1">&#39;The selected directory is probably not a valid Mesmerize Project.&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">open_project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">is_mesmerize_project</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span> <span class="o">=</span> <span class="n">get_project_manager</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">project_root_dir</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">open_project</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionProject_Configuration</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionProject_Configuration</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">show_config_window</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_proj_buttons_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">project_browser</span><span class="p">()</span>
+        <span class="n">pb</span><span class="o">.</span><span class="n">reload_all_tabs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append_recent_projects_list</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">show_project_browser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">get_window_manager</span><span class="p">()</span><span class="o">.</span><span class="n">project_browser</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">set_proj_buttons_visible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnNewProject</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelNewProj</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnOpenProject</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelOpenProject</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="c1"># self.ui.listWidgetRecentProjects.setVisible(b)</span>
+        <span class="c1"># self.ui.labelRecentProjects.setVisible(b)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnProjectBrowser</span><span class="o">.</span><span class="n">setHidden</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelProjectBrowser</span><span class="o">.</span><span class="n">setHidden</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_flowcharts_list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_plots_list</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">set_flowcharts_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelRecentProjects</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Project flowcharts&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">listWidgetRecentProjects</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flowcharts_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;flowcharts&#39;</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileSystemModel</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setRootPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowcharts_dir</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDir</span><span class="o">.</span><span class="n">NoDotAndDotDot</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QDir</span><span class="o">.</span><span class="n">Files</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QDir</span><span class="o">.</span><span class="n">Dirs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">setRootIndex</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flowcharts_dir</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">setColumnHidden</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">setColumnHidden</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeToContents</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewFlowcharts</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m_ix</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_new_flowchart</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">filePath</span><span class="p">(</span><span class="n">m_ix</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">set_plots_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">labelProjectPlots</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_manager</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;plots&#39;</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileSystemModel</span><span class="p">()</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setRootPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_dir</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QDir</span><span class="o">.</span><span class="n">NoDotAndDotDot</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QDir</span><span class="o">.</span><span class="n">Files</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QDir</span><span class="o">.</span><span class="n">Dirs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">setRootIndex</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots_dir</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">setColumnHidden</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">setColumnHidden</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">header</span><span class="p">()</span><span class="o">.</span><span class="n">setSectionResizeMode</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHeaderView</span><span class="o">.</span><span class="n">ResizeToContents</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">treeViewProjectPlots</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m_ix</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_plot</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">filePath</span><span class="p">(</span><span class="n">m_ix</span><span class="p">)))</span>
+
+    <span class="nd">@present_exceptions</span><span class="p">(</span><span class="s1">&#39;Could not open plot&#39;</span><span class="p">,</span> <span class="s1">&#39;The selected file is probably not a valid plot file.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                               <span class="s1">&#39;The following error occurred:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">open_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="n">plot</span> <span class="o">=</span> <span class="n">open_plot_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_windows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_DeleteOnClose</span><span class="p">)</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">destroyed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_windows</span><span class="o">.</span><span class="n">remove</span><span class="p">,</span> <span class="n">plot</span><span class="p">))</span>
+        <span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">open_new_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">get_window_manager</span><span class="p">()</span><span class="o">.</span><span class="n">get_new_viewer_window</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="c1"># start.viewer()</span>
+
+    <span class="k">def</span> <span class="nf">open_new_flowchart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">return</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="n">get_window_manager</span><span class="p">()</span><span class="o">.</span><span class="n">get_new_flowchart</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_batch_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_batch</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">testing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BatchModuleGUI</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">run_batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span> <span class="o">=</span> <span class="n">BatchModuleGUI</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run_batch</span><span class="o">=</span><span class="n">run_batch</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">testing</span><span class="p">:</span>
+                 <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;No batch manager open&#39;</span><span class="p">,</span> <span class="s1">&#39;Choose a location for a new batch or create a new batch&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span> <span class="o">=</span> <span class="n">BatchModuleGUI</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">testing</span><span class="o">=</span><span class="n">testing</span><span class="p">)</span>
+            <span class="c1"># self._batch_manager.show()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_manager</span>
+            <span class="c1"># self._batch_manager.show()</span>
+            <span class="c1"># self._batch_manager.show()</span>
+
+<div class="viewcode-block" id="MainWindow.closeEvent"><a class="viewcode-back" href="../../../mesmerize.common.html#mesmerize.common.welcome_window.MainWindow.closeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">QCloseEvent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Close Application?&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;Are you sure you want to close all Mesmerize windows?&#39;</span><span class="p">,</span>
+                                         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">,</span>
+                                         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">)</span> <span class="o">==</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span><span class="p">:</span>
+            <span class="n">QCloseEvent</span><span class="o">.</span><span class="n">ignore</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">topLevelWidgets</span><span class="p">():</span>
+                <span class="n">QCloseEvent</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

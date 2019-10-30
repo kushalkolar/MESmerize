@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mesmerize.viewer.modules.batch_run_modules.CNMF &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/consoles.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mesmerize.viewer.modules.batch_run_modules.CNMF</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mesmerize.viewer.modules.batch_run_modules.CNMF</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on July 7 2018</span>
+
+<span class="sd">@author: kushal</span>
+
+<span class="sd">Chatzigeorgiou Group</span>
+<span class="sd">Sars International Centre for Marine Molecular Biology</span>
+
+<span class="sd">GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</span>
+
+<span class="sd">Adapted from @agiovann and @epnev</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">setNumThreads</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Open CV is naturally single threaded&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">caiman</span> <span class="k">as</span> <span class="nn">cm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">caiman.utils.visualization</span> <span class="k">import</span> <span class="n">plot_contours</span><span class="p">,</span> <span class="n">view_patches_bar</span>
+<span class="kn">from</span> <span class="nn">caiman.source_extraction.cnmf</span> <span class="k">import</span> <span class="n">cnmf</span> <span class="k">as</span> <span class="n">cnmf</span>
+<span class="kn">from</span> <span class="nn">caiman.source_extraction.cnmf.utilities</span> <span class="k">import</span> <span class="n">detrend_df_f</span>
+<span class="kn">from</span> <span class="nn">caiman.components_evaluation</span> <span class="k">import</span> <span class="n">estimate_components_quality_auto</span>
+<span class="kn">import</span> <span class="nn">tifffile</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="k">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtWidgets</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="vm">__file__</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">..roi_manager</span> <span class="k">import</span> <span class="n">ModuleGUI</span>
+    <span class="kn">from</span> <span class="nn">...core</span> <span class="k">import</span> <span class="n">ViewerUtils</span><span class="p">,</span> <span class="n">ViewerWorkEnv</span>
+
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">batch_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;output_info&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
+    <span class="n">n_processes</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;_MESMERIZE_N_THREADS&#39;</span><span class="p">]</span>
+    <span class="n">n_processes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_processes</span><span class="p">)</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">UUID</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;.tiff&#39;</span><span class="p">]</span>
+    <span class="n">input_params</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;.params&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+
+    <span class="n">fr</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;fr&#39;</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span>
+    <span class="n">gnb</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;gnb&#39;</span><span class="p">]</span>
+    <span class="n">merge_thresh</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;merge_thresh&#39;</span><span class="p">]</span>
+    <span class="n">rf</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;rf&#39;</span><span class="p">]</span>
+    <span class="n">stride_cnmf</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;stride_cnmf&#39;</span><span class="p">]</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span>
+    <span class="n">gSig</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;gSig&#39;</span><span class="p">]</span>
+    <span class="n">gSig</span> <span class="o">=</span> <span class="p">[</span><span class="n">gSig</span><span class="p">,</span> <span class="n">gSig</span><span class="p">]</span>
+    <span class="n">min_SNR</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;min_SNR&#39;</span><span class="p">]</span>
+    <span class="n">rval_thr</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;rval_thr&#39;</span><span class="p">]</span>
+    <span class="n">cnn_thr</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;cnn_thr&#39;</span><span class="p">]</span>
+    <span class="n">decay_time</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;decay_time&#39;</span><span class="p">]</span>
+    <span class="n">bord_px</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;bord_px&#39;</span><span class="p">]</span>
+    <span class="n">refit</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;refit&#39;</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*********** Creating Process Pool ***********&#39;</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">,</span> <span class="n">dview</span><span class="p">,</span> <span class="n">np</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">setup_cluster</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">n_processes</span><span class="o">=</span><span class="n">n_processes</span><span class="p">,</span> <span class="n">single_thread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Creating memmap&#39;</span><span class="p">)</span>
+        <span class="n">fname_new</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">save_memmap_each</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span>
+            <span class="n">base_name</span><span class="o">=</span><span class="s1">&#39;memmap_&#39;</span> <span class="o">+</span> <span class="n">UUID</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span>
+            <span class="n">border_to_0</span><span class="o">=</span><span class="n">bord_px</span><span class="p">,</span>
+            <span class="n">dview</span><span class="o">=</span><span class="n">dview</span><span class="p">)</span>
+        <span class="n">fname_new</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">save_memmap_join</span><span class="p">(</span><span class="n">fname_new</span><span class="p">,</span> <span class="n">base_name</span><span class="o">=</span><span class="s1">&#39;memmap_&#39;</span> <span class="o">+</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">dview</span><span class="o">=</span><span class="n">dview</span><span class="p">)</span>
+
+        <span class="n">Yr</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">load_memmap</span><span class="p">(</span><span class="n">fname_new</span><span class="p">)</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">Yr</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">T</span><span class="p">,)</span> <span class="o">+</span> <span class="n">dims</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+        <span class="n">cnm</span> <span class="o">=</span> <span class="n">cnmf</span><span class="o">.</span><span class="n">CNMF</span><span class="p">(</span><span class="n">n_processes</span><span class="o">=</span><span class="n">n_processes</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">gSig</span><span class="o">=</span><span class="n">gSig</span><span class="p">,</span> <span class="n">merge_thresh</span><span class="o">=</span><span class="n">merge_thresh</span><span class="p">,</span>
+                        <span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dview</span><span class="o">=</span><span class="n">dview</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="n">rf</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">stride_cnmf</span><span class="p">,</span> <span class="n">memory_fact</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">method_init</span><span class="o">=</span><span class="s1">&#39;greedy_roi&#39;</span><span class="p">,</span> <span class="n">alpha_snmf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">only_init_patch</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gnb</span><span class="o">=</span><span class="n">gnb</span><span class="p">,</span> <span class="n">border_pix</span><span class="o">=</span><span class="n">bord_px</span><span class="p">)</span>
+        <span class="n">cnm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+
+        <span class="n">idx_components</span><span class="p">,</span> <span class="n">idx_components_bad</span><span class="p">,</span> <span class="n">SNR_comp</span><span class="p">,</span> <span class="n">r_values</span><span class="p">,</span> <span class="n">cnn_preds</span> <span class="o">=</span> \
+            <span class="n">estimate_components_quality_auto</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">cnm</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">cnm</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="n">cnm</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">cnm</span><span class="o">.</span><span class="n">f</span><span class="p">,</span>
+                                             <span class="n">cnm</span><span class="o">.</span><span class="n">YrA</span><span class="p">,</span> <span class="n">fr</span><span class="p">,</span> <span class="n">decay_time</span><span class="p">,</span> <span class="n">gSig</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span>
+                                             <span class="n">dview</span><span class="o">=</span><span class="n">dview</span><span class="p">,</span> <span class="n">min_SNR</span><span class="o">=</span><span class="n">min_SNR</span><span class="p">,</span>
+                                             <span class="n">r_values_min</span><span class="o">=</span><span class="n">rval_thr</span><span class="p">,</span> <span class="n">use_cnn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                             <span class="n">thresh_cnn_lowest</span><span class="o">=</span><span class="n">cnn_thr</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">refit</span><span class="p">:</span>
+
+            <span class="n">A_in</span><span class="p">,</span> <span class="n">C_in</span><span class="p">,</span> <span class="n">b_in</span><span class="p">,</span> <span class="n">f_in</span> <span class="o">=</span> <span class="n">cnm</span><span class="o">.</span><span class="n">A</span><span class="p">[:,</span>
+                                     <span class="n">idx_components</span><span class="p">],</span> <span class="n">cnm</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="n">idx_components</span><span class="p">],</span> <span class="n">cnm</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">cnm</span><span class="o">.</span><span class="n">f</span>
+
+            <span class="n">cnm2</span> <span class="o">=</span> <span class="n">cnmf</span><span class="o">.</span><span class="n">CNMF</span><span class="p">(</span><span class="n">n_processes</span><span class="o">=</span><span class="n">n_processes</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">A_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">gSig</span><span class="o">=</span><span class="n">gSig</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">dview</span><span class="o">=</span><span class="n">dview</span><span class="p">,</span>
+                             <span class="n">merge_thresh</span><span class="o">=</span><span class="n">merge_thresh</span><span class="p">,</span> <span class="n">Ain</span><span class="o">=</span><span class="n">A_in</span><span class="p">,</span> <span class="n">Cin</span><span class="o">=</span><span class="n">C_in</span><span class="p">,</span> <span class="n">b_in</span><span class="o">=</span><span class="n">b_in</span><span class="p">,</span>
+                             <span class="n">f_in</span><span class="o">=</span><span class="n">f_in</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gnb</span><span class="o">=</span><span class="n">gnb</span><span class="p">,</span>
+                             <span class="n">method_deconvolution</span><span class="o">=</span><span class="s1">&#39;oasis&#39;</span><span class="p">,</span> <span class="n">check_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">cnm2</span> <span class="o">=</span> <span class="n">cnm2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+
+            <span class="n">cnmA</span> <span class="o">=</span> <span class="n">cnm2</span><span class="o">.</span><span class="n">A</span>
+            <span class="n">cnmb</span> <span class="o">=</span> <span class="n">cnm2</span><span class="o">.</span><span class="n">b</span>
+            <span class="n">cnmC</span> <span class="o">=</span> <span class="n">cnm2</span><span class="o">.</span><span class="n">C</span>
+            <span class="n">cnm_f</span> <span class="o">=</span> <span class="n">cnm2</span><span class="o">.</span><span class="n">f</span>
+            <span class="n">cnmYrA</span> <span class="o">=</span> <span class="n">cnm2</span><span class="o">.</span><span class="n">YrA</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cnmA</span> <span class="o">=</span> <span class="n">cnm</span><span class="o">.</span><span class="n">A</span>
+            <span class="n">cnmb</span> <span class="o">=</span> <span class="n">cnm</span><span class="o">.</span><span class="n">b</span>
+            <span class="n">cnmC</span> <span class="o">=</span> <span class="n">cnm</span><span class="o">.</span><span class="n">C</span>
+            <span class="n">cnm_f</span> <span class="o">=</span> <span class="n">cnm</span><span class="o">.</span><span class="n">f</span>
+            <span class="n">cnmYrA</span> <span class="o">=</span> <span class="n">cnm</span><span class="o">.</span><span class="n">YrA</span>
+
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">Yr</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_Yr.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cnmA</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-A.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cnmb</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-b.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cnmC</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-C.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cnm_f</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-f.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">idx_components</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_idx_components.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cnmYrA</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span>  <span class="o">+</span> <span class="s1">&#39;_cnm-YrA.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dims</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">UUID</span>  <span class="o">+</span> <span class="s1">&#39;_dims.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="n">output_file_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-A.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_Yr.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-b.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-C.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-f.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_idx_components.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_cnm-YrA.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;_dims.pikl&#39;</span><span class="p">,</span>
+                            <span class="n">UUID</span> <span class="o">+</span> <span class="s1">&#39;.out&#39;</span>
+                            <span class="p">]</span>
+
+        <span class="n">output</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
+                       <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="s1">&#39;output_files&#39;</span><span class="p">:</span> <span class="n">output_file_list</span>
+                       <span class="p">})</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;output_info&#39;</span><span class="p">:</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()})</span>
+
+    <span class="n">dview</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="n">glob</span><span class="p">(</span><span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/memmap_*&#39;</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">mf</span><span class="p">)</span>
+
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span> <span class="o">+</span> <span class="s1">&#39;.out&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="Output"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.batch_run_modules.html#mesmerize.viewer.modules.batch_run_modules.CNMF.Output">[docs]</a><span class="k">class</span> <span class="nc">Output</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="Output.__init__"><a class="viewcode-back" href="../../../../../mesmerize.viewer.modules.batch_run_modules.html#mesmerize.viewer.modules.batch_run_modules.CNMF.Output.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_dir</span><span class="p">,</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">viewer_ref</span><span class="p">):</span>
+        <span class="c1"># super(Output, self).__init__()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_dir</span> <span class="o">=</span> <span class="n">batch_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">UUID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewer_ref</span> <span class="o">=</span> <span class="n">viewer_ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmfe_results</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">UUID</span><span class="p">)</span>
+        <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;CNMF visualization or Import?&#39;</span><span class="p">)</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+
+        <span class="n">label</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Would you like to use the CaImAn visualization or import components into the viewer?&#39;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnCNMF</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnCNMF</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;CaImAn CNMF visualization&#39;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnCNMF</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnImportIntoViewer</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnImportIntoViewer</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Import CNMF output into chosen Viewer&#39;</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btnImportIntoViewer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnCNMF</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_cnmf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btnImportIntoViewer</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">import_cnmf_into_viewer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">get_cnmf_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-A.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-C.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmb</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-b.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnm_f</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-f.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cnmYrA</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-YrA.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_idx_components.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dims</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_dims.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">output_cnmf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># , batch_dir, UUID, viewer_ref):</span>
+        <span class="k">pass</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_cnmf_results</span><span class="p">()</span>
+
+        <span class="n">Yr</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_Yr.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+
+        <span class="n">cnmb</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-b.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="n">cnm_f</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-f.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="n">cnmYrA</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;_cnm-YrA.pikl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+
+        <span class="n">img</span> <span class="o">=</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.tiff&#39;</span><span class="p">)</span>
+        <span class="n">Cn</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">local_correlations</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">Cn</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Cn</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">visualization</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">view_patches_bar</span><span class="p">(</span><span class="n">Yr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span><span class="p">],</span>
+                                                                     <span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span><span class="p">],</span> <span class="n">cnmb</span><span class="p">,</span> <span class="n">cnm_f</span><span class="p">,</span>
+                                                                     <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                                     <span class="n">YrA</span><span class="o">=</span><span class="n">cnmYrA</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">idx_components</span><span class="p">],</span> <span class="n">img</span><span class="o">=</span><span class="n">Cn</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">import_cnmf_into_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_cnmf_results</span><span class="p">()</span>
+
+        <span class="n">vi</span> <span class="o">=</span> <span class="n">ViewerUtils</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">viewer_ref</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">vi</span><span class="o">.</span><span class="n">discard_workEnv</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">status_bar_label</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s1">&#39;Loading CNMFE data, please wait...&#39;</span><span class="p">)</span>
+        <span class="n">pickle_file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_workEnv.pik&#39;</span>
+        <span class="n">tiff_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.tiff&#39;</span>
+
+        <span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">workEnv</span> <span class="o">=</span> <span class="n">ViewerWorkEnv</span><span class="o">.</span><span class="n">from_pickle</span><span class="p">(</span><span class="n">pickle_file_path</span><span class="p">,</span> <span class="n">tiff_path</span><span class="p">)</span>
+        <span class="n">vi</span><span class="o">.</span><span class="n">update_workEnv</span><span class="p">()</span>
+
+        <span class="n">input_params</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.params&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+        <span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">workEnv</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewer_ref</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionROI_Manager</span><span class="o">.</span><span class="n">trigger</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewer_ref</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">running_modules</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">ModuleGUI</span><span class="p">):</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">start_cnmfe_mode</span><span class="p">()</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">add_all_cnmfe_components</span><span class="p">(</span><span class="n">cnmA</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmA</span><span class="p">,</span>
+                                           <span class="n">cnmb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmb</span><span class="p">,</span>
+                                           <span class="n">cnmC</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span><span class="p">,</span>
+                                           <span class="n">cnm_f</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cnm_f</span><span class="p">,</span>
+                                           <span class="n">cnmYrA</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmYrA</span><span class="p">,</span>
+                                           <span class="n">idx_components</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cnmC</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
+                                           <span class="n">dims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dims</span><span class="p">,</span>
+                                           <span class="n">input_params_dict</span><span class="o">=</span><span class="n">input_params</span><span class="p">,</span>
+                                           <span class="n">dfof</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;name_cnmf&#39;</span> <span class="ow">in</span> <span class="n">input_params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">input_params</span><span class="p">[</span><span class="s1">&#39;name_cnmf&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">vi</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">label_curr_img_seq_name</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;CNMF of: &#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="vm">__file__</span><span class="p">:</span>
+    <span class="n">run</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -28,6 +28,7 @@
         <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,9 +94,8 @@
               <p class="caption"><span class="caption-text">Overview</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#welcome-window">Welcome Window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-viewer">The Viewer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#opening-image-sequences">Opening Image sequences</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#stimulus-mapping">Stimulus mapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#caiman-modules">CaImAn modules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#batch-manager">Batch Manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#project-organization">Project Organization</a></li>
@@ -138,11 +138,11 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/plots/lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/plots/scatter.html">Scatter</a></li>
@@ -166,17 +166,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -243,101 +247,57 @@
             
   <div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize attempts to encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and keep track of the analysis so that it can be recapitulated. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.</p>
+<div class="section" id="welcome-window">
+<h2>Welcome Window<a class="headerlink" href="#welcome-window" title="Permalink to this headline">¶</a></h2>
+<p>Share your analysis pipelines and figures along with your publication</p>
 <img alt="_images/welcome_window.png" src="_images/welcome_window.png" />
+</div>
 <div class="section" id="the-viewer">
 <h2>The Viewer<a class="headerlink" href="#the-viewer" title="Permalink to this headline">¶</a></h2>
+<p>Explore image sequences, and use various modules for pre-processing and signal-extraction. Annotate regions of interest with any relevant information. Map stimuli/behavior periods.</p>
 <img alt="_images/viewer.png" src="_images/viewer.png" />
-</div>
-<div class="section" id="opening-image-sequences">
-<h2>Opening Image sequences<a class="headerlink" href="#opening-image-sequences" title="Permalink to this headline">¶</a></h2>
-<p>Mesmerize is able to work with 2D imaging sequences stored as tiff files and also with mes files from Femtonics microscopes. If you have image sequences stored in another format they can also be used if a Python library exists for opening them.</p>
-</div>
-<div class="section" id="stimulus-mapping">
-<h2>Stimulus mapping<a class="headerlink" href="#stimulus-mapping" title="Permalink to this headline">¶</a></h2>
-<p>Stimulus information from mes files or CSV’s can be mapped onto your imaging data.</p>
 </div>
 <div class="section" id="caiman-modules">
 <h2>CaImAn modules<a class="headerlink" href="#caiman-modules" title="Permalink to this headline">¶</a></h2>
-<p>Mesmerize contains front-end GUI modules for the extremely useful and versatile CaImAn library. This makes it very easy for users without a programming background to use the library.</p>
+<p>Mesmerize contains front-end GUI modules for the CaImAn library. This makes it very easy for users without a programming background to use the library.</p>
 <p><strong>CaImAn Elastic Motion Correction</strong></p>
 <img alt="_images/motion_correction.png" src="_images/motion_correction.png" />
 <p><strong>CNMFE</strong></p>
 <img alt="_images/cnmfe.png" src="_images/cnmfe.png" />
-<p>The computationally intense procedures performed using the CaImAn library (Elastic Motion Correction and CNMF) can be organized using the Mesmerize Batch Manager.</p>
 </div>
 <div class="section" id="batch-manager">
 <h2>Batch Manager<a class="headerlink" href="#batch-manager" title="Permalink to this headline">¶</a></h2>
+<p>Computationally intense procedures performed can be organized with the Mesmerize Batch Manager.</p>
 <img alt="_images/batch_manager.png" src="_images/batch_manager.png" />
 </div>
 <div class="section" id="project-organization">
 <h2>Project Organization<a class="headerlink" href="#project-organization" title="Permalink to this headline">¶</a></h2>
+<p>Explore project data and create experimental groups.</p>
 <img alt="_images/project_browser.png" src="_images/project_browser.png" />
 </div>
 <div class="section" id="data-analysis-pyqtgraph-programmable-flowcharts">
 <h2>Data analysis - pyqtgraph programmable flowcharts.<a class="headerlink" href="#data-analysis-pyqtgraph-programmable-flowcharts" title="Permalink to this headline">¶</a></h2>
+<p>Build your own analysis piplines using flowcharts.</p>
 <img alt="_images/flowchart.png" src="_images/flowchart.png" />
-<p><strong>Types of Nodes</strong></p>
-<ul class="simple">
-<li><strong>Data Nodes</strong><ul>
-<li>Load_Proj_DF</li>
-<li>Save</li>
-<li>Load</li>
-</ul>
-</li>
-<li><strong>Plotting</strong><ul>
-<li>Simple time series</li>
-<li>Heatmap</li>
-</ul>
-</li>
-<li><strong>Categorical Filters</strong><ul>
-<li>Align Stims</li>
-<li>ROI Selection</li>
-<li>Genotype selection</li>
-<li>Peak Detection</li>
-<li>Custom columns</li>
-</ul>
-</li>
-<li><strong>Filters and Signal Processing</strong><ul>
-<li>Butterworth filter</li>
-<li>Savitzsky-Golay filter</li>
-<li>Derivative</li>
-<li>Resample</li>
-<li>Normalize</li>
-<li>Z-Score<ul>
-<li><strong>Math</strong></li>
-</ul>
-</li>
-<li>LogTransform</li>
-<li>Discreate fourier transform</li>
-<li>Inverse discrete fourier transform</li>
-<li>Absolute value</li>
-</ul>
-</li>
-<li><strong>Clustering</strong> - based on sklearn<ul>
-<li>KMeans</li>
-<li>Agglomerative</li>
-<li>LDA</li>
-</ul>
-</li>
-<li><strong>Transform</strong> - based on sklearn<ul>
-<li>Manifold Learning<ul>
-<li>Isomap</li>
-<li>Locally Linear Embedding</li>
-<li>Spectral Embedding</li>
-<li>MDS<ul>
-<li><strong>Decomposition</strong> - based on sklearn</li>
-<li>PCA</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="section" id="interactive-plots">
 <h2>Interactive Plots<a class="headerlink" href="#interactive-plots" title="Permalink to this headline">¶</a></h2>
+<p>Create shareable interactive plots where the analysis history of every datapoint is traceable. Explore information associated with a datapoint, such as the spatial localization of its parent ROI and raw data.</p>
+<p><strong>Interactive Heatmaps</strong></p>
 <img alt="_images/interactive.gif" src="_images/interactive.gif" />
+<p><strong>Interactive Cross-correlation analysis</strong></p>
+<a class=""
+               data-lightbox="group-8f768204-bcde-47e6-a2d5-823a8a725f40"
+               href="_images/cross_cor2.gif"
+               title=""
+               data-title=""
+               ><img src="_images/cross_cor2.gif"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p>Other types of plots: Beeswarm, Violins, KShape, Proportions, Scatter</p>
 </div>
 </div>
 

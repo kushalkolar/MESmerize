@@ -28,6 +28,7 @@
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
         <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -128,14 +129,17 @@
 <p class="caption"><span class="caption-text">Plots</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="consoles.html">Consoles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cross_correlation.html">Cross Correlation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="kshape.html">KShape</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lda.html">LDA</a></li>
 <li class="toctree-l1"><a class="reference internal" href="peak_editor.html">Peak Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Scatter</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Scatter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#layout">Layout</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="simple_plot.html">Simple Plot</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
@@ -156,17 +160,21 @@
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/common.html">Common</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/nodes.html">Nodes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/utils.html">Plotting utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
 </ul>
 
             
@@ -232,8 +240,99 @@
            <div itemprop="articleBody">
             
   <div class="section" id="scatter">
-<span id="plot-scatter"></span><h1>Scatter<a class="headerlink" href="#scatter" title="Permalink to this headline">¶</a></h1>
-<p>Simple interactive scatter plot.</p>
+<span id="plot-scatterplot"></span><h1>Scatter<a class="headerlink" href="#scatter" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html#api-scatterplot"><span class="std std-ref">API Reference</span></a></p>
+<p><strong>Interactive scatter plot</strong></p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="../general/misc.html#save-ptrn"><span class="std std-ref">This plot can be saved in an interactive form</span></a></p>
+</div>
+<div class="section" id="layout">
+<h2>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h2>
+<a class=""
+               data-lightbox="group-eb37aef3-0bda-4273-976a-841d0e6f6dba"
+               href="../../_images/scatter1.png"
+               title=""
+               data-title=""
+               ><img src="../../_images/scatter1.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p><strong>Left:</strong> Controls</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="83%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Control</th>
+<th class="head">&#160;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Data Column</td>
+<td>Data column containing numerical arrays of size 2, X &amp; Y values [x, y]</td>
+</tr>
+<tr class="row-odd"><td>X</td>
+<td>Data column containing only X values</td>
+</tr>
+<tr class="row-even"><td>Y</td>
+<td>Data column containing only Y values</td>
+</tr>
+<tr class="row-odd"><td>log x</td>
+<td>Use <span class="math notranslate nohighlight">\(log_{10}\)</span> of the X data</td>
+</tr>
+<tr class="row-even"><td>log y</td>
+<td>Use <span class="math notranslate nohighlight">\(log_{10}\)</span> of the Y data</td>
+</tr>
+<tr class="row-odd"><td>Colors based on</td>
+<td>Set spot colors based on categorical labels in this column</td>
+</tr>
+<tr class="row-even"><td>Choose colormap</td>
+<td>Colromap for the the spot colors</td>
+</tr>
+<tr class="row-odd"><td>Shapes based on</td>
+<td>Set spot shapes based on categorical labels in this column</td>
+</tr>
+<tr class="row-even"><td>UUID Column</td>
+<td>Column containing UUIDs that correspond to the plot data</td>
+</tr>
+<tr class="row-odd"><td>DPT Curve column</td>
+<td>Data column containing numerical arrays to show in the <a class="reference internal" href="datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a></td>
+</tr>
+<tr class="row-even"><td>Spot size</td>
+<td>Size of the spots</td>
+</tr>
+<tr class="row-odd"><td>Alpha</td>
+<td>Not implemented yet</td>
+</tr>
+<tr class="row-even"><td>Live update…</td>
+<td>Update the plot with live inputs from the flowchart</td>
+</tr>
+<tr class="row-odd"><td>Update Plot</td>
+<td>Update the plot according to the input data from the flowchart and the parameters</td>
+</tr>
+<tr class="row-even"><td>Save</td>
+<td><a class="reference internal" href="../general/misc.html#save-ptrn"><span class="std std-ref">Save the plot as a ptrn file</span></a></td>
+</tr>
+<tr class="row-odd"><td>Load</td>
+<td><a class="reference internal" href="../general/misc.html#save-ptrn"><span class="std std-ref">Load a saved ptrn file</span></a></td>
+</tr>
+<tr class="row-even"><td>Export to ma…</td>
+<td>Not implemented yet</td>
+</tr>
+<tr class="row-odd"><td>Export data</td>
+<td>Not implemented yet</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><strong>Below the plot:</strong> Status label that displays plotting issues. Click the label to see more information.</p>
+<p><strong>Right:</strong> <a class="reference internal" href="datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a>. Click datapoints in the plot to set the Datapoint Tracer.</p>
+<p><strong>Bottom:</strong> <a class="reference internal" href="../general/misc.html#consoleoverview"><span class="std std-ref">Console</span></a></p>
+</div>
 </div>
 
 

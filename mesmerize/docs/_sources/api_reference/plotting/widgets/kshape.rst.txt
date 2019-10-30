@@ -5,7 +5,7 @@ KShape
 
 .. autoclass:: mesmerize.plotting.KShapeWidget
     :show-inheritance:
-    :members: input_arrays, ks, n_clusters, train_data, y_pred, cluster_centers, cluster_means, params, start_process, pad_input_data, set_input
+    :members: input_arrays, ks, n_clusters, train_data, y_pred, cluster_centers, cluster_means, params, start_process, pad_input_data, set_input, transmission
     :member-order: bysource
     
     .. autoattribute:: sig_output_changed
@@ -17,4 +17,4 @@ KShape
     
 .. autoclass:: mesmerize.plotting.widgets.kshape.widget.KShapePlot
     :show-inheritance:
-    :members: __init__, ax_curves, plot
+    :members: __init__, ax, plot

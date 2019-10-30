@@ -1,27 +1,27 @@
 Overview
 ********
 
+Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize attempts to encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and keep track of the analysis so that it can be recapitulated. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.
+
+Welcome Window
+^^^^^^^^^^^^^^
+
+Share your analysis pipelines and figures along with your publication
+
 .. image:: ./imgs/Overview/welcome_window.png
 
 The Viewer
 ^^^^^^^^^^
 
+Explore image sequences, and use various modules for pre-processing and signal-extraction. Annotate regions of interest with any relevant information. Map stimuli/behavior periods.
+
 .. image:: ./imgs/Overview/viewer.png
 
-Opening Image sequences
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Mesmerize is able to work with 2D imaging sequences stored as tiff files and also with mes files from Femtonics microscopes. If you have image sequences stored in another format they can also be used if a Python library exists for opening them.
-
-Stimulus mapping
-^^^^^^^^^^^^^^^^
-
-Stimulus information from mes files or CSV's can be mapped onto your imaging data.
 
 CaImAn modules
 ^^^^^^^^^^^^^^
 
-Mesmerize contains front-end GUI modules for the extremely useful and versatile CaImAn library. This makes it very easy for users without a programming background to use the library.
+Mesmerize contains front-end GUI modules for the CaImAn library. This makes it very easy for users without a programming background to use the library.
 
 **CaImAn Elastic Motion Correction**
 
@@ -31,80 +31,39 @@ Mesmerize contains front-end GUI modules for the extremely useful and versatile 
 
 .. image:: ./imgs/Overview/cnmfe.png
 
-The computationally intense procedures performed using the CaImAn library (Elastic Motion Correction and CNMF) can be organized using the Mesmerize Batch Manager.
-
 Batch Manager
 ^^^^^^^^^^^^^
+
+Computationally intense procedures performed can be organized with the Mesmerize Batch Manager.
 
 .. image:: ./imgs/Overview/batch_manager.png
 
 Project Organization
 ^^^^^^^^^^^^^^^^^^^^
 
+Explore project data and create experimental groups.
+
 .. image:: ./imgs/Overview/project_browser.png
 
 Data analysis - pyqtgraph programmable flowcharts.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Build your own analysis piplines using flowcharts.
+
 .. image:: ./imgs/Overview/flowchart.png
 
-**Types of Nodes**
-
-
-* **Data Nodes**
-
-  * Load_Proj_DF
-  * Save
-  * Load
-
-* **Plotting**
-
-  * Simple time series
-  * Heatmap
-
-* **Categorical Filters**
-
-  * Align Stims
-  * ROI Selection
-  * Genotype selection
-  * Peak Detection
-  * Custom columns
-
-* **Filters and Signal Processing**
-
-  * Butterworth filter
-  * Savitzsky-Golay filter
-  * Derivative
-  * Resample
-  * Normalize
-  * Z-Score
-
-    * **Math**
-
-  * LogTransform
-  * Discreate fourier transform
-  * Inverse discrete fourier transform
-  * Absolute value
-
-* **Clustering** - based on sklearn
-
-  * KMeans
-  * Agglomerative
-  * LDA
-
-* **Transform** - based on sklearn
-
-  * Manifold Learning
-
-    * Isomap
-    * Locally Linear Embedding
-    * Spectral Embedding
-    * MDS
-
-      * **Decomposition** - based on sklearn
-      * PCA
 
 Interactive Plots
 ^^^^^^^^^^^^^^^^^
 
+Create shareable interactive plots where the analysis history of every datapoint is traceable. Explore information associated with a datapoint, such as the spatial localization of its parent ROI and raw data.
+
+**Interactive Heatmaps**
+
 .. image:: ./imgs/Overview/interactive.gif
+
+**Interactive Cross-correlation analysis**
+
+.. thumbnail:: ./user_guides/plots/cross_cor.gif
+
+Other types of plots: Beeswarm, Violins, KShape, Proportions, Scatter

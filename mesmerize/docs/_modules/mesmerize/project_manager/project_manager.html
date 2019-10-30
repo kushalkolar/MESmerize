@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>mesmerize.project_manager.project_manager &mdash; Mesmerize 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/js/lightbox.min.js"></script>
+        <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/css/lightbox.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Mesmerize
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../Overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/faq.html">FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation_guide.html">Citation guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Project Organization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/new_project/new_project.html">Create a New Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/project_organization/project_browser/project_browser.html">Project Browser</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/overview.html">Viewer overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/convert_meta_data.html">Convert Meta Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/add_to_project.html">Add a Sample to the Project</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Viewer Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/tiff_file.html">Tiff file module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/batch_manager.html">Batch Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/caiman_motion_correction.html">Caiman Motion Correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/cnmf.html">CNMF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/cnmfe.html">CNMFE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/viewer/modules/script_editor.html">Script Editor</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Flowchart</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/overview.html">Flowchart Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/flowchart/examples.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Plots</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/beeswarm.html">Beeswarm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/consoles.html">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/cross_correlation.html">Cross Correlation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/peak_editor.html">Peak Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Misc</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html">Welcome Window</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#project-structure">Project Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#project-sample">Project Sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#consoles">Consoles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#saving-plots">Saving plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#plot-navbar">Plot Navbar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/general/misc.html#system-configuration">System Configuration</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide/viewer_modules.html">Viewer Modules</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Viewer_data_types.html">Viewer Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/viewer_modules.html">Viewer Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/roi_manager.html">ROI Manager</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/viewer_modules/stimulus_mapping.html">Stimulus Mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/Analysis_data_types.html">Data types used for analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/analysis.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/nodes.html">Nodes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/utils.html">Plotting utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/bases.html">Plot Bases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/datapoint_tracer.html">Datapoint Tracer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/heatmap.html">Heatmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Mesmerize</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>mesmerize.project_manager.project_manager</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for mesmerize.project_manager.project_manager</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on June 14 2018</span>
+
+<span class="sd">@author: kushal</span>
+
+<span class="sd">Chatzigeorgiou Group</span>
+<span class="sd">Sars International Centre for Marine Molecular Biology</span>
+
+<span class="sd">GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007</span>
+
+<span class="sd">A back-end module for managing most project related functions, such as the root dataframe and all children,</span>
+<span class="sd">adding rows to the root dataframe, updating child dataframes, and updating the project configuration.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">PyQt5</span> <span class="k">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">project_config_window</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">get_window_manager</span><span class="p">,</span> <span class="n">is_mesmerize_project</span>
+<span class="c1"># from ..common import get_window_manager</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">move</span> <span class="k">as</span> <span class="n">move_file</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
+
+
+<div class="viewcode-block" id="ProjectManager"><a class="viewcode-back" href="../../../mesmerize.project_manager.html#mesmerize.project_manager.project_manager.ProjectManager">[docs]</a><span class="k">class</span> <span class="nc">ProjectManager</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="n">signal_dataframe_changed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+    <span class="n">signal_project_config_changed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ProjectManager.__init__"><a class="viewcode-back" href="../../../mesmerize.project_manager.html#mesmerize.project_manager.project_manager.ProjectManager.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_dataframes</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_root_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="n">project_root_dir</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="n">proj_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signal_dataframe_changed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_dataframe</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_dataframes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">create_sub_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">child_name</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;CHILD_DFS&#39;</span><span class="p">):</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="p">[</span><span class="s1">&#39;CHILD_DFS&#39;</span><span class="p">][</span><span class="n">child_name</span><span class="p">]</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filt</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child_dataframes</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">child_name</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dataframe&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;filter_history&#39;</span><span class="p">:</span> <span class="n">filt</span><span class="p">}})</span>
+
+    <span class="k">def</span> <span class="nf">add_sub_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">filter_history</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_dataframes</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">child_name</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dataframe&#39;</span><span class="p">:</span> <span class="n">dataframe</span><span class="p">,</span> <span class="s1">&#39;filter_history&#39;</span><span class="p">:</span> <span class="n">filter_history</span><span class="p">}})</span>
+        <span class="k">if</span> <span class="n">child_name</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;CHILD_DFS&#39;</span><span class="p">):</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="p">[</span><span class="s1">&#39;CHILD_DFS&#39;</span><span class="p">][</span><span class="n">child_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="p">[</span><span class="s1">&#39;CHILD_DFS&#39;</span><span class="p">][</span><span class="n">child_name</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filter_history</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;CHILD_DFS&#39;</span><span class="p">,</span> <span class="n">child_name</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filter_history</span><span class="p">))</span>
+
+        <span class="n">configuration</span><span class="o">.</span><span class="n">save_proj_config</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">remove_sub_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_dataframes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">remove_option</span><span class="p">(</span><span class="s1">&#39;CHILD_DFS&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">configuration</span><span class="o">.</span><span class="n">save_proj_config</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">setup_new_project</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dataframes&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;batches&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;images&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;curves&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;flowcharts&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;trns&#39;</span><span class="p">,</span>
+                   <span class="s1">&#39;plots&#39;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">subdirs</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
+
+        <span class="n">configuration</span><span class="o">.</span><span class="n">create_new_proj_config</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_config_window</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_window</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnSave</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_new_project_dataframe</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">open_project</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">is_mesmerize_project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">)</span>
+
+        <span class="n">df_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;dataframes&#39;</span><span class="p">,</span> <span class="s1">&#39;root.dfr&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">df_path</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;project_dataframe&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_config_window</span><span class="p">()</span>
+
+        <span class="n">configuration</span><span class="o">.</span><span class="n">open_proj_config</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">attach_open_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windows</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">update_open_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">windows</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_config_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_window</span> <span class="o">=</span> <span class="n">project_config_window</span><span class="o">.</span><span class="n">Window</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_window</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnSave</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update_open_windows</span><span class="p">)</span>
+        <span class="c1"># self.config_window.resize(560, 620)</span>
+
+    <span class="k">def</span> <span class="nf">show_config_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_create_new_project_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_window</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnSave</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_new_project_dataframe</span><span class="p">)</span>
+
+        <span class="n">include</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;INCLUDE&#39;</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;EXCLUDE&#39;</span><span class="p">)</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="n">include</span> <span class="o">+</span> <span class="n">exclude</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_dataframe</span><span class="p">()</span>
+
+        <span class="n">start</span><span class="o">.</span><span class="n">project_browser</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span>
+
+    <span class="k">def</span> <span class="nf">set_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Must pass an instance of pandas.DataFrame&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit_signal_dataframe_changed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">save_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">df_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;dataframes&#39;</span><span class="p">,</span> <span class="s1">&#39;root.dfr&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">df_path</span><span class="p">):</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;root.dfr already exists, renaming file...&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backup_project_dataframe</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">df_path</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;project_dataframe&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">update_project_config_requested</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_to_add</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">columns_changed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;ROI_DEFS&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;untagged&#39;</span>
+                <span class="n">columns_changed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;STIM_DEFS&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;untagged&#39;</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">)</span>
+                <span class="n">columns_changed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;CUSTOM_COLUMNS&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+
+                <span class="n">rep_val</span> <span class="o">=</span> <span class="n">custom_to_add</span><span class="p">[</span><span class="n">column</span><span class="p">][</span><span class="s1">&#39;replacement_value&#39;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">custom_to_add</span><span class="p">[</span><span class="n">column</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bool&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">rep_val</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span>
+                        <span class="n">rep_val</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">elif</span> <span class="n">rep_val</span> <span class="o">==</span> <span class="s1">&#39;False&#39;</span><span class="p">:</span>
+                        <span class="n">rep_val</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">rep_val</span>
+                <span class="n">columns_changed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">all_columns</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;INCLUDE&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">configuration</span><span class="o">.</span><span class="n">proj_cfg</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;EXCLUDE&#39;</span><span class="p">)</span>
+        <span class="n">columns_to_drop</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">all_columns</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns_to_drop</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">columns_changed</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">columns_changed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">backup_project_dataframe</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns_to_drop</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_dataframe</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">signal_dataframe_changed</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="n">get_window_manager</span><span class="p">()</span><span class="o">.</span><span class="n">project_browser</span><span class="o">.</span><span class="n">project_browser</span><span class="o">.</span><span class="n">update_dataframe_data</span><span class="p">)</span>
+            <span class="n">get_window_manager</span><span class="p">()</span><span class="o">.</span><span class="n">project_browser</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">signal_project_config_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit_signal_dataframe_changed</span><span class="p">()</span>
+
+            <span class="n">pb</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">project_browser</span><span class="p">()</span>
+            <span class="n">pb</span><span class="o">.</span><span class="n">reload_all_tabs</span><span class="p">()</span>
+            <span class="n">get_window_manager</span><span class="p">()</span><span class="o">.</span><span class="n">project_browser</span> <span class="o">=</span> <span class="n">pb</span>
+
+        <span class="c1"># configuration.proj_cfg_changed.notify_all()</span>
+
+    <span class="k">def</span> <span class="nf">delete_gui_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">children</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">backup_project_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">move_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;dataframes&#39;</span><span class="p">,</span> <span class="s1">&#39;root.dfr&#39;</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;dataframes&#39;</span><span class="p">,</span> <span class="n">f</span><span class="s1">&#39;root_bak_{time()}.dfr&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">append_to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dicts_to_append</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backup_project_dataframe</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dicts_to_append</span><span class="p">),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit_signal_dataframe_changed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">emit_signal_dataframe_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signal_dataframe_changed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProjectManager.change_sample_rows"><a class="viewcode-back" href="../../../mesmerize.project_manager.html#mesmerize.project_manager.project_manager.ProjectManager.change_sample_rows">[docs]</a>    <span class="k">def</span> <span class="nf">change_sample_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dicts_to_append</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove the rows corresponding to the passed sample_id and replace them with the list of dicts provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.backup_project_dataframe()</span>
+        <span class="c1"># self.dataframe = self.dataframe[self.dataframe[&#39;SampleID&#39;] != sample_id]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_sample_id_rows</span><span class="p">(</span><span class="n">sample_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dicts_to_append</span><span class="p">),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit_signal_dataframe_changed</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">delete_sample_id_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backup_project_dataframe</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;SampleID&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">sample_id</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit_signal_dataframe_changed</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_sample_id_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;SampleID&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">sample_id</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Kushal Kolar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
