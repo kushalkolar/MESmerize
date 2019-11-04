@@ -43,8 +43,6 @@ class StimulusExtraction:
 
         self.zero_pos = zero_pos
 
-        self.proj_path = self.t.get_proj_path()
-
     def extract(self) -> Transmission:
 
         samples = self.t.df.SampleID.unique()
@@ -55,13 +53,15 @@ class StimulusExtraction:
             dfs = list(
                 tqdm(
                     p.imap(self._per_sample, samples),
-                    total=len(samples)
+                    total=len(samples),
+                    position=0,
+                    desc='samples'
                 )
             )
 
         self.t.df = pd.concat([df for df in dfs if df is not None]).reset_index(drop=True)
-        self.t.df = self.t.df.explode('_st_stim_curve')
-        self.t.df['_st_uuid'] = self.t.df.apply(lambda: uuid4)
+
+        # self.t.df = self.t.df.explode('_st_stim_curve')
 
         return self.t
 
@@ -77,16 +77,15 @@ class StimulusExtraction:
 
         stim_df = stim_df.sort_values(by='start').reset_index(drop=True)
 
-        out_df = stim_df.apply(lambda r:
-                               self._per_stimulus_period(sub_df,
-                                                         r['name'],
-                                                         r['start'],
-                                                         r['end']),
-                               axis=1
-                               )
+        out_dfs = []
 
-        return out_df
+        for ix, r in tqdm(stim_df.iterrows(), total=stim_df.index.size, position=1, desc='stimulus period'):
+            sp_df = self._per_stimulus_period(sub_df, r['name'], r['start'], r['end'])
+            out_dfs.append(sp_df)
 
+        return pd.concat(out_dfs).reset_index(drop=True)
+
+    # TODO: This can be done MUCH faster with DataFrame.explode but need to figure out how to keep all curve specific data
     def _per_stimulus_period(self, sub_df: pd.DataFrame, st_name: str, st_start: int, st_end: int) -> pd.DataFrame:
         """
         Extract a single stimulus period from all curves
@@ -98,18 +97,29 @@ class StimulusExtraction:
         :return:
         """
 
-        curves = sub_df[self.data_column].values
+        curve_uuids = sub_df['uuid_curve'].values
 
-        for curve in curves:
+        cols = sub_df.columns.to_list() + ['_st_name', '_st_start_ix', '_st_end_ix', '_st_curve']
+        out_df = pd.DataFrame(columns=cols)
+
+        for u in curve_uuids:
             # Do each separately to accommodate for varying curve lengths
+            s = sub_df[sub_df['uuid_curve'] == u].iloc[0].copy()
+
+            curve = s[self.data_column]
+
             start_ix, end_ix = self._apply_offsets(st_start, st_end, curve.size - 1)
 
-            sub_df['_st_name'] = st_name
-            sub_df['_st_start_ix'] = start_ix
-            sub_df['_st_end_ix'] = end_ix
-            sub_df['_st_curve'] = curve[start_ix:end_ix]
+            s['_st_name'] = st_name
+            s['_st_type'] = self.stimulus_type
+            s['_st_start_ix'] = start_ix
+            s['_st_end_ix'] = end_ix
+            s['_st_curve'] = curve[start_ix:end_ix]
+            s['_st_uuid'] = uuid4()
 
-        return sub_df
+            out_df = out_df.append(s, ignore_index=True)
+
+        return out_df
 
     def _apply_offsets(self, start_ix, end_ix, max_ix) -> Tuple[int, int]:
         if self.zero_pos == 'start_offset':
