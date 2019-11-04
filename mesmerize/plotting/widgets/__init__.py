@@ -9,8 +9,9 @@ from .beeswarms import BeeswarmPlotWindow
 from .curve_plot_window import CurvePlotWindow
 
 from .proportions import ProportionsWidget
+from .space_map import SpaceMapWidget
 
 __all__ = ['DatapointTracerWidget', 'KShapeWidget', 'HeatmapWidget', 'HeatmapSplitterWidget',
            'HeatmapTracerWidget', 'CrossCorrelationWidget', 'ScatterPlotWidget', 'BeeswarmPlotWindow',
-           'CurvePlotWindow', 'ProportionsWidget']
+           'CurvePlotWindow', 'ProportionsWidget', 'SpaceMapWidget']
 
