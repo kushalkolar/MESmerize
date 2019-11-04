@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#@author: kushal
+# @author: kushal
 
-#Chatzigeorgiou Group
-#Sars International Centre for Marine Molecular Biology
+# Chatzigeorgiou Group
+# Sars International Centre for Marine Molecular Biology
 
-#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+# GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 
 import numpy as np
@@ -61,7 +61,7 @@ class StimulusExtraction:
 
         self.t.df = pd.concat([df for df in dfs if df is not None]).reset_index(drop=True)
         self.t.df = self.t.df.explode('_st_stim_curve')
-        self.t.df['_st_uuid'] = self.t.df.apply(uuid4)
+        self.t.df['_st_uuid'] = self.t.df.apply(lambda: uuid4)
 
         return self.t
 
@@ -77,27 +77,17 @@ class StimulusExtraction:
 
         stim_df = stim_df.sort_values(by='start').reset_index(drop=True)
 
-        curves = sub_df[self.data_column].values
+        out_df = stim_df.apply(lambda r:
+                               self._per_stimulus_period(sub_df,
+                                                         r['name'],
+                                                         r['start'],
+                                                         r['end']),
+                               axis=1
+                               )
 
-        sub_df[
-            [
-                '_st_stim_name',
-                '_st_stim_start_ix',
-                '_st_stim_end_ix',
-                '_st_stim_curve'
-            ]
-        ] \
-            = stim_df.apply(lambda r:
-                            self._per_stimulus_period(curves,
-                                                      r['name'],
-                                                      r['start'],
-                                                      r['end']),
-                            axis=1
-                            )
+        return out_df
 
-        return sub_df
-
-    def _per_stimulus_period(self, curves: np.ndarray, st_name: str, st_start: int, st_end: int) -> pd.Series:
+    def _per_stimulus_period(self, sub_df: pd.DataFrame, st_name: str, st_start: int, st_end: int) -> pd.DataFrame:
         """
         Extract a single stimulus period from all curves
 
@@ -108,18 +98,18 @@ class StimulusExtraction:
         :return:
         """
 
-        stim_curves = []
+        curves = sub_df[self.data_column].values
 
         for curve in curves:
             # Do each separately to accommodate for varying curve lengths
             start_ix, end_ix = self._apply_offsets(st_start, st_end, curve.size - 1)
-            stim_curves.append(curve[start_ix:end_ix])
 
-        return pd.Series({'_st_stim_name': st_name,
-                          '_st_stim_start_ix': start_ix,
-                          '_st_stim_end_ix': end_ix,
-                          '_st_stim_curve': stim_curves
-                          })
+            sub_df['_st_name'] = st_name
+            sub_df['_st_start_ix'] = start_ix
+            sub_df['_st_end_ix'] = end_ix
+            sub_df['_st_curve'] = curve[start_ix:end_ix]
+
+        return sub_df
 
     def _apply_offsets(self, start_ix, end_ix, max_ix) -> Tuple[int, int]:
         if self.zero_pos == 'start_offset':
