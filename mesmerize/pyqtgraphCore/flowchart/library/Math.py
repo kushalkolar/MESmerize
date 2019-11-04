@@ -176,12 +176,20 @@ class ArrayStats(CtrlNode):
     uiTemplate = [('data_column', 'combo', {}),
                   ('function', 'combo', {'items': ['amin', 'amax', 'nanmin', 'nanmax', 'ptp', 'median', 'mean', 'std',
                                                    'var', 'nanmedian', 'nanmean', 'nanstd', 'nanvar']}),
+                  ('group_by', 'combo', {}),
+                  ('group_uuid', 'combo', {}),
                   ('output_col', 'lineEdit', {}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
         self.t = transmission
         self.set_data_column_combo_box()
+
+        ccols = ['------'] + organize_dataframe_columns(self.t.df.columns)[1]
+        self.ctrls['group_by'].setItems(ccols)
+
+        ucols = ['------'] + organize_dataframe_columns(self.t.df.columns)[2]
+        self.ctrls['group_uuid'].setItems(ucols)
 
         if not self.apply_checked():
             return
@@ -196,14 +204,36 @@ class ArrayStats(CtrlNode):
 
         function = self.ctrls['function'].currentText()
 
+        if self.ctrls['group_by'].currentRow() > 0:
+            group_by = self.ctrls['group_by'].currentText()
+        else:
+            group_by = False
+
         params = {'data_column': self.data_column,
                   'output_column': output_column,
-                  'function': function
+                  'function': function,
+                  'group_by': group_by
                   }
 
         func = getattr(np, function)
 
-        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: func(x))
+        if group_by:
+
+            if self.ctrls['group_uuid'].currentRow() == 0:
+                raise ValueError('Must set "group_uuid" if using "group_by"')
+
+            grouped_df = Transmission.empty_df(self.t)
+
+            for group in self.t.df[group_by].unique():
+                data = np.vstack(self.t.df[self.t.df[group_by] == group])
+                results = func(data, axis=0)
+                grouped_df = grouped_df.append(self.t.df[self.t.df[group_by] == group].iloc[0])
+                grouped_df[output_column] = results
+
+            self.t.df = grouped_df
+        else:
+            self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: func(x))
+
         self.t.last_output = output_column
 
         self.t.history_trace.add_operation('all', 'array_stats', params)
@@ -264,3 +294,5 @@ class ZScore(CtrlNode):
         self.t.last_output = '_ZSCORE'
 
         return self.t
+
+
