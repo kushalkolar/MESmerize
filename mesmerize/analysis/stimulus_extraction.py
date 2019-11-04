@@ -111,7 +111,7 @@ class StimulusExtraction:
         for curve in curves:
             # Do each separately to accommodate for varying curve lengths
             start_ix, end_ix = self._apply_offsets(st_start, st_end, curve.size - 1)
-            stim_curves.append(curve[start_ix, end_ix])
+            stim_curves.append(curve[start_ix:end_ix])
 
         return pd.Series({'_st_stim_name': st_name,
                           '_st_stim_start_ix': start_ix,
