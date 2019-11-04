@@ -65,7 +65,7 @@ class StimulusExtraction:
 
         return self.t
 
-    def _per_sample(self, sample_id: str):
+    def _per_sample(self, sample_id: str) -> pd.DataFrame:
 
         sub_df = self.t.df[self.t.df.SampleID == sample_id].copy()
         sub_df.reset_index(drop=True, inplace=True)
@@ -95,7 +95,9 @@ class StimulusExtraction:
                             axis=1
                             )
 
-    def _per_stimulus_period(self, curves: np.ndarray, st_name: str, st_start: int, st_end: int):
+        return sub_df
+
+    def _per_stimulus_period(self, curves: np.ndarray, st_name: str, st_start: int, st_end: int) -> pd.Series:
         """
         Extract a single stimulus period from all curves
 
