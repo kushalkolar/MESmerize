@@ -28,7 +28,7 @@ class StimulusExtraction:
                  end_offset: int,
                  zero_pos: str):
 
-        self.t = transmission.copy()
+        self.t = transmission
         self.t.df.reset_index(drop=True, inplace=True)
 
         self.data_column = data_column
