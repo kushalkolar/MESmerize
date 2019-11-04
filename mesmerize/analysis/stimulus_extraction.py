@@ -11,8 +11,6 @@
 
 import numpy as np
 import pandas as pd
-import pickle
-import os
 from multiprocessing import Pool
 from tqdm import tqdm
 from .data_types import Transmission
@@ -29,8 +27,10 @@ class StimulusExtraction:
                  start_offset: int,
                  end_offset: int,
                  zero_pos: str):
+        
+        self.t = transmission.copy()
+        self.t.df.reset_index(drop=True, inplace=True)
 
-        self.t = transmission.df.reset_index(drop=True)
         self.data_column = data_column
         self.stimulus_type = stimulus_type
 
@@ -68,11 +68,9 @@ class StimulusExtraction:
     def _per_sample(self, sample_id: str):
 
         sub_df = self.t.df[self.t.df.SampleID == sample_id].copy()
-        img_info_path = sub_df.ImgInfoPath.unique()[0]
+        sub_df.reset_index(drop=True, inplace=True)
 
-        p = pickle.load(open(os.path.join(self.proj_path, img_info_path), 'rb'))
-
-        stim_df = p['stim_maps'][self.stimulus_type]
+        stim_df = sub_df.stim_maps.iloc[0][0][0][self.stimulus_type]
 
         stim_df['start'] = stim_df['start'].astype(np.int64)
         stim_df['end'] = stim_df['end'].astype(np.int64)
