@@ -3,8 +3,8 @@
 from .common import *
 from ....analysis.data_types import *
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
-from tslearn.preprocessing import TimeSeriesScalerMinMax
-from PyQt5 import QtWidgets
+from ....analysis.stimulus_extraction import StimulusExtraction
+
 
 class ExtractStim(CtrlNode):
     """Extract portions of curves according to stimulus maps"""
@@ -18,27 +18,6 @@ class ExtractStim(CtrlNode):
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
-
-    # def __init__(self, name):
-    #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-    # self.ctrls['Stim_Type'].returnPressed.connect(self.setAutoCompleter)
-
-    # def setAutoCompleter(self):
-    #     stim_def = self.ctrls['Stim_Type'].text()
-    #     try:
-    #         stims = list(set([a for b in self.transmission.df[stim_def].tolist() for a in b]))
-    #     except (KeyError, IndexError) as e:
-    #         QtWidgets.QMessageBox.warning(None, 'Stimulus type not found',
-    #                                       'The stimulus type which you have entered'
-    #                                       ' does not exist in the incoming dataframe\n'
-    #                                       + str(e))
-    #         return
-    #     autocompleter = QtWidgets.QCompleter(stims, self.ctrls['Stimulus'])
-    #     self.ctrls['Stimulus'].setCompleter(autocompleter)
-    #     self.ctrls['Stimulus'].setToolTip('\n'.join(stims))
-    #
-    # def _setAutoCompleterLineEdit(self):
-    #     pass
 
     def processData(self, transmission: Transmission):
         # self.transmission = transmission
@@ -63,48 +42,9 @@ class ExtractStim(CtrlNode):
         end_offset = self.ctrls['end_offset'].value()
         zero_pos = self.ctrls['zero_pos'].currentText()
 
-        df = Transmission.empty_df(self.t, addCols=['_EXTRACT_STIM', '_STIM_TYPE',
-                                                    '_STIMULUS'])  # empty_df(), self.transmission.src)
-        for ix, r in self.t.df.iterrows():
-            try:
-                smap = r['stim_maps'][0][0][stim_def]['dataframe']
-            except KeyError:
-                continue
-            curve = r[data_column]
-            if curve is None:
-                continue
-            for i, stim in smap.iterrows():
-                if not stim['name'].startswith(stim_tag):
-                    continue
-                stim_start = stim['start']
-                stim_end = stim['end']
+        stim_extractor = StimulusExtraction(self.t, data_column, stim_def, start_offset, end_offset, zero_pos)
 
-                if zero_pos == 'start_offset':
-
-                    tstart = max(stim_start + start_offset, 0)
-                    tend = min(stim_end + end_offset, len(curve) - 1)
-
-                elif zero_pos == 'stim_end':
-                    tstart = stim_end
-                    tend = min(stim_end + end_offset, len(curve) - 1)
-
-                elif zero_pos == 'stim_center':
-                    tstart = int(((stim_start + stim_end) / 2)) + start_offset
-                    tend = min(stim_end + end_offset, len(curve) - 1)
-
-                rn = r.copy()
-
-                stim_extract = np.take(curve, np.arange(int(tstart), int(tend)))
-
-                rn['_EXTRACT_STIM'] = stim_extract
-                rn['STIM_TYPE'] = stim_def
-                rn['STIMULUS'] = stim_tag
-
-                df.loc[df.index.size] = rn
-
-        df.reset_index(inplace=True, drop=True)
-
-        self.t.df = df
+        self.t = stim_extractor.extract()
 
         params = {'stim_type': stim_def,
                   'stimulus': stim_tag,
@@ -114,17 +54,8 @@ class ExtractStim(CtrlNode):
                   }
 
         self.t.history_trace.add_operation('all', operation='extract_stim', parameters=params)
-        self.t.last_output = '_EXTRACT_STIM'
+        self.t.last_output = '_st_curve'
 
-        # rn[stim_def] = ['name']
-
-        # t.df = t.df.append(rn, ignore_index=True)
-
-        # t.history_trace = self.t.history_trace
-
-        # t.src.append({'AlignStims': params})
-        # print('ALIGN_STIMS APPENDED')
-        # print(t.src)
         return self.t
 
 
