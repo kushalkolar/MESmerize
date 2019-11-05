@@ -190,18 +190,6 @@ class Resample(CtrlNode):
         return signal.resample(row[self.data_column], Rn)
 
 
-# class ZScore(CtrlNode):
-#     nodeName = 'Z-Score'
-#     uiTemplate = [('data_column', 'combo', {}),
-#                   ('Apply', 'check', {'checked': False, 'applyBox': True})
-#                   ]
-#
-#     def processData(self, transmission: Transmission):
-#         if self.ctrls['Apply'].isChecked() is False:
-#             return
-#         t = transmission.copy()
-
-
 class ScalerMeanVariance(CtrlNode):
     """Scaler for time series. Scales time series so that their mean (resp. standard deviation) in each dimension is mu (resp. std).\n
     See https://tslearn.readthedocs.io/en/latest/gen_modules/preprocessing/tslearn.preprocessing.TimeSeriesScalerMeanVariance.html#tslearn.preprocessing.TimeSeriesScalerMeanVariance"""
