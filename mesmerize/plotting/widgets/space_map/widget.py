@@ -10,8 +10,6 @@
 
 from ..base import BasePlotWidget
 from ...utils import *
-from ....pyqtgraphCore.widgets.ComboBox import ComboBox
-from ....pyqtgraphCore.widgets.ListWidget import ListWidget
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from ....pyqtgraphCore.console import ConsoleWidget
 from ....common.configuration import console_history_path
@@ -22,7 +20,8 @@ from typing import *
 import tifffile
 import os
 import pandas as pd
-from ....analysis import Transmission, organize_dataframe_columns
+from ....analysis import Transmission
+from .control_widget import Ui_Controls
 
 
 class ControlDock(QtWidgets.QDockWidget):
@@ -30,87 +29,69 @@ class ControlDock(QtWidgets.QDockWidget):
 
     def __init__(self, parent):
         QtWidgets.QDockWidget.__init__(self, parent=parent)
-        self.vlayout = QtWidgets.QVBoxLayout()
+        self.ui = Ui_Controls()
+        self.ui.setupUi(self)
 
         self.widget_registry = WidgetRegistry()
 
-        label_categorical_column = QtWidgets.QLabel(self)
-        label_categorical_column.setText('Categorical Label')
-        label_categorical_column.setMaximumHeight(30)
-        self.vlayout.addWidget(label_categorical_column)
-
-        self.combo_categorical_column = ComboBox(self)
-        self.combo_categorical_column.setMaximumHeight(30)
-        self.combo_categorical_column.currentTextChanged.connect(self.sig_changed)
-        self.widget_registry.register(self.combo_categorical_column,
-                                      setter=self.combo_categorical_column.setText,
-                                      getter=self.combo_categorical_column.currentText,
+        self.widget_registry.register(self.ui.combo_categorical_column,
+                                      setter=self.ui.combo_categorical_column.setText,
+                                      getter=self.ui.combo_categorical_column.currentText,
                                       name='categorical_column')
-        self.vlayout.addWidget(self.combo_categorical_column)
 
-        self.cmap_img_label = QtWidgets.QLabel(self)
-        self.cmap_img_label.setText('Colormap ')
-        self.cmap_img_label.setMaximumHeight(30)
-        self.vlayout.addWidget(self.cmap_img_label)
-
-        self.cmap_img = ColormapListWidget(self)
-        self.cmap_img.set_cmap('jet')
-        self.cmap_img.currentRowChanged.connect(self.sig_changed)
-        self.cmap_img.setMaximumHeight(150)
-        self.widget_registry.register(self.cmap_img,
-                                      setter=self.cmap_img.set_cmap,
-                                      getter=self.cmap_img.get_cmap,
+        self.widget_registry.register(self.ui.cmap_img,
+                                      setter=self.ui.cmap_img.set_cmap,
+                                      getter=self.ui.cmap_img.get_cmap,
                                       name='cmap_img')
-        self.vlayout.addWidget(self.cmap_img)
 
-        self.cmap_patches_label = QtWidgets.QLabel(self)
-        self.cmap_patches_label.setText('Colormap ')
-        self.cmap_patches_label.setMaximumHeight(30)
-        self.vlayout.addWidget(self.cmap_patches_label)
-
-        self.cmap_patches = ColormapListWidget(self)
-        self.cmap_patches.set_cmap('tab10')
-        self.cmap_patches.currentRowChanged.connect(self.sig_changed)
-        self.cmap_patches.setMaximumHeight(150)
-        self.widget_registry.register(self.cmap_patches,
-                                      setter=self.cmap_patches.set_cmap,
-                                      getter=self.cmap_patches.get_cmap,
+        self.widget_registry.register(self.ui.cmap_patches,
+                                      setter=self.ui.cmap_patches.set_cmap,
+                                      getter=self.ui.cmap_patches.get_cmap,
                                       name='cmap_patches')
-        self.vlayout.addWidget(self.cmap_patches)
 
-        label_projection = QtWidgets.QLabel(self)
-        label_projection.setText('Projection')
-        label_projection.setMaximumHeight(30)
-        self.vlayout.addWidget(label_projection)
+        self.widget_registry.register(self.ui.radioButtonMax,
+                                      setter=self.ui.radioButtonMax.setChecked,
+                                      getter=self.ui.radioButtonMax.isChecked,
+                                      name='max_projection')
 
-        self.combo_projection = ComboBox(self)
-        self.combo_projection.setMaximumHeight(30)
-        self.combo_projection.currentTextChanged.connect(self.sig_changed)
-        self.combo_projection.setItems(['max', 'std'])
-        self.widget_registry.register(self.combo_projection,
-                                      setter=self.combo_projection.setText,
-                                      getter=self.combo_projection.currentText,
-                                      name='projection')
-        self.vlayout.addWidget(self.combo_projection)
+        self.widget_registry.register(self.ui.radioButtonStd,
+                                      setter=self.ui.radioButtonStd.setChecked,
+                                      getter=self.ui.radioButtonStd.isChecked,
+                                      name='std_projection')
 
-        self.btn_update_plot = QtWidgets.QPushButton(self)
-        self.btn_update_plot.setText('Update Plot')
-        self.btn_update_plot.setMaximumHeight(30)
-        self.btn_update_plot.clicked.connect(self.sig_changed)
-        self.vlayout.addWidget(self.btn_update_plot)
-
-        label_samples_list = QtWidgets.QLabel(self)
-        label_samples_list.setText('Samples')
-        label_samples_list.setMaximumHeight(30)
-        self.vlayout.addWidget(label_samples_list)
-
-        self.list_widget_samples = ListWidget(self)
-        self.list_widget_samples.currentItemChanged.connect(self.sig_changed)
-        self.widget_registry.register(self.list_widget_samples,
-                                      setter=self.list_widget_samples.setSelectedItems,
-                                      getter=self.list_widget_samples.getSelectedItems,
+        self.widget_registry.register(self.ui.list_widget_samples,
+                                      setter=self.ui.list_widget_samples.setSelectedItems,
+                                      getter=self.ui.list_widget_samples.getSelectedItems,
                                       name='selected_sample')
-        self.vlayout.addWidget(self.list_widget_samples)
+
+        self.widget_registry.register(self.ui.checkBoxFill,
+                                      setter=self.ui.checkBoxFill.setChecked,
+                                      getter=self.ui.checkBoxFill.isChecked,
+                                      name='fill_patches')
+
+        self.widget_registry.register(self.ui.doubleSpinBoxLineWidth,
+                                      setter=self.ui.doubleSpinBoxLineWidth.setValue,
+                                      getter=self.ui.doubleSpinBoxLineWidth.value,
+                                      name='line_width')
+
+        self.widget_registry.register(self.ui.doubleSpinBoxAlpha,
+                                      setter=self.ui.doubleSpinBoxAlpha.setValue,
+                                      getter=self.ui.doubleSpinBoxAlpha.value,
+                                      name='alpha')
+
+        self.ui.combo_categorical_column.currentTextChanged.connect(self.sig_changed)
+        self.ui.cmap_img.currentItemChanged.connect(self.sig_changed)
+        self.ui.cmap_patches.currentItemChanged.connect(self.sig_changed)
+        self.ui.radioButtonMax.clicked.connect(self.sig_changed)
+        self.ui.radioButtonStd.clicked.connect(self.sig_changed)
+        self.ui.checkBoxFill.clicked.connect(self.sig_changed)
+        self.ui.doubleSpinBoxLineWidth.valueChanged.connect(self.sig_changed)
+        self.ui.doubleSpinBoxAlpha.valueChanged.connect(self.sig_changed)
+        self.ui.list_widget_samples.currentTextChanged.connect(self.sig_changed)
+
+    def fill_widget(self, samples: list, categorical_columns: list):
+        self.ui.combo_categorical_column.setItems(categorical_columns)
+        self.ui.list_widget_samples.setItems(samples)
 
     def get_state(self) -> dict:
         return self.widget_registry.get_state()
@@ -154,7 +135,14 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.control_widget = ControlDock(self)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.control_widget)
         self.control_widget.sig_changed.connect(self.update_plot)
-        self.control_widget.ui.pushButtonUpdatePlot.clicked.connect(lambda: self.update_plot())
+
+        self.update_live = self.control_widget.ui.checkBoxLiveUpdate.isChecked()
+        self.control_widget.ui.checkBoxLiveUpdate.toggled.connect(self.set_update_live)
+
+        self.control_widget.ui.pushButtonUpdatePlot.clicked.connect(self.update_plot)
+
+        self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
+        self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
 
         cmd_history_file = os.path.join(console_history_path, 'space_map.pik')
 
@@ -177,20 +165,40 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.error_label.mousePressEvent.connect(self.show_exception_info)
 
         self.sample_df = None
+        self.plot_opts = None
+
+    def set_update_live(self, b: bool):
+        self.control_widget.ui.checkBoxLiveUpdate.setChecked(b)
+        self.update_live = b
+
+    @BasePlotWidget.signal_blocker
+    def set_input(self, transmission: Transmission):
+        """Set the input transmission"""
+        if (self._transmission is None) or self.update_live:
+            super(SpaceMapWidget, self).set_input(transmission)
+            self.update_plot()
 
     @BasePlotWidget.signal_blocker
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
-        pass
+        samples = list(self.transmission.df['SampleID'].unique())
+        self.control_widget.fill_widget(samples=samples, categorical_columns=categorical_columns)
 
     @exceptions_label('error_label', 'exception_holder', 'Error while setting data', 'Make sure you have selected appropriate columns')
     def update_plot(self, *args, **kwargs):
-        opts = self.get_plot_opts()
+        self.plot_opts = self.get_plot_opts()
 
-        categorical_column = opts['categorical_column']
-        sample_id = opts['selected_sample'][0]
-        projection = opts['projection']
-        cmap_img = opts['cmap_img']
-        cmap_patches = opts['cmap_patches']
+        categorical_column = self.plot_opts['categorical_column']
+        sample_id = self.plot_opts['selected_sample'][0]
+        cmap_img = self.plot_opts['cmap_img']
+        cmap_patches = self.plot_opts['cmap_patches']
+        fill_patches = self.plot_opts['fill_patches']
+        line_width = self.plot_opts['line_width']
+        alpha = self.plot_opts['alpha']
+
+        if self.plot_opts['max_projection']:
+            projection = 'max'
+        elif self.plot_opts['std_projection']:
+            projection = 'std'
 
         self.sample_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
         labels = self.sample_df[categorical_column]
@@ -209,7 +217,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
             cors = np.dstack([xs, ys])[0]
             label = r[categorical_column]
 
-            poly = Polygon(cors, fill=False, color=cmap[label], alpha=0.6)
+            poly = Polygon(cors, fill=fill_patches, color=cmap[label], linewidth=line_width, alpha=alpha)
 
             self.plot.ax.add_patch(poly)
 
@@ -230,7 +238,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         else:
             raise ValueError('Can only accept "max" and "std" arguments')
 
-        img_path = os.path.join(self.proj_path, 'images', f'{self.sample_id}-_-{img_uuid}{suffix}')
+        img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{self.sample_id}-_-{img_uuid}{suffix}')
 
         img = tifffile.TiffFile(img_path).asarray()
         return img
