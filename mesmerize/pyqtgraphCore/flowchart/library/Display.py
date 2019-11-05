@@ -37,7 +37,8 @@ class Plot(CtrlNode):
         transmissions = merge_transmissions(transmissions)
 
         columns = pd.concat([t.df for t in transmissions]).columns
-        self.ctrls['data_column'].setItems(columns.to_list())
+        dcols = organize_dataframe_columns(columns)
+        self.ctrls['data_column'].setItems(dcols)
 
         if self.ctrls['Apply'].isChecked() is False:
             return
