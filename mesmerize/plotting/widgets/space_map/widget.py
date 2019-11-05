@@ -192,6 +192,8 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @exceptions_label('error_label', 'exception_holder', 'Error while setting data', 'Make sure you have selected appropriate columns')
     def update_plot(self, *args, **kwargs):
+        self.error_label.clear()
+
         self.plot_opts = self.get_plot_opts()
 
         categorical_column = self.plot_opts['categorical_column']
@@ -227,6 +229,8 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
             poly = Polygon(cors, fill=fill_patches, color=cmap[label], linewidth=line_width, alpha=alpha)
 
             self.plot.ax.add_patch(poly)
+
+        self.plot.draw()
 
     def load_image(self, projection: str):
         img_uuid = self.sample_df['ImgUUID'].iloc[0]
