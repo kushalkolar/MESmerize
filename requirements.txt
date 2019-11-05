@@ -12,7 +12,7 @@ matplotlib==2.1.2
 opencv-contrib-python==3.4.1.15
 opencv-python==3.4.1.15
 pandas==0.25.3
-Pillow==5.4.1
+Pillow==6.2.0
 psutil==5.5.1
 PyQt5==5.9.2
 python-dateutil==2.8.0
