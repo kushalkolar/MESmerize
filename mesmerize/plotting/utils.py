@@ -156,12 +156,6 @@ class WidgetRegistry:
         self.widgets = dict()
 
     def register(self, widget: QtWidgets.QWidget, setter: callable, getter: callable, name: str):
-        if not hasattr(widget, setter):
-            raise AttributeError(f'Invalid setter. Widget: {widget} does not have attribute: {setter}')
-
-        if not hasattr(widget, getter):
-            raise AttributeError(f'Invalid setter. Widget: {widget} does not have attribute: {getter}')
-
         if (not callable(setter)) or (not callable(getter)):
             raise TypeError('setter and getter must be callable')
 
