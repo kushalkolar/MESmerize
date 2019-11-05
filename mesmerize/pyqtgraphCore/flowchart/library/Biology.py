@@ -9,25 +9,18 @@ from ....analysis.stimulus_extraction import StimulusExtraction
 class ExtractStim(CtrlNode):
     """Extract portions of curves according to stimulus maps"""
     nodeName = 'ExtractStim'
-    # Cannot use QComboBox for Stim_type since it leads to a stack overflow in Node.__getattr__ when removing or clearing the combobox
     uiTemplate = [('data_column', 'combo', {}),
                   ('Stim_Type', 'combo', {}),
-                  ('Stimulus', 'lineEdit', {'placeHolder': 'Stimulus', 'text': ''}),
-                  ('start_offset', 'doubleSpin', {'min': -999999.0, 'max': 999999.99, 'value': 0, 'step': 1}),
-                  ('end_offset', 'doubleSpin', {'min': -999999.0, 'max': 999999.99, 'value': 0, 'step': 1}),
+                  ('start_offset', 'intSpin', {'min': -999999, 'max': 999999, 'value': 0, 'step': 1}),
+                  ('end_offset', 'intSpin', {'min': -999999, 'max': 999999, 'value': 0, 'step': 1}),
                   ('zero_pos', 'combo', {'values': ['start_offset', 'stim_end', 'stim_center']}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
     def processData(self, transmission: Transmission):
-        # self.transmission = transmission
         self.t = transmission
         self.set_data_column_combo_box()
         self.ctrls['Stim_Type'].setItems(self.t.STIM_DEFS)
-
-        # ac = QtWidgets.QCompleter(self.transmission.STIM_DEFS, self.ctrls['Stim_Type'])
-        # self.ctrls['Stim_Type'].setCompleter(ac)
-        # self.ctrls['Stim_Type'].setToolTip('\n'.join(self.transmission.STIM_DEFS))
 
         if self.ctrls['Apply'].isChecked() is False:
             return
@@ -37,24 +30,22 @@ class ExtractStim(CtrlNode):
         data_column = self.ctrls['data_column'].currentText()
 
         stim_def = self.ctrls['Stim_Type'].currentText()
-        stim_tag = self.ctrls['Stimulus'].text()
         start_offset = self.ctrls['start_offset'].value()
         end_offset = self.ctrls['end_offset'].value()
         zero_pos = self.ctrls['zero_pos'].currentText()
 
-        stim_extractor = StimulusExtraction(self.t, data_column, stim_def, start_offset, end_offset, zero_pos)
+        self.stim_extractor = StimulusExtraction(self.t, data_column, stim_def, start_offset, end_offset, zero_pos)
 
-        self.t = stim_extractor.extract()
+        self.t = self.stim_extractor.extract()
 
         params = {'stim_type': stim_def,
-                  'stimulus': stim_tag,
                   'start_offset': start_offset,
                   'end_offset': end_offset,
                   'zero_pos': zero_pos
                   }
 
         self.t.history_trace.add_operation('all', operation='extract_stim', parameters=params)
-        self.t.last_output = '_st_curve'
+        self.t.last_output = '_ST_CURVE'
 
         return self.t
 

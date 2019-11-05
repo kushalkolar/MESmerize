@@ -99,7 +99,7 @@ class StimulusExtraction:
 
         curve_uuids = sub_df['uuid_curve'].values
 
-        cols = sub_df.columns.to_list() + ['_st_name', '_st_start_ix', '_st_end_ix', '_st_curve']
+        cols = sub_df.columns.to_list() + ['ST_NAME', 'ST_TYPE', '_ST_START_IX', '_ST_END_IX', '_ST_CURVE', 'ST_uuid']
         out_df = pd.DataFrame(columns=cols)
 
         for u in curve_uuids:
@@ -110,12 +110,12 @@ class StimulusExtraction:
 
             start_ix, end_ix = self._apply_offsets(st_start, st_end, curve.size - 1)
 
-            s['_st_name'] = st_name
-            s['_st_type'] = self.stimulus_type
-            s['_st_start_ix'] = start_ix
-            s['_st_end_ix'] = end_ix
-            s['_st_curve'] = curve[start_ix:end_ix]
-            s['_st_uuid'] = uuid4()
+            s['ST_NAME'] = st_name
+            s['ST_TYPE'] = self.stimulus_type
+            s['_ST_START_IX'] = start_ix
+            s['_ST_END_IX'] = end_ix
+            s['_ST_CURVE'] = curve[start_ix:end_ix]
+            s['ST_uuid'] = str(uuid4())
 
             out_df = out_df.append(s, ignore_index=True)
 
