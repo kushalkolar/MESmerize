@@ -158,11 +158,18 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.console = ConsoleWidget(parent=self, namespace=ns, text=txt, historyFile=cmd_history_file)
 
+        self.dockConsole = QtWidgets.QDockWidget(self)
+        self.dockConsole.setWindowTitle('Console')
+        self.dockConsole.setFeatures(
+            QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable)
+        self.dockConsole.setWidget(self.console)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dockConsole)
+
         self.block_signals_list = [self.control_widget]
 
         self.error_label = self.plot.error_label
         self.exception_holder = None
-        self.error_label.mousePressEvent.connect(self.show_exception_info)
+        self.error_label.mousePressEvent = self.show_exception_info
 
         self.sample_df = None
         self.plot_opts = None
@@ -223,6 +230,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     def load_image(self, projection: str):
         img_uuid = self.sample_df['ImgUUID'].iloc[0]
+        sample_id = self.sample_df['SampleID'].iloc[0]
 
         if isinstance(img_uuid, pd.Series):
             img_uuid = img_uuid.item()
@@ -238,7 +246,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         else:
             raise ValueError('Can only accept "max" and "std" arguments')
 
-        img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{self.sample_id}-_-{img_uuid}{suffix}')
+        img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{sample_id}-_-{img_uuid}{suffix}')
 
         img = tifffile.TiffFile(img_path).asarray()
         return img
