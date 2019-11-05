@@ -183,7 +183,8 @@ class ArrayStats(CtrlNode):
 
     def processData(self, transmission: Transmission):
         self.t = transmission
-        self.set_data_column_combo_box()
+        dcols = organize_dataframe_columns(transmission.df.columns)[0]
+        self.ctrls['data_column'].setItems(dcols)
 
         ccols = ['------'] + organize_dataframe_columns(self.t.df.columns)[1]
         self.ctrls['group_by'].setItems(ccols)
@@ -202,13 +203,13 @@ class ArrayStats(CtrlNode):
 
         function = self.ctrls['function'].currentText()
 
-        if self.ctrls['group_by'].currentRow() > 0:
+        if self.ctrls['group_by'].currentIndex() > 0:
             group_by = self.ctrls['group_by'].currentText()
         else:
             group_by = False
 
-        if self.ctrls['group_by_sec'].currentRow() > 0:
-            group_by_sec = self.ctrls['group_by'].currentText()
+        if self.ctrls['group_by_sec'].currentIndex() > 0:
+            group_by_sec = self.ctrls['group_by_sec'].currentText()
         else:
             group_by_sec = False
 
@@ -229,7 +230,9 @@ class ArrayStats(CtrlNode):
         if group_by:
             grouped_df = Transmission.empty_df(self.t, addCols=[f'{output_column}'])
 
-            for group in self.t.df[group_by].unique():
+            groups_primary = self.t.df[group_by].unique()
+
+            for group in tqdm(groups_primary, total=groups_primary.size, desc='groups'):
                 gdf = self.t.df[self.t.df[group_by] == group]
 
                 for sgroup in secondary_groups:
@@ -264,9 +267,10 @@ class ArgGroupStat(CtrlNode):
     """Group by a certain column and return value of another column based on a data column statistic"""
     nodeName = 'ArgGroupStat'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('groupby', 'combo', {}),
+                  ('group_by', 'combo', {}),
                   ('return_col', 'combo', {}),
-                  ('stat', 'combo', {'items': ['min', 'max']})
+                  ('stat', 'combo', {'items': ['min', 'max']}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
                   ]
 
     def processData(self, transmission: Transmission):
@@ -274,17 +278,16 @@ class ArgGroupStat(CtrlNode):
         self.set_data_column_combo_box()
 
         ccols = organize_dataframe_columns(self.t.df.columns)[1]
-        self.ctrls['groupby'].setItems(ccols)
-        self.ctrls['groupby_sec'].setItems(ccols)
+        self.ctrls['group_by'].setItems(ccols)
 
-        self.ctrls['return_col'].setItems(self.t.df.columns)
+        self.ctrls['return_col'].setItems(self.t.df.columns.tolist())
 
         if not self.apply_checked():
             return
 
         self.t = transmission.copy()
 
-        group_by = self.ctrls['group_by']
+        group_by = self.ctrls['group_by'].currentText()
         return_col = self.ctrls['return_col'].currentText()
         stat = self.ctrls['stat'].currentText()
         output_column = 'ARG_STAT'
@@ -300,6 +303,7 @@ class ArgGroupStat(CtrlNode):
 
         for group in self.t.df[group_by].unique():
             gdf = self.t.df[self.t.df[group_by] == group]
+            gdf.reset_index(drop=True, inplace=True)
 
             if stat == 'max':
                 ix = gdf[self.data_column].idxmax()
@@ -307,13 +311,15 @@ class ArgGroupStat(CtrlNode):
             elif stat == 'min':
                 ix = gdf[self.data_column].idxmin()
 
-                s = gdf.iloc[ix].copy()
-                s['ARG_STAT'] = s[return_col]
+            s = gdf.iloc[ix].copy()
+            s['ARG_STAT'] = s[return_col]
 
-                out_df = out_df.append(s, ignore_index=True)
+            out_df = out_df.append(s, ignore_index=True)
 
         self.t.df = out_df
         self.t.history_trace.add_operation('all', 'arg-group-stat', params)
+
+        return self.t
 
 
 class ZScore(CtrlNode):
