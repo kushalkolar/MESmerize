@@ -161,9 +161,6 @@ class WidgetRegistry:
 
         self.widgets[widget] = WidgetEntry(setter=setter, getter=getter, name=name)
 
-    def set_widget(self, widget: QtWidgets.QWidget, value: Any):
-        self.widgets[widget].setter(value)
-
     def get_state(self) -> dict:
         # s = dict.fromkeys([self.widgets[k].name for k in list(self.widgets.keys())])
         s = dict()
