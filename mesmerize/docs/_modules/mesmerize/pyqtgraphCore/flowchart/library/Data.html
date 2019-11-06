@@ -136,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -170,6 +171,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -241,6 +243,7 @@
 <span class="kn">from</span> <span class="nn">....analysis</span> <span class="k">import</span> <span class="n">Transmission</span>
 <span class="kn">from</span> <span class="nn">....analysis.history_widget</span> <span class="k">import</span> <span class="n">HistoryTreeWidget</span>
 <span class="kn">from</span> <span class="nn">....common</span> <span class="k">import</span> <span class="n">get_project_manager</span>
+<span class="kn">from</span> <span class="nn">....common.qdialogs</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">tslearn.preprocessing</span> <span class="k">import</span> <span class="n">TimeSeriesScalerMinMax</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -315,7 +318,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="n">CtrlNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">terminals</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;out&#39;</span><span class="p">}})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;load_trn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_dialog_trn_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;load_trn&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;proj_path&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir_dialog_proj_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="kc">None</span>
@@ -329,12 +332,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;proj_trns&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">trns_names</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;proj_trns&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fname</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_project_manager</span><span class="p">()</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="s1">&#39;trns&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span> <span class="k">if</span> <span class="n">fname</span> <span class="k">else</span> <span class="kc">False</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">file_dialog_trn_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Import Transmission object&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;(*.trn *.ptrn)&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># def file_dialog_trn_file(self):</span>
+    <span class="c1">#     path = QtWidgets.QFileDialog.getOpenFileName(None, &#39;Import Transmission object&#39;, &#39;&#39;, &#39;(*.trn *.ptrn)&#39;)</span>
+    <span class="c1">#     if path == &#39;&#39;:</span>
+    <span class="c1">#         return</span>
+    <span class="c1">#     self.load_file(path[0])</span>
 
+    <span class="nd">@use_open_file_dialog</span><span class="p">(</span><span class="s1">&#39;Load Transmission file&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;*.trn, *.ptrn&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
             <span class="k">return</span>
@@ -373,7 +377,6 @@
             <span class="k">return</span>
 
     <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">get_proj_path</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Out&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">}</span></div>
 
 

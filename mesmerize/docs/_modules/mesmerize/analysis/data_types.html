@@ -136,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -170,6 +171,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -259,31 +261,30 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">configparser</span> <span class="k">import</span> <span class="n">RawConfigParser</span>
-<span class="kn">from</span> <span class="nn">..common.utils</span> <span class="k">import</span> <span class="n">HdfTools</span>
+<span class="kn">from</span> <span class="nn">..common.utils</span> <span class="k">import</span> <span class="n">HdfTools</span><span class="p">,</span> <span class="n">draw_graph</span>
 <span class="kn">from</span> <span class="nn">..common</span> <span class="k">import</span> <span class="n">get_proj_config</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="k">import</span> <span class="n">tqdm</span>
-<span class="kn">from</span> <span class="nn">graphviz</span> <span class="k">import</span> <span class="n">Digraph</span>
 
 
-<div class="viewcode-block" id="_HistoryTraceExceptions"><a class="viewcode-back" href="../../../mesmerize.analysis.html#mesmerize._HistoryTraceExceptions">[docs]</a><span class="k">class</span> <span class="nc">_HistoryTraceExceptions</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<div class="viewcode-block" id="_HistoryTraceExceptions.__init__"><a class="viewcode-back" href="../../../mesmerize.analysis.html#mesmerize._HistoryTraceExceptions.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_HistoryTraceExceptions</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
 
-<div class="viewcode-block" id="_HistoryTraceExceptions.__str__"><a class="viewcode-back" href="../../../mesmerize.analysis.html#mesmerize._HistoryTraceExceptions.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span></div></div>
-
-
-<div class="viewcode-block" id="DataBlockNotFound"><a class="viewcode-back" href="../../../mesmerize.analysis.html#mesmerize.DataBlockNotFound">[docs]</a><span class="k">class</span> <span class="nc">DataBlockNotFound</span><span class="p">(</span><span class="n">_HistoryTraceExceptions</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Requested data block not found&quot;&quot;&quot;</span></div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span>
 
 
-<div class="viewcode-block" id="DataBlockAlreadyExists"><a class="viewcode-back" href="../../../mesmerize.analysis.html#mesmerize.DataBlockAlreadyExists">[docs]</a><span class="k">class</span> <span class="nc">DataBlockAlreadyExists</span><span class="p">(</span><span class="n">_HistoryTraceExceptions</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Data block already exists in HistoryTrace.&quot;&quot;&quot;</span></div>
+<span class="k">class</span> <span class="nc">DataBlockNotFound</span><span class="p">(</span><span class="n">_HistoryTraceExceptions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Requested data block not found&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="OperationNotFound"><a class="viewcode-back" href="../../../mesmerize.analysis.html#mesmerize.OperationNotFound">[docs]</a><span class="k">class</span> <span class="nc">OperationNotFound</span><span class="p">(</span><span class="n">_HistoryTraceExceptions</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Requested operation not found in data block.&quot;&quot;&quot;</span></div>
+<span class="k">class</span> <span class="nc">DataBlockAlreadyExists</span><span class="p">(</span><span class="n">_HistoryTraceExceptions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data block already exists in HistoryTrace.&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">OperationNotFound</span><span class="p">(</span><span class="n">_HistoryTraceExceptions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Requested operation not found in data block.&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="HistoryTrace"><a class="viewcode-back" href="../../../api_reference/Analysis_data_types.html#mesmerize.HistoryTrace">[docs]</a><span class="k">class</span> <span class="nc">HistoryTrace</span><span class="p">:</span>
@@ -418,15 +419,32 @@
         <span class="k">for</span> <span class="n">_id</span> <span class="ow">in</span> <span class="n">_ids</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">operation</span><span class="p">:</span> <span class="n">parameters</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="HistoryTrace.get_data_block_history"><a class="viewcode-back" href="../../../api_reference/Analysis_data_types.html#mesmerize.HistoryTrace.get_data_block_history">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_block_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the full history trace of a single data block&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="HistoryTrace.get_data_block_history"><a class="viewcode-back" href="../../../api_reference/Analysis_data_types.html#mesmerize.HistoryTrace.get_data_block_history">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_block_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">],</span> <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the full history trace of a single data block.</span>
+
+<span class="sd">        Use copy=False if you want to modify the history trace of the data block.</span>
+
+<span class="sd">        :param data_block_id: data block ID</span>
+<span class="sd">        :type data_block_id: Union[str, UUID]</span>
+
+<span class="sd">        :param copy: If true, returns a deepcopy</span>
+<span class="sd">        :type copy: bool</span>
+
+<span class="sd">        :return: data block history</span>
+<span class="sd">        :rtype: List[dict]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">data_block_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_uuid</span><span class="p">(</span><span class="n">data_block_id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">data_block_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_blocks</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">DataBlockNotFound</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data_block_id</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">data_block_id</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">data_block_id</span><span class="p">])</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">data_block_id</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="HistoryTrace.get_all_data_blocks_history"><a class="viewcode-back" href="../../../api_reference/Analysis_data_types.html#mesmerize.HistoryTrace.get_all_data_blocks_history">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_data_blocks_history</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns history trace of all datablocks&quot;&quot;&quot;</span>
@@ -570,38 +588,40 @@
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">history</span><span class="o">=</span><span class="n">history</span><span class="p">,</span> <span class="n">data_blocks</span><span class="o">=</span><span class="n">data_blocks</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">view</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="n">Digraph</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pdf&#39;</span><span class="p">,</span> <span class="n">node_attr</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="s1">&#39;record&#39;</span><span class="p">})</span>
+<div class="viewcode-block" id="HistoryTrace.draw_graph"><a class="viewcode-back" href="../../../api_reference/Analysis_data_types.html#mesmerize.HistoryTrace.draw_graph">[docs]</a>    <span class="k">def</span> <span class="nf">draw_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">UUID</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw graph of a data block. kwargs are passed to `mesmerize.plotting.utils.draw_graph`</span>
 
-        <span class="n">db_history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_block_history</span><span class="p">(</span><span class="n">data_block_id</span><span class="p">)</span>
+<span class="sd">        :param data_block_id: data block ID from which to get history to draw in a graph</span>
+<span class="sd">        :type data_block_id: Union[str, UUID]</span>
 
-        <span class="n">o_encounters</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">o_n_l</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="sd">        :return: file path to the graph pdf file</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db_history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_block_history</span><span class="p">(</span><span class="n">data_block_id</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">cleaned</span> <span class="o">=</span> <span class="n">HistoryTrace</span><span class="o">.</span><span class="n">clean_history_trace</span><span class="p">(</span><span class="n">db_history</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">draw_graph</span><span class="p">(</span><span class="n">cleaned</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HistoryTrace.clean_history_trace"><a class="viewcode-back" href="../../../api_reference/Analysis_data_types.html#mesmerize.HistoryTrace.clean_history_trace">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">clean_history_trace</span><span class="p">(</span><span class="n">db_history</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cleans up excessive data such as frequencies linspaces and linkage matrices so the graph is viewable.</span>
+
+<span class="sd">        :param db_history: data block history</span>
+<span class="sd">        :return: data block history with excessive params removed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">db_history</span><span class="p">:</span>
             <span class="n">o</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">params</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="n">o</span><span class="p">]</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_params</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n   --\&gt; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;\|&quot;</span><span class="p">)</span>  <span class="c1"># .replace(&quot;[&quot;, &quot; &quot;).replace(&quot;(&quot;, &quot; &quot;).replace(&quot;)&quot;, &quot; &quot;)</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2">: </span><span class="si">{p}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">op</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="o">=</span> <span class="n">HistoryTrace</span><span class="o">.</span><span class="n">_cleanup_params</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
-            <span class="n">o_n</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{o}</span><span class="s2">.{o_encounters.count(o)}&quot;</span>
-            <span class="n">o_n_l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o_n</span><span class="p">)</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;{ &#39;</span> <span class="o">+</span> <span class="n">o_n</span> <span class="o">+</span> <span class="s1">&#39; | &#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; }&#39;</span>
+        <span class="k">return</span> <span class="n">db_history</span></div>
 
-            <span class="n">g</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">o_n</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-            <span class="n">o_encounters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
-
-        <span class="n">es</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_n_l</span><span class="p">)):</span>
-            <span class="n">es</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">o_n_l</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">o_n_l</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-
-        <span class="n">g</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">es</span><span class="p">)</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_cleanup_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_cleanup_params</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s1">&#39;rfft&#39;</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;frequencies&#39;</span><span class="p">)</span>
@@ -867,7 +887,7 @@
         
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="s1">&#39;_RAW_CURVE&#39;</span><span class="p">:</span> <span class="n">npz</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">curve</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;meta&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="p">,</span> <span class="s1">&#39;stim_maps&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="n">stim_maps</span><span class="p">]]})</span></div>
 
-<div class="viewcode-block" id="Transmission.get_data_block_dataframe"><a class="viewcode-back" href="../../../mesmerize.analysis.html#mesmerize.Transmission.get_data_block_dataframe">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_block_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_data_block_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_block_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the DataFrame rows corresponding to a single data block.</span>
 
@@ -881,7 +901,7 @@
         <span class="k">if</span> <span class="n">UUID</span><span class="p">(</span><span class="n">data_block_id</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">data_blocks</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">DataBlockNotFound</span><span class="p">(</span><span class="n">data_block_id</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">_BLOCK_</span> <span class="o">==</span> <span class="n">data_block_id</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">_BLOCK_</span> <span class="o">==</span> <span class="n">data_block_id</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Transmission.merge"><a class="viewcode-back" href="../../../api_reference/Analysis_data_types.html#mesmerize.Transmission.merge">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">transmissions</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>

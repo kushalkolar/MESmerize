@@ -152,17 +152,36 @@ class WidgetEntry:
 
 
 class WidgetRegistry:
+    """
+    Register widgets to conveniently store and restore their states
+    """
+
     def __init__(self):
         self.widgets = dict()
 
     def register(self, widget: QtWidgets.QWidget, setter: callable, getter: callable, name: str):
+        """
+        Register a widget. The `setter` and `getter` methods must be interoperable
+
+        :param widget: widget to register
+        :type widget: QtWidgets.QWidget
+
+        :param setter: widget's method to use for setting its value
+        :type setter: callable
+
+        :param getter: widget's method to use for getting its value. This value must be settable through the specified "setter" method
+        :type getter: callable
+
+        :param name: a name for this widget
+        :type name: str
+        """
         if (not callable(setter)) or (not callable(getter)):
             raise TypeError('setter and getter must be callable')
 
         self.widgets[widget] = WidgetEntry(setter=setter, getter=getter, name=name)
 
     def get_state(self) -> dict:
-        # s = dict.fromkeys([self.widgets[k].name for k in list(self.widgets.keys())])
+        """Get a dict of states for all registered widgets"""
         s = dict()
 
         for w in self.widgets.keys():
@@ -172,6 +191,7 @@ class WidgetRegistry:
         return s
 
     def set_state(self, state: dict):
+        """Set all registered widgets from a dict"""
         for w in self.widgets.keys():
             name = self.widgets[w].name
 

@@ -167,7 +167,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#absolutevalue">AbsoluteValue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#logtransform">LogTransform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#arraystats">ArrayStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#arggroupstat">ArgGroupStat</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#zscore">ZScore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linregress">LinRegress</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#biology">Biology</a><ul>
@@ -209,6 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -243,6 +246,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -1682,7 +1686,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="arraystats">
-<h3>ArrayStats<a class="headerlink" href="#arraystats" title="Permalink to this headline">¶</a></h3>
+<span id="node-arraystats"></span><h3>ArrayStats<a class="headerlink" href="#arraystats" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.ArrayStats" title="mesmerize.pyqtgraphCore.flowchart.library.Math.ArrayStats"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <p>Perform a few basic statistical functions.</p>
@@ -1712,8 +1716,8 @@
 </div></blockquote>
 <table border="1" class="docutils">
 <colgroup>
-<col width="14%" />
-<col width="86%" />
+<col width="25%" />
+<col width="75%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Parameter</th>
@@ -1725,51 +1729,92 @@
 <td>Data column containing numerical arrays</td>
 </tr>
 <tr class="row-odd"><td>function</td>
-<td><div class="first line-block">
+<td><div class="first last line-block">
 <div class="line"><em>amin</em>: Return the minimum of the input array</div>
-</div>
-<div class="line-block">
 <div class="line"><em>amax</em>: Return the maximum of the input array</div>
-</div>
-<div class="line-block">
 <div class="line"><em>nanmin</em>: Return the minimum of the input array, ignore NaNs</div>
-</div>
-<div class="line-block">
 <div class="line"><em>nanmax</em>: Return the maximum of the input array, ignore NaNs</div>
-</div>
-<div class="line-block">
 <div class="line"><em>ptp</em>: Return the range (max - min) of the values of the input array</div>
-</div>
-<div class="line-block">
 <div class="line"><em>median</em>: Return the median of the input array</div>
-</div>
-<div class="line-block">
 <div class="line"><em>mean</em>: Return the mean of the input array</div>
-</div>
-<div class="line-block">
 <div class="line"><em>std</em>: Return the standard deviation of the input array</div>
-</div>
-<div class="line-block">
 <div class="line"><em>var</em>: Return the variance of the input array</div>
-</div>
-<div class="line-block">
 <div class="line"><em>nanmedian</em>: Return the median of the input array, ignore NaNs</div>
-</div>
-<div class="line-block">
 <div class="line"><em>nanmean</em>: Return the mean of the input array, ignore NaNs</div>
-</div>
-<div class="line-block">
 <div class="line"><em>nanstd</em>: Return the standard deviation of the input array, ignore NaNs</div>
-</div>
-<div class="last line-block">
 <div class="line"><em>nanvar</em>: Return the variance of the input array, ignore NaNs</div>
 </div>
 </td>
+</tr>
+<tr class="row-even"><td>group_by <em>(Optional)</em></td>
+<td>Group by a categorial variable, for example get the mean array of a group</td>
+</tr>
+<tr class="row-odd"><td>group_by_sec <em>(Optional)</em></td>
+<td>Group by a secondary categorical variable</td>
 </tr>
 <tr class="row-even"><td>output_col</td>
 <td>Enter a name for the output column</td>
 </tr>
 <tr class="row-odd"><td>Apply</td>
+<td>Process data through this node</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="arggroupstat">
+<span id="node-arggroupstat"></span><h3>ArgGroupStat<a class="headerlink" href="#arggroupstat" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.ArgGroupStat" title="mesmerize.pyqtgraphCore.flowchart.library.Math.ArgGroupStat"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<p>Group by a categorial variable and return the value of any other column based on a statistic.
+Basically creates sub-dataframes for each group and then returns based on the sub-dataframe.</p>
+<p>Group by column “group_by” and return value from column “return_col” where data in <em>data_column</em> fits “stat”</p>
+<p><strong>Output Data Column</strong> <em>(Any)</em>: ARG_STAT</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td>Data column containing single numbers (not arrays for now)</td>
+</tr>
+<tr class="row-odd"><td>group_by</td>
+<td>Group by column (categorical variables)</td>
+</tr>
+<tr class="row-even"><td>return_col</td>
+<td>Return value from this column (any data)</td>
+</tr>
+<tr class="row-odd"><td>stat</td>
+<td>“max” or “min”</td>
+</tr>
+<tr class="row-even"><td>Apply</td>
 <td>Process data through this node</td>
 </tr>
 </tbody>
@@ -1826,6 +1871,56 @@
 </table>
 </div></blockquote>
 </div></blockquote>
+</div>
+<div class="section" id="linregress">
+<h3>LinRegress<a class="headerlink" href="#linregress" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.LinRegress" title="mesmerize.pyqtgraphCore.flowchart.library.Math.LinRegress"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
+<p>Basically uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html">scipy.stats.linregress</a></p>
+<p>Performs Linear Regression on numerical arrays and returns slope, intercept, r-value, p-value and standard error</p>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Terminal</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>In</td>
+<td>Input Transmission</td>
+</tr>
+<tr class="row-odd"><td>Out</td>
+<td>Transmission with the result placed in the output column</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="88%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data_column</td>
+<td><div class="first last line-block">
+<div class="line">Data column containing 1D numerical arrays.</div>
+<div class="line">The values are used as the y values and indices as the x values for the regression</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Output Columnns:</strong> Single numbers, <em>_SLOPE</em>, <em>_INTERCEPT</em>, <em>_R-VALUE</em>, <em>_P-VALUE</em>, <em>_STDERR</em> as decribed in <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html">scipy.stats.linregress</a></p>
+</div></blockquote>
 <hr class="docutils" />
 </div>
 </div>
@@ -1838,6 +1933,7 @@
 <div><p><a class="reference internal" href="../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Biology.ExtractStim" title="mesmerize.pyqtgraphCore.flowchart.library.Biology.ExtractStim"><code class="xref py py-class docutils literal notranslate"><span class="pre">Source</span></code></a></p>
 <blockquote>
 <div><p>Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it. It outputs one row per stimulus period.</p>
+<p><strong>Note:</strong> Stimulus extraction is currently quite slow, will be optimized after some planned changes in the Transmission object.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="19%" />
@@ -1849,17 +1945,23 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>STIM_TYPE</td>
+<tr class="row-even"><td>ST_TYPE</td>
 <td>Stimulus type, corresponds to your <a class="reference internal" href="../project_organization/new_project/new_project.html#project-configuration"><span class="std std-ref">Project Config</span></a></td>
 </tr>
-<tr class="row-odd"><td>STIMULUS</td>
-<td>Name of the stimulus.</td>
+<tr class="row-odd"><td>ST_NAME</td>
+<td>Name of the stimulus</td>
 </tr>
-<tr class="row-even"><td>_EXTRACT_STIM</td>
-<td>The extracted array based on the parameters.</td>
+<tr class="row-even"><td>_ST_CURVE</td>
+<td>The extracted array based on the parameters</td>
 </tr>
-<tr class="row-odd"><td>uuid_stim</td>
-<td>UUID for the extracted stimulus period</td>
+<tr class="row-odd"><td>_ST_START_IX</td>
+<td>Start index of the stimulus period in the parent curve</td>
+</tr>
+<tr class="row-even"><td>_ST_END_IX</td>
+<td>End index of the stimulus period in the parent curve</td>
+</tr>
+<tr class="row-odd"><td>ST_uuid</td>
+<td>UUID assigned for the extracted stimulus period</td>
 </tr>
 </tbody>
 </table>
@@ -1880,16 +1982,13 @@
 <tr class="row-odd"><td>Stim_Type</td>
 <td>Type of stimulus to extract</td>
 </tr>
-<tr class="row-even"><td>Stimulus</td>
-<td>Name of the stimulus to extract</td>
-</tr>
-<tr class="row-odd"><td>start_offset</td>
+<tr class="row-even"><td>start_offset</td>
 <td>Offset the start index of the stimulus mapping by a value (in frames)</td>
 </tr>
-<tr class="row-even"><td>end_offset</td>
+<tr class="row-odd"><td>end_offset</td>
 <td>Offset the end index of the stimulus mapping by a value (in frames)</td>
 </tr>
-<tr class="row-odd"><td>zero_pos</td>
+<tr class="row-even"><td>zero_pos</td>
 <td><p class="first">Zero index of the extracted signal</p>
 <div class="line-block">
 <div class="line"><em>start_offset</em>: extraction begins at the <em>start_offset</em> value, stops at the <em>end_offset</em></div>
@@ -2082,7 +2181,7 @@
 <tr class="row-even"><td>IncM <em>(optional)</em></td>
 <td>Inconsistency matrix, output from <a class="reference internal" href="#node-inconsistent"><span class="std std-ref">Inconsistent</span></a></td>
 </tr>
-<tr class="row-odd"><td>Monocrit <em>(optinal)</em></td>
+<tr class="row-odd"><td>Monocrit <em>(optional)</em></td>
 <td>Output from <a class="reference internal" href="#node-maxincstat"><span class="std std-ref">MaxIncStat</span></a> or <a class="reference internal" href="#node-maxinconsistent"><span class="std std-ref">MaxInconsistent</span></a></td>
 </tr>
 <tr class="row-even"><td>Out</td>

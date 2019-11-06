@@ -136,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -170,6 +171,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -417,8 +419,8 @@
     <span class="n">ucols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columns</span> <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;uuid&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;UUID&#39;</span> <span class="ow">in</span> <span class="n">c</span><span class="p">)]</span>
 
     <span class="n">ccols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columns</span> <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span> <span class="ow">and</span>
-             <span class="p">(</span><span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;CurvePath&#39;</span><span class="p">,</span> <span class="s1">&#39;ImgPath&#39;</span><span class="p">,</span> <span class="s1">&#39;ImgUUID&#39;</span><span class="p">,</span> <span class="s1">&#39;ROI_State&#39;</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;ImgInfoPath&#39;</span><span class="p">,</span> <span class="s1">&#39;misc&#39;</span><span class="p">])</span> <span class="ow">and</span>
-             <span class="p">(</span><span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ucols</span><span class="p">)]</span>
+             <span class="p">(</span><span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;CurvePath&#39;</span><span class="p">,</span> <span class="s1">&#39;ImgPath&#39;</span><span class="p">,</span> <span class="s1">&#39;ImgUUID&#39;</span><span class="p">,</span> <span class="s1">&#39;ROI_State&#39;</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="s1">&#39;ImgInfoPath&#39;</span><span class="p">,</span> <span class="s1">&#39;misc&#39;</span><span class="p">])</span>
+             <span class="p">]</span>
 
     <span class="n">dcols</span><span class="o">.</span><span class="n">sort</span><span class="p">();</span><span class="n">ccols</span><span class="o">.</span><span class="n">sort</span><span class="p">();</span><span class="n">ucols</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 
