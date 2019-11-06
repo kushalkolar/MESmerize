@@ -890,10 +890,34 @@ ArrayStats
     
 .. _node_ArgGroupStat:
 
+ArgGroupStat
+^^^^^^^^^^^^
+
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.ArgGroupStat>`
     
+    Group by a categorial variable and return the value of any other column based on a statistic.
+    Basically creates sub-dataframes for each group and then returns based on the sub-dataframe.
     
-
+    Group by column "group_by" and return value from column "return_col" where data in *data_column* fits "stat"
+    
+    **Output Data Column** *(Any)*: ARG_STAT
+    
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+    
+    ==============  ===============================================================
+    Parameter       Description
+    ==============  ===============================================================
+    data_column     Data column containing single numbers (not arrays for now)
+    group_by        Group by column (categorical variables)
+    return_col      Return value from this column (any data)
+    stat            "max" or "min"
+    Apply           Process data through this node
+    ==============  ===============================================================
 
 .. _node_ZScore:
 
@@ -921,7 +945,32 @@ ZScore
 	Apply          Process data through this node
 	=============  =============================================================
     
+
+LinRegress
+^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.LinRegress>`
     
+    Basically uses `scipy.stats.linregress <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html>`_
+    
+    Performs Linear Regression on numerical arrays and returns slope, intercept, r-value, p-value and standard error
+
+	========== 	=================
+	Terminal		Description
+	========== 	=================
+	In		Input Transmission
+	Out		Transmission with the result placed in the output column
+	========== 	=================
+    
+    ============    ======================================================================================
+    Parameter       Description
+    ============    ======================================================================================
+    data_column     | Data column containing 1D numerical arrays.
+                    | The values are used as the y values and indices as the x values for the regression
+    ============    ======================================================================================
+    
+    **Output Columnns:** Single numbers, *_SLOPE*, *_INTERCEPT*, *_R-VALUE*, *_P-VALUE*, *_STDERR* as decribed in `scipy.stats.linregress <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.linregress.html>`_
+
 --------------------
 
 .. _nodes_Biology:
@@ -1098,15 +1147,15 @@ FCluster
 
 	**Output Data Column** *(categorial)*: FCLUSTER_LABELS
 
-	====================            =================
-	Terminal                        Description
-	====================            =================
-	Linkage                         Linkage matrix, output from :ref:`node_Linkage` node.
-	Data                            Input Transmission, usually the same input Transmission used for the :ref:`node_Linkage` node.
-	IncM *(optional)*	           Inconsistency matrix, output from :ref:`node_Inconsistent`
-	Monocrit *(optional)*	           Output from :ref:`node_MaxIncStat` or :ref:`node_MaxInconsistent`
-	Out                             Transmission with clustering data that can be visualized using the :ref:`node_Heatmap`
-	====================            =================
+	=====================              =================
+	Terminal                           Description
+	=====================              =================
+	Linkage                            Linkage matrix, output from :ref:`node_Linkage` node.
+	Data                               Input Transmission, usually the same input Transmission used for the :ref:`node_Linkage` node.
+	IncM *(optional)*                  Inconsistency matrix, output from :ref:`node_Inconsistent`
+	Monocrit *(optional)*              Output from :ref:`node_MaxIncStat` or :ref:`node_MaxInconsistent`
+	Out                                Transmission with clustering data that can be visualized using the :ref:`node_Heatmap`
+	=====================              =================
 	
 	**Parameters:** Exactly as desribed in `scipy.cluster.hierarchy.fcluster <https://docs.scipy.org/doc/scipy-1.2.1/reference/generated/scipy.cluster.hierarchy.fcluster.html>`_
 	
