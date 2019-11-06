@@ -238,7 +238,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.plot.ax.add_patch(poly)
 
         handles = [Patch(color=cmap_labels[k], label=k) for k in cmap_labels.keys()]
-        self.plot.ax.legend(handles=handles, ncol=int(np.sqrt(len(handles))), loc='lower right')
+        self.plot.ax.legend(handles=handles, ncol=int(np.sqrt(len(handles))), loc='lower right', title=categorical_column)
 
         self.plot.fig.tight_layout()
 
