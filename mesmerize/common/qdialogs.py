@@ -7,10 +7,10 @@
 
 #GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QLabel
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QLabel, QWidget
 import traceback
 from functools import wraps
-from . import get_project_manager
+from . import get_project_manager, is_app
 from typing import *
 
 
@@ -31,6 +31,10 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
     def catcher(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
+            if not is_app():
+                func(self, *args, **kwargs)
+                return fn
+
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:
@@ -58,6 +62,10 @@ def exceptions_label(label: str, exception_holder: str = None,
     def catcher(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
+            if not is_app():
+                func(self, *args, **kwargs)
+                return fn
+
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:
@@ -98,13 +106,24 @@ def use_open_file_dialog(title: str = 'Choose file', start_dir: Union[str, None]
     :param exts:        List of file extensions to set the filter in the dialog box
     """
     def wrapper(func):
+
         @wraps(func)
         def fn(self, *args, **kwargs):
+            if not is_app():
+                func(self, *args, **kwargs)
+                return fn
+
             if exts is None:
                 e = []
             else:
                 e = exts
-            path = QFileDialog.getOpenFileName(self, title, _get_start_dir(start_dir), f'({" ".join(e)})')
+
+            if isinstance(self, QWidget):
+                parent = self
+            else:
+                parent = None
+
+            path = QFileDialog.getOpenFileName(parent, title, _get_start_dir(start_dir), f'({" ".join(e)})')
             if not path[0]:
                 return
             path = path[0]
@@ -124,13 +143,23 @@ def use_save_file_dialog(title: str = 'Save file', start_dir: Union[str, None] =
     def wrapper(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
+            if not is_app():
+                func(self, *args, **kwargs)
+                return fn
+
             if ext is None:
                 raise ValueError('Must specify extension')
             if ext.startswith('*'):
                 ex = ext[1:]
             else:
                 ex = ext
-            path = QFileDialog.getSaveFileName(self, title, _get_start_dir(start_dir), f'(*{ex})')
+
+            if isinstance(self, QWidget):
+                parent = self
+            else:
+                parent = None
+
+            path = QFileDialog.getSaveFileName(parent, title, _get_start_dir(start_dir), f'(*{ex})')
             if not path[0]:
                 return
             path = path[0]
@@ -153,11 +182,18 @@ def use_open_dir_dialog(title: str = 'Open directory', start_dir: Union[str, Non
     def wrapper(func):
         @wraps(func)
         def fn(self, *args, **kwargs):
-            path = QFileDialog.getExistingDirectory(self, title, _get_start_dir(start_dir))
+            if not is_app():
+                func(self, *args, **kwargs)
+                return fn
+
+            if isinstance(self, QWidget):
+                parent = self
+            else:
+                parent = None
+
+            path = QFileDialog.getExistingDirectory(parent, title, _get_start_dir(start_dir))
             if not path:
                 return
             func(self, path, *args, **kwargs)
         return fn
     return wrapper
-
-
