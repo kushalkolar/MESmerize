@@ -15,7 +15,7 @@ from ....pyqtgraphCore.console import ConsoleWidget
 from ....common.configuration import console_history_path
 from ....common.qdialogs import *
 from matplotlib.axes import Axes
-from matplotlib.patches import Polygon
+from matplotlib.patches import Polygon, Patch
 from typing import *
 import tifffile
 import os
@@ -60,8 +60,8 @@ class ControlDock(QtWidgets.QDockWidget):
                                       name='std_projection')
 
         self.widget_registry.register(self.ui.list_widget_samples,
-                                      setter=self.ui.list_widget_samples.setSelectedItems,
-                                      getter=self.ui.list_widget_samples.getSelectedItems,
+                                      setter=lambda l: self.ui.list_widget_samples.setSelectedItems(l),
+                                      getter=lambda: [self.ui.list_widget_samples.currentItem().text()],
                                       name='selected_sample')
 
         self.widget_registry.register(self.ui.checkBoxFill,
@@ -87,7 +87,7 @@ class ControlDock(QtWidgets.QDockWidget):
         self.ui.checkBoxFill.clicked.connect(self.sig_changed)
         self.ui.doubleSpinBoxLineWidth.valueChanged.connect(self.sig_changed)
         self.ui.doubleSpinBoxAlpha.valueChanged.connect(self.sig_changed)
-        self.ui.list_widget_samples.currentTextChanged.connect(self.sig_changed)
+        self.ui.list_widget_samples.currentItemChanged.connect(self.sig_changed)
 
     def fill_widget(self, samples: list, categorical_columns: list):
         self.ui.combo_categorical_column.setItems(categorical_columns)
@@ -134,7 +134,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget = ControlDock(self)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.control_widget)
-        self.control_widget.sig_changed.connect(self.update_plot)
+        self.control_widget.sig_changed.connect(lambda: self.update_plot())
 
         self.update_live = self.control_widget.ui.checkBoxLiveUpdate.isChecked()
         self.control_widget.ui.checkBoxLiveUpdate.toggled.connect(self.set_update_live)
@@ -192,31 +192,38 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @exceptions_label('error_label', 'exception_holder', 'Error while setting data', 'Make sure you have selected appropriate columns')
     def update_plot(self, *args, **kwargs):
+        self.plot.clear()
         self.error_label.clear()
 
-        self.plot_opts = self.get_plot_opts()
+        plot_opts = self.control_widget.widget_registry.get_state()
 
-        categorical_column = self.plot_opts['categorical_column']
-        sample_id = self.plot_opts['selected_sample'][0]
-        cmap_img = self.plot_opts['cmap_img']
-        cmap_patches = self.plot_opts['cmap_patches']
-        fill_patches = self.plot_opts['fill_patches']
-        line_width = self.plot_opts['line_width']
-        alpha = self.plot_opts['alpha']
+        categorical_column = plot_opts['categorical_column']
 
-        if self.plot_opts['max_projection']:
+        if len(plot_opts['selected_sample']) < 1:
+            raise ValueError('No Sample selected')
+
+        sample_id = plot_opts['selected_sample'][0]
+        cmap_img = plot_opts['cmap_img']
+        cmap_patches = plot_opts['cmap_patches']
+        fill_patches = plot_opts['fill_patches']
+        line_width = plot_opts['line_width']
+        alpha = plot_opts['alpha']
+
+        if plot_opts['max_projection']:
             projection = 'max'
-        elif self.plot_opts['std_projection']:
+        elif plot_opts['std_projection']:
             projection = 'std'
 
         self.sample_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
         labels = self.sample_df[categorical_column]
-        cmap = get_colormap(labels=labels.unique(), cmap=cmap_patches)
+        cmap_labels = get_colormap(labels=labels.unique(), cmap=cmap_patches)
 
         img = self.load_image(projection)
 
-        self.plot.clear()
-        self.plot.ax.imshow(img.transpose(1, 0), origin='lower', cmap=cmap_img)
+        self.plot.ax.set_title(sample_id)
+
+        vmax = np.nanmedian(img) + (10 * np.nanstd(img))
+        self.plot.ax.imshow(img.transpose(1, 0), origin='lower', cmap=cmap_img, vmax=vmax)
 
         for ix, r in self.sample_df.iterrows():
             roi = r['ROI_State']
@@ -226,9 +233,14 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
             cors = np.dstack([xs, ys])[0]
             label = r[categorical_column]
 
-            poly = Polygon(cors, fill=fill_patches, color=cmap[label], linewidth=line_width, alpha=alpha)
+            poly = Polygon(cors, fill=fill_patches, color=cmap_labels[label], linewidth=line_width, alpha=alpha)
 
             self.plot.ax.add_patch(poly)
+
+        handles = [Patch(color=cmap_labels[k], label=k) for k in cmap_labels.keys()]
+        self.plot.ax.legend(handles=handles, ncol=int(np.sqrt(len(handles))), loc='lower right')
+
+        self.plot.fig.tight_layout()
 
         self.plot.draw()
 
