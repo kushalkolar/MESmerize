@@ -152,6 +152,7 @@
 <li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -186,6 +187,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -265,7 +267,7 @@
 </div>
 <p><strong>Layout</strong></p>
 <a class=""
-               data-lightbox="group-4a7d6bc5-1da5-4fc5-b74e-9176d758282b"
+               data-lightbox="group-2ba2b4a5-a3ad-4f00-8114-d317fe7b717a"
                href="../../_images/kshape1.png"
                title=""
                data-title=""
@@ -518,6 +520,10 @@
 <h4>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h4>
 <p>You can export any of the plots with a specific size &amp; DPI.</p>
 <p>Replace the <code class="docutils literal notranslate"><span class="pre">get_&lt;plot&gt;().fig</span></code> on <cite>line 5</cite> with the desired plot.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">matplotlib API for: <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.savefig">Figure.savefig</a>, <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.set_size_inches">Figure.set_size_inches</a>, <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.get_size_inches">Figure.get_size_inches</a></p>
+</div>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -534,7 +540,8 @@
 14
 15
 16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Desired size (width, height)</span>
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Desired size (width, height)</span>
 <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
 
 <span class="c1"># Get the figure</span>
@@ -549,8 +556,9 @@
 <span class="c1"># Save the figure as an png file with 600 dpi</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/share/data/temp/kushal/amazing_shapes.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="c1"># Reset the figure size</span>
+<span class="c1"># Reset the figure size and draw</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">orig_size</span><span class="p">)</span>
+<span class="n">get_</span><span class="o">&lt;</span><span class="n">plot</span><span class="o">&gt;</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
 <div class="admonition note">

@@ -137,7 +137,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#console">Console</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#namespace">Namespace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#exporting">Exporting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#export">Export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#x-tick-labels">x tick labels</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#colorbar-label">Colorbar label</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#axes-visibility">Axes visibility</a></li>
@@ -152,6 +152,7 @@
 <li class="toctree-l1"><a class="reference internal" href="proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -186,6 +187,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -260,7 +262,7 @@
 <p>Visualize numerical arrays in the form of a heatmap. Also used for visualization of Hierarchical clusterting dendrograms. <a class="reference internal" href="datapoint_tracer.html#datapointtracer"><span class="std std-ref">Datapoint Tracer</span></a> is embedded.</p>
 <p><strong>Layout</strong></p>
 <a class=""
-               data-lightbox="group-4f31a718-a732-4289-9db3-4b91060c87c4"
+               data-lightbox="group-830029d0-8ee3-4d6e-9cf7-4cbab7242e2f"
                href="../../_images/heatmap_layout1.png"
                title=""
                data-title=""
@@ -286,7 +288,7 @@
 <p><strong>Load:</strong> Load a plot that has been saved as a “.ptrn” file.</p>
 <p><strong>Layout to visualize Hierarchical Clustering</strong></p>
 <a class=""
-               data-lightbox="group-2f86bba1-e3e9-4f7d-a5ff-9934c9c716fc"
+               data-lightbox="group-6a12dd9f-6b5a-4c6b-aa13-797766971fe1"
                href="../../_images/heatmap_clustering1.png"
                title=""
                data-title=""
@@ -375,8 +377,8 @@
 </div>
 <div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="exporting">
-<h4>Exporting<a class="headerlink" href="#exporting" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="export">
+<h4>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h4>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">matplotlib API for: <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.savefig">Figure.savefig</a>, <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.set_size_inches">Figure.set_size_inches</a>, <a class="reference external" href="https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.get_size_inches">Figure.get_size_inches</a></p>
@@ -397,7 +399,8 @@
 14
 15
 16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Desired size (width, height)</span>
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Desired size (width, height)</span>
 <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
 
 <span class="c1"># Get the figure</span>
@@ -412,8 +415,9 @@
 <span class="c1"># Save the figure as a png file with 1200 dpi</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;/share/data/temp/kushal/amazing_heatmap.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="n">pad_inches</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="c1"># Reset the figure size</span>
+<span class="c1"># Reset the figure size and draw()</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="n">orig_size</span><span class="p">)</span>
+<span class="n">get_plot_area</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
 <div class="admonition note">

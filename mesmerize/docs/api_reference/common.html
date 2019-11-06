@@ -138,6 +138,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -176,6 +177,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -417,6 +419,31 @@ If false, it will save the unsupported object’s __str__() return value</li>
 </table>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="mesmerize.common.utils.draw_graph">
+<code class="descclassname">mesmerize.common.utils.</code><code class="descname">draw_graph</code><span class="sig-paren">(</span><em>l: List[dict], filename: Optional[str] = None, view: bool = False</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/mesmerize/common/utils.html#draw_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.common.utils.draw_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a graph from a list of dicts.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>l</strong> (<em>List</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>]</em>) – list of dicts</li>
+<li><strong>filename</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>]</em>) – full path for storing the draw graph pdf file</li>
+<li><strong>view</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>]</em>) – view the graph in the system’s default pdf reader after it is rendered</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">full path to the graph pdf file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

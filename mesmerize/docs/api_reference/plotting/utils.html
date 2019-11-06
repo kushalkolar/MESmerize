@@ -138,6 +138,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -172,6 +173,7 @@
 <li class="toctree-l1"><a class="reference internal" href="widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -308,6 +310,44 @@ option: ‘subsequent’ returns subsequent colors from the cmap</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="class">
+<dt id="mesmerize.plotting.utils.WidgetRegistry">
+<em class="property">class </em><code class="descclassname">mesmerize.plotting.utils.</code><code class="descname">WidgetRegistry</code><a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#WidgetRegistry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.WidgetRegistry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register widgets to conveniently store and restore their states</p>
+<dl class="method">
+<dt id="mesmerize.plotting.utils.WidgetRegistry.register">
+<code class="descname">register</code><span class="sig-paren">(</span><em>widget: PyQt5.QtWidgets.QWidget</em>, <em>setter: callable</em>, <em>getter: callable</em>, <em>name: str</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#WidgetRegistry.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.WidgetRegistry.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a widget. The <cite>setter</cite> and <cite>getter</cite> methods must be interoperable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>widget</strong> (<em>QtWidgets.QWidget</em>) – widget to register</li>
+<li><strong>setter</strong> (<em>callable</em>) – widget’s method to use for setting its value</li>
+<li><strong>getter</strong> (<em>callable</em>) – widget’s method to use for getting its value. This value must be settable through the specified “setter” method</li>
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – a name for this widget</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.utils.WidgetRegistry.get_state">
+<code class="descname">get_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#WidgetRegistry.get_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.WidgetRegistry.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dict of states for all registered widgets</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.plotting.utils.WidgetRegistry.set_state">
+<code class="descname">set_state</code><span class="sig-paren">(</span><em>state: dict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/mesmerize/plotting/utils.html#WidgetRegistry.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.plotting.utils.WidgetRegistry.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all registered widgets from a dict</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

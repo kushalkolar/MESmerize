@@ -136,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -170,6 +171,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -423,18 +425,6 @@
         <span class="n">Rn</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">Ns</span> <span class="o">/</span> <span class="n">Nf</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_rate</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">],</span> <span class="n">Rn</span><span class="p">)</span></div>
-
-
-<span class="c1"># class ZScore(CtrlNode):</span>
-<span class="c1">#     nodeName = &#39;Z-Score&#39;</span>
-<span class="c1">#     uiTemplate = [(&#39;data_column&#39;, &#39;combo&#39;, {}),</span>
-<span class="c1">#                   (&#39;Apply&#39;, &#39;check&#39;, {&#39;checked&#39;: False, &#39;applyBox&#39;: True})</span>
-<span class="c1">#                   ]</span>
-<span class="c1">#</span>
-<span class="c1">#     def processData(self, transmission: Transmission):</span>
-<span class="c1">#         if self.ctrls[&#39;Apply&#39;].isChecked() is False:</span>
-<span class="c1">#             return</span>
-<span class="c1">#         t = transmission.copy()</span>
 
 
 <div class="viewcode-block" id="ScalerMeanVariance"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Signal.ScalerMeanVariance">[docs]</a><span class="k">class</span> <span class="nc">ScalerMeanVariance</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>

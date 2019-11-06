@@ -377,9 +377,9 @@ class ZScore(CtrlNode):
         return self.t
 
 
-class LinReg(CtrlNode):
+class LinRegress(CtrlNode):
     """Linear Regression"""
-    nodeName = 'LinReg'
+    nodeName = 'LinRegress'
     uiTemplate = [('data_column', 'combo', {}),
                   ('Apply', 'check', {'applyBox': True, 'checked': False})
                   ]

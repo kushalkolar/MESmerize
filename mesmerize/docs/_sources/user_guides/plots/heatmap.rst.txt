@@ -98,8 +98,8 @@ cax                     Colorbar axes
 Examples
 --------
 
-Exporting
-^^^^^^^^^
+Export
+^^^^^^
 
 .. seealso:: matplotlib API for: `Figure.savefig <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.savefig>`_, `Figure.set_size_inches <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.set_size_inches>`_, `Figure.get_size_inches <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.get_size_inches>`_
 
@@ -121,8 +121,9 @@ Exporting
     # Save the figure as a png file with 1200 dpi
     fig.savefig('/share/data/temp/kushal/amazing_heatmap.png', dpi=1200, bbox_inches='tight', pad_inches=0)
     
-    # Reset the figure size
+    # Reset the figure size and draw()
     fig.set_size_inches(orig_size)
+    get_plot_area().draw()
     
 .. note:: The entire plot area might go gray after the figure is reset to the original size. I think this is a Qt-matplotlib issue. Just resize the window a bit and the plot will be visible again!
 

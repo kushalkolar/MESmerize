@@ -338,7 +338,7 @@ def draw_graph(l: List[dict], filename: Optional[str] = None, view: bool = False
     :type filename: Optional[str]
 
     :param view: view the graph in the system's default pdf reader after it is rendered
-    :param view: Optional[bool]
+    :type view: Optional[bool]
 
     :return: full path to the graph pdf file
     :rtype: str

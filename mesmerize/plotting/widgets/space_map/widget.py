@@ -147,11 +147,12 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         cmd_history_file = os.path.join(console_history_path, 'space_map.pik')
 
         ns = {'this': self,
-              'plot': self.plot,
+              'get_plot': lambda: self.plot,
               }
 
         txt = ["Namespaces",
                "self as 'this'",
+               "Useful callable: get_plot()"
                ]
 
         txt = "\n".join(txt)
@@ -171,8 +172,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.exception_holder = None
         self.error_label.mousePressEvent = self.show_exception_info
 
-        self.sample_df = None
-        self.plot_opts = None
+        self.sample_df = None  #: sub-dataframe of the current sample
 
     def set_update_live(self, b: bool):
         self.control_widget.ui.checkBoxLiveUpdate.setChecked(b)
@@ -238,7 +238,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.plot.ax.add_patch(poly)
 
         handles = [Patch(color=cmap_labels[k], label=k) for k in cmap_labels.keys()]
-        self.plot.ax.legend(handles=handles, ncol=int(np.sqrt(len(handles))), loc='lower right')
+        self.plot.ax.legend(handles=handles, ncol=int(np.sqrt(len(handles))), loc='lower right', title=categorical_column)
 
         self.plot.fig.tight_layout()
 

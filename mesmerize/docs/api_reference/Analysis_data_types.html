@@ -138,6 +138,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -177,6 +178,7 @@
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -788,8 +790,27 @@ Added to all or specific datablock(s), depending on which datablock(s) the node 
 
 <dl class="method">
 <dt id="mesmerize.analysis.data_types.HistoryTrace.get_data_block_history">
-<code class="descname">get_data_block_history</code><span class="sig-paren">(</span><em>data_block_id: uuid.UUID</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_data_block_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_data_block_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the full history trace of a single data block</p>
+<code class="descname">get_data_block_history</code><span class="sig-paren">(</span><em>data_block_id: Union[str, uuid.UUID], copy: bool = False</em><span class="sig-paren">)</span> &#x2192; List[dict]<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.get_data_block_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.get_data_block_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the full history trace of a single data block.</p>
+<p>Use copy=False if you want to modify the history trace of the data block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_block_id</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>UUID</em><em>]</em>) – data block ID</li>
+<li><strong>copy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If true, returns a deepcopy</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">data block history</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>]</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -913,6 +934,40 @@ Useful when merging Transmission objects.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>history_traces</strong> – list of HistoryTrace instances</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.draw_graph">
+<code class="descname">draw_graph</code><span class="sig-paren">(</span><em>data_block_id: Union[str, uuid.UUID], **kwargs</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.draw_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.draw_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw graph of a data block. kwargs are passed to <cite>mesmerize.plotting.utils.draw_graph</cite></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_block_id</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>UUID</em><em>]</em>) – data block ID from which to get history to draw in a graph</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">file path to the graph pdf file</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="mesmerize.analysis.data_types.HistoryTrace.clean_history_trace">
+<em class="property">static </em><code class="descname">clean_history_trace</code><span class="sig-paren">(</span><em>db_history: list</em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/mesmerize/analysis/data_types.html#HistoryTrace.clean_history_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#mesmerize.analysis.data_types.HistoryTrace.clean_history_trace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans up excessive data such as frequencies linspaces and linkage matrices so the graph is viewable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db_history</strong> – data block history</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">data block history with excessive params removed</td>
 </tr>
 </tbody>
 </table>
