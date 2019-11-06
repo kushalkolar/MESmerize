@@ -152,10 +152,11 @@ class WidgetEntry:
 
 
 class WidgetRegistry:
+    """
+    Register widgets to conveniently store and restore their states
+    """
+
     def __init__(self):
-        """
-        Register widgets to conveniently store and restore their states
-        """
         self.widgets = dict()
 
     def register(self, widget: QtWidgets.QWidget, setter: callable, getter: callable, name: str):
