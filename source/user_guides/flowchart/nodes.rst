@@ -840,6 +840,7 @@ LogTransform
 	Apply		Process data through this node
 	============ 	=================
 
+.. _node_ArrayStats:
 
 ArrayStats
 ^^^^^^^^^^
@@ -862,40 +863,36 @@ ArrayStats
 	The desired function is applied to each 1D array in the *data_column* and the output is placed in the Output Data Column.
 
 	
-    ============    =================
-    Parameter       Description
-    ============    =================
-    data_column     Data column containing numerical arrays
-    function        | *amin*: Return the minimum of the input array
+    ===========================     ===============================================================================
+    Parameter                       Description
+    ===========================     ===============================================================================
+    data_column                     Data column containing numerical arrays
+    function                        | *amin*: Return the minimum of the input array
+                                    | *amax*: Return the maximum of the input array
+                                    | *nanmin*: Return the minimum of the input array, ignore NaNs
+                                    | *nanmax*: Return the maximum of the input array, ignore NaNs
+                                    | *ptp*: Return the range (max - min) of the values of the input array
+                                    | *median*: Return the median of the input array
+                                    | *mean*: Return the mean of the input array
+                                    | *std*: Return the standard deviation of the input array
+                                    | *var*: Return the variance of the input array
+                                    | *nanmedian*: Return the median of the input array, ignore NaNs
+                                    | *nanmean*: Return the mean of the input array, ignore NaNs
+                                    | *nanstd*: Return the standard deviation of the input array, ignore NaNs
+                                    | *nanvar*: Return the variance of the input array, ignore NaNs
+                                    
+    group_by *(Optional)*           Group by a categorial variable, for example get the mean array of a group
+    group_by_sec *(Optional)*       Group by a secondary categorical variable
+    output_col                      Enter a name for the output column
+    Apply                           Process data through this node
+    ===========================     ===============================================================================
+
     
-                    | *amax*: Return the maximum of the input array
-                    
-                    | *nanmin*: Return the minimum of the input array, ignore NaNs
-                    
-                    | *nanmax*: Return the maximum of the input array, ignore NaNs
-                    
-                    | *ptp*: Return the range (max - min) of the values of the input array
-                    
-                    | *median*: Return the median of the input array
-                    
-                    | *mean*: Return the mean of the input array
-                    
-                    | *std*: Return the standard deviation of the input array
-                    
-                    | *var*: Return the variance of the input array
-                    
-                    | *nanmedian*: Return the median of the input array, ignore NaNs
-                    
-                    | *nanmean*: Return the mean of the input array, ignore NaNs
+.. _node_ArgGroupStat:
 
-                    | *nanstd*: Return the standard deviation of the input array, ignore NaNs
-
-                    | *nanvar*: Return the variance of the input array, ignore NaNs
-                    
-    output_col      Enter a name for the output column
-    Apply           Process data through this node
-    ============    =================
-
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Math.ArgGroupStat>`
+    
+    
 
 
 .. _node_ZScore:
@@ -943,14 +940,18 @@ ExtractStim
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.ExtractStim>`
 
 	Extract the portions of a trace corresponding to stimuli that have been temporally mapped onto it. It outputs one row per stimulus period.
+	
+	**Note:** Stimulus extraction is currently quite slow, will be optimized after some planned changes in the Transmission object.
 
 	===================    ========================================
 	Output Data Column     Description
 	===================    ========================================
-	STIM_TYPE              Stimulus type, corresponds to your :ref:`Project Config <project-configuration>`
-	STIMULUS               Name of the stimulus.
-	_EXTRACT_STIM          The extracted array based on the parameters.
-	uuid_stim		  UUID for the extracted stimulus period
+	ST_TYPE                Stimulus type, corresponds to your :ref:`Project Config <project-configuration>`
+	ST_NAME                Name of the stimulus
+	_ST_CURVE              The extracted array based on the parameters
+	_ST_START_IX           Start index of the stimulus period in the parent curve
+	_ST_END_IX             End index of the stimulus period in the parent curve
+	ST_uuid                UUID assigned for the extracted stimulus period
 	===================    ========================================
 
 	============         =================
@@ -958,7 +959,6 @@ ExtractStim
 	============         =================
 	data_column          Data column containing the signals to be extracted based on the stimulus maps
 	Stim_Type            Type of stimulus to extract
-	Stimulus             Name of the stimulus to extract
 	start_offset         Offset the start index of the stimulus mapping by a value (in frames)
 	end_offset           Offset the end index of the stimulus mapping by a value (in frames)
 
@@ -1104,7 +1104,7 @@ FCluster
 	Linkage                         Linkage matrix, output from :ref:`node_Linkage` node.
 	Data                            Input Transmission, usually the same input Transmission used for the :ref:`node_Linkage` node.
 	IncM *(optional)*	           Inconsistency matrix, output from :ref:`node_Inconsistent`
-	Monocrit *(optinal)*	           Output from :ref:`node_MaxIncStat` or :ref:`node_MaxInconsistent`
+	Monocrit *(optional)*	           Output from :ref:`node_MaxIncStat` or :ref:`node_MaxInconsistent`
 	Out                             Transmission with clustering data that can be visualized using the :ref:`node_Heatmap`
 	====================            =================
 	
