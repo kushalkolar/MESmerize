@@ -6,6 +6,7 @@ import traceback
 from ....analysis import Transmission
 from ....analysis.history_widget import HistoryTreeWidget
 from ....common import get_project_manager
+from ....common.qdialogs import *
 import os
 from tslearn.preprocessing import TimeSeriesScalerMinMax
 import pickle
@@ -80,7 +81,7 @@ class LoadFile(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'Out': {'io': 'out'}})
-        self.ctrls['load_trn'].clicked.connect(self.file_dialog_trn_file)
+        self.ctrls['load_trn'].clicked.connect(lambda: self.load_file())
         self.ctrls['proj_path'].clicked.connect(self.dir_dialog_proj_path)
 
         self.t = None
@@ -94,12 +95,13 @@ class LoadFile(CtrlNode):
             self.ctrls['proj_trns'].setItems(trns_names)
             self.ctrls['proj_trns'].currentTextChanged.connect(lambda fname: self.load_file(os.path.join(get_project_manager().root_dir, 'trns', fname) if fname else False))
 
-    def file_dialog_trn_file(self):
-        path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
-        if path == '':
-            return
-        self.load_file(path[0])
+    # def file_dialog_trn_file(self):
+    #     path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
+    #     if path == '':
+    #         return
+    #     self.load_file(path[0])
 
+    @use_open_file_dialog('Load Transmission file', None, ['*.trn, *.ptrn'])
     def load_file(self, path: str):
         if not path:
             return
@@ -138,7 +140,6 @@ class LoadFile(CtrlNode):
             return
 
     def process(self):
-        self.t.get_proj_path()
         return {'Out': self.t}
 
 
