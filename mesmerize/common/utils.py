@@ -21,8 +21,7 @@ import json
 import pandas as pd
 from warnings import warn
 import traceback
-from PyQt5 import QtCore, QtWidgets
-from functools import wraps
+from graphviz import Digraph
 
 
 def make_workdir(prefix: str = '') -> str:
@@ -326,3 +325,53 @@ class HdfTools:
             elif isinstance(item, h5py._hl.group.Group):
                 ans[key] = HdfTools._dicts_from_group(h5file, path + key + '/')
         return ans
+
+
+def draw_graph(l: List[dict], filename: Optional[str] = None, view: bool = False) -> str:
+    """
+    Draw a graph from a list of dicts.
+
+    :param l: list of dicts
+    :type l: List[dict]
+
+    :param filename: full path for storing the draw graph pdf file
+    :type filename: Optional[str]
+
+    :param view: view the graph in the system's default pdf reader after it is rendered
+    :param view: Optional[bool]
+
+    :return: full path to the graph pdf file
+    :rtype: str
+    """
+    if filename is None:
+        workdir = make_workdir(prefix='graph_')
+        filename = os.path.join(workdir, 'graph')
+
+    g = Digraph('G', filename=filename, format='pdf', node_attr={'shape': 'record'})
+
+    o_encounters = []
+    o_n_l = []
+
+    for op in l:
+        o = list(op.keys())[0]
+        params = op[o]
+        s = []
+        for k in params.keys():
+            p = str(params[k]).replace("{", "\\n   --\> ").replace("}", "").replace("|", "\|")  # .replace("[", " ").replace("(", " ").replace(")", " ")
+            s.append(f"{k}: {p}")
+
+        o_n = f"{o}.{o_encounters.count(o)}"
+        o_n_l.append(o_n)
+        s = '{ ' + o_n + ' | ' + '\\n'.join(s) + ' }'
+
+        g.node(o_n, s)
+        o_encounters.append(o)
+
+    es = []
+    for i in range(1, len(o_n_l)):
+        es.append((o_n_l[i - 1], o_n_l[i]))
+
+    g.edges(es)
+    g.render(view=view)
+
+    return filename

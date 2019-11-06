@@ -2,10 +2,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from glob import glob
 import os
 from matplotlib import cm as matplotlib_color_map
-from typing import List, Union, Any
+from typing import *
 from mesmerize.pyqtgraphCore import mkColor
 import numpy as np
 from collections import OrderedDict
+from warnings import warn
 
 qual_cmaps = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1', 'Set2', 'Set3', 'tab10', 'tab20', 'tab20b',
               'tab20c']
@@ -123,6 +124,9 @@ class ColormapListWidget(QtWidgets.QListWidget):
         ix = self.indexFromItem(item)
         self.setCurrentIndex(ix)
 
+    def get_cmap(self) -> str:
+        return self.currentItem().text()
+
     def emit_colormap_changed(self, item: QtWidgets.QListWidgetItem):
         self.signal_colormap_changed.emit(item.text())
 
@@ -138,3 +142,44 @@ class ColormapListWidget(QtWidgets.QListWidget):
             item.setIcon(img)
             self.addItem(item)
         self.setIconSize(QtCore.QSize(120, 25))
+
+
+class WidgetEntry:
+    def __init__(self, setter: callable, getter: callable, name: str):
+        self.setter = setter
+        self.getter = getter
+        self.name = name
+
+
+class WidgetRegistry:
+    def __init__(self):
+        self.widgets = dict()
+
+    def register(self, widget: QtWidgets.QWidget, setter: callable, getter: callable, name: str):
+        if (not callable(setter)) or (not callable(getter)):
+            raise TypeError('setter and getter must be callable')
+
+        self.widgets[widget] = WidgetEntry(setter=setter, getter=getter, name=name)
+
+    def get_state(self) -> dict:
+        # s = dict.fromkeys([self.widgets[k].name for k in list(self.widgets.keys())])
+        s = dict()
+
+        for w in self.widgets.keys():
+            name = self.widgets[w].name
+            s[name] = self.widgets[w].getter()
+
+        return s
+
+    def set_state(self, state: dict):
+        for w in self.widgets.keys():
+            name = self.widgets[w].name
+
+            # account for using old saved state files whilst control widgets change
+            if name not in state.keys():
+                warn(f'State not available for widget: {name}\n{w}')
+                continue
+
+            s = state[name]
+
+            self.widgets[w].setter(s)

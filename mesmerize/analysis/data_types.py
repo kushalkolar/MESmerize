@@ -24,10 +24,9 @@ from itertools import chain
 import os
 import traceback
 from configparser import RawConfigParser
-from ..common.utils import HdfTools
+from ..common.utils import HdfTools, draw_graph
 from ..common import get_proj_config
 from tqdm import tqdm
-from graphviz import Digraph
 
 
 class _HistoryTraceExceptions(Exception):
@@ -183,15 +182,32 @@ class HistoryTrace:
         for _id in _ids:
             self.history[_id].append({operation: parameters})
 
-    def get_data_block_history(self, data_block_id: UUID) -> list:
-        """Get the full history trace of a single data block"""
+    def get_data_block_history(self, data_block_id: Union[str, UUID], copy: bool = False) -> List[dict]:
+        """
+        Get the full history trace of a single data block.
+
+        Use copy=False if you want to modify the history trace of the data block.
+
+        :param data_block_id: data block ID
+        :type data_block_id: Union[str, UUID]
+
+        :param copy: If true, returns a deepcopy
+        :type copy: bool
+
+        :return: data block history
+        :rtype: List[dict]
+        """
 
         data_block_id = self._to_uuid(data_block_id)
 
         if data_block_id not in self.data_blocks:
             raise DataBlockNotFound(str(data_block_id))
 
-        return self.history[data_block_id].copy()
+        if copy:
+            return deepcopy(self.history[data_block_id])
+
+        else:
+            return self.history[data_block_id]
 
     def get_all_data_blocks_history(self) -> dict:
         """Returns history trace of all datablocks"""
@@ -335,38 +351,40 @@ class HistoryTrace:
 
         return cls(history=history, data_blocks=data_blocks)
 
-    def draw_graph(self, data_block_id: Union[str, UUID], filename: str, view: bool = False) -> None:
-        g = Digraph('G', filename=filename, format='pdf', node_attr={'shape': 'record'})
+    def draw_graph(self, data_block_id: Union[str, UUID], **kwargs) -> str:
+        """
+        Draw graph of a data block. kwargs are passed to `mesmerize.plotting.utils.draw_graph`
 
-        db_history = self.get_data_block_history(data_block_id)
+        :param data_block_id: data block ID from which to get history to draw in a graph
+        :type data_block_id: Union[str, UUID]
 
-        o_encounters = []
-        o_n_l = []
+        :return: file path to the graph pdf file
+        :rtype: str
+        """
+        db_history = self.get_data_block_history(data_block_id, copy=True)
+
+        cleaned = HistoryTrace.clean_history_trace(db_history)
+
+        return draw_graph(cleaned, **kwargs)
+
+    @staticmethod
+    def clean_history_trace(db_history: list) -> list:
+        """
+        Cleans up excessive data such as frequencies linspaces and linkage matrices so the graph is viewable.
+
+        :param db_history: data block history
+        :return: data block history with excessive params removed
+        """
 
         for op in db_history:
             o = list(op.keys())[0]
             params = op[o]
-            params = self._cleanup_params(o, params)
-            s = []
-            for k in params.keys():
-                p = str(params[k]).replace("{", "\\n   --\> ").replace("}", "").replace("|", "\|")  # .replace("[", " ").replace("(", " ").replace(")", " ")
-                s.append(f"{k}: {p}")
+            op[o] = HistoryTrace._cleanup_params(o, params)
 
-            o_n = f"{o}.{o_encounters.count(o)}"
-            o_n_l.append(o_n)
-            s = '{ ' + o_n + ' | ' + '\\n'.join(s) + ' }'
+        return db_history
 
-            g.node(o_n, s)
-            o_encounters.append(o)
-
-        es = []
-        for i in range(1, len(o_n_l)):
-            es.append((o_n_l[i - 1], o_n_l[i]))
-
-        g.edges(es)
-        g.render(view=view)
-
-    def _cleanup_params(self, operation, params):
+    @staticmethod
+    def _cleanup_params(operation, params):
         log = params.copy()
         if operation == 'rfft':
             log.pop('frequencies')

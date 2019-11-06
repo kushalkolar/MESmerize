@@ -182,8 +182,8 @@ def organize_dataframe_columns(columns: Iterable[str]) -> Tuple[List[str], List[
     ucols = [c for c in columns if ('uuid' in c) or ('UUID' in c)]
 
     ccols = [c for c in columns if (not c.startswith('_')) and
-             (c not in ['CurvePath', 'ImgPath', 'ImgUUID', 'ROI_State', 'meta', 'ImgInfoPath', 'misc']) and
-             (c not in ucols)]
+             (c not in ['CurvePath', 'ImgPath', 'ImgUUID', 'ROI_State', 'meta', 'ImgInfoPath', 'misc'])
+             ]
 
     dcols.sort();ccols.sort();ucols.sort()
 

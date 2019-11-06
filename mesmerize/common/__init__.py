@@ -75,8 +75,12 @@ def get_timestamp_str() -> str:
 
 
 def is_app() -> bool:
+    if QApplication.instance() is None:
+        return False
+
     if hasattr(QApplication.instance(), 'window_manager') and hasattr(QApplication.instance(), 'project_manager'):
         return True
+
     return False
 
 

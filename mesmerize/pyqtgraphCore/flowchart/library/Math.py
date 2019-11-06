@@ -2,7 +2,7 @@
 from ....analysis.math.tvregdiff import tv_reg_diff
 from .common import *
 from ....analysis.data_types import Transmission
-from scipy.stats import zscore as _zscore
+from scipy.stats import zscore as _zscore, linregress
 import pandas as pd
 
 
@@ -176,12 +176,19 @@ class ArrayStats(CtrlNode):
     uiTemplate = [('data_column', 'combo', {}),
                   ('function', 'combo', {'items': ['amin', 'amax', 'nanmin', 'nanmax', 'ptp', 'median', 'mean', 'std',
                                                    'var', 'nanmedian', 'nanmean', 'nanstd', 'nanvar']}),
+                  ('group_by', 'combo', {}),
+                  ('group_by_sec', 'combo', {}),
                   ('output_col', 'lineEdit', {}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
 
     def processData(self, transmission: Transmission):
         self.t = transmission
-        self.set_data_column_combo_box()
+        dcols = organize_dataframe_columns(transmission.df.columns)[0]
+        self.ctrls['data_column'].setItems(dcols)
+
+        ccols = ['------'] + organize_dataframe_columns(self.t.df.columns)[1]
+        self.ctrls['group_by'].setItems(ccols)
+        self.ctrls['group_by_sec'].setItems(ccols)
 
         if not self.apply_checked():
             return
@@ -196,17 +203,121 @@ class ArrayStats(CtrlNode):
 
         function = self.ctrls['function'].currentText()
 
+        if self.ctrls['group_by'].currentIndex() > 0:
+            group_by = self.ctrls['group_by'].currentText()
+        else:
+            group_by = False
+
+        if self.ctrls['group_by_sec'].currentIndex() > 0:
+            group_by_sec = self.ctrls['group_by_sec'].currentText()
+        else:
+            group_by_sec = False
+
         params = {'data_column': self.data_column,
                   'output_column': output_column,
-                  'function': function
+                  'function': function,
+                  'group_by': group_by,
+                  'group_by_sec': group_by_sec
                   }
 
         func = getattr(np, function)
 
-        self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: func(x))
+        if group_by_sec:
+            secondary_groups = self.t.df[group_by_sec].unique()
+        else:
+            secondary_groups = ['']
+
+        if group_by:
+            grouped_df = Transmission.empty_df(self.t, addCols=[f'{output_column}'])
+
+            groups_primary = self.t.df[group_by].unique()
+
+            for group in tqdm(groups_primary, total=groups_primary.size, desc='groups'):
+                gdf = self.t.df[self.t.df[group_by] == group]
+
+                for sgroup in secondary_groups:
+
+                    if sgroup:
+                        sgdf = gdf[gdf[group_by_sec] == sgroup]
+                        s = sgdf.iloc[0].copy()
+
+                    else:
+                        sgdf = gdf
+                        s = gdf.iloc[0].copy()
+
+                    data = np.vstack(sgdf[self.data_column])
+                    results = func(data, axis=0)
+
+                    s[f'{output_column}'] = results
+
+                    grouped_df = grouped_df.append(s, ignore_index=True)
+
+            self.t.df = grouped_df
+        else:
+            self.t.df[output_column] = self.t.df[self.data_column].apply(lambda x: func(x))
+
         self.t.last_output = output_column
 
         self.t.history_trace.add_operation('all', 'array_stats', params)
+
+        return self.t
+
+
+class ArgGroupStat(CtrlNode):
+    """Group by a certain column and return value of another column based on a data column statistic"""
+    nodeName = 'ArgGroupStat'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('group_by', 'combo', {}),
+                  ('return_col', 'combo', {}),
+                  ('stat', 'combo', {'items': ['min', 'max']}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        ccols = organize_dataframe_columns(self.t.df.columns)[1]
+        self.ctrls['group_by'].setItems(ccols)
+
+        self.ctrls['return_col'].setItems(self.t.df.columns.tolist())
+
+        if not self.apply_checked():
+            return
+
+        self.t = transmission.copy()
+
+        group_by = self.ctrls['group_by'].currentText()
+        return_col = self.ctrls['return_col'].currentText()
+        stat = self.ctrls['stat'].currentText()
+        output_column = 'ARG_STAT'
+
+        params = {'data_column': self.data_column,
+                  'group_by': group_by,
+                  'return_col': return_col,
+                  'stat': stat,
+                  'output_column': output_column
+                  }
+
+        out_df = Transmission.empty_df(self.t, addCols=['ARG_STAT'])
+
+        for group in self.t.df[group_by].unique():
+            gdf = self.t.df[self.t.df[group_by] == group]
+            gdf.reset_index(drop=True, inplace=True)
+
+            if stat == 'max':
+                ix = gdf[self.data_column].idxmax()
+
+            elif stat == 'min':
+                ix = gdf[self.data_column].idxmin()
+
+            s = gdf.iloc[ix].copy()
+            s['ARG_STAT'] = s[return_col]
+
+            out_df = out_df.append(s, ignore_index=True)
+
+        self.t.df = out_df
+        self.t.history_trace.add_operation('all', 'arg-group-stat', params)
 
         return self.t
 
@@ -264,3 +375,39 @@ class ZScore(CtrlNode):
         self.t.last_output = '_ZSCORE'
 
         return self.t
+
+
+class LinReg(CtrlNode):
+    """Linear Regression"""
+    nodeName = 'LinReg'
+    uiTemplate = [('data_column', 'combo', {}),
+                  ('Apply', 'check', {'applyBox': True, 'checked': False})
+                  ]
+
+    def processData(self, transmission: Transmission):
+        self.t = transmission
+        self.set_data_column_combo_box()
+
+        if not self.apply_checked():
+            return
+
+        self.t = transmission.copy()
+
+        params = {'data_column': self.data_column}
+
+        self.t.df[['_SLOPE', '_INTERCEPT', '_R-VALUE', '_P-VALUE', '_STDERR']] \
+            = self.t.df[self.data_column].apply(lambda y: self._linreg(np.arange(y.size), y))
+
+        self.t.history_trace.add_operation('all', 'linreg', params)
+        self.t.last_output = None
+
+        return self.t
+
+    def _linreg(self, x, y):
+        r = linregress(x=np.arange(y.size), y=y)
+
+        return pd.Series({'_SLOPE': r[0],
+                          '_INTERCEPT': r[1],
+                          '_R-VALUE': r[2],
+                          '_P-VALUE': r[3],
+                          '_STDERR': r[4]})

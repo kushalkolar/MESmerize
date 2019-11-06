@@ -4,7 +4,8 @@ from ....analysis import simple_plot_window
 from .common import *
 import numpy as np
 import pandas as pd
-from ....plotting.widgets import HeatmapTracerWidget, ScatterPlotWidget, BeeswarmPlotWindow, ProportionsWidget, CrossCorrelationWidget
+from ....plotting.widgets import HeatmapTracerWidget, ScatterPlotWidget, \
+    BeeswarmPlotWindow, ProportionsWidget, CrossCorrelationWidget, SpaceMapWidget
 from ....plotting.variants.timeseries import TimeseriesPlot
 from graphviz import Digraph
 from ....common.utils import make_workdir
@@ -36,7 +37,8 @@ class Plot(CtrlNode):
         transmissions = merge_transmissions(transmissions)
 
         columns = pd.concat([t.df for t in transmissions]).columns
-        self.ctrls['data_column'].setItems(columns.to_list())
+        dcols = organize_dataframe_columns(columns)
+        self.ctrls['data_column'].setItems(dcols)
 
         if self.ctrls['Apply'].isChecked() is False:
             return
@@ -229,6 +231,25 @@ class CrossCorr(CtrlNode):
         self.transmissions_list = merge_transmissions(self.transmissions)
 
         self.t = Transmission.merge(self.transmissions_list)
+
+        self.plot_widget.set_input(self.t)
+
+
+class SpaceMap(CtrlNode):
+    """Visualize spatial maps of a categorical variable"""
+    nodeName = 'SpaceMap'
+    uiTemplate = [('ShowGUI', 'button', {'text': 'Show GUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
+        self.plot_widget =SpaceMapWidget()
+        self.ctrls['ShowGUI'].clicked.connect(self.plot_widget.show)
+
+    def process(self, **kwargs):
+        self.transmissions = kwargs['In']
+        self.transmissions = merge_transmissions(self.transmissions)
+
+        self.t = Transmission.merge(self.transmissions)
 
         self.plot_widget.set_input(self.t)
 
