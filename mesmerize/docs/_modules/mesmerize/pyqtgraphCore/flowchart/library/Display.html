@@ -136,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -170,6 +171,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -239,7 +241,8 @@
 <span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">....plotting.widgets</span> <span class="k">import</span> <span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="n">ScatterPlotWidget</span><span class="p">,</span> <span class="n">BeeswarmPlotWindow</span><span class="p">,</span> <span class="n">ProportionsWidget</span><span class="p">,</span> <span class="n">CrossCorrelationWidget</span>
+<span class="kn">from</span> <span class="nn">....plotting.widgets</span> <span class="k">import</span> <span class="n">HeatmapTracerWidget</span><span class="p">,</span> <span class="n">ScatterPlotWidget</span><span class="p">,</span> \
+    <span class="n">BeeswarmPlotWindow</span><span class="p">,</span> <span class="n">ProportionsWidget</span><span class="p">,</span> <span class="n">CrossCorrelationWidget</span><span class="p">,</span> <span class="n">SpaceMapWidget</span>
 <span class="kn">from</span> <span class="nn">....plotting.variants.timeseries</span> <span class="k">import</span> <span class="n">TimeseriesPlot</span>
 <span class="kn">from</span> <span class="nn">graphviz</span> <span class="k">import</span> <span class="n">Digraph</span>
 <span class="kn">from</span> <span class="nn">....common.utils</span> <span class="k">import</span> <span class="n">make_workdir</span>
@@ -271,7 +274,8 @@
         <span class="n">transmissions</span> <span class="o">=</span> <span class="n">merge_transmissions</span><span class="p">(</span><span class="n">transmissions</span><span class="p">)</span>
 
         <span class="n">columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">transmissions</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;data_column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+        <span class="n">dcols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;data_column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">dcols</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;Apply&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">return</span>
@@ -464,6 +468,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">transmissions_list</span> <span class="o">=</span> <span class="n">merge_transmissions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmissions</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Transmission</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmissions_list</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SpaceMap"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Display.SpaceMap">[docs]</a><span class="k">class</span> <span class="nc">SpaceMap</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Visualize spatial maps of a categorical variable&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;SpaceMap&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;ShowGUI&#39;</span><span class="p">,</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;Show GUI&#39;</span><span class="p">})]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">CtrlNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">terminals</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;In&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;multi&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_widget</span> <span class="o">=</span><span class="n">SpaceMapWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;ShowGUI&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmissions</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;In&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmissions</span> <span class="o">=</span> <span class="n">merge_transmissions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmissions</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">Transmission</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transmissions</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_widget</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">)</span></div>
 

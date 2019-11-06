@@ -136,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -170,6 +171,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -237,7 +239,7 @@
 <span class="kn">from</span> <span class="nn">....analysis.math.tvregdiff</span> <span class="k">import</span> <span class="n">tv_reg_diff</span>
 <span class="kn">from</span> <span class="nn">.common</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">....analysis.data_types</span> <span class="k">import</span> <span class="n">Transmission</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">zscore</span> <span class="k">as</span> <span class="n">_zscore</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">zscore</span> <span class="k">as</span> <span class="n">_zscore</span><span class="p">,</span> <span class="n">linregress</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
@@ -411,12 +413,19 @@
     <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;data_column&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
                   <span class="p">(</span><span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;amin&#39;</span><span class="p">,</span> <span class="s1">&#39;amax&#39;</span><span class="p">,</span> <span class="s1">&#39;nanmin&#39;</span><span class="p">,</span> <span class="s1">&#39;nanmax&#39;</span><span class="p">,</span> <span class="s1">&#39;ptp&#39;</span><span class="p">,</span> <span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span>
                                                    <span class="s1">&#39;var&#39;</span><span class="p">,</span> <span class="s1">&#39;nanmedian&#39;</span><span class="p">,</span> <span class="s1">&#39;nanmean&#39;</span><span class="p">,</span> <span class="s1">&#39;nanstd&#39;</span><span class="p">,</span> <span class="s1">&#39;nanvar&#39;</span><span class="p">]}),</span>
+                  <span class="p">(</span><span class="s1">&#39;group_by&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;group_by_sec&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
                   <span class="p">(</span><span class="s1">&#39;output_col&#39;</span><span class="p">,</span> <span class="s1">&#39;lineEdit&#39;</span><span class="p">,</span> <span class="p">{}),</span>
                   <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})]</span>
 
     <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_data_column_combo_box</span><span class="p">()</span>
+        <span class="n">dcols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="n">transmission</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;data_column&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">dcols</span><span class="p">)</span>
+
+        <span class="n">ccols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;------&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by_sec&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_checked</span><span class="p">():</span>
             <span class="k">return</span>
@@ -431,17 +440,121 @@
 
         <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;function&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">group_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group_by</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by_sec&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">group_by_sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by_sec&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group_by_sec</span> <span class="o">=</span> <span class="kc">False</span>
+
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data_column&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">,</span>
                   <span class="s1">&#39;output_column&#39;</span><span class="p">:</span> <span class="n">output_column</span><span class="p">,</span>
-                  <span class="s1">&#39;function&#39;</span><span class="p">:</span> <span class="n">function</span>
+                  <span class="s1">&#39;function&#39;</span><span class="p">:</span> <span class="n">function</span><span class="p">,</span>
+                  <span class="s1">&#39;group_by&#39;</span><span class="p">:</span> <span class="n">group_by</span><span class="p">,</span>
+                  <span class="s1">&#39;group_by_sec&#39;</span><span class="p">:</span> <span class="n">group_by_sec</span>
                   <span class="p">}</span>
 
         <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">group_by_sec</span><span class="p">:</span>
+            <span class="n">secondary_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">group_by_sec</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">secondary_groups</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">group_by</span><span class="p">:</span>
+            <span class="n">grouped_df</span> <span class="o">=</span> <span class="n">Transmission</span><span class="o">.</span><span class="n">empty_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">addCols</span><span class="o">=</span><span class="p">[</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{output_column}</span><span class="s1">&#39;</span><span class="p">])</span>
+
+            <span class="n">groups_primary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">group_by</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">groups_primary</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">groups_primary</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;groups&#39;</span><span class="p">):</span>
+                <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">group_by</span><span class="p">]</span> <span class="o">==</span> <span class="n">group</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">sgroup</span> <span class="ow">in</span> <span class="n">secondary_groups</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="n">sgroup</span><span class="p">:</span>
+                        <span class="n">sgdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="n">gdf</span><span class="p">[</span><span class="n">group_by_sec</span><span class="p">]</span> <span class="o">==</span> <span class="n">sgroup</span><span class="p">]</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">sgdf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">sgdf</span> <span class="o">=</span> <span class="n">gdf</span>
+                        <span class="n">s</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">sgdf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">])</span>
+                    <span class="n">results</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                    <span class="n">s</span><span class="p">[</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{output_column}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span>
+
+                    <span class="n">grouped_df</span> <span class="o">=</span> <span class="n">grouped_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">grouped_df</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">last_output</span> <span class="o">=</span> <span class="n">output_column</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;array_stats&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="ArgGroupStat"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.ArgGroupStat">[docs]</a><span class="k">class</span> <span class="nc">ArgGroupStat</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Group by a certain column and return value of another column based on a data column statistic&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;ArgGroupStat&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;data_column&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;group_by&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;return_col&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;stat&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;items&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">]}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+                  <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data_column_combo_box</span><span class="p">()</span>
+
+        <span class="n">ccols</span> <span class="o">=</span> <span class="n">organize_dataframe_columns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="n">ccols</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;return_col&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_checked</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">group_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;group_by&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">return_col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;return_col&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrls</span><span class="p">[</span><span class="s1">&#39;stat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="n">output_column</span> <span class="o">=</span> <span class="s1">&#39;ARG_STAT&#39;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data_column&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">,</span>
+                  <span class="s1">&#39;group_by&#39;</span><span class="p">:</span> <span class="n">group_by</span><span class="p">,</span>
+                  <span class="s1">&#39;return_col&#39;</span><span class="p">:</span> <span class="n">return_col</span><span class="p">,</span>
+                  <span class="s1">&#39;stat&#39;</span><span class="p">:</span> <span class="n">stat</span><span class="p">,</span>
+                  <span class="s1">&#39;output_column&#39;</span><span class="p">:</span> <span class="n">output_column</span>
+                  <span class="p">}</span>
+
+        <span class="n">out_df</span> <span class="o">=</span> <span class="n">Transmission</span><span class="o">.</span><span class="n">empty_df</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">addCols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ARG_STAT&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">group_by</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">group_by</span><span class="p">]</span> <span class="o">==</span> <span class="n">group</span><span class="p">]</span>
+            <span class="n">gdf</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">stat</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span>
+                <span class="n">ix</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">stat</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+                <span class="n">ix</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">idxmin</span><span class="p">()</span>
+
+            <span class="n">s</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">s</span><span class="p">[</span><span class="s1">&#39;ARG_STAT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">return_col</span><span class="p">]</span>
+
+            <span class="n">out_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">out_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;arg-group-stat&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
 
@@ -499,6 +612,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">last_output</span> <span class="o">=</span> <span class="s1">&#39;_ZSCORE&#39;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span></div>
+
+
+<div class="viewcode-block" id="LinRegress"><a class="viewcode-back" href="../../../../../api_reference/nodes.html#mesmerize.pyqtgraphCore.flowchart.library.Math.LinRegress">[docs]</a><span class="k">class</span> <span class="nc">LinRegress</span><span class="p">(</span><span class="n">CtrlNode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Linear Regression&quot;&quot;&quot;</span>
+    <span class="n">nodeName</span> <span class="o">=</span> <span class="s1">&#39;LinRegress&#39;</span>
+    <span class="n">uiTemplate</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;data_column&#39;</span><span class="p">,</span> <span class="s1">&#39;combo&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                  <span class="p">(</span><span class="s1">&#39;Apply&#39;</span><span class="p">,</span> <span class="s1">&#39;check&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;applyBox&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;checked&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+                  <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">processData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data_column_combo_box</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_checked</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">transmission</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data_column&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;_SLOPE&#39;</span><span class="p">,</span> <span class="s1">&#39;_INTERCEPT&#39;</span><span class="p">,</span> <span class="s1">&#39;_R-VALUE&#39;</span><span class="p">,</span> <span class="s1">&#39;_P-VALUE&#39;</span><span class="p">,</span> <span class="s1">&#39;_STDERR&#39;</span><span class="p">]]</span> \
+            <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linreg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">y</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">history_trace</span><span class="o">.</span><span class="n">add_operation</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;linreg&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">last_output</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+
+    <span class="k">def</span> <span class="nf">_linreg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="s1">&#39;_SLOPE&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="s1">&#39;_INTERCEPT&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                          <span class="s1">&#39;_R-VALUE&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                          <span class="s1">&#39;_P-VALUE&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                          <span class="s1">&#39;_STDERR&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="mi">4</span><span class="p">]})</span></div>
 </pre></div>
 
            </div>

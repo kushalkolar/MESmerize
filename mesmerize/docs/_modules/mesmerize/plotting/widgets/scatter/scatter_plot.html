@@ -136,6 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/scatter.html">Scatter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/simple_plot.html">Simple Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guides/plots/spacemap.html">SpaceMap</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Misc</span></p>
 <ul>
@@ -170,6 +171,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/kshape.html">KShape</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/proportions.html">Proportions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/scatter.html">Scatter Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api_reference/plotting/widgets/spacemap.html">SpaceMap</a></li>
 </ul>
 
             
@@ -262,10 +264,10 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
-<div class="viewcode-block" id="ControlDock"><a class="viewcode-back" href="../../../../../mesmerize.plotting.widgets.scatter.html#mesmerize.plotting.ControlDock">[docs]</a><span class="k">class</span> <span class="nc">ControlDock</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ControlDock</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="p">):</span>
     <span class="n">sig_changed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ControlDock.__init__"><a class="viewcode-back" href="../../../../../mesmerize.plotting.widgets.scatter.html#mesmerize.plotting.ControlDock.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">Ui_DockWidgetControls</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -290,7 +292,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data_controls</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDataColumn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxXColumn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxYColumn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxDPTCurve</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categorial_controls</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxColorsColumn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxShapesColumn</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">uuid_controls</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxUUIDColumn</span><span class="p">]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uuid_controls</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxUUIDColumn</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">set_combo_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comboBox</span><span class="p">:</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">ix</span> <span class="o">=</span> <span class="n">comboBox</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
@@ -330,11 +332,11 @@
             <span class="n">cb</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">uuid_columns</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">p_ucol</span> <span class="ow">in</span> <span class="n">uuid_columns</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_combo_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxUUIDColumn</span><span class="p">,</span> <span class="n">p_ucol</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_combo_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBoxUUIDColumn</span><span class="p">,</span> <span class="n">p_ucol</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="CentralWidget"><a class="viewcode-back" href="../../../../../mesmerize.plotting.widgets.scatter.html#mesmerize.plotting.CentralWidget">[docs]</a><span class="k">class</span> <span class="nc">CentralWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
-<div class="viewcode-block" id="CentralWidget.__init__"><a class="viewcode-back" href="../../../../../mesmerize.plotting.widgets.scatter.html#mesmerize.plotting.CentralWidget.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CentralWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">graphics_view</span> <span class="o">=</span> <span class="n">GraphicsLayoutWidget</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plot_variant</span> <span class="o">=</span> <span class="n">PgScatterPlot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graphics_view</span><span class="p">)</span>  <span class="c1">#: Instance of :ref:`PgScatterPlot &lt;API_Variant_PgScatterPlot&gt;` which is the actual plot area</span>
@@ -348,13 +350,13 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">status_label</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vlayout</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ScatterPlotWidget"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget">[docs]</a><span class="k">class</span> <span class="nc">ScatterPlotWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">,</span> <span class="n">BasePlotWidget</span><span class="p">):</span>
     <span class="n">drop_opts</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="ScatterPlotWidget.__init__"><a class="viewcode-back" href="../../../../../mesmerize.plotting.widgets.html#mesmerize.plotting.ScatterPlotWidget.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="n">BasePlotWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;Scatter Plot&#39;</span><span class="p">)</span>
@@ -415,7 +417,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dockConsole</span><span class="o">.</span><span class="n">setFeatures</span><span class="p">(</span>
             <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="o">.</span><span class="n">DockWidgetFloatable</span> <span class="o">|</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDockWidget</span><span class="o">.</span><span class="n">DockWidgetMovable</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dockConsole</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">BottomDockWidgetArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dockConsole</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">BottomDockWidgetArea</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dockConsole</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ScatterPlotWidget.set_update_live"><a class="viewcode-back" href="../../../../../api_reference/plotting/widgets/scatter.html#mesmerize.plotting.ScatterPlotWidget.set_update_live">[docs]</a>    <span class="k">def</span> <span class="nf">set_update_live</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">control_widget</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">checkBoxLiveUpdateFromFlowchart</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
@@ -424,7 +426,7 @@
     <span class="nd">@BasePlotWidget</span><span class="o">.</span><span class="n">signal_blocker</span>
     <span class="k">def</span> <span class="nf">set_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transmission</span><span class="p">:</span> <span class="n">Transmission</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the input transmission&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_transmission</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_live</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">ScatterPlotWidget</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">set_input</span><span class="p">(</span><span class="n">transmission</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
 
