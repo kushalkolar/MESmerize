@@ -25,6 +25,11 @@ from ...common import get_window_manager, get_project_manager
 # from common import configuration
 import os
 from typing import Union, Optional
+from ...common.utils import draw_graph
+from ...analysis.data_types import HistoryTrace
+from copy import deepcopy
+
+region_data_types = ['_pf_uuid', '_ST_uuid']
 
 
 class DatapointTracerWidget(QtWidgets.QWidget):
@@ -64,6 +69,7 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.ui.radioButtonSTDProjection.clicked.connect(lambda x: self.set_image('std'))
 
         self.ui.pushButtonOpenInViewer.clicked.connect(self.open_in_viewer)
+        self.ui.pushButtonOpenAnalysisGraph.clicked.connect(self.open_analysis_graph)
 
     def set_widget(self, datapoint_uuid: UUID, data_column_curve: str, row: pd.Series, proj_path: str,
                    history_trace: Optional[list] = None, peak_ix: Optional[int] = None, tstart: Optional[int] = None,
@@ -184,8 +190,9 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         #     x, y = (0, 1)
         # else:
         #     x,y = (1, 0)
-
-        self.image_view.setImage(img, axes={'x': 0, 'y': 1})
+        vmin = np.nanmin(img)
+        vmax = np.nanmedian(img) + (10 * np.nanstd(img))
+        self.image_view.setImage(img, axes={'x': 0, 'y': 1}, levels=(vmin, vmax))
 
         self.previous_sample_id_projection = f'{self.sample_id}{projection}'
         # self.image_item.setImage(img.T.astype(np.uint16))
@@ -196,7 +203,11 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         Open the parent Sample of the current datapoint.
         """
         w = get_window_manager().get_new_viewer_window()
-        w.open_from_dataframe(proj_path=self.proj_path, row=self.row)#, roi_index=('cnmf_idx', self.roi.cnmf_idx))
+        w.open_from_dataframe(proj_path=self.proj_path, row=self.row)
+
+    def open_analysis_graph(self):
+        cleaned = HistoryTrace.clean_history_trace(deepcopy(self.history_trace))
+        draw_graph(cleaned, view=True)
 
 
 class TimelineLinearRegion:
