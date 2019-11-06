@@ -31,7 +31,7 @@ Fill Patches        Fill the patches
 Line width          Line width of the patches
 Alpha               Alpha level of the patches
 Samples             Click on the sample to plot
-Save                `Save the plot data and state in an interactive form <save_ptrn>`
+Save                :ref:`Save the plot data and state in an interactive form <save_ptrn>`
 Load                Load a plot that has been saved as a ".ptrn" file.
 =================   ==============================================================
 
