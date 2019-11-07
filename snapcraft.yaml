@@ -8,43 +8,75 @@ description: >
 
 confinement: strict
 
-# When snapcraft performs the build it will try to build the wheels for all pip requirements and try to perform the mesmerize setup.py before those dependencies are actually installed. To workaround this the setup.py catches the imports of the Cython dependencies to allow snap to continue the build. Therefore by having performing the <setup> part before the <mesmerize> pip will build and install all dependencies, and when snapcraft tries to build the <mesmerize> part it will go through the same seutp.py but this time it can actually build the Cython extensions since Cython was installed in the <setup> step.
+
 parts:
-  setup:
+#  setup:
     # Should try including desktop-gtk3 at some time to see if it fixes warnings on Fedora?
+#    after: [desktop-qt5]
+#    plugin: python
+#    python-version: python3
+#    source: .
+#    source-type: git
+#    source-branch: snap
+    # Cython is required for setup.py, python-dateutils is required by pandas and for whatever reason doesn't get installed automatically
+#    python-packages: [Cython, python-dateutil, numpy]
+#    build-packages:
+#      - tcl
+#      - python3
+#      - python3-tk
+#      - python3-pyqt5
+#      - gcc
+#      - g++
+#      - libatlas-base-dev
+#      - gfortran
+#      - libblas3
+#      - liblapack3
+#      - libopenblas-dev
+#      - liblapack-dev
+#      - libblas-dev
+#      - cython3
+#      - graphviz
+#      - qtbase5-dev
+#      - libqt5gui5
+#      - libqt5svg5
+#    stage-packages:
+#      - libatlas-base-dev
+  mesmerize:
     after: [desktop-qt5]
     plugin: python
-    python-version: python3
-    source: .
-    source-type: git
-    source-branch: snap
-    # Cython is required for setup.py, python-dateutils is required by pandas and for whatever reason doesn't get installed automatically
-    python-packages: [Cython, python-dateutil]
-  mesmerize:
-    after: [setup]
-    plugin: python
     requirements: requirements.txt
+    python-packages: [Cython, python-dateutil, numpy]
     python-version: python3
     source: .
-    source-type: git
+#    source-type: git
     source-branch: snap
     build-packages:
+      - tcl
       - python3
       - python3-tk
       - python3-pyqt5
       - gcc
+      - g++
+      - libatlas-base-dev
       - gfortran
       - libblas3
       - liblapack3
       - libopenblas-dev
       - liblapack-dev
+      - libblas-dev
       - cython3
       - graphviz
-#      - qtbase5-dev
-#      - libqt5gui5
-#      - libqt5svg5
-
     stage-packages:
+      - gcc
+      - g++
+      - libatlas-base-dev
+      - gfortran
+      - libblas3
+      - liblapack3
+      - libopenblas-dev
+      - liblapack-dev
+      - libblas-dev
+      - tcl
       - python3
       - python3-tk
       - python3-pyqt5
@@ -52,9 +84,28 @@ parts:
       - locales
       - cython3
       - qtwayland5
+      - graphviz
+#      - libagg-dev
+#      - libcairo2
+#      - libcairo2-dev
+#      - libgs9
+#      - libgs9-common
+#      - libgs-dev
+#      - libpng16-16
+#      - libpng-dev
+#      - libfontconfig1
+#      - libfontconfig1-dev
+#      - zlibc
+#      - evince
 #      - libqt5gui5
 #      - libqt5svg5
 #      - qtbase5-dev
+  # From https://github.com/dmnfarrell/pandastable/blob/master/snap/snapcraft.yaml
+  filesets: #to deal with problem finding init.tcl
+    plugin: dump
+    source: /usr/share/tcltk/
+    organize:
+         '*': ./usr/lib/
 
 apps:
   mesmerize:
@@ -70,4 +121,23 @@ apps:
       - x11
       - opengl
       - home
+      - network
+      - network-bind
+      - removable-media
+  mesmerize-ipython:
+    command: bin/ipython3
+    environment:
+        # To work on Fedora
+        DISABLE_WAYLAND: 1
+    plugs:
+      - desktop
+      - desktop-legacy
+      - unity7
+      - wayland
+      - x11
+      - opengl
+      - home
+      - network
+      - network-bind
+      - removable-media
 
