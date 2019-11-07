@@ -101,7 +101,7 @@ class LoadFile(CtrlNode):
     #         return
     #     self.load_file(path[0])
 
-    @use_open_file_dialog('Load Transmission file', None, ['*.trn, *.ptrn'])
+    @use_open_file_dialog('Load Transmission file', None, ['*.trn', '*.ptrn'])
     def load_file(self, path: str):
         if not path:
             return
