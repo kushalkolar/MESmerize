@@ -4,47 +4,18 @@ version: 0.1.0
 grade: stable
 summary: Platform for Calcium Imaging analysis
 description: >
-  Calcium imaging anlaysis platform
+  Calcium imaging anlaysis platform. Website: mesmerizelab.org
 
 confinement: strict
 
 
 parts:
-#  setup:
     # Should try including desktop-gtk3 at some time to see if it fixes warnings on Fedora?
-#    after: [desktop-qt5]
-#    plugin: python
-#    python-version: python3
-#    source: .
-#    source-type: git
-#    source-branch: snap
-    # Cython is required for setup.py, python-dateutils is required by pandas and for whatever reason doesn't get installed automatically
-#    python-packages: [Cython, python-dateutil, numpy]
-#    build-packages:
-#      - tcl
-#      - python3
-#      - python3-tk
-#      - python3-pyqt5
-#      - gcc
-#      - g++
-#      - libatlas-base-dev
-#      - gfortran
-#      - libblas3
-#      - liblapack3
-#      - libopenblas-dev
-#      - liblapack-dev
-#      - libblas-dev
-#      - cython3
-#      - graphviz
-#      - qtbase5-dev
-#      - libqt5gui5
-#      - libqt5svg5
-#    stage-packages:
-#      - libatlas-base-dev
   mesmerize:
     after: [desktop-qt5]
     plugin: python
     requirements: requirements.txt
+    # Cython is required for setup.py, python-dateutils is required by pandas and for whatever reason doesn't get installed automatically
     python-packages: [Cython, python-dateutil, numpy]
     python-version: python3
     source: .
@@ -113,6 +84,7 @@ apps:
     environment:
         # To work on Fedora
         DISABLE_WAYLAND: 1
+        PYTHONPATH: ' '
     plugs:
       - desktop
       - desktop-legacy
@@ -124,11 +96,12 @@ apps:
       - network
       - network-bind
       - removable-media
-  mesmerize-ipython:
+  ipython:
     command: bin/ipython3
     environment:
         # To work on Fedora
         DISABLE_WAYLAND: 1
+        PYTHONPATH: ' '
     plugs:
       - desktop
       - desktop-legacy
