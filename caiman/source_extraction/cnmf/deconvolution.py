@@ -1,11 +1,11 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """Extract neural activity from a fluorescence trace using a constrained deconvolution approach
 
 Created on Tue Sep  1 16:11:25 2015
 @author: Eftychios A. Pnevmatikakis, based on an implementation by T. Machado,  Andrea Giovannucci & Ben Deverett
 """
+from __future__ import division
+from __future__ import print_function
 
 from builtins import range
 from past.utils import old_div
@@ -20,95 +20,99 @@ import sys
 #%%
 
 
-def constrained_foopsi(fluor, bl=None,  c1=None, g=None,  sn=None, p=None, method_deconvolution='oasis', bas_nonneg=True,
+def constrained_foopsi(fluor, bl=None,  c1=None, g=None,  sn=None, p=None, method='oasis', bas_nonneg=True,
                        noise_range=[.25, .5], noise_method='logmexp', lags=5, fudge_factor=1.,
-                       verbosity=False, solvers=None, optimize_g=0, s_min=None, **kwargs):
+                       verbosity=False, solvers=None, optimize_g=0, penalty=1, **kwargs):
     """ Infer the most likely discretized spike train underlying a fluorescence trace
 
     It relies on a noise constrained deconvolution approach
 
-    Args:
-        fluor: np.ndarray
-            One dimensional array containing the fluorescence intensities with
-            one entry per time-bin.
 
-        bl: [optional] float
-            Fluorescence baseline value. If no value is given, then bl is estimated
-            from the data.
+    Parameters:
+    ----------
 
-        c1: [optional] float
-            value of calcium at time 0
+    fluor: np.ndarray
+        One dimensional array containing the fluorescence intensities with
+        one entry per time-bin.
 
-        g: [optional] list,float
-            Parameters of the AR process that models the fluorescence impulse response.
-            Estimated from the data if no value is given
+    bl: [optional] float
+        Fluorescence baseline value. If no value is given, then bl is estimated
+        from the data.
 
-        sn: float, optional
-            Standard deviation of the noise distribution.  If no value is given,
-            then sn is estimated from the data.
+    c1: [optional] float
+        value of calcium at time 0
 
-        p: int
-            order of the autoregression model
+    g: [optional] list,float
+        Parameters of the AR process that models the fluorescence impulse response.
+        Estimated from the data if no value is given
 
-        method_deconvolution: [optional] string
-            solution method for basis projection pursuit 'cvx' or 'cvxpy' or 'oasis'
+    sn: float, optional
+        Standard deviation of the noise distribution.  If no value is given,
+        then sn is estimated from the data.
 
-        bas_nonneg: bool
-            baseline strictly non-negative
+    p: int
+        order of the autoregression model
 
-        noise_range:  list of two elms
-            frequency range for averaging noise PSD
+    method: [optional] string
+        solution method for basis projection pursuit 'cvx' or 'cvxpy' or 'oasis'
 
-        noise_method: string
-            method of averaging noise PSD
+    bas_nonneg: bool
+        baseline strictly non-negative
 
-        lags: int
-            number of lags for estimating time constants
+    noise_range:  list of two elms
+        frequency range for averaging noise PSD
 
-        fudge_factor: float
-            fudge factor for reducing time constant bias
+    noise_method: string
+        method of averaging noise PSD
 
-        verbosity: bool
-             display optimization details
+    lags: int
+        number of lags for estimating time constants
 
-        solvers: list string
-            primary and secondary (if problem unfeasible for approx solution) solvers
-            to be used with cvxpy, default is ['ECOS','SCS']
+    fudge_factor: float
+        fudge factor for reducing time constant bias
 
-        optimize_g : [optional] int, only applies to method 'oasis'
-            Number of large, isolated events to consider for optimizing g.
-            If optimize_g=0 (default) the provided or estimated g is not further optimized.
+    verbosity: bool
+         display optimization details
 
-        s_min : float, optional, only applies to method 'oasis'
-            Minimal non-zero activity within each bin (minimal 'spike size').
-            For negative values the threshold is abs(s_min) * sn * sqrt(1-g)
-            If None (default) the standard L1 penalty is used
-            If 0 the threshold is determined automatically such that RSS <= sn^2 T
+    solvers: list string
+        primary and secondary (if problem unfeasible for approx solution) solvers
+        to be used with cvxpy, default is ['ECOS','SCS']
+
+    optimize_g : [optional] int, only applies to method 'oasis'
+        Number of large, isolated events to consider for optimizing g.
+        If optimize_g=0 (default) the provided or estimated g is not further optimized.
+
+    penalty : [optional] int, default 1, only applies to method 'oasis'
+        Sparsity penalty. 1: min |s|_1  0: min |s|_0
 
     Returns:
-        c: np.ndarray float
-            The inferred denoised fluorescence signal at each time-bin.
+    -------
+    c: np.ndarray float
+        The inferred denoised fluorescence signal at each time-bin.
 
-        bl, c1, g, sn : As explained above
+    bl, c1, g, sn : As explained above
 
-        sp: ndarray of float
-            Discretized deconvolved neural activity (spikes)
+    sp: ndarray of float
+        Discretized deconvolved neural activity (spikes)
 
         lam: float
-            Regularization parameter
-    Raises:
-        Exception("You must specify the value of p")
+                Regularization parameter	
+    Raise:
+    ------
+    Exception("You must specify the value of p")
 
-        Exception('OASIS is currently only implemented for p=1 and p=2')
+    Exception('OASIS is currently only implemented for p=1 and p=2')
 
-        Exception('Undefined Deconvolution Method')
+    Exception('Undefined Deconvolution Method')
 
     References:
-        * Pnevmatikakis et al. 2016. Neuron, in press, http://dx.doi.org/10.1016/j.neuron.2015.11.037
-        * Machado et al. 2015. Cell 162(2):338-350
+    ----------
+    * Pnevmatikakis et al. 2016. Neuron, in press, http://dx.doi.org/10.1016/j.neuron.2015.11.037
+    * Machado et al. 2015. Cell 162(2):338-350
 
     \image: docs/img/deconvolution.png
     \image: docs/img/evaluationcomponent.png
+
     """
 
     if p is None:
@@ -127,17 +131,16 @@ def constrained_foopsi(fluor, bl=None,  c1=None, g=None,  sn=None, p=None, metho
         sp = c.copy()
 
     else:  # choose a source extraction method
-        if method_deconvolution == 'cvx':
+        if method == 'cvx':
             c, bl, c1, g, sn, sp = cvxopt_foopsi(
                 fluor, b=bl, c1=c1, g=g, sn=sn, p=p, bas_nonneg=bas_nonneg, verbosity=verbosity)
 
-        elif method_deconvolution == 'cvxpy':
+        elif method == 'cvxpy':
             c, bl, c1, g, sn, sp = cvxpy_foopsi(
                 fluor, g, sn, b=bl, c1=c1, bas_nonneg=bas_nonneg, solvers=solvers)
 
-        elif method_deconvolution == 'oasis':
+        elif method == 'oasis':
             from caiman.source_extraction.cnmf.oasis import constrained_oasisAR1
-            penalty = 1 if s_min is None else 0
             if p == 1:
                 if bl is None:
                     # Infer the most likely discretized spike train underlying an AR(1) fluorescence trace
@@ -145,7 +148,7 @@ def constrained_foopsi(fluor, bl=None,  c1=None, g=None,  sn=None, p=None, metho
                     # min |s|_1 subject to |c-y|^2 = sn^2 T and s_t = c_t-g c_{t-1} >= 0
                     c, sp, bl, g, lam = constrained_oasisAR1(
                         fluor.astype(np.float32), g[0], sn, optimize_b=True, b_nonneg=bas_nonneg,
-                        optimize_g=optimize_g, penalty=penalty, s_min=0 if s_min is None else s_min)
+                        optimize_g=optimize_g, penalty=penalty)
                 else:
                     c, sp, _, g, lam = constrained_oasisAR1(
                         (fluor - bl).astype(np.float32), g[0], sn, optimize_b=False, penalty=penalty)
@@ -303,51 +306,58 @@ def cvxopt_foopsi(fluor, b, c1, g, sn, p, bas_nonneg, verbosity):
 def cvxpy_foopsi(fluor, g, sn, b=None, c1=None, bas_nonneg=True, solvers=None):
     """Solves the deconvolution problem using the cvxpy package and the ECOS/SCS library.
 
-    Args:
-        fluor: ndarray
-            fluorescence trace
 
-        g: list of doubles
-            parameters of the autoregressive model, cardinality equivalent to p
+    Parameters:
+    -----------
+    fluor: ndarray
+        fluorescence trace
 
-        sn: double
-            estimated noise level
+    g: list of doubles
+        parameters of the autoregressive model, cardinality equivalent to p
 
-        b: double
-            baseline level. If None it is estimated.
+    sn: double
+        estimated noise level
 
-        c1: double
-            initial value of calcium. If None it is estimated.
+    b: double
+        baseline level. If None it is estimated.
 
-        bas_nonneg: boolean
-            should the baseline be estimated
+    c1: double
+        initial value of calcium. If None it is estimated.
 
-        solvers: tuple of two strings
-            primary and secondary solvers to be used. Can be choosen between ECOS, SCS, CVXOPT
+    bas_nonneg: boolean
+        should the baseline be estimated
+
+    solvers: tuple of two strings
+        primary and secondary solvers to be used. Can be choosen between ECOS, SCS, CVXOPT
 
     Returns:
-        c: estimated calcium trace
+    --------
 
-        b: estimated baseline
+    c: estimated calcium trace
 
-        c1: esimtated initial calcium value
+    b: estimated baseline
 
-        g: esitmated parameters of the autoregressive model
+    c1: esimtated initial calcium value
 
-        sn: estimated noise level
+    g: esitmated parameters of the autoregressive model
 
-        sp: estimated spikes
+    sn: estimated noise level
 
-    Raises:
-        ImportError 'cvxpy solver requires installation of cvxpy. Not working in windows at the moment.'
+    sp: estimated spikes
 
-        ValueError 'Problem solved suboptimally or unfeasible'
+    Raise:
+    -----
+    ImportError('cvxpy solver requires installation of cvxpy. Not working in windows at the moment.')
+
+    ValueError('Problem solved suboptimally or unfeasible')
+
     """
     # todo: check the result and gen_vector vars
     try:
         import cvxpy as cvx
 
-    except ImportError: # XXX Is the below still true?
+    except ImportError:
+
         raise ImportError(
             'cvxpy solver requires installation of cvxpy. Not working in windows at the moment.')
 
@@ -452,33 +462,37 @@ def _nnls(KK, Ky, s=None, mask=None, tol=1e-9, max_iter=None):
     Solve non-negative least squares problem
     ``argmin_s || Ks - y ||_2`` for ``s>=0``
 
-    Args:
-        KK : array, shape (n, n)
-            Dot-product of design matrix K transposed and K, K'K
+    Parameters:
+    ----------
 
-        Ky : array, shape (n,)
-            Dot-product of design matrix K transposed and target vector y, K'y
+    KK : array, shape (n, n)
+        Dot-product of design matrix K transposed and K, K'K
 
-        s : None or array, shape (n,), optional, default None
-            Initialization of deconvolved neural activity.
+    Ky : array, shape (n,)
+        Dot-product of design matrix K transposed and target vector y, K'y
 
-        mask : array of bool, shape (n,), optional, default (True,)*n
-            Mask to restrict potential spike times considered.
+    s : None or array, shape (n,), optional, default None
+        Initialization of deconvolved neural activity.
 
-        tol : float, optional, default 1e-9
-            Tolerance parameter.
+    mask : array of bool, shape (n,), optional, default (True,)*n
+        Mask to restrict potential spike times considered.
 
-        max_iter : None or int, optional, default None
-            Maximum number of iterations before termination.
-            If None (default), it is set to len(KK).
+    tol : float, optional, default 1e-9
+        Tolerance parameter.
+
+    max_iter : None or int, optional, default None
+        Maximum number of iterations before termination.
+        If None (default), it is set to len(KK).
 
     Returns:
-        s : array, shape (n,)
-            Discretized deconvolved neural activity (spikes)
+    -------
+    s : array, shape (n,)
+        Discretized deconvolved neural activity (spikes)
 
     References:
-        Lawson C and Hanson RJ, SIAM 1987
-        Bro R and DeJong S, J Chemometrics 1997
+    ----------
+    * Lawson C and Hanson RJ, SIAM 1987
+    * Bro R and DeJong S, J Chemometrics 1997
     """
 
     if mask is None:
@@ -531,46 +545,49 @@ def onnls(y, g, lam=0, shift=100, window=None, mask=None, tol=1e-9, max_iter=Non
     Solves the sparse non-negative deconvolution problem
     ``argmin_s 1/2|Ks-y|^2 + lam |s|_1`` for ``s>=0``
 
-    Args:
-        y : array of float, shape (T,)
-            One dimensional array containing the fluorescence intensities with
-            one entry per time-bin.
+    Parameters:
+    ----------
+    y : array of float, shape (T,)
+        One dimensional array containing the fluorescence intensities with
+        one entry per time-bin.
 
-        g : array, shape (p,)
-            if p in (1,2):
-                Parameter(s) of the AR(p) process that models the fluorescence impulse response.
-            else:
-                Kernel that models the fluorescence impulse response.
+    g : array, shape (p,)
+        if p in (1,2):
+            Parameter(s) of the AR(p) process that models the fluorescence impulse response.
+        else:
+            Kernel that models the fluorescence impulse response.
 
-        lam : float, optional, default 0
-            Sparsity penalty parameter lambda.
-    
-        shift : int, optional, default 100
-            Number of frames by which to shift window from on run of NNLS to the next.
-    
-        window : int, optional, default None (200 or larger dependend on g)
-            Window size.
-    
-        mask : array of bool, shape (n,), optional, default (True,)*n
-            Mask to restrict potential spike times considered.
-    
-        tol : float, optional, default 1e-9
-            Tolerance parameter.
-    
-        max_iter : None or int, optional, default None
-            Maximum number of iterations before termination.
-            If None (default), it is set to window size.
+    lam : float, optional, default 0
+        Sparsity penalty parameter lambda.
+
+    shift : int, optional, default 100
+        Number of frames by which to shift window from on run of NNLS to the next.
+
+    window : int, optional, default None (200 or larger dependend on g)
+        Window size.
+
+    mask : array of bool, shape (n,), optional, default (True,)*n
+        Mask to restrict potential spike times considered.
+
+    tol : float, optional, default 1e-9
+        Tolerance parameter.
+
+    max_iter : None or int, optional, default None
+        Maximum number of iterations before termination.
+        If None (default), it is set to window size.
 
     Returns:
-        c : array of float, shape (T,)
-            The inferred denoised fluorescence signal at each time-bin.
-    
-        s : array of float, shape (T,)
-            Discretized deconvolved neural activity (spikes).
+    -------
+    c : array of float, shape (T,)
+        The inferred denoised fluorescence signal at each time-bin.
+
+    s : array of float, shape (T,)
+        Discretized deconvolved neural activity (spikes).
 
     References:
-        Friedrich J and Paninski L, NIPS 2016
-        Bro R and DeJong S, J Chemometrics 1997
+    ----------
+    * Friedrich J and Paninski L, NIPS 2016
+    * Bro R and DeJong S, J Chemometrics 1997
     """
 
     T = len(y)
@@ -637,66 +654,70 @@ def constrained_oasisAR2(y, g, sn, optimize_b=True, b_nonneg=True, optimize_g=0,
     """ Infer the most likely discretized spike train underlying an AR(2) fluorescence trace
 
     Solves the noise constrained sparse non-negative deconvolution problem
-    min (s)_1 subject to (c-y)^2 = sn^2 T and s_t = c_t-g1 c_{t-1}-g2 c_{t-2} >= 0
+    min |s|_1 subject to |c-y|^2 = sn^2 T and s_t = c_t-g1 c_{t-1}-g2 c_{t-2} >= 0
 
-    Args:
-        y : array of float
-            One dimensional array containing the fluorescence intensities (with baseline
-            already subtracted) with one entry per time-bin.
-    
-        g : (float, float)
-            Parameters of the AR(2) process that models the fluorescence impulse response.
-    
-        sn : float
-            Standard deviation of the noise distribution.
-    
-        optimize_b : bool, optional, default True
-            Optimize baseline if True else it is set to 0, see y.
-    
-        b_nonneg: bool, optional, default True
-            Enforce strictly non-negative baseline if True.
-    
-        optimize_g : int, optional, default 0
-            Number of large, isolated events to consider for optimizing g.
-            No optimization if optimize_g=0.
-    
-        decimate : int, optional, default 5
-            Decimation factor for estimating hyper-parameters faster on decimated data.
-    
-        shift : int, optional, default 100
-            Number of frames by which to shift window from on run of NNLS to the next.
-    
-        window : int, optional, default None (200 or larger dependend on g)
-            Window size.
-    
-        tol : float, optional, default 1e-9
-            Tolerance parameter.
-    
-        max_iter : int, optional, default 1
-            Maximal number of iterations.
-    
-        penalty : int, optional, default 1
-            Sparsity penalty. 1: min (s)_1  0: min (s)_0
+    Parameters:
+    ----------
+    y : array of float
+        One dimensional array containing the fluorescence intensities (with baseline
+        already subtracted) with one entry per time-bin.
+
+    g : (float, float)
+        Parameters of the AR(2) process that models the fluorescence impulse response.
+
+    sn : float
+        Standard deviation of the noise distribution.
+
+    optimize_b : bool, optional, default True
+        Optimize baseline if True else it is set to 0, see y.
+
+    b_nonneg: bool, optional, default True
+        Enforce strictly non-negative baseline if True.
+
+    optimize_g : int, optional, default 0
+        Number of large, isolated events to consider for optimizing g.
+        No optimization if optimize_g=0.
+
+    decimate : int, optional, default 5
+        Decimation factor for estimating hyper-parameters faster on decimated data.
+
+    shift : int, optional, default 100
+        Number of frames by which to shift window from on run of NNLS to the next.
+
+    window : int, optional, default None (200 or larger dependend on g)
+        Window size.
+
+    tol : float, optional, default 1e-9
+        Tolerance parameter.
+
+    max_iter : int, optional, default 1
+        Maximal number of iterations.
+
+    penalty : int, optional, default 1
+        Sparsity penalty. 1: min |s|_1  0: min |s|_0
 
     Returns:
-        c : array of float
-            The inferred denoised fluorescence signal at each time-bin.
-    
-        s : array of float
-            Discretized deconvolved neural activity (spikes).
-    
-        b : float
-            Fluorescence baseline value.
-    
-        (g1, g2) : tuple of float
-            Parameters of the AR(2) process that models the fluorescence impulse response.
-    
-        lam : float
-            Sparsity penalty parameter lambda of dual problem.
+    -------
+
+    c : array of float
+        The inferred denoised fluorescence signal at each time-bin.
+
+    s : array of float
+        Discretized deconvolved neural activity (spikes).
+
+    b : float
+        Fluorescence baseline value.
+
+    (g1, g2) : tuple of float
+        Parameters of the AR(2) process that models the fluorescence impulse response.
+
+    lam : float
+        Sparsity penalty parameter lambda of dual problem.
 
     References:
-        Friedrich J and Paninski L, NIPS 2016
-        Friedrich J, Zhou P, and Paninski L, arXiv 2016
+    ----------
+    * Friedrich J and Paninski L, NIPS 2016
+    * Friedrich J, Zhou P, and Paninski L, arXiv 2016
     """
     T = len(y)
     d = (g[0] + sqrt(g[0] * g[0] + 4 * g[1])) / 2
@@ -881,6 +902,7 @@ def constrained_oasisAR2(y, g, sn, optimize_b=True, b_nonneg=True, optimize_g=0,
                 lam -= db
 
     if penalty == 0:  # get (locally optimal) L0 solution
+
         def c4smin(y, s, s_min):
             ls = np.append(np.where(s > s_min)[0], T)
             tmp = np.zeros_like(s)
@@ -922,24 +944,26 @@ def estimate_parameters(fluor, p=2, sn=None, g=None, range_ff=[0.25, 0.5],
     """
     Estimate noise standard deviation and AR coefficients if they are not present
 
-    Args:
-        p: positive integer
-            order of AR system
-    
-        sn: float
-            noise standard deviation, estimated if not provided.
-    
-        lags: positive integer
-            number of additional lags where he autocovariance is computed
-    
-        range_ff : (1,2) array, nonnegative, max value <= 0.5
-            range of frequency (x Nyquist rate) over which the spectrum is averaged
-    
-        method: string
-            method of averaging: Mean, median, exponentiated mean of logvalues (default)
-    
-        fudge_factor: float (0< fudge_factor <= 1)
-            shrinkage factor to reduce bias
+    Parameters:
+    -----------
+
+    p: positive integer
+        order of AR system
+
+    sn: float
+        noise standard deviation, estimated if not provided.
+
+    lags: positive integer
+        number of additional lags where he autocovariance is computed
+
+    range_ff : (1,2) array, nonnegative, max value <= 0.5
+        range of frequency (x Nyquist rate) over which the spectrum is averaged
+
+    method: string
+        method of averaging: Mean, median, exponentiated mean of logvalues (default)
+
+    fudge_factor: float (0< fudge_factor <= 1)
+        shrinkage factor to reduce bias
     """
 
     if sn is None:
@@ -958,25 +982,29 @@ def estimate_time_constant(fluor, p=2, sn=None, lags=5, fudge_factor=1.):
     """
     Estimate AR model parameters through the autocovariance function
 
-    Args:
-        fluor        : nparray
-            One dimensional array containing the fluorescence intensities with
-            one entry per time-bin.
-    
-        p            : positive integer
-            order of AR system
-    
-        sn           : float
-            noise standard deviation, estimated if not provided.
-    
-        lags         : positive integer
-            number of additional lags where he autocovariance is computed
-    
-        fudge_factor : float (0< fudge_factor <= 1)
-            shrinkage factor to reduce bias
+    Inputs:
+    --------
+
+    fluor        : nparray
+        One dimensional array containing the fluorescence intensities with
+        one entry per time-bin.
+
+    p            : positive integer
+        order of AR system
+
+    sn           : float
+        noise standard deviation, estimated if not provided.
+
+    lags         : positive integer
+        number of additional lags where he autocovariance is computed
+
+    fudge_factor : float (0< fudge_factor <= 1)
+        shrinkage factor to reduce bias
 
     Returns:
-        g       : estimated coefficients of the AR process
+    -----------
+
+    g       : estimated coefficients of the AR process
     """
 
     if sn is None:
@@ -991,9 +1019,6 @@ def estimate_time_constant(fluor, p=2, sn=None, lags=5, fudge_factor=1.):
     g = np.linalg.lstsq(A, xc[lags + 1:])[0]
     gr = np.roots(np.concatenate([np.array([1]), -g.flatten()]))
     gr = old_div((gr + gr.conjugate()), 2.)
-    np.random.seed(45) # We want some variability below, but it doesn't have to be random at
-                       # runtime. A static seed captures our intent, while still not disrupting
-                       # the desired identical results from runs.
     gr[gr > 1] = 0.95 + np.random.normal(0, 0.01, np.sum(gr > 1))
     gr[gr < 0] = 0.15 + np.random.normal(0, 0.01, np.sum(gr < 0))
     g = np.poly(fudge_factor * gr)
@@ -1006,19 +1031,22 @@ def GetSn(fluor, range_ff=[0.25, 0.5], method='logmexp'):
     """    
     Estimate noise power through the power spectral density over the range of large frequencies    
 
-    Args:
-        fluor    : nparray
-            One dimensional array containing the fluorescence intensities with
-            one entry per time-bin.
-    
-        range_ff : (1,2) array, nonnegative, max value <= 0.5
-            range of frequency (x Nyquist rate) over which the spectrum is averaged  
-    
-        method   : string
-            method of averaging: Mean, median, exponentiated mean of logvalues (default)
+    Inputs:
+    ----------
+
+    fluor    : nparray
+        One dimensional array containing the fluorescence intensities with
+        one entry per time-bin.
+
+    range_ff : (1,2) array, nonnegative, max value <= 0.5
+        range of frequency (x Nyquist rate) over which the spectrum is averaged  
+
+    method   : string
+        method of averaging: Mean, median, exponentiated mean of logvalues (default)
 
     Returns:
-        sn       : noise standard deviation
+    -----------
+    sn       : noise standard deviation
     """
 
     ff, Pxx = scipy.signal.welch(fluor)
@@ -1039,16 +1067,18 @@ def axcov(data, maxlag=5):
     """
     Compute the autocovariance of data at lag = -maxlag:0:maxlag
 
-    Args:
-        data : array
-            Array containing fluorescence data
-    
-        maxlag : int
-            Number of lags to use in autocovariance calculation
+    Parameters:
+    ----------
+    data : array
+        Array containing fluorescence data
+
+    maxlag : int
+        Number of lags to use in autocovariance calculation
 
     Returns:
-        axcov : array
-            Autocovariances computed from -maxlag:0:maxlag
+    -------
+    axcov : array
+        Autocovariances computed from -maxlag:0:maxlag
     """
 
     data = data - np.mean(data)
@@ -1065,11 +1095,13 @@ def nextpow2(value):
     """
     Find exponent such that 2^exponent is equal to or greater than abs(value).
 
-    Args:
-        value : int
+    Parameters:
+    ----------
+    value : int
 
     Returns:
-        exponent : int
+    -------
+    exponent : int
     """
 
     exponent = 0
@@ -1077,3 +1109,70 @@ def nextpow2(value):
     while avalue > np.power(2, exponent):
         exponent += 1
     return exponent
+
+
+def deconvolve_ca(y=[], options=None, **args):
+    """
+    a wrapper for deconvolving calcium trace
+
+    Args:
+        y: fluorescence trace, a vector
+        options: dictionary for storing all parameters used for deconvolution
+        **args: extra options to be updated.
+
+    Returns:
+
+    """
+    # default options
+    if not options:
+        options = {'bl': None,
+                   'c1': None,
+                   'g': None,
+                   'sn': None,
+                   'p': 1,
+                   'approach': 'constrained foopsi',
+                   'method': 'oasis',
+                   'bas_nonneg': True,
+                   'noise_range': [.25, .5],
+                   'noise_method': 'logmexp',
+                   'lags': 5,
+                   'fudge_factor': 1.0,
+                   'verbosity': None,
+                   'solvers': None,
+                   'optimize_g': 1,
+                   'penalty': 1}
+
+    # update options
+    for key in args.keys():
+        options[key] = args[key]
+
+    if len(y) == 0:
+        # return default parameters for deconvolution
+        return options
+
+    # run deconvolution
+    y = np.array(y).squeeze().astype(np.float64)
+
+    if options['approach'].lower() == 'constrained foopsi':
+        # constrained foopsi
+        c, baseline, c1, g, sn, spike, lam_ = \
+            constrained_foopsi(y, options['bl'], options['c1'],
+                               options['g'], options['sn'],
+                               options['p'], options['method'],
+                               options['bas_nonneg'],
+                               options['noise_range'],
+                               options['noise_method'],
+                               options['lags'],
+                               options['fudge_factor'],
+                               options['verbosity'],
+                               options['solvers'],
+                               options['optimize_g'],
+                               options['penalty'])
+        options['g'] = g
+        options['sn'] = sn
+        options['sn'] = lam_
+    elif options['approach'].lower() == 'threshold foopsi':
+        # foopsi with a threshold on spike size
+        pass
+
+    return c, spike, options, baseline, c1

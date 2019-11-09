@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from .base.movies import movie, load, load_movie_chain
 from .base.timeseries import concatenate
 from .cluster import start_server, stop_server

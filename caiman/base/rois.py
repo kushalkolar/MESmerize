@@ -1,110 +1,105 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Created on Thu Oct 22 13:22:26 2015
 
 @author: agiovann
 """
-
+from __future__ import division
+from __future__ import print_function
+#%%
 from builtins import map
 from builtins import zip
 from builtins import str
 from builtins import range
-
-import cv2
-import json
-import logging
-import matplotlib.pyplot as pl
-import matplotlib.patches as mpatches
-import numpy as np
-import os
 from past.utils import old_div
 from scipy.ndimage.filters import gaussian_filter
 from scipy.ndimage import label, center_of_mass
 from skimage.morphology import remove_small_objects, remove_small_holes, dilation
 import scipy
-from scipy import ndimage as ndi
+import numpy as np
+import cv2
+import time
 from scipy.optimize import linear_sum_assignment
-import shutil
+import json
 from skimage.filters import sobel
 from skimage.morphology import watershed
+from scipy import ndimage as ndi
 from skimage.draw import polygon
-import tempfile
-import time
+import matplotlib.pyplot as pl
+import matplotlib.patches as mpatches
 import zipfile
-
+import tempfile
+import shutil
+import os
 from ..motion_correction import tile_and_correct
 
-try:
-    cv2.setNumThreads(0)
-except:
-    pass
+#%%
 
-def com(A, d1, d2, d3=None):
+
+def com(A, d1, d2):
     """Calculation of the center of mass for spatial components
 
-     Args:
-         A:   np.ndarray
-              matrix of spatial components (d x K)
+     Inputs:
+     ------
+     A:   np.ndarray
+          matrix of spatial components (d x K)
 
-         d1:  int
-              number of pixels in x-direction
+     d1:  int
+          number of pixels in x-direction
 
-         d2:  int
-              number of pixels in y-direction
+     d2:  int
+          number of pixels in y-direction
 
-         d3:  int
-              number of pixels in z-direction
-
-     Returns:
-         cm:  np.ndarray
-              center of mass for spatial components (K x 2 or 3)
+     Output:
+     -------
+     cm:  np.ndarray
+          center of mass for spatial components (K x 2)
     """
 
     if 'csc_matrix' not in str(type(A)):
         A = scipy.sparse.csc_matrix(A)
 
-    if d3 is None:
-        Coor = np.matrix([np.outer(np.ones(d2), np.arange(d1)).ravel(),
-                          np.outer(np.arange(d2), np.ones(d1)).ravel()], dtype=A.dtype)
-    else:
-        Coor = np.matrix([
-            np.outer(np.ones(d3), np.outer(np.ones(d2), np.arange(d1)).ravel()).ravel(),
-            np.outer(np.ones(d3), np.outer(np.arange(d2), np.ones(d1)).ravel()).ravel(),
-            np.outer(np.arange(d3), np.outer(np.ones(d2), np.ones(d1)).ravel()).ravel()],
-            dtype=A.dtype)
-    cm = (Coor * A / A.sum(axis=0)).T
+    Coor = dict()
+    Coor['x'] = np.kron(
+        np.ones((d2, 1)), np.expand_dims(list(range(d1)), axis=1))
+    Coor['y'] = np.kron(np.expand_dims(
+        list(range(d2)), axis=1), np.ones((d1, 1)))
+    cm = old_div(np.hstack((Coor['x'], Coor['y'])).T * A, A.sum(axis=0)).T
     return np.array(cm)
+
+#%%
+
 
 def extract_binary_masks_from_structural_channel(Y, min_area_size=30, min_hole_size=15, gSig=5, expand_method='closing', selem=np.ones((3, 3))):
     """Extract binary masks by using adaptive thresholding on a structural channel
 
-    Args:
-        Y:                  caiman movie object
-                            movie of the structural channel (assumed motion corrected)
+    Inputs:
+    ------
+    Y:                  caiman movie object
+                        movie of the structural channel (assumed motion corrected)
 
-        min_area_size:      int
-                            ignore components with smaller size
+    min_area_size:      int
+                        ignore components with smaller size
 
-        min_hole_size:      int
-                            fill in holes up to that size (donuts)
+    min_hole_size:      int
+                        fill in holes up to that size (donuts)
 
-        gSig:               int
-                            average radius of cell
+    gSig:               int
+                        average radius of cell
 
-        expand_method:      string
-                            method to expand binary masks (morphological closing or dilation)
+    expand_method:      string
+                        method to expand binary masks (morphological closing or dilation)
 
-        selem:              np.array
-                            morphological element with which to expand binary masks
+    selem:              np.array
+                        morphological element with which to expand binary masks
 
-    Returns:
-        A:                  sparse column format matrix
-                            matrix of binary masks to be used for CNMF seeding
+    Output:
+    -------
+    A:                  sparse column format matrix
+                        matrix of binary masks to be used for CNMF seeding
 
-        mR:                 np.array
-                            mean image used to detect cell boundaries
+    mR:                 np.array
+                        mean image used to detect cell boundaries
     """
 
     mR = Y.mean(axis=0)
@@ -131,6 +126,8 @@ def extract_binary_masks_from_structural_channel(Y, min_area_size=30, min_hole_s
 
     return A, mR
 
+
+#%%
 def mask_to_2d(mask):
     # todo todocument
     if mask.ndim > 2:
@@ -141,6 +138,8 @@ def mask_to_2d(mask):
         dims = np.shape(mask)
         return scipy.sparse.coo_matrix(np.reshape(mask, (np.prod(dims), -1,), order='F'))
 
+
+#%%
 def get_distance_from_A(masks_gt, masks_comp, min_dist=10):
     # todo todocument
 
@@ -156,49 +155,57 @@ def get_distance_from_A(masks_gt, masks_comp, min_dist=10):
 
     return distance_masks([A_ben, A_cnmf], [cm_ben, cm_cnmf], min_dist)
 
+#%%
+
+
 def nf_match_neurons_in_binary_masks(masks_gt, masks_comp, thresh_cost=.7, min_dist=10, print_assignment=False,
-                                     plot_results=False, Cn=None, labels=['Session 1','Session 2'], cmap='gray', D=None, enclosed_thr=None):
+                                     plot_results=False, Cn=None, labels=None, cmap='viridis', D=None, enclosed_thr=None):
     """
     Match neurons expressed as binary masks. Uses Hungarian matching algorithm
 
-    Args:
-        masks_gt: bool ndarray  components x d1 x d2
-            ground truth masks
+    Parameters:
+    -----------
 
-        masks_comp: bool ndarray  components x d1 x d2
-            mask to compare to
+    masks_gt: bool ndarray  components x d1 x d2
+        ground truth masks
 
-        thresh_cost: double
-            max cost accepted
+    masks_comp: bool ndarray  components x d1 x d2
+        mask to compare to
 
-        min_dist: min distance between cm
+    thresh_cost: double
+        max cost accepted
 
-        print_assignment:
-            for hungarian algorithm
+    min_dist: min distance between cm
 
-        plot_results: bool
+    print_assignment:
+        for hungarian algorithm
 
-        Cn:
-            correlation image or median
+    plot_results: bool
 
-        D: list of ndarrays
-            list of distances matrices
+    Cn:
+        correlation image or median
 
-        enclosed_thr: float
-            if not None set distance to at most the specified value when ground truth is a subset of inferred
+    D: list of ndarrays
+        list of distances matrices
+
+    enclosed_thr: float
+        if not None set distance to at most the specified value when ground truth is a subset of inferred
 
     Returns:
-        idx_tp_1:
-            indeces true pos ground truth mask
+    --------
+    idx_tp_1:
+        indeces true pos ground truth mask
 
-        idx_tp_2:
-            indeces true pos comp
+    idx_tp_2:
+        indeces true pos comp
 
-        idx_fn_1:
-            indeces false neg
+    idx_fn_1:
+        indeces false neg
 
-        idx_fp_2:
-            indeces false pos
+    idx_fp_2:
+        indeces false pos
+
+    performance:
 
     """
 
@@ -239,7 +246,7 @@ def nf_match_neurons_in_binary_masks(masks_gt, masks_comp, thresh_cost=.7, min_d
     performance['precision'] = old_div(TP, (TP + FP))
     performance['accuracy'] = old_div((TP + TN), (TP + FP + FN + TN))
     performance['f1_score'] = 2 * TP / (2 * TP + FP + FN)
-    logging.debug(performance)
+    print(performance)
     #%%
     idx_tp = np.where(np.array(costs) < thresh_cost)[0]
     idx_tp_ben = matches[0][idx_tp]    # ground truth
@@ -263,8 +270,8 @@ def nf_match_neurons_in_binary_masks(masks_gt, masks_comp, thresh_cost=.7, min_d
                     'size': 10}
             pl.rc('font', **font)
             lp, hp = np.nanpercentile(Cn, [5, 95])
-            ses_1 = mpatches.Patch(color='red', label=labels[0])
-            ses_2 = mpatches.Patch(color='white', label=labels[1])
+            ses_1 = mpatches.Patch(color='red', label='Session 1')
+            ses_2 = mpatches.Patch(color='white', label='Session 2')
             pl.subplot(1, 2, 1)
             pl.imshow(Cn, vmin=lp, vmax=hp, cmap=cmap)
             [pl.contour(norm_nrg(mm), levels=[level], colors='w', linewidths=1)
@@ -292,145 +299,108 @@ def nf_match_neurons_in_binary_masks(masks_gt, masks_comp, thresh_cost=.7, min_d
             pl.show()
             pl.axis('off')
         except Exception as e:
-            logging.warning("not able to plot precision recall: graphics failure")
-            logging.warning(e)
+            print("not able to plot precision recall usually because we are on travis")
+            print(e)
     return idx_tp_gt, idx_tp_comp, idx_fn_gt, idx_fp_comp, performance
 
-def register_ROIs(A1, A2, dims, template1=None, template2=None, align_flag=True, 
-                  D=None, max_thr = 0, use_opt_flow = True, thresh_cost=.7, 
-                  max_dist=10, enclosed_thr=None, print_assignment=False, 
-                  plot_results=False, Cn=None, cmap='viridis'):
+#%% register_ROIs largely follows the function nf_match_neurons_in_binary_masks
+
+
+def register_ROIs(A1, A2, dims, template1=None, template2=None, align_flag=True, D=None, thresh_cost=.7, max_dist=10, enclosed_thr=None,
+                  print_assignment=False, plot_results=False, Cn=None, cmap='viridis'):
     """
-    Register ROIs across different sessions using an intersection over union 
-    metric and the Hungarian algorithm for optimal matching
+    Register ROIs across different sessions using an intersection over union metric
+    and the Hungarian algorithm for optimal matching
 
-    Args:
-        A1: ndarray or csc_matrix  # pixels x # of components
-            ROIs from session 1
+    Parameters:
+    -----------
 
-        A2: ndarray or csc_matrix  # pixels x # of components
-            ROIs from session 2
+    A1: ndarray or csc_matrix  # pixels x # of components
+        ROIs from session 1
 
-        dims: list or tuple
-            dimensionality of the FOV
+    A2: ndarray or csc_matrix  # pixels x # of components
+        ROIs from session 2
 
-        template1: ndarray dims
-            template from session 1
+    dims: list or tuple
+        dimensionality of the FOV
 
-        template2: ndarray dims
-            template from session 2
+    template1: ndarray dims
+        template from session 1
 
-        align_flag: bool
-            align the templates before matching
+    template2: ndarray dims
+        template from session 2
 
-        D: ndarray
-            matrix of distances in the event they are pre-computed
+    align_flag: bool
+        align the templates before matching
 
-        max_thr: scalar
-            max threshold parameter before binarization    
+    D: ndarray
+        matrix of distances in the event they are pre-computed
 
-        use_opt_flow: bool
-            use dense optical flow to align templates
+    thresh_cost: scalar
+        maximum distance considered
 
-        thresh_cost: scalar
-            maximum distance considered
+    max_dist: scalar
+        max distance between centroids
 
-        max_dist: scalar
-            max distance between centroids
+    enclosed_thr: float
+        if not None set distance to at most the specified value when ground truth is a subset of inferred
 
-        enclosed_thr: float
-            if not None set distance to at most the specified value when ground 
-            truth is a subset of inferred
+    print_assignment: bool
+        print pairs of matched ROIs
 
-        print_assignment: bool
-            print pairs of matched ROIs
+    plot_results: bool
+        create a plot of matches and mismatches
 
-        plot_results: bool
-            create a plot of matches and mismatches
+    Cn: ndarray
+        background image for plotting purposes
 
-        Cn: ndarray
-            background image for plotting purposes
-
-        cmap: string
-            colormap for background image
+    cmap: string
+        colormap for background image
 
     Returns:
-        matched_ROIs1: list
-            indeces of matched ROIs from session 1
+    --------
+    matched_ROIs1: list
+        indeces of matched ROIs from session 1
 
-        matched_ROIs2: list
-            indeces of matched ROIs from session 2
+    matched_ROIs2: list
+        indeces of matched ROIs from session 2
 
-        non_matched1: list
-            indeces of non-matched ROIs from session 1
+    non_matched1: list
+        indeces of non-matched ROIs from session 1
 
-        non_matched2: list
-            indeces of non-matched ROIs from session 2
+    non_matched2: list
+        indeces of non-matched ROIs from session 1
 
-        performance:  list
-            (precision, recall, accuracy, f_1 score) with A1 taken as ground truth
-
-        A2: csc_matrix  # pixels x # of components
-            ROIs from session 2 aligned to session 1
+    performance:  list
+        (precision, recall, accuracy, f_1 score) with A1 taken as ground truth
 
     """
-
-#    if 'csc_matrix' not in str(type(A1)):
-#        A1 = scipy.sparse.csc_matrix(A1)
-#    if 'csc_matrix' not in str(type(A2)):
-#        A2 = scipy.sparse.csc_matrix(A2)
-
-    if 'ndarray' not in str(type(A1)):
-        A1 = A1.toarray()
-    if 'ndarray' not in str(type(A2)):
-        A2 = A2.toarray()
 
     if template1 is None or template2 is None:
         align_flag = False
 
-    x_grid, y_grid = np.meshgrid(np.arange(0., dims[0]).astype(
-                np.float32), np.arange(0., dims[1]).astype(np.float32))
-
     if align_flag:  # first align ROIs from session 2 to the template from session 1
-        template1 -= template1.min()
-        template1 /= template1.max()
-        template2 -= template2.min()
-        template2 /= template2.max()
-
-        if use_opt_flow:
-            template1_norm = np.uint8(template1*(template1 > 0)*255)
-            template2_norm = np.uint8(template2*(template2 > 0)*255)
-            flow = cv2.calcOpticalFlowFarneback(np.uint8(template1_norm*255),
-                                                np.uint8(template2_norm*255),
-                                                None,0.5,3,128,3,7,1.5,0)
-            x_remap = (flow[:,:,0] + x_grid).astype(np.float32) 
-            y_remap = (flow[:,:,1] + y_grid).astype(np.float32)
-
-        else:
-            template2, shifts, _, xy_grid = tile_and_correct(template2, template1 - template1.min(),
-                                                             [int(
-                                                                 dims[0] / 4), int(dims[1] / 4)], [16, 16], [10, 10],
-                                                             add_to_movie=template2.min(), shifts_opencv=True)
-
-            dims_grid = tuple(np.max(np.stack(xy_grid, axis=0), axis=0) -
-                              np.min(np.stack(xy_grid, axis=0), axis=0) + 1)
-            _sh_ = np.stack(shifts, axis=0)
-            shifts_x = np.reshape(_sh_[:, 1], dims_grid,
-                                  order='C').astype(np.float32)
-            shifts_y = np.reshape(_sh_[:, 0], dims_grid,
-                                  order='C').astype(np.float32)
-
-            x_remap = (-np.resize(shifts_x, dims) + x_grid).astype(np.float32)
-            y_remap = (-np.resize(shifts_y, dims) + y_grid).astype(np.float32)
-
-        A_2t = np.reshape(A2, dims + (-1,), order='F').transpose(2, 0, 1)
+        template2, shifts, _, xy_grid = tile_and_correct(template2, template1 - template1.min(),
+                                                         [int(
+                                                             dims[0] / 4), int(dims[1] / 4)], [16, 16], [10, 10],
+                                                         add_to_movie=template2.min(), shifts_opencv=True)
+        A_2t = np.reshape(A2.toarray(), dims + (-1,),
+                          order='F').transpose(2, 0, 1)
+        dims_grid = tuple(np.max(np.stack(xy_grid, axis=0), axis=0) -
+                          np.min(np.stack(xy_grid, axis=0), axis=0) + 1)
+        _sh_ = np.stack(shifts, axis=0)
+        shifts_x = np.reshape(_sh_[:, 1], dims_grid,
+                              order='C').astype(np.float32)
+        shifts_y = np.reshape(_sh_[:, 0], dims_grid,
+                              order='C').astype(np.float32)
+        x_grid, y_grid = np.meshgrid(np.arange(0., dims[0]).astype(
+            np.float32), np.arange(0., dims[1]).astype(np.float32))
+        x_remap = (-np.resize(shifts_x, dims) + x_grid).astype(np.float32)
+        y_remap = (-np.resize(shifts_y, dims) + y_grid).astype(np.float32)
         A2 = np.stack([cv2.remap(img.astype(np.float32), x_remap,
-                                 y_remap, cv2.INTER_NEAREST) for img in A_2t], axis=0)
+                                 y_remap, cv2.INTER_CUBIC) for img in A_2t], axis=0)
         A2 = np.reshape(A2.transpose(1, 2, 0),
                         (A1.shape[0], A_2t.shape[0]), order='F')
-
-    A1 = np.stack([a*(a>max_thr*a.max()) for a in A1.T]).T 
-    A2 = np.stack([a*(a>max_thr*a.max()) for a in A2.T]).T 
 
     if D is None:
         if 'csc_matrix' not in str(type(A1)):
@@ -479,7 +449,7 @@ def register_ROIs(A1, A2, dims, template1=None, template2=None, align_flag=True,
     performance['precision'] = old_div(TP, (TP + FP))
     performance['accuracy'] = old_div((TP + TN), (TP + FP + FN + TN))
     performance['f1_score'] = 2 * TP / (2 * TP + FP + FN)
-    logging.info(performance)
+    print(performance)
 
     if plot_results:
         if Cn is None:
@@ -519,135 +489,13 @@ def register_ROIs(A1, A2, dims, template1=None, template2=None, align_flag=True,
         pl.title('Mismatches')
         pl.axis('off')
 #        except Exception as e:
-#            logging.warning("not able to plot precision recall usually because we are on travis")
-#            logging.warning(e)
+#            print("not able to plot precision recall usually because we are on travis")
+#            print(e)
 
-    return matched_ROIs1, matched_ROIs2, non_matched1, non_matched2, performance, A2
+    return matched_ROIs1, matched_ROIs2, non_matched1, non_matched2, performance
 
-def register_multisession(A, dims, templates = [None], align_flag=True, 
-                          max_thr = 0, use_opt_flow = True, thresh_cost=.7, 
-                          max_dist=10, enclosed_thr=None):
-    """
-    Register ROIs across multiple sessions using an intersection over union metric
-    and the Hungarian algorithm for optimal matching. Registration occurs by 
-    aligning session 1 to session 2, keeping the union of the matched and 
-    non-matched components to register with session 3 and so on.
 
-    Args:
-        A: list of ndarray or csc_matrix matrices # pixels x # of components
-           ROIs from each session
-
-        dims: list or tuple
-            dimensionality of the FOV
-
-        template: list of ndarray matrices of size dims
-            templates from each session
-
-        align_flag: bool
-            align the templates before matching
-
-        max_thr: scalar
-            max threshold parameter before binarization    
-
-        use_opt_flow: bool
-            use dense optical flow to align templates
-
-        thresh_cost: scalar
-            maximum distance considered
-
-        max_dist: scalar
-            max distance between centroids
-
-        enclosed_thr: float
-            if not None set distance to at most the specified value when ground 
-            truth is a subset of inferred
-
-    Returns:
-        A_union: csc_matrix # pixels x # of total distinct components
-            union of all kept ROIs 
-
-        assignments: ndarray int of size # of total distinct components x # sessions
-            element [i,j] = k if component k from session j is mapped to component
-            i in the A_union matrix. If there is no much the value is NaN
-
-        matchings: list of lists
-            matchings[i][j] = k means that component j from session i is represented
-            by component k in A_union
-
-    """
-
-    n_sessions = len(A)
-    templates = list(templates)
-    if len(templates) == 1:
-        templates = n_sessions*templates
-
-    if n_sessions <= 1:
-        raise Exception('number of sessions must be greater than 1')
-
-    A = [a.toarray() if 'ndarray' not in str(type(a)) else a for a in A]
-
-    A_union = A[0].copy()
-    matchings = []
-    matchings.append(list(range(A_union.shape[-1])))
-
-    for sess in range(1,n_sessions):
-        reg_results = register_ROIs(A[sess], A_union, dims, 
-                                    template1 = templates[sess], 
-                                    template2 = templates[sess-1], align_flag=True, 
-                                    max_thr = max_thr, use_opt_flow = use_opt_flow,
-                                    thresh_cost = thresh_cost, max_dist = max_dist, 
-                                    enclosed_thr = enclosed_thr)
-
-        mat_sess, mat_un, nm_sess, nm_un, _, A2 = reg_results
-        logging.info(len(mat_sess))
-        A_union = A2.copy()
-        A_union[:,mat_un] = A[sess][:,mat_sess]
-        A_union = np.concatenate((A_union.toarray(), A[sess][:,nm_sess]), axis = 1)
-        new_match = np.zeros(A[sess].shape[-1], dtype = int)
-        new_match[mat_sess] = mat_un
-        new_match[nm_sess] = range(A2.shape[-1],A_union.shape[-1])
-        matchings.append(new_match.tolist())
-
-    assignments = np.empty((A_union.shape[-1], n_sessions))*np.nan
-    for sess in range(n_sessions):
-        assignments[matchings[sess],sess] = range(len(matchings[sess]))
-
-    return A_union, assignments, matchings
-
-def extract_active_components(assignments, indeces, only = True):
-    """
-    Computes the indeces of components that were active in a specified set of 
-    sessions. 
-
-    Args:
-        assignments: ndarray # of components X # of sessions
-            assignments matrix returned by function register_multisession
-
-        indeces: list int
-            set of sessions to look for active neurons. Session 1 corresponds to a
-            pythonic index 0 etc
-
-        only: bool
-            If True return components that were active ONLY in these sessions and
-            were inactive in all the others. If False components can be active
-            in other sessions as well
-
-    Returns:
-        components: list int
-            indeces of components 
-
-    """
-
-    components = np.where(np.isnan(assignments[:,indeces]).sum(-1) == 0)[0]
-
-    if only:
-        not_inds = list(np.setdiff1d(range(assignments.shape[-1]), indeces))
-        not_comps = np.where(np.isnan(assignments[:,not_inds]).sum(-1) == 
-                             len(not_inds))[0]
-        components = np.intersect1d(components, not_comps)
-
-    return components
-
+#%% threshold
 def norm_nrg(a_):
 
     a = a_.copy()
@@ -660,30 +508,38 @@ def norm_nrg(a_):
     a[indx] = cumEn
     return a.reshape(dims, order='F')
 
+#%% compute mask distances
+
+
 def distance_masks(M_s, cm_s, max_dist, enclosed_thr=None):
     """
     Compute distance matrix based on an intersection over union metric. Matrix are compared in order,
     with matrix i compared with matrix i+1
 
-    Args:
-        M_s: tuples of 1-D arrays
-            The thresholded A matrices (masks) to compare, output of threshold_components
+    Parameters:
+    ----------
+    M_s: tuples of 1-D arrays
+        The thresholded A matrices (masks) to compare, output of threshold_components
 
-        cm_s: list of list of 2-ples
-            the centroids of the components in each M_s
+    cm_s: list of list of 2-ples
+        the centroids of the components in each M_s
 
-        max_dist: float
-            maximum distance among centroids allowed between components. This corresponds to a distance
-            at which two components are surely disjoined
+    max_dist: float
+        maximum distance among centroids allowed between components. This corresponds to a distance
+        at which two components are surely disjoined
 
-        enclosed_thr: float
-            if not None set distance to at most the specified value when ground truth is a subset of inferred
+    enclosed_thr: float
+        if not None set distance to at most the specified value when ground truth is a subset of inferred
+
 
     Returns:
-        D_s: list of matrix distances
+    --------
+    D_s: list of matrix distances
 
-    Raises:
-        Exception: 'Nan value produced. Error in inputs'
+    Raise:
+    ------
+    Exception('Nan value produced. Error in inputs')
+
 
     """
     D_s = []
@@ -691,7 +547,7 @@ def distance_masks(M_s, cm_s, max_dist, enclosed_thr=None):
     for gt_comp, test_comp, cmgt_comp, cmtest_comp in zip(M_s[:-1], M_s[1:], cm_s[:-1], cm_s[1:]):
 
         # todo : better with a function that calls itself
-        logging.info('New Pair **')
+        print('New Pair **')
         # not to interfer with M_s
         gt_comp = gt_comp.copy()[:, :]
         test_comp = test_comp.copy()[:, :]
@@ -731,7 +587,7 @@ def distance_masks(M_s, cm_s, max_dist, enclosed_thr=None):
                         D[i, j] = 1 - 1. * intersection / \
                             (union - intersection)
                         if enclosed_thr is not None:
-                            if intersection == gt_val[j] or intersection == gt_val[i]:
+                            if intersection == gt_val[i]:
                                 D[i, j] = min(D[i, j], 0.5)
                     else:
                         D[i, j] = 1.
@@ -744,6 +600,8 @@ def distance_masks(M_s, cm_s, max_dist, enclosed_thr=None):
         D_s.append(D)
     return D_s
 
+
+#%% find matches
 def find_matches(D_s, print_assignment=False):
     # todo todocument
 
@@ -754,7 +612,6 @@ def find_matches(D_s, print_assignment=False):
         # we make a copy not to set changes in the original
         DD = D.copy()
         if np.sum(np.where(np.isnan(DD))) > 0:
-            logging.error('Exception: Distance Matrix contains NaN, not allowed!')
             raise Exception('Distance Matrix contains NaN, not allowed!')
 
         # we do the hungarian
@@ -767,35 +624,39 @@ def find_matches(D_s, print_assignment=False):
         for row, column in indexes2:
             value = DD[row, column]
             if print_assignment:
-                logging.debug(('(%d, %d) -> %f' % (row, column, value)))
+                print(('(%d, %d) -> %f' % (row, column, value)))
             total.append(value)
-        logging.debug(('FOV: %d, shape: %d,%d total cost: %f' %
+        print(('FOV: %d, shape: %d,%d total cost: %f' %
                (ii, DD.shape[0], DD.shape[1], np.sum(total))))
-        logging.debug((time.time() - t_start))
+        print((time.time() - t_start))
         costs.append(total)
         # send back the results in the format we want
     return matches, costs
 
+
+#%%
 def link_neurons(matches, costs, max_cost=0.6, min_FOV_present=None):
     """
     Link neurons from different FOVs given matches and costs obtained from the hungarian algorithm
 
-    Args:
-        matches: lists of list of tuple
-            output of the find_matches function
+    Parameters:
+    ----------
+    matches: lists of list of tuple
+        output of the find_matches function
 
-        costs: list of lists of scalars
-            cost associated to each match in matches
+    costs: list of lists of scalars
+        cost associated to each match in matches
 
-        max_cost: float
-            maximum allowed value of the 1- intersection over union metric
+    max_cost: float
+        maximum allowed value of the 1- intersection over union metric
 
-        min_FOV_present: int
-            number of FOVs that must consequently contain the neuron starting from 0. If none
-            the neuro must be present in each FOV
+    min_FOV_present: int
+        number of FOVs that must consequently contain the neuron starting from 0. If none
+        the neuro must be present in each FOV
 
     Returns:
-        neurons: list of arrays representing the indices of neurons in each FOV
+    --------
+    neurons: list of arrays representing the indices of neurons in each FOV
 
     """
     if min_FOV_present is None:
@@ -822,9 +683,11 @@ def link_neurons(matches, costs, max_cost=0.6, min_FOV_present=None):
             neurons.append(neuron)
 
     neurons = np.array(neurons).T
-    logging.info(('num_neurons:' + str(num_neurons)))
+    print(('num_neurons:' + str(num_neurons)))
     return neurons
 
+
+#%%
 def nf_load_masks(file_name, dims):
     # todo todocument
 
@@ -840,23 +703,27 @@ def nf_load_masks(file_name, dims):
     masks = np.array([tomask(s['coordinates']) for s in regions])
     return masks
 
+
+#%%
 def nf_masks_to_json(binary_masks, json_filename):
     """
     Take as input a tensor of binary mask and produces json format for neurofinder
 
-    Args:
-        binary_masks: 3d ndarray (components x dimension 1  x dimension 2)
+    Parameters:
+    -----------
+    binary_masks: 3d ndarray (components x dimension 1  x dimension 2)
 
-        json_filename: str
+    json_filename: str
 
     Returns:
-        regions: list of dict
-            regions in neurofinder format
+    --------
+    regions: list of dict
+        regions in neurofinder format
 
     """
     regions = []
     for m in binary_masks:
-        coords = [[int(x), int(y)] for x, y in zip(*np.where(m))]
+        coords = [[x, y] for x, y in zip(*np.where(m))]
         regions.append({"coordinates": coords})
 
     with open(json_filename, 'w') as f:
@@ -865,30 +732,6 @@ def nf_masks_to_json(binary_masks, json_filename):
     return regions
 
 #%%
-def nf_masks_to_neurof_dict(binary_masks, dataset_name):
-    """
-    Take as input a tensor of binary mask and produces dict format for neurofinder
-
-    Args:
-        binary_masks: 3d ndarray (components x dimension 1  x dimension 2)
-        dataset_filename: name of the dataset
-
-    Returns:
-        dset: dict
-            dataset in neurofinder format to be saved in json
-    """
-
-    regions = []
-    for m in binary_masks:
-        coords = [[int(x), int(y)] for x, y in zip(*np.where(m))]
-        regions.append({"coordinates": coords})
-
-    dset = {"regions": regions, "dataset": dataset_name}
-
-    return dset
-
-#%%
-
 
 
 def nf_read_roi(fileobj):
@@ -896,7 +739,7 @@ def nf_read_roi(fileobj):
     points = read_roi(fileobj)
     Read ImageJ's ROI format
 
-    Adapted from https://gist.github.com/luispedro/3437255
+    Addapted from https://gist.github.com/luispedro/3437255
     '''
 # This is based on:
 # http://rsbweb.nih.gov/ij/developer/source/ij/io/RoiDecoder.java.html
@@ -939,7 +782,7 @@ def nf_read_roi(fileobj):
     magic = fileobj.read(4)
     if magic != 'Iout':
         #        raise IOError('Magic number not found')
-        logging.warning('Magic number not found')
+        print('Magic number not found')
     version = get16()
 
     # It seems that the roi type field occupies 2 Bytes, but only one is used
@@ -949,11 +792,11 @@ def nf_read_roi(fileobj):
     get8()
 
 #    if not (0 <= roi_type < 11):
-#        logging.error(('roireader: ROI type %s not supported' % roi_type))
+#        print(('roireader: ROI type %s not supported' % roi_type))
 #
 #    if roi_type != 7:
 #
-#        logging.error(('roireader: ROI type %s not supported (!= 7)' % roi_type))
+#        print(('roireader: ROI type %s not supported (!= 7)' % roi_type))
 
     top = get16()
     left = get16()
@@ -994,6 +837,8 @@ def nf_read_roi(fileobj):
 
     return points
 
+
+#%%
 def nf_read_roi_zip(fname, dims, return_names=False):
     # todo todocument
 
@@ -1015,12 +860,15 @@ def nf_read_roi_zip(fname, dims, return_names=False):
         return masks, names
     else:
         return masks
+#%%
+
 
 def nf_merge_roi_zip(fnames, idx_to_keep, new_fold):
     """
     Create a zip file containing ROIs for ImageJ by combining elements from a list of ROI zip files
 
-    Args:
+    Parameters:
+    -----------
         fnames: str
             list of zip files containing ImageJ rois
 
@@ -1039,7 +887,7 @@ def nf_merge_roi_zip(fnames, idx_to_keep, new_fold):
         folders_rois.append(dirpath)
         with zipfile.ZipFile(fn) as zf:
             name_rois = zf.namelist()
-            logging.debug(len(name_rois))
+            print(len(name_rois))
         zip_ref = zipfile.ZipFile(fn, 'r')
         zip_ref.extractall(dirpath)
         files_to_keep.append([os.path.join(dirpath, ff)
@@ -1053,36 +901,40 @@ def nf_merge_roi_zip(fnames, idx_to_keep, new_fold):
     shutil.make_archive(new_fold, 'zip', new_fold)
     shutil.rmtree(new_fold)
 
+
+#%%
 def extract_binary_masks_blob(A, neuron_radius, dims, num_std_threshold=1, minCircularity=0.5,
                               minInertiaRatio=0.2, minConvexity=.8):
     """
     Function to extract masks from data. It will also perform a preliminary selectino of good masks based on criteria like shape and size
 
-    Args:
-        A: scipy.sparse matris
-            contains the components as outputed from the CNMF algorithm
+    Parameters:
+    ----------
+    A: scipy.sparse matris
+        contains the components as outputed from the CNMF algorithm
 
-        neuron_radius: float
-            neuronal radius employed in the CNMF settings (gSiz)
+    neuron_radius: float
+        neuronal radius employed in the CNMF settings (gSiz)
 
-        num_std_threshold: int
-            number of times above iqr/1.349 (std estimator) the median to be considered as threshold for the component
+    num_std_threshold: int
+        number of times above iqr/1.349 (std estimator) the median to be considered as threshold for the component
 
-        minCircularity: float
-            parameter from cv2.SimpleBlobDetector
+    minCircularity: float
+        parameter from cv2.SimpleBlobDetector
 
-        minInertiaRatio: float
-            parameter from cv2.SimpleBlobDetector
+    minInertiaRatio: float
+        parameter from cv2.SimpleBlobDetector
 
-        minConvexity: float
-            parameter from cv2.SimpleBlobDetector
+    minConvexity: float
+        parameter from cv2.SimpleBlobDetector
 
     Returns:
-        masks: np.array
+    --------
+    masks: np.array
 
-        pos_examples:
+    pos_examples:
 
-        neg_examples:
+    neg_examples:
 
     """
     params = cv2.SimpleBlobDetector_Params()
@@ -1112,7 +964,8 @@ def extract_binary_masks_blob(A, neuron_radius, dims, num_std_threshold=1, minCi
     neg_examples = []
 
     for count, comp in enumerate(A.tocsc()[:].T):
-        logging.debug(count)
+
+        print(count)
         comp_d = np.array(comp.todense())
         gray_image = np.reshape(comp_d, dims, order='F')
         gray_image = (gray_image - np.min(gray_image)) / \
@@ -1137,7 +990,7 @@ def extract_binary_masks_blob(A, neuron_radius, dims, num_std_threshold=1, minCi
             edges = (label_objects == (1 + idx_largest))
             edges = ndi.binary_fill_holes(edges)
         else:
-            logging.warning('empty component')
+            print('empty component')
             edges = np.zeros_like(edges)
 
         masks_ws.append(edges)
@@ -1151,6 +1004,7 @@ def extract_binary_masks_blob(A, neuron_radius, dims, num_std_threshold=1, minCi
     return np.array(masks_ws), np.array(pos_examples), np.array(neg_examples)
 
 
+#%%
 def extract_binary_masks_blob_parallel(A, neuron_radius, dims, num_std_threshold=1, minCircularity=0.5,
                                        minInertiaRatio=0.2, minConvexity=.8, dview=None):
     # todo todocument
@@ -1177,6 +1031,7 @@ def extract_binary_masks_blob_parallel(A, neuron_radius, dims, num_std_threshold
     return masks, is_pos, is_neg
 
 
+#%%
 def extract_binary_masks_blob_parallel_place_holder(pars):
     A, neuron_radius, dims, num_std_threshold, _, minInertiaRatio, minConvexity = pars
     masks_ws, pos_examples, neg_examples = extract_binary_masks_blob(A, neuron_radius,
@@ -1184,6 +1039,7 @@ def extract_binary_masks_blob_parallel_place_holder(pars):
                                                                      minInertiaRatio=minInertiaRatio, minConvexity=minConvexity)
     return masks_ws, len(pos_examples), len(neg_examples)
 
+#%%
 
 
 def extractROIsFromPCAICA(spcomps, numSTD=4, gaussiansigmax=2, gaussiansigmay=2, thresh=None):
@@ -1192,10 +1048,12 @@ def extractROIsFromPCAICA(spcomps, numSTD=4, gaussiansigmax=2, gaussiansigmay=2,
 
     The algorithm estimates the significance of a components by thresholding the components after gaussian smoothing
 
-    Args:
-        spcompomps, 3d array containing the spatial components
+    Parameters:
+    -----------
 
-        numSTD: number of standard deviation above the mean of the spatial component to be considered signiificant
+    spcompomps, 3d array containing the spatial components
+
+    numSTD: number of standard deviation above the mean of the spatial component to be considered signiificant
     """
 
     numcomps, _, _ = spcomps.shape
@@ -1226,103 +1084,13 @@ def extractROIsFromPCAICA(spcomps, numSTD=4, gaussiansigmax=2, gaussiansigmay=2,
 
     return allMasks, maskgrouped
 
-def detect_duplicates_and_subsets(binary_masks, predictions=None, r_values=None, dist_thr=0.1, min_dist=10,
-                                  thresh_subset=0.8):
-
-    cm = [scipy.ndimage.center_of_mass(mm) for mm in binary_masks]
-    sp_rois = scipy.sparse.csc_matrix(
-        np.reshape(binary_masks, (binary_masks.shape[0], -1)).T)
-    D = distance_masks([sp_rois, sp_rois], [cm, cm], min_dist)[0]
-    np.fill_diagonal(D, 1)
-    overlap = sp_rois.T.dot(sp_rois).toarray()
-    sz = np.array(sp_rois.sum(0))
-    logging.info(sz.shape)
-    overlap = overlap/sz.T
-    np.fill_diagonal(overlap, 0)
-    # pairs of duplicate indeces
-
-    indeces_orig = np.where((D < dist_thr) | ((overlap) >= thresh_subset))
-    indeces_orig = [(a, b) for a, b in zip(indeces_orig[0], indeces_orig[1])]
-
-    use_max_area = False
-    if predictions is not None:
-        metric = predictions.squeeze()
-    elif r_values is not None:
-        metric = r_values.squeeze()
-    else:
-        metric = sz.squeeze()
-        logging.debug('***** USING MAX AREA BY DEFAULT')
-
-    overlap_tmp = overlap.copy() >= thresh_subset
-    overlap_tmp = overlap_tmp*metric[:, None]
-
-    max_idx = np.argmax(overlap_tmp)
-    one, two = np.unravel_index(max_idx, overlap_tmp.shape)
-    max_val = overlap_tmp[one, two]
-
-    indeces_to_keep = []
-    indeces_to_remove = []
-    while max_val > 0:
-        one, two = np.unravel_index(max_idx, overlap_tmp.shape)
-        if metric[one] > metric[two]:
-            #indeces_to_keep.append(one)
-            overlap_tmp[:,two] = 0
-            overlap_tmp[two,:] = 0
-            indeces_to_remove.append(two)
-            #if two in indeces_to_keep:
-            #    indeces_to_keep.remove(two)
-        else:
-            overlap_tmp[:,one] = 0
-            overlap_tmp[one,:] = 0
-            indeces_to_remove.append(one)
-            #indeces_to_keep.append(two)
-            #if one in indeces_to_keep:
-            #    indeces_to_keep.remove(one)
-
-        max_idx = np.argmax(overlap_tmp)
-        one, two = np.unravel_index(max_idx, overlap_tmp.shape)
-        max_val = overlap_tmp[one, two]
-
-    #indeces_to_remove = np.setdiff1d(np.unique(indeces_orig),indeces_to_keep)
-    indeces_to_keep = np.setdiff1d(np.unique(indeces_orig),indeces_to_remove)
-
-#    if len(indeces) > 0:
-#        if use_max_area:
-#            # if is to  deal with tie breaks in case of same area
-#            indeces_keep = np.argmax([[overlap[sec, frst], overlap[frst, sec]]
-#                    for frst, sec in indeces], 1)
-#            indeces_remove = np.argmin([[overlap[sec, frst], overlap[frst, sec]]
-#                    for frst, sec in indeces], 1)
-#
-#
-#        else: #use CNN
-#            indeces_keep = np.argmin([[metric[sec], metric[frst]]
-#                for frst, sec in indeces], 1)
-#            indeces_remove = np.argmax([[metric[sec], metric[frst]]
-#                for frst, sec in indeces], 1)
-#
-#        indeces_keep = np.unique([elms[ik] for ik, elms in
-#                                      zip(indeces_keep, indeces)])
-#        indeces_remove = np.unique([elms[ik] for ik, elms in
-#                                       zip(indeces_remove, indeces)])
-#
-#        multiple_appearance = np.intersect1d(indeces_keep,indeces_remove)
-#        for mapp in multiple_appearance:
-#            indeces_remove.remove(mapp)
-#    else:
-#        indeces_keep = []
-#        indeces_remove = []
-#        indeces_keep = []
-#        indeces_remove = []
-
-
-    return indeces_orig, indeces_to_keep, indeces_to_remove, D, overlap
 
 def detect_duplicates(file_name, dist_thr=0.1, FOV=(512, 512)):
     """
     Removes duplicate ROIs from file file_name
 
-    Args:
+    Parameters:
+    -----------
         file_name:  .zip file with all rois
 
         dist_thr:   distance threshold for duplicate detection
@@ -1330,6 +1098,7 @@ def detect_duplicates(file_name, dist_thr=0.1, FOV=(512, 512)):
         FOV:        dimensions of the FOV
 
     Returns:
+    --------
         duplicates  : list of indeces with duplicate entries
 
         ind_keep    : list of kept indeces

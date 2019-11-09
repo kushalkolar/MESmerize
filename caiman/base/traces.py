@@ -1,28 +1,21 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Spyder Editor
 
 author: agiovann
 """
+from __future__ import division
+from __future__ import print_function
 #%%
 from builtins import zip
 from builtins import str
 from builtins import range
 from past.utils import old_div
-
 import cv2
-import logging
 import numpy as np
 import pylab as pl
 pl.ion()
 from . import timeseries as ts
-
-try:
-    cv2.setNumThreads(0)
-except:
-    pass
 
 #%%
 
@@ -35,13 +28,17 @@ class trace(ts.timeseries):
 
     TODO
 
-    Args:
-        input_trace: np.ndarray (time x ncells)
-        start_time: time beginning trace
-        fr: frame rate
-        meta_data: dictionary including any custom meta data
-    """
+    Parameters:
+    ----------
+    input_trace: np.ndarray (time x ncells)
 
+    start_time: time beginning trace
+
+    fr: frame rate
+
+    meta_data: dictionary including any custom meta data
+
+    """
     def __new__(cls, input_arr, **kwargs):
         return super(trace, cls).__new__(cls, input_arr, **kwargs)
 
@@ -59,27 +56,31 @@ class trace(ts.timeseries):
         In order to compute the baseline frames are binned according to the window length parameter
         and then the intermediate values are interpolated.
 
-        Args:
-            secsWindow: length of the windows used to compute the quantile
-            quantilMin : value of the quantile
+        Parameters:
+        ----------
+        secsWindow: length of the windows used to compute the quantile
 
-        Raises:
-            ValueError "All traces must be positive"
-            ValueError "The window must be shorter than the total length"
+        quantilMin : value of the quantile
+
+        Raise:
+        -----
+        ValueError("All traces must be positive")
+
+        ValueError("The window must be shorter than the total length")
         """
         if np.min(self) <= 0:
             raise ValueError("All traces must be positive")
 
         T, _ = self.shape
         window = int(window_sec * self.fr)
-        logging.debug(window)
+        print(window)
         if window >= T:
             raise ValueError(
                 "The window must be shorter than the total length")
 
         tracesDFF = []
         for tr in self.T:
-            logging.debug("TR Shape is " + str(tr.shape))
+            print((tr.shape))
             traceBL = [np.percentile(tr[i:i + window], minQuantile)
                        for i in range(1, len(tr) - window)]
             missing = np.percentile(tr[-window:], minQuantile)
@@ -97,20 +98,24 @@ class trace(ts.timeseries):
 
         author: ben deverett
 
-        Args:
-            stacked : bool
-                for multiple columns of data, stack instead of overlaying
-            subtract_minimum : bool
-                subtract minimum from each individual trace
-            cmap : matplotlib.LinearSegmentedColormap
-                color map for display. Options are found in pl.colormaps(), and are accessed as pl.cm.my_favourite_map
-            kwargs : dict
-                any arguments accepted by matplotlib.plot
+        Parameters:
+        ----------
+        stacked : bool
+            for multiple columns of data, stack instead of overlaying
+
+        subtract_minimum : bool
+            subtract minimum from each individual trace
+
+        cmap : matplotlib.LinearSegmentedColormap
+            color map for display. Options are found in pl.colormaps(), and are accessed as pl.cm.my_favourite_map
+
+        kwargs : dict
+            any arguments accepted by matplotlib.plot
 
         Returns:
-            The matplotlib axes object corresponding to the data plot
+        -------
+        The matplotlib axes object corresponding to the data plot
         """
-
         d = self.copy()
         n = 1  # number of traces
         if len(d.shape) > 1:

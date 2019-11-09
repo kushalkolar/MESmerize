@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import numpy.testing as npt
 import numpy as np
 from caiman.source_extraction import cnmf

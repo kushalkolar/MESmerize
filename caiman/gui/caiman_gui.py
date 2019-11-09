@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -8,7 +7,6 @@ email: zhoupc1988@gmail.com
 created: 6/16/17
 last edited:
 """
-
 import os
 from collections import OrderedDict
 from PyQt5.QtWidgets import QFileDialog, QWidget, QLabel, QPushButton, \

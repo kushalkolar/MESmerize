@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 Constrained Nonnegative Matrix Factorization
 
@@ -9,16 +7,17 @@ A similar CNMF class that will output data that are not usually present in the r
 Created on Fri Aug 26 15:44:32 2016
 
 @author: agiovann
-
+ 
 
 """
+from __future__ import division
+from __future__ import print_function
 
 from builtins import str
 from builtins import object
 from past.utils import old_div
 import numpy as np
-from .utilities import local_correlations, order_components, evaluate_components
-from caiman.source_extraction.cnmf.params import CNMFParams
+from .utilities import local_correlations, CNMFSetParms, order_components, evaluate_components
 from .pre_processing import preprocess_data
 from .initialization import initialize_components
 from .merging import merge_components
@@ -43,70 +42,73 @@ class CNMF(object):
 
         A similar CNMF class that will output data that are not usually present in the regular CNMF process
 
-        Args:
-            n_processes: int
-               number of processed used (if in parallel this controls memory usage)
+        Parameters:
+        -----------
 
-            k: int
-               number of neurons expected per FOV (or per patch if patches_pars is  None)
 
-            gSig: tuple
-                expected half size of neurons
+        n_processes: int
+           number of processed used (if in parallel this controls memory usage)
 
-            merge_thresh: float
-                merging threshold, max correlation allowed
+        k: int
+           number of neurons expected per FOV (or per patch if patches_pars is  None)
 
-            dview: Direct View object
-                for parallelization pruposes when using ipyparallel
+        gSig: tuple
+            expected half size of neurons
 
-            p: int
-                order of the autoregressive process used to estimate deconvolution
+        merge_thresh: float
+            merging threshold, max correlation allowed
 
-            Ain: ndarray
-                if know, it is the initial estimate of spatial filters
+        dview: Direct View object
+            for parallelization pruposes when using ipyparallel
 
-            ssub: int
-                downsampleing factor in space
+        p: int
+            order of the autoregressive process used to estimate deconvolution
 
-            tsub: int 
-                 downsampling factor in time
+        Ain: ndarray
+            if know, it is the initial estimate of spatial filters
 
-            p_ssub: int
-                downsampling factor in space for patches 
+        ssub: int
+            downsampleing factor in space
 
-            method_init: str
-               can be greedy_roi or sparse_nmf
+        tsub: int 
+             downsampling factor in time
 
-            alpha_snmf: float
-                weight of the sparsity regularization
+        p_ssub: int
+            downsampling factor in space for patches 
 
-            p_tsub: int 
-                 downsampling factor in time for patches     
+        method_init: str
+           can be greedy_roi or sparse_nmf
 
-            rf: int
-                half-size of the patches in pixels. rf=25, patches are 50x50
+        alpha_snmf: float
+            weight of the sparsity regularization
 
-            stride: int
-                amount of overlap between the patches in pixels
+        p_tsub: int 
+             downsampling factor in time for patches     
 
-            memory_fact: float
-                unitless number accounting how much memory should be used. You will need to try
-                 different values to see which one would work the default is OK for a 16 GB system
+        rf: int
+            half-size of the patches in pixels. rf=25, patches are 50x50
 
-            N_samples_fitness: int 
-                number of samples over which exceptional events are computed (See utilities.evaluate_components) 
+        stride: int
+            amount of overlap between the patches in pixels
 
-            robust_std: bool
-                whether to use robust std estimation for fitness (See utilities.evaluate_components)        
+        memory_fact: float
+            unitless number accounting how much memory should be used. You will need to try
+             different values to see which one would work the default is OK for a 16 GB system
 
-            fitness_threshold: float
-                fitness threshold to decide which components to keep. The lower the stricter
-                 is the inclusion criteria (See utilities.evaluate_components)
+        N_samples_fitness: int 
+            number of samples over which exceptional events are computed (See utilities.evaluate_components) 
+
+        robust_std: bool
+            whether to use robust std estimation for fitness (See utilities.evaluate_components)        
+
+        fitness_threshold: float
+            fitness threshold to decide which components to keep. The lower the stricter
+             is the inclusion criteria (See utilities.evaluate_components)
 
         Returns:
-            self
+        --------
+        self
         """
-
         self.k = k  # number of neurons expected per FOV (or per patch if patches_pars is not None
         self.gSig = gSig  # expected half size of neurons
         self.merge_thresh = merge_thresh  # merging threshold, max correlation allowed
@@ -145,21 +147,24 @@ class CNMF(object):
         """
         This method uses the cnmf algorithm to find sources in data.
 
-        Args:
-            images : mapped np.ndarray of shape (t,x,y) containing the images that vary over time.
+        Parameters:
+        ----------
+        images : mapped np.ndarray of shape (t,x,y) containing the images that vary over time.
 
         Returns:
-            self 
-        """
+        --------
+        self 
 
+        """
         T, d1, d2 = images.shape
         dims = (d1, d2)
         Yr = images.reshape([T, np.prod(dims)], order='F').T
         Y = np.transpose(images, [1, 2, 0])
         print((T, d1, d2))
 
-        options = CNMFParams(dims, K=self.k, gSig=self.gSig, ssub=self.ssub, tsub=self.tsub, p=self.p,
-                             p_ssub=self.p_ssub, p_tsub=self.p_tsub, method_init=self.method_init, normalize_init=True)
+        options = CNMFSetParms(Y, self.n_processes, p=self.p, gSig=self.gSig, K=self.k, ssub=self.ssub, tsub=self.tsub,
+                               p_ssub=self.p_ssub, p_tsub=self.p_tsub,
+                               method_init=self.method_init, normalize_init=True)
 
         self.options = options
 
@@ -192,7 +197,7 @@ class CNMF(object):
             print((A.shape))
 
             A, b, C, f = update_spatial_components(
-                Yr, C, f, A, sn=sn, dview=self.dview, dims=self.dims,  **options['spatial_params'])
+                Yr, C, f, A, sn=sn, dview=self.dview, **options['spatial_params'])
             # set it back to original value to perform full deconvolution
             options['temporal_params']['p'] = self.p
 
@@ -200,6 +205,7 @@ class CNMF(object):
                                                                                     dview=self.dview, bl=None, c1=None, sn=None, g=None, **options['temporal_params'])
 
         else:  # use patches
+
             if self.stride is None:
                 self.stride = np.int(self.rf * 2 * .1)
                 print(
@@ -218,7 +224,8 @@ class CNMF(object):
 
             self.optional_outputs = optional_outputs
 
-            options = CNMFParams(dims, K=A.shape[-1], gSig=self.gSig, p=self.p, thr=self.merge_thresh)
+            options = CNMFSetParms(Y, self.n_processes, p=self.p,
+                                   gSig=self.gSig, K=A.shape[-1], thr=self.merge_thresh)
             pix_proc = np.minimum(np.int((d1 * d2) / self.n_processes / (
                 old_div(T, 2000.))), np.int(old_div((d1 * d2), self.n_processes)))  # regulates the amount of memory used
 

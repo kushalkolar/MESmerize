@@ -1,11 +1,9 @@
-#!/usr/bin/env python
-#%%
 import numpy.testing as npt
 import numpy as np
 import os
 import caiman as cm
 from caiman.source_extraction import cnmf
-from caiman.paths import caiman_datadir
+
 
 def demo(parallel=False):
 
@@ -17,9 +15,8 @@ def demo(parallel=False):
         n_processes, dview = 2, None
 
     # LOAD MOVIE AND MEMORYMAP
-    fname_new = cm.save_memmap([os.path.join(caiman_datadir(), 'example_movies', 'demoMovie.tif')],
-                                base_name='Yr',
-                                order = 'C')
+    fname_new = cm.save_memmap([os.path.abspath(cm.__path__[0][:-7]) +
+                                '/example_movies/demoMovie.tif'], base_name='Yr')
     Yr, dims, T = cm.load_memmap(fname_new)
     # INIT
     cnm = cnmf.CNMF(n_processes, method_init='greedy_roi', k=30, gSig=[4, 4], merge_thresh=.8,
@@ -31,18 +28,14 @@ def demo(parallel=False):
         cm.cluster.stop_server(dview=dview)
 
     # verifying the spatial components
-    npt.assert_allclose(cnm.estimates.A.sum(), 281.1, 1e-2)
+    npt.assert_allclose(cnm.A.sum(), 281.1, 1e-2)
     # verifying the temporal components
-    npt.assert_allclose(cnm.estimates.C.sum(), 66271668, 1e-2)
-    try:
-        dview.terminate()
-    except:
-        pass
+    npt.assert_allclose(cnm.C.sum(), 66271668, 1e-2)
+
 
 def test_single_thread():
-    #demo()
-    pass
+    demo()
+
 
 def test_parallel():
-    #demo(True)
-    pass
+    demo(True)
