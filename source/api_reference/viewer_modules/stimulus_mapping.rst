@@ -31,24 +31,24 @@ DataFrame Format
     name    Stimulus name
     start   Start time of stimulus period
     end     End time of stimulus period
-    color   Color to display in the viewer curve plot.
+    color   Color to display in the viewer curve plot
     ======= ===============================================================
 
     Data types:
     
-        ======= ===============================================================
-        Column  Data type
-        ======= ===============================================================
-        name    str
-        start   numpy.float64
-        end     numpy.float64
-        
-        color   Tuple in RGBA format
-        
-                | (int, int, int, int)
-                
-                | Each int must be within the 0 - 255 range
-        ======= ===============================================================
+    ======= ===============================================================
+    Column  Data type
+    ======= ===============================================================
+    name    str
+    start   numpy.float64
+    end     numpy.float64
+    
+    color   Tuple in RGBA format
+    
+            | (int, int, int, int)
+            
+            | Each int must be within the 0 - 255 range
+    ======= ===============================================================
 
 **Example**
 
