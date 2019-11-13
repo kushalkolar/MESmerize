@@ -93,7 +93,7 @@ class LoadFile(CtrlNode):
             trns = glob(os.path.join(proj_path, 'trns', '*.trn'))
             trns_names = [""] + [os.path.basename(f) for f in trns]
             self.ctrls['proj_trns'].setItems(trns_names)
-            self.ctrls['proj_trns'].currentTextChanged.connect(lambda fname: self.load_file(os.path.join(get_project_manager().root_dir, 'trns', fname) if fname else False))
+            self.ctrls['proj_trns'].currentTextChanged.connect(lambda fname: self.load_file(os.path.join(get_project_manager().root_dir, 'trns', fname) if fname else False, qdialog=False))
 
     # def file_dialog_trn_file(self):
     #     path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
@@ -102,7 +102,7 @@ class LoadFile(CtrlNode):
     #     self.load_file(path[0])
 
     @use_open_file_dialog('Load Transmission file', None, ['*.trn', '*.ptrn'])
-    def load_file(self, path: str):
+    def load_file(self, path: str, qdialog=True):
         if not path:
             return
         try:
