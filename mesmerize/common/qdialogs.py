@@ -109,6 +109,11 @@ def use_open_file_dialog(title: str = 'Choose file', start_dir: Union[str, None]
 
         @wraps(func)
         def fn(self, *args, **kwargs):
+            if 'qdialog' in kwargs.keys():
+                if not kwargs['qdialog']:
+                    func(self, *args, **kwargs)
+                    return fn
+
             if not is_app():
                 func(self, *args, **kwargs)
                 return fn
