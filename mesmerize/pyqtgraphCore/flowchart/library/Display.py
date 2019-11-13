@@ -13,6 +13,7 @@ import os
 import subprocess
 from random import randrange
 
+
 class Plot(CtrlNode):
     """Plot curves and/or scatter points"""
     nodeName = 'Plot'
@@ -37,7 +38,7 @@ class Plot(CtrlNode):
         transmissions = merge_transmissions(transmissions)
 
         columns = pd.concat([t.df for t in transmissions]).columns
-        dcols = organize_dataframe_columns(columns)
+        dcols = organize_dataframe_columns(columns)[0]
         self.ctrls['data_column'].setItems(dcols)
 
         if self.ctrls['Apply'].isChecked() is False:
@@ -187,7 +188,6 @@ class BeeswarmPlots(CtrlNode):
 
         transmissions = kwargs['In']
         transmissions_list = merge_transmissions(transmissions)
-
 
         self.plot_widget.update_input_transmissions(transmissions_list)
 
