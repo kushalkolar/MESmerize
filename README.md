@@ -6,7 +6,7 @@
 
 Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. It encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and aids in the creation of FAIR-functionally linked datasets. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.
 
-biorxiv: https://doi.org/10.1101/840488
+biorxiv manuscript: https://doi.org/10.1101/840488
 
 ## Documentation
 Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesmerizelab.org/)
@@ -39,8 +39,6 @@ sudo dnf install snapd
 To install `snapd` on other distros please see: [https://docs.snapcraft.io/installing-snapd](https://docs.snapcraft.io/installing-snapd).
 
 The snap has been tested to work on Ubuntu 18.04, Debian 9 (Stretch) and Fedora 29.
-
-Mesmerize is experimental and we are working on increasing test coverage, however it has already been used extensively in our lab and is under active development.
 
 For other installation methods please see the docs.
 
