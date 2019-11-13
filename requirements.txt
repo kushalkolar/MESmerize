@@ -31,4 +31,5 @@ joblib==0.13.2
 tslearn==0.2.2
 graphviz==0.13
 numba==0.42.1
-bottleneck
+bottleneck==1.2.1
+
