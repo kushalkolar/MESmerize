@@ -9,6 +9,8 @@ AbstractBasePlotWidget
 .. autoclass:: mesmerize.plotting.widgets.base._AbstractBasePlotWidget
     :members: transmission, set_input, update_plot, get_plot_opts, set_plot_opts, save_plot, open_plot
     :member-order: bysource
+
+.. _API_BasePlotWidget:
     
 BasePlotWidget
 ==============

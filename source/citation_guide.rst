@@ -1,7 +1,7 @@
 Citation guide
 **************
 
-Mesmerize provides interfaces to many great tools that were created by other developers. Please cite the tools that you use in addition to citing Mesmerize.
+Mesmerize provides interfaces to many great tools that were created by other developers. I encourage citing the tools that you use in addition to citing Mesmerize.
 
 Mesmerize relies heavily on `pyqtgraph widgets <pyqtgraph.org>`_. `Citing pyqtgraph. <https://groups.google.com/forum/#!msg/pyqtgraph/fnNGN6j132E/WPr89jpSb_QJ>`_
 

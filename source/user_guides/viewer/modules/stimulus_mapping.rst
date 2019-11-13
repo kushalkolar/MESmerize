@@ -7,11 +7,43 @@ Stimulus Mapping
 
 **Map temporal information such as stimulus or behavioral periods.**
 
+Stimulus Mapping Module
 
-Console
-=======
+.. image:: ./stim_maps_module.png
+
+Stimulus periods illustrated on the viewer timeline
+
+.. image:: ./stim_maps_viewer.png
+
+The tabs that are available in the stimulus mapping module corresponds to the stimulus types in your :ref:`Project Configuration<StimulusTypeColums>`.
+
+You can add stimulus periods either manually or through a script.
+
+Manual Annotation
+=================
+
+#. To add a stimulus manually click the "Add Row" button. This will add an empty row to the current tab page.
+
+#. Enter a name for the stimulus, start time, end time, and pick a color for illustrating the stimulus periods on the Viewer timeline.
+
+#. To remove a stimulus click the "Remove stim" button. Stimulus periods do not have to be added in chronological order.
+
+#. Click "Set all maps" to set the mappings for all stimulus types. You can then choose to illustrate a stimulus on the viewer timeline by selecting it from "Show on timeline"
+
+Import and Export are not implemented yet.
+
+.. warning:: At the moment, only "frames" are properly supported for the time units.
+
+Script
+======
 
 .. seealso:: :ref:`API Reference <module_StimulusMapping>`
+
+You can also use the :ref:`Stimulus Mapping module's API <module_StimulusMapping>` to set the stimulus mappings from a pandas DataFrame.
+
+This example creates a pandas DataFrame from a csv file to set the stimulus mappings. It uses the csv file from the pvc-7 dataset availble on CRCNS: http://dx.doi.org/10.6080/K0C8276G
+
+You can also download the csv here: :download:`stimulus_pvc7.csv <./stimulus_pvc7.csv>`
 
 .. code-block:: python
     :linenos:
@@ -55,4 +87,3 @@ Console
 
     # Set the ori colormap
     smm.maps['ori'].set_data(df)
-    

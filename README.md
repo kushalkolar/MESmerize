@@ -4,13 +4,14 @@
 
 # Mesmerize
 
-Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize attempts to encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and keep track of the analysis so that it can be recapitulated. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.
+Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. It encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and aids in the creation of FAIR-functionally linked datasets. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.
+
+biorxiv: https://doi.org/10.1101/840488
 
 ## Documentation
 Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesmerizelab.org/)
 
 ## Installation
-Mesmerize is currently available only on Linux, it will soon be available for Mac OSX.
 
 ### Snap
 The easiest way to get Mesmerize is through the Snap store [https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize) .
@@ -41,6 +42,6 @@ The snap has been tested to work on Ubuntu 18.04, Debian 9 (Stretch) and Fedora 
 
 Mesmerize is experimental and we are working on increasing test coverage, however it has already been used extensively in our lab and is under active development.
 
-### PyPI
+For other installation methods please see the docs.
 
-### Virtual Environment
+

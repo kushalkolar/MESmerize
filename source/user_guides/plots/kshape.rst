@@ -22,7 +22,7 @@ This GUI uses the `tslearn.clustering.KShape <https://tslearn.readthedocs.io/en/
 
 **Bottom left:** Plot of a random sample of input data from a cluster.
 
-**Center:** Plot of cluster mean and either confidence interval, standard deviation, or neither. Uses on `seaborn.lineplot <https://seaborn.pydata.org/generated/seaborn.lineplot.html>`_
+**Center:** Plot of cluster mean and either confidence interval, standard deviation, or neither. Uses `seaborn.lineplot <https://seaborn.pydata.org/generated/seaborn.lineplot.html>`_
 
 **Right:** Proportions plot. Exactly the same as :ref:`plot_Proportions`.
 
@@ -33,7 +33,7 @@ KShape Parameters
 
 The parameters and input data are simply fed to `tslearn.clustering.KShape <https://tslearn.readthedocs.io/en/latest/gen_modules/clustering/tslearn.clustering.KShape.html#tslearn.clustering.KShape>`_
 
-Parameters outlined here are simply as they appear in the tslearn.
+Parameters outlined here are simply as they appear in the tslearn docs.
 
 **data_column:** Input data for clustering.
 

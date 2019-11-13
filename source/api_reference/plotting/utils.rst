@@ -11,6 +11,8 @@ A few useful helper functions
 
 .. autofunction:: mesmerize.plotting.utils.auto_colormap
 
+.. _API_WidgetRegistry:
+
 .. autoclass:: mesmerize.plotting.utils.WidgetRegistry
     :members:
     :member-order: bysource

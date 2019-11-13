@@ -6,6 +6,7 @@
 Welcome to Mesmerize's documentation!
 =====================================
 
+| biorxiv: https://doi.org/10.1101/840488
 | GitHub: https://github.com/kushalkolar/MESmerize
 | Help forum: https://groups.google.com/d/forum/mesmerize
 | Contact: kushalkolar@alumni.ubc.ca

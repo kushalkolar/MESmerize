@@ -38,8 +38,3 @@ Instructions
                 self.setFloating(True) # Must be floating
 
 #. The module will be accessible through the Viewer Window's "Plugins" menu. The names in the plugins menu will correspond to the aforementioned ``module_name`` variable.
-
-
-Batch Modules
-=============
-
