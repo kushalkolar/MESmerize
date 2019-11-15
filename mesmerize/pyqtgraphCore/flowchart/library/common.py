@@ -18,9 +18,10 @@ except:
 
 from ...widgets.ComboBox import ComboBox as QComboBox
 from ...widgets.ListWidget import ListWidget
+from ...widgets.LineEdit import LineEdit
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
 from ....analysis import organize_dataframe_columns
-from PyQt5.QtWidgets import QLineEdit
+# from PyQt5.QtWidgets import QLineEdit as LineEdit
 
 
 def generateUi(opts):
@@ -95,7 +96,7 @@ def generateUi(opts):
 
         elif t == 'lineEdit':
             # w = QtGui.QLineEdit()
-            w = QLineEdit()
+            w = LineEdit()
             if 'placeHolder' in o:
                 w.setPlaceholderText(o['placeHolder'])
             if 'text' in o:
