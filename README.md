@@ -2,9 +2,9 @@
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/mesmerize)
 
-## Gitter
+## Questions/Discussions
 
-We have a discussion room on gitter. For larger bugs/issues please use the issue tracker.
+We have a room on gitter. For larger bugs/issues please use the issue tracker.
 
 [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
