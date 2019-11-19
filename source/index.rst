@@ -8,8 +8,11 @@ Welcome to Mesmerize's documentation!
 
 | biorxiv: https://doi.org/10.1101/840488
 | GitHub: https://github.com/kushalkolar/MESmerize
-| Help forum: https://groups.google.com/d/forum/mesmerize
+| Questions/Discussion: `Gitter room <https://gitter.im/mesmerize_discussion/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link>`_ |gitter_badge|
 | Contact: kushalkolar@alumni.ubc.ca
+
+.. |gitter_badge| image:: https://badges.gitter.im/mesmerize_discussion/community.svg
+                    :target: https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
 .. toctree::
 	:maxdepth: 1

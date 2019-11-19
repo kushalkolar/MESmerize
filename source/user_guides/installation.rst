@@ -101,13 +101,14 @@ First, make sure you have compilers & python.
         
     Install dependencies::
 
-        sudo apt-get install qt5-default tcl graphviz
+        sudo apt-get install qt5-default tcl graphviz git
     
     For other distros these packages probably have the same or similar names.
     
 **For Mac OSX**
     
     Install Xcode::
+    
         xcode-select --install
 
     This might take a while.
@@ -131,13 +132,38 @@ First, make sure you have compilers & python.
 
     source /path/to/venv/bin/activate
 
-#. Install some dependencies::
+#. Clone the repo::
 
-    pip install cython numpy python-dateutil
+    git clone https://github.com/kushalkolar/MESmerize.git
+
+
+#. cd & switch to the snap branch::
     
-#. Install mesmerize::
+    cd MESmerize
+    git checkout snap
 
-    pip install git+https://github.com/kushalkolar/MESmerize.git@snap
+#. Install some build dependencies::
+
+    pip install Cython numpy python-dateutil
+    
+#. Install remaining dependencies::
+
+    pip install -r requirements.txt
+
+#. Build some things::
+
+    python setup.py build_ext -i
+
+#. Add to PYTHONPATH environment variable::
+
+    export PYTHONPATH=$PWD:$PYTHONPATH
+
+You will always need to add the path to MESmerize to the PYTHONPATH environment varible before launching.
+    
+#. Launch::
+
+    python ./mesmerize
+
 
 Customized
 ----------
