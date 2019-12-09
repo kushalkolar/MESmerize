@@ -21,6 +21,7 @@ Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesme
 
 ### Snap
 The easiest way to get Mesmerize is through the Snap store [https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize)\
+
 The snap comes with a version of Caiman from ~late 2018. We're currently working on getting Mesmerize up to date with the latest release of Caiman.
 
 After installation simply run `mesmerize` in the terminal and the application will launch in ~10-30 seconds.
