@@ -313,15 +313,21 @@ class ROIList(list):
         data = pg_roi.getArrayRegion((image.view(np.ndarray)), self.vi.viewer.imageItem, axes)
 
         if data is not None:
-            while data.ndim > 1:
-                data = data.mean(axis=1)
-            if image.ndim == 3:
-                # Set the curve
-                roi = self.__getitem__(ix)
+            data[data == 0] = np.nan
 
-                roi.curve_plot_item.setData(y=data, x=self.vi.viewer.tVals)
-                roi.set_color('w', width=2)
-                roi.curve_plot_item.show()
+            if data.ndim == 2:
+            # while data.ndim > 1:
+                # data = data.mean(axis=1)
+                y = np.nanmean(data)
+
+            elif image.ndim == 3:
+                # Set the curve
+                y = np.nanmean(data, axis=(1, 2))
+
+            roi = self.__getitem__(ix)
+            roi.curve_plot_item.setData(y=y, x=self.vi.viewer.tVals)
+            roi.set_color('w', width=2)
+            roi.curve_plot_item.show()
         self.vi.viewer.status_bar_label.clearMessage()
 
     def slot_btn_set_tag(self):
