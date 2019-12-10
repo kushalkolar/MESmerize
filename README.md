@@ -19,6 +19,7 @@ https://doi.org/10.1101/840488
 
 #### Future plans:
 
+- Video tutorials
 - Use the latest version of CaImAn to incorporate the new component evaluation metrics and registration across trials
 - Create an Anaconda installation for Windows & Mac users.
 - Create a more efficient data container & pipeline system for downstream analysis, possibly using this: https://github.com/kushalkolar/composition_sugar
