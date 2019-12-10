@@ -15,7 +15,7 @@ Dec 10, 2019: Text framework for writing analysis pipelines, still very experime
 
 https://doi.org/10.1101/840488
 
-####Future plans:
+#### Future plans:
 
 - Use the latest version of CaImAn to incorporate the new component evaluation metrics and registration across trials
 - Create an Anaconda installation for Windows & Mac users.
