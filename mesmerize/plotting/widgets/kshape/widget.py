@@ -707,7 +707,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.control_widget.ui.radioButtonXZeroZero.setChecked(ui_state['x-zero_zero'])
             self.control_widget.ui.radioButtonXZeroMaxima.setChecked(ui_state['x-zero_maxima'])
 
-        self.data_column = ui_state['data_column']
+            self.data_column = ui_state['data_column']
+            
         self.input_arrays = self.transmission.df[self.data_column].values
 
         for k in opts.keys():
