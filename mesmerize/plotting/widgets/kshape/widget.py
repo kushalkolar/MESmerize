@@ -692,18 +692,20 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def set_plot_opts(self, opts: dict):
         """Set the plot options"""
         prop_opts = opts.pop('proportion_opts')
-        self.plot_proportions.set_plot_opts(prop_opts)
+        if prop_opts is not None:
+            self.plot_proportions.set_plot_opts(prop_opts)
 
         ui_state = opts.pop('ui_state')
 
-        ix = self.control_widget.ui.comboBoxDataColumn.findText(ui_state['data_column'])
-        self.control_widget.ui.comboBoxDataColumn.setCurrentIndex(ix)
-        self.control_widget.ui.checkBoxShowKShapeCenters.setChecked(ui_state['show_centers'])
-        self.control_widget.ui.spinBoxMaxNumCurves.setValue(ui_state['max_num_curves'])
-        ix = self.control_widget.ui.comboBoxErrorBand.findText(ui_state['error_band'])
-        self.control_widget.ui.comboBoxErrorBand.setCurrentIndex(ix)
-        self.control_widget.ui.radioButtonXZeroZero.setChecked(ui_state['x-zero_zero'])
-        self.control_widget.ui.radioButtonXZeroMaxima.setChecked(ui_state['x-zero_maxima'])
+        if ui_state is not None:
+            ix = self.control_widget.ui.comboBoxDataColumn.findText(ui_state['data_column'])
+            self.control_widget.ui.comboBoxDataColumn.setCurrentIndex(ix)
+            self.control_widget.ui.checkBoxShowKShapeCenters.setChecked(ui_state['show_centers'])
+            self.control_widget.ui.spinBoxMaxNumCurves.setValue(ui_state['max_num_curves'])
+            ix = self.control_widget.ui.comboBoxErrorBand.findText(ui_state['error_band'])
+            self.control_widget.ui.comboBoxErrorBand.setCurrentIndex(ix)
+            self.control_widget.ui.radioButtonXZeroZero.setChecked(ui_state['x-zero_zero'])
+            self.control_widget.ui.radioButtonXZeroMaxima.setChecked(ui_state['x-zero_maxima'])
 
         self.data_column = ui_state['data_column']
         self.input_arrays = self.transmission.df[self.data_column].values
