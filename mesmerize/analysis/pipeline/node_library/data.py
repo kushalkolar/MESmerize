@@ -18,14 +18,13 @@ def pad_arrays(container, data_column, method: str = 'random'):
 def partition(container, n_partitions: int):
     size = container.df.index.size
 
-    bound_ixs = np.arange(0, size, int(size / n_partitions))
+    ixs = np.array(range(size))
 
+    partitions = np.array_split(ixs, n_partitions)
     labels = np.empty(shape=(size,), dtype=np.int64)
 
-    for p, ix in enumerate(range(1, bound_ixs.size)):
-        labels[bound_ixs[ix - 1]:bound_ixs[ix]] = p
-
-    labels[-1] = p
+    for label, p in enumerate(partitions):
+        labels[p] = label
 
     container.df['partition'] = labels
     return container
