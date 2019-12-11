@@ -11,8 +11,6 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 ## News & upcoming
 
-Dec 10, 2019: Text framework for writing analysis pipelines, still very experimental: https://github.com/kushalkolar/composition_sugar
-
 **Nov 13, 2019:** See our recent biorxiv manuscript where we use Mesmerize to analyze a calcium imaging dataset from *Ciona intestinalis* as well as other model organisms!
 
 https://doi.org/10.1101/840488
@@ -22,9 +20,6 @@ https://doi.org/10.1101/840488
 - Video tutorials
 - Use the latest version of CaImAn to incorporate the new component evaluation metrics and registration across trials
 - Create an Anaconda installation for Windows & Mac users.
-- Create a more efficient data container & pipeline system for downstream analysis, possibly using this: https://github.com/kushalkolar/composition_sugar
-- Migrate to a different framework for interactive visualizations.
-- More types of standard visualizations.
 
 ## Questions/Discussions
 
