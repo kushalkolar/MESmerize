@@ -630,44 +630,27 @@ class ModuleGUI(QtWidgets.QWidget):
         return UUID
 
     def del_item(self):
-        # """Delete the currently selected item from the batch and any corresponding dependents of the item's output"""
+        """Delete the currently selected item from the batch and any corresponding dependents of the item's output"""
         if QtWidgets.QMessageBox.question(self, 'Confirm deletion',
-                                          'Are you sure you want to delete the selected item from the batch? '
+                                          'Are you sure you want to delete the selected items from the batch? '
                                           'This will also remove ALL files associated to the item',
                                           QtWidgets.QMessageBox.Yes,
                                           QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
             return
-        s = self.ui.listwBatch.currentItem()
-        UUID = s.data(3)
+        items = self.ui.listwBatch.selectedItems()
 
-        assert isinstance(self.df, pandas.DataFrame)
+        for s in items:
+            UUID = s.data(3)
 
-        dependents = self.df.loc[self.df['input_item'] == UUID]
-        if not dependents.empty:
-            if QtWidgets.QMessageBox.warning(self, 'This item has dependents!',
-                                             'There are other items in your batch list that are dependent on the item you '
-                                             'have selected to delete. If you delete this item from the batch then all '
-                                             'dependent items will also be deleted.\n\nDo you still wish to continue?',
-                                             QtWidgets.QMessageBox.Yes,
-                                             QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
-                return
+            self.df = self.df[self.df['uuid'] != UUID]
+            self.df.reset_index(drop=True, inplace=True)
 
-            for item in self.ui.listwBatch.items():
-                if item.data(3) == UUID:
-                    ix = self.ui.listwBatch.indexFromItem(item).row()
-                    self.ui.listwBatch.takeItem(ix)
+            ix = self.ui.listwBatch.indexFromItem(s).row()
+            self.ui.listwBatch.takeItem(ix)
+            self.set_line_numbers()
 
-            self.df = self.df.loc[self.df['input_item'] != UUID]
-
-        self.df = self.df[self.df['uuid'] != UUID]
-        self.df.reset_index(drop=True, inplace=True)
-
-        ix = self.ui.listwBatch.indexFromItem(s).row()
-        self.ui.listwBatch.takeItem(ix)
-        self.set_line_numbers()
-
-        for file in glob(self.batch_path + '/*' + str(UUID) + '*'):
-            os.remove(file)
+            for file in glob(self.batch_path + '/*' + str(UUID) + '*'):
+                os.remove(file)
 
         self.df.to_pickle(self.batch_path + '/dataframe.batch')
 
