@@ -19,6 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from fcsugar import Container
 from .. import Transmission
+import os
+import pandas as pd
 
 
 class TransmissionContainer(Transmission, Container):
@@ -26,8 +28,19 @@ class TransmissionContainer(Transmission, Container):
         Transmission.__init__(self, *args, **kwargs)
         Container.__init__(self)
 
+    @property
+    def dataframe(self):
+        proj_df_path = os.path.join(self.get_proj_path(), 'dataframes', 'root.dfr')
+        proj_df = pd.read_hdf(proj_df_path, key='project_dataframe', mode='r')
+        return pd.merge(proj_df, self.df, on='uuid_curve')
+
     def append_log(self, node, params):
         super(TransmissionContainer, self).append_log(node, params)
 
         self.history_trace.add_operation('all', node.name, params)
 
+    def __add__(self, other):
+        if not isinstance(other, TransmissionContainer):
+            raise TypeError("Can only combine TransmissionContainers")
+
+        return TransmissionContainer.merge([self, other])
