@@ -3,6 +3,8 @@
 Installation
 ************
 
+**We currently support Linux & Mac OS X. On Windows it is tricky to set up an environment that works reliably with compilers for building some dependencies. From our experience it's much easier to just install Linux and use the Snap.**
+
 .. _snap_install:
 
 Snap
