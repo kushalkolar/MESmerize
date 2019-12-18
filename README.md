@@ -33,8 +33,14 @@ Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesme
 
 ## Installation
 
+**The easiest way to get Mesmerize is to install the snap (Linux only). You can also install directly from the repo on Linux & Mac OSX.**
+
+See the docs for instructions:
+
+http://mesmerizelab.org/user_guides/installation.html
+
 ### Snap
-The easiest way to get Mesmerize is through the Snap store [https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize)\
+[https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize)
 
 **Note: The snap comes with a version of Caiman from ~late 2018. We're currently working on getting Mesmerize up to date with the latest release of Caiman.**
 
@@ -61,7 +67,3 @@ sudo dnf install snapd
 To install `snapd` on other distros please see: [https://docs.snapcraft.io/installing-snapd](https://docs.snapcraft.io/installing-snapd).
 
 The snap has been tested to work on Ubuntu 18.04, Debian 9 (Stretch) and Fedora 29.
-
-For other installation methods please see the docs.
-
-
