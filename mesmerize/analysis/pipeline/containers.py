@@ -35,10 +35,8 @@ class TransmissionContainer(Transmission, Container):
         return pd.merge(proj_df, self.df, on='uuid_curve')
 
     def append_log(self, node):
-        params = node.params
-        super(TransmissionContainer, self).append_log(node, params)
-
-        self.history_trace.add_operation('all', node.name, params)
+        super(TransmissionContainer, self).append_log(node)
+        self.history_trace.add_operation('all', node.name, node.params)
 
     def __add__(self, other):
         if not isinstance(other, TransmissionContainer):
