@@ -34,7 +34,8 @@ class TransmissionContainer(Transmission, Container):
         proj_df = pd.read_hdf(proj_df_path, key='project_dataframe', mode='r')
         return pd.merge(proj_df, self.df, on='uuid_curve')
 
-    def append_log(self, node, params):
+    def append_log(self, node):
+        params = node.params
         super(TransmissionContainer, self).append_log(node, params)
 
         self.history_trace.add_operation('all', node.name, params)
