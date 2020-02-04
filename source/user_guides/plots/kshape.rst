@@ -188,7 +188,18 @@ Set the x tick labels in time units instead of frames
     get_plot_means().draw()
     
 .. note:: You may need to resize the dock widget that the plot is present in to display the newly drawn plot, this is a Qt-matplotlib issue.
+
+Hide legend
+^^^^^^^^^^^
+
+Hide/show legend in the proportions plot
+
+.. code-block:: pyton
+
+    get_plot_proportions().ax.legend().set_visible(True)
+    get_plot_proportions().draw()
     
+
 Export
 ^^^^^^
 

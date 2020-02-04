@@ -7,13 +7,13 @@ Installation
 
 .. _snap_install:
 
-Snap
+Linux
 ====
 
-Installation
-------------
+The easiest way to get Mesmerize is through the Snap Store. You can also install from the GitHub repo.
 
-The easiest way to get Mesmerize is through the Snap Store
+Snap
+----
 
 .. image:: https://snapcraft.io/static/images/badges/en/snap-store-black.svg
   :target: https://snapcraft.io/mesmerize
@@ -22,10 +22,7 @@ Command line snap installation::
 
     sudo snap install mesmerize
 
-Launch
-------
-
-After installation simply run ``mesmerize`` in the terminal and the application will launch in ~10-30 seconds. Make sure your PYTHONPATH environment variable is empty otherwise it might conflict with the snap.::
+After installation simply run ``mesmerize`` in the terminal and the application will launch in ~10-30 seconds. Make sure your PYTHONPATH environment variable is empty otherwise it might conflict with the snap::
 
     export PYTHONPATH=
     
@@ -44,7 +41,7 @@ You can also open an ipython console in the snap environment::
 
     
 Requirements
-------------
+^^^^^^^^^^^^
 
 Make sure you have ``snapd`` installed, which is required for running snap apps.
 Ubuntu 16.04 and later usually come pre-installed with snapd.
@@ -65,7 +62,7 @@ If you have trouble installing Mesmerize via snap you might need to install `cor
 	sudo snap install core18
 
 Limitations
------------
+^^^^^^^^^^^
 
 The snap installation has several limitations, most importantly you will not be able to access arbitrary filesystems. If you need this you will have to install directly from the repo (see From GitHub). If you are able to mount your external filesystem in /media (or wherever your distro places removeable media) then you should be able to access these filesystems if you do the following::
 
@@ -78,52 +75,31 @@ Alternatively you can install the snap in devmode (gives that snap broad access 
 .. warning:: Analysis graphs do not work in the snap version at the moment.
 
 From GitHub
-===========
-
-Easy
-----
-
-This installation method should work on Linux and Mac.
+-----------
 
 First, make sure you have compilers & python.
 
 **For Debian & Ubuntu based distros**
 
-    Get build tools and other things::
+Get build tools and other things::
 
-        sudo apt-get install build-essential
-        
-    For other distros look for the equivalent meta-package that contains gcc, glibc, etc.
-
-    If you don't have python3.6::
-
-        sudo apt-get install python3.6
+    sudo apt-get install build-essential
     
-    For other distros lookup how to install python3.6 through their package manager.
-        
-    Install dependencies::
+For other distros look for the equivalent meta-package that contains gcc, glibc, etc.
 
-        sudo apt-get install qt5-default tcl graphviz git
+If you don't have python3.6::
+
+    sudo apt-get install python3.6
+
+For other distros lookup how to install python3.6 through their package manager.
     
-    For other distros these packages probably have the same or similar names.
-    
-**For Mac OSX**
-    
-    Install Xcode::
-    
-        xcode-select --install
+Install dependencies::
 
-    This might take a while.
+    sudo apt-get install qt5-default tcl graphviz git
 
-    Install brew::
+For other distros these packages probably have the same or similar names.
 
-        /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-    Install python 3.6.5::
-
-        brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f2a764ef944b1080be64bd88dca9a1d80130c558/Formula/python.rb
-
-**Install Mesmerize**
+**Create a virtual environment & install Mesmerize**
     
 #. Create a virtual environment::
     
@@ -156,21 +132,75 @@ First, make sure you have compilers & python.
 
     python setup.py build_ext -i
 
-#. Add to PYTHONPATH environment variable::
+#. Add to PYTHONPATH environment variable. You will always need to add the path to MESmerize to the PYTHONPATH environment varible before launching.::
 
     export PYTHONPATH=$PWD:$PYTHONPATH
-
-You will always need to add the path to MESmerize to the PYTHONPATH environment varible before launching.
     
 #. Launch::
 
     python ./mesmerize
 
+    
+Mac OSX
+=======
+
+This requires Anaconda and will install Mesmerize in an Anaconda environment. Tested on macOS Catalina 10.15.1
+
+Download Anaconda for Python 3: https://www.anaconda.com/distribution/
+    
+First make sure you have xcode::
+
+    xcode-select --install
+
+This might take a while.
+
+**Create an environment & install Mesmerize**
+
+#. Create a new environment using python 3.6::
+
+    conda create --name mesmerize python=3.6
+
+#. Enter the environment::
+
+    source activate mesmerize
+
+#. Install cython, numpy and pandas::
+
+    conda install cython numpy pandas
+
+#. Clone the mesmerize repo and enter it::
+
+    git clone https://github.com/kushalkolar/MESmerize.git
+    cd MESmerize
+
+#. Checkout the snap branch::
+
+    git checkout snap
+
+#. Install more dependencies::
+
+    pip install -r requirements.txt
+
+#. Install Mesmerize::
+
+    CFLAGS='-stdlib=libc++' python setup.py build_ext -i
+
+**Launching Mesmerize**
+
+#. Export the path to the MESmerize repo directory::
+
+    export PYTHONPATH=<path_to_MESmerize_dir>
+
+#. Launch. It may take a few minutes the first time::
+
+    python <path_to_MESmerize_dir>/mesmerize
+
+**You might get a matplotlib error, if so execute the following which appends the default matplotlib backend-option. Note that this will probably affect matplotlib in all your environments**::
+
+    echo "backend: qt5" >> ~/.matplotlib/matplotlibrc
 
 Customized
-----------
-
-
+==========
     
 Troubleshooting
 ===============
