@@ -67,7 +67,8 @@ This example shows how to add all tiff files (of image sequences) from a directo
                 "overlaps":             98,
                 "upsample":             4,
                 "name_elas":            "will set later per file",
-                "output_bit_depth":     "Do not convert"
+                "output_bit_depth":     "Do not convert",
+                "gSig_filt"             (10, 10)
                 }
 
     # Path to the dir containing images
@@ -172,7 +173,8 @@ This example shows how to crop videos prior to adding them as batch items. This 
                 "overlaps":             98,
                 "upsample":             4,
                 "name_elas":            "will set later per file",
-                "output_bit_depth":     "Do not convert"
+                "output_bit_depth":     "Do not convert",
+                "gSig_filt"             (10, 10)
                 }
 
     # Path to the dir containing images
