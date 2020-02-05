@@ -1,7 +1,7 @@
 Citation guide
 **************
 
-Mesmerize provides interfaces to many great tools that were created by other developers. I encourage citing the tools that you use in addition to citing Mesmerize.
+Mesmerize provides interfaces to many great tools that were created by other developers. Please cite the papers for the following Viewer Modules and analysis methods that you use in addition to citing Mesmerize. I would also suggest citing numpy, pandas, scipy, sklearn, and matplotlib.
 
 Mesmerize relies heavily on `pyqtgraph widgets <pyqtgraph.org>`_. `Citing pyqtgraph. <https://groups.google.com/forum/#!msg/pyqtgraph/fnNGN6j132E/WPr89jpSb_QJ>`_
 
@@ -33,7 +33,28 @@ Node/Method                                             Cite
 ===================================================     ========================================================================
 :ref:`k-Shape clustering <plot_KShape>`                 | Paparrizos, J., & Gravano, L. (2016). k-Shape. ACM SIGMOD Record, 45(1), 69–76. doi: http://dx.doi.org/10.1145/2723372.2737793
 
-                                                        | Tavenard, R., Faouzi, J., & Vandewiele, G.. (2017). tslearn: A machine learning toolkit dedicated to time-series data. https://github.com/rtavenar/tslearn
-:ref:`Cross-correlation <plot_CrossCorrelation>`        | Tavenard, R., Faouzi, J., & Vandewiele, G.. (2017). tslearn: A machine learning toolkit dedicated to time-series data. https://github.com/rtavenar/tslearn
+                                                        | Romain Tavenard, Johann Faouzi, Gilles Vandewiele and Felix Divo, Guillaume Androz, Chester Holtz, Marie Payne, Roman Yurchak, Marc Ruβwurm, Kushal Kolar, & Eli Woods. (2017). tslearn: A machine learning toolkit dedicated to time-series data. https://github.com/rtavenar/tslearn
+                                                        
+:ref:`Cross-correlation <plot_CrossCorrelation>`        | Romain Tavenard, Johann Faouzi, Gilles Vandewiele and Felix Divo, Guillaume Androz, Chester Holtz, Marie Payne, Roman Yurchak, Marc Ruβwurm, Kushal Kolar, & Eli Woods. (2017). tslearn: A machine learning toolkit dedicated to time-series data. https://github.com/rtavenar/tslearn
+
 :ref:`TVDiff Node <node_TVDiff>`                        Rick Chartrand, “Numerical Differentiation of Noisy, Nonsmooth Data,” ISRN Applied Mathematics, vol. 2011, Article ID 164564, 11 pages, 2011. https://doi.org/10.5402/2011/164564.
 ===================================================     ========================================================================
+
+Scientific Libraries
+====================
+
+=============== ==========================================================================================
+Library
+=============== ==========================================================================================
+numpy           | Van Der Walt, S., Colbert, S. C. & Varoquaux, G. The NumPy array: A structure for efficient numerical computation. Comput. Sci. Eng. (2011) doi:10.1109/MCSE.2011.37
+
+pandas          | McKinney, W. Data Structures for Statistical Computing in Python. Proc. 9th Python Sci. Conf. (2010)
+
+scipy           | Virtanen, P., Gommers, R., Oliphant, T.E. et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. Nat Methods (2020). https://doi.org/10.1038/s41592-019-0686-2
+
+sklearn         | Pedregosa, F. et al. Scikit-learn: Machine learning in Python. J. Mach. Learn. Res. (2011)
+
+matplotlib      | Hunter, J. D. Matplotlib: A 2D graphics environment. Comput. Sci. Eng. (2007)
+
+pyqtgraph       | http://www.pyqtgraph.org/
+=============== ==========================================================================================
