@@ -471,7 +471,7 @@ class PeakDetect(CtrlNode):
                     fall_ampl = sig[peak_revised] - sig[ix_right_base]
 
                     # Check if above relative amplitude threshold
-                    if (rise_ampl + fall_ampl) > self.ctrls['AmplThrRel'].value():
+                    if ((rise_ampl + fall_ampl) / 2) > self.ctrls['AmplThrRel'].value():
                         peaks_bases_df.set_value(ix, 'event', peak_revised)
                     else:
                         rows_drop.append(ix)
