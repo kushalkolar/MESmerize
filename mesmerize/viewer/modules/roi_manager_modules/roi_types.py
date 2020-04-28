@@ -364,6 +364,29 @@ class ManualROI(BaseROI):
         return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box)
 
 
+class Suite2pROI(ManualROI):
+    """Just a """
+    def __init__(self, *args, **kwargs):
+        super(Suite2pROI, self).__init__(*args, **kwargs)
+        self.stat = None
+
+    def to_state(self):
+        state = super(Suite2pROI, self).to_state()
+        state['stat'] = self.stat
+
+    @staticmethod
+    def get_generic_roi_graphics_object(self, *args, **kwargs) -> pg.ROI:
+        """Create a read only ROI"""
+        roi_graphics_object = super(Suite2pROI, self).get_generic_roi_graphics_object(*args, **kwargs)
+
+        # workaround so the ROI is "ready only"
+        roi_graphics_object.movePoint = lambda: None
+        roi_graphics_object.addHandle = lambda: None
+        roi_graphics_object.removeHandle = lambda: None
+
+        return roi_graphics_object
+
+
 class CNMFROI(BaseROI):
     """A class for ROIs imported from CNMF(E) output data"""
     def __init__(self, curve_plot_item: pg.PlotDataItem,
