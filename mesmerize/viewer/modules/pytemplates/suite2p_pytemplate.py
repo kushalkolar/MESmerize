@@ -12,6 +12,7 @@ class Ui_DockWidgetSuite2p(object):
     def setupUi(self, DockWidgetSuite2p):
         DockWidgetSuite2p.setObjectName("DockWidgetSuite2p")
         DockWidgetSuite2p.resize(735, 386)
+        DockWidgetSuite2p.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.dockWidgetContents)

@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -56,6 +56,7 @@
     <addaction name="menuLoad_images"/>
     <addaction name="menuCaImAn_toolbox"/>
     <addaction name="actionROI_Manager"/>
+    <addaction name="actionSuite2p_Importer"/>
     <addaction name="actionStimulus_Mapping"/>
     <addaction name="actionManual_motion_correction"/>
     <addaction name="actionScript_Editor"/>
@@ -300,6 +301,11 @@
   <action name="actionOpen_docs">
    <property name="text">
     <string>&amp;Open docs</string>
+   </property>
+  </action>
+  <action name="actionSuite2p_Importer">
+   <property name="text">
+    <string>Suite2p Importer</string>
    </property>
   </action>
  </widget>

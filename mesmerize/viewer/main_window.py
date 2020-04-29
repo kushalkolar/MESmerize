@@ -80,6 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         'cnmfe': cnmfe.ModuleGUI,
                         'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
                         'roi_manager': roi_manager.ModuleGUI,
+                        'suite2p_importer': suite2p.ModuleGUI,
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
                         'script_editor': script_editor.ModuleGUI,
                         }
@@ -97,6 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
         self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
+        self.ui.actionSuite2p_Importer.triggered.connect(lambda: self.run_module(suite2p.ModuleGUI))
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
         self.ui.actionScript_Editor.triggered.connect(lambda: self.run_module(script_editor.ModuleGUI))
 
