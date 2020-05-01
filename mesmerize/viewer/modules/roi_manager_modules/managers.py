@@ -35,6 +35,8 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
         self.roi_list = None  #: The ROIList instance that stores the list of ROIs
         self.parent = parent
 
+        self.metadata = None
+
     @abc.abstractmethod
     def add_roi(self, *args, **kwargs):
         """Method for adding an ROI, must be implemented in subclass"""
@@ -58,17 +60,21 @@ class AbstractBaseManager(metaclass=abc.ABCMeta):
         """
         self.vi.viewer.status_bar_label.showMessage('Saving ROIs...')
         # the key 'roi_type' determines which Manager subclass should be used, and 'states' are the actual ROI states
-        states = {'roi_type': self.roi_list.roi_types, 'states': []}
+        states = {
+            'roi_type': self.roi_list.roi_types.__name__,
+            'states': [],
+            'metadata': self.metadata
+        }
+
         for roi in self.roi_list:
             state = roi.to_state()
             states['states'].append(state)
         self.vi.viewer.status_bar_label.showMessage('ROIs saved!')
         return states
 
-    @abc.abstractmethod
-    def restore_from_states(self, states: list):
-        """Restore ROIs from their states"""
-        pass
+    def restore_from_states(self, states: dict):
+        if 'metadata' in states.keys():
+            self.metadata = states['metadata']
 
     def get_plot_item(self) -> pg.PlotDataItem:
         """Get the viewer plot item that is associated to these ROIs"""
@@ -98,7 +104,7 @@ class ManagerManual(AbstractBaseManager):
 
     def create_roi_list(self):
         """Create a new empty ROI list instance for storing Manual ROIs"""
-        self.roi_list = ROIList(self.ui, 'ManualROI', self.vi)
+        self.roi_list = ROIList(self.ui, ManualROI, self.vi)
 
     def add_roi(self, shape: str):
         """
@@ -119,6 +125,7 @@ class ManagerManual(AbstractBaseManager):
 
     def restore_from_states(self, states: dict):
         """Restore ROIs from states"""
+        super(ManagerManual, self).restore_from_states(states)
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
@@ -134,7 +141,13 @@ class ManagerManual(AbstractBaseManager):
     def get_all_states(self) -> dict:
         """Get the ROI states so that they can be restored later"""
         self.vi.viewer.status_bar_label.showMessage('Saving ROIs...')
-        states = {'roi_type': self.roi_list.roi_types, 'states': []}
+
+        states = {
+            'roi_type': self.roi_list.roi_types.__name__,
+            'states': [],
+            'metadata': self.metadata
+        }
+
         for ix in range(len(self.roi_list)):
             self.roi_list.set_pg_roi_plot(ix)
             state = self.roi_list[ix].to_state()
@@ -162,6 +175,51 @@ class ManagerManual(AbstractBaseManager):
         self.roi_list.reindex_colormap()
 
 
+class ManagerScatter(AbstractBaseManager):
+    """Manager for unmoveable ROIs drawn using scatterplots"""
+    def __init__(self, parent, ui, viewer_interface: ViewerUtils):
+        super(ManagerScatter, self).__init__(parent, ui, viewer_interface)
+        self.create_roi_list()
+        self.list_widget = self.roi_list.list_widget
+
+    def add_roi(self, curve, xs, ys, metadata: dict = None):
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
+        roi = ScatterROI(
+            curve_plot_item=self.get_plot_item(),
+            view_box=self.vi.viewer.getView(),
+            curve_data=curve,
+            xs=xs,
+            ys=ys
+        )
+
+        roi.metadata = metadata
+        self.roi_list.append(roi)
+        self.roi_list.reindex_colormap()
+
+    def restore_from_states(self, states: dict):
+        """Restore from states, such as when these ROIs are saved with a Project Sample"""
+        super(ManagerScatter, self).restore_from_states(states)
+
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
+        for state in states['states']:
+            roi = ScatterROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
+            self.roi_list.append(roi)
+
+        self.roi_list.reindex_colormap()
+
+    def create_roi_list(self):
+        """Create empty ROI List"""
+        self.roi_list = ROIList(self.ui, ScatterROI, self.vi)
+
+    def set_spot_size(self, size: int):
+        for roi in self.roi_list:
+            roi.get_roi_graphics_object().setSize(size)
+
+
 class ManagerCNMFE(AbstractBaseManager):
     """Manager for ROIs imported from CNMF or CNMFE outputs"""
     def __init__(self, parent, ui, viewer_interface):
@@ -185,7 +243,7 @@ class ManagerCNMFE(AbstractBaseManager):
 
     def create_roi_list(self):
         """Create empty CNMFROI list"""
-        self.roi_list = ROIList(self.ui, 'CNMFROI', self.vi)
+        self.roi_list = ROIList(self.ui, CNMFROI, self.vi)
 
     def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict, dfof=False,
                            calc_raw_min_max=False):
@@ -278,6 +336,7 @@ class ManagerCNMFE(AbstractBaseManager):
 
     def restore_from_states(self, states: dict):
         """Restore from states, such as when these ROIs are saved with a Project Sample"""
+        super(ManagerCNMFE, self).restore_from_states(states)
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 

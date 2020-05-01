@@ -17,7 +17,7 @@ from .pytemplates.suite2p_pytemplate import *
 import numpy as np
 from pathlib import Path
 from scipy.spatial import ConvexHull
-from .roi_manager_modules.roi_types import Suite2pROI
+from .roi_manager_modules.managers import ManagerScatter
 from tqdm import tqdm
 from typing import *
 
@@ -114,10 +114,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 return
 
         # get the GUI ROI Manager module and set it in manual mode
-        self.vi.viewer.parent().get_module('roi_manager').start_manual_mode()
+        self.vi.viewer.parent().get_module('roi_manager').start_scatter_mode('ScatterROI')
 
         # get the backend ROI manager
         roi_manager = self.vi.viewer.workEnv.roi_manager
+        assert isinstance(roi_manager, ManagerScatter)
 
         # the data
         F = self.data.F
@@ -138,30 +139,30 @@ class ModuleGUI(QtWidgets.QDockWidget):
         Fc = F - (self.data.Fneu_sub * Fneu)
 
         for ix in tqdm(range(len(stat))):
-
             self.vi.viewer.status_bar_label.showMessage(f'Importing ROIs from Suite2p output data. {ix} / {len(stat)}')
 
-            roi = Suite2pROI.from_positions(
-                positions=get_vertices(stat[ix]),
-                curve_plot_item=roi_manager.get_plot_item(),
-                view_box=self.vi.viewer.getView()
-            )
+            pos = get_vertices(stat[ix])
+            xs = pos[:, 0]
+            ys = pos[:, 1]
 
             y = Fc[ix]
-            x = np.arange(y.size + 1, dtype=np.float64)[1:]
 
-            # set curve data
-            roi.curve_data = (x, y)
+            roi = roi_manager.add_roi(
+                curve=y,
+                xs=xs,
+                ys=ys,
+                metadata=stat[ix]
+            )
 
-            # save stat data
-            roi.stat = stat[ix]
+            # x = np.arange(y.size + 1, dtype=np.float64)[1:]
+            #
+            # # set curve data
+            # roi.curve_data = (x, y)
+
 
             # set is_cell data
             if self.has_iscell_column:
                 roi.set_tag('s2p_iscell', f"{int(iscell[ix][0])} | {iscell[ix][1]}")
-
-            roi_manager.roi_list.append(roi)
-            roi_manager.roi_list.reindex_colormap()
 
         log = {'Fneu_subtraction': self.data.Fneu_sub,
                'ops': self.data.ops}

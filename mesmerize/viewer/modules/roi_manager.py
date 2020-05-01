@@ -123,15 +123,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def btnAddROI_context_menu_requested(self, p):
         self.btnAddROIMenu.exec_(self.ui.btnAddROI.mapToGlobal(p))
 
-    def start_cnmfe_mode(self):
+    def start_scatter_mode(self, type_str: str):
         """Start in CNMFE mode. Creates a new back-end manager instance (uses ManagerCNMFE)"""
-        print('staring cnmfe mode in roi manager')
+        print('staring scatter mode in roi manager')
 
         if hasattr(self, 'manager'):
             del self.manager
 
         self.ui.btnAddROI.setDisabled(True)
-        self.manager = managers.ManagerCNMFE(self, self.ui, self.vi)
+        manager = getattr(managers, f'Manager{type_str}')
+        self.manager = manager(self, self.ui, self.vi)
         self.vi.viewer.workEnv.roi_manager = self.manager
         self.ui.btnSwitchToManualMode.setEnabled(True)
 
@@ -174,13 +175,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     def set_all_from_states(self, states: dict):
         """Set all the ROIs from a states dict. Instantiates the appropriate back-end Manager"""
-        if states['roi_type'] == 'CNMFROI':
-            self.start_cnmfe_mode()
+        if states['roi_type'] in ['CNMFROI', 'ScatterROI']:
+            self.start_scatter_mode(states['roi_type'])
             self.manager.restore_from_states(states)
 
-        elif states['roi_type'] == 'ManualROI':
+        elif states['roi_type'] in ['ManualROI']:
             self.start_manual_mode()
             self.manager.restore_from_states(states)
+
+        else:
+            raise TypeError('`roi_type` not specified in states dict')
 
     def import_from_imagej(self):
         """Import ROIs from ImageJ zip file"""
@@ -196,7 +200,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           'It might not be an ImageJ ROIs file' + traceback.format_exc())
 
     def set_spot_size(self, size: int):
-        if not isinstance(self.manager, managers.ManagerCNMFE):
+        if not isinstance(self.manager, managers.ManagerScatter):
             return
 
         self.manager.set_spot_size(size)

@@ -416,7 +416,7 @@ class Output(QtWidgets.QWidget):
 
         for m in self.viewer_ref.parent().running_modules:
             if isinstance(m, ModuleGUI):
-                m.start_cnmfe_mode()
+                m.start_scatter_mode('CNMFROI')
                 m.add_all_cnmfe_components(cnmA=self.cnmA,
                                            cnmb=self.cnmb,
                                            cnmC=self.cnmC,
