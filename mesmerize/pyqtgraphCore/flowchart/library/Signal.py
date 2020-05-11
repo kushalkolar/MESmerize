@@ -364,8 +364,8 @@ class PeakDetect(CtrlNode):
                   ('Fictional_Bases', 'check', {'checked': True}),
                   ('Edit', 'button', {'text': 'Open GUI'}),
                   ('SlopeThr', 'doubleSpin', {'min': -100.00, 'max': 1.0, 'step': 0.010}),
-                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
-                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
+                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 9999.00, 'step': 0.05}),
+                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 9999.00, 'step': 0.05}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
