@@ -176,7 +176,7 @@ class HdfTools:
                     try:
                         mg.create_dataset(k, data=json.dumps(metadata[k]))
                     except TypeError as e:
-                        bad_keys.append(str(e))
+                        bad_keys.append(k + ': ' + str(e))
 
                 if len(bad_keys) > 0:
                     bad_keys = '\n'.join(bad_keys)

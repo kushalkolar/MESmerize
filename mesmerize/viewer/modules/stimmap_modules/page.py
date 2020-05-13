@@ -62,11 +62,8 @@ class Page(QtWidgets.QWidget):
         if units not in ['frames', 'seconds']:
             raise ValueError('Units must be either "frames" or "seconds"')
 
-        if units == 'seconds':
-            self.ui.comboBoxTimeUnits.setCurrentIndex(0)
-
-        elif units == 'frames':
-            self.ui.comboBoxTimeUnits.setCurrentIndex(1)
+        ix = self.ui.comboBoxTimeUnits.findText(units)
+        self.ui.comboBoxTimeUnits.setCurrentIndex(ix)
 
     def get_units(self) -> str:
         """

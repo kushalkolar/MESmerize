@@ -53,6 +53,26 @@ else:
     _import_custom_modules = False
 
 
+dock_widget_area = {'roi_manager': QtCore.Qt.LeftDockWidgetArea,
+                    roi_manager.ModuleGUI: QtCore.Qt.LeftDockWidgetArea,
+
+                    'tiff_io': QtCore.Qt.TopDockWidgetArea,
+                    tiff_io.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
+
+                    'cnmf': QtCore.Qt.RightDockWidgetArea,
+                    cnmf.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+                    'cnmfe': QtCore.Qt.RightDockWidgetArea,
+                    cnmfe.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+                    'caiman_motion_correction': QtCore.Qt.RightDockWidgetArea,
+                    caiman_motion_correction.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+                    'stimulus_mapping': QtCore.Qt.BottomDockWidgetArea,
+                    stimulus_mapping.ModuleGUI: QtCore.Qt.BottomDockWidgetArea
+                    }
+
+
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
                         'mesfile': mesfile_io.ModuleGUI,
@@ -208,6 +228,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.running_modules[-1].show()
         else:
             self.running_modules[-1].hide()
+
+        if module_class in self.standard_modules.values():
+            self.addDockWidget(dock_widget_area[module_class], m)
+
         return self.running_modules[-1]
 
     def get_module(self, module_name: str, hide=False):

@@ -498,6 +498,7 @@ class ViewerWorkEnv:
             #                  }
 
             d = {'SampleID': self.sample_id,
+                 'AnimalID': self.sample_id.split('-_-')[0],
                  'CurvePath': os.path.relpath(curve_path, proj_path),
                  'ImgUUID': str(UUID),
                  'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),

@@ -183,6 +183,13 @@ def use_open_dir_dialog(title: str = 'Open directory', start_dir: Union[str, Non
 
     :param title:       Title of the dialog box
     :param start_dir:   Directory that is first shown in the dialog box.
+
+    Example:
+
+    @use_open_dir_dialog('Select Project Directory', '')
+    def load_data(self, path, *args, **kwargs):
+        my_func_to_do_stuff_and_load_data(path)
+
     """
     def wrapper(func):
         @wraps(func)

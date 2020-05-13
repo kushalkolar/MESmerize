@@ -83,7 +83,7 @@ def run(batch_dir: str, UUID: str):
                            strides=strides, overlaps=overlaps, splits_els=splits_els,
                            upsample_factor_grid=upsample_factor_grid,
                            max_deviation_rigid=max_deviation_rigid,
-                           shifts_opencv=True, nonneg_movie=True, gSig_filt=gSig_filt)
+                           shifts_opencv=True, nonneg_movie=True, use_cuda=USE_CUDA, gSig_filt=gSig_filt)
 
         mc.motion_correct_pwrigid(save_movie=True)
         m_els = cm.load(mc.fname_tot_els)
