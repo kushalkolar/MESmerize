@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ImageViewTemplate.ui'
+# Form implementation generated from reading ui file './ImageViewTemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -30,7 +30,7 @@ class Ui_Form(object):
         self.gridLayout_8.setObjectName("gridLayout_8")
         self.btnExportWorkEnv = QtWidgets.QPushButton(self.layoutWidget)
         self.btnExportWorkEnv.setObjectName("btnExportWorkEnv")
-        self.gridLayout_8.addWidget(self.btnExportWorkEnv, 1, 4, 1, 1)
+        self.gridLayout_8.addWidget(self.btnExportWorkEnv, 1, 6, 1, 1)
         self.histogram = HistogramLUTWidget(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -40,7 +40,7 @@ class Ui_Form(object):
         self.histogram.setMinimumSize(QtCore.QSize(150, 0))
         self.histogram.setMaximumSize(QtCore.QSize(150, 16777215))
         self.histogram.setObjectName("histogram")
-        self.gridLayout_8.addWidget(self.histogram, 2, 4, 2, 1)
+        self.gridLayout_8.addWidget(self.histogram, 2, 6, 2, 1)
         self.graphicsView = GraphicsView(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -48,7 +48,7 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.graphicsView.sizePolicy().hasHeightForWidth())
         self.graphicsView.setSizePolicy(sizePolicy)
         self.graphicsView.setObjectName("graphicsView")
-        self.gridLayout_8.addWidget(self.graphicsView, 1, 0, 4, 4)
+        self.gridLayout_8.addWidget(self.graphicsView, 1, 2, 4, 4)
         self.label_curr_img_seq_name = QtWidgets.QLabel(self.layoutWidget)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -58,7 +58,7 @@ class Ui_Form(object):
         self.label_curr_img_seq_name.setText("")
         self.label_curr_img_seq_name.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.label_curr_img_seq_name.setObjectName("label_curr_img_seq_name")
-        self.gridLayout_8.addWidget(self.label_curr_img_seq_name, 0, 1, 1, 1)
+        self.gridLayout_8.addWidget(self.label_curr_img_seq_name, 0, 3, 1, 1)
         self.label = QtWidgets.QLabel(self.layoutWidget)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -67,9 +67,24 @@ class Ui_Form(object):
         self.label.setFont(font)
         self.label.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.label.setObjectName("label")
-        self.gridLayout_8.addWidget(self.label, 0, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.label, 0, 2, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_8.addItem(spacerItem, 0, 2, 1, 1)
+        self.gridLayout_8.addItem(spacerItem, 0, 4, 1, 1)
+        self.verticalSliderZLevel = QtWidgets.QSlider(self.layoutWidget)
+        self.verticalSliderZLevel.setOrientation(QtCore.Qt.Vertical)
+        self.verticalSliderZLevel.setInvertedAppearance(True)
+        self.verticalSliderZLevel.setInvertedControls(False)
+        self.verticalSliderZLevel.setObjectName("verticalSliderZLevel")
+        self.gridLayout_8.addWidget(self.verticalSliderZLevel, 1, 1, 4, 1)
+        self.label_zlevel = QtWidgets.QLabel(self.layoutWidget)
+        self.label_zlevel.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignHCenter)
+        self.label_zlevel.setObjectName("label_zlevel")
+        self.gridLayout_8.addWidget(self.label_zlevel, 1, 0, 3, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_8.addItem(spacerItem1, 0, 0, 1, 1)
+        self.spinBoxZLevel = QtWidgets.QSpinBox(self.layoutWidget)
+        self.spinBoxZLevel.setObjectName("spinBoxZLevel")
+        self.gridLayout_8.addWidget(self.spinBoxZLevel, 4, 0, 1, 1)
         self.roiPlot = PlotWidget(self.splitter)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -81,6 +96,8 @@ class Ui_Form(object):
         self.gridLayout_10.addWidget(self.splitterHighest, 0, 0, 1, 1)
 
         self.retranslateUi(Form)
+        self.verticalSliderZLevel.valueChanged['int'].connect(self.spinBoxZLevel.setValue)
+        self.spinBoxZLevel.valueChanged['int'].connect(self.verticalSliderZLevel.setValue)
         QtCore.QMetaObject.connectSlotsByName(Form)
         Form.setTabOrder(self.roiPlot, self.histogram)
         Form.setTabOrder(self.histogram, self.graphicsView)
@@ -90,6 +107,8 @@ class Ui_Form(object):
         Form.setWindowTitle(_translate("Form", "Form"))
         self.btnExportWorkEnv.setText(_translate("Form", "Export workEnv"))
         self.label.setText(_translate("Form", "Current image sequence:"))
+        self.verticalSliderZLevel.setToolTip(_translate("Form", "z-level slider"))
+        self.label_zlevel.setText(_translate("Form", "z-level"))
 
 from ..widgets.GraphicsView import GraphicsView
 from ..widgets.HistogramLUTWidget import HistogramLUTWidget

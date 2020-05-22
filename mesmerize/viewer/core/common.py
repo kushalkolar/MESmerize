@@ -38,6 +38,11 @@ class ViewerUtils:
         self.viewer.status_bar_label.showMessage('Updating work environment, please wait...')
         self.viewer.parent().show()
 
+        if self.viewer.workEnv.imgdata.z_max is not None:
+            self.viewer.set_zlevel_ui_visible(True)
+            self.viewer.ui.verticalSliderZLevel.setMaximum(self.viewer.workEnv.imgdata.z_max)
+            self.viewer.ui.spinBoxZLevel.setMaximum(self.viewer.workEnv.imgdata.z_max)
+
         self.viewer.setImage(self.viewer.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
                                    xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
                                                      self.viewer.workEnv.imgdata.seq.T.shape[0]))

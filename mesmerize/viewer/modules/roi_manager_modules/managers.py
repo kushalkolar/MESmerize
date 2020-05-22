@@ -218,6 +218,18 @@ class ManagerScatter(AbstractBaseManager):
     def set_spot_size(self, size: int):
         for roi in self.roi_list:
             roi.get_roi_graphics_object().setSize(size)
+            roi.spot_size = size
+
+
+class ManagerVolROI(ManagerScatter):
+    """Manager for 3D ROIs"""
+    def __init__(self, parent, ui, viewer_interface: ViewerUtils):
+        super(ManagerVolROI, self).__init__(parent, ui, viewer_interface)
+        self.viewer_interface.viewer.sigZLevelChanged.connect(self.set_zlevel)
+
+    def set_zlevel(self, z: int):
+        for roi in self.roi_list:
+            roi.set_zlevel(z)
 
 
 class ManagerCNMFE(AbstractBaseManager):

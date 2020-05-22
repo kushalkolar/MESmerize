@@ -390,6 +390,8 @@ class ScatterROI(BaseROI):
         else:
             self.restore_state(state)
 
+        self.spot_size = 1
+
     def set_curve_data(self, y_vals: np.ndarray):
         """Set the curve data"""
         xs = np.arange(len(y_vals))
@@ -435,7 +437,7 @@ class VolROI(ScatterROI):
     """3D ROI"""
     def __init__(self, curve_plot_item: pg.PlotDataItem	, view_box: pg.ViewBox, **kwargs):
         super().__init__(curve_plot_item, view_box, **kwargs)
-        self.z_level = 0
+        self.zlevel = 0  # z-level of the ROI, different from zValue!!
 
     def set_roi_graphics_object(self, xs: np.ndarray, ys: np.ndarray):
         # cors = contour['coordinates']
@@ -452,15 +454,23 @@ class VolROI(ScatterROI):
     def _draw(self):
         """Create the scatter plot that is used for visualization of the spatial localization"""
         self.roi_graphics_object = pg.ScatterPlotItem(
-            self.roi_xs[self.z_level],
-            self.roi_ys[self.z_level],
+            self.roi_xs[self.zlevel],
+            self.roi_ys[self.zlevel],
             symbol='s',
             size=1
         )
 
-    def set_z_level(self, z: int):
-        self.z_level = z
-        self.roi_graphics_object.setData(self.roi_xs[z], self.roi_ys[z], symbol='s', size=1)
+    def set_zlevel(self, z: int):
+        """
+        Set the z-level of the ROI to correspond with the
+        z-level of the image.
+
+        Different from `setZValue`!!
+        """
+
+        self.zlevel = z
+
+        self.roi_graphics_object.setData(self.roi_xs[z], self.roi_ys[z], symbol='s', size=self.spot_size)
 
 
 class CNMFROI(ScatterROI):

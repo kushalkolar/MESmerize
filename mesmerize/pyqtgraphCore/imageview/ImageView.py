@@ -80,6 +80,7 @@ class ImageView(QtWidgets.QWidget):
     """
     sigTimeChanged = QtCore.Signal(object, object)
     sigProcessingChanged = QtCore.Signal(object)
+    sigZLevelChanged = QtCore.Signal(object)
 
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, *args):
         """
@@ -187,6 +188,21 @@ class ImageView(QtWidgets.QWidget):
             setattr(self, fn, getattr(self.ui.histogram, fn))
 
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
+
+        self.ui.verticalSliderZLevel.valueChanged.connect(self.set_zlevel)
+        self.set_zlevel_ui_visible(False)
+
+    def set_zlevel_ui_visible(self, b: bool):
+        self.ui.verticalSliderZLevel.setVisible(b)
+        self.ui.spinBoxZLevel.setVisible(b)
+        self.ui.label_zlevel.setVisible(b)
+
+    def set_zlevel(self, z):
+        self.workEnv.imgdata.set_zlevel(z)
+        self.viewer.setImage(self.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
+                             xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
+                                               self.viewer.workEnv.imgdata.seq.T.shape[0]))
+        self.sigZLevelChanged.emit(z)
 
     def get_workEnv(self):
         return self.workEnv
