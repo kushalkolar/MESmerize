@@ -38,14 +38,15 @@ class ImgData:
         self.z = None
         self.z_max = None
 
-        if seq.ndim == 4:
-            self._seq = seq
-            self.seq = self._seq[:, :, :, 0]
-            self.z = 0
-            self.z_max = self._seq.shape[3]
-        else:
-            self._seq = seq
-            self.seq = self.seq = self._seq  #: image sequence, shape is [x, y, t] or [x, y, t, z]
+        if seq is not None:
+            if seq.ndim == 4:
+                self._seq = seq
+                self.seq = self._seq[:, :, :, 0]
+                self.z = 0
+                self.z_max = self._seq.shape[3]
+            else:
+                self._seq = seq
+                self.seq = self.seq = self._seq  #: image sequence, shape is [x, y, t] or [x, y, t, z]
 
         if meta is None:
             meta = {'origin': 'unknown',
