@@ -16,8 +16,8 @@ from ..core.viewer_work_environment import ViewerWorkEnv
 from .pytemplates.suite2p_pytemplate import *
 import numpy as np
 from pathlib import Path
-from scipy.spatial import ConvexHull
-from .roi_manager_modules.managers import ManagerScatter
+from scipy.spatial import cKDTree
+from .roi_manager_modules.managers import ManagerScatterROI
 from tqdm import tqdm
 from typing import *
 
@@ -48,7 +48,7 @@ class Suite2pData:
             if not f_path.is_file():
                 raise FileNotFoundError(f"The selected directory does not have the '{f}.npy' file.")
 
-            setattr(self, f, np.load(f_path))
+            setattr(self, f, np.load(f_path, allow_pickle=True))
 
     def clear(self):
         for attr in self.attrs:
@@ -57,15 +57,23 @@ class Suite2pData:
 
 
 def get_vertices(s: np.ndarray):
-    """Uses the stat array from stat.npy to get the ROI vertices"""
+    """
+    Uses the stat array that contains a collection of all points contained by the ROI
+    and uses a k-neighbors tree to only keep the edge points of the ROI
+    """
     xs = s['xpix']
     ys = s['ypix']
 
-    a = np.array((xs, ys)).T
+    points = np.array((xs, ys)).T
 
-    hull = ConvexHull(a, qhull_options='Qs')
+    kdt = cKDTree(points)
+    vertices = []
 
-    vs = a[hull.vertices]
+    for p in points:
+        if len(kdt.query_ball_point(p, 1)) < 5:
+            vertices.append(p)
+
+    vs = np.vstack(vertices)
 
     return vs
 
@@ -83,15 +91,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.data = Suite2pData()
 
-        if 's2p_iscell' not in proj_cfg.options('ROI_DEFS'):
-            QMessageBox.warning(self, 'Missing `s2p_iscell` column',
-                                'You have not created an `s2p_iscell` ROI Type column in your project configuration, '
-                                'so you will not see the probabilities from the Suite2p classifier.')
-
-            self.has_iscell_column = True
-        else:
-            self.has_iscell_column = False
-
     @present_exceptions('Invalid dir', '')
     @use_open_dir_dialog('Select dir containing Suite2p output')
     def select_dir(self, path, *args):
@@ -106,6 +105,23 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.label_dir.setText(path)
 
     def import_rois(self):
+        if 's2p_iscell' not in proj_cfg.options('ROI_DEFS'):
+            QMessageBox.warning(self, 'Missing `s2p_iscell` column',
+                                'You have not created an `s2p_iscell` ROI Type column in your project configuration, '
+                                'so you will not see the probabilities from the Suite2p classifier.')
+
+            self.has_iscell_column = False
+        else:
+            self.has_iscell_column = True
+
+        if (len(self.data.stat) > 100) and (not self.ui.checkBox_use_iscell.isChecked()):
+            if QMessageBox.warning(self, 'Large Import Warning!',
+                                      f'This will import {len(self.data.stat)} ROIs which may take a few minutes.\n'
+                                      f'You may want to consider importing only ROIs classified as cells '
+                                      f'by the suite2p classifier.\n\n'
+                                      f'Continue anyways?', QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
+                return
+
         if len(self.vi.viewer.workEnv.roi_manager.roi_list) > 0:
             if QMessageBox.warning(self, 'Clear ROI Manager?',
                                              'Importing Suite2p ROIs will clear the ROI Manager, proceed anyway?',
@@ -118,7 +134,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # get the backend ROI manager
         roi_manager = self.vi.viewer.workEnv.roi_manager
-        assert isinstance(roi_manager, ManagerScatter)
+        assert isinstance(roi_manager, ManagerScatterROI)
 
         # the data
         F = self.data.F

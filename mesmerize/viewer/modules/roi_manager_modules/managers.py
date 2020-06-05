@@ -106,7 +106,7 @@ class ManagerManual(AbstractBaseManager):
         """Create a new empty ROI list instance for storing Manual ROIs"""
         self.roi_list = ROIList(self.ui, ManualROI, self.vi)
 
-    def add_roi(self, shape: str):
+    def add_roi(self, shape: str) -> ManualROI:
         """
         Add an ROI to the list
 
@@ -122,6 +122,8 @@ class ManagerManual(AbstractBaseManager):
 
         self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
+
+        return roi
 
     def restore_from_states(self, states: dict):
         """Restore ROIs from states"""
@@ -175,14 +177,14 @@ class ManagerManual(AbstractBaseManager):
         self.roi_list.reindex_colormap()
 
 
-class ManagerScatter(AbstractBaseManager):
+class ManagerScatterROI(AbstractBaseManager):
     """Manager for unmoveable ROIs drawn using scatterplots"""
     def __init__(self, parent, ui, viewer_interface: ViewerUtils):
-        super(ManagerScatter, self).__init__(parent, ui, viewer_interface)
+        super(ManagerScatterROI, self).__init__(parent, ui, viewer_interface)
         self.create_roi_list()
         self.list_widget = self.roi_list.list_widget
 
-    def add_roi(self, curve, xs, ys, metadata: dict = None):
+    def add_roi(self, curve, xs, ys, metadata: dict = None) -> ScatterROI:
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
@@ -198,9 +200,11 @@ class ManagerScatter(AbstractBaseManager):
         self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
+        return roi
+
     def restore_from_states(self, states: dict):
         """Restore from states, such as when these ROIs are saved with a Project Sample"""
-        super(ManagerScatter, self).restore_from_states(states)
+        super(ManagerScatterROI, self).restore_from_states(states)
 
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
@@ -221,7 +225,7 @@ class ManagerScatter(AbstractBaseManager):
             roi.spot_size = size
 
 
-class ManagerVolROI(ManagerScatter):
+class ManagerVolROI(ManagerScatterROI):
     """Manager for 3D ROIs"""
     def __init__(self, parent, ui, viewer_interface: ViewerUtils):
         super(ManagerVolROI, self).__init__(parent, ui, viewer_interface)
