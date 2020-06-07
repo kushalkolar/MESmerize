@@ -23,26 +23,38 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 # from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import json
-import caiman as cm
 
-from builtins import zip
-from builtins import str
-from builtins import map
-from builtins import range
-from past.utils import old_div
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
-from caiman.source_extraction import cnmf
-from caiman.utils.utils import download_demo
 from caiman.utils import visualization
-from caiman.components_evaluation import estimate_components_quality_auto
+
 import os
 import pickle
 from glob import glob
 from functools import partial
 import traceback
 from time import time, sleep
+import logging
+
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                    format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
+
+import caiman as cm
+from caiman.source_extraction import cnmf
+from caiman.utils.utils import download_demo
+from caiman.utils.visualization import inspect_correlation_pnr, nb_inspect_correlation_pnr
+from caiman.motion_correction import MotionCorrect
+from caiman.source_extraction.cnmf import params as params
+from caiman.utils.visualization import plot_contours, nb_view_patches, nb_plot_contour
+import cv2
+import h5py
+from caiman.utils.utils import load_dict_from_hdf5
+
+try:
+    cv2.setNumThreads(0)
+except:
+    pass
 
 
 if not sys.argv[0] == __file__:
@@ -118,7 +130,8 @@ def run(batch_dir: str, UUID: str):
 
     c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
                                                      n_processes=n_processes,
-                                                     single_thread=False)
+                                                     single_thread=False,
+                                                     ignore_preexisting=True)
     if 'bord_px' in input_params.keys():
         bord_px = input_params['bord_px']
     else:
@@ -147,7 +160,6 @@ def run(batch_dir: str, UUID: str):
             output_file_list = [UUID + '_pnr.pikl',
                                 UUID + '_cn_filter.pikl',
                                 UUID + '_dims.pikl',
-                                UUID + '.out'
                                 ]
 
             output.update({'output': UUID,
@@ -184,9 +196,9 @@ def run(batch_dir: str, UUID: str):
                         # if you want to initialize with some preselcted components you can pass them here as boolean vectors
                         Ain=Ain,
                         # half size of the patch (final patch will be 100x100)
-                        rf=(rf, rf),
+                        rf=rf,
                         # overlap among patches (keep it at least large as 4 times the neuron size)
-                        stride=(stride, stride),
+                        stride=stride,
                         only_init_patch=True,  # just leave it as is
                         gnb=gnb,  # number of background components
                         nb_patch=nb_patch,  # number of background components per patch
@@ -204,38 +216,25 @@ def run(batch_dir: str, UUID: str):
         cnm.fit(Y)
 
         #  DISCARD LOW QUALITY COMPONENTS
-        idx_components, idx_components_bad, comp_SNR, r_values, pred_CNN = estimate_components_quality_auto(
-            Y, cnm.A, cnm.C, cnm.b, cnm.f, cnm.YrA, frate,
-            decay_time, gSig, dims, dview=dview,
-            min_SNR=min_SNR, r_values_min=r_values_min, use_cnn=False)
+        cnm.params.set('quality', {'min_SNR': min_SNR,
+                                   'rval_thr': r_values_min,
+                                   'use_cnn': False})
+        cnm.estimates.evaluate_components(Y, cnm.params, dview=dview)
+
+        out_filename = f'{UUID}_results.hdf5'
+        cnm.save(out_filename)
 
         # np.save(filename[:-5] + '_curves.npy', cnm.C)
-        pickle.dump(Yr, open(UUID + '_Yr.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.A, open(UUID + '_cnm-A.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.b, open(UUID + '_cnm-b.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.C, open(UUID + '_cnm-C.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.f, open(UUID + '_cnm-f.pikl', 'wb'), protocol=4)
-        pickle.dump(idx_components, open(UUID + '_idx_components.pikl', 'wb'), protocol=4)
-        pickle.dump(cnm.YrA, open(UUID + '_cnm-YrA.pikl', 'wb'), protocol=4)
         pickle.dump(pnr, open(UUID + '_pnr.pikl', 'wb'), protocol=4)
         pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
-        pickle.dump(dims, open(UUID + '_dims.pikl', 'wb'), protocol=4)
+        pickle.dump(Yr, open(UUID + '_Yr.pikl', 'wb'), protocol=4)
 
-        output_file_list = [UUID + '_cnm-A.pikl',
-                            UUID + '_Yr.pikl',
-                            UUID + '_cnm-b.pikl',
-                            UUID + '_cnm-C.pikl',
-                            UUID + '_cnm-f.pikl',
-                            UUID + '_idx_components.pikl',
-                            UUID + '_cnm-YrA.pikl',
-                            UUID + '_pnr.pikl',
-                            UUID + '_cn_filter.pikl',
-                            UUID + '_dims.pikl',
-                            UUID + '.out'
-                            ]
         output.update({'output': filename[:-5],
                        'status': 1,
-                       'output_files': output_file_list
+                       'output_files': [out_filename,
+                                        UUID + '_pnr.pikl',
+                                        UUID + '_cn_filter.pikl',
+                                        UUID + '_Yr.pikl']
                        })
 
     except Exception as e:
@@ -366,15 +365,17 @@ class Output(QtWidgets.QWidget):
         # visualization.inspect_correlation_pnr(cn_filter, pnr)
 
     def get_cnmfe_results(self):
-        filename = self.batch_dir + '/' + str(self.UUID)
+        filename = os.path.join(self.batch_dir, f'{self.UUID}_results.hdf5')
 
-        self.cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
-        self.cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-        self.cnm_f = cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-        self.cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
-        self.cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
-        self.idx_components = pickle.load(open(filename + '_idx_components.pikl', 'rb'))
-        self.dims = pickle.load(open(filename + '_dims.pikl', 'rb'))
+        data = load_dict_from_hdf5(filename)
+
+        self.cnmA = data['estimates']['A']
+        self.cnmb = data['estimates']['b']
+        self.cnm_f = data['estimates']['f']
+        self.cnmC = data['estimates']['C']
+        self.cnmYrA = data['estimates']['YrA']
+        self.idx_components = data['estimates']['idx_components']
+        self.dims = data['dims']
 
     def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
         filename = self.batch_dir + '/' + str(self.UUID)
@@ -383,9 +384,10 @@ class Output(QtWidgets.QWidget):
 
         Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
 
-        cnmb = pickle.load(open(filename + '_cnm-b.pikl', 'rb'))
-        cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
-        cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
+        cnmb = self.cnmb
+        cnm_f = self.cnm_f
+        cnmYrA = self.cnmYrA
+
         cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
         self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
                                                                      self.cnmC[self.idx_components], cnmb, cnm_f,
@@ -400,6 +402,8 @@ class Output(QtWidgets.QWidget):
 
         if not vi.discard_workEnv():
             return
+
+        # vi.viewer.parent().roi_manager.start_scatter_mode()
 
         vi.viewer.status_bar_label.showMessage('Loading CNMFE data, please wait...')
         pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
@@ -416,7 +420,7 @@ class Output(QtWidgets.QWidget):
 
         for m in self.viewer_ref.parent().running_modules:
             if isinstance(m, ModuleGUI):
-                m.start_scatter_mode('CNMFROI')
+                m.start_scatter_mode('CNMFE')
                 m.add_all_cnmfe_components(cnmA=self.cnmA,
                                            cnmb=self.cnmb,
                                            cnmC=self.cnmC,

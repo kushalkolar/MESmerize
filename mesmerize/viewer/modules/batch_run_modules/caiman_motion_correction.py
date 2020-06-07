@@ -122,9 +122,7 @@ def run(batch_dir: str, UUID: str):
     end_time = time()
     processing_time = (end_time - start_time) / 60
 
-    output_files_list = [UUID + '_mc.tiff',
-                         UUID + '.out'
-                         ]
+    output_files_list = [UUID + '_mc.tiff']
 
     output.update({'processing_time': processing_time,
                    'output_files': output_files_list})

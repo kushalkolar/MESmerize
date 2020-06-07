@@ -314,7 +314,11 @@ class ManagerCNMFE(AbstractBaseManager):
             else:
                 raw_min_max = None
 
-            roi = CNMFROI(self.get_plot_item(), self.vi.viewer.getView(), idx_components[ix], curve_data, contour,
+            roi = CNMFROI(curve_plot_item=self.get_plot_item(),
+                          view_box=self.vi.viewer.getView(),
+                          cnmf_idx=idx_components[ix],
+                          curve_data=curve_data,
+                          contour=contour,
                           raw_min_max=raw_min_max)
 
             self.roi_list.append(roi)
@@ -408,3 +412,4 @@ class ManagerCNMFE(AbstractBaseManager):
     def set_spot_size(self, size: int):
         for roi in self.roi_list:
             roi.get_roi_graphics_object().setSize(size)
+            roi.spot_size = size

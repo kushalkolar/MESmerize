@@ -200,7 +200,5 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                           'It might not be an ImageJ ROIs file' + traceback.format_exc())
 
     def set_spot_size(self, size: int):
-        if not isinstance(self.manager, managers.ManagerScatterROI):
-            return
-
-        self.manager.set_spot_size(size)
+        if hasattr(self.manager, 'set_spot_size'):
+            self.manager.set_spot_size(size)

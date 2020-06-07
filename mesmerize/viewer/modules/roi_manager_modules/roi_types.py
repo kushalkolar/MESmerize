@@ -426,7 +426,7 @@ class ScatterROI(BaseROI):
 
     def _draw(self):
         """Create the scatter plot that is used for visualization of the spatial localization"""
-        self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s', size=1)
+        self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s', size=self.spot_size)
 
     @classmethod
     def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
@@ -486,7 +486,10 @@ class CNMFROI(ScatterROI):
         :type  state:       dict
         :param cnmf_idx:    original index of the ROI from cnmf idx_components
         """
-        super(CNMFROI, self).__init__(curve_plot_item, view_box, state)
+        super(CNMFROI, self).__init__(curve_plot_item=curve_plot_item,
+                                      view_box=view_box,
+                                      curve_data=curve_data,
+                                      state=state)
 
         self.roi_xs = np.empty(0)  #: numpy array of the x values of the ROI's spatial coordinates
         self.roi_ys = np.empty(0)  #: numpy array of the y values of the ROI's spatial coordinates
