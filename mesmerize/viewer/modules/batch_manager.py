@@ -41,6 +41,7 @@ from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from glob import glob
 from collections import UserList
 from typing import *
+from pprint import pformat
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -300,7 +301,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         :param module:  The module name under /batch_run_modules that the batch item is from
         :param viewers: ViewerWindow, ImageView, or list of ViewerWindows
-        :param UUID:    UUID of the item to load input from
+        :param UUID:    UUID of the item to load output from
         """
         if len(self.output_widgets) > 3:
             try:
@@ -353,7 +354,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.ui.textBrowserOutputInfo.setText('Output file does not exist for selected item')
             return
         else:
-            self.ui.textBrowserOutputInfo.setText(str(output))
+            self.ui.textBrowserOutputInfo.setText(pformat(output))
 
     def disable_ui_buttons(self, b):
         self.ui.btnStart.setDisabled(b)
@@ -465,6 +466,8 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def move_files(self, files: list, UUID) -> QtCore.QProcess:
         shell_str = '#!/bin/bash\n'
+
+        files += [f'{UUID}.out']
 
         for f in files:
             src = os.path.join(self.working_dir, f)
