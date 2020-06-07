@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>257</width>
+    <width>287</width>
     <height>671</height>
    </rect>
   </property>
@@ -467,6 +467,7 @@
  </widget>
  <tabstops>
   <tabstop>comboBoxOutputBitDepth</tabstop>
+  <tabstop>spinBoxGSig_filt</tabstop>
   <tabstop>spinboxX</tabstop>
   <tabstop>spinboxY</tabstop>
   <tabstop>spinboxIterRigid</tabstop>
@@ -479,8 +480,8 @@
   <tabstop>sliderOverlaps</tabstop>
   <tabstop>btnShowQuilt</tabstop>
   <tabstop>spinboxUpsample</tabstop>
-  <tabstop>btnAddToBatchElastic</tabstop>
   <tabstop>lineEditNameElastic</tabstop>
+  <tabstop>btnAddToBatchElastic</tabstop>
  </tabstops>
  <resources/>
  <connections>

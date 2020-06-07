@@ -122,7 +122,9 @@
  <tabstops>
   <tabstop>btnSelectTiff</tabstop>
   <tabstop>btnSelectMetaFile</tabstop>
+  <tabstop>radioButtonAsArray</tabstop>
   <tabstop>radioButtonAsArrayMulti</tabstop>
+  <tabstop>radioButtonImread</tabstop>
   <tabstop>btnLoadIntoWorkEnv</tabstop>
  </tabstops>
  <resources/>

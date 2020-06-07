@@ -61,8 +61,10 @@ class Ui_DockWidget(object):
         self.retranslateUi(DockWidget)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
         DockWidget.setTabOrder(self.btnSelectTiff, self.btnSelectMetaFile)
-        DockWidget.setTabOrder(self.btnSelectMetaFile, self.radioButtonAsArrayMulti)
-        DockWidget.setTabOrder(self.radioButtonAsArrayMulti, self.btnLoadIntoWorkEnv)
+        DockWidget.setTabOrder(self.btnSelectMetaFile, self.radioButtonAsArray)
+        DockWidget.setTabOrder(self.radioButtonAsArray, self.radioButtonAsArrayMulti)
+        DockWidget.setTabOrder(self.radioButtonAsArrayMulti, self.radioButtonImread)
+        DockWidget.setTabOrder(self.radioButtonImread, self.btnLoadIntoWorkEnv)
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate

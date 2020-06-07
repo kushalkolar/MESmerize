@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
+    <width>455</width>
     <height>922</height>
    </rect>
   </property>
@@ -627,6 +627,7 @@
   <tabstop>doubleSpinBoxRvalThr</tabstop>
   <tabstop>doubleSpinBoxCNNThr</tabstop>
   <tabstop>spinBoxDecayTime</tabstop>
+  <tabstop>checkBoxRefit</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMF</tabstop>
   <tabstop>btnExport</tabstop>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/cnmf_pytemplate.ui'
+# Form implementation generated from reading ui file './cnmf_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -12,7 +12,7 @@ class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(396, 922)
+        DockWidget.resize(455, 922)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -262,7 +262,8 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.doubleSpinBoxMinSNR, self.doubleSpinBoxRvalThr)
         DockWidget.setTabOrder(self.doubleSpinBoxRvalThr, self.doubleSpinBoxCNNThr)
         DockWidget.setTabOrder(self.doubleSpinBoxCNNThr, self.spinBoxDecayTime)
-        DockWidget.setTabOrder(self.spinBoxDecayTime, self.lineEdName)
+        DockWidget.setTabOrder(self.spinBoxDecayTime, self.checkBoxRefit)
+        DockWidget.setTabOrder(self.checkBoxRefit, self.lineEdName)
         DockWidget.setTabOrder(self.lineEdName, self.btnAddToBatchCNMF)
         DockWidget.setTabOrder(self.btnAddToBatchCNMF, self.btnExport)
         DockWidget.setTabOrder(self.btnExport, self.btnImport)

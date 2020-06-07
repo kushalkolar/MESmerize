@@ -192,7 +192,7 @@ class Ui_Form(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 704, 339))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 695, 368))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -213,7 +213,7 @@ class Ui_Form(object):
         self.scrollAreaStdOut.setWidgetResizable(True)
         self.scrollAreaStdOut.setObjectName("scrollAreaStdOut")
         self.scrollAreaWidgetContents_4 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 327, 367))
+        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 331, 365))
         self.scrollAreaWidgetContents_4.setObjectName("scrollAreaWidgetContents_4")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
@@ -230,7 +230,7 @@ class Ui_Form(object):
         self.scrollAreaOutputInfo.setWidgetResizable(True)
         self.scrollAreaOutputInfo.setObjectName("scrollAreaOutputInfo")
         self.scrollAreaWidgetContents_6 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 327, 367))
+        self.scrollAreaWidgetContents_6.setGeometry(QtCore.QRect(0, 0, 331, 364))
         self.scrollAreaWidgetContents_6.setObjectName("scrollAreaWidgetContents_6")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_6)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -242,19 +242,24 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-        Form.setTabOrder(self.listwBatch, self.btnStart)
+        Form.setTabOrder(self.listWidgetItemNumbers, self.listwBatch)
+        Form.setTabOrder(self.listwBatch, self.lineEditFindItem)
+        Form.setTabOrder(self.lineEditFindItem, self.btnStart)
         Form.setTabOrder(self.btnStart, self.btnStartAtSelection)
         Form.setTabOrder(self.btnStartAtSelection, self.btnDelete)
-        Form.setTabOrder(self.btnDelete, self.btnAbort)
+        Form.setTabOrder(self.btnDelete, self.btnExportShScripts)
+        Form.setTabOrder(self.btnExportShScripts, self.btnAbort)
         Form.setTabOrder(self.btnAbort, self.btnNew)
         Form.setTabOrder(self.btnNew, self.btnOpen)
         Form.setTabOrder(self.btnOpen, self.btnViewInput)
-        Form.setTabOrder(self.btnViewInput, self.scrollArea)
+        Form.setTabOrder(self.btnViewInput, self.btnCompress)
+        Form.setTabOrder(self.btnCompress, self.checkBoxUseWorkDir)
+        Form.setTabOrder(self.checkBoxUseWorkDir, self.scrollArea)
         Form.setTabOrder(self.scrollArea, self.textBrowserItemInfo)
-        Form.setTabOrder(self.textBrowserItemInfo, self.textBrowserStdOut)
-        Form.setTabOrder(self.textBrowserStdOut, self.scrollAreaStdOut)
-        Form.setTabOrder(self.scrollAreaStdOut, self.textBrowserOutputInfo)
-        Form.setTabOrder(self.textBrowserOutputInfo, self.scrollAreaOutputInfo)
+        Form.setTabOrder(self.textBrowserItemInfo, self.scrollAreaOutputInfo)
+        Form.setTabOrder(self.scrollAreaOutputInfo, self.textBrowserOutputInfo)
+        Form.setTabOrder(self.textBrowserOutputInfo, self.scrollAreaStdOut)
+        Form.setTabOrder(self.scrollAreaStdOut, self.textBrowserStdOut)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
@@ -274,6 +279,6 @@ class Ui_Form(object):
         self.textBrowserItemInfo.setHtml(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:\'Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Sans Serif\'; font-size:9pt;\"><br /></p></body></html>"))
 

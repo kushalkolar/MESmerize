@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>536</width>
     <height>1153</height>
    </rect>
   </property>
@@ -737,15 +737,18 @@ If lower more components will be accepted, potentially with worse quality</strin
   <tabstop>spinBoxGSig</tabstop>
   <tabstop>lineEdCorrPNRName</tabstop>
   <tabstop>btnAddToBatchCorrPNR</tabstop>
+  <tabstop>lineEditAin</tabstop>
   <tabstop>doubleSpinBoxMinCorr</tabstop>
   <tabstop>spinBoxMinPNR</tabstop>
   <tabstop>spinBoxMinSNR</tabstop>
   <tabstop>doubleSpinBoxRValuesMin</tabstop>
+  <tabstop>doubleSpinBoxDecayTime</tabstop>
   <tabstop>spinBoxRf</tabstop>
   <tabstop>spinBoxOverlap</tabstop>
   <tabstop>spinBoxGnb</tabstop>
   <tabstop>spinBoxNb_patch</tabstop>
   <tabstop>spinBoxK</tabstop>
+  <tabstop>comboBoxDeconv</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMFE</tabstop>
   <tabstop>btnExport</tabstop>
