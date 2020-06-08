@@ -41,7 +41,10 @@ class ViewerUtils:
         if self.viewer.workEnv.imgdata.z_max is not None:
             self.viewer.set_zlevel_ui_visible(True)
             self.viewer.ui.verticalSliderZLevel.setMaximum(self.viewer.workEnv.imgdata.z_max)
+            self.viewer.ui.verticalSliderZLevel.setValue(0)
             self.viewer.ui.spinBoxZLevel.setMaximum(self.viewer.workEnv.imgdata.z_max)
+        else:
+            self.viewer.set_zlevel_ui_visible(False)
 
         self.viewer.setImage(self.viewer.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
                                    xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],

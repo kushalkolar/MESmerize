@@ -280,7 +280,7 @@ class ViewerWorkEnv:
         return cls(imdata, meta=meta_data)
 
     @classmethod
-    def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = ''):
+    def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = '', axes_order: str = None):
         """
         Return instance of work environment with ImgData.seq set from the tiff file.
 
@@ -314,7 +314,32 @@ class ViewerWorkEnv:
         else:
             meta = None
 
-        imdata = ImgData(seq.T, meta)
+        # Custom user mapping if specified
+        if axes_order is not None:
+            if not set(axes_order).issubset({'x', 'y', 't', 'z'}):
+                raise ValueError('`axes_order` must only contain "x", "y", "t" and/or "z" characters')
+
+            if len(axes_order) != seq.ndim:
+                raise ValueError('number of dims specified by `axes_order` must match dims of image sequence')
+
+            if seq.ndim == 4:
+                new_axes = tuple(map({'x': 0, 'y': 1, 't': 2, 'z': 3}.get, axes_order))
+                seq = np.moveaxis(seq, (0, 1, 2, 3), new_axes)
+            else:
+                new_axes = tuple(map({'x': 0, 'y': 1, 't': 2}.get, axes_order))
+                seq = np.moveaxis(seq, (0, 1, 2), new_axes)
+
+        # Default mapping
+        else:
+            # default axes remapping from tzxy
+            if seq.ndim == 4:
+                # tzxy to xytz
+                seq = np.moveaxis(seq, (0, 1, 2, 3), (2, 3, 0, 1))
+            else:
+                # for 2D
+                seq = seq.T
+
+        imdata = ImgData(seq, meta)
         return cls(imdata)
 
     @classmethod

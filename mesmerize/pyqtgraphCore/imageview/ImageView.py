@@ -199,9 +199,24 @@ class ImageView(QtWidgets.QWidget):
 
     def set_zlevel(self, z):
         self.workEnv.imgdata.set_zlevel(z)
-        self.viewer.setImage(self.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
-                             xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
-                                               self.viewer.workEnv.imgdata.seq.T.shape[0]))
+
+        # these will be set after changing the Z
+        ix = self.currentIndex
+        levels = self.getHistogramWidget().getLevels()
+
+        # Set the 2D image sequence at the selected z-level
+        self.setImage(
+            self.workEnv.imgdata.seq.T,
+            pos=(0, 0), scale=(1, 1),
+            xvals=np.linspace(
+                1, self.workEnv.imgdata.seq.T.shape[0], self.workEnv.imgdata.seq.T.shape[0]
+            )
+        )
+
+        # reset these
+        self.setCurrentIndex(ix)
+        self.setLevels(*levels)
+
         self.sigZLevelChanged.emit(z)
 
     def get_workEnv(self):

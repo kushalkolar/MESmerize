@@ -43,7 +43,7 @@ class ImgData:
                 self._seq = seq
                 self.seq = self._seq[:, :, :, 0]
                 self.z = 0
-                self.z_max = self._seq.shape[3]
+                self.z_max = self._seq.shape[3] - 1
             else:
                 self._seq = seq
                 self.seq = self.seq = self._seq  #: image sequence, shape is [x, y, t] or [x, y, t, z]

@@ -102,9 +102,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         method = self.get_load_method()
         meta_path = self.meta_file_path
 
-        self.load_tiff_file(tiff_path, meta_path, method)
+        if self.ui.radioButton_axes_custom.isChecked():
+            axes_order = self.ui.lineEdit_axes_custom.text()
+        else:
+            axes_order = None
 
-    def load_tiff_file(self, tiff_path, meta_path, method):
+        self.load_tiff_file(tiff_path, meta_path, method, axes_order)
+
+    def load_tiff_file(self, tiff_path, meta_path, method, axes_order):
         """
         Load a tiff file along with associated meta data
 
@@ -123,7 +128,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.vi.viewer.workEnv = ViewerWorkEnv.from_tiff(path=tiff_path,
                                                          method=method,
-                                                         meta_path=meta_path)
+                                                         meta_path=meta_path,
+                                                         axes_order=axes_order)
         self.vi.update_workEnv()
         self.vi.enable_ui(True)
         self.vi.viewer.ui.label_curr_img_seq_name.setText(os.path.basename(tiff_path))
