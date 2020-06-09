@@ -583,7 +583,8 @@ class ModuleGUI(QtWidgets.QWidget):
         # self.current_std_out.append(text)
         self.ui.textBrowserStdOut.append(text)
 
-    def add_item(self, module: str, input_workEnv: ViewerWorkEnv, input_params: dict, name: str='', info: dict ='') -> uuid.UUID:
+    def add_item(self, module: str, input_workEnv: ViewerWorkEnv,
+                 input_params: dict, name: str = '', info: dict = '') -> uuid.UUID:
         """
         Add an item to the currently open batch
 
@@ -594,31 +595,38 @@ class ModuleGUI(QtWidgets.QWidget):
         :param  info:           A dictionary with any metadata information to display in the scroll area label.
         :return:                UUID of the added item
         """
+
         if input_workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
                                                                               ' nothing to add to the batch!')
             return
-        # vi = ViewerUtils(viewer_reference)
+
         UUID = uuid.uuid4()
 
-        if module == 'CNMFE' or module == 'caiman_motion_correction' or module == 'CNMF':
-            filename = os.path.join(self.batch_path, str(UUID) + '.tiff')
-            tifffile.imsave(filename, data=input_workEnv.imgdata.seq.T, bigtiff=True)
-            input_workEnv.to_pickle(self.batch_path, filename=str(UUID) + '_workEnv', save_img_seq=False, UUID=None)
+        filename = os.path.join(self.batch_path, f'{UUID}_input')
+        input_workEnv.to_pickle(
+            self.batch_path,
+            filename=filename,
+            save_img_seq=True,
+            UUID=UUID
+        )
 
         pickle.dump(input_params, open(os.path.join(self.batch_path, str(UUID) + '.params'), 'wb'), protocol=4)
 
         input_params = np.array(input_params, dtype=object)
-        # meta = np.array(info, dtype=object)
 
-        self.df = self.df.append({'module': module,
-                                  'name': name,
-                                  'input_item': None,
-                                  'input_params': input_params,
-                                  'info': info,
-                                  'uuid': UUID,
-                                  'output': None,
-                                  }, ignore_index=True)
+        self.df = self.df.append(
+            {
+                'module': module,
+                'name': name,
+                'input_item': None,
+                'input_params': input_params,
+                'info': info,
+                'uuid': UUID,
+                'output': None,
+            },
+            ignore_index=True
+        )
 
         assert isinstance(self.df, pandas.DataFrame)
 
@@ -629,7 +637,7 @@ class ModuleGUI(QtWidgets.QWidget):
         item.setData(3, UUID)
         self.set_line_numbers()
 
-        self.df.to_pickle(self.batch_path + '/dataframe.batch')
+        self.df.to_pickle(os.path.join(self.batch_path, 'dataframe.batch'))
         return UUID
 
     def del_item(self):

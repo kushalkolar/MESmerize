@@ -69,9 +69,9 @@ def run(batch_dir: str, UUID: str):
     output = {'status': 0, 'output_info': ''}
     n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
-    file_path = batch_dir + '/' + UUID
+    file_path = os.path.join(batch_dir, UUID)
 
-    filename = file_path + '.tiff'
+    filename = file_path + '_input.tiff'
     input_params = pickle.load(open(file_path + '.params', 'rb'))
 
     frate = input_params['frate']
@@ -218,6 +218,8 @@ def run(batch_dir: str, UUID: str):
         #  DISCARD LOW QUALITY COMPONENTS
         cnm.params.set('quality', {'min_SNR': min_SNR,
                                    'rval_thr': r_values_min,
+                                   'decay_time': decay_time,
+                                   'fr':        frate,
                                    'use_cnn': False})
         cnm.estimates.evaluate_components(Y, cnm.params, dview=dview)
 
@@ -263,7 +265,8 @@ class Output(QtWidgets.QWidget):
 
         visualization.mpl.use('TkAgg')
 
-        filename = batch_dir + '/' + str(UUID)
+        filename = os.path.join(batch_dir, str(UUID))
+
         if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
             print('showing corr pnr')
             self.output_corr_pnr()
@@ -302,7 +305,8 @@ class Output(QtWidgets.QWidget):
             self.show()
 
     def output_corr_pnr(self):  # , batch_dir, UUID, viewer_ref):
-        filename = self.batch_dir + '/' + str(self.UUID)
+        filename = os.path.join(self.batch_dir, str(self.UUID))
+
         print(self.batch_dir)
         print(str(self.UUID))
         print(filename)
@@ -378,7 +382,7 @@ class Output(QtWidgets.QWidget):
         self.dims = data['dims']
 
     def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
-        filename = self.batch_dir + '/' + str(self.UUID)
+        filename = os.path.join(self.batch_dir, str(self.UUID))
 
         self.get_cnmfe_results()
 
@@ -406,31 +410,35 @@ class Output(QtWidgets.QWidget):
         # vi.viewer.parent().roi_manager.start_scatter_mode()
 
         vi.viewer.status_bar_label.showMessage('Loading CNMFE data, please wait...')
-        pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
-        tiff_path = self.batch_dir + '/' + str(self.UUID) + '.tiff'
+        pickle_file_path = os.path.join(self.batch_dir, f'{self.UUID}_input.pik')
+        tiff_path = os.path.join(self.batch_dir, f'{self.UUID}_input.tiff')
 
         vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path, tiff_path)
         vi.update_workEnv()
 
-        input_params = pickle.load(open(self.batch_dir + '/' + str(self.UUID) + '.params', 'rb'))
+        input_params = pickle.load(
+            open(
+                os.path.join(self.batch_dir, f'{self.UUID}_.params'),
+                'rb'
+            )
+        )
 
         vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
 
-        self.viewer_ref.parent().ui.actionROI_Manager.trigger()
+        roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
+        roi_manager_gui.start_scatter_mode('VolCNMF')
 
-        for m in self.viewer_ref.parent().running_modules:
-            if isinstance(m, ModuleGUI):
-                m.start_scatter_mode('CNMFE')
-                m.add_all_cnmfe_components(cnmA=self.cnmA,
-                                           cnmb=self.cnmb,
-                                           cnmC=self.cnmC,
-                                           cnm_f=self.cnm_f,
-                                           cnmYrA=self.cnmYrA,
-                                           idx_components=self.idx_components,
-                                           dims=self.dims,
-                                           input_params_dict=input_params,
-                                           calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
-                                           )
+        roi_manager_gui.manager.add_all_cnmfe_components(
+            cnmA=self.cnmA,
+            cnmb=self.cnmb,
+            cnmC=self.cnmC,
+            cnm_f=self.cnm_f,
+            cnmYrA=self.cnmYrA,
+            idx_components=self.idx_components,
+            dims=self.dims,
+            input_params_dict=input_params,
+            calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
+        )
 
         if 'name_cnmfe' in input_params.keys():
             name = input_params['name_cnmfe']

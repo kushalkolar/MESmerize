@@ -39,6 +39,8 @@ class ImgData:
         self.z_max = None
 
         if seq is not None:
+            self.ndim = seq.ndim
+
             if seq.ndim == 4:
                 self._seq = seq
                 self.seq = self._seq[:, :, :, 0]
@@ -47,6 +49,8 @@ class ImgData:
             else:
                 self._seq = seq
                 self.seq = self.seq = self._seq  #: image sequence, shape is [x, y, t] or [x, y, t, z]
+        else:
+            self.ndim = None
 
         if meta is None:
             meta = {'origin': 'unknown',

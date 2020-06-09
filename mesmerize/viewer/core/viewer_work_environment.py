@@ -369,8 +369,14 @@ class ViewerWorkEnv:
 
         return d
 
+    def _prepare_export(
+            self,
+            dir_path: str,
+            filename: Optional[str] = None,
+            save_img_seq: bool = True,
+            UUID: Optional[UUID_type] = None
+        ) -> Tuple[str, dict]:
 
-    def _prepare_export(self, dir_path: str, filename: Optional[str] = None, save_img_seq: bool = True, UUID: Optional[UUID_type] = None) -> Tuple[str, dict]:
         if UUID is None:
             UUID = uuid4()
 
@@ -384,7 +390,19 @@ class ViewerWorkEnv:
         data = {**work_env, 'UUID': UUID}
 
         if save_img_seq:
-            tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
+            if self.imgdata.ndim == 3:
+                tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
+
+            elif self.imgdata.ndim == 4:
+                tifffile.imsave(
+                    f'{filename}.tiff',
+                    np.moveaxis(
+                        self.imgdata._seq,
+                        (2, 3, 0, 1),  # from xytz
+                        (0, 1, 2, 3)   # to   tzxy
+                    ),
+                    bigtiff=True
+                )
 
         return (filename, data)
 
