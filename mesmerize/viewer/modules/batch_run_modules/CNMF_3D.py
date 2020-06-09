@@ -98,7 +98,7 @@ def run(batch_dir: str, UUID: str):
             cnm_ = cnm
 
         out_filename = f'{UUID}_results.hdf5'
-        cnm.save(out_filename)
+        cnm_.save(out_filename)
 
         output.update(
             {
