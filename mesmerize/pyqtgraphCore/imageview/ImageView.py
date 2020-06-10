@@ -193,9 +193,7 @@ class ImageView(QtWidgets.QWidget):
         self.set_zlevel_ui_visible(False)
 
     def set_zlevel_ui_visible(self, b: bool):
-        self.ui.verticalSliderZLevel.setVisible(b)
-        self.ui.spinBoxZLevel.setVisible(b)
-        self.ui.label_zlevel.setVisible(b)
+        self.ui.groupBoxZLevel.setVisible(b)
 
     def set_zlevel(self, z):
         self.workEnv.imgdata.set_zlevel(z)
@@ -216,6 +214,10 @@ class ImageView(QtWidgets.QWidget):
         # reset these
         self.setCurrentIndex(ix)
         self.setLevels(*levels)
+
+        if self.workEnv.roi_manager is not None:
+            if hasattr(self.workEnv.roi_manager, 'set_zlevel'):
+                self.workEnv.roi_manager.set_zlevel(z)
 
         self.sigZLevelChanged.emit(z)
 

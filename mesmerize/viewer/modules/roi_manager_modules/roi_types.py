@@ -438,15 +438,15 @@ class VolROI(ScatterROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem	, view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
                  zlevel: int = 0):
-        super(VolROI).__init__(curve_plot_item=curve_plot_item,
-                               view_box=view_box,
-                               curve_data=curve_data,
-                               state=state)
-        self.zlevel = zlevel  # z-level of the ROI, different from zValue!!
+        super(VolROI, self).__init__(curve_plot_item, view_box, state, curve_data)
+
+        self.zlevel = zlevel  # z-level of the ROI that is currently visible, different from zValue!!
+        self.zcenter = None
 
         if state is None:
             # get the outline from the cnmf output
             self.coors = contour['coordinates']
+            self.zcenter = int(contour['CoM'][0])
 
             self.set_roi_graphics_object()
 
@@ -455,9 +455,12 @@ class VolROI(ScatterROI):
         else:
             self.restore_state(state)
 
+        self.visible = False
+
     def restore_state(self, state: dict):
         self.coors = state['coors']
         self.cnmf_idx = state['cnmf_idx']
+        self.zcenter = state['zcenter']
 
         self.set_roi_graphics_object()
 
@@ -466,17 +469,26 @@ class VolROI(ScatterROI):
                  'tags':        self.get_all_tags(),
                  'roi_type':    self.__class__.__name__,
                  'coors':       self.coors,
-                 'cnmf_idx':    self.cnmf_idx}
+                 'cnmf_idx':    self.cnmf_idx,
+                 'zcenter':     self.zcenter}
 
         return state
 
     def set_roi_graphics_object(self):
-        self.current_coors = self.coors[self.zlevel][~np.isnan(self.coors).any(axis=1)]
+        coors = self.coors[self.zlevel]
+        self.current_coors = coors[~np.isnan(coors).any(axis=1)]
+        self.check_visible()
 
-        self.roi_xs = self.current_coors[:, 0].flatten().astype(int)
-        self.roi_ys = self.current_coors[:, 1].flatten().astype(int)
+        self.roi_xs = self.current_coors[:, 1].flatten().astype(int)
+        self.roi_ys = self.current_coors[:, 0].flatten().astype(int)
 
         self._draw()
+
+    def check_visible(self):
+        if self.current_coors.size > 0:
+            self.visible = True
+        else:
+            self.visible = False
 
     def _draw(self):
         """Create the scatter plot that is used for visualization of the spatial localization"""
@@ -497,10 +509,13 @@ class VolROI(ScatterROI):
 
         self.zlevel = z
 
-        self.current_coors = self.coors[self.zlevel][~np.isnan(self.coors).any(axis=1)]
+        coors = self.coors[self.zlevel]
+        self.current_coors = coors[~np.isnan(coors).any(axis=1)]
 
-        self.roi_xs = self.current_coors[:, 0].flatten().astype(int)
-        self.roi_ys = self.current_coors[:, 1].flatten().astype(int)
+        self.check_visible()
+
+        self.roi_xs = self.current_coors[:, 1].flatten().astype(int)
+        self.roi_ys = self.current_coors[:, 0].flatten().astype(int)
 
         self.roi_graphics_object.setData(self.roi_xs, self.roi_ys)#, symbol='s', size=self.spot_size)
 
@@ -518,10 +533,7 @@ class CNMFROI(ScatterROI):
         :type  state:       dict
         :param cnmf_idx:    original index of the ROI from cnmf idx_components
         """
-        super(CNMFROI, self).__init__(curve_plot_item=curve_plot_item,
-                                      view_box=view_box,
-                                      curve_data=curve_data,
-                                      state=state)
+        super(CNMFROI, self).__init__(curve_plot_item, view_box, state, curve_data)
 
         self.roi_xs = np.empty(0)  #: numpy array of the x values of the ROI's spatial coordinates
         self.roi_ys = np.empty(0)  #: numpy array of the y values of the ROI's spatial coordinates

@@ -157,7 +157,11 @@ class ViewerWorkEnv:
             # seq = tifffile.imread(tiff_path)
             tif = tifffile.TiffFile(tiff_path, is_nih=True)
             seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
-            seq = seq.T
+            if seq.ndim == 4:
+                # tzxy to xytz
+                seq = np.moveaxis(seq, (0, 1, 2, 3), (2, 3, 0, 1))
+            else:
+                seq = seq.T
         else:
             seq = None
 

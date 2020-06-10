@@ -75,12 +75,12 @@
     <item>
      <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>K</string>
+       <string>k</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="spinBox_K">
+     <widget class="QSpinBox" name="spinBox_k">
       <property name="maximum">
        <number>9999</number>
       </property>
@@ -265,7 +265,7 @@
   <tabstop>spinBox_p</tabstop>
   <tabstop>spinBox_rf</tabstop>
   <tabstop>spinBox_stride</tabstop>
-  <tabstop>spinBox_K</tabstop>
+  <tabstop>spinBox_k</tabstop>
   <tabstop>spinBox_gSig_x</tabstop>
   <tabstop>spinBox_gSig_y</tabstop>
   <tabstop>spinBox_gSig_z</tabstop>

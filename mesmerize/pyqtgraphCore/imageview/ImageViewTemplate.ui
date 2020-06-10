@@ -29,14 +29,14 @@
        </property>
        <widget class="QWidget" name="layoutWidget">
         <layout class="QGridLayout" name="gridLayout_8">
-         <item row="1" column="6">
+         <item row="1" column="5">
           <widget class="QPushButton" name="btnExportWorkEnv">
            <property name="text">
             <string>Export workEnv</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="6" rowspan="2">
+         <item row="2" column="5" rowspan="2">
           <widget class="HistogramLUTWidget" name="histogram">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -58,7 +58,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="2" rowspan="4" colspan="4">
+         <item row="1" column="1" rowspan="4" colspan="4">
           <widget class="GraphicsView" name="graphicsView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -68,7 +68,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="3">
+         <item row="0" column="2">
           <widget class="QLabel" name="label_curr_img_seq_name">
            <property name="font">
             <font>
@@ -85,7 +85,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
+         <item row="0" column="1">
           <widget class="QLabel" name="label">
            <property name="font">
             <font>
@@ -102,7 +102,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="4">
+         <item row="0" column="3">
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -115,47 +115,54 @@
            </property>
           </spacer>
          </item>
-         <item row="1" column="1" rowspan="4">
-          <widget class="QSlider" name="verticalSliderZLevel">
-           <property name="toolTip">
-            <string>z-level slider</string>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="invertedAppearance">
-            <bool>true</bool>
-           </property>
-           <property name="invertedControls">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0" rowspan="3">
-          <widget class="QLabel" name="label_zlevel">
-           <property name="text">
+          <widget class="QGroupBox" name="groupBoxZLevel">
+           <property name="title">
             <string>z-level</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+            <set>Qt::AlignCenter</set>
            </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QSpinBox" name="spinBoxZLevel"/>
+            </item>
+            <item>
+             <widget class="QSlider" name="verticalSliderZLevel">
+              <property name="minimumSize">
+               <size>
+                <width>25</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>move along the z-axis</string>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="pageStep">
+               <number>5</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="invertedAppearance">
+               <bool>true</bool>
+              </property>
+              <property name="invertedControls">
+               <bool>true</bool>
+              </property>
+              <property name="tickPosition">
+               <enum>QSlider::TicksBelow</enum>
+              </property>
+              <property name="tickInterval">
+               <number>5</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
-         </item>
-         <item row="0" column="0">
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="4" column="0">
-          <widget class="QSpinBox" name="spinBoxZLevel"/>
          </item>
         </layout>
        </widget>
@@ -198,9 +205,12 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>roiPlot</tabstop>
-  <tabstop>histogram</tabstop>
   <tabstop>graphicsView</tabstop>
+  <tabstop>btnExportWorkEnv</tabstop>
+  <tabstop>histogram</tabstop>
+  <tabstop>spinBoxZLevel</tabstop>
+  <tabstop>verticalSliderZLevel</tabstop>
+  <tabstop>roiPlot</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -211,12 +221,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>74</x>
-     <y>417</y>
+     <x>46</x>
+     <y>405</y>
     </hint>
     <hint type="destinationlabel">
-     <x>47</x>
-     <y>422</y>
+     <x>69</x>
+     <y>96</y>
     </hint>
    </hints>
   </connection>
@@ -227,12 +237,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>51</x>
-     <y>403</y>
+     <x>70</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
-     <x>83</x>
-     <y>401</y>
+     <x>46</x>
+     <y>405</y>
     </hint>
    </hints>
   </connection>

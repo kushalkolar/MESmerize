@@ -12,7 +12,7 @@ class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(536, 1153)
+        DockWidget.resize(536, 951)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -303,6 +303,8 @@ class Ui_DockWidget(object):
         self.btnImport.setObjectName("btnImport")
         self.horizontalLayout_12.addWidget(self.btnImport)
         self.verticalLayout.addLayout(self.horizontalLayout_12)
+        spacerItem14 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem14)
         DockWidget.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(DockWidget)

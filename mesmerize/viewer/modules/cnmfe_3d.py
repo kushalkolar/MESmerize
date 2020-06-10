@@ -24,6 +24,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_CNMF3D_template()
         self.ui.setupUi(self)
 
+        self.ui.pushButton_add_to_batch.clicked.connect(self.add_to_batch)
+
     @present_exceptions()
     def get_params(self, *args, group_params: bool = False, **kwargs) -> dict:
         """
@@ -39,7 +41,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         cnmf_kwargs = {
                         'rf': self.ui.spinBox_rf.value(),
                         'stride': self.ui.spinBox_stride.value(),
-                        'K': self.ui.spinBox_K.value(),
+                        'k': self.ui.spinBox_k.value(),
                         'gSig': [
                             self.ui.spinBox_gSig_x.value(),
                             self.ui.spinBox_gSig_y.value(),
@@ -87,7 +89,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.spinBox_rf.setValue(p['rf'])
         self.ui.spinBox_stride.setValue(p['stride'])
-        self.ui.spinBox_K.setValue(p['K'])
+        self.ui.spinBox_K.setValue(p['k'])
 
         self.ui.spinBox_gSig_x.setValue(p['gSig'][0])
         self.ui.spinBox_gSig_y.setValue(p['gSig'][1])
@@ -101,7 +103,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.lineEdit_name.setText(d['item_name'])  # same key regardless of format
 
-    def add_to_batch(self):
+    @present_exceptions()
+    def add_to_batch(self, *args, **kwargs):
         if self.vi.viewer.workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
                                                                           'nothing to add to batch')

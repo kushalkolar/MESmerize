@@ -58,6 +58,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.listWidgetROIs.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.listWidgetROIs.customContextMenuRequested.connect(self._list_widget_context_menu_requested)
 
+        self.ui.listWidgetROIs.currentRowChanged.connect(self.request_zlevel)
+
         self.ui.pushButtonImportFromImageJ.clicked.connect(self.import_from_imagej)
 
         self.installEventFilter(self)
@@ -202,3 +204,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def set_spot_size(self, size: int):
         if hasattr(self.manager, 'set_spot_size'):
             self.manager.set_spot_size(size)
+
+    def request_zlevel(self, roi_ix):
+        if not isinstance(self.manager, managers.ManagerVolROI):
+            return
+
+        roi = self.manager.roi_list[roi_ix]
+
+        if not roi.visible:
+            self.vi.viewer.ui.verticalSliderZLevel.setValue(roi.zcenter)

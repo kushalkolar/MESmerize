@@ -257,7 +257,7 @@ class ManagerVolCNMF(ManagerVolROI):
     def create_roi_list(self):
         self.roi_list = ROIList(self.ui, VolROI, self.vi)
 
-    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict):
+    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, dims, input_params_dict):
         """Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs"""
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
@@ -266,12 +266,14 @@ class ManagerVolCNMF(ManagerVolROI):
         self.cnmC = cnmC
         self.cnm_f = cnm_f
         self.cnmYrA = cnmYrA
-        self.idx_components = idx_components
-        self.orig_idx_components = deepcopy(idx_components)
+
+        # components are already filtered from the output file
+        self.idx_components = np.arange(self.cnmC.shape[0])
+        self.orig_idx_components = deepcopy(self.idx_components)
         self.input_params_dict = input_params_dict
 
         # spatial components
-        contours = caiman_get_contours(cnmA[:, idx_components], dims)
+        contours = caiman_get_contours(cnmA[:, self.idx_components], dims, thr=0.9)
 
         temporal_components = cnmC
 
@@ -287,7 +289,7 @@ class ManagerVolCNMF(ManagerVolROI):
 
             roi = VolROI(curve_plot_item=self.get_plot_item(),
                          view_box=self.vi.viewer.getView(),
-                         cnmf_idx=idx_components[ix],
+                         cnmf_idx=self.idx_components[ix],
                          curve_data=curve_data,
                          contour=contour)
 

@@ -1,4 +1,13 @@
 # from . import custom_modules
-__all__ = ['mesfile_io', 'cnmfe', 'cnmf', 'roi_manager',
-           'tiff_io', 'caiman_motion_correction', 'stimulus_mapping',
-           'script_editor', 'suite2p']
+__all__ = [
+    'mesfile_io',
+    'cnmfe',
+    'cnmf',
+    'cnmfe_3d',
+    'roi_manager',
+    'tiff_io',
+    'caiman_motion_correction',
+    'stimulus_mapping',
+    'script_editor',
+    'suite2p'
+]

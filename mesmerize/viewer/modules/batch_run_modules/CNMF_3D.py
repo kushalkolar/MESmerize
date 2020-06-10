@@ -37,9 +37,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
 
 if not sys.argv[0] == __file__:
-    from ..roi_manager import ModuleGUI
     from ...core import ViewerUtils, ViewerWorkEnv
-    from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 
 
 def run(batch_dir: str, UUID: str):
@@ -50,7 +48,7 @@ def run(batch_dir: str, UUID: str):
 
     filepath = os.path.join(batch_dir, UUID)
 
-    imgpath = f'{filepath}.tiff'
+    imgpath = f'{filepath}_input.tiff'
     input_params = pickle.load(open(f'{filepath}.params', 'rb'))
 
     print('******** Creating process pool *********')
@@ -131,14 +129,16 @@ class Output:
             return
 
         vi.viewer.status_bar_label.showMessage('Please wait, loading image data...')
-        pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
-        tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
+
+        pik_path = os.path.join(batch_path, f'{UUID}_input.pik')
+        tiff_path = os.path.join(batch_path, f'{UUID}_input.tiff')
         vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pik_path, tiff_path)
 
         vi.update_workEnv()
         vi.viewer.status_bar_label.showMessage('Finished loading image data...')
 
-        input_params = pickle.load(open(batch_path + '/' + str(UUID) + '.params', 'rb'))
+        input_params_path = os.path.join(batch_path, f'{UUID}.params')
+        input_params = pickle.load(open(input_params_path, 'rb'))
 
         cnmf_data = load_dict_from_hdf5(
             os.path.join(batch_path, f'{UUID}_results.hdf5')
@@ -161,7 +161,6 @@ class Output:
             cnmC=cnmC,
             cnm_f=cnm_f,
             cnmYrA=cnmYrA,
-            idx_components=idx_components,
             dims=dims,
             input_params_dict=input_params,
         )
@@ -170,3 +169,7 @@ class Output:
         vi.viewer.ui.label_curr_img_seq_name.setText('cnmf_3D:' + name)
         vi.viewer.workEnv.history_trace.append({'cnmf_3d': input_params})
         vi.enable_ui(True)
+
+
+if sys.argv[0] == __file__:
+    run(sys.argv[1], sys.argv[2])
