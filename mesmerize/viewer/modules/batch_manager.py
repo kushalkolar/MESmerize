@@ -253,8 +253,8 @@ class ModuleGUI(QtWidgets.QWidget):
         if r['input_item'].item() is None:
             if not vi.discard_workEnv():
                 return
-            pikpath = os.path.join(self.batch_path, str(UUID) + '_workEnv.pik')
-            tiffpath = os.path.join(self.batch_path, str(UUID) + '.tiff')
+            pikpath = os.path.join(self.batch_path, str(UUID) + '_input.pik')
+            tiffpath = os.path.join(self.batch_path, str(UUID) + '_input.tiff')
             vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
             if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
                 vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)

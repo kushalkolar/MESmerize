@@ -58,7 +58,7 @@ def run(batch_dir: str, UUID: str):
 
     try:
         print('********** Making memmap **********')
-        memmap_path = cm.save_memmap([imgpath], base_name='Yr', is_3D=True, order='C')
+        memmap_path = cm.save_memmap([imgpath], base_name=f'memmap_{UUID}', is_3D=True, order='C', dview=dview)
 
         print('********** Loading memmap **********')
         Yr, dims, T = cm.load_memmap(memmap_path)
@@ -66,12 +66,20 @@ def run(batch_dir: str, UUID: str):
 
         images = np.reshape(Yr.T, [T] + list(dims), order='F')
 
-        cnm = cnmf.CNMF(
-            n_processes=n_processes,
-            dview=dview,
-            only_init_patch=True,
-            **input_params['cnmf_kwargs']
-        )
+        if input_params['use_patches']:
+            cnm = cnmf.CNMF(
+                n_processes=n_processes,
+                dview=dview,
+                only_init_patch=True,
+                **input_params['cnmf_kwargs']
+            )
+
+        else:
+            cnm = cnmf.CNMF(
+                n_processes,
+                dview=dview
+                **input_params['cnmf_kwargs']
+            )
 
         cnm.fit(images)
 

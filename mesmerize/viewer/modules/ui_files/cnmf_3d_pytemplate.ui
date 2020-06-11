@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>261</width>
-    <height>596</height>
+    <width>297</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="floating">
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>CNMF 3D</string>
+   <string>&amp;CNMF 3D</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <widget class="QLabel" name="label_6">
       <property name="text">
@@ -33,43 +33,58 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>rf</string>
+     <widget class="QGroupBox" name="groupBox_use_patches">
+      <property name="title">
+       <string>&amp;Use patches</string>
       </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QSpinBox" name="spinBox_rf">
-      <property name="maximum">
-       <number>9999</number>
+      <property name="flat">
+       <bool>false</bool>
       </property>
-      <property name="singleStep">
-       <number>5</number>
+      <property name="checkable">
+       <bool>true</bool>
       </property>
-      <property name="value">
-       <number>25</number>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>stride</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QSpinBox" name="spinBox_stride">
-      <property name="maximum">
-       <number>9999</number>
-      </property>
-      <property name="singleStep">
-       <number>5</number>
-      </property>
-      <property name="value">
-       <number>15</number>
-      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>rf</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_rf">
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="singleStep">
+          <number>5</number>
+         </property>
+         <property name="value">
+          <number>25</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>stride</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox_stride">
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="singleStep">
+          <number>5</number>
+         </property>
+         <property name="value">
+          <number>15</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>

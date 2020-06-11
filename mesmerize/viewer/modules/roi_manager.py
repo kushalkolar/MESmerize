@@ -14,6 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core.common import ViewerUtils
 from .pytemplates.roi_manager_pytemplate import *
 from .roi_manager_modules import managers
+from .roi_manager_modules.roi_types import *
 from functools import partial
 import traceback
 
@@ -117,7 +118,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def slot_delete_roi_menu(self):
         """Delete the currently selected ROI"""
         if hasattr(self, 'manager'):
-            if isinstance(self.manager, managers.ManagerCNMFE):
+            if isinstance(self.manager, managers.ManagerCNMFROI):
                 self.manager.update_idx_components(self.manager.roi_list.current_index)
 
             del self.manager.roi_list[self.manager.roi_list.current_index]
@@ -126,7 +127,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.btnAddROIMenu.exec_(self.ui.btnAddROI.mapToGlobal(p))
 
     def start_scatter_mode(self, type_str: str):
-        """Start in CNMFE mode. Creates a new back-end manager instance (uses ManagerCNMFE)"""
+        """Start in CNMFE mode. Creates a new back-end manager instance (uses ManagerCNMFROI)"""
         print('staring scatter mode in roi manager')
 
         if hasattr(self, 'manager'):
@@ -140,7 +141,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     def add_all_cnmfe_components(self, *args, **kwargs):
         """Import CNMF(E) output data"""
-        assert isinstance(self.manager, managers.ManagerCNMFE)
+        assert isinstance(self.manager, managers.ManagerCNMFROI)
         self.manager.add_all_components(*args, **kwargs)
 
     def start_manual_mode(self):
@@ -171,22 +172,33 @@ class ModuleGUI(QtWidgets.QDockWidget):
         pass
 
     def package_for_project(self) -> dict:
-        """Gets all the ROI states so that they can be packaged along with the rest of the work environment to be saved as a project Sample"""
+        """
+        Gets all the ROI states so that they can be packaged along with
+        the rest of the work environment to be saved as a project Sample
+        """
+
         states = self.manager.get_all_states()
         return states
 
     def set_all_from_states(self, states: dict):
         """Set all the ROIs from a states dict. Instantiates the appropriate back-end Manager"""
-        if states['roi_type'] in ['CNMFROI', 'ScatterROI']:
+        if 'roi_type' not in states.keys():
+            raise TypeError('`roi_type` not specified in states dict')
+
+        roi_class = states["roi_type"]
+
+        if roi_class not in globals().keys():
+            raise TypeError(f'Specified ROI type <{roi_class}> not found in available ROI types.')
+
+        # All scatter types, CNMF(E), Suite2p, VolCNMF etc.
+        if issubclass(globals()[roi_class], ScatterROI):
             self.start_scatter_mode(states['roi_type'])
             self.manager.restore_from_states(states)
 
-        elif states['roi_type'] in ['ManualROI']:
+        # Manual ROI classes
+        elif issubclass(globals()[roi_class], ManualROI):
             self.start_manual_mode()
             self.manager.restore_from_states(states)
-
-        else:
-            raise TypeError('`roi_type` not specified in states dict')
 
     def import_from_imagej(self):
         """Import ROIs from ImageJ zip file"""

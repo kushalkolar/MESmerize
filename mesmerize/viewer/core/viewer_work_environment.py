@@ -462,13 +462,26 @@ class ViewerWorkEnv:
         img_path = self.to_pickle(imgdir, UUID=UUID, save_img_seq=save_img_seq)
 
         if save_img_seq:
-            max_proj = np.amax(self.imgdata.seq, axis=2)
-            max_proj_path = img_path + '_max_proj.tiff'
-            tifffile.imsave(max_proj_path, max_proj)
+            if self.imgdata.ndim == 3:
+                max_proj = np.amax(self.imgdata.seq, axis=2)
+                max_proj_path = img_path + '_max_proj.tiff'
+                tifffile.imsave(max_proj_path, max_proj)
 
-            std_proj = self.imgdata.seq.std(axis=2)
-            std_proj_path = img_path + '_std_proj.tiff'
-            tifffile.imsave(std_proj_path, std_proj)
+                std_proj = self.imgdata.seq.std(axis=2)
+                std_proj_path = img_path + '_std_proj.tiff'
+                tifffile.imsave(std_proj_path, std_proj)
+            # projection for each zlevel
+            elif self.imgdata.ndim == 4:
+                for z in range(self.imgdata.z_max):
+                    self.imgdata.set_zlevel(z)
+
+                    max_proj = np.amax(self.imgdata.seq, axis=2)
+                    max_proj_path = f'{img_path}_max_proj-{z}.tiff'
+                    tifffile.imsave(max_proj_path, max_proj)
+
+                    std_proj = self.imgdata.seq.std(axis=2)
+                    std_proj_path = f'{img_path}_std_proj-{z}.tiff'
+                    tifffile.imsave(std_proj_path, std_proj)
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False

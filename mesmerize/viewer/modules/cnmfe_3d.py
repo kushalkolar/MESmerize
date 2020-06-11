@@ -39,8 +39,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # kwargs for CNMF
         cnmf_kwargs = {
-                        'rf': self.ui.spinBox_rf.value(),
-                        'stride': self.ui.spinBox_stride.value(),
                         'k': self.ui.spinBox_k.value(),
                         'gSig': [
                             self.ui.spinBox_gSig_x.value(),
@@ -60,9 +58,18 @@ class ModuleGUI(QtWidgets.QDockWidget):
         }
 
         d = {
-            'refit': self.ui.checkBox_refit.isChecked(),
-            'item_name': self.ui.lineEdit_name.text()
+            'refit':        self.ui.checkBox_refit.isChecked(),
+            'item_name':    self.ui.lineEdit_name.text(),
+            'use_patches':  self.ui.groupBox_use_patches.isChecked()
         }
+
+        if d['use_patches']:
+            cnmf_kwargs.update(
+                {
+                    'rf': self.ui.spinBox_rf.value(),
+                    'stride': self.ui.spinBox_stride.value(),
+                }
+            )
 
         if group_params:
             d.update(

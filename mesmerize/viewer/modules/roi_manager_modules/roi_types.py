@@ -380,6 +380,8 @@ class ScatterROI(BaseROI):
         :param curve_data: 1D numpy array of y values
         :param kwargs:
         """
+        self.spot_size = 1
+
         super(ScatterROI, self).__init__(curve_plot_item, view_box, state, metadata)
 
         if (xs is not None) and (ys is not None):
@@ -389,8 +391,6 @@ class ScatterROI(BaseROI):
             self.set_curve_data(curve_data)
         else:
             self.restore_state(state)
-
-        self.spot_size = 1
 
     def set_curve_data(self, y_vals: np.ndarray):
         """Set the curve data"""
@@ -429,19 +429,20 @@ class ScatterROI(BaseROI):
         self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s', size=self.spot_size)
 
     @classmethod
-    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
-        return cls(curve_plot_item=curve_plot_item, view_box=view_box, state=state)
+    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict, **kwargs):
+        return cls(curve_plot_item=curve_plot_item, view_box=view_box, state=state, **kwargs)
 
 
-class VolROI(ScatterROI):
+class VolCNMF(ScatterROI):
     """3D ROI"""
     def __init__(self, curve_plot_item: pg.PlotDataItem	, view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
                  zlevel: int = 0):
-        super(VolROI, self).__init__(curve_plot_item, view_box, state, curve_data)
 
         self.zlevel = zlevel  # z-level of the ROI that is currently visible, different from zValue!!
         self.zcenter = None
+
+        super(VolCNMF, self).__init__(curve_plot_item, view_box, state, curve_data)
 
         if state is None:
             # get the outline from the cnmf output
@@ -558,7 +559,7 @@ class CNMFROI(ScatterROI):
         else:
             self.restore_state(state)
 
-        self.spot_size = 1
+        # self.spot_size = 1
 
     def restore_state(self, state):
         super(CNMFROI, self).restore_state(state)

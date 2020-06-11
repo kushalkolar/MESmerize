@@ -236,7 +236,7 @@ class ManagerVolROI(ManagerScatterROI):
             roi.set_zlevel(z)
 
     def create_roi_list(self):
-        self.roi_list = ROIList(self.ui, VolROI, self.vi)
+        self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
 
 
 class ManagerVolCNMF(ManagerVolROI):
@@ -255,7 +255,7 @@ class ManagerVolCNMF(ManagerVolROI):
         self.cnmYrA = None
 
     def create_roi_list(self):
-        self.roi_list = ROIList(self.ui, VolROI, self.vi)
+        self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
 
     def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, dims, input_params_dict):
         """Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs"""
@@ -287,11 +287,11 @@ class ManagerVolCNMF(ManagerVolROI):
             curve_data = temporal_components[ix]
             contour = contours[ix]
 
-            roi = VolROI(curve_plot_item=self.get_plot_item(),
-                         view_box=self.vi.viewer.getView(),
-                         cnmf_idx=self.idx_components[ix],
-                         curve_data=curve_data,
-                         contour=contour)
+            roi = VolCNMF(curve_plot_item=self.get_plot_item(),
+                          view_box=self.vi.viewer.getView(),
+                          cnmf_idx=self.idx_components[ix],
+                          curve_data=curve_data,
+                          contour=contour)
 
             self.roi_list.append(roi)
 
@@ -304,12 +304,11 @@ class ManagerVolCNMF(ManagerVolROI):
 
     def restore_from_states(self, states: dict):
         """Restore from states, such as when these ROIs are saved with a Project Sample"""
-        super(ManagerVolROI, self).restore_from_states(states)
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
         for state in states['states']:
-            roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
+            roi = VolCNMF.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
         self.input_params_dict = states['input_params_cnmfe']
         self.cnmA = states['cnmf_output']['cnmA']
@@ -363,11 +362,11 @@ class ManagerVolCNMF(ManagerVolROI):
             roi.spot_size = size
 
 
-class ManagerCNMFE(AbstractBaseManager):
+class ManagerCNMFROI(AbstractBaseManager):
     """Manager for ROIs imported from CNMF or CNMFE outputs"""
     def __init__(self, parent, ui, viewer_interface):
         """Instantiate necessary attributes"""
-        super(ManagerCNMFE, self).__init__(parent, ui, viewer_interface)
+        super(ManagerCNMFROI, self).__init__(parent, ui, viewer_interface)
 
         self.create_roi_list()
         self.list_widget = self.roi_list.list_widget
@@ -483,7 +482,7 @@ class ManagerCNMFE(AbstractBaseManager):
 
     def restore_from_states(self, states: dict):
         """Restore from states, such as when these ROIs are saved with a Project Sample"""
-        super(ManagerCNMFE, self).restore_from_states(states)
+        super(ManagerCNMFROI, self).restore_from_states(states)
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
@@ -504,7 +503,7 @@ class ManagerCNMFE(AbstractBaseManager):
         """Get all states so that they can be restored"""
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
-        states = super(ManagerCNMFE, self).get_all_states()
+        states = super(ManagerCNMFROI, self).get_all_states()
 
         # If the user has manually deleted some ROIs
         new_idx_components = np.array([roi.cnmf_idx for roi in self.roi_list], dtype=np.int64)
