@@ -77,7 +77,7 @@ def run(batch_dir: str, UUID: str):
         else:
             cnm = cnmf.CNMF(
                 n_processes,
-                dview=dview
+                dview=dview,
                 **input_params['cnmf_kwargs']
             )
 
