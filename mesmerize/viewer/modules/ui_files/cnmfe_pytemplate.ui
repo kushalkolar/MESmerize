@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>1153</height>
+    <width>536</width>
+    <height>951</height>
    </rect>
   </property>
   <property name="floating">
@@ -729,6 +729,19 @@ If lower more components will be accepted, potentially with worse quality</strin
       </item>
      </layout>
     </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
  </widget>
@@ -737,15 +750,18 @@ If lower more components will be accepted, potentially with worse quality</strin
   <tabstop>spinBoxGSig</tabstop>
   <tabstop>lineEdCorrPNRName</tabstop>
   <tabstop>btnAddToBatchCorrPNR</tabstop>
+  <tabstop>lineEditAin</tabstop>
   <tabstop>doubleSpinBoxMinCorr</tabstop>
   <tabstop>spinBoxMinPNR</tabstop>
   <tabstop>spinBoxMinSNR</tabstop>
   <tabstop>doubleSpinBoxRValuesMin</tabstop>
+  <tabstop>doubleSpinBoxDecayTime</tabstop>
   <tabstop>spinBoxRf</tabstop>
   <tabstop>spinBoxOverlap</tabstop>
   <tabstop>spinBoxGnb</tabstop>
   <tabstop>spinBoxNb_patch</tabstop>
   <tabstop>spinBoxK</tabstop>
+  <tabstop>comboBoxDeconv</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMFE</tabstop>
   <tabstop>btnExport</tabstop>

@@ -80,6 +80,7 @@ class ImageView(QtWidgets.QWidget):
     """
     sigTimeChanged = QtCore.Signal(object, object)
     sigProcessingChanged = QtCore.Signal(object)
+    sigZLevelChanged = QtCore.Signal(object)
 
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, *args):
         """
@@ -187,6 +188,38 @@ class ImageView(QtWidgets.QWidget):
             setattr(self, fn, getattr(self.ui.histogram, fn))
 
         self.timeLine.sigPositionChanged.connect(self.timeLineChanged)
+
+        self.ui.verticalSliderZLevel.valueChanged.connect(self.set_zlevel)
+        self.set_zlevel_ui_visible(False)
+
+    def set_zlevel_ui_visible(self, b: bool):
+        self.ui.groupBoxZLevel.setVisible(b)
+
+    def set_zlevel(self, z):
+        self.workEnv.imgdata.set_zlevel(z)
+
+        # these will be set after changing the Z
+        ix = self.currentIndex
+        levels = self.getHistogramWidget().getLevels()
+
+        # Set the 2D image sequence at the selected z-level
+        self.setImage(
+            self.workEnv.imgdata.seq.T,
+            pos=(0, 0), scale=(1, 1),
+            xvals=np.linspace(
+                1, self.workEnv.imgdata.seq.T.shape[0], self.workEnv.imgdata.seq.T.shape[0]
+            )
+        )
+
+        # reset these
+        self.setCurrentIndex(ix)
+        self.setLevels(*levels)
+
+        if self.workEnv.roi_manager is not None:
+            if hasattr(self.workEnv.roi_manager, 'set_zlevel'):
+                self.workEnv.roi_manager.set_zlevel(z)
+
+        self.sigZLevelChanged.emit(z)
 
     def get_workEnv(self):
         return self.workEnv

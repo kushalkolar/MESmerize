@@ -41,6 +41,7 @@ from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from glob import glob
 from collections import UserList
 from typing import *
+from pprint import pformat
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -252,8 +253,8 @@ class ModuleGUI(QtWidgets.QWidget):
         if r['input_item'].item() is None:
             if not vi.discard_workEnv():
                 return
-            pikpath = os.path.join(self.batch_path, str(UUID) + '_workEnv.pik')
-            tiffpath = os.path.join(self.batch_path, str(UUID) + '.tiff')
+            pikpath = os.path.join(self.batch_path, str(UUID) + '_input.pik')
+            tiffpath = os.path.join(self.batch_path, str(UUID) + '_input.tiff')
             vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
             if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
                 vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
@@ -300,7 +301,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         :param module:  The module name under /batch_run_modules that the batch item is from
         :param viewers: ViewerWindow, ImageView, or list of ViewerWindows
-        :param UUID:    UUID of the item to load input from
+        :param UUID:    UUID of the item to load output from
         """
         if len(self.output_widgets) > 3:
             try:
@@ -353,7 +354,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.ui.textBrowserOutputInfo.setText('Output file does not exist for selected item')
             return
         else:
-            self.ui.textBrowserOutputInfo.setText(str(output))
+            self.ui.textBrowserOutputInfo.setText(pformat(output))
 
     def disable_ui_buttons(self, b):
         self.ui.btnStart.setDisabled(b)
@@ -465,6 +466,8 @@ class ModuleGUI(QtWidgets.QWidget):
 
     def move_files(self, files: list, UUID) -> QtCore.QProcess:
         shell_str = '#!/bin/bash\n'
+
+        files += [f'{UUID}.out']
 
         for f in files:
             src = os.path.join(self.working_dir, f)
@@ -580,7 +583,8 @@ class ModuleGUI(QtWidgets.QWidget):
         # self.current_std_out.append(text)
         self.ui.textBrowserStdOut.append(text)
 
-    def add_item(self, module: str, input_workEnv: ViewerWorkEnv, input_params: dict, name: str='', info: dict ='') -> uuid.UUID:
+    def add_item(self, module: str, input_workEnv: ViewerWorkEnv,
+                 input_params: dict, name: str = '', info: dict = '') -> uuid.UUID:
         """
         Add an item to the currently open batch
 
@@ -591,31 +595,38 @@ class ModuleGUI(QtWidgets.QWidget):
         :param  info:           A dictionary with any metadata information to display in the scroll area label.
         :return:                UUID of the added item
         """
+
         if input_workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Work Environment is empty!', 'The current work environment is empty,'
                                                                               ' nothing to add to the batch!')
             return
-        # vi = ViewerUtils(viewer_reference)
+
         UUID = uuid.uuid4()
 
-        if module == 'CNMFE' or module == 'caiman_motion_correction' or module == 'CNMF':
-            filename = os.path.join(self.batch_path, str(UUID) + '.tiff')
-            tifffile.imsave(filename, data=input_workEnv.imgdata.seq.T, bigtiff=True)
-            input_workEnv.to_pickle(self.batch_path, filename=str(UUID) + '_workEnv', save_img_seq=False, UUID=None)
+        filename = os.path.join(self.batch_path, f'{UUID}_input')
+        input_workEnv.to_pickle(
+            self.batch_path,
+            filename=filename,
+            save_img_seq=True,
+            UUID=UUID
+        )
 
         pickle.dump(input_params, open(os.path.join(self.batch_path, str(UUID) + '.params'), 'wb'), protocol=4)
 
         input_params = np.array(input_params, dtype=object)
-        # meta = np.array(info, dtype=object)
 
-        self.df = self.df.append({'module': module,
-                                  'name': name,
-                                  'input_item': None,
-                                  'input_params': input_params,
-                                  'info': info,
-                                  'uuid': UUID,
-                                  'output': None,
-                                  }, ignore_index=True)
+        self.df = self.df.append(
+            {
+                'module': module,
+                'name': name,
+                'input_item': None,
+                'input_params': input_params,
+                'info': info,
+                'uuid': UUID,
+                'output': None,
+            },
+            ignore_index=True
+        )
 
         assert isinstance(self.df, pandas.DataFrame)
 
@@ -626,7 +637,7 @@ class ModuleGUI(QtWidgets.QWidget):
         item.setData(3, UUID)
         self.set_line_numbers()
 
-        self.df.to_pickle(self.batch_path + '/dataframe.batch')
+        self.df.to_pickle(os.path.join(self.batch_path, 'dataframe.batch'))
         return UUID
 
     def del_item(self):

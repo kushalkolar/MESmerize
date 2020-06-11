@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>257</width>
-    <height>671</height>
+    <width>287</width>
+    <height>567</height>
    </rect>
   </property>
   <property name="floating">
@@ -69,6 +69,19 @@
         </item>
        </widget>
       </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </item>
     <item>
@@ -86,6 +99,19 @@
          <string>disabled if set to zero</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
@@ -265,6 +291,19 @@
          <number>3</number>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
@@ -462,11 +501,25 @@
       </item>
      </layout>
     </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
  </widget>
  <tabstops>
   <tabstop>comboBoxOutputBitDepth</tabstop>
+  <tabstop>spinBoxGSig_filt</tabstop>
   <tabstop>spinboxX</tabstop>
   <tabstop>spinboxY</tabstop>
   <tabstop>spinboxIterRigid</tabstop>
@@ -479,8 +532,8 @@
   <tabstop>sliderOverlaps</tabstop>
   <tabstop>btnShowQuilt</tabstop>
   <tabstop>spinboxUpsample</tabstop>
-  <tabstop>btnAddToBatchElastic</tabstop>
   <tabstop>lineEditNameElastic</tabstop>
+  <tabstop>btnAddToBatchElastic</tabstop>
  </tabstops>
  <resources/>
  <connections>

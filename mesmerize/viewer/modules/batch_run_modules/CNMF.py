@@ -45,7 +45,7 @@ def run(batch_dir: str, UUID: str):
     output = {'status': 0, 'output_info': ''}
     n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
-    file_path = batch_dir + '/' + UUID
+    file_path = os.path.join(batch_dir, UUID)
 
     filename = [file_path + '.tiff']
     input_params = pickle.load(open(file_path + '.params', 'rb'))
@@ -137,7 +137,6 @@ def run(batch_dir: str, UUID: str):
                             UUID + '_idx_components.pikl',
                             UUID + '_cnm-YrA.pikl',
                             UUID + '_dims.pikl',
-                            UUID + '.out'
                             ]
 
         output.update({'output': UUID,
@@ -164,7 +163,7 @@ class Output(QtWidgets.QWidget):
         self.viewer_ref = viewer_ref
         self.cnmfe_results = {}
 
-        filename = batch_dir + '/' + str(UUID)
+        filename = os.path.join(batch_dir, str(UUID))
         QtWidgets.QWidget.__init__(self)
         self.setWindowTitle('CNMF visualization or Import?')
         layout = QtWidgets.QVBoxLayout()
@@ -188,7 +187,7 @@ class Output(QtWidgets.QWidget):
         self.show()
 
     def get_cnmf_results(self):
-        filename = self.batch_dir + '/' + str(self.UUID)
+        filename = os.path.join(self.batch_dir, str(self.UUID))
 
         self.cnmA = pickle.load(open(filename + '_cnm-A.pikl', 'rb'))
         self.cnmC = pickle.load(open(filename + '_cnm-C.pikl', 'rb'))
@@ -201,7 +200,7 @@ class Output(QtWidgets.QWidget):
 
     def output_cnmf(self):  # , batch_dir, UUID, viewer_ref):
         pass
-        filename = self.batch_dir + '/' + str(self.UUID)
+        filename = os.path.join(self.batch_dir, str(self.UUID))
 
         self.get_cnmf_results()
 
@@ -211,7 +210,9 @@ class Output(QtWidgets.QWidget):
         cnm_f = pickle.load(open(filename + '_cnm-f.pikl', 'rb'))
         cnmYrA = pickle.load(open(filename + '_cnm-YrA.pikl', 'rb'))
 
-        img = tifffile.imread(self.batch_dir + '/' + str(self.UUID) + '.tiff')
+        img_path  = os.path.join(self.batch_dir, f'{self.UUID}_input.tiff')
+        img = tifffile.imread(img_path)
+
         Cn = cm.local_correlations(img.transpose(1, 2, 0))
         Cn[np.isnan(Cn)] = 0
 
@@ -229,29 +230,30 @@ class Output(QtWidgets.QWidget):
             return
 
         vi.viewer.status_bar_label.showMessage('Loading CNMFE data, please wait...')
-        pickle_file_path = self.batch_dir + '/' + str(self.UUID) + '_workEnv.pik'
-        tiff_path = self.batch_dir + '/' + str(self.UUID) + '.tiff'
+        pickle_file_path = os.path.join(self.batch_dir, f'{self.UUID}_input.pik')
+        tiff_path = os.path.join(self.batch_dir, f'{self.UUID}_input.tiff')
 
         vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path, tiff_path)
         vi.update_workEnv()
 
-        input_params = pickle.load(open(self.batch_dir + '/' + str(self.UUID) + '.params', 'rb'))
+        params_path = os.path.join(self.batch_dir, f'{self.UUID}.params')
+        input_params = pickle.load(open(params_path, 'rb'))
         vi.viewer.workEnv.history_trace.append(input_params)
 
-        self.viewer_ref.parent().ui.actionROI_Manager.trigger()
+        roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
+        roi_manager_gui.start_scatter_mode('VolCNMF')
 
-        for m in self.viewer_ref.parent().running_modules:
-            if isinstance(m, ModuleGUI):
-                m.start_cnmfe_mode()
-                m.add_all_cnmfe_components(cnmA=self.cnmA,
-                                           cnmb=self.cnmb,
-                                           cnmC=self.cnmC,
-                                           cnm_f=self.cnm_f,
-                                           cnmYrA=self.cnmYrA,
-                                           idx_components=np.array(range(self.cnmC.shape[0])),
-                                           dims=self.dims,
-                                           input_params_dict=input_params,
-                                           dfof=True)
+        roi_manager_gui.manager.add_all_cnmfe_components(
+            cnmA=self.cnmA,
+            cnmb=self.cnmb,
+            cnmC=self.cnmC,
+            cnm_f=self.cnm_f,
+            cnmYrA=self.cnmYrA,
+            idx_components=np.array(range(self.cnmC.shape[0])),
+            dims=self.dims,
+            input_params_dict=input_params,
+            dfof=True
+        )
 
         if 'name_cnmf' in input_params.keys():
             name = input_params['name_cnmf']

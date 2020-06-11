@@ -42,7 +42,7 @@ def run(batch_dir: str, UUID: str):
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
-    file_path = batch_dir + '/' + UUID
+    file_path = os.path.join(batch_dir, UUID)
     n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
 
@@ -52,7 +52,7 @@ def run(batch_dir: str, UUID: str):
                                                      single_thread=False)
 
     try:
-        fname = [file_path + '.tiff']
+        fname = [file_path + '_input.tiff']
         input_params = pickle.load(open(file_path + '.params', 'rb'))
         # TODO: Should just unpack the input params as kwargs
         niter_rig = input_params['iters_rigid']
@@ -107,14 +107,15 @@ def run(batch_dir: str, UUID: str):
         elif input_params['output_bit_depth'] == '16':
             m_els = m_els.astype(np.uint16)
 
-        tifffile.imsave(batch_dir + '/' + UUID + '_mc.tiff', m_els, bigtiff=True, imagej=True, compress=1)
+        img_out_path = os.path.join(batch_dir, f'{UUID}_mc.tiff')
+        tifffile.imsave(img_out_path, m_els, bigtiff=True, imagej=True, compress=1)
 
         output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
     except Exception:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
-    for mf in glob(batch_dir +'/' + UUID +'*.mmap'):
+    for mf in glob(os.path.join(batch_dir, UUID + '*.mmap')):
         os.remove(mf)
 
     dview.terminate()
@@ -122,9 +123,7 @@ def run(batch_dir: str, UUID: str):
     end_time = time()
     processing_time = (end_time - start_time) / 60
 
-    output_files_list = [UUID + '_mc.tiff',
-                         UUID + '.out'
-                         ]
+    output_files_list = [UUID + '_mc.tiff']
 
     output.update({'processing_time': processing_time,
                    'output_files': output_files_list})
@@ -140,21 +139,35 @@ class Output:
             return
 
         vi.viewer.status_bar_label.showMessage('Please wait, loading motion corrected image sequence...')
-        pik_path = batch_path + '/' + str(UUID) + '_workEnv.pik'
-        tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
+
+        pik_path = os.path.join(batch_path, f'{UUID}_input.pik')
+        tiff_path = os.path.join(batch_path, f'{UUID}_mc.tiff')
+
         vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pik_path, tiff_path)
         #tiff_path = batch_path + '/' + str(UUID) + '_mc.tiff'
         #workEnv.imgdata.seq = tifffile.imread(tiff_path).T
         vi.update_workEnv()
         vi.viewer.status_bar_label.showMessage('Finished loading motion corrected image sequence!')
 
-        input_params = pickle.load(open(batch_path + '/' + str(UUID) + '.params', 'rb'))
+        input_params = pickle.load(
+            open(
+                os.path.join(batch_path, f'{UUID}.params'),
+                'rb'
+            )
+        )
 
         name = input_params['name_elas']
         vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
-        bpx = json.load(open(batch_path + '/' + str(UUID) + '.out', 'r'))['bord_px']
+
+        out_file = json.load(
+            open(os.path.join(batch_path, f'{UUID}.out'), 'r')
+        )
+
+        bpx = out_file['bord_px']
         input_params.update({'bord_px': bpx})
+
         vi.viewer.workEnv.history_trace.append({'caiman_motion_correction': input_params})
+
         vi.enable_ui(True)
 
 

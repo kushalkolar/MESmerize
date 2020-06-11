@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
+    <width>402</width>
     <height>536</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>393</width>
+    <width>402</width>
     <height>412</height>
    </size>
   </property>
@@ -223,6 +223,20 @@
    <header>..roi_manager_modules.roi_tag_line_edit</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>horizontalSliderSpotSize</tabstop>
+  <tabstop>btnAddROI</tabstop>
+  <tabstop>checkBoxShowAll</tabstop>
+  <tabstop>checkBoxLivePlot</tabstop>
+  <tabstop>btnPlot</tabstop>
+  <tabstop>pushButtonImportFromImageJ</tabstop>
+  <tabstop>btnSwitchToManualMode</tabstop>
+  <tabstop>listWidgetROIs</tabstop>
+  <tabstop>listWidgetROITags</tabstop>
+  <tabstop>lineEditROITag</tabstop>
+  <tabstop>btnSetROITag</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

@@ -38,6 +38,14 @@ class ViewerUtils:
         self.viewer.status_bar_label.showMessage('Updating work environment, please wait...')
         self.viewer.parent().show()
 
+        if self.viewer.workEnv.imgdata.ndim == 4:
+            self.viewer.set_zlevel_ui_visible(True)
+            self.viewer.ui.verticalSliderZLevel.setMaximum(self.viewer.workEnv.imgdata.z_max)
+            self.viewer.ui.verticalSliderZLevel.setValue(0)
+            self.viewer.ui.spinBoxZLevel.setMaximum(self.viewer.workEnv.imgdata.z_max)
+        else:
+            self.viewer.set_zlevel_ui_visible(False)
+
         self.viewer.setImage(self.viewer.workEnv.imgdata.seq.T, pos=(0, 0), scale=(1, 1),
                                    xvals=np.linspace(1, self.viewer.workEnv.imgdata.seq.T.shape[0],
                                                      self.viewer.workEnv.imgdata.seq.T.shape[0]))
@@ -89,6 +97,7 @@ class ViewerUtils:
         self.viewer.clear()
         self.viewer.workEnv.saved = True
         self.viewer.ui.label_curr_img_seq_name.setText('EMPTY')
+        self.viewer.set_zlevel_ui_visible(False)
         self.viewer.status_bar_label.showMessage('Work environment cleared.')
 
     def workEnv_changed(self, element=None):

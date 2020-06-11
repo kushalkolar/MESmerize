@@ -409,8 +409,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>704</width>
-          <height>339</height>
+          <width>695</width>
+          <height>368</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -420,7 +420,7 @@
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
@@ -451,8 +451,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>327</width>
-          <height>367</height>
+          <width>331</width>
+          <height>365</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -477,8 +477,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>327</width>
-          <height>367</height>
+          <width>331</width>
+          <height>364</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -494,20 +494,25 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <tabstops>
+  <tabstop>listWidgetItemNumbers</tabstop>
   <tabstop>listwBatch</tabstop>
+  <tabstop>lineEditFindItem</tabstop>
   <tabstop>btnStart</tabstop>
   <tabstop>btnStartAtSelection</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>btnExportShScripts</tabstop>
   <tabstop>btnAbort</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnOpen</tabstop>
   <tabstop>btnViewInput</tabstop>
+  <tabstop>btnCompress</tabstop>
+  <tabstop>checkBoxUseWorkDir</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>textBrowserItemInfo</tabstop>
-  <tabstop>textBrowserStdOut</tabstop>
-  <tabstop>scrollAreaStdOut</tabstop>
-  <tabstop>textBrowserOutputInfo</tabstop>
   <tabstop>scrollAreaOutputInfo</tabstop>
+  <tabstop>textBrowserOutputInfo</tabstop>
+  <tabstop>scrollAreaStdOut</tabstop>
+  <tabstop>textBrowserStdOut</tabstop>
  </tabstops>
  <resources/>
  <connections/>
