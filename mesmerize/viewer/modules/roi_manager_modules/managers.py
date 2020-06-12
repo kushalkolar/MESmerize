@@ -242,6 +242,7 @@ class ManagerVolROI(ManagerScatterROI):
 class ManagerVolCNMF(ManagerVolROI):
     def __init__(self, parent, ui, viewer_interface):
         super(ManagerVolCNMF, self).__init__(parent, ui, viewer_interface)
+        self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
 
         self.input_params_dict = None
         self.idx_components = None  # Keep track of components if the user manually want to remove some
@@ -322,8 +323,6 @@ class ManagerVolCNMF(ManagerVolROI):
 
     def get_all_states(self) -> dict:
         """Get all states so that they can be restored"""
-        if not hasattr(self, 'roi_list'):
-            self.create_roi_list()
         states = super(ManagerVolROI, self).get_all_states()
 
         # If the user has manually deleted some ROIs

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>297</width>
-    <height>720</height>
+    <width>313</width>
+    <height>830</height>
    </rect>
   </property>
   <property name="floating">
@@ -17,7 +17,7 @@
    <string>&amp;CNMF 3D</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QLabel" name="label_6">
       <property name="text">
@@ -243,9 +243,50 @@
      </widget>
     </item>
     <item>
+     <widget class="QCheckBox" name="checkBox_keep_memmap">
+      <property name="toolTip">
+       <string>Keep the memmap of this batch item.
+If unchecked the memmap will be deleted 
+after this batch item is processed unless it 
+is required for a later batch item.</string>
+      </property>
+      <property name="text">
+       <string>Keep memmap of this batch item</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_use_previous_memmap">
+      <property name="toolTip">
+       <string>Useful if trying out different paramters for the same input image stack.</string>
+      </property>
+      <property name="title">
+       <string>Use &amp;memmap from previous batch item</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="lineEdit_memmap_uuid">
+         <property name="placeholderText">
+          <string>Enter UUID</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QLineEdit" name="lineEdit_name">
+        <property name="toolTip">
+         <string>Enter a name for this batch item</string>
+        </property>
         <property name="placeholderText">
          <string>Enter name</string>
         </property>
@@ -278,6 +319,7 @@
  </widget>
  <tabstops>
   <tabstop>spinBox_p</tabstop>
+  <tabstop>groupBox_use_patches</tabstop>
   <tabstop>spinBox_rf</tabstop>
   <tabstop>spinBox_stride</tabstop>
   <tabstop>spinBox_k</tabstop>
@@ -289,9 +331,28 @@
   <tabstop>doubleSpinBox_minSNR</tabstop>
   <tabstop>doubleSpinBox_decay_time</tabstop>
   <tabstop>checkBox_refit</tabstop>
+  <tabstop>groupBox_use_previous_memmap</tabstop>
+  <tabstop>lineEdit_memmap_uuid</tabstop>
   <tabstop>lineEdit_name</tabstop>
   <tabstop>pushButton_add_to_batch</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lineEdit_name</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton_add_to_batch</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>178</x>
+     <y>683</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>226</x>
+     <y>686</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

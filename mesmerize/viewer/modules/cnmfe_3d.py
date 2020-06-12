@@ -13,6 +13,7 @@ from ..core.common import ViewerUtils
 from .pytemplates.cnmf_3d_pytemplate import *
 from ...common import get_window_manager
 from ...common.qdialogs import *
+from uuid import UUID
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -24,7 +25,20 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_CNMF3D_template()
         self.ui.setupUi(self)
 
+        # If keep memmap, cannot use another item's memmap
+        self.ui.checkBox_keep_memmap.toggled.connect(self.set_memmap_checkboxes)
+
+        # If use another item's memmap, can't keep it's own memmap
+        self.ui.groupBox_use_previous_memmap.toggled.connect(self.set_memmap_checkboxes)
+
         self.ui.pushButton_add_to_batch.clicked.connect(self.add_to_batch)
+
+    def set_memmap_checkboxes(self):
+        if self.ui.checkBox_keep_memmap.isChecked():
+            self.ui.groupBox_use_previous_memmap.setChecked(False)
+
+        elif self.ui.groupBox_use_previous_memmap.isChecked():
+            self.ui.checkBox_keep_memmap.setChecked(False)
 
     @present_exceptions()
     def get_params(self, *args, group_params: bool = False, **kwargs) -> dict:
@@ -57,10 +71,22 @@ class ModuleGUI(QtWidgets.QDockWidget):
                         'rval_thr':     self.ui.doubleSpinBox_rval.value(),
         }
 
+        use_memmap = self.ui.groupBox_use_previous_memmap.isChecked()
+        memmap_uuid = self.ui.lineEdit_memmap_uuid.text()
+
+        if use_memmap:
+            try:
+                UUID(memmap_uuid)
+            except ValueError:
+                raise ValueError('Invalid UUID format. Please check that you entered the UUID correctly.')
+
         d = {
             'refit':        self.ui.checkBox_refit.isChecked(),
             'item_name':    self.ui.lineEdit_name.text(),
-            'use_patches':  self.ui.groupBox_use_patches.isChecked()
+            'use_patches':  self.ui.groupBox_use_patches.isChecked(),
+            'use_memmap':   use_memmap,
+            'memmap_uuid':  memmap_uuid,
+            'keep_memmap':  self.ui.checkBox_keep_memmap.isChecked()
         }
 
         if d['use_patches']:
@@ -124,7 +150,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         bm = get_window_manager().get_batch_manager()
 
-        bm.add_item(
+        if d['use_memmap']:
+            memmap_uuid = UUID(d['memmap_uuid'])
+
+            if memmap_uuid not in bm.df['uuid'].values:
+                raise ValueError("The entered memmap UUID isn't present in this batch")
+
+            bm.df.loc[bm.df['uuid'] == memmap_uuid, 'save_temp_files'] = 1
+
+        u = bm.add_item(
             module='CNMF_3D',
             name=name,
             input_workEnv=self.vi.viewer.workEnv,
@@ -132,5 +166,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
             info=self.get_params()
         )
 
+        if u is None:
+            self.vi.viewer.status_bar_label.clearMessage()
+            return
+
+        if d['keep_memmap']:
+            bm.df.loc[bm.df['uuid'] == u, 'save_temp_files'] = 1
+
         self.vi.viewer.status_bar_label.showMessage(f'Finished adding CNMF 3D item: "{name}" to batch')
         self.ui.lineEdit_name.clear()
+        self.ui.lineEdit_memmap_uuid.clear()

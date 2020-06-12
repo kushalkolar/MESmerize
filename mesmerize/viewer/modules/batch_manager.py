@@ -195,7 +195,17 @@ class ModuleGUI(QtWidgets.QWidget):
         os.makedirs(self.batch_path)
         self.ui.listwBatch.clear()
 
-        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid', 'compressed'])
+        self.df = pandas.DataFrame(
+            columns=[
+                'module',
+                'input_params',
+                'output',
+                'info',
+                'uuid',
+                'compressed',
+                'save_temp_files'
+            ]
+        )
         self.df.to_pickle(os.path.join(self.batch_path, 'dataframe.batch'))
 
         self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
@@ -420,12 +430,14 @@ class ModuleGUI(QtWidgets.QWidget):
             UUID = self.df.iloc[self.current_batch_item_index]['uuid']
             output = self.get_batch_item_output(UUID)
 
+            # Deal with the previous batch item if it aborted and perform workdir cleanup
             if output is None:
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
                 if self._use_workdir:
                     # cleanup workdir
                     self.move_files([], UUID)
 
+            # Deal with the previous batch item that just finished
             elif output['status']:
                 if 'output_files' in output.keys() and self._use_workdir:# and os.path.isdir(self.working_dir):
                     output_files_list = output['output_files']
@@ -530,7 +542,9 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             mv_str = None
 
-        args = f'"{self.working_dir}" "{u}"'
+        save_temp_files = r['save_temp_files']
+
+        args = f'"{self.working_dir}" "{u}" {save_temp_files}'
         if use_subdir:
             savedir = os.path.join(self.batch_path, f'jobs_{get_timestamp_str()}')
         else:
@@ -617,18 +631,17 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.df = self.df.append(
             {
-                'module': module,
-                'name': name,
-                'input_item': None,
-                'input_params': input_params,
-                'info': info,
-                'uuid': UUID,
-                'output': None,
+                'module':           module,
+                'name':             name,
+                'input_item':       None,
+                'input_params':     input_params,
+                'info':             info,
+                'uuid':             UUID,
+                'output':           None,
+                'save_temp_files':  0
             },
             ignore_index=True
         )
-
-        assert isinstance(self.df, pandas.DataFrame)
 
         self.ui.listwBatch.addItem(module + ': ' + name)
         n = self.ui.listwBatch.count()
