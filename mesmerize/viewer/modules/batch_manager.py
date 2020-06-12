@@ -259,24 +259,21 @@ class ModuleGUI(QtWidgets.QWidget):
             raise TypeError('Must pass pyqtgraphCore.ImageView instance or list of pyqtgraphCore.ImageView instances.')
 
         vi = ViewerUtils(viewer_reference=viewer)
+        # try:
+        pikpath = os.path.join(self.batch_path, str(UUID) + '_input.pik')
+        tiffpath = os.path.join(self.batch_path, str(UUID) + '_input.tiff')
+        vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
+        if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
+            vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
+            vi.update_workEnv()
+            vi.enable_ui(True)
+            vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
+            vi.viewer.ui.label_curr_img_seq_name.setText('Input of item: ' + r['name'].item())
 
-        if r['input_item'].item() is None:
-            if not vi.discard_workEnv():
-                return
-            pikpath = os.path.join(self.batch_path, str(UUID) + '_input.pik')
-            tiffpath = os.path.join(self.batch_path, str(UUID) + '_input.tiff')
-            vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
-            if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
-                vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
-                vi.update_workEnv()
-                vi.enable_ui(True)
-                vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
-                vi.viewer.ui.label_curr_img_seq_name.setText('Input of item: ' + r['name'].item())
-
-            else:
-                QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
-                                              'The input files do not exist for this item.')
-                vi.viewer.status_bar_label.showMessage('Error, could not load input into work environment.')
+        # except:
+        #         QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
+        #                                       'The input files do not exist for this item.')
+        #         vi.viewer.status_bar_label.showMessage('Error, could not load input into work environment.')
         if self.lwd is not None:
             self.lwd.close()
             self.lwd = None
