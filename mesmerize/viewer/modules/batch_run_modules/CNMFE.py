@@ -141,11 +141,11 @@ def run(batch_dir: str, UUID: str):
         print('Creating memmap')
         fname_new = cm.save_memmap_each(
             filename,
-            base_name='memmap_' + UUID,
+            base_name='memmap-' + UUID,
             order='C',
             border_to_0=bord_px,
             dview=dview)
-        fname_new = cm.save_memmap_join(fname_new, base_name='memmap_' + UUID, dview=dview)
+        fname_new = cm.save_memmap_join(fname_new, base_name='memmap-' + UUID, dview=dview)
         # load memory mappable file
         Yr, dims, T = cm.load_memmap(fname_new)
         Y = Yr.T.reshape((T,) + dims, order='F')
@@ -170,7 +170,7 @@ def run(batch_dir: str, UUID: str):
 
             dview.terminate()
 
-            for mf in glob(batch_dir + '/memmap_*'):
+            for mf in glob(batch_dir + '/memmap-*'):
                 os.remove(mf)
 
             end_time = time()
@@ -244,7 +244,7 @@ def run(batch_dir: str, UUID: str):
 
     dview.terminate()
 
-    for mf in glob(batch_dir + '/memmap_*'):
+    for mf in glob(batch_dir + '/memmap-*'):
         os.remove(mf)
 
     end_time = time()
