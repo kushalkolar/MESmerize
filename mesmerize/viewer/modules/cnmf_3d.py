@@ -63,6 +63,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
                         'p': self.ui.spinBox_p.value()
         }
 
+        # Any additional cnmf kwargs
+        if self.ui.groupBox_cnmf_kwargs.isChecked():
+            try:
+                _kwargs = self.ui.plainTextEdit_cnmf_kwargs.toPlainText()
+                cnmf_kwargs_add = eval(f"dict{_kwargs}")
+                cnmf_kwargs.update(cnmf_kwargs_add)
+            except:
+                raise ValueError("CNMF kwargs not formatted properly.")
+
+
         # kwargs for component evaluation
         eval_kwargs = {
                         'fr':           self.vi.viewer.workEnv.imgdata.meta['fps'],
@@ -70,6 +80,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
                         'min_SNR':      self.ui.doubleSpinBox_minSNR.value(),
                         'rval_thr':     self.ui.doubleSpinBox_rval.value(),
         }
+
+        # Any additional eval kwargs
+        if self.ui.groupBox_eval_kwargs.isChecked():
+            try:
+                _kwargs = self.ui.plainTextEdit_eval_kwargs.toPlainText()
+                eval_kwargs_add = eval(f"dict{_kwargs}")
+                eval_kwargs.update(eval_kwargs_add )
+            except:
+                raise ValueError("Evaluation kwargs not formatted properly.")
 
         use_memmap = self.ui.groupBox_use_previous_memmap.isChecked()
         memmap_uuid = self.ui.lineEdit_memmap_uuid.text()
