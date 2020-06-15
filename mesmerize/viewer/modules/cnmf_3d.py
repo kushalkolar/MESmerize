@@ -67,7 +67,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if self.ui.groupBox_cnmf_kwargs.isChecked():
             try:
                 _kwargs = self.ui.plainTextEdit_cnmf_kwargs.toPlainText()
-                cnmf_kwargs_add = eval(f"dict{_kwargs}")
+                cnmf_kwargs_add = eval(f"dict({_kwargs})")
                 cnmf_kwargs.update(cnmf_kwargs_add)
             except:
                 raise ValueError("CNMF kwargs not formatted properly.")
