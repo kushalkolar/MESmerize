@@ -259,6 +259,10 @@ class ModuleGUI(QtWidgets.QWidget):
             raise TypeError('Must pass pyqtgraphCore.ImageView instance or list of pyqtgraphCore.ImageView instances.')
 
         vi = ViewerUtils(viewer_reference=viewer)
+
+        if not vi.discard_workEnv():
+            return
+
         # try:
         pikpath = os.path.join(self.batch_path, str(UUID) + '_input.pik')
         tiffpath = os.path.join(self.batch_path, str(UUID) + '_input.tiff')
