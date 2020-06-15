@@ -3,7 +3,7 @@ __all__ = [
     'mesfile_io',
     'cnmfe',
     'cnmf',
-    'cnmf_3d.py',
+    'cnmf_3d',
     'roi_manager',
     'tiff_io',
     'caiman_motion_correction',
