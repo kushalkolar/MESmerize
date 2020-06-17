@@ -139,28 +139,16 @@ class Output:
             os.path.join(batch_path, f'{UUID}_results.hdf5')
         )
 
-        cnmA = cnmf_data['estimates']['A']
-        cnmb = cnmf_data['estimates']['b']
-        cnm_f = cnmf_data['estimates']['f']
-        cnmC = cnmf_data['estimates']['C']
-        cnmYrA = cnmf_data['estimates']['YrA']
-        dims = cnmf_data['dims']
-
         roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
         roi_manager_gui.start_scatter_mode('CNMFROI')
 
         roi_manager_gui.manager.add_all_components(
-            cnmA=cnmA,
-            cnmb=cnmb,
-            cnmC=cnmC,
-            cnm_f=cnm_f,
-            cnmYrA=cnmYrA,
-            dims=dims,
+            cnmf_data,
             input_params_dict=input_params,
         )
 
         name = input_params['item_name']
-        vi.viewer.ui.label_curr_img_seq_name.setText(f'CNMF: {name}}')
+        vi.viewer.ui.label_curr_img_seq_name.setText(f'CNMF: {name}')
         vi.viewer.workEnv.history_trace.append({'cnmf': input_params})
         vi.enable_ui(True)
 
