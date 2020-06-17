@@ -13,7 +13,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from ..core.common import ViewerUtils
 from .pytemplates.cnmf_pytemplate import *
-import json
 from ...common import get_window_manager
 from ...common.qdialogs import *
 
@@ -30,7 +29,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnAddToBatchCNMF.clicked.connect(self.add_to_batch_cnmf)
 
     @present_exceptions()
-    def get_params(self, *args, group_params: bool = False, **kwargs) -> dict:
+    def get_params(self, *args, group_params: bool = False) -> dict:
         """
         Get a dict of the set parameters.
         If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
@@ -44,12 +43,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
                            'You must set a framerate for the current image sequence. '
                            'You can set it manually in the console like this:\nget_meta()["fps"] = <framerate>')
 
+        # Get width of border that is NaN, usually happens due ot motion correction
         history_trace = self.vi.viewer.workEnv.history_trace
         try:
             bord_px = next(d for ix, d in enumerate(history_trace) if 'caiman_motion_correction' in d)['caiman_motion_correction']['bord_px']
         except StopIteration:
             bord_px = 0
 
+        # CNMF kwargs
         cnmf_kwargs = \
             {
                 'p': self.ui.spinBoxP.value(),
@@ -59,16 +60,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'stride_cnmf': self.ui.spinBoxStrideCNMF.value(),
                 'k': self.ui.spinBoxK.value(),
                 'gSig': [
-                    self.ui.spinBox_gSig_x.value(),
-                    self.ui.spinBox_gSig_y.value()
-                ],
+                            self.ui.spinBox_gSig_x.value(),
+                            self.ui.spinBox_gSig_y.value()
+                        ],
                 'ssub': self.ui.spinBox_ssub.value(),
                 'tsub': self.ui.spinBox_tsub.value(),
                 'method_init': self.ui.comboBox_method_init.currentText(),
                 'border_pix': bord_px,
             }
 
-        # Any additional cnmf kwargs
+        # Any additional cnmf kwargs set in the text entry
         if self.ui.groupBox_cnmf_kwargs.isChecked():
             try:
                 _kwargs = self.ui.plainTextEdit_cnmf_kwargs.toPlainText()
@@ -77,11 +78,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
             except:
                 raise ValueError("CNMF kwargs not formatted properly.")
 
+        # Component evaluation kwargs
         eval_kwargs = \
             {
                 'min_SNR': self.ui.doubleSpinBoxMinSNR.value(),
                 'rval_thr': self.ui.doubleSpinBoxRvalThr.value(),
-                'cnn_thr': self.ui.doubleSpinBoxCNNThr.value(),
+                'min_cnn_thr': self.ui.doubleSpinBoxCNNThr.value(),
                 'cnn_lowest': self.ui.doubleSpinBox_cnn_lowest.value(),
                 'decay_time': self.ui.spinBoxDecayTime.value(),
                 'name_cnmf': self.ui.lineEdName.text(),
@@ -89,7 +91,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'fr': self.vi.viewer.workEnv.imgdata.meta['fps']
             }
 
-        # Any additional eval kwargs
+        # Any additional eval kwargs set in the text entry
         if self.ui.groupBox_eval_kwargs.isChecked():
             try:
                 _kwargs = self.ui.plainTextEdit_eval_kwargs.toPlainText()
@@ -98,12 +100,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
             except:
                 raise ValueError("Evaluation kwargs not formatted properly.")
 
+        # Make the output dict
         d = \
             {
-                'refit': self.ui.checkBoxRefit.isChecked(),
                 'item_name': self.ui.lineEdName.text(),
+                'refit': self.ui.checkBoxRefit.isChecked(),
+                'border_pix': bord_px
             }
 
+        # Group the kwargs of the two parts seperately
         if group_params:
             d.update(
                 {
@@ -112,6 +117,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 }
             )
 
+        # or not
         else:
             d.update(
                 {
@@ -163,6 +169,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
         """
         Add a CNMF batch item with the currently set parameters and the current work environment.
         """
+        if self.vi.viewer.workEnv.isEmpty:
+            QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
+                                                                          'nothing to add to batch')
+            return
+
         input_workEnv = self.vi.viewer.workEnv
 
         d = self.get_params(group_params=True)

@@ -41,7 +41,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.checkBox_keep_memmap.setChecked(False)
 
     @present_exceptions()
-    def get_params(self, *args, group_params: bool = False, **kwargs) -> dict:
+    def get_params(self, *args, group_params: bool = False) -> dict:
         """
         Get a dict of the params.
         Doesn't use arguments, *args and **kwargs are there just for compatibility with `@present_exceptions`
@@ -141,7 +141,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.spinBox_rf.setValue(p['rf'])
         self.ui.spinBox_stride.setValue(p['stride'])
-        self.ui.spinBox_K.setValue(p['k'])
+        self.ui.spinBox_k.setValue(p['k'])
 
         self.ui.spinBox_gSig_x.setValue(p['gSig'][0])
         self.ui.spinBox_gSig_y.setValue(p['gSig'][1])

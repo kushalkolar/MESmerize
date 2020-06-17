@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>703</width>
-    <height>704</height>
+    <height>702</height>
    </rect>
   </property>
   <property name="floating">
@@ -20,7 +20,7 @@
    <string>&amp;CNMF</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <layout class="QHBoxLayout" name="horizontalLayout_6">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
@@ -136,7 +136,7 @@
            <double>0.050000000000000</double>
           </property>
           <property name="value">
-           <double>0.300000000000000</double>
+           <double>0.700000000000000</double>
           </property>
          </widget>
         </item>
@@ -442,6 +442,24 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Ain:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEditAin"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
        <widget class="QGroupBox" name="groupBox_cnmf_kwargs">
         <property name="toolTip">
          <string>You can enter additional kwargs to pass for CNMF instantiation.
@@ -471,10 +489,6 @@ Use single quotes for strings, do not use double quotes.</string>
         </layout>
        </widget>
       </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QLabel" name="label_20">
         <property name="text">
@@ -787,6 +801,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>spinBox_ssub</tabstop>
   <tabstop>spinBox_tsub</tabstop>
   <tabstop>comboBox_method_init</tabstop>
+  <tabstop>lineEditAin</tabstop>
   <tabstop>groupBox_cnmf_kwargs</tabstop>
   <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
   <tabstop>doubleSpinBoxMinSNR</tabstop>

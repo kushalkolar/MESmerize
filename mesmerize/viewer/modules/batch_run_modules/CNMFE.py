@@ -14,18 +14,10 @@ Adapted from @agiovann and @epnev
 
 from __future__ import division
 import sys
-# from ..common import ViewerUtils, BatchRunInterface
-# from MesmerizeCore.packager import viewerWorkEnv as ViewerWorkEnv
-# from MesmerizeCore import configuration
-# from pyqtgraph.Qt import QtCore, QtGui, QtWidgets
-# if not len(sys.argv) > 1:
-#     from pyqtgraphCore.Qt import QtCore, QtGui, QtWidgets
 from PyQt5 import QtCore, QtGui, QtWidgets
-# from pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 import json
 
 import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 from caiman.utils import visualization
 
@@ -42,15 +34,9 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
 
 import caiman as cm
 from caiman.source_extraction import cnmf
-from caiman.utils.utils import download_demo
-from caiman.utils.visualization import inspect_correlation_pnr, nb_inspect_correlation_pnr
-from caiman.motion_correction import MotionCorrect
-from caiman.source_extraction.cnmf import params as params
-from caiman.utils.visualization import plot_contours, nb_view_patches, nb_plot_contour
-import cv2
-import h5py
 from caiman.utils.utils import load_dict_from_hdf5
 
+import cv2
 try:
     cv2.setNumThreads(0)
 except:
@@ -71,22 +57,10 @@ def run(batch_dir: str, UUID: str):
     n_processes = int(n_processes)
     file_path = os.path.join(batch_dir, UUID)
 
-    filename = file_path + '_input.tiff'
+    filename = [file_path + '.tiff']
     input_params = pickle.load(open(file_path + '.params', 'rb'))
 
-    frate = input_params['frate']
-    gSig = input_params['gSig']
-    gSiz = 3 * gSig + 1
-    min_corr = input_params['min_corr']
-    min_pnr = input_params['min_pnr']
-    min_SNR = input_params['min_SNR']
-    r_values_min = input_params['r_values_min']
-    decay_time = input_params['decay_time']
-    rf = input_params['rf']
-    stride = input_params['stride']
-    gnb = input_params['gnb']
-    nb_patch = input_params['nb_patch']
-    k = input_params['k']
+    # If Ain is specified
     if 'Ain' in input_params.keys():
         if input_params['Ain']:
             print('>> Ain specified, looking for cnm-A file <<')
@@ -104,8 +78,8 @@ def run(batch_dir: str, UUID: str):
 
             if os.path.isfile(item_out_file):
                 if json.load(open(item_out_file, 'r'))['status']:
-                    Ain_file = os.path.join(parent_batch_dir, item_uuid + '_cnm-A.pikl')
-                    Ain = pickle.load(open(Ain_file, 'rb'))
+                    Ain_path = os.path.join(parent_batch_dir, item_uuid + '_results.hdf5')
+                    Ain = load_dict_from_hdf5(Ain_path)['estimates']['A']
                     print('>>> Found Ain file <<<')
                 else:
                     raise FileNotFoundError('>>> Could not find specified Ain file <<<')
@@ -114,59 +88,52 @@ def run(batch_dir: str, UUID: str):
     else:
         Ain = None
 
-    if 'method_deconvolution' in input_params.keys():
-        method_deconvolution = input_params['method_deconvolution']
-    else:
-        method_deconvolution = 'oasis'
-
-    if 'deconv_flag' in input_params.keys():
-        deconv_flag = input_params['deconv_flag']
-    else:
-        deconv_flag = True
-
-    filename = [filename]
-
     print('*********** Creating Process Pool ***********')
 
-    c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
-                                                     n_processes=n_processes,
-                                                     single_thread=False,
-                                                     ignore_preexisting=True)
-    if 'bord_px' in input_params.keys():
-        bord_px = input_params['bord_px']
-    else:
-        bord_px = 6
+    c, dview, n_processes = cm.cluster.setup_cluster(
+        backend='local',
+        n_processes=n_processes,
+        single_thread=False,
+        ignore_preexisting=True
+    )
 
     try:
         print('Creating memmap')
-        fname_new = cm.save_memmap_each(
-            filename,
-            base_name='memmap-' + UUID,
-            order='C',
-            border_to_0=bord_px,
-            dview=dview)
-        fname_new = cm.save_memmap_join(fname_new, base_name='memmap-' + UUID, dview=dview)
-        # load memory mappable file
-        Yr, dims, T = cm.load_memmap(fname_new)
+        memmap_path = cm.save_memmap(
+            filename, base_name=f'memmap-', order='C', dview=dview, border_to_0=input_params['border_pix'],
+
+        )
+
+        Yr, dims, T = cm.load_memmap(memmap_path)
         Y = Yr.T.reshape((T,) + dims, order='F')
-        # compute some summary images (correlation and peak to noise)
-        # change swap dim if output looks weird, it is a problem with tiffile
+
+        if input_params['do_cnmfe']:
+            gSig = input_params['cnmfe_kwargs']['gSig'][0]
+        else:
+            gSig = input_params['corr_pnr_kwargs']['gSig']
+
         cn_filter, pnr = cm.summary_images.correlation_pnr(
-            Y, gSig=gSig, swap_dim=False)
+            Y, swap_dim=False, gSig=gSig
+        )
+
         if not input_params['do_cnmfe'] and input_params['do_corr_pnr']:
             pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
             pickle.dump(pnr, open(UUID + '_pnr.pikl', 'wb'), protocol=4)
 
-            output_file_list = [UUID + '_pnr.pikl',
-                                UUID + '_cn_filter.pikl',
-                                UUID + '_dims.pikl',
-                                ]
+            output_file_list = \
+                [
+                    UUID + '_pnr.pikl',
+                    UUID + '_cn_filter.pikl',
+                ]
 
-            output.update({'output': UUID,
-                           'status': 1,
-                           'output_info': 'inspect correlation & pnr',
-                           'output_files': output_file_list
-                           })
+            output.update(
+                {
+                    'output': UUID,
+                    'status': 1,
+                    'output_info': 'inspect correlation & pnr',
+                    'output_files': output_file_list
+                }
+            )
 
             dview.terminate()
 
@@ -181,63 +148,49 @@ def run(batch_dir: str, UUID: str):
 
             return
 
-        cnm = cnmf.CNMF(n_processes=n_processes,
-                        method_init='corr_pnr',  # use this for 1 photon
-                        k=k,  # neurons per patch
-                        gSig=(gSig, gSig),  # half size of neuron
-                        gSiz=(gSiz, gSiz),  # in general 3*gSig+1
-                        merge_thresh=.3,  # threshold for merging
-                        p=1,  # order of autoregressive process to fit
-                        dview=dview,  # if None it will run on a single thread
-                        # downsampling factor in time for initialization, increase if you have memory problems
-                        tsub=2,
-                        # downsampling factor in space for initialization, increase if you have memory problems
-                        ssub=2,
-                        # if you want to initialize with some preselcted components you can pass them here as boolean vectors
-                        Ain=Ain,
-                        # half size of the patch (final patch will be 100x100)
-                        rf=rf,
-                        # overlap among patches (keep it at least large as 4 times the neuron size)
-                        stride=stride,
-                        only_init_patch=True,  # just leave it as is
-                        gnb=gnb,  # number of background components
-                        nb_patch=nb_patch,  # number of background components per patch
-                        method_deconvolution=method_deconvolution,  # could use 'cvxpy' alternatively
-                        deconv_flag=deconv_flag,
-                        low_rank_background=True,  # leave as is
-                        # sometimes setting to False improve the results
-                        update_background_components=True,
-                        min_corr=min_corr,  # min peak value from correlation image
-                        min_pnr=min_pnr,  # min peak to noise ration from PNR image
-                        normalize_init=False,  # just leave as is
-                        center_psf=True,  # leave as is for 1 photon
-                        del_duplicates=True,  # whether to remove duplicates from initialization
-                        border_pix=bord_px)  # number of pixels to not consider in the borders
+        cnm = cnmf.CNMF(
+            n_processes=n_processes,
+            method_init='corr_pnr',
+            dview=dview,
+            Ain=Ain,
+            only_init_patch=True,  # just leave it as is
+            low_rank_background=True,
+            normalize_init=False,
+            center_psf=True,
+            **input_params['cnmfe_kwargs']
+        )
+
         cnm.fit(Y)
 
         #  DISCARD LOW QUALITY COMPONENTS
-        cnm.params.set('quality', {'min_SNR': min_SNR,
-                                   'rval_thr': r_values_min,
-                                   'decay_time': decay_time,
-                                   'fr':        frate,
-                                   'use_cnn': False})
+        cnm.params.set(
+            'quality',
+            {
+                'use_cnn': False,
+                **input_params['eval_kwargs']
+            }
+        )
+
         cnm.estimates.evaluate_components(Y, cnm.params, dview=dview)
 
         out_filename = f'{UUID}_results.hdf5'
         cnm.save(out_filename)
 
-        # np.save(filename[:-5] + '_curves.npy', cnm.C)
         pickle.dump(pnr, open(UUID + '_pnr.pikl', 'wb'), protocol=4)
         pickle.dump(cn_filter, open(UUID + '_cn_filter.pikl', 'wb'), protocol=4)
-        pickle.dump(Yr, open(UUID + '_Yr.pikl', 'wb'), protocol=4)
 
-        output.update({'output': filename[:-5],
-                       'status': 1,
-                       'output_files': [out_filename,
-                                        UUID + '_pnr.pikl',
-                                        UUID + '_cn_filter.pikl',
-                                        UUID + '_Yr.pikl']
-                       })
+        output.update(
+            {
+                'output': filename[:-5],
+                'status': 1,
+                'output_files': [
+                    out_filename,
+                    UUID + '_pnr.pikl',
+                    UUID + '_cn_filter.pikl',
+                ]
+
+            }
+        )
 
     except Exception as e:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
@@ -284,10 +237,6 @@ class Output(QtWidgets.QWidget):
             self.btnCP.setText('Corr PNR Img')
             layout.addWidget(self.btnCP)
 
-            self.btnCNMFE = QtWidgets.QPushButton()
-            self.btnCNMFE.setText('CaImAn CNMFE visualization')
-            layout.addWidget(self.btnCNMFE)
-
             self.btnImportIntoViewer = QtWidgets.QPushButton()
             self.btnImportIntoViewer.setText('Import CNMFE output into chosen Viewer')
             layout.addWidget(self.btnImportIntoViewer)
@@ -300,16 +249,12 @@ class Output(QtWidgets.QWidget):
             self.setLayout(layout)
 
             self.btnCP.clicked.connect(self.output_corr_pnr)
-            self.btnCNMFE.clicked.connect(self.output_cnmfe)
             self.btnImportIntoViewer.clicked.connect(self.import_cnmfe_into_viewer)
             self.show()
 
     def output_corr_pnr(self):  # , batch_dir, UUID, viewer_ref):
         filename = os.path.join(self.batch_dir, str(self.UUID))
 
-        print(self.batch_dir)
-        print(str(self.UUID))
-        print(filename)
         cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
         # try:
         pnr = pickle.load(open(filename + '_pnr.pikl', 'rb'))
@@ -366,48 +311,15 @@ class Output(QtWidgets.QWidget):
         self.mw.show()
         # plt.show()
 
-        # visualization.inspect_correlation_pnr(cn_filter, pnr)
-
-    def get_cnmfe_results(self):
-        filename = os.path.join(self.batch_dir, f'{self.UUID}_results.hdf5')
-
-        data = load_dict_from_hdf5(filename)
-
-        self.cnmA = data['estimates']['A']
-        self.cnmb = data['estimates']['b']
-        self.cnm_f = data['estimates']['f']
-        self.cnmC = data['estimates']['C']
-        self.cnmYrA = data['estimates']['YrA']
-        self.idx_components = data['estimates']['idx_components']
-        self.dims = data['dims']
-
-    def output_cnmfe(self):  # , batch_dir, UUID, viewer_ref):
-        filename = os.path.join(self.batch_dir, str(self.UUID))
-
-        self.get_cnmfe_results()
-
-        Yr = pickle.load(open(filename + '_Yr.pikl', 'rb'))
-
-        cnmb = self.cnmb
-        cnm_f = self.cnm_f
-        cnmYrA = self.cnmYrA
-
-        cn_filter = pickle.load(open(filename + '_cn_filter.pikl', 'rb'))
-        self.visualization = cm.utils.visualization.view_patches_bar(Yr, self.cnmA[:, self.idx_components],
-                                                                     self.cnmC[self.idx_components], cnmb, cnm_f,
-                                                                     self.dims[0], self.dims[1],
-                                                                     YrA=cnmYrA[self.idx_components], img=cn_filter)
-        #self.hide()
-
     def import_cnmfe_into_viewer(self):
-        self.get_cnmfe_results()
-
         vi = ViewerUtils(self.viewer_ref)
 
         if not vi.discard_workEnv():
             return
 
-        # vi.viewer.parent().roi_manager.start_scatter_mode()
+        cnmf_data = load_dict_from_hdf5(
+            os.path.join(self.batch_dir, f'{self.UUID}_results.hdf5')
+        )
 
         vi.viewer.status_bar_label.showMessage('Loading CNMFE data, please wait...')
         pickle_file_path = os.path.join(self.batch_dir, f'{self.UUID}_input.pik')
@@ -426,26 +338,15 @@ class Output(QtWidgets.QWidget):
         vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
 
         roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-        roi_manager_gui.start_scatter_mode('VolCNMF')
+        roi_manager_gui.start_scatter_mode('CNMFROI')
 
-        roi_manager_gui.manager.add_all_cnmfe_components(
-            cnmA=self.cnmA,
-            cnmb=self.cnmb,
-            cnmC=self.cnmC,
-            cnm_f=self.cnm_f,
-            cnmYrA=self.cnmYrA,
-            idx_components=self.idx_components,
-            dims=self.dims,
+        roi_manager_gui.manager.add_all_components(
+            cnmf_data,
             input_params_dict=input_params,
-            calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
+            calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()()
         )
 
-        if 'name_cnmfe' in input_params.keys():
-            name = input_params['name_cnmfe']
-        else:
-            name = ''
-        vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + name)
-        #self.hide()
+        vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + input_params['item_name'])
         self.close()
 
 

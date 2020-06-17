@@ -12,15 +12,12 @@ Adapted from the demo notebook from @agiovann and @epnev
 
 from ipyparallel import Client
 import logging
-import matplotlib.pyplot as plt
 import numpy as np
 import os
-import psutil
 from scipy.ndimage.filters import gaussian_filter
 import sys
 
 import caiman as cm
-from caiman.utils.visualization import nb_view_patches3d
 import caiman.source_extraction.cnmf as cnmf
 from caiman.components_evaluation import evaluate_components, estimate_components_quality_auto
 from caiman.cluster import setup_cluster
@@ -126,9 +123,6 @@ def run(work_dir: str, UUID: str, save_temp_files: str):
 
         cnm.estimates.evaluate_components(images, cnm.params, dview=dview)
 
-        print('Keeping ' + str(len(cnm.estimates.idx_components)) +
-              ' and discarding  ' + str(len(cnm.estimates.idx_components_bad)))
-
         if input_params['refit']:
             cnm.params.set('temporal', {'p': input_params['cnmf_kwargs']['p']})
             cnm_ = cnm.refit(images)
@@ -198,28 +192,16 @@ class Output:
             os.path.join(batch_path, f'{UUID}_results.hdf5')
         )
 
-        cnmA = cnmf_data['estimates']['A']
-        cnmb = cnmf_data['estimates']['b']
-        cnm_f = cnmf_data['estimates']['f']
-        cnmC = cnmf_data['estimates']['C']
-        cnmYrA = cnmf_data['estimates']['YrA']
-        dims = cnmf_data['dims']
-
         roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
         roi_manager_gui.start_scatter_mode('VolCNMF')
 
         roi_manager_gui.manager.add_all_components(
-            cnmA=cnmA,
-            cnmb=cnmb,
-            cnmC=cnmC,
-            cnm_f=cnm_f,
-            cnmYrA=cnmYrA,
-            dims=dims,
+            cnmf_data,
             input_params_dict=input_params,
         )
 
         name = input_params['item_name']
-        vi.viewer.ui.label_curr_img_seq_name.setText('cnmf_3D:' + name)
+        vi.viewer.ui.label_curr_img_seq_name.setText(f'CNMF 3D: {name}')
         vi.viewer.workEnv.history_trace.append({'cnmf_3d': input_params})
         vi.enable_ui(True)
 
