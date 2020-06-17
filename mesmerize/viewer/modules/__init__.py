@@ -9,5 +9,6 @@ __all__ = [
     'caiman_motion_correction',
     'stimulus_mapping',
     'script_editor',
-    'suite2p'
+    'suite2p',
+    'caiman_importer'
 ]
