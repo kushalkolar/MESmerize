@@ -20,7 +20,7 @@
    <string>&amp;CNMF-E</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout_15">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -66,17 +66,10 @@
            <number>998</number>
           </property>
           <property name="singleStep">
-           <number>2</number>
+           <number>1</number>
           </property>
           <property name="value">
-           <number>14</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_22">
-          <property name="text">
-           <string>Must be an even number</string>
+           <number>10</number>
           </property>
          </widget>
         </item>
@@ -158,6 +151,37 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEditAin"/>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_12">
+        <item>
+         <widget class="QLabel" name="label_19">
+          <property name="text">
+           <string>p:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinBox_p">
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -461,6 +485,112 @@
         </item>
        </layout>
       </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_23">
+        <item>
+         <widget class="QLabel" name="label_35">
+          <property name="text">
+           <string>ssub:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinBox_ssub">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_36">
+          <property name="text">
+           <string>tsub:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinBox_tsub">
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="value">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_17">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBox_low_rank_background">
+        <property name="text">
+         <string>low_rank_background</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>ring_size_factor:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_ring_size_factor">
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
@@ -504,10 +634,43 @@
         </item>
        </layout>
       </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <item>
+         <widget class="QLabel" name="label_22">
+          <property name="text">
+           <string>merge_thresh:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBoxMergeThresh">
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.050000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.700000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_15">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
       <item>
        <widget class="QGroupBox" name="groupBox_cnmf_kwargs">
         <property name="toolTip">
@@ -532,33 +695,6 @@ Use single quotes for strings, do not use double quotes.</string>
            <property name="toolTip">
             <string>You can enter additional kwargs to pass for CNMF instantiation.
 Use single quotes for strings, do not use double quotes.</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_eval_kwargs">
-        <property name="toolTip">
-         <string>You can enter additional parameters to use for component evaluation.
-Use single quotes for strings, do not use double quotes</string>
-        </property>
-        <property name="title">
-         <string>Use e&amp;valuation params</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QPlainTextEdit" name="plainTextEdit_eval_kwargs">
-           <property name="toolTip">
-            <string>You can enter additional parameters to use for component evaluation.
-Use single quotes for strings, do not use double quotes</string>
            </property>
           </widget>
          </item>
@@ -700,6 +836,33 @@ If lower more components will be accepted, potentially with worse quality</strin
        </layout>
       </item>
       <item>
+       <widget class="QGroupBox" name="groupBox_eval_kwargs">
+        <property name="toolTip">
+         <string>You can enter additional parameters to use for component evaluation.
+Use single quotes for strings, do not use double quotes</string>
+        </property>
+        <property name="title">
+         <string>Use e&amp;valuation params</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QPlainTextEdit" name="plainTextEdit_eval_kwargs">
+           <property name="toolTip">
+            <string>You can enter additional parameters to use for component evaluation.
+Use single quotes for strings, do not use double quotes</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <widget class="QLabel" name="label_18">
@@ -740,6 +903,7 @@ If lower more components will be accepted, potentially with worse quality</strin
   <tabstop>lineEdCorrPNRName</tabstop>
   <tabstop>btnAddToBatchCorrPNR</tabstop>
   <tabstop>lineEditAin</tabstop>
+  <tabstop>spinBox_p</tabstop>
   <tabstop>doubleSpinBoxMinCorr</tabstop>
   <tabstop>spinBoxMinPNR</tabstop>
   <tabstop>spinBoxRf</tabstop>
@@ -747,14 +911,18 @@ If lower more components will be accepted, potentially with worse quality</strin
   <tabstop>spinBoxGnb</tabstop>
   <tabstop>spinBoxNb_patch</tabstop>
   <tabstop>spinBoxK</tabstop>
+  <tabstop>spinBox_ssub</tabstop>
+  <tabstop>spinBox_tsub</tabstop>
+  <tabstop>checkBox_low_rank_background</tabstop>
+  <tabstop>doubleSpinBox_ring_size_factor</tabstop>
   <tabstop>comboBoxDeconv</tabstop>
   <tabstop>groupBox_cnmf_kwargs</tabstop>
   <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
-  <tabstop>groupBox_eval_kwargs</tabstop>
-  <tabstop>plainTextEdit_eval_kwargs</tabstop>
   <tabstop>spinBoxMinSNR</tabstop>
   <tabstop>doubleSpinBoxRValuesMin</tabstop>
   <tabstop>doubleSpinBoxDecayTime</tabstop>
+  <tabstop>groupBox_eval_kwargs</tabstop>
+  <tabstop>plainTextEdit_eval_kwargs</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMFE</tabstop>
  </tabstops>
