@@ -29,13 +29,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.btnAddToBatchCNMF.clicked.connect(self.add_to_batch_cnmf)
 
-        self.ui.btnExport.clicked.connect(self.export_params)
-        self.ui.btnImport.clicked.connect(self.import_params)
-
-        # assert isinstance(self.vi.viewer_ref.batch_manager, BatchModuleGui)
-
     @present_exceptions()
-    def get_params(self, *args, **kwargs) -> dict:
+    def get_params(self, *args, group_params: bool = False, **kwargs) -> dict:
         """
         Get a dict of the set parameters.
         If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
@@ -55,26 +50,75 @@ class ModuleGUI(QtWidgets.QDockWidget):
         except StopIteration:
             bord_px = 0
 
-        d = {'Input':           self.ui.comboBoxInput.currentText(),
-             'p':               self.ui.spinBoxP.value(),
-             'gnb':             self.ui.spinBoxGnb.value(),
-             'merge_thresh':    self.ui.doubleSpinBoxMergeThresh.value(),
-             'rf':              self.ui.spinBoxRf.value(),
-             'stride_cnmf':     self.ui.spinBoxStrideCNMF.value(),
-             'k':               self.ui.spinBoxK.value(),
-             'gSig':            self.ui.spinBoxGSig.value(),
-             'min_SNR':         self.ui.doubleSpinBoxMinSNR.value(),
-             'rval_thr':        self.ui.doubleSpinBoxRvalThr.value(),
-             'cnn_thr':         self.ui.doubleSpinBoxCNNThr.value(),
-             'decay_time':      self.ui.spinBoxDecayTime.value(),
-             'name_cnmf':       self.ui.lineEdName.text(),
-             'refit':           self.ui.checkBoxRefit.isChecked()
-             }
+        cnmf_kwargs = \
+            {
+                'p': self.ui.spinBoxP.value(),
+                'gnb': self.ui.spinBoxGnb.value(),
+                'merge_thresh': self.ui.doubleSpinBoxMergeThresh.value(),
+                'rf': self.ui.spinBoxRf.value(),
+                'stride_cnmf': self.ui.spinBoxStrideCNMF.value(),
+                'k': self.ui.spinBoxK.value(),
+                'gSig': [
+                    self.ui.spinBox_gSig_x.value(),
+                    self.ui.spinBox_gSig_y.value()
+                ],
+                'ssub': self.ui.spinBox_ssub.value(),
+                'tsub': self.ui.spinBox_tsub.value(),
+                'method_init': self.ui.comboBox_method_init.currentText(),
+                'border_pix': bord_px,
+            }
 
-        # Non UI params
-        d = {'fr': self.vi.viewer.workEnv.imgdata.meta['fps'],
-             'bord_px': bord_px,
-             **d}
+        # Any additional cnmf kwargs
+        if self.ui.groupBox_cnmf_kwargs.isChecked():
+            try:
+                _kwargs = self.ui.plainTextEdit_cnmf_kwargs.toPlainText()
+                cnmf_kwargs_add = eval(f"dict({_kwargs})")
+                cnmf_kwargs.update(cnmf_kwargs_add)
+            except:
+                raise ValueError("CNMF kwargs not formatted properly.")
+
+        eval_kwargs = \
+            {
+                'min_SNR': self.ui.doubleSpinBoxMinSNR.value(),
+                'rval_thr': self.ui.doubleSpinBoxRvalThr.value(),
+                'cnn_thr': self.ui.doubleSpinBoxCNNThr.value(),
+                'cnn_lowest': self.ui.doubleSpinBox_cnn_lowest.value(),
+                'decay_time': self.ui.spinBoxDecayTime.value(),
+                'name_cnmf': self.ui.lineEdName.text(),
+                'refit': self.ui.checkBoxRefit.isChecked(),
+                'fr': self.vi.viewer.workEnv.imgdata.meta['fps']
+            }
+
+        # Any additional eval kwargs
+        if self.ui.groupBox_eval_kwargs.isChecked():
+            try:
+                _kwargs = self.ui.plainTextEdit_eval_kwargs.toPlainText()
+                eval_kwargs_add = eval(f"dict{_kwargs}")
+                eval_kwargs.update(eval_kwargs_add)
+            except:
+                raise ValueError("Evaluation kwargs not formatted properly.")
+
+        d = \
+            {
+                'refit': self.ui.checkBoxRefit.isChecked(),
+                'item_name': self.ui.lineEdName.text(),
+            }
+
+        if group_params:
+            d.update(
+                {
+                    'cnmf_kwargs': cnmf_kwargs,
+                    'eval_kwargs': eval_kwargs
+                }
+            )
+
+        else:
+            d.update(
+                {
+                    **cnmf_kwargs,
+                    **eval_kwargs
+                }
+            )
 
         return d
 
@@ -84,32 +128,36 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         :param d: parameters dict
         """
-        self.ui.spinBoxP.setValue(d['p'])
-        self.ui.spinBoxGnb.setValue(d['gnb'])
-        self.ui.doubleSpinBoxMergeThresh.setValue(d['merge_thresh'])
-        self.ui.spinBoxRf.setValue(d['rf'])
-        self.ui.spinBoxStrideCNMF.setValue(d['stride_cnmf'])
-        self.ui.spinBoxK.setValue(d['k'])
-        self.ui.spinBoxGSig.setValue(d['gSig'])
-        self.ui.doubleSpinBoxMinSNR.setValue(d['min_SNR'])
-        self.ui.doubleSpinBoxRvalThr.setValue(d['rval_thr'])
-        self.ui.doubleSpinBoxCNNThr.setValue(d['cnn_thr'])
-        self.ui.spinBoxDecayTime.setValue(d['decay_time'])
-        self.ui.lineEdName.setText(d['name_cnmf'])
-        self.ui.checkBoxRefit.setChecked(d['refit'])
+        if ('cnmf_kwargs' in d.keys()) and ('eval_kwargs' in d.keys()):
+            p = {**d['cnmf_kwargs'], **d['eval_kwargs']}
+        else:
+            p = d
 
-    @use_save_file_dialog('Save params file as', None, '.json')
-    def export_params(self, path, args, **kwargs):
-        with open(path, 'w') as f:
-            d = self.get_params()
-            json.dump(d, f)
+        self.ui.spinBoxP.setValue(p['p'])
+        self.ui.spinBoxGnb.setValue(p['gnb'])
+        self.ui.doubleSpinBoxMergeThresh.setValue(p['merge_thresh'])
+        self.ui.spinBoxRf.setValue(p['rf'])
+        self.ui.spinBoxStrideCNMF.setValue(p['stride_cnmf'])
+        self.ui.spinBoxK.setValue(p['k'])
 
-    @use_open_file_dialog('Choose params file', None, ['*.json'])
-    @present_exceptions('Cannot import parameters', 'Make sure it is a CNMF parameters file')
-    def import_params(self, path, *args, **kwargs):
-        with open(path, 'r') as f:
-            d = json.load(f)
-            self.set_params(d)
+        self.ui.spinBox_gSig_x.setValue(p['gSig'][0])
+        self.ui.spinBox_gSig_x.setValue(p['gSig'][1])
+
+        self.ui.spinBox_ssub.setValue([p['ssub']])
+        self.ui.spinBox_tsub.setValue([p['tsub']])
+
+        ix = self.ui.comboBox_method_init.findText(p['method_init'])
+        if ix == -1:
+            raise ValueError('Invalid method_init param')
+        self.ui.comboBox_method_init.setCurrentIndex(ix)
+
+        self.ui.doubleSpinBoxMinSNR.setValue(p['min_SNR'])
+        self.ui.doubleSpinBoxRvalThr.setValue(p['rval_thr'])
+        self.ui.doubleSpinBoxCNNThr.setValue(p['cnn_thr'])
+        self.ui.doubleSpinBox_cnn_lowest.setValue(p['cnn_lowest'])
+        self.ui.spinBoxDecayTime.setValue(p['decay_time'])
+        self.ui.lineEdName.setText(p['item_name'])
+        self.ui.checkBoxRefit.setChecked(p['refit'])
 
     def add_to_batch_cnmf(self):
         """
@@ -117,17 +165,23 @@ class ModuleGUI(QtWidgets.QDockWidget):
         """
         input_workEnv = self.vi.viewer.workEnv
 
-        d = self.get_params()
+        d = self.get_params(group_params=True)
 
-        name = self.ui.lineEdName.text()
+        name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMF: ' + name + ' to batch...')
 
         batch_manager = get_window_manager().get_batch_manager()
-        batch_manager.add_item(module='CNMF',
-                               name=name,
-                               input_workEnv=input_workEnv,
-                               input_params=d,
-                               info=d
-                               )
+        u = batch_manager.add_item(
+            module='CNMF',
+            name=name,
+            input_workEnv=input_workEnv,
+            input_params=d,
+            info=self.get_params()
+        )
+
+        if u is None:
+            self.vi.viewer.status_bar_label.clearMessage()
+            return
+
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')
         self.ui.lineEdName.clear()
