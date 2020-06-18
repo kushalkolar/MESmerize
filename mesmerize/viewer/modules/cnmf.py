@@ -57,7 +57,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'gnb': self.ui.spinBoxGnb.value(),
                 'merge_thresh': self.ui.doubleSpinBoxMergeThresh.value(),
                 'rf': self.ui.spinBoxRf.value(),
-                'stride_cnmf': self.ui.spinBoxStrideCNMF.value(),
+                'stride': self.ui.spinBoxStrideCNMF.value(),
                 'k': self.ui.spinBoxK.value(),
                 'gSig': [
                             self.ui.spinBox_gSig_x.value(),
