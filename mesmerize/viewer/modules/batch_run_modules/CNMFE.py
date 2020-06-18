@@ -57,7 +57,7 @@ def run(batch_dir: str, UUID: str):
     n_processes = int(n_processes)
     file_path = os.path.join(batch_dir, UUID)
 
-    filename = [file_path + '.tiff']
+    filename = [file_path + '_input.tiff']
     input_params = pickle.load(open(file_path + '.params', 'rb'))
 
     # If Ain is specified
