@@ -4,7 +4,6 @@ Cython==0.29.6
 dask==1.1.1
 future==0.17.1
 h5py==2.9.0
-hickle==3.4.3
 ipython==7.3.0
 ipyparallel==6.2.3
 MarkupSafe==1.1.1
