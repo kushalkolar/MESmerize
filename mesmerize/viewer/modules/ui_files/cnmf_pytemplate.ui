@@ -675,15 +675,12 @@ Use single quotes for strings, do not use double quotes.</string>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBoxDecayTime">
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>999</number>
+         <widget class="QDoubleSpinBox" name="spinBoxDecayTime">
+          <property name="singleStep">
+           <double>0.500000000000000</double>
           </property>
           <property name="value">
-           <number>4</number>
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -808,7 +805,6 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>doubleSpinBoxRvalThr</tabstop>
   <tabstop>doubleSpinBoxCNNThr</tabstop>
   <tabstop>doubleSpinBox_cnn_lowest</tabstop>
-  <tabstop>spinBoxDecayTime</tabstop>
   <tabstop>groupBox_eval_kwargs</tabstop>
   <tabstop>plainTextEdit_eval_kwargs</tabstop>
   <tabstop>checkBoxRefit</tabstop>
