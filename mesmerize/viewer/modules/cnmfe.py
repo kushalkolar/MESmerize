@@ -128,9 +128,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
                     'item_name':        item_name,
                     'do_cnmfe':         False,
                     'do_corr_pnr':      True,
-                    'corr_pnr_kwargs':  corr_pnr_kwargs,
-                    'border_pix': bord_px
+                    'border_pix':       bord_px
                 }
+
+            if group_params:
+                d.update({'corr_pnr_kwargs':  corr_pnr_kwargs})
+            else:
+                d.update({**corr_pnr_kwargs})
 
         elif item_type == 'cnmfe':
             item_name = self.ui.lineEdName.text()
@@ -139,10 +143,22 @@ class ModuleGUI(QtWidgets.QDockWidget):
                     'item_name':        item_name,
                     'do_cnmfe':         False,
                     'do_corr_pnr':      True,
-                    'cnmfe_kwargs':     cnmfe_kwargs,
-                    'eval_kwargs':      eval_kwargs,
-                    'border_pix': bord_px
+                    'border_pix':       bord_px
                 }
+            if group_params:
+                d.update(
+                    {
+                        'cnmfe_kwargs': cnmfe_kwargs,
+                        'eval_kwargs': eval_kwargs,
+                    }
+                )
+            else:
+                d.update(
+                    {
+                        **cnmfe_kwargs,
+                        **eval_kwargs
+                    }
+                )
         else:
             raise ValueError("Must specify argument `item_type` as either 'corr_pnr' or 'cnmfe'")
 
