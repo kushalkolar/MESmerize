@@ -61,10 +61,12 @@ def run(batch_dir: str, UUID: str):
     input_params = pickle.load(open(file_path + '.params', 'rb'))
 
     # If Ain is specified
-    if 'Ain' in input_params.keys():
-        if input_params['Ain']:
+    if input_params['do_cnmfe']:
+        Ain = None
+        item_uuid = input_params['cnmfe_kwargs'].pop('Ain')
+
+        if item_uuid:
             print('>> Ain specified, looking for cnm-A file <<')
-            item_uuid = input_params['Ain']
             parent_batch_dir = os.environ['CURR_BATCH_DIR']
             item_out_file = os.path.join(parent_batch_dir, f'{item_uuid}.out')
             t0 = time()
@@ -83,10 +85,6 @@ def run(batch_dir: str, UUID: str):
                     print('>>> Found Ain file <<<')
                 else:
                     raise FileNotFoundError('>>> Could not find specified Ain file <<<')
-        else:
-            Ain = None
-    else:
-        Ain = None
 
     print('*********** Creating Process Pool ***********')
 
