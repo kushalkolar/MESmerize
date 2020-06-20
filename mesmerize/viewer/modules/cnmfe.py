@@ -141,8 +141,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
             d = \
                 {
                     'item_name':        item_name,
-                    'do_cnmfe':         False,
-                    'do_corr_pnr':      True,
+                    'do_cnmfe':         True,
+                    'do_corr_pnr':      False,
                     'border_pix':       bord_px
                 }
             if group_params:
