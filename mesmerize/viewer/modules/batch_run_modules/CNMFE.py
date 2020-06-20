@@ -152,7 +152,6 @@ def run(batch_dir: str, UUID: str):
             dview=dview,
             Ain=Ain,
             only_init_patch=True,  # just leave it as is
-            low_rank_background=True,
             normalize_init=False,
             center_psf=True,
             **input_params['cnmfe_kwargs']
