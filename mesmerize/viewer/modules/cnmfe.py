@@ -84,7 +84,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'method_deconvolution': method_deconvolution,
                 'Ain': self.ui.lineEditAin.text().replace(' ', '').strip('\n'),
                 'p': self.ui.spinBox_p.value(),
-                'merge_thr': self.ui.doubleSpinBoxMergeThresh.value(),
+                'merge_thresh': self.ui.doubleSpinBoxMergeThresh.value(),
                 'ssub': self.ui.spinBox_ssub.value(),
                 'tsub': self.ui.spinBox_tsub.value(),
                 'low_rank_background': self.ui.checkBox_low_rank_background.isChecked(),
