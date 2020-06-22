@@ -327,7 +327,7 @@ class Output(QtWidgets.QWidget):
 
         input_params = pickle.load(
             open(
-                os.path.join(self.batch_dir, f'{self.UUID}_.params'),
+                os.path.join(self.batch_dir, f'{self.UUID}.params'),
                 'rb'
             )
         )
