@@ -93,7 +93,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.scrollAreaStdOut.hide()
         self.resize(1200, 650)
-        self.ui.listwBatch.currentItemChanged.connect(self.show_item_info)
+        self.ui.listwBatch.itemClicked.connect(self.show_item_info)
 
         self.output_widgets = []
         self.df = pandas.DataFrame() #: pandas.DataFrame that stores a "database" of information on the batch
