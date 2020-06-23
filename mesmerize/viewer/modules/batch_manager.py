@@ -568,15 +568,15 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             savedir = self.batch_path
 
-        if IS_WINDOWS:
-            suffix = '.sh'
+        if not IS_WINDOWS:
+            extn = '.sh'
         else:
-            suffix = '.ps1'
+            extn = '.ps1'
 
         return make_runfile(module_path=module_path,
                             savedir=savedir,
                             args_str=args,
-                            filename=f'{u}.{suffix}',
+                            filename=f'{u}{extn}',
                             pre_run=cp_str,
                             post_run=mv_str)
 
