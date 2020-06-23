@@ -60,8 +60,12 @@ class ModuleGUI(QtWidgets.QWidget):
         self._testing = testing
         self.ui = Ui_Form()
         self.ui.setupUi(self)
-        self.ui.checkBoxUseWorkDir.setChecked(True)
-        self.ui.checkBoxUseWorkDir.toggled.connect(self.set_workdir)
+        if not IS_WINDOWS:
+            self.ui.checkBoxUseWorkDir.setChecked(True)
+            self.ui.checkBoxUseWorkDir.toggled.connect(self.set_workdir)
+        else:
+            self.ui.checkBoxUseWorkDir.setChecked(False)
+            self.ui.checkBoxUseWorkDir.setDisabled(True)
         # self.ui.lineEditWorkDir.setEnabled(True)
         self._use_workdir = False
         self.working_dir = None
@@ -564,10 +568,15 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             savedir = self.batch_path
 
+        if IS_WINDOWS:
+            suffix = '.sh'
+        else:
+            suffix = '.ps1'
+
         return make_runfile(module_path=module_path,
                             savedir=savedir,
                             args_str=args,
-                            filename=f'{u}.sh',
+                            filename=f'{u}.{suffix}',
                             pre_run=cp_str,
                             post_run=mv_str)
 
