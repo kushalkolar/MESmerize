@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './main_window_pytemplate.ui'
+# Form implementation generated from reading ui file 'main_window_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -114,6 +114,12 @@ class Ui_MainWindow(object):
         self.actionClose_all_projection_windows.setObjectName("actionClose_all_projection_windows")
         self.actionOpen_docs = QtWidgets.QAction(MainWindow)
         self.actionOpen_docs.setObjectName("actionOpen_docs")
+        self.actionSuite2p_Importer = QtWidgets.QAction(MainWindow)
+        self.actionSuite2p_Importer.setObjectName("actionSuite2p_Importer")
+        self.actionCNMF_3D = QtWidgets.QAction(MainWindow)
+        self.actionCNMF_3D.setObjectName("actionCNMF_3D")
+        self.actionCaimanImportHDF5 = QtWidgets.QAction(MainWindow)
+        self.actionCaimanImportHDF5.setObjectName("actionCaimanImportHDF5")
         self.menuFile.addAction(self.actionAdd_to_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_work_environment)
@@ -125,9 +131,12 @@ class Ui_MainWindow(object):
         self.menuCaImAn_toolbox.addAction(self.actionMotion_Correction)
         self.menuCaImAn_toolbox.addAction(self.actionCNMF)
         self.menuCaImAn_toolbox.addAction(self.actionCNMF_E)
+        self.menuCaImAn_toolbox.addAction(self.actionCNMF_3D)
+        self.menuCaImAn_toolbox.addAction(self.actionCaimanImportHDF5)
         self.menuModules.addAction(self.menuLoad_images.menuAction())
         self.menuModules.addAction(self.menuCaImAn_toolbox.menuAction())
         self.menuModules.addAction(self.actionROI_Manager)
+        self.menuModules.addAction(self.actionSuite2p_Importer)
         self.menuModules.addAction(self.actionStimulus_Mapping)
         self.menuModules.addAction(self.actionManual_motion_correction)
         self.menuModules.addAction(self.actionScript_Editor)
@@ -194,7 +203,7 @@ class Ui_MainWindow(object):
         self.actionBatch_Manager.setText(_translate("MainWindow", "&Batch Manager"))
         self.actionDump_Work_Environment.setText(_translate("MainWindow", "&Clear Work Environment"))
         self.actionAdd_to_project.setText(_translate("MainWindow", "&Add to project"))
-        self.actionResize.setText(_translate("MainWindow", "R&esize"))
+        self.actionResize.setText(_translate("MainWindow", "Re&size"))
         self.actionCrop.setText(_translate("MainWindow", "&Crop"))
         self.actionView_info.setText(_translate("MainWindow", "View info"))
         self.actionChange_dtype.setText(_translate("MainWindow", "Change &dtype"))
@@ -209,4 +218,7 @@ class Ui_MainWindow(object):
         self.actionStandard_Deviation.setText(_translate("MainWindow", "&Standard Deviation"))
         self.actionClose_all_projection_windows.setText(_translate("MainWindow", "&Close all projection windows"))
         self.actionOpen_docs.setText(_translate("MainWindow", "&Open docs"))
+        self.actionSuite2p_Importer.setText(_translate("MainWindow", "Suite&2p Importer"))
+        self.actionCNMF_3D.setText(_translate("MainWindow", "CNMF &3D"))
+        self.actionCaimanImportHDF5.setText(_translate("MainWindow", "&Import HDF5 result file"))
 

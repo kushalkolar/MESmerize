@@ -88,7 +88,7 @@ Get the back-end ROI Manager, see :ref:`ROI Manager APIs <API_ROIManagers>`
     
     >>> get_workEnv().roi_manager
     
-    <mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE object at 0x7f01b8780668>``
+    <mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFROI object at 0x7f01b8780668>``
    
 Get the ROI List, see :ref:`ROIList API <API_ROIList>`
 

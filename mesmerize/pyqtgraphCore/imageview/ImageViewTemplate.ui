@@ -29,14 +29,14 @@
        </property>
        <widget class="QWidget" name="layoutWidget">
         <layout class="QGridLayout" name="gridLayout_8">
-         <item row="1" column="4">
+         <item row="1" column="5">
           <widget class="QPushButton" name="btnExportWorkEnv">
            <property name="text">
             <string>Export workEnv</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="4" rowspan="2">
+         <item row="2" column="5" rowspan="2">
           <widget class="HistogramLUTWidget" name="histogram">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -58,7 +58,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0" rowspan="4" colspan="4">
+         <item row="1" column="1" rowspan="4" colspan="4">
           <widget class="GraphicsView" name="graphicsView">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -68,7 +68,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item row="0" column="2">
           <widget class="QLabel" name="label_curr_img_seq_name">
            <property name="font">
             <font>
@@ -85,7 +85,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
+         <item row="0" column="1">
           <widget class="QLabel" name="label">
            <property name="font">
             <font>
@@ -102,7 +102,7 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
+         <item row="0" column="3">
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -114,6 +114,55 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="1" column="0" rowspan="3">
+          <widget class="QGroupBox" name="groupBoxZLevel">
+           <property name="title">
+            <string>z-level</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QSpinBox" name="spinBoxZLevel"/>
+            </item>
+            <item>
+             <widget class="QSlider" name="verticalSliderZLevel">
+              <property name="minimumSize">
+               <size>
+                <width>25</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>move along the z-axis</string>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="pageStep">
+               <number>5</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="invertedAppearance">
+               <bool>true</bool>
+              </property>
+              <property name="invertedControls">
+               <bool>true</bool>
+              </property>
+              <property name="tickPosition">
+               <enum>QSlider::TicksBelow</enum>
+              </property>
+              <property name="tickInterval">
+               <number>5</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -156,10 +205,46 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>roiPlot</tabstop>
-  <tabstop>histogram</tabstop>
   <tabstop>graphicsView</tabstop>
+  <tabstop>btnExportWorkEnv</tabstop>
+  <tabstop>histogram</tabstop>
+  <tabstop>spinBoxZLevel</tabstop>
+  <tabstop>verticalSliderZLevel</tabstop>
+  <tabstop>roiPlot</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>verticalSliderZLevel</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxZLevel</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>405</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>69</x>
+     <y>96</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxZLevel</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>verticalSliderZLevel</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>96</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>46</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

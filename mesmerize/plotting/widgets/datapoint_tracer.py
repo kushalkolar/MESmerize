@@ -19,7 +19,7 @@ import pandas as pd
 import tifffile
 import numpy as np
 import pickle
-from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI
+from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI, ScatterROI, VolCNMF
 # from ...viewer.core import ViewerWorkEnv, ViewerUtils
 from ...common import get_window_manager, get_project_manager
 # from common import configuration
@@ -46,6 +46,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.peak_ix = None
         self.tstart = None
         self.tend = None
+
+        self.is_3d = False
 
         self.ui = Ui_DatapointTracer()
         self.ui.setupUi(self)
@@ -92,6 +94,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.proj_path = proj_path
         self.sample_id = self.row['SampleID']
 
+        self.ui.label_zlevel.clear()
+
         if isinstance(self.sample_id, pd.Series):
             self.sample_id = self.sample_id.item()
 
@@ -120,9 +124,9 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         # self.pandas_series_widget.collapseAll()
 
         if self.ui.radioButtonMaxProjection.isChecked():
-            self.set_image('max')
+            self.img_proj = 'max'
         elif self.ui.radioButtonSTDProjection.isChecked():
-            self.set_image('std')
+            self.img_proj = 'std'
 
         self.peak_region.clear_all()
         self.ui.graphicsViewPlot.clear()
@@ -142,11 +146,24 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         except:
             roi_state = self.row['ROI_State']
 
-        if roi_state['roi_type'] == 'CNMFROI':
-            self.roi = CNMFROI.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
+        if roi_state['roi_type'] in ['CNMFROI', 'ScatterROI']:
+            self.set_image(self.img_proj)
+            ROIClass = globals()[roi_state['roi_type']]
+            self.roi = ROIClass.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
             self.roi.get_roi_graphics_object().setBrush(mkColor(roi_color))
+
         elif roi_state['roi_type'] == 'ManualROI':
+            self.set_image(self.img_proj)
             self.roi = ManualROI.from_state(curve_plot_item=None, view_box=self.view, state=roi_state)
+
+        elif roi_state['roi_type'] in ['VolCNMF']:
+            self.is_3d = True
+            self.zcenter = roi_state['zcenter']
+            self.set_image(self.img_proj)
+
+            self.roi = VolCNMF.from_state(curve_plot_item=None, view_box=self.view, state=roi_state, zlevel=self.zcenter)
+            self.roi.get_roi_graphics_object().setBrush(mkColor(roi_color))
+
         self.roi.get_roi_graphics_object().setPen(mkColor(roi_color))
         self.roi.add_to_viewer()
 
@@ -160,7 +177,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         :param projection: one of either 'max' or 'std'
         """
         if f'{self.sample_id}{projection}' == self.previous_sample_id_projection:
-            return
+            if not self.is_3d:
+                return
 
         img_uuid = self.row['ImgUUID']
 
@@ -172,13 +190,19 @@ class DatapointTracerWidget(QtWidgets.QWidget):
                 type(img_uuid)))
 
         if projection == 'max':
-            suffix = '_max_proj.tiff'
+            suffix = '_max_proj'
         elif projection == 'std':
-            suffix = '_std_proj.tiff'
+            suffix = '_std_proj'
         else:
             raise ValueError('Can only accept "max" and "std" arguments')
 
-        img_path = os.path.join(self.proj_path, 'images', f'{self.sample_id}-_-{img_uuid}{suffix}')
+        self.ui.label_zlevel.clear()
+
+        if self.is_3d:
+            suffix += f'-{self.zcenter}'
+            self.ui.label_zlevel.setText(f'Showing plane #: {self.zcenter}   ')
+
+        img_path = os.path.join(self.proj_path, 'images', f'{self.sample_id}-_-{img_uuid}{suffix}.tiff')
 
         img = tifffile.imread(img_path)
 

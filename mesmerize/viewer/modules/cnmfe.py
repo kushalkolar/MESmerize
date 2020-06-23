@@ -30,20 +30,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnAddToBatchCorrPNR.clicked.connect(self.add_to_batch_corr_pnr)
         self.ui.btnAddToBatchCNMFE.clicked.connect(self.add_to_batch_cnmfe)
 
-        self.ui.btnExport.clicked.connect(self.export_params)
-        self.ui.btnImport.clicked.connect(self.import_params)
-
-        # assert isinstance(self.vi.viewer_ref.batch_manager, BatchModuleGui)
-
     @present_exceptions()
-    def get_params(self, *args, **kwargs) -> dict:
+    def get_params(self, item_type: str, group_params: bool = False) -> dict:
         """
         Get a dict of the set parameters.
         If the work environment was loaded from a motion correction batch item it put the bord_px in the dict.
         Doesn't use any arguments
 
-        :return: parameters dict
-        :rtype: dict
+        :param item_type: one of `corr_pnr` or `cnmfe`
         """
         if self.vi.viewer.workEnv.imgdata.meta['fps'] == 0:
             raise KeyError('No framerate for current image sequence!',
@@ -65,89 +59,170 @@ class ModuleGUI(QtWidgets.QDockWidget):
             deconv_flag = True
             method_deconvolution = deconv
 
-        d = {'Input':           self.ui.comboBoxInput.currentText(),
-             'frate':           self.vi.viewer.workEnv.imgdata.meta['fps'],
-             'gSig':            self.ui.spinBoxGSig.value(),
-             'bord_px':         bord_px,
-             'min_corr':        self.ui.doubleSpinBoxMinCorr.value(),
-             'min_pnr':         self.ui.spinBoxMinPNR.value(),
-             'min_SNR':         self.ui.spinBoxMinSNR.value(),
-             'r_values_min':    self.ui.doubleSpinBoxRValuesMin.value(),
-             'decay_time':      self.ui.doubleSpinBoxDecayTime.value(),
-             'rf':              self.ui.spinBoxRf.value(),
-             'stride':          self.ui.spinBoxOverlap.value(),
-             'gnb':             self.ui.spinBoxGnb.value(),
-             'nb_patch':        self.ui.spinBoxNb_patch.value(),
-             'k':               self.ui.spinBoxK.value(),
-             'name_corr_pnr':   self.ui.lineEdCorrPNRName.text(),
-             'name_cnmfe':      self.ui.lineEdName.text(),
-             'Ain':             self.ui.lineEditAin.text().replace(' ', '').strip('\n'),
-             'deconv_flag':     deconv_flag,
-             'method_deconvolution': method_deconvolution
-             }
+        gSig = self.ui.spinBoxGSig.value()
+
+        # Correlation-PNR param
+        corr_pnr_kwargs = \
+            {
+                'gSig': gSig
+            }
+
+        # CNMFE kwargs
+        cnmfe_kwargs = \
+            {
+                'gSig': (gSig, gSig),
+                'gSiz': (3*gSig+1, 3*gSig+1),
+                'border_pix': bord_px,
+                'rf': self.ui.spinBoxRf.value(),
+                'stride': self.ui.spinBoxOverlap.value(),
+                'gnb': self.ui.spinBoxGnb.value(),
+                'nb_patch': self.ui.spinBoxNb_patch.value(),
+                'k': self.ui.spinBoxK.value(),
+                'min_corr': self.ui.doubleSpinBoxMinCorr.value(),
+                'min_pnr': self.ui.spinBoxMinPNR.value(),
+                'deconv_flag': deconv_flag,
+                'method_deconvolution': method_deconvolution,
+                'Ain': self.ui.lineEditAin.text().replace(' ', '').strip('\n'),
+                'p': self.ui.spinBox_p.value(),
+                'merge_thresh': self.ui.doubleSpinBoxMergeThresh.value(),
+                'ssub': self.ui.spinBox_ssub.value(),
+                'tsub': self.ui.spinBox_tsub.value(),
+                'low_rank_background': self.ui.checkBox_low_rank_background.isChecked(),
+                'ring_size_factor': self.ui.doubleSpinBox_ring_size_factor.value(),
+                'update_background_components': True,
+                'del_duplicates': True
+            }
+
+        # Any additional CNMFE kwargs set in the text entry
+        if self.ui.groupBox_cnmf_kwargs.isChecked():
+            try:
+                _kwargs = self.ui.plainTextEdit_cnmf_kwargs.toPlainText()
+                cnmfe_kwargs_add = eval(f"dict({_kwargs})")
+                cnmfe_kwargs.update(cnmfe_kwargs_add)
+            except:
+                raise ValueError("CNMFE kwargs not formatted properly.")
+
+        # kwargs for component evaluation
+        eval_kwargs = \
+            {
+                'fr': self.vi.viewer.workEnv.imgdata.meta['fps'],
+                'min_SNR': self.ui.spinBoxMinSNR.value(),
+                'rval_thr': self.ui.doubleSpinBoxRValuesMin.value(),
+                'decay_time': self.ui.doubleSpinBoxDecayTime.value(),
+            }
+
+        # Any additional eval kwargs set in the text entry
+        if self.ui.groupBox_eval_kwargs.isChecked():
+            try:
+                _kwargs = self.ui.plainTextEdit_eval_kwargs.toPlainText()
+                eval_kwargs_add = eval(f"dict{_kwargs}")
+                eval_kwargs.update(eval_kwargs_add)
+            except:
+                raise ValueError("Evaluation kwargs not formatted properly.")
+
+        # Output either the dict for corr-pnr or CNMFE
+        if item_type == 'corr_pnr':
+            item_name = self.ui.lineEdCorrPNRName.text()
+            d = \
+                {
+                    'item_name':        item_name,
+                    'do_cnmfe':         False,
+                    'do_corr_pnr':      True,
+                    'border_pix':       bord_px
+                }
+
+            if group_params:
+                d.update({'corr_pnr_kwargs':  corr_pnr_kwargs})
+            else:
+                d.update({**corr_pnr_kwargs})
+
+        elif item_type == 'cnmfe':
+            item_name = self.ui.lineEdName.text()
+            d = \
+                {
+                    'item_name':        item_name,
+                    'do_cnmfe':         True,
+                    'do_corr_pnr':      False,
+                    'border_pix':       bord_px
+                }
+            if group_params:
+                d.update(
+                    {
+                        'cnmfe_kwargs': cnmfe_kwargs,
+                        'eval_kwargs': eval_kwargs,
+                    }
+                )
+            else:
+                d.update(
+                    {
+                        **cnmfe_kwargs,
+                        **eval_kwargs
+                    }
+                )
+        else:
+            raise ValueError("Must specify argument `item_type` as either 'corr_pnr' or 'cnmfe'")
 
         return d
 
-    @use_save_file_dialog('Save parameters', None, ['.json'])
-    def export_params(self, path: str, *args, **kwargs):
-        with open(path, 'w') as f:
-            d = self.get_params()
-            json.dump(d, f)
-
-    @use_open_file_dialog('Open CNMFE parameters file', None, ['*.json'])
-    @present_exceptions('Cannot import parameters', 'Make sure it is a CNMFE parameters file')
-    def import_params(self, path, *args, **kwargs):
-        with open(path, 'r') as f:
-            d = json.load(f)
-            self.set_params(d)
-
-    def set_params(self, params: dict):
+    def set_params(self, d: dict):
         """
         Set all parameters from a dict. All keys must be present in the dict.
 
         :param params: parameters dict
         """
-        self.ui.comboBoxInput.setCurrentText(params['Input'])
-        self.ui.spinBoxGSig.setValue(params['gSig'])
-        self.ui.doubleSpinBoxMinCorr.setValue(params['min_corr'])
-        self.ui.spinBoxMinPNR.setValue(params['min_pnr'])
-        self.ui.spinBoxMinSNR.setValue(params['min_SNR'])
-        self.ui.doubleSpinBoxRValuesMin.setValue(params['r_values_min'])
-        self.ui.doubleSpinBoxDecayTime.setValue(params['decay_time'])
-        self.ui.spinBoxRf.setValue(params['rf'])
-        self.ui.spinBoxOverlap.setValue(params['stride'])
-        self.ui.spinBoxGnb.setValue(params['gnb'])
-        self.ui.spinBoxNb_patch.setValue(params['nb_patch'])
-        self.ui.spinBoxK.setValue(params['k'])
-        self.ui.lineEdCorrPNRName.setText(params['name_corr_pnr'])
-        self.ui.lineEdName.setText(params['name_cnmfe'])
-        if 'Ain' in params.keys():
-            self.ui.lineEditAin.setText(params['Ain'])
+
+        if ('cnmf_kwargs' in d.keys()) and ('eval_kwargs' in d.keys()):
+            p = {**d['cnmfe_kwargs'], **d['eval_kwargs']}
+        elif d['do_corr_pnr']:
+            p = {**d['corr_pnr_kwargs']}
+            self.ui.lineEdCorrPNRName.setText(p['item_name'])
+            self.ui.spinBoxGSig.setValue(p['gSig'])
+        else:
+            p = d
+
+        self.ui.spinBoxGSig.setValue(p['gSig'])
+        self.ui.doubleSpinBoxMinCorr.setValue(p['min_corr'])
+        self.ui.spinBoxMinPNR.setValue(p['min_pnr'])
+        self.ui.spinBoxMinSNR.setValue(p['min_SNR'])
+        self.ui.doubleSpinBoxRValuesMin.setValue(p['rval_thr'])
+        self.ui.doubleSpinBoxMergeThresh.setValue(p['merge_thr'])
+        self.ui.doubleSpinBoxDecayTime.setValue(p['decay_time'])
+        self.ui.spinBoxRf.setValue(p['rf'])
+        self.ui.spinBoxOverlap.setValue(p['stride'])
+        self.ui.spinBoxGnb.setValue(p['gnb'])
+        self.ui.spinBoxNb_patch.setValue(p['nb_patch'])
+        self.ui.spinBoxK.setValue(p['k'])
+        self.ui.spinBox_ssub.setValue(p['ssub'])
+        self.ui.spinBox_tsub.setValue(p['tsub'])
+        self.ui.doubleSpinBox_ring_size_factor.setValue(p['ring_size_factor'])
+        self.ui.checkBox_low_rank_background.setChecked(p['low_rank_background'])
+        if p['method_deconvolution'] is not None:
+            ix = self.ui.comboBoxDeconv.findText(p['method_deconvolution'])
+            if ix == -1:
+                raise ValueError('Invalid `method_deconvolution`')
+            self.ui.comboBoxDeconv.setCurrentIndex(ix)
+        else:
+            ix = self.ui.comboBoxDeconv.findText('SKIP')
+            self.ui.comboBoxDeconv.setCurrentIndex(ix)
+
+        if 'Ain' in p.keys():
+            self.ui.lineEditAin.setText(p['Ain'])
 
     def add_to_batch_corr_pnr(self):
         """
         Add a Corr PNR batch item with the currently set parameters and the current work environment.
 
         """
-        if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
-            if self.vi.viewer.workEnv.isEmpty:
-                QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
-                                                                              'nothing to add to batch')
-                return
-            input_workEnv = self.vi.viewer.workEnv
-        else:
-            input_workEnv = self.ui.comboBoxInput.currentText()
-
-        d = self.get_params()
-
-        if d is None:
+        if self.vi.viewer.workEnv.isEmpty:
+            QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
+                                                                          'nothing to add to batch')
             return
+        input_workEnv = self.vi.viewer.workEnv
 
-        d['do_corr_pnr'] = True
-        d['do_cnmfe'] = False
+        d = self.get_params('corr_pnr', group_params=True)
 
         batch_manager = get_window_manager().get_batch_manager()
-        name = self.ui.lineEdCorrPNRName.text()
+        name = d['item_name']
 
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding Corr PNR: ' + name + ' to batch...')
 
@@ -155,7 +230,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                name=name,
                                input_workEnv=input_workEnv,
                                input_params=d,
-                               info=d
+                               info=self.get_params('corr_pnr')
                                )
 
         self.vi.viewer.status_bar_label.showMessage('Done adding Corr PNR: ' + name + ' to batch!')
@@ -165,24 +240,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
         """
         Add a CNMFE batch item with the currently set parameters and the current work environment.
         """
-        if self.ui.comboBoxInput.currentText() == 'Current Work Environment':
-            if self.vi.viewer.workEnv.isEmpty:
-                QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
-                                                                              'nothing to add to batch')
-                return
-            input_workEnv = self.vi.viewer.workEnv
-        else:
-            input_workEnv = self.ui.comboBoxInput.currentText()
-
-        d = self.get_params()
-
-        if d is None:
+        if self.vi.viewer.workEnv.isEmpty:
+            QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
+                                                                          'nothing to add to batch')
             return
+        input_workEnv = self.vi.viewer.workEnv
 
-        d['do_corr_pnr'] = False
-        d['do_cnmfe'] = True
+        d = self.get_params('cnmfe', group_params=True)
 
-        name = self.ui.lineEdName.text()
+        name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMFE: ' + name + ' to batch...')
 
         batch_manager = get_window_manager().get_batch_manager()
@@ -190,8 +256,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                name=name,
                                input_workEnv=input_workEnv,
                                input_params=d,
-                               info=d
+                               info=self.get_params('cnmfe')
                                )
+
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMFE: ' + name + ' to batch!')
         self.clear_line_edits()
 
@@ -199,7 +266,3 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.lineEdCorrPNRName.clear()
         self.ui.lineEdName.clear()
         self.ui.lineEditAin.clear()
-
-    @QtCore.pyqtSlot()
-    def update_available_inputs(self):
-        pass

@@ -364,8 +364,8 @@ class PeakDetect(CtrlNode):
                   ('Fictional_Bases', 'check', {'checked': True}),
                   ('Edit', 'button', {'text': 'Open GUI'}),
                   ('SlopeThr', 'doubleSpin', {'min': -100.00, 'max': 1.0, 'step': 0.010}),
-                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
-                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 1.00, 'step': 0.05}),
+                  ('AmplThrAbs', 'doubleSpin', {'min': 0.00, 'max': 9999.00, 'step': 0.05}),
+                  ('AmplThrRel', 'doubleSpin', {'min': 0.00, 'max': 9999.00, 'step': 0.05}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
@@ -471,7 +471,7 @@ class PeakDetect(CtrlNode):
                     fall_ampl = sig[peak_revised] - sig[ix_right_base]
 
                     # Check if above relative amplitude threshold
-                    if (rise_ampl + fall_ampl) > self.ctrls['AmplThrRel'].value():
+                    if ((rise_ampl + fall_ampl) / 2) > self.ctrls['AmplThrRel'].value():
                         peaks_bases_df.set_value(ix, 'event', peak_revised)
                     else:
                         rows_drop.append(ix)

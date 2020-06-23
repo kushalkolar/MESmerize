@@ -1,9 +1,13 @@
-#### Problem
+#### Describe the issue, be as explicit as possible.
 
-#### Error message/Exception in spyder console. Any screenshots
+#### Steps that can be followed to reproduce the problem. What exactly were you were doing that lead to the issue.
 
-#### Steps to reproduce the problem
+#### Relevant messages from the terminal that Mesmerize is running in
+
+#### Relevant screenshots
+
+#### If relevant, messages from the batch manager terminal
 
 #### Operating System
 
-#### Commit ID
+#### Mesmerize install (snap, or which branch if from github)

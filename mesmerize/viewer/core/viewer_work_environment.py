@@ -157,7 +157,11 @@ class ViewerWorkEnv:
             # seq = tifffile.imread(tiff_path)
             tif = tifffile.TiffFile(tiff_path, is_nih=True)
             seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
-            seq = seq.T
+            if seq.ndim == 4:
+                # tzxy to xytz
+                seq = np.moveaxis(seq, (0, 1, 2, 3), (2, 3, 0, 1))
+            else:
+                seq = seq.T
         else:
             seq = None
 
@@ -280,7 +284,7 @@ class ViewerWorkEnv:
         return cls(imdata, meta=meta_data)
 
     @classmethod
-    def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = ''):
+    def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = '', axes_order: str = None):
         """
         Return instance of work environment with ImgData.seq set from the tiff file.
 
@@ -314,7 +318,32 @@ class ViewerWorkEnv:
         else:
             meta = None
 
-        imdata = ImgData(seq.T, meta)
+        # Custom user mapping if specified
+        if axes_order is not None:
+            if not set(axes_order).issubset({'x', 'y', 't', 'z'}):
+                raise ValueError('`axes_order` must only contain "x", "y", "t" and/or "z" characters')
+
+            if len(axes_order) != seq.ndim:
+                raise ValueError('number of dims specified by `axes_order` must match dims of image sequence')
+
+            if seq.ndim == 4:
+                new_axes = tuple(map({'x': 0, 'y': 1, 't': 2, 'z': 3}.get, axes_order))
+                seq = np.moveaxis(seq, (0, 1, 2, 3), new_axes)
+            else:
+                new_axes = tuple(map({'x': 0, 'y': 1, 't': 2}.get, axes_order))
+                seq = np.moveaxis(seq, (0, 1, 2), new_axes)
+
+        # Default mapping
+        else:
+            # default axes remapping from tzxy
+            if seq.ndim == 4:
+                # tzxy to xytz
+                seq = np.moveaxis(seq, (0, 1, 2, 3), (2, 3, 0, 1))
+            else:
+                # for 2D
+                seq = seq.T
+
+        imdata = ImgData(seq, meta)
         return cls(imdata)
 
     @classmethod
@@ -344,8 +373,14 @@ class ViewerWorkEnv:
 
         return d
 
+    def _prepare_export(
+            self,
+            dir_path: str,
+            filename: Optional[str] = None,
+            save_img_seq: bool = True,
+            UUID: Optional[UUID_type] = None
+        ) -> Tuple[str, dict]:
 
-    def _prepare_export(self, dir_path: str, filename: Optional[str] = None, save_img_seq: bool = True, UUID: Optional[UUID_type] = None) -> Tuple[str, dict]:
         if UUID is None:
             UUID = uuid4()
 
@@ -359,7 +394,19 @@ class ViewerWorkEnv:
         data = {**work_env, 'UUID': UUID}
 
         if save_img_seq:
-            tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
+            if self.imgdata.ndim == 3:
+                tifffile.imsave(f'{filename}.tiff', self.imgdata.seq.T, bigtiff=True)
+
+            elif self.imgdata.ndim == 4:
+                tifffile.imsave(
+                    f'{filename}.tiff',
+                    np.moveaxis(
+                        self.imgdata._seq,
+                        (2, 3, 0, 1),  # from xytz
+                        (0, 1, 2, 3)   # to   tzxy
+                    ),
+                    bigtiff=True
+                )
 
         return (filename, data)
 
@@ -415,13 +462,26 @@ class ViewerWorkEnv:
         img_path = self.to_pickle(imgdir, UUID=UUID, save_img_seq=save_img_seq)
 
         if save_img_seq:
-            max_proj = np.amax(self.imgdata.seq, axis=2)
-            max_proj_path = img_path + '_max_proj.tiff'
-            tifffile.imsave(max_proj_path, max_proj)
+            if self.imgdata.ndim == 3:
+                max_proj = np.amax(self.imgdata.seq, axis=2)
+                max_proj_path = img_path + '_max_proj.tiff'
+                tifffile.imsave(max_proj_path, max_proj)
 
-            std_proj = self.imgdata.seq.std(axis=2)
-            std_proj_path = img_path + '_std_proj.tiff'
-            tifffile.imsave(std_proj_path, std_proj)
+                std_proj = self.imgdata.seq.std(axis=2)
+                std_proj_path = img_path + '_std_proj.tiff'
+                tifffile.imsave(std_proj_path, std_proj)
+            # projection for each zlevel
+            elif self.imgdata.ndim == 4:
+                for z in range(self.imgdata.z_max):
+                    self.imgdata.set_zlevel(z)
+
+                    max_proj = np.amax(self.imgdata.seq, axis=2)
+                    max_proj_path = f'{img_path}_max_proj-{z}.tiff'
+                    tifffile.imsave(max_proj_path, max_proj)
+
+                    std_proj = self.imgdata.seq.std(axis=2)
+                    std_proj_path = f'{img_path}_std_proj-{z}.tiff'
+                    tifffile.imsave(std_proj_path, std_proj)
 
         # Since viewerWorkEnv.to_pickle sets the saved property to True, and we're not done saving the dict yet.
         self._saved = False
@@ -498,6 +558,7 @@ class ViewerWorkEnv:
             #                  }
 
             d = {'SampleID': self.sample_id,
+                 'AnimalID': self.sample_id.split('-_-')[0],
                  'CurvePath': os.path.relpath(curve_path, proj_path),
                  'ImgUUID': str(UUID),
                  'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),

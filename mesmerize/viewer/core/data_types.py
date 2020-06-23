@@ -31,10 +31,27 @@ class ImgData:
     """Object that stores the image sequence and meta data from the imaging source"""
     def __init__(self, seq: np.ndarray = None, meta: dict = None):
         """
-        :param seq:     Image sequence as a numpy array, shape is [x, y, t]
+        :param seq:     Image sequence as a numpy array, shape is [x, y, t] or [x, y, t, z]
         :param meta:    Meta data dict from the imaging source.
         """
-        self.seq = seq  #: image sequence, shape is [x, y, t]
+
+        self.z = None
+        self.z_max = None
+
+        if seq is not None:
+            self.ndim = seq.ndim
+
+            if seq.ndim == 4:
+                self._seq = seq
+                self.seq = self._seq[:, :, :, 0]
+                self.z = 0
+                self.z_max = self._seq.shape[3] - 1
+            else:
+                self._seq = seq
+                self.seq = self.seq = self._seq  #: image sequence, shape is [x, y, t] or [x, y, t, z]
+        else:
+            self.ndim = None
+
         if meta is None:
             meta = {'origin': 'unknown',
                     'fps': 0,
@@ -43,3 +60,10 @@ class ImgData:
                     }
 
         self.meta = meta.copy()  #: Meta data dict from the imaging source
+
+    def set_zlevel(self, z):
+        if self._seq.ndim < 4:
+            raise ValueError('Data are not 3D, cannot set z-level')
+
+        self.z = z
+        self.seq = self._seq[:, :, :, self.z]
