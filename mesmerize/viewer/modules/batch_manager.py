@@ -486,7 +486,11 @@ class ModuleGUI(QtWidgets.QWidget):
         sh_file = self.create_runscript(r, cp=True, mv=False, use_subdir=False)
 
         self.process.setWorkingDirectory(self.working_dir)
-        self.process.start(sh_file)
+
+        if IS_WINDOWS:
+            self.process.start('powershell.exe', [sh_file])
+        else:
+            self.process.start(sh_file)
         self.ui.listwBatch.item(self.current_batch_item_index).setBackground(QtGui.QBrush(QtGui.QColor('yellow')))
 
     def move_files(self, files: list, UUID) -> QtCore.QProcess:
@@ -527,7 +531,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.working_dir = self.batch_path
             self._use_workdir = False
             return
-        
+
         if ev:
             try:
                 self.working_dir = make_workdir('batch_manager')
