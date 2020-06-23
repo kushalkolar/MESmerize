@@ -144,8 +144,8 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
         to_write = os.linesep.join(
             [
                 f'{cmd_prefix}',
-                f'$env:_MESMERIZE_N_THREADS={n_threads}',
-                f'$env:_MESMERIZE_USE_CUDA={use_cuda}',
+                f'$env:_MESMERIZE_N_THREADS="{n_threads}"',
+                f'$env:_MESMERIZE_USE_CUDA="{use_cuda}"',
                 f'{pre_run}',
                 f'{python_call} {module_path} {args_str}',
                 f'{post_run}'

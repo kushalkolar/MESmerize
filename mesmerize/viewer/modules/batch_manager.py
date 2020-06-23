@@ -523,6 +523,11 @@ class ModuleGUI(QtWidgets.QWidget):
         QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
 
     def set_workdir(self, ev):
+        if IS_WINDOWS:
+            self.working_dir = self.batch_path
+            self._use_workdir = False
+            return
+        
         if ev:
             try:
                 self.working_dir = make_workdir('batch_manager')
