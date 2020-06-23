@@ -539,6 +539,11 @@ class ModuleGUI(QtWidgets.QWidget):
         module_path = os.path.abspath(m.__file__)
         u = r['uuid']
 
+        # Just disable seperation of batch dir and work dir on windows for now
+        if IS_WINDOWS:
+            cp = False
+            mv = False
+
         if cp:
             files = os.path.join(self.batch_path, f"*{u}*")
             cp_str = f'cp {files} {self.working_dir}\nexport CURR_BATCH_DIR={self.batch_path}'

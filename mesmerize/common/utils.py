@@ -143,11 +143,11 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
     else:
         to_write = '\r\n'.join(
             [
-                f'{cmd_prefix}'
-                f'set _MESMERIZE_N_THREADS={n_threads}'
-                f'set _MESMERIZE_USE_CUDA={use_cuda}'
-                f'{pre_run}'
-                f'{python_call} {module_path} {args_str}'
+                f'{cmd_prefix}',
+                f'set _MESMERIZE_N_THREADS={n_threads}',
+                f'set _MESMERIZE_USE_CUDA={use_cuda}',
+                f'{pre_run}',
+                f'{python_call} {module_path} {args_str}',
                 f'{post_run}'
             ]
         )
