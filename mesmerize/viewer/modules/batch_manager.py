@@ -35,13 +35,19 @@ from stat import S_IEXEC
 from functools import partial
 from collections import deque
 import psutil
-from signal import SIGKILL
 import traceback
 from ...misc_widgets.list_widget_dialog import ListWidgetDialog
 from glob import glob
 from collections import UserList
 from typing import *
 from pprint import pformat
+from ...common.configuration import IS_WINDOWS
+
+if not IS_WINDOWS:
+    from signal import SIGKILL
+
+elif IS_WINDOWS:
+    from win32api import TerminateProcess, CloseHandle
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -591,9 +597,20 @@ class ModuleGUI(QtWidgets.QWidget):
         except psutil.NoSuchProcess:
             return
         children = psutil.Process(py_proc).children()
-        os.kill(py_proc, SIGKILL)
-        for child in children:
-            os.kill(child.pid, SIGKILL)
+
+        if not IS_WINDOWS:
+            os.kill(py_proc, SIGKILL)
+
+            for child in children:
+                os.kill(child.pid, SIGKILL)
+        
+        if IS_WINDOWS:
+            TerminateProcess(py_proc, -1)
+            CloseHandle(py_proc)
+
+            for child in children:
+                TerminateProcess(child.pid, -1)
+                CloseHandle(child.pid)
 
     def print_qprocess_std_out(self, proc):
         text = proc.readAllStandardOutput().data().decode('utf8')

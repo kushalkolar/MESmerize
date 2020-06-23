@@ -22,6 +22,8 @@ import pandas as pd
 from warnings import warn
 import traceback
 from graphviz import Digraph
+from .configuration import IS_WINDOWS
+
 
 
 def make_workdir(prefix: str = '') -> str:
@@ -48,6 +50,26 @@ def make_workdir(prefix: str = '') -> str:
     os.makedirs(workdir)
 
     return workdir
+
+
+# def make_runfile(*args, **kwargs) -> str:
+#     if not IS_WINDOWS:
+#         return _make_runfile_posix(*args, **kwargs)
+#
+#     elif IS_WINDOWS:
+#         return _make_runfile_windows(*args, **kwargs)
+#
+#
+# def _make_runfile_windows(module_path: str, workdir: str, args_str: str = None, filename: str = None,
+#                  pre_run: str = '', post_run: str = '') -> str:
+#
+#     if filename is None:
+#         sh_file = os.path.join(workdir, 'run')
+#     else:
+#         sh_file = os.path.join(workdir, filename)
+#
+#     sys_cfg = get_sys_config()
+
 
 
 def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None, filename: Optional[str] = None,
@@ -78,7 +100,10 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
     """
 
     if filename is None:
-        sh_file = os.path.join(savedir, 'run.sh')
+        if IS_WINDOWS:
+            sh_file = os.path.join(savedir, 'run.ps1')
+        else:
+            sh_file = os.path.join(savedir, 'run.sh')
     else:
         sh_file = os.path.join(savedir, filename)
 
@@ -107,13 +132,25 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
     if args_str is None:
         args_str = ''
 
-    to_write = '\n'.join(['#!/bin/bash',
-                          f'{cmd_prefix}',
-                          f'export _MESMERIZE_N_THREADS={n_threads}',
-                          f'export _MESMERIZE_USE_CUDA={use_cuda}',
-                          f'{pre_run}',
-                          f'{python_call} {module_path} {args_str}',
-                          f'{post_run}'])
+    if not IS_WINDOWS:
+        to_write = '\n'.join(['#!/bin/bash',
+                              f'{cmd_prefix}',
+                              f'export _MESMERIZE_N_THREADS={n_threads}',
+                              f'export _MESMERIZE_USE_CUDA={use_cuda}',
+                              f'{pre_run}',
+                              f'{python_call} {module_path} {args_str}',
+                              f'{post_run}'])
+    else:
+        to_write = '\n'.join(
+            [
+                f'{cmd_prefix}'
+                f'set _MESMERIZE_N_THREADS={n_threads}'
+                f'set _MESMERIZE_USE_CUDA={use_cuda}'
+                f'{pre_run}'
+                f'{python_call} {module_path} {args_str}'
+                f'{post_run}'
+            ]
+        )
 
     with open(sh_file, 'w') as sf:
         sf.write(to_write)
