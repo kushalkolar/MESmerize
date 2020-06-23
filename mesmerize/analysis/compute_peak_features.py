@@ -14,11 +14,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 import numpy as np
 from scipy.integrate import simps
 from .data_types import Transmission
-from multiprocessing import Pool
+from ..common.configuration import IS_WINDOWS
 from ..common import get_sys_config
 from tqdm import tqdm
 import pandas as pd
 import uuid
+
+if IS_WINDOWS:
+    from multiprocessing import Pool
+else:
+    from multiprocessing.pool import ThreadPool as Pool
 
 
 class ComputePeakFeatures:
