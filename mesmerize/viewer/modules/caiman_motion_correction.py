@@ -99,7 +99,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
             {
                 'max_shifts': (self.ui.spinboxX.value(), self.ui.spinboxY.value()),
                 'niter_rig': self.ui.spinboxIterRigid.value(),
-                'name_rigid': self.ui.lineEditNameRigid.text(),
                 'max_deviation_rigid': self.ui.spinboxMaxDev.value(),
                 'strides': (self.ui.sliderStrides.value(), self.ui.sliderStrides.value()),
                 'overlaps': (self.ui.sliderOverlaps.value(), self.ui.sliderOverlaps.value()),
