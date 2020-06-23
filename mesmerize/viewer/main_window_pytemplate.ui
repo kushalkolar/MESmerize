@@ -52,10 +52,13 @@
      <addaction name="actionMotion_Correction"/>
      <addaction name="actionCNMF"/>
      <addaction name="actionCNMF_E"/>
+     <addaction name="actionCNMF_3D"/>
+     <addaction name="actionCaimanImportHDF5"/>
     </widget>
     <addaction name="menuLoad_images"/>
     <addaction name="menuCaImAn_toolbox"/>
     <addaction name="actionROI_Manager"/>
+    <addaction name="actionSuite2p_Importer"/>
     <addaction name="actionStimulus_Mapping"/>
     <addaction name="actionManual_motion_correction"/>
     <addaction name="actionScript_Editor"/>
@@ -226,7 +229,7 @@
   </action>
   <action name="actionResize">
    <property name="text">
-    <string>R&amp;esize</string>
+    <string>Re&amp;size</string>
    </property>
   </action>
   <action name="actionCrop">
@@ -300,6 +303,21 @@
   <action name="actionOpen_docs">
    <property name="text">
     <string>&amp;Open docs</string>
+   </property>
+  </action>
+  <action name="actionSuite2p_Importer">
+   <property name="text">
+    <string>Suite&amp;2p Importer</string>
+   </property>
+  </action>
+  <action name="actionCNMF_3D">
+   <property name="text">
+    <string>CNMF &amp;3D</string>
+   </property>
+  </action>
+  <action name="actionCaimanImportHDF5">
+   <property name="text">
+    <string>&amp;Import HDF5 result file</string>
    </property>
   </action>
  </widget>

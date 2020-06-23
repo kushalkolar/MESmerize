@@ -6,14 +6,14 @@ from matplotlib import cm as matplotlib_color_map
 
 from .... import pyqtgraphCore as pg
 from ....viewer.core.common import ViewerUtils
-from ....viewer.modules.roi_manager_modules.roi_types import ManualROI, CNMFROI
+from ....viewer.modules.roi_manager_modules.roi_types import ManualROI, ScatterROI
 from ....common import configuration, get_project_manager
 from typing import Union
 
 
 class ROIList(list):
     """A list for holding ROIs of one type"""
-    def __init__(self, ui, roi_types: str, viewer_interface: ViewerUtils):
+    def __init__(self, ui, roi_types: type, viewer_interface: ViewerUtils):
         """
         Instantiate
 
@@ -52,7 +52,7 @@ class ROIList(list):
         assert isinstance(ui.checkBoxLivePlot, QtWidgets.QCheckBox)
         self.live_plot_checkbox = ui.checkBoxLivePlot
         self.live_plot_checkbox.setChecked(False)
-        if self.roi_types == 'ManualROI':
+        if issubclass(self.roi_types, ManualROI):
             self.live_plot_checkbox.setEnabled(True)
         else:
             self.live_plot_checkbox.setEnabled(False)
@@ -78,7 +78,7 @@ class ROIList(list):
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
-    def append(self, roi: Union[CNMFROI, ManualROI]):
+    def append(self, roi: Union[ScatterROI, ManualROI]):
         """Add an ROI instance to the list"""
         roi.add_to_viewer()
 
@@ -191,7 +191,7 @@ class ROIList(list):
             roi.set_original_color(c)
             roi.set_color(c)
 
-    def __getitem__(self, item) -> Union[ManualROI, CNMFROI]:
+    def __getitem__(self, item) -> Union[ManualROI, ScatterROI]:
         """Get an item (ROI) from the list"""
         return super(ROIList, self).__getitem__(item)
 
@@ -213,7 +213,7 @@ class ROIList(list):
         self._show_graphics_object(ix)
         self.set_list_widget_tags()
 
-    def highlight_roi(self, roi: Union[ManualROI, CNMFROI]):
+    def highlight_roi(self, roi: Union[ManualROI, ScatterROI]):
         """Highlight an ROI in white, both the spatial visualization and the curve"""
         ix = self.index(roi)
         self.highlight_curve(ix)
@@ -273,9 +273,9 @@ class ROIList(list):
         for ix in range(self.__len__()):
             self._hide_graphics_object(ix)
 
-    def _live_update_requested(self, roi: Union[ManualROI, CNMFROI]):
+    def _live_update_requested(self, roi: Union[ManualROI, ScatterROI]):
         ix = self.index(roi)
-        if self.roi_types == 'CNMFROI':
+        if not issubclass(self.roi_types, ManualROI):
             raise TypeError('Can only live update Manually drawn ROIs when they are moved')
 
         self.vi.workEnv_changed('ROI Region')

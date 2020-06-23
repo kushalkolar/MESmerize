@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CNMF3D_template</class>
+ <widget class="QDockWidget" name="CNMF3D_template">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>573</width>
+    <height>662</height>
+   </rect>
+  </property>
+  <property name="floating">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>&amp;CNMF 3D</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QVBoxLayout" name="verticalLayout_7">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>p</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinBox_p">
+          <property name="value">
+           <number>2</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_use_patches">
+          <property name="title">
+           <string>&amp;Use patches</string>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>rf</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_rf">
+             <property name="maximum">
+              <number>9999</number>
+             </property>
+             <property name="singleStep">
+              <number>5</number>
+             </property>
+             <property name="value">
+              <number>25</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>stride</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_stride">
+             <property name="maximum">
+              <number>9999</number>
+             </property>
+             <property name="singleStep">
+              <number>5</number>
+             </property>
+             <property name="value">
+              <number>15</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>k</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinBox_k">
+          <property name="maximum">
+           <number>9999</number>
+          </property>
+          <property name="value">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>gSig, (x, y z)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QSpinBox" name="spinBox_gSig_x">
+            <property name="maximum">
+             <number>999</number>
+            </property>
+            <property name="value">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_gSig_y">
+            <property name="maximum">
+             <number>999</number>
+            </property>
+            <property name="value">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spinBox_gSig_z">
+            <property name="maximum">
+             <number>999</number>
+            </property>
+            <property name="value">
+             <number>3</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>merge threshold</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_merge_threshold">
+          <property name="minimum">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.800000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_cnmf_kwargs">
+          <property name="toolTip">
+           <string>You can enter additional kwargs to pass for CNMF instantiation.
+Use single quotes for strings, do not use double quotes.</string>
+          </property>
+          <property name="statusTip">
+           <string/>
+          </property>
+          <property name="title">
+           <string>Use CNMF &amp;kwargs</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QPlainTextEdit" name="plainTextEdit_cnmf_kwargs">
+             <property name="toolTip">
+              <string>You can enter additional kwargs to pass for CNMF instantiation.
+Use single quotes for strings, do not use double quotes.</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>rval threshold</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_rval">
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.700000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>min SNR</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_minSNR">
+          <property name="singleStep">
+           <double>0.250000000000000</double>
+          </property>
+          <property name="value">
+           <double>2.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>decay time</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_decay_time">
+          <property name="minimum">
+           <double>0.250000000000000</double>
+          </property>
+          <property name="value">
+           <double>2.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_eval_kwargs">
+          <property name="toolTip">
+           <string>You can enter additional parameters to use for component evaluation.
+Use single quotes for strings, do not use double quotes</string>
+          </property>
+          <property name="title">
+           <string>Use e&amp;valuation params</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QPlainTextEdit" name="plainTextEdit_eval_kwargs">
+             <property name="toolTip">
+              <string>You can enter additional parameters to use for component evaluation.
+Use single quotes for strings, do not use double quotes</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_refit">
+          <property name="text">
+           <string>refit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_keep_memmap">
+          <property name="toolTip">
+           <string>Keep the memmap of this batch item.
+If unchecked the memmap will be deleted 
+after this batch item is processed unless it 
+is required for a later batch item.</string>
+          </property>
+          <property name="text">
+           <string>Keep memmap of this batch item</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_use_previous_memmap">
+          <property name="toolTip">
+           <string>Useful if trying out different paramters for the same input image stack.</string>
+          </property>
+          <property name="title">
+           <string>Use &amp;memmap from previous batch item</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="lineEdit_memmap_uuid">
+             <property name="placeholderText">
+              <string>Enter UUID</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLineEdit" name="lineEdit_name">
+            <property name="toolTip">
+             <string>Enter a name for this batch item</string>
+            </property>
+            <property name="placeholderText">
+             <string>Enter name</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_add_to_batch">
+            <property name="text">
+             <string>Add to batch</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>spinBox_p</tabstop>
+  <tabstop>groupBox_use_patches</tabstop>
+  <tabstop>spinBox_rf</tabstop>
+  <tabstop>spinBox_stride</tabstop>
+  <tabstop>spinBox_k</tabstop>
+  <tabstop>spinBox_gSig_x</tabstop>
+  <tabstop>spinBox_gSig_y</tabstop>
+  <tabstop>spinBox_gSig_z</tabstop>
+  <tabstop>doubleSpinBox_merge_threshold</tabstop>
+  <tabstop>groupBox_cnmf_kwargs</tabstop>
+  <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
+  <tabstop>doubleSpinBox_rval</tabstop>
+  <tabstop>doubleSpinBox_minSNR</tabstop>
+  <tabstop>doubleSpinBox_decay_time</tabstop>
+  <tabstop>groupBox_eval_kwargs</tabstop>
+  <tabstop>plainTextEdit_eval_kwargs</tabstop>
+  <tabstop>checkBox_refit</tabstop>
+  <tabstop>checkBox_keep_memmap</tabstop>
+  <tabstop>groupBox_use_previous_memmap</tabstop>
+  <tabstop>lineEdit_memmap_uuid</tabstop>
+  <tabstop>lineEdit_name</tabstop>
+  <tabstop>pushButton_add_to_batch</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>lineEdit_name</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton_add_to_batch</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>178</x>
+     <y>683</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>226</x>
+     <y>686</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

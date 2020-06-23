@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>389</width>
-    <height>276</height>
+    <width>371</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="floating">
@@ -17,7 +17,7 @@
    <string>Tiff file &amp;I/O</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -73,44 +73,101 @@
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Load method:</string>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="toolTip">
+       <string>The options for “Load Method” correspond to the tifffile library method that is used for loading the images</string>
       </property>
+      <property name="title">
+       <string>Load Method:</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QRadioButton" name="radioButtonAsArray">
+         <property name="toolTip">
+          <string>Usually faster alternative to imread</string>
+         </property>
+         <property name="text">
+          <string>asarray</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioButtonAsArrayMulti">
+         <property name="toolTip">
+          <string>Use if tiff was created in append mode</string>
+         </property>
+         <property name="text">
+          <string>asarray - multi series</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioButtonImread">
+         <property name="toolTip">
+          <string>Should work for most tiffs if they were not created in append mode.</string>
+         </property>
+         <property name="text">
+          <string>i&amp;mread</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButtonAsArray">
-      <property name="toolTip">
-       <string>Usually faster alternative to imread</string>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Axes order</string>
       </property>
-      <property name="text">
-       <string>asarray</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="radioButtonAsArrayMulti">
-      <property name="toolTip">
-       <string>Use if tiff was created in append mode</string>
-      </property>
-      <property name="text">
-       <string>asarray - multi series</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="radioButtonImread">
-      <property name="toolTip">
-       <string>Should work for most tiffs if they were not created in append mode.</string>
-      </property>
-      <property name="text">
-       <string>i&amp;mread</string>
-      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QRadioButton" name="radioButton_axes_default">
+         <property name="toolTip">
+          <string>default option, usual dimensions</string>
+         </property>
+         <property name="text">
+          <string>2D: [t, x, y] || 3D: [t, z, x, y]</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QRadioButton" name="radioButton_axes_custom">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_axes_custom">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="maxLength">
+            <number>4</number>
+           </property>
+           <property name="placeholderText">
+            <string>Custom, ex: xyzt</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="btnLoadIntoWorkEnv">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="text">
        <string>Load into workEnv</string>
       </property>
@@ -122,7 +179,12 @@
  <tabstops>
   <tabstop>btnSelectTiff</tabstop>
   <tabstop>btnSelectMetaFile</tabstop>
+  <tabstop>radioButtonAsArray</tabstop>
   <tabstop>radioButtonAsArrayMulti</tabstop>
+  <tabstop>radioButtonImread</tabstop>
+  <tabstop>radioButton_axes_default</tabstop>
+  <tabstop>radioButton_axes_custom</tabstop>
+  <tabstop>lineEdit_axes_custom</tabstop>
   <tabstop>btnLoadIntoWorkEnv</tabstop>
  </tabstops>
  <resources/>

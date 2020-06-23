@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/roi_manager_pytemplate.ui'
+# Form implementation generated from reading ui file './roi_manager_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,8 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(393, 536)
-        DockWidget.setMinimumSize(QtCore.QSize(393, 412))
+        DockWidget.resize(402, 536)
+        DockWidget.setMinimumSize(QtCore.QSize(402, 412))
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -109,6 +109,17 @@ class Ui_DockWidget(object):
         self.lineEditROITag.returnPressed.connect(self.btnSetROITag.click)
         self.horizontalSliderSpotSize.valueChanged['int'].connect(self.label_4.setNum)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
+        DockWidget.setTabOrder(self.tabWidget, self.horizontalSliderSpotSize)
+        DockWidget.setTabOrder(self.horizontalSliderSpotSize, self.btnAddROI)
+        DockWidget.setTabOrder(self.btnAddROI, self.checkBoxShowAll)
+        DockWidget.setTabOrder(self.checkBoxShowAll, self.checkBoxLivePlot)
+        DockWidget.setTabOrder(self.checkBoxLivePlot, self.btnPlot)
+        DockWidget.setTabOrder(self.btnPlot, self.pushButtonImportFromImageJ)
+        DockWidget.setTabOrder(self.pushButtonImportFromImageJ, self.btnSwitchToManualMode)
+        DockWidget.setTabOrder(self.btnSwitchToManualMode, self.listWidgetROIs)
+        DockWidget.setTabOrder(self.listWidgetROIs, self.listWidgetROITags)
+        DockWidget.setTabOrder(self.listWidgetROITags, self.lineEditROITag)
+        DockWidget.setTabOrder(self.lineEditROITag, self.btnSetROITag)
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate

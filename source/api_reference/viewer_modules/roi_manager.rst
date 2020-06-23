@@ -38,10 +38,10 @@ ManagerManual
     :members:
     :member-order: bysource
 
-ManagerCNMFE
+ManagerCNMFROI
 ------------
 
-.. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFE
+.. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFROI
     :show-inheritance:
     :special-members:
     :members:
