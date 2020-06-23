@@ -114,7 +114,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             mc_params.update(eval(f"dict({_kwargs})"))
 
         if group_params:
-            d.update({'mc_params': mc_params})
+            d.update({'mc_kwargs': mc_params})
 
         else:
             d.update({**mc_params})
@@ -181,7 +181,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.lineEditNameElastic.clear()
 
     def add_to_batch(self):
-        input_params = self.get_params()
+        input_params = self.get_params(group_params=True)
         input_workEnv = self.get_input_workEnv()
         item_name = input_params['name_elas']
         batch_manager = get_window_manager().get_batch_manager()
@@ -189,4 +189,4 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                name=item_name,
                                input_workEnv=input_workEnv,
                                input_params=input_params,
-                               info=input_params)
+                               info=self.get_params())
