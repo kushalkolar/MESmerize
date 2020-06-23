@@ -13,7 +13,6 @@ from .control_widget_pytemplate import *
 from . import kshape_process
 import psutil
 import os
-from signal import SIGKILL
 from ....common.utils import make_workdir, make_runfile
 from ....common.qdialogs import *
 from ....common import console_history_path
@@ -32,6 +31,14 @@ from ..base import BasePlotWidget
 from math import sqrt, ceil
 from ...utils import auto_colormap
 from typing import Union
+
+from ....common.configuration import IS_WINDOWS
+
+if not IS_WINDOWS:
+    from signal import SIGKILL
+
+elif IS_WINDOWS:
+    from win32api import TerminateProcess, CloseHandle
 
 
 class KShapeControlDock(QtWidgets.QDockWidget):
@@ -620,9 +627,20 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         except psutil.NoSuchProcess:
             return
         children = psutil.Process(py_proc).children()
-        os.kill(py_proc, SIGKILL)
-        for child in children:
-            os.kill(child.pid, SIGKILL)
+
+        if not IS_WINDOWS:
+            os.kill(py_proc, SIGKILL)
+
+            for child in children:
+                os.kill(child.pid, SIGKILL)
+
+        elif IS_WINDOWS:
+            TerminateProcess(py_proc, -1)
+            CloseHandle(py_proc)
+
+            for child in children:
+                TerminateProcess(child.pid, -1)
+                CloseHandle(child.pid)
 
     def process_finished(self):
         """Set the plots when the external clustering QProcess finishes"""
