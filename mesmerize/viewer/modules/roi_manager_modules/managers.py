@@ -345,9 +345,9 @@ class ManagerVolCNMF(ManagerVolROI):
         new_idx_components = np.array([roi.cnmf_idx for roi in self.roi_list], dtype=np.int64)
 
         # Make sure nothing weird happened
-        l = [self.cnmA, self.cnmb, self.cnmC, self.cnm_f, self.cnmYrA, self.orig_idx_components, new_idx_components]
-        if any(item is None for item in l):
-            raise ValueError('One or more pieces of CNMF(E) data are missing')
+        # l = [self.cnmA, self.cnmb, self.cnmC, self.cnm_f, self.cnmYrA, self.orig_idx_components, new_idx_components]
+        # if any(item is None for item in l):
+        #     raise ValueError('One or more pieces of CNMF(E) data are missing')
 
         # Store the actual cnmf attributes as well.
         input_dict = {'input_params_cnmfe': self.input_params_dict,
@@ -544,9 +544,9 @@ class ManagerCNMFROI(AbstractBaseManager):
         new_idx_components = np.array([roi.cnmf_idx for roi in self.roi_list], dtype=np.int64)
 
         # Make sure nothing weird happened
-        l = [self.cnmA, self.cnmb, self.cnmC, self.cnm_f, self.cnmYrA, self.orig_idx_components, new_idx_components]
-        if any(item is None for item in l):
-            raise ValueError('One or more pieces of CNMF(E) data are missing')
+        # l = [self.cnmA, self.cnmb, self.cnmC, self.cnm_f, self.cnmYrA, self.orig_idx_components, new_idx_components]
+        # if any(item is None for item in l):
+        #     raise ValueError('One or more pieces of CNMF(E) data are missing')
 
         # Store the actual cnmf attributes as well.
         input_dict = {'input_params_cnmfe': self.input_params_dict,
