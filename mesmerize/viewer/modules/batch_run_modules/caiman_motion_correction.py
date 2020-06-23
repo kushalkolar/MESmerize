@@ -54,7 +54,7 @@ def run(batch_dir: str, UUID: str):
         fname = [file_path + '_input.tiff']
         input_params = pickle.load(open(file_path + '.params', 'rb'))
         # TODO: Should just unpack the input params as kwargs
-        mc_kwargs = input_params['mc_kwargs']
+        mc_kwargs = input_params['mc_params']
 
         splits_rig = n_processes
 
