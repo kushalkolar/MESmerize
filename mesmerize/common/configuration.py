@@ -25,10 +25,10 @@ from configparser import RawConfigParser
 
 if os.name == 'nt':
     IS_WINDOWS = True
-    HOME = 'HOME'
+    HOME = 'USERPROFILE'
 else:
     IS_WINDOWS = False
-    HOME = 'USERPROFILE'
+    HOME = 'HOME'
 
 sys_cfg = {}
 
