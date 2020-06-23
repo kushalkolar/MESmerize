@@ -199,8 +199,62 @@ This might take a while.
 
     echo "backend: qt5" >> ~/.matplotlib/matplotlibrc
 
-Customized
-==========
+Windows
+=======
+
+Only Windows 10 is supported.
+
+Download & install Anaconda for Python 3: https://www.anaconda.com/distribution/
+
+You will also need git: https://gitforwindows.org/
+
+.. warning:: It is **highly** recommended that you use Mesmerize in a new dedicated environment, even if you already have major dependencies (like caiman) installed in another environment.
+
+**All commands are to be run in the powershell**
+
+#. You will need anaconda to be accessible through powershell. Close & open a new powershell after running this::
+
+    conda init powershell
+
+#. Create a new anaconda environment::
+
+    conda create -n mesmerize
+    
+#. Install caiman::
+
+    conda install -c conda-forge caiman
+    
+#. Downgrade pandas::
+
+    conda install pandas==0.25.3
+    
+#. Install some packages::
+
+    pip install scikit-learn==0.20.2 tifffile==0.15.1 opencv-python opencv-contrib-python Cython tables==3.5.2 Pillow==5.4.1 seaborn==0.9.0 spyder==3.3.3 graphviz
+    
+#. Install tslearn::
+
+    conda install -c conda-forge tslearn==0.2.1
+    
+#. Install graphviz, this is different from the python interface to graphviz installed through pip::
+
+    graphviz
+
+#. Allow powershell to execute scripts, this is required for the batch manager and k-Shape GUI which launch external processes. This may affect the security of your system by allowing scripts to be executable. I'm not an expert on Windows so if someone knows a better way to do this let me know! As far as I know, I'm not sure why you would even try to execute untrusted scripts so this shouldn't be a concern?::
+
+    Set-ExecutionPolicy RemoteSigned
+    Set-ExecutionPolicy Bypass -scope Process -Force
+    
+#. Clone Mesmerize::
+
+    git clone https://github.com/kushalkolar/MESmerize.git
+    
+#. Add the path to the MESmerize dir to your ``PYTHONPATH``. In the start menu enter "edit environment variables for your account", create a a new variable called ``PYTHONPATH`` and enter the path to the MESmerize dir. Or add the path to the MESmerize dir if you already have a ``PYTHONPATH`` environment variable
+
+#. Launch Mesmerize::
+
+    python <path to MESmerize dir>/mesmerize
+
     
 Troubleshooting
 ===============
