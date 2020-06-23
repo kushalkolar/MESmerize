@@ -141,7 +141,7 @@ class Output:
             )
         )
 
-        name = input_params['name_elas']
+        name = input_params['item_name']
         vi.viewer.ui.label_curr_img_seq_name.setText('MotCor :' + name)
 
         out_file = json.load(

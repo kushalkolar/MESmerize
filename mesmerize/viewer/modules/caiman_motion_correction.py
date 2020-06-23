@@ -182,6 +182,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         input_params = self.get_params(group_params=True)
         input_workEnv = self.get_input_workEnv()
         item_name = self.ui.lineEditNameElastic.text()
+        input_params['item_name'] = item_name
         batch_manager = get_window_manager().get_batch_manager()
         batch_manager.add_item(module='caiman_motion_correction',
                                name=item_name,
