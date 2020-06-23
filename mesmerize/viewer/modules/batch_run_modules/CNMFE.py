@@ -97,13 +97,26 @@ def run(batch_dir: str, UUID: str):
 
     try:
         print('Creating memmap')
+
+        # memmap_path = cm.save_memmap_each(
+        #     filename,
+        #     base_name='memmap-' + UUID,
+        #     order='C',
+        #     border_to_0=input_params['border_pix'],
+        #     dview=dview)
+        # memmap_path = cm.save_memmap_join(memmap_path, base_name='memmap-' + UUID, dview=dview)
+        # # load memory mappable file
+        # Yr, dims, T = cm.load_memmap(memmap_path)
+        # Y = Yr.T.reshape((T,) + dims, order='F')
+
+
         memmap_path = cm.save_memmap(
             filename, base_name=f'memmap-', order='C', dview=dview, border_to_0=input_params['border_pix'],
 
         )
 
         Yr, dims, T = cm.load_memmap(memmap_path)
-        Y = Yr.T.reshape((T,) + dims, order='F')
+        Y = np.reshape(Yr.T, [T] + list(dims), order='F')
 
         if input_params['do_cnmfe']:
             gSig = input_params['cnmfe_kwargs']['gSig'][0]
@@ -190,7 +203,7 @@ def run(batch_dir: str, UUID: str):
         )
 
     except Exception as e:
-        output.update({'status': 0, 'output_info': traceback.format_exc()})
+        output.update({'status': 0, 'Y.shape': Y.shape, 'output_info': traceback.format_exc()})
 
     dview.terminate()
 
@@ -340,7 +353,7 @@ class Output(QtWidgets.QWidget):
         roi_manager_gui.manager.add_all_components(
             cnmf_data,
             input_params_dict=input_params,
-            calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()()
+            calc_raw_min_max=self.checkbox_calc_raw_min_max.isChecked()
         )
 
         vi.viewer.ui.label_curr_img_seq_name.setText('CNMFE of: ' + input_params['item_name'])

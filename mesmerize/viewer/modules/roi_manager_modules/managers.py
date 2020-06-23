@@ -428,6 +428,9 @@ class ManagerCNMFROI(AbstractBaseManager):
         self.dims = self.cnmf_data_dict['dims']
         self.idx_components = cnmf_data_dict['estimates']['idx_components']
 
+        if self.idx_components is None:
+            self.idx_components = np.arange(self.cnmC.shape[0])
+
         self.orig_idx_components = deepcopy(self.idx_components)
         self.input_params_dict = input_params_dict
 
