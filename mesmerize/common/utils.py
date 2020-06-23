@@ -141,7 +141,7 @@ def make_runfile(module_path: str, savedir: str, args_str: Optional[str] = None,
                               f'{python_call} {module_path} {args_str}',
                               f'{post_run}'])
     else:
-        to_write = '\r\n'.join(
+        to_write = os.linesep.join(
             [
                 f'{cmd_prefix}',
                 f'set _MESMERIZE_N_THREADS={n_threads}',
