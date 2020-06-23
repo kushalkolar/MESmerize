@@ -91,8 +91,8 @@ def run(batch_dir: str, UUID: str):
     c, dview, n_processes = cm.cluster.setup_cluster(
         backend='local',
         n_processes=n_processes,
-        single_thread=False,
-        ignore_preexisting=True
+        single_thread=False
+        #ignore_preexisting=True
     )
 
     try:
@@ -208,7 +208,10 @@ def run(batch_dir: str, UUID: str):
     dview.terminate()
 
     for mf in glob(batch_dir + '/memmap-*'):
-        os.remove(mf)
+        try:
+            os.remove(mf)
+        except: # Windows doesn't like removing the memmaps
+            pass
 
     end_time = time()
     processing_time = (end_time - start_time) / 60
@@ -360,5 +363,6 @@ class Output(QtWidgets.QWidget):
         self.close()
 
 
-if sys.argv[0] == __file__:
+#if sys.argv[0] == __file__:
+if __name__ == '__main__':
     run(sys.argv[1], sys.argv[2])
