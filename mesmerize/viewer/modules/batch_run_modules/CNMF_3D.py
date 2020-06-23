@@ -146,7 +146,10 @@ def run(work_dir: str, UUID: str, save_temp_files: str):
         # Delete the memmap from the work dir
         if not os.path.samefile(batch_dir, work_dir):
             print("***** Deleting memmap files from work dir *****")
-            os.remove(memmap_path)
+            try:
+                os.remove(memmap_path)
+            except:
+                pass
 
         output.update(
             {
@@ -206,5 +209,6 @@ class Output:
         vi.enable_ui(True)
 
 
-if sys.argv[0] == __file__:
+#if sys.argv[0] == __file__:
+if __name__ == '__main__':
     run(*sys.argv[1:])

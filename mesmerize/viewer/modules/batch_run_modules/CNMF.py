@@ -111,7 +111,15 @@ def run(batch_dir: str, UUID: str):
     dview.terminate()
 
     for mf in glob(batch_dir + '/memmap-*'):
-        os.remove(mf)
+        try:
+            os.remove(mf)
+        except:
+            pass
+
+    end_time = time()
+    proc_time = (end_time - start_time) / 60
+
+    output.update({'processing_time': proc_time})
 
     json.dump(output, open(file_path + '.out', 'w'))
 
@@ -153,5 +161,6 @@ class Output:
         vi.enable_ui(True)
 
 
-if sys.argv[0] == __file__:
+#if sys.argv[0] == __file__:
+if __name__ == '__main__':
     run(sys.argv[1], sys.argv[2])

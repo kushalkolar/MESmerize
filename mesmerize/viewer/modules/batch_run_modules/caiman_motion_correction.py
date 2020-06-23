@@ -101,7 +101,10 @@ def run(batch_dir: str, UUID: str):
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
     for mf in glob(os.path.join(batch_dir, UUID + '*.mmap')):
-        os.remove(mf)
+        try:
+            os.remove(mf)
+        except:
+            pass
 
     dview.terminate()
 
@@ -211,5 +214,6 @@ class BitDepthConverter:
         """
         return np.take(lut, image).astype(lut.dtype)
 
-if sys.argv[0] == __file__:
+#if sys.argv[0] == __file__:
+if __name__ == '__main__':
     run(sys.argv[1], sys.argv[2])
