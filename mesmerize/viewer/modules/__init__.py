@@ -3,11 +3,12 @@ __all__ = [
     'mesfile_io',
     'cnmfe',
     'cnmf',
-    'cnmfe_3d',
+    'cnmf_3d',
     'roi_manager',
     'tiff_io',
     'caiman_motion_correction',
     'stimulus_mapping',
     'script_editor',
-    'suite2p'
+    'suite2p',
+    'caiman_importer'
 ]

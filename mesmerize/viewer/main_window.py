@@ -66,10 +66,16 @@ dock_widget_area = {'roi_manager': QtCore.Qt.LeftDockWidgetArea,
                     cnmfe.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
 
                     'cnmf_3d': QtCore.Qt.RightDockWidgetArea,
-                    cnmfe_3d.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+                    cnmf_3d.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
 
                     'caiman_motion_correction': QtCore.Qt.RightDockWidgetArea,
                     caiman_motion_correction.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+                    'caiman_importer': QtCore.Qt.TopDockWidgetArea,
+                    caiman_importer.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
+
+                    'suite2p_importer': QtCore.Qt.TopDockWidgetArea,
+                    suite2p.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
 
                     'stimulus_mapping': QtCore.Qt.BottomDockWidgetArea,
                     stimulus_mapping.ModuleGUI: QtCore.Qt.BottomDockWidgetArea
@@ -81,8 +87,9 @@ class MainWindow(QtWidgets.QMainWindow):
                         'mesfile': mesfile_io.ModuleGUI,
                         'cnmf': cnmf.ModuleGUI,
                         'cnmfe': cnmfe.ModuleGUI,
-                        'cnmf_3d': cnmfe_3d.ModuleGUI,
+                        'cnmf_3d': cnmf_3d.ModuleGUI,
                         'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
+                        'caiman_importer': caiman_importer.ModuleGUI,
                         'roi_manager': roi_manager.ModuleGUI,
                         'suite2p_importer': suite2p.ModuleGUI,
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
@@ -100,8 +107,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionCNMF.triggered.connect(lambda: self.run_module(cnmf.ModuleGUI))
         self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
-        self.ui.actionCNMF_3D.triggered.connect(lambda: self.run_module(cnmfe_3d.ModuleGUI))
+        self.ui.actionCNMF_3D.triggered.connect(lambda: self.run_module(cnmf_3d.ModuleGUI))
         self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
+        self.ui.actionCaimanImportHDF5.triggered.connect(lambda: self.run_module(caiman_importer.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
         self.ui.actionSuite2p_Importer.triggered.connect(lambda: self.run_module(suite2p.ModuleGUI))
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
@@ -236,7 +244,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.running_modules[-1].hide()
 
-        if module_class in self.standard_modules.values():
+        if (module_class in self.standard_modules.values()) and dock_widget_area.keys():
             self.addDockWidget(dock_widget_area[module_class], m)
 
         return self.running_modules[-1]

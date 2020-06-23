@@ -242,10 +242,14 @@ class ManagerVolROI(ManagerScatterROI):
 class ManagerVolCNMF(ManagerVolROI):
     def __init__(self, parent, ui, viewer_interface):
         super(ManagerVolCNMF, self).__init__(parent, ui, viewer_interface)
+        self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
 
         self.input_params_dict = None
         self.idx_components = None  # Keep track of components if the user manually want to remove some
         self.orig_idx_components = None  # List of components prior to any manual deletion by the user
+
+        # cnmf data dict directly from the hdf5 file
+        self.cnmf_data_dict = None
 
         # These correspond to the caiman.source_extraction.cnmf attributes
         self.cnmA = None
@@ -257,15 +261,26 @@ class ManagerVolCNMF(ManagerVolROI):
     def create_roi_list(self):
         self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
 
-    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, dims, input_params_dict):
-        """Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs"""
+    def add_all_components(self, cnmf_data_dict, input_params_dict):
+        """
+        Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs
+
+        :param cnmf_data_dict:      CNMF results data directly from the HDF5 file
+        :param input_params_dict:   dict of input params, from the batch manager
+        :param calc_raw_min_max:    Calculate raw min & max for each ROI
+        :return:
+        """
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
-        self.cnmA = cnmA
-        self.cnmb = cnmb
-        self.cnmC = cnmC
-        self.cnm_f = cnm_f
-        self.cnmYrA = cnmYrA
+
+        self.cnmf_data_dict = cnmf_data_dict
+
+        self.cnmA = self.cnmf_data_dict['estimates']['A']
+        self.cnmb = self.cnmf_data_dict['estimates']['b']
+        self.cnm_f = self.cnmf_data_dict['estimates']['f']
+        self.cnmC = self.cnmf_data_dict['estimates']['C']
+        self.cnmYrA = self.cnmf_data_dict['estimates']['YrA']
+        self.dims = self.cnmf_data_dict['dims']
 
         # components are already filtered from the output file
         self.idx_components = np.arange(self.cnmC.shape[0])
@@ -273,9 +288,9 @@ class ManagerVolCNMF(ManagerVolROI):
         self.input_params_dict = input_params_dict
 
         # spatial components
-        contours = caiman_get_contours(cnmA[:, self.idx_components], dims, thr=0.9)
+        contours = caiman_get_contours(self.cnmA[:, self.idx_components], self.dims, thr=0.9)
 
-        temporal_components = cnmC
+        temporal_components = self.cnmC
 
         self.input_params_dict = self.input_params_dict
         num_components = len(temporal_components)
@@ -307,6 +322,8 @@ class ManagerVolCNMF(ManagerVolROI):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
+        self.cnmf_data_dict = states['cnmf_data_dict']
+
         for state in states['states']:
             roi = VolCNMF.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
@@ -322,8 +339,6 @@ class ManagerVolCNMF(ManagerVolROI):
 
     def get_all_states(self) -> dict:
         """Get all states so that they can be restored"""
-        if not hasattr(self, 'roi_list'):
-            self.create_roi_list()
         states = super(ManagerVolROI, self).get_all_states()
 
         # If the user has manually deleted some ROIs
@@ -336,6 +351,7 @@ class ManagerVolCNMF(ManagerVolROI):
 
         # Store the actual cnmf attributes as well.
         input_dict = {'input_params_cnmfe': self.input_params_dict,
+                      'cnmf_data_dict':     self.cnmf_data_dict,
                       'cnmf_output':
                           {
                               'cnmA': self.cnmA,
@@ -374,6 +390,9 @@ class ManagerCNMFROI(AbstractBaseManager):
         self.idx_components = None  # Keep track of components if the user manually want to remove some
         self.orig_idx_components = None  # List of components prior to any manual deletion by the user
 
+        # cnmf data dict directly from the hdf5 file
+        self.cnmf_data_dict = None
+
         # These correspond to the caiman.source_extraction.cnmf attributes
         self.cnmA = None
         self.cnmb = None
@@ -387,28 +406,42 @@ class ManagerCNMFROI(AbstractBaseManager):
         """Create empty CNMFROI list"""
         self.roi_list = ROIList(self.ui, CNMFROI, self.vi)
 
-    def add_all_components(self, cnmA, cnmb, cnmC, cnm_f, cnmYrA, idx_components, dims, input_params_dict, dfof=False,
-                           calc_raw_min_max=False):
-        """Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs"""
+    def add_all_components(self, cnmf_data_dict, input_params_dict, calc_raw_min_max=False):
+        """
+        Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs
+
+        :param cnmf_data_dict:      CNMF results data directly from the HDF5 file
+        :param input_params_dict:   dict of input params, from the batch manager
+        :param calc_raw_min_max:    Calculate raw min & max for each ROI
+        :return:
+        """
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
-        self.cnmA = cnmA
-        self.cnmb = cnmb
-        self.cnmC = cnmC
-        self.cnm_f = cnm_f
-        self.cnmYrA = cnmYrA
-        self.idx_components = idx_components
-        self.orig_idx_components = deepcopy(idx_components)
+
+        self.cnmf_data_dict = cnmf_data_dict
+
+        self.cnmA = self.cnmf_data_dict['estimates']['A']
+        self.cnmb = self.cnmf_data_dict['estimates']['b']
+        self.cnm_f = self.cnmf_data_dict['estimates']['f']
+        self.cnmC = self.cnmf_data_dict['estimates']['C']
+        self.cnmYrA = self.cnmf_data_dict['estimates']['YrA']
+        self.dims = self.cnmf_data_dict['dims']
+        self.idx_components = cnmf_data_dict['estimates']['idx_components']
+
+        if self.idx_components is None:
+            self.idx_components = np.arange(self.cnmC.shape[0])
+
+        self.orig_idx_components = deepcopy(self.idx_components)
         self.input_params_dict = input_params_dict
 
         # spatial components
-        contours = caiman_get_contours(cnmA[:, idx_components], dims)
-        if dfof:
-            temporal_components = cnmC
-        else:
-            temporal_components = cnmC[idx_components]
+        contours = caiman_get_contours(self.cnmA[:, self.idx_components], self.dims)
+        # if dfof:
+        #     temporal_components = cnmC
+        # else:
+        #     temporal_components = cnmC[idx_components]
         self.input_params_dict = self.input_params_dict
-        num_components = len(temporal_components)
+        num_components = len(self.cnmC)
 
         if calc_raw_min_max:
             img = self.vi.viewer.workEnv.imgdata.seq.T
@@ -417,12 +450,12 @@ class ManagerCNMFROI(AbstractBaseManager):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
                                                         + str(ix) + ' / ' + str(num_components))
 
-            curve_data = temporal_components[ix]
+            curve_data = self.cnmC[ix]
             contour = contours[ix]
 
             if calc_raw_min_max:
                 # Get a binary mask
-                mask = self.cnmA[:, idx_components[ix]].toarray().reshape(dims, order='F') > 0
+                mask = self.cnmA[:, self.idx_components[ix]].toarray().reshape(self.dims, order='F') > 0
                 # mask3d = np.array((mask,) * curve_data.shape[0])
 
                 max_ix = curve_data.argmax()
@@ -442,7 +475,7 @@ class ManagerCNMFROI(AbstractBaseManager):
 
             roi = CNMFROI(curve_plot_item=self.get_plot_item(),
                           view_box=self.vi.viewer.getView(),
-                          cnmf_idx=idx_components[ix],
+                          cnmf_idx=self.idx_components[ix],
                           curve_data=curve_data,
                           contour=contour,
                           raw_min_max=raw_min_max)
@@ -486,6 +519,8 @@ class ManagerCNMFROI(AbstractBaseManager):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
+        self.cnmf_data_dict = states['cnmf_data_dict']
+
         for state in states['states']:
             roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
             self.roi_list.append(roi)
@@ -515,6 +550,7 @@ class ManagerCNMFROI(AbstractBaseManager):
 
         # Store the actual cnmf attributes as well.
         input_dict = {'input_params_cnmfe': self.input_params_dict,
+                      'cnmf_data_dict': self.cnmf_data_dict,
                       'cnmf_output':
                           {
                               'cnmA': self.cnmA,

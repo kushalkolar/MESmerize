@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './main_window_pytemplate.ui'
+# Form implementation generated from reading ui file 'main_window_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -16,7 +16,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 30))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -118,8 +118,8 @@ class Ui_MainWindow(object):
         self.actionSuite2p_Importer.setObjectName("actionSuite2p_Importer")
         self.actionCNMF_3D = QtWidgets.QAction(MainWindow)
         self.actionCNMF_3D.setObjectName("actionCNMF_3D")
-        self.actionLoad_HDF5_result_file = QtWidgets.QAction(MainWindow)
-        self.actionLoad_HDF5_result_file.setObjectName("actionLoad_HDF5_result_file")
+        self.actionCaimanImportHDF5 = QtWidgets.QAction(MainWindow)
+        self.actionCaimanImportHDF5.setObjectName("actionCaimanImportHDF5")
         self.menuFile.addAction(self.actionAdd_to_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_work_environment)
@@ -132,7 +132,7 @@ class Ui_MainWindow(object):
         self.menuCaImAn_toolbox.addAction(self.actionCNMF)
         self.menuCaImAn_toolbox.addAction(self.actionCNMF_E)
         self.menuCaImAn_toolbox.addAction(self.actionCNMF_3D)
-        self.menuCaImAn_toolbox.addAction(self.actionLoad_HDF5_result_file)
+        self.menuCaImAn_toolbox.addAction(self.actionCaimanImportHDF5)
         self.menuModules.addAction(self.menuLoad_images.menuAction())
         self.menuModules.addAction(self.menuCaImAn_toolbox.menuAction())
         self.menuModules.addAction(self.actionROI_Manager)
@@ -220,5 +220,5 @@ class Ui_MainWindow(object):
         self.actionOpen_docs.setText(_translate("MainWindow", "&Open docs"))
         self.actionSuite2p_Importer.setText(_translate("MainWindow", "Suite&2p Importer"))
         self.actionCNMF_3D.setText(_translate("MainWindow", "CNMF &3D"))
-        self.actionLoad_HDF5_result_file.setText(_translate("MainWindow", "&Load HDF5 result file"))
+        self.actionCaimanImportHDF5.setText(_translate("MainWindow", "&Import HDF5 result file"))
 

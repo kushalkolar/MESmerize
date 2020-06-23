@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -53,7 +53,7 @@
      <addaction name="actionCNMF"/>
      <addaction name="actionCNMF_E"/>
      <addaction name="actionCNMF_3D"/>
-     <addaction name="actionLoad_HDF5_result_file"/>
+     <addaction name="actionCaimanImportHDF5"/>
     </widget>
     <addaction name="menuLoad_images"/>
     <addaction name="menuCaImAn_toolbox"/>
@@ -315,9 +315,9 @@
     <string>CNMF &amp;3D</string>
    </property>
   </action>
-  <action name="actionLoad_HDF5_result_file">
+  <action name="actionCaimanImportHDF5">
    <property name="text">
-    <string>&amp;Load HDF5 result file</string>
+    <string>&amp;Import HDF5 result file</string>
    </property>
   </action>
  </widget>

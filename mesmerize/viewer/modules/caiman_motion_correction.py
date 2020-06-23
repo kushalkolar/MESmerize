@@ -80,27 +80,43 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.overlapsH = []
         self.overlapsV = []
 
-    def get_params(self) -> dict:
+    def get_params(self, group_params: bool = False) -> dict:
         """
         Get a dict of the set parameters
         :return: parameters dict
         :rtype: dict
         """
 
-        gSig_filt = None if self.ui.spinBoxGSig_filt.value() == 0 else (self.ui.spinBoxGSig_filt.value(), )*2
+        if self.ui.spinBoxGSig_filt.value() == 0:
+            gSig_filt = None
+        else:
+            gSig = self.ui.spinBoxGSig_filt.value()
+            gSig_filt = (gSig, gSig)
 
-        d = {'max_shifts_x':        self.ui.spinboxX.value(),
-             'max_shifts_y':        self.ui.spinboxY.value(),
-             'iters_rigid':         self.ui.spinboxIterRigid.value(),
-             'name_rigid':          self.ui.lineEditNameRigid.text(),
-             'max_dev':             self.ui.spinboxMaxDev.value(),
-             'strides':             self.ui.sliderStrides.value(),
-             'overlaps':            self.ui.sliderOverlaps.value(),
-             'upsample':            self.ui.spinboxUpsample.value(),
-             'name_elas':           self.ui.lineEditNameElastic.text(),
-             'output_bit_depth':    self.ui.comboBoxOutputBitDepth.currentText(),
-             'gSig_filt':           gSig_filt
-             }
+        d = {'output_bit_depth': self.ui.comboBoxOutputBitDepth.currentText()}
+
+        mc_params = \
+            {
+                'max_shifts': (self.ui.spinboxX.value(), self.ui.spinboxY.value()),
+                'niter_rig': self.ui.spinboxIterRigid.value(),
+                'max_deviation_rigid': self.ui.spinboxMaxDev.value(),
+                'strides': (self.ui.sliderStrides.value(), self.ui.sliderStrides.value()),
+                'overlaps': (self.ui.sliderOverlaps.value(), self.ui.sliderOverlaps.value()),
+                'upsample_factor_grid': self.ui.spinboxUpsample.value(),
+                'gSig_filt': gSig_filt
+            }
+
+        # Update the dict with any user entered kwargs
+        if self.ui.groupBox_motion_correction_kwargs.isChecked():
+            _kwargs = self.ui.plainTextEdit_mc_kwargs.toPlainText()
+            mc_params.update(eval(f"dict({_kwargs})"))
+
+        if group_params:
+            d.update({'mc_kwargs': mc_params})
+
+        else:
+            d.update({**mc_params})
+
         return d
 
     def set_params(self, params: dict):
@@ -163,12 +179,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.lineEditNameElastic.clear()
 
     def add_to_batch(self):
-        input_params = self.get_params()
+        input_params = self.get_params(group_params=True)
         input_workEnv = self.get_input_workEnv()
-        item_name = input_params['name_elas']
+        item_name = self.ui.lineEditNameElastic.text()
+        input_params['item_name'] = item_name
         batch_manager = get_window_manager().get_batch_manager()
         batch_manager.add_item(module='caiman_motion_correction',
                                name=item_name,
                                input_workEnv=input_workEnv,
                                input_params=input_params,
-                               info=input_params)
+                               info=self.get_params())

@@ -119,6 +119,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                         "asarray" and "asarray-multi" uses :meth:`tifffile.asarray`
                         "asarray-multi" is for multi-page tiffs
                         "imread" uses :meth:`tifffile.imread`
+        :param axes_order: axes order, examples: txy, xyt, tzxy, xytz etc.
         """
 
         self.vi.viewer.status_bar_label.showMessage('Please wait, loading tiff file, this may take a few minutes...')

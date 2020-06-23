@@ -93,7 +93,9 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.scrollAreaStdOut.hide()
         self.resize(1200, 650)
+
         self.ui.listwBatch.currentItemChanged.connect(self.show_item_info)
+        self.ui.listwBatch.itemClicked.connect(self.show_item_info)
 
         self.output_widgets = []
         self.df = pandas.DataFrame() #: pandas.DataFrame that stores a "database" of information on the batch
@@ -195,7 +197,17 @@ class ModuleGUI(QtWidgets.QWidget):
         os.makedirs(self.batch_path)
         self.ui.listwBatch.clear()
 
-        self.df = pandas.DataFrame(columns=['module', 'input_params', 'output', 'info', 'uuid', 'compressed'])
+        self.df = pandas.DataFrame(
+            columns=[
+                'module',
+                'input_params',
+                'output',
+                'info',
+                'uuid',
+                'compressed',
+                'save_temp_files'
+            ]
+        )
         self.df.to_pickle(os.path.join(self.batch_path, 'dataframe.batch'))
 
         self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
@@ -250,23 +262,24 @@ class ModuleGUI(QtWidgets.QWidget):
 
         vi = ViewerUtils(viewer_reference=viewer)
 
-        if r['input_item'].item() is None:
-            if not vi.discard_workEnv():
-                return
-            pikpath = os.path.join(self.batch_path, str(UUID) + '_input.pik')
-            tiffpath = os.path.join(self.batch_path, str(UUID) + '_input.tiff')
-            vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
-            if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
-                vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
-                vi.update_workEnv()
-                vi.enable_ui(True)
-                vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
-                vi.viewer.ui.label_curr_img_seq_name.setText('Input of item: ' + r['name'].item())
+        if not vi.discard_workEnv():
+            return
 
-            else:
-                QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
-                                              'The input files do not exist for this item.')
-                vi.viewer.status_bar_label.showMessage('Error, could not load input into work environment.')
+        # try:
+        pikpath = os.path.join(self.batch_path, str(UUID) + '_input.pik')
+        tiffpath = os.path.join(self.batch_path, str(UUID) + '_input.tiff')
+        vi.viewer.status_bar_label.showMessage('Please wait, loading input into work environment...')
+        if os.path.isfile(pikpath) and os.path.isfile(tiffpath):
+            vi.viewer.workEnv = ViewerWorkEnv.from_pickle(pickle_file_path=pikpath, tiff_path=tiffpath)
+            vi.update_workEnv()
+            vi.enable_ui(True)
+            vi.viewer.status_bar_label.showMessage('Done! loaded input into work environment.')
+            vi.viewer.ui.label_curr_img_seq_name.setText('Input of item: ' + r['name'].item())
+
+        # except:
+        #         QtWidgets.QMessageBox.warning(self, 'Input file does not exist',
+        #                                       'The input files do not exist for this item.')
+        #         vi.viewer.status_bar_label.showMessage('Error, could not load input into work environment.')
         if self.lwd is not None:
             self.lwd.close()
             self.lwd = None
@@ -420,12 +433,14 @@ class ModuleGUI(QtWidgets.QWidget):
             UUID = self.df.iloc[self.current_batch_item_index]['uuid']
             output = self.get_batch_item_output(UUID)
 
+            # Deal with the previous batch item if it aborted and perform workdir cleanup
             if output is None:
                 self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
                 if self._use_workdir:
                     # cleanup workdir
                     self.move_files([], UUID)
 
+            # Deal with the previous batch item that just finished
             elif output['status']:
                 if 'output_files' in output.keys() and self._use_workdir:# and os.path.isdir(self.working_dir):
                     output_files_list = output['output_files']
@@ -530,7 +545,9 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             mv_str = None
 
-        args = f'"{self.working_dir}" "{u}"'
+        save_temp_files = r['save_temp_files']
+
+        args = f'"{self.working_dir}" "{u}" {save_temp_files}'
         if use_subdir:
             savedir = os.path.join(self.batch_path, f'jobs_{get_timestamp_str()}')
         else:
@@ -617,18 +634,17 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.df = self.df.append(
             {
-                'module': module,
-                'name': name,
-                'input_item': None,
-                'input_params': input_params,
-                'info': info,
-                'uuid': UUID,
-                'output': None,
+                'module':           module,
+                'name':             name,
+                'input_item':       None,
+                'input_params':     input_params,
+                'info':             info,
+                'uuid':             UUID,
+                'output':           None,
+                'save_temp_files':  0
             },
             ignore_index=True
         )
-
-        assert isinstance(self.df, pandas.DataFrame)
 
         self.ui.listwBatch.addItem(module + ': ' + name)
         n = self.ui.listwBatch.count()
