@@ -18,15 +18,6 @@ from PyQt5.QtWidgets import QApplication
 from abc import ABCMeta
 
 
-# def get_sys_config() -> configparser.RawConfigParser:
-#     sys_cfg_file = os.environ['HOME'] + '/.mesmerize'
-#     sys_cfg_file = sys_cfg_file + '/config'
-#     sys_cfg = configparser.RawConfigParser(allow_no_value=True)
-#     sys_cfg.optionxform = str
-#     sys_cfg.read(sys_cfg_file)
-#     return sys_cfg
-
-
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
     """
     :param proj_path: Full project path

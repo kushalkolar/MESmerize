@@ -14,6 +14,7 @@ from .pytemplates.script_editor_pytemplate import Ui_ViewerScriptEditor
 from .script_editor_modules.syntax_editor import Highlighter
 import os
 from ...common.qdialogs import *
+from ...common.configuration import HOME
 
 
 class ModuleGUI(QtWidgets.QMainWindow):
@@ -81,7 +82,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
             f.write(text)
 
     def new_file(self):
-        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Create a new file', os.environ['HOME'], '(*.py)')
+        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Create a new file', os.environ[HOME], '(*.py)')
         if path == '':
             return
         if path[0].endswith('.py'):
@@ -92,7 +93,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
         self.add_tab(path)
 
     def open_file(self):
-        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', os.environ['HOME'], '(*.py)')
+        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', os.environ[HOME], '(*.py)')
         if path == '':
             return
         self.add_tab(path[0])

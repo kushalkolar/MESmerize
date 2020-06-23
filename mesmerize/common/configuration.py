@@ -25,14 +25,17 @@ from configparser import RawConfigParser
 
 if os.name == 'nt':
     IS_WINDOWS = True
+    HOME = 'HOME'
 else:
     IS_WINDOWS = False
+    HOME = 'USERPROFILE'
 
 sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]
 
-sys_cfg_dir = os.path.join(os.environ['HOME'], '.mesmerize')
+sys_cfg_dir = os.path.join(os.environ[HOME], '.mesmerize')
+
 sys_cfg_file = os.path.join(sys_cfg_dir, 'config.json')
 
 console_history_path = os.path.join(sys_cfg_dir, 'console_history')
@@ -53,7 +56,7 @@ default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       '_MESMERIZE_USE_CUDA': False,
                       '_MESMERIZE_PYTHON_CALL': 'python3',
                       '_MESMERIZE_PREFIX_COMMANDS': '\n'.join(_prefix_commands),
-                      '_MESMERIZE_CUSTOM_MODULES_DIR': os.environ['HOME'] + '/mesmerize_custom_modules',
+                      '_MESMERIZE_CUSTOM_MODULES_DIR': os.environ[HOME] + '/mesmerize_custom_modules',
                       '_MESMERIZE_WORKDIR': '',
                       'recent_projects': []
                       }
