@@ -20,7 +20,7 @@ from tqdm import tqdm
 import pandas as pd
 import uuid
 
-if IS_WINDOWS:
+if not IS_WINDOWS:
     from multiprocessing import Pool
 else:
     from multiprocessing.pool import ThreadPool as Pool
