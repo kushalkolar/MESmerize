@@ -14,6 +14,7 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 **June 2020** 
 
 Version 0.2 released.
+
 Changes:
 - The Viewer can handle 3D data and 3D ROIs. Classes are provided for creating Volumetic ROI types, and a Volumetic ROI manager.
 - Caiman 3D CNMF can be used with 3D data.
