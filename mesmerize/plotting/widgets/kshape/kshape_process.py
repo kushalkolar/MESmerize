@@ -55,5 +55,6 @@ def run(data_path: str, params_path: str):
     print('* Done! *')
 
 
-if sys.argv[0] == __file__:
+#if sys.argv[0] == __file__:
+if __name__ == '__main__':
     run(sys.argv[1], sys.argv[2])

@@ -580,6 +580,11 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         sh_file_path = make_runfile(module_path=m, savedir=self.get_workdir(), args_str=args)
 
         self.control_widget.ui.textBrowser.clear()
+        
+        if IS_WINDOWS:
+            self.process.start('powershell.exe', [sh_file_path])
+        else:
+            self.process.start(sh_file_path)
 
         self.process.start(sh_file_path)
 
