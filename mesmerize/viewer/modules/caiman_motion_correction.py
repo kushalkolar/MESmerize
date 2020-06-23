@@ -104,7 +104,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'strides': (self.ui.sliderStrides.value(), self.ui.sliderStrides.value()),
                 'overlaps': (self.ui.sliderOverlaps.value(), self.ui.sliderOverlaps.value()),
                 'upsample_factor_grid': self.ui.spinboxUpsample.value(),
-                'name_elas': self.ui.lineEditNameElastic.text(),
                 'gSig_filt': gSig_filt
             }
 
@@ -183,7 +182,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def add_to_batch(self):
         input_params = self.get_params(group_params=True)
         input_workEnv = self.get_input_workEnv()
-        item_name = input_params['name_elas']
+        item_name = self.ui.lineEditNameElastic.text()
         batch_manager = get_window_manager().get_batch_manager()
         batch_manager.add_item(module='caiman_motion_correction',
                                name=item_name,
