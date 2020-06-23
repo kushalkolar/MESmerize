@@ -11,15 +11,24 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 ## News & upcoming
 
-**Nov 13, 2019:** See our recent biorxiv manuscript where we use Mesmerize to analyze a calcium imaging dataset from *Ciona intestinalis* as well as other model organisms!
+**June 2020** 
+
+Version 0.2 released.
+Changes:
+- The Viewer can handle 3D data and 3D ROIs. Classes are provided for creating Volumetic ROI types, and a Volumetic ROI manager.
+- Caiman 3D CNMF can be used with 3D data.
+- Updated CNMF(E) and motion correction modules to use the latest release of CaImAn. Parameter entry GUIs are much more flexible now.
+- CNMF(E) data can be imported from hdf5 files from Caiman, allowing these data to be used for downstream analysis in Mesmerize.
+- Suite2p importer added.
+- Some cleanup with the batch manager.
+
+*Please note that batches from v0.1 and v0.2 are not inter-compatible. Use the v0.1 branch if you need v0.1*
+
+**Nov 2019:**
+
+See our recent biorxiv manuscript where we use Mesmerize to analyze a calcium imaging dataset from *Ciona intestinalis* as well as other model organisms!
 
 https://doi.org/10.1101/840488
-
-#### Future plans:
-
-- Video tutorials
-- Use the latest version of CaImAn to incorporate the new component evaluation metrics and registration across trials
-- Create an Anaconda installation for Windows & Mac users.
 
 ## Questions/Discussions
 
@@ -43,6 +52,8 @@ http://mesmerizelab.org/user_guides/installation.html
 [https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize)
 
 **Note: The snap comes with a version of Caiman from ~late 2018. We're currently working on getting Mesmerize up to date with the latest release of Caiman.**
+
+**v0.2 will soon be available on snap**
 
 After installation simply run `mesmerize` in the terminal and the application will launch in ~10-30 seconds.
 
