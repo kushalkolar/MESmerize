@@ -46,29 +46,19 @@ def run(batch_dir: str, UUID: str):
     n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
 
-    c, dview, n_processes = cm.cluster.setup_cluster(backend='local',  # use this one
-                                                     n_processes=n_processes,
-                                                     # number of process to use, if you go out of memory try to reduce this one
-                                                     single_thread=False)
+    c, dview, n_processes = cm.cluster.setup_cluster(
+        backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
+    )
 
     try:
         fname = [file_path + '_input.tiff']
         input_params = pickle.load(open(file_path + '.params', 'rb'))
         # TODO: Should just unpack the input params as kwargs
-        niter_rig = input_params['iters_rigid']
-        max_shifts = (input_params['max_shifts_x'], input_params['max_shifts_y'])
+        mc_kwargs = input_params['mc_kwargs']
+
         splits_rig = n_processes
 
-        strides = (input_params['strides'], input_params['strides'])
-        overlaps = (input_params['overlaps'], input_params['overlaps'])
         splits_els = n_processes
-        upsample_factor_grid = input_params['upsample']
-        max_deviation_rigid = input_params['max_dev']
-
-        if 'gSig_filt' in input_params.keys():
-            gSig_filt = input_params['gSig_filt']
-        else:
-            gSig_filt = None
 
         if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
             USE_CUDA = True
@@ -77,27 +67,22 @@ def run(batch_dir: str, UUID: str):
 
         min_mov = cm.load(fname[0], subindices=range(200)).min()
 
-        mc = MotionCorrect(fname[0], min_mov,
-                           dview=dview, max_shifts=max_shifts, niter_rig=niter_rig,
-                           splits_rig=splits_rig,
-                           strides=strides, overlaps=overlaps, splits_els=splits_els,
-                           upsample_factor_grid=upsample_factor_grid,
-                           max_deviation_rigid=max_deviation_rigid,
-                           shifts_opencv=True, nonneg_movie=True, use_cuda=USE_CUDA, gSig_filt=gSig_filt)
+        mc = MotionCorrect(
+            fname[0], min_mov,
+            dview=dview,
+            splits_rig=splits_rig,
+            splits_els=splits_els,
+            shifts_opencv=True,
+            nonneg_movie=True,
+            use_cuda=USE_CUDA,
+            **mc_kwargs
+        )
 
         mc.motion_correct_pwrigid(save_movie=True)
         m_els = cm.load(mc.fname_tot_els)
         bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
                                          np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
 
-        # p = pickle.load(open(UUID + '_workEnv.pik', 'rb'))
-        # if p['imdata']['meta']['origin'] == 'mes':
-        #     if p['imdata']['meta']['orig_meta']['DataType'] == 'uint16':
-        #         pass
-        #         # lut = BitDepthConverter.create_lut([np.nanmin(m_els), np.nanmax(m_els)], source=16, out=8)
-
-        #
-        # else:
         m_els -= np.nanmin(m_els)
 
         if input_params['output_bit_depth'] == 'Do not convert':
