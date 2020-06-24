@@ -88,6 +88,10 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.btnAbort.clicked.connect(self._terminate_qprocess)
         self.ui.btnAbort.setDisabled(True)
+
+        self.ui.btnAbort_batch.clicked.connect(self.abort_batch)
+        self.ui.btnAbort_batch.setDisabled(True)
+
         self.ui.btnOpen.clicked.connect(self.open_batch)
         self.ui.btnDelete.clicked.connect(self.del_item)
         self.ui.btnViewInput.clicked.connect(self.btn_view_input_slot)
@@ -632,6 +636,20 @@ class ModuleGUI(QtWidgets.QWidget):
                 TerminateProcess(child.pid, -1)
                 CloseHandle(child.pid)
 
+    def abort_batch(self):
+        if QtWidgets.QMessageBox.warning(
+                self,
+                'Abort batch?',
+                'Are you sure you want to abort the batch run?',
+                QtWidgets.QMessageBox.Yes,
+                QtWidgets.QMessageBox.No
+        ) == QtWidgets.QMessageBox.No:
+            return
+
+        self._terminate_qprocess()
+        self.disable_ui_buttons(False)
+        self.ui.checkBoxUseWorkDir.setEnabled(True)
+
     def print_qprocess_std_out(self, proc):
         text = proc.readAllStandardOutput().data().decode('utf8')
         # self.current_std_out.append(text)
@@ -796,6 +814,8 @@ class ModuleGUI(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'File open Error!',
                                           'Could not open the dataframe file.\n' + traceback.format_exc())
             return
+
+        self.disable_ui_buttons(False)
 
     def reset_list_widget_colors(self):
         for ix, r in self.df.iterrows():
