@@ -651,7 +651,11 @@ class ModuleGUI(QtWidgets.QWidget):
         ) == QtWidgets.QMessageBox.No:
             return
 
-        self._terminate_qprocess()
+        self.process.finished.disconnect()  # stops it from going to the next item
+
+        self.set_list_widget_item_color(ix=self.current_batch_item_index, color='orange')
+
+        self._terminate_qprocess()  # terminate the qproess for current batch item
         self.disable_ui_buttons(False)
         self.ui.checkBoxUseWorkDir.setEnabled(True)
 
