@@ -818,7 +818,7 @@ class ModuleGUI(QtWidgets.QWidget):
                                           'Could not open the dataframe file.\n' + traceback.format_exc())
             return
 
-        self.set_workdir(self._use_workdir)  # performs a check and creates a new workdir
+        self.set_workdir(self.ui.checkBoxUseWorkDir.isChecked())  # performs a check and creates a new workdir
         self.disable_ui_buttons(False)
 
     def reset_list_widget_colors(self):
