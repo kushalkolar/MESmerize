@@ -65,8 +65,8 @@ class ModuleGUI(QtWidgets.QWidget):
         else:
             self.ui.checkBoxUseWorkDir.setChecked(False)
             self.ui.checkBoxUseWorkDir.setDisabled(True)
-        # self.ui.lineEditWorkDir.setEnabled(True)
-        self._use_workdir = False
+
+        self._use_workdir = False  # by default false, set_workdir() performs a check whenever a batch is opened.
         self.working_dir = None
         self.batch_path = None
 
@@ -155,7 +155,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.ui.btnStart.setEnabled(True)
         self.ui.btnStartAtSelection.setEnabled(True)
-        self.set_workdir(True)
+        self.set_workdir(True)  # does a check to see if the workdir is writable upon batch manager initiation
 
         if run_batch is not None:
             print('Running from item ' + run_batch[1])
@@ -385,6 +385,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.ui.btnStartAtSelection.setDisabled(b)
         self.ui.btnDelete.setDisabled(b)
         self.ui.btnAbort.setEnabled(b)
+        self.ui.btnAbort_batch.setEnabled(b)
 
     def process_batch(self, start_ix: Union[int, uuid.UUID] = 0, clear_viewers=False):
         """Process everything in the batch by calling subclass of BatchRunInterface.process() for all items in batch
@@ -528,7 +529,7 @@ class ModuleGUI(QtWidgets.QWidget):
         QtWidgets.QMessageBox.information(self, 'Batch is done!', 'Yay, your batch has finished processing!')
 
     def set_workdir(self, ev):
-        if IS_WINDOWS:
+        if IS_WINDOWS:  # I'm sorry ¯\_(ツ)_/¯
             self.working_dir = self.batch_path
             self._use_workdir = False
             return
@@ -538,7 +539,9 @@ class ModuleGUI(QtWidgets.QWidget):
                 self.working_dir = make_workdir('batch_manager')
             except Exception as e:
                 QtWidgets.QMessageBox.warning(self, 'Cannot create Work Dir',
-                                              f'Could not create a work directory. {e}')
+                                              f'Could not create a work directory, '
+                                              f'the batch directory will be used for work.\n{e}')
+
                 self.ui.checkBoxUseWorkDir.setChecked(False)
                 self.working_dir = self.batch_path
             else:
@@ -815,6 +818,7 @@ class ModuleGUI(QtWidgets.QWidget):
                                           'Could not open the dataframe file.\n' + traceback.format_exc())
             return
 
+        self.set_workdir(self._use_workdir)  # performs a check and creates a new workdir
         self.disable_ui_buttons(False)
 
     def reset_list_widget_colors(self):
