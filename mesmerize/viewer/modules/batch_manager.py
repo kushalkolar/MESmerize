@@ -66,7 +66,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.ui.checkBoxUseWorkDir.setChecked(False)
             self.ui.checkBoxUseWorkDir.setDisabled(True)
 
-        self._use_workdir = False  # by default false, set_workdir() performs a check whenever a batch is opened.
+        self._use_workdir = False  # by default false, set_workdir() performs a check later
         self.working_dir = None
         self.batch_path = None
 
@@ -141,6 +141,8 @@ class ModuleGUI(QtWidgets.QWidget):
                 path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Choose the location of an existing batch folder '
                                                                         'or a location for a new batch folder')
                 if path == '':
+                    # does a check to see if the workdir is writable upon batch manager initiation
+                    self.set_workdir(True)
                     return
             else:
                 path = run_batch[0]
@@ -818,7 +820,6 @@ class ModuleGUI(QtWidgets.QWidget):
                                           'Could not open the dataframe file.\n' + traceback.format_exc())
             return
 
-        self.set_workdir(self.ui.checkBoxUseWorkDir.isChecked())  # performs a check and creates a new workdir
         self.disable_ui_buttons(False)
 
     def reset_list_widget_colors(self):
