@@ -212,7 +212,7 @@ You will also need git: https://gitforwindows.org/
 
 **All commands are to be run in the powershell**
 
-#. You will need anaconda to be accessible through powershell. Close & open a new powershell after running this::
+#. You will need anaconda to be accessible through powershell. You may need to run powershell as administrator for this stepo to work. Close & open a new non-admin powershell after running this::
 
     conda init powershell
 

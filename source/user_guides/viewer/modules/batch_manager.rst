@@ -43,14 +43,14 @@ Window title: Name of batch directory
     Start at selection          Process the batch starting from the item that is currently selected in the list.
     Delete selection            Delete the item that is currently being selected along with the associated data in the batch dir.
     Export shell scripts        Export bash scripts so that the batch items can be run on a computing cluster
-    Abort                       Abort the current batch item
+    Abort current item          Abort the current batch item and move on to the next item
+    Abort batch                 Abort the current item and stop processing the batch
     New batch                   Create a new batch
     Open batch                  Open a batch
     View Input                  Open the input work environment, in the viewer, for the currently selected item
-    Compress                    Not implemented
     ======================    ================================================
     
-    **Use work dir:** Check this box to use the work dir that has been set in the :ref:`System Configuration <SystemConfiguration>`
+    **Use work dir:** Check this box to use the work dir that has been set in the :ref:`System Configuration <SystemConfiguration>`. This feature is only available on Linux & Mac OSX.
     
 **Top right:** Standard out from the external processes that are processing the batch items.
 

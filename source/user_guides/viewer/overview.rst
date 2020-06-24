@@ -18,6 +18,19 @@ Layout
 
 To access Viewer modules choose the module you want to run from the Modules menu at the top. All modules, except the Batch Manager, are small floating windows which you can dock into the Viewer by dragging them to an edge of the viewer.
 
+3D data
+-------
+
+When viewing 3D data a slider on the left allows you to move through the z axis.
+
+.. thumbnail:: .overview/viewer_3d.png
+
+The image stack shown above is from Martin Haesemeyer's dataset from the following paper:
+
+    Haesemeyer M, Robson DN, Li JM, Schier AF, Engert F. A Brain-wide Circuit Model of Heat-Evoked Swimming Behavior in Larval Zebrafish. Neuron. 2018;98(4):817-831.e6. doi:10.1016/j.neuron.2018.04.013
+
+
+
 .. _ViewerWorkEnv:
 
 Work Environment
@@ -120,7 +133,7 @@ Not implemented yet. You can change the dtype through the console.
 Projections
 ^^^^^^^^^^^
 
-View Mean, Max, and Standard Deviation projections of the current image sequence in the work environment.
+View Mean, Max, and Standard Deviation projections of the current image sequence in the work environment. If the data are 3D, the projection is of the current plane.
 
 Modules
 -------
@@ -192,7 +205,7 @@ all_modules             List all available modules (includes default and any ava
 ViewerWorkEnv           Use for creating new instances of :ref:`ViewerWorkEnv <API_ViewerWorkEnv>`
 ImgData                 Use for creating new instances of :ref:`ImgData <API_ImgData>`
 get_workEnv()           Get the current viewer :ref:`work environment <ViewerWorkEnv>` (instance of :ref:`ViewerWorkEnv <API_ViewerWorkEnv>`)
-get_image()             Get the current image sequence (returns current :ref:`ViewerWorkEnv.imgdata.seq <API_ViewerWorkEnv>`)
+get_image()             Get the current image sequence (returns current :ref:`ViewerWorkEnv.imgdata.seq <API_ViewerWorkEnv>`). If the data are 3D it returns the current plane only.
 get_meta()              Get the current meta data
 get_module(<name>)      Pass the name of a module as a string. Returns that module if it is available.
 get_batch_manager()     Get the batch manager.
@@ -252,7 +265,7 @@ Open image
     meta = ...
     
     # Create ImgData instance
-    # Image sequence must be numpy array of shape [x, y, t]
+    # Image sequence must be numpy array of shape [x, y, t] or [x, y, t, z]
     imgdata = ImgData(seq.T, meta)
     
     # Create a work environment instance

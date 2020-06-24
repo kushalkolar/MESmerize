@@ -15,6 +15,8 @@ When you choose a tiff file it will automatically find the associated .json meta
 
 Finally, select an appropriate load method (see next section) and click "Load into workEnv"
 
+You specify a non-standard axes order (more information below)
+
 .. warning:: If the name of the tiff file and .json meta data file are different, you must specify the .json meta data file using the *Select meta data* button.
 
 .. warning:: **You cannot perform any analysis without the meta data file since you need the sampling rate of the video and it is specified in the meta data file.**
@@ -42,3 +44,28 @@ imread
 ------
 
 Usually slower, should work for most tiff files.
+
+Axes order
+==========
+
+Choose the default 2D\3D axes order or manually enter the axes order if your tiff file uses a different order.
+
+
+Script usage
+============
+
+You can also load tiff files through the :ref:`Viewer Console <ViewerConsole>` or :ref:`Script Editor <module_ScriptEditor>`.
+
+.. code-block:: python
+    :linenos:
+
+    image_path = # path to tiff file
+    meta_path = # path to json meta data file
+    
+    vi._clear_workEnv() # Prevents a dialog box from appearing
+    
+    tio = get_module('tiff_io')
+    tio.load_tiff_file(image_path, meta_path, method='imread', axes_order='txy')
+
+    
+.. seealso:: :ref:`Viewer Core API <API_ViewerCore>`, :ref:`Overview on consoles <ConsoleOverview>`
