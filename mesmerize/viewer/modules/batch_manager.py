@@ -16,7 +16,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 from ..core import ViewerUtils, ViewerWorkEnv
 from ...pyqtgraphCore.imageview import ImageView
 from ..main_window import MainWindow as ViewerWindow
-from ..core.background_tiff_compressor import Compressor as TiffCompressor
 from ...common import get_sys_config, get_timestamp_str, get_window_manager
 from ...common.qdialogs import *
 from ...common.utils import make_runfile, make_workdir
@@ -112,7 +111,6 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.move_processes = []
 
-        # self.ui.btnCompress.clicked.connect(self.compress_all)
         self.ui.btnExportShScripts.clicked.connect(self.export_submission_scripts)
 
         self.lwd = None
@@ -214,7 +212,6 @@ class ModuleGUI(QtWidgets.QWidget):
                 'output',
                 'info',
                 'uuid',
-                'compressed',
                 'save_temp_files'
             ]
         )
@@ -770,8 +767,6 @@ class ModuleGUI(QtWidgets.QWidget):
         try:
             df = pandas.read_pickle(dfpath)
             self.df = df
-            if 'compressed' not in self.df.columns:
-                self.df['compressed'] = False * self.df.index.size
             self.batch_path = path
             self.setWindowTitle('Batch Manager: ' + os.path.basename(self.batch_path))
             self.ui.labelBatchPath.setText(self.batch_path)
@@ -814,8 +809,3 @@ class ModuleGUI(QtWidgets.QWidget):
                 item.setBackground(QtGui.QBrush(QtGui.QColor('#77dd77')))  # green
             else:
                 item.setBackground(QtGui.QBrush(QtGui.QColor('#fe0d00')))  # red
-
-    def init_compressor(self):
-        self.thread_pool_compressor = QtCore.QThreadPool()
-        self.thread_pool_compressor.setMaxThreadCount(10)
-        self.thread_pool_compressor.start()
