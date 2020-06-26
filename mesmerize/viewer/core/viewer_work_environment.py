@@ -437,6 +437,12 @@ class ViewerWorkEnv:
         if self.isEmpty:
             raise ValueError('Work environment is empty')
 
+        if self.imgdata.meta['fps'] == 0 or self.imgdata.meta['fps'] == 0.0 or self.imgdata.meta['fps'] is None:
+            raise AttributeError("Sampling rate of the image data is not set."
+                                 "You must set `viewer.workEnv.imgdata.meta['fps'].\n"
+                                 "If you are using the viewer console you can do:\n"
+                                 "get_meta()['fps'] = <sampling rate as int or float>")
+
         save_img_seq = True
 
         # Path where image (as tiff file) and image metadata, roi_states, and stimulus maps (in a pickle) are stored
