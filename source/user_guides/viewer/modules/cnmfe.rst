@@ -23,9 +23,11 @@ Perform CNMFE using the implementation provided by the CaImAn library.
 
 **Parameters**
 
-Please see the CaImAn demo notebook mentioned above to understand the parameters.
-
 **Ain**: Seed spatial components from another CNMFE item by entering its UUID here.
+
+Please see the CaImAn demo notebook mentioned above to understand the rest of the parameters. The Caiman docs also provide descriptions of the parameters: https://caiman.readthedocs.io/
+
+You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example.
 
 .. _module_CNMFE_Usage:
 

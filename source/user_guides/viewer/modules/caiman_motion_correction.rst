@@ -21,10 +21,12 @@ Output bit depth: The motion corrected image sequences are of float32 type. You 
 
 For all other parameters please see the demo notebook mentioned above.
 
+You can also enter parameters as keyword arguments (kwargs) in the text box if you select "Use motion correction kwargs". This is useful if you want to enter parameters that cannot be entered in the GUI for example.
+
 Usage
 =====
 
-This module adds a "caiman motion correction" *item* to the batch. Set the desired parameters (see demo notebook) and then enter a name to add it as an *item* to the batch. After the batch item is processed, double-click the batch item to open the motion corrected image sequence in the viewer. You can then use this motion corrected image sequence for further analysis, such as :ref:`CNMF <module_CNMF>` or :ref:`CNMFE <module_CNMFE>`.
+This module adds a "caiman motion correction" *item* to the batch. Set the desired parameters (see demo notebook) and then enter a name to add it as an *item* to the batch. After the batch item is processed, double-click the batch item to open the motion corrected image sequence in the viewer. You can then use this motion corrected image sequence for further analysis.
 
 .. seealso:: This modules uses the :ref:`Batch Manager <module_BatchManager>`.
 
@@ -55,20 +57,17 @@ This example shows how to add all tiff files (of image sequences) from a directo
     import os
 
     # Motion correction params.
-    # Params are identical to the GUI ones
     
     mc_params = {
-                "max_shifts_x":         6,
-                "max_shifts_y":         6,
-                "iters_rigid":          2,
-                "name_rigid":           "Does not matter",
+                "max_shifts":           (6, 6)
+                "niter_rig":            2,
                 "max_dev":              3,
                 "strides":              196,
                 "overlaps":             98,
-                "upsample":             4,
-                "name_elas":            "will set later per file",
+                "upsample_factor_grid": 4,
+                "item_name":            "will set later per file",
                 "output_bit_depth":     "Do not convert",
-                "gSig_filt"             (10, 10)
+                "gSig_filt"             (10, 10)  # Set to `None` for 2p data
                 }
 
     # Path to the dir containing images
@@ -162,20 +161,18 @@ This example shows how to crop videos prior to adding them as batch items. This 
                             }
 
     # Motion correction params.
-    # Params are identical to the GUI ones
-        mc_params = {
-                "max_shifts_x":         6,
-                "max_shifts_y":         6,
-                "iters_rigid":          2,
-                "name_rigid":           "Does not matter",
+    mc_params = {
+                "max_shifts":           (6, 6)
+                "niter_rig":            2,
                 "max_dev":              3,
                 "strides":              196,
                 "overlaps":             98,
-                "upsample":             4,
-                "name_elas":            "will set later per file",
+                "upsample_factor_grid": 4,
+                "item_name":            "will set later per file",
                 "output_bit_depth":     "Do not convert",
-                "gSig_filt"             (10, 10)
+                "gSig_filt"             (10, 10)  # Set to `None` for 2p data
                 }
+
 
     # Path to the dir containing images
     files = glob("/full_path_to_raw_images/*.tiff")

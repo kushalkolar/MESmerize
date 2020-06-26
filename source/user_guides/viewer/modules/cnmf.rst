@@ -16,27 +16,27 @@ Perform CNMFE using the implementation provided by the CaImAn library. This modu
     - CaImAn demo notebook, the implementation in Mesmerize is basically from the demo. The second half of the notebook describes CNMF
         https://github.com/flatironinstitute/CaImAn/blob/master/demos/notebooks/demo_pipeline.ipynb
 
-.. image:: ./cnmfe.png
+.. image:: ./cnmf.png
 
 **Parameters**
 
-Please see the CaImAn demo notebook mentioned above to understand the parameters.
+Please see the CaImAn demo notebook mentioned above to understand the parameters. The Caiman docs also provide descriptions of the parameters: https://caiman.readthedocs.io/
 
+You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example.
 
 Console
 =======
 
 A script can be used to add CNMFE batch items. This is much faster than using the GUI. This example sets the work environment from the output of a batch item. See the :ref:`Caiman Motion Correction script usage examples <MotCorScripts>` for how to load images if you want to add CNMF items from images that are not in a batch.
 
-.. seealso:: :ref:`Script Editor <module_ScriptEditor>`, :ref:`CNMF module API
+.. seealso:: :ref:`Script Editor <module_ScriptEditor>`
 
 
 .. code-block:: python
     :linenos:
     
     # CNMF Params that we will use for each item
-    params =   {'Input': 'Current Work Environment',
-                'p': 2, 
+    params =   {'p': 2, 
                 'gnb': 1, 
                 'merge_thresh': 0.25, 
                 'rf': 70, 

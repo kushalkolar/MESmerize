@@ -23,7 +23,7 @@ To access Viewer modules choose the module you want to run from the Modules menu
 
 When viewing 3D data a slider on the left allows you to move through the z axis.
 
-.. thumbnail:: .overview/viewer_3d.png
+.. thumbnail:: ./overview/viewer_3d.png
 
 The image stack shown above is from Martin Haesemeyer's dataset from the following paper:
 

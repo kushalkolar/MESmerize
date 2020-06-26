@@ -48,7 +48,10 @@ Welcome to Mesmerize's documentation!
     ./user_guides/viewer/modules/roi_manager
     ./user_guides/viewer/modules/caiman_motion_correction
     ./user_guides/viewer/modules/cnmf
+    ./user_guides/viewer/modules/cnmf_3d
     ./user_guides/viewer/modules/cnmfe
+    ./user_guides/viewer/modules/caiman_hdf5_importer
+    ./user_guides/viewer/modules/suite2p_importer
     ./user_guides/viewer/modules/script_editor
     
 .. toctree::
