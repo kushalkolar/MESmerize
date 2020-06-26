@@ -37,8 +37,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.overlapsH = []
         self.overlapsV = []
 
-        self._input_workEnv = None
-
     def draw_quilt(self):
         if self.ui.btnShowQuilt.isChecked() is False:
             self.remove_quilt()
@@ -125,31 +123,24 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         :param params: dict of parameters
         """
-        self.ui.spinboxX.setValue(params['max_shifts_x'])
-        self.ui.spinboxY.setValue(params['max_shifts_y'])
-        self.ui.spinboxIterRigid.setValue(params['iters_rigid'])
-        self.ui.lineEditNameRigid.setText(params['name_rigid'])
+        self.ui.spinboxX.setValue(params['max_shifts'][0])
+        self.ui.spinboxY.setValue(params['max_shifts'][1])
+        self.ui.spinboxIterRigid.setValue(params['niter_rig'])
         self.ui.spinboxMaxDev.setValue(params['max_dev'])
         self.ui.sliderStrides.setValue(params['strides'])
         self.ui.sliderOverlaps.setValue(params['overlaps'])
         self.ui.spinboxUpsample.setValue(params['upsample'])
-        self.ui.lineEditNameElastic.setText(params['name_elas'])
+        self.ui.lineEditNameElastic.setText(params['item_name'])
         if params['output_bit_depth'] == 'Do not convert':
             self.ui.comboBoxOutputBitDepth.setCurrentIndex(0)
         elif params['output_bit_depth'] == '8':
             self.ui.comboBoxOutputBitDepth.setCurrentIndex(1)
         elif params['output_bit_depth'] == '16':
             self.ui.comboBoxOutputBitDepth.setCurrentIndex(2)
-        self.ui.spinBoxGSig_filt.setValue(params['gSig_filt'])
-
-    def set_input_workEnv(self, workEnv):
-        self._input_workEnv = workEnv
-
-    def get_input_workEnv(self):
-        if self._input_workEnv is None:
-            raise ValueError('Input work environment is not set')
+        if params['gSig_filt'] == None:
+            self.ui.spinBoxGSig_filt.setValue(0)
         else:
-            return self._input_workEnv
+            self.ui.spinBoxGSig_filt.setValue(params['gSig_filt'][0])
 
     def add_to_batch_rig_corr(self):
         pass
@@ -164,15 +155,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CaImAn motion correction: ' + name + ' to batch...')
 
-        self.set_input_workEnv(self.vi.viewer.workEnv)
         self.add_to_batch()
-
-        # batch_manager.add_item(module='caiman_motion_correction',
-        #                        viewer_reference=self.vi.viewer,
-        #                        name=name,
-        #                        input_workEnv=self.vi.viewer.workEnv,
-        #                        input_params=d,
-        #                        info=d)
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CaImAn motion correction: ' + name + ' to batch!')
 
@@ -180,7 +163,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     def add_to_batch(self):
         input_params = self.get_params(group_params=True)
-        input_workEnv = self.get_input_workEnv()
+        input_workEnv = self.vi.viewer.workEnv
         item_name = self.ui.lineEditNameElastic.text()
         input_params['item_name'] = item_name
         batch_manager = get_window_manager().get_batch_manager()
