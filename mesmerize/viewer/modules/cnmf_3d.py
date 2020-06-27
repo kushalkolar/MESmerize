@@ -171,7 +171,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             name=name,
             input_workEnv=self.vi.viewer.workEnv,
             input_params=d,
-            info=self.get_params()
+            info=d
         )
 
         if u is None:

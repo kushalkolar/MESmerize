@@ -27,7 +27,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.ui.btnAddToBatchCNMF.clicked.connect(self.add_to_batch_cnmf)
+        self.ui.btnAddToBatchCNMF.clicked.connect(self.add_to_batch)
 
     @present_exceptions()
     def get_params(self, *args, group_params: bool = False) -> dict:
@@ -87,8 +87,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'min_cnn_thr': self.ui.doubleSpinBoxCNNThr.value(),
                 'cnn_lowest': self.ui.doubleSpinBox_cnn_lowest.value(),
                 'decay_time': self.ui.spinBoxDecayTime.value(),
-                'name_cnmf': self.ui.lineEdName.text(),
-                'refit': self.ui.checkBoxRefit.isChecked(),
                 'fr': self.vi.viewer.workEnv.imgdata.meta['fps']
             }
 
@@ -129,7 +127,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
-    def add_to_batch_cnmf(self, params : dict = None) -> UUID:
+    def add_to_batch(self, params : dict = None) -> UUID:
         """
         Add a CNMF batch item with the currently set parameters and the current work environment.
         """
@@ -160,7 +158,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             name=name,
             input_workEnv=input_workEnv,
             input_params=d,
-            info=self.get_params()
+            info=d
         )
 
         if u is None:

@@ -159,6 +159,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                    name=item_name,
                                    input_workEnv=input_workEnv,
                                    input_params=input_params,
-                                   info=self.get_params())
+                                   info=input_params
+                                   )
 
         return u

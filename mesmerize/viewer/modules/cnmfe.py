@@ -196,7 +196,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                    name=name,
                                    input_workEnv=input_workEnv,
                                    input_params=d,
-                                   info=self.get_params('corr_pnr')
+                                   info=d
                                    )
 
         self.vi.viewer.status_bar_label.showMessage('Done adding Corr PNR: ' + name + ' to batch!')
@@ -233,7 +233,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                                    name=name,
                                    input_workEnv=input_workEnv,
                                    input_params=d,
-                                   info=self.get_params('cnmfe')
+                                   info=d
                                    )
 
         if u is None:

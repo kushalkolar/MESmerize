@@ -168,7 +168,6 @@ def run(batch_dir: str, UUID: str):
             normalize_init=False,
             center_psf=True,
             **input_params['cnmfe_kwargs'],
-            border_pix=input_params['border_pix']
         )
 
         cnm.fit(Y)
