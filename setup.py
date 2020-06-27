@@ -31,7 +31,7 @@ def is_building():
 
 s = dict(
     name='mesmerize',
-    version='0.1',
+    version='0.2',
     packages=find_packages(exclude=['use_cases', 'use_cases.*', 'tests']),
     include_package_data=True,
     entry_points={'console_scripts': ['mesmerize=mesmerize.__main__:main']},
