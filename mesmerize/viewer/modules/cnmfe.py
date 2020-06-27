@@ -16,6 +16,7 @@ from .pytemplates.cnmfe_pytemplate import *
 import json
 from ...common import get_window_manager
 from ...common.qdialogs import *
+from uuid import UUID
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -71,7 +72,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         cnmfe_kwargs = \
             {
                 'gSig': (gSig, gSig),
-                'gSiz': (3*gSig+1, 3*gSig+1),
+                'gSiz': (3 * gSig + 1, 3 * gSig + 1),
                 'border_pix': bord_px,
                 'rf': self.ui.spinBoxRf.value(),
                 'stride': self.ui.spinBoxOverlap.value(),
@@ -132,7 +133,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 }
 
             if group_params:
-                d.update({'corr_pnr_kwargs':  corr_pnr_kwargs})
+                d.update({'corr_pnr_kwargs': corr_pnr_kwargs})
             else:
                 d.update({**corr_pnr_kwargs})
 
@@ -164,51 +165,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
-    def set_params(self, d: dict):
-        """
-        Set all parameters from a dict. All keys must be present in the dict.
-
-        :param params: parameters dict
-        """
-
-        if ('cnmf_kwargs' in d.keys()) and ('eval_kwargs' in d.keys()):
-            p = {**d['cnmfe_kwargs'], **d['eval_kwargs']}
-        elif d['do_corr_pnr']:
-            p = {**d['corr_pnr_kwargs']}
-            self.ui.lineEdCorrPNRName.setText(p['item_name'])
-            self.ui.spinBoxGSig.setValue(p['gSig'])
-        else:
-            p = d
-
-        self.ui.spinBoxGSig.setValue(p['gSig'])
-        self.ui.doubleSpinBoxMinCorr.setValue(p['min_corr'])
-        self.ui.spinBoxMinPNR.setValue(p['min_pnr'])
-        self.ui.spinBoxMinSNR.setValue(p['min_SNR'])
-        self.ui.doubleSpinBoxRValuesMin.setValue(p['rval_thr'])
-        self.ui.doubleSpinBoxMergeThresh.setValue(p['merge_thr'])
-        self.ui.doubleSpinBoxDecayTime.setValue(p['decay_time'])
-        self.ui.spinBoxRf.setValue(p['rf'])
-        self.ui.spinBoxOverlap.setValue(p['stride'])
-        self.ui.spinBoxGnb.setValue(p['gnb'])
-        self.ui.spinBoxNb_patch.setValue(p['nb_patch'])
-        self.ui.spinBoxK.setValue(p['k'])
-        self.ui.spinBox_ssub.setValue(p['ssub'])
-        self.ui.spinBox_tsub.setValue(p['tsub'])
-        self.ui.doubleSpinBox_ring_size_factor.setValue(p['ring_size_factor'])
-        self.ui.checkBox_low_rank_background.setChecked(p['low_rank_background'])
-        if p['method_deconvolution'] is not None:
-            ix = self.ui.comboBoxDeconv.findText(p['method_deconvolution'])
-            if ix == -1:
-                raise ValueError('Invalid `method_deconvolution`')
-            self.ui.comboBoxDeconv.setCurrentIndex(ix)
-        else:
-            ix = self.ui.comboBoxDeconv.findText('SKIP')
-            self.ui.comboBoxDeconv.setCurrentIndex(ix)
-
-        if 'Ain' in p.keys():
-            self.ui.lineEditAin.setText(p['Ain'])
-
-    def add_to_batch_corr_pnr(self):
+    def add_to_batch_corr_pnr(self, params: dict = None) -> UUID:
         """
         Add a Corr PNR batch item with the currently set parameters and the current work environment.
 
@@ -219,24 +176,35 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
         input_workEnv = self.vi.viewer.workEnv
 
-        d = self.get_params('corr_pnr', group_params=True)
+        if params is None:
+            d = self.get_params('corr_pnr', group_params=True)
+        else:
+            # Check that user passed dict is formatted correctly
+            required_keys = ['item_name', 'do_cnmfe', 'do_corr_pnr', 'border_pix', 'corr_pnr_kwargs']
+            if any([k not in params.keys() for k in required_keys]):
+                raise ValueError(f'Must pass a params dict with the following keys:\n'
+                                 f'{required_keys}\n'
+                                 f'Please see the docs for more information.')
+            d = params
 
         batch_manager = get_window_manager().get_batch_manager()
         name = d['item_name']
 
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding Corr PNR: ' + name + ' to batch...')
 
-        batch_manager.add_item(module='CNMFE',
-                               name=name,
-                               input_workEnv=input_workEnv,
-                               input_params=d,
-                               info=self.get_params('corr_pnr')
-                               )
+        u = batch_manager.add_item(module='CNMFE',
+                                   name=name,
+                                   input_workEnv=input_workEnv,
+                                   input_params=d,
+                                   info=self.get_params('corr_pnr')
+                                   )
 
         self.vi.viewer.status_bar_label.showMessage('Done adding Corr PNR: ' + name + ' to batch!')
         self.clear_line_edits()
 
-    def add_to_batch_cnmfe(self):
+        return u
+
+    def add_to_batch_cnmfe(self, params: dict = None) -> UUID:
         """
         Add a CNMFE batch item with the currently set parameters and the current work environment.
         """
@@ -246,21 +214,36 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
         input_workEnv = self.vi.viewer.workEnv
 
-        d = self.get_params('cnmfe', group_params=True)
+        if params is None:
+            d = self.get_params('cnmfe', group_params=True)
+        else:
+            # Check that user passed dict is formatted correctly
+            required_keys = ['item_name', 'do_cnmfe', 'do_corr_pnr', 'border_pix', 'cnmfe_kwargs', 'eval_kwargs']
+            if any([k not in params.keys() for k in required_keys]):
+                raise ValueError(f'Must pass a params dict with the following keys:\n'
+                                 f'{required_keys}\n'
+                                 f'Please see the docs for more information.')
+            d = params
 
         name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMFE: ' + name + ' to batch...')
 
         batch_manager = get_window_manager().get_batch_manager()
-        batch_manager.add_item(module='CNMFE',
-                               name=name,
-                               input_workEnv=input_workEnv,
-                               input_params=d,
-                               info=self.get_params('cnmfe')
-                               )
+        u = batch_manager.add_item(module='CNMFE',
+                                   name=name,
+                                   input_workEnv=input_workEnv,
+                                   input_params=d,
+                                   info=self.get_params('cnmfe')
+                                   )
+
+        if u is None:
+            self.vi.viewer.status_bar_label.clearMessage()
+            return
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMFE: ' + name + ' to batch!')
         self.clear_line_edits()
+
+        return u
 
     def clear_line_edits(self):
         self.ui.lineEdCorrPNRName.clear()

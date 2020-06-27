@@ -167,7 +167,8 @@ def run(batch_dir: str, UUID: str):
             only_init_patch=True,  # just leave it as is
             normalize_init=False,
             center_psf=True,
-            **input_params['cnmfe_kwargs']
+            **input_params['cnmfe_kwargs'],
+            border_pix=input_params['border_pix']
         )
 
         cnm.fit(Y)

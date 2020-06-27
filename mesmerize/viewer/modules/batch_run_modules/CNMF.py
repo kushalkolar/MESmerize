@@ -74,7 +74,8 @@ def run(batch_dir: str, UUID: str):
         cnm = cnmf.CNMF(
             dview=dview,
             n_processes=n_processes,
-            **input_params['cnmf_kwargs']
+            **input_params['cnmf_kwargs'],
+            border_pix=input_params['border_pix']
         )
 
         cnm.fit(Y)

@@ -15,6 +15,7 @@ from ..core.common import ViewerUtils
 from .pytemplates.caiman_motion_correction_pytemplate import *
 from ...common import get_window_manager
 from ...pyqtgraphCore import LinearRegionItem
+from uuid import UUID
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -117,31 +118,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
-    def set_params(self, params: dict):
-        """
-        Set all parameters from a dict. All keys must be present in the dict and of the correct type.
-
-        :param params: dict of parameters
-        """
-        self.ui.spinboxX.setValue(params['max_shifts'][0])
-        self.ui.spinboxY.setValue(params['max_shifts'][1])
-        self.ui.spinboxIterRigid.setValue(params['niter_rig'])
-        self.ui.spinboxMaxDev.setValue(params['max_dev'])
-        self.ui.sliderStrides.setValue(params['strides'])
-        self.ui.sliderOverlaps.setValue(params['overlaps'])
-        self.ui.spinboxUpsample.setValue(params['upsample'])
-        self.ui.lineEditNameElastic.setText(params['item_name'])
-        if params['output_bit_depth'] == 'Do not convert':
-            self.ui.comboBoxOutputBitDepth.setCurrentIndex(0)
-        elif params['output_bit_depth'] == '8':
-            self.ui.comboBoxOutputBitDepth.setCurrentIndex(1)
-        elif params['output_bit_depth'] == '16':
-            self.ui.comboBoxOutputBitDepth.setCurrentIndex(2)
-        if params['gSig_filt'] == None:
-            self.ui.spinBoxGSig_filt.setValue(0)
-        else:
-            self.ui.spinBoxGSig_filt.setValue(params['gSig_filt'][0])
-
     def add_to_batch_rig_corr(self):
         pass
 
@@ -153,7 +129,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         name = self.ui.lineEditNameElastic.text()
 
-        self.vi.viewer.status_bar_label.showMessage('Please wait, adding CaImAn motion correction: ' + name + ' to batch...')
+        self.vi.viewer.status_bar_label.showMessage(
+            'Please wait, adding CaImAn motion correction: ' + name + ' to batch...')
 
         self.add_to_batch()
 
@@ -161,14 +138,27 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.lineEditNameElastic.clear()
 
-    def add_to_batch(self):
-        input_params = self.get_params(group_params=True)
+    def add_to_batch(self, params: dict = None) -> UUID:
+        if params is None:
+            input_params = self.get_params(group_params=True)
+            item_name = self.ui.lineEditNameElastic.text()
+            input_params['item_name'] = item_name
+        else:
+            # check that params dict is formatted properly
+            required_keys = ['item_name', 'mc_kwargs', 'output_bit_depth']
+            if any([k not in params.keys() for k in required_keys]):
+                raise ValueError(f'Must pass a params dict with the following keys:\n'
+                                 f'{required_keys}\n'
+                                 f'Please see the docs for more information.')
+            input_params = params
+            item_name = input_params['item_name']
+
         input_workEnv = self.vi.viewer.workEnv
-        item_name = self.ui.lineEditNameElastic.text()
-        input_params['item_name'] = item_name
         batch_manager = get_window_manager().get_batch_manager()
-        batch_manager.add_item(module='caiman_motion_correction',
-                               name=item_name,
-                               input_workEnv=input_workEnv,
-                               input_params=input_params,
-                               info=self.get_params())
+        u = batch_manager.add_item(module='caiman_motion_correction',
+                                   name=item_name,
+                                   input_workEnv=input_workEnv,
+                                   input_params=input_params,
+                                   info=self.get_params())
+
+        return u

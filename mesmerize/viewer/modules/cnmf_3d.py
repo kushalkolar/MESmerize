@@ -133,36 +133,25 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
-    def set_params(self, d: dict):
-        if ('cnmf_kwargs' in d.keys()) and ('eval_kwargs' in d.keys()):
-            p = {**d['cnmf_kwargs'], **d['eval_kwargs']}
-        else:
-            p = d
-
-        self.ui.spinBox_rf.setValue(p['rf'])
-        self.ui.spinBox_stride.setValue(p['stride'])
-        self.ui.spinBox_k.setValue(p['k'])
-
-        self.ui.spinBox_gSig_x.setValue(p['gSig'][0])
-        self.ui.spinBox_gSig_y.setValue(p['gSig'][1])
-        self.ui.spinBox_gSig_z.setValue(p['gSig'][2])
-
-        self.ui.doubleSpinBox_merge_threshold.setValue(p['merge_thresh'])
-        self.ui.spinBox_p.setValue(p['p'])
-        self.ui.doubleSpinBox_decay_time.setValue(p['decay_time'])
-        self.ui.doubleSpinBox_minSNR.setValue(p['min_SNR'])
-        self.ui.doubleSpinBox_rval.setValue(p['rval_thr'])
-
-        self.ui.lineEdit_name.setText(d['item_name'])  # same key regardless of format
-
     @present_exceptions()
-    def add_to_batch(self, *args, **kwargs):
+    def add_to_batch(self, params: dict = None) -> UUID:
         if self.vi.viewer.workEnv.isEmpty:
             QtWidgets.QMessageBox.warning(self, 'Empty work environment', 'The work environment is empty, '
                                                                           'nothing to add to batch')
             return
 
-        d = self.get_params(group_params=True)
+        if params is None:
+            d = self.get_params(group_params=True)
+        else:
+            # Check that user passed dict is formatted correctly
+            required_keys = ['cnmf_kwargs', 'eval_kwargs', 'item_name', 'refit', 'use_patches',
+                             'use_memmap', 'memmap_uuid', 'keep_memmap']
+            if any([k not in params.keys() for k in required_keys]):
+                raise ValueError(f'Must pass a params dict with the following keys:\n'
+                                 f'{required_keys}\n'
+                                 f'Please see the docs for more information.')
+            d = params
+
         name = d['item_name']
 
         self.vi.viewer.status_bar_label.showMessage(f'Please wait, adding CNMF 3D item: "{name}" to batch')
@@ -195,3 +184,5 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.status_bar_label.showMessage(f'Finished adding CNMF 3D item: "{name}" to batch')
         self.ui.lineEdit_name.clear()
         self.ui.lineEdit_memmap_uuid.clear()
+
+        return u

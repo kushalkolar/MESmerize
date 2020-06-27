@@ -15,6 +15,7 @@ from ..core.common import ViewerUtils
 from .pytemplates.cnmf_pytemplate import *
 from ...common import get_window_manager
 from ...common.qdialogs import *
+from uuid import UUID
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -128,44 +129,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
-    def set_params(self, d: dict):
-        """
-        Set all parameters from a dict. All keys must be present in the dict.
-
-        :param d: parameters dict
-        """
-        if ('cnmf_kwargs' in d.keys()) and ('eval_kwargs' in d.keys()):
-            p = {**d['cnmf_kwargs'], **d['eval_kwargs']}
-        else:
-            p = d
-
-        self.ui.spinBoxP.setValue(p['p'])
-        self.ui.spinBoxGnb.setValue(p['gnb'])
-        self.ui.doubleSpinBoxMergeThresh.setValue(p['merge_thresh'])
-        self.ui.spinBoxRf.setValue(p['rf'])
-        self.ui.spinBoxStrideCNMF.setValue(p['stride_cnmf'])
-        self.ui.spinBoxK.setValue(p['k'])
-
-        self.ui.spinBox_gSig_x.setValue(p['gSig'][0])
-        self.ui.spinBox_gSig_x.setValue(p['gSig'][1])
-
-        self.ui.spinBox_ssub.setValue([p['ssub']])
-        self.ui.spinBox_tsub.setValue([p['tsub']])
-
-        ix = self.ui.comboBox_method_init.findText(p['method_init'])
-        if ix == -1:
-            raise ValueError('Invalid method_init param')
-        self.ui.comboBox_method_init.setCurrentIndex(ix)
-
-        self.ui.doubleSpinBoxMinSNR.setValue(p['min_SNR'])
-        self.ui.doubleSpinBoxRvalThr.setValue(p['rval_thr'])
-        self.ui.doubleSpinBoxCNNThr.setValue(p['cnn_thr'])
-        self.ui.doubleSpinBox_cnn_lowest.setValue(p['cnn_lowest'])
-        self.ui.spinBoxDecayTime.setValue(p['decay_time'])
-        self.ui.lineEdName.setText(p['item_name'])
-        self.ui.checkBoxRefit.setChecked(p['refit'])
-
-    def add_to_batch_cnmf(self):
+    def add_to_batch_cnmf(self, params : dict = None) -> UUID:
         """
         Add a CNMF batch item with the currently set parameters and the current work environment.
         """
@@ -176,7 +140,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         input_workEnv = self.vi.viewer.workEnv
 
-        d = self.get_params(group_params=True)
+        if params is None:
+            d = self.get_params(group_params=True)
+        else:
+            # Check that user passed dict is formatted correctly
+            required_keys = ['cnmf_kwargs', 'eval_kwargs', 'item_name', 'refit', 'border_pix']
+            if any([k not in params.keys() for k in required_keys]):
+                raise ValueError(f'Must pass a params dict with the following keys:\n'
+                                 f'{required_keys}\n'
+                                 f'Please see the docs for more information.')
+            d = params
 
         name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMF: ' + name + ' to batch...')
@@ -196,3 +169,5 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')
         self.ui.lineEdName.clear()
+
+        return u
