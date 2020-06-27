@@ -24,8 +24,8 @@ Please see the CaImAn demo notebook mentioned above to understand the parameters
 
 You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example.
 
-Console
-=======
+Script usage
+============
 
 A script can be used to add CNMFE batch items. This is much faster than using the GUI. This example sets the work environment from the output of a batch item. See the :ref:`Caiman Motion Correction script usage examples <MotCorScripts>` for how to load images if you want to add CNMF items from images that are not in a batch.
 
@@ -36,20 +36,36 @@ A script can be used to add CNMFE batch items. This is much faster than using th
     :linenos:
     
     # CNMF Params that we will use for each item
-    params =   {'p': 2, 
-                'gnb': 1, 
-                'merge_thresh': 0.25, 
-                'rf': 70, 
-                'stride_cnmf': 40, 
-                'k': 16, 
-                'gSig': 8, 
-                'min_SNR': 2.5, 
-                'rval_thr': 0.8, 
-                'cnn_thr': 0.8, 
-                'decay_time': 20, 
-                'name_cnmf': 'set_later_per_file', 
-                'refit': True
-                }
+    cnmf_kwargs = \
+    {
+        'p': 2, 
+        'gnb': 1, 
+        'merge_thresh': 0.25, 
+        'rf': 70, 
+        'stride': 40, 
+        'k': 16, 
+        'gSig': (8, 8), 
+        'gSiz': (33, 33)
+    }
+    
+    # component evaluation params
+    eval_kwargs = \
+    {
+        'min_SNR': 2.5, 
+        'rval_thr': 0.8, 
+        'min_cnn_thr': 0.8,
+        'cnn_lowest': 0.1,
+        'decay_time': 2.0, 
+    }
+    
+    # the dict that will be passed to the mesmerize caiman module
+    params = \
+    {
+        "cnmf_kwargs":  cnmf_kwargs,
+        "eval_kwargs":  eval_kwargs,
+        "refit":        True,  # if you want to perform a refit
+        "item_name":    "will set later per file",
+    }
 
     # Get the batch manager
     bm = get_batch_manager()
@@ -57,26 +73,55 @@ A script can be used to add CNMFE batch items. This is much faster than using th
     
     # Start index if we want to start processing the new items after they have been added
     start_ix = bm.df.index.size + 1
-
+    
+    # This example uses motion corrected output items from the batch manager
+    # You can also open image files directly from disk, see the motion correction
+    # script examples to see how to open images from disk.
     for ix, r in bm.df.iterrows():
         # Use output of items 6 - 12
+        # for example if items 6 - 12 were motion correction items
         if ix < 6:
             continue
-        if ix > 12:
+        if ix > 12: # You need to set a break point, else the batch grows infinitely
             break
-            
-        # Get the name of the mot cor item	
+        
+        # Get the name of the mot cor item
         name = r['name']
 
         # Set the name for the new cnmf item
-        params['name_cnmf'] = name
+        params['item_name'] = name
         
         # Load the mot cor output
         bm.load_item_output(module='caiman_motion_correction', viewers=viewer, UUID=r['uuid'])
         
-        # Set the CNMF params and add to batch
-        cnmf_mod.set_params(params)
-        cnmf_mod.add_to_batch_cnmf()
+        # Set the sampling rate of the data
+        params['eval_kwargs']['fr'] = vi.viewer.workEnv.imgdata.meta['fps']
+        
+        # Get the border_pix value from the motion correction output
+        # skip this if loading files that don't have NaNs on the image borders
+        history_trace = vi.viewer.workEnv.history_trace
+        border_pix = next(d for ix, d in enumerate(history_trace) if 'caiman_motion_correction' in d)['caiman_motion_correction']['bord_px']
+        
+        # Set the border_pix values
+        params['border_pix'] = border_pix
+        params['cnmf_kwargs']['border_pix'] = border_pix
+        
+        # Add to batch
+        cnmf_mod.add_to_batch(params)
+        
+        # change some of the params and add this variant to batch
+        params['cnmf_kwargs']['gSig'] = (10, 10)
+        params['cnmf_kwargs']['gSiz'] = (41, 41)
+        
+        # Add to batch with this params variant
+        cnmf_mod.add_to_batch(params)
+        
+        # another parameter variant
+        params['eval_kwargs']['rval_thr'] = 0.7
+        params['eval_kwargs']['min_cnn_thr'] = 0.65
+        
+        # Add to batch with this params variant
+        cnmf_mod.add_to_batch(params)
     
     # Cleanup the work environment
     vi._clear_workEnv()

@@ -86,6 +86,7 @@ Add Corr PNR batch items from a batch that contains motion corrected items. This
 
             # Get the name of the mot cor item
             name = r['name']
+            params['item_name'] = name
 
             # Load the output of the motion corrected batch item
             # The output will load into the viewer that this script
@@ -94,28 +95,28 @@ Add Corr PNR batch items from a batch that contains motion corrected items. This
 
             # Get the currently set params
             # You just need the dict with all the correct keys
-            # You will just modify the "gSig" and "name_corr_pnr" keys
-            params = cnmfe_mod.get_params()
+            # You will just modify the "gSig" and "item_name" keys
+            params = cnmfe_mod.get_params(item_type='corr_pnr', group_params=True)
 
             # Set the gSig and name params
-            params['gSig'] = 8
-            params['name_corr_pnr'] = name
+            params['corr_pnr_kwargs']['gSig'] = 8
 
-            # Set the params and add to batch
-            cnmfe_mod.set_params(params)
-            cnmfe_mod.add_to_batch_corr_pnr()
+            # Add to batch
+            cnmfe_mod.add_to_batch_corr_pnr(params)
 
             # Another variant of params
-            # Set the gSig and name params
-            params['gSig'] = 10
-            params['name_corr_pnr'] = name
+            params['corr_pnr_kwargs']['gSig'] = 10
 
-            # Set the params and add to batch
-            cnmfe_mod.set_params(params)
-            cnmfe_mod.add_to_batch_corr_pnr()
+            # Add to batch with this variant of params
+            cnmfe_mod.add_to_batch_corr_pnr(params)
 
     # Cleanup the work environment
     vi._clear_workEnv()
 
     # Start the batch from the start_ix
     bm.process_batch(start_ix, clear_viewers=True)
+    
+CNMFE
+-----
+
+
