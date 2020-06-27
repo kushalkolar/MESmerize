@@ -184,7 +184,11 @@ class ManagerScatterROI(AbstractBaseManager):
         self.create_roi_list()
         self.list_widget = self.roi_list.list_widget
 
-    def add_roi(self, curve: np.ndarray, xs, ys, metadata: dict = None) -> ScatterROI:
+    def add_roi(self, curve: np.ndarray,
+                xs: np.ndarray,
+                ys: np.ndarray,
+                metadata: dict = None) \
+            -> ScatterROI:
         """
         Add a single ROI
 
