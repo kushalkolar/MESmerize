@@ -174,8 +174,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.roi_manager = self.running_modules[-1]
 
         status_label = self.statusBar()
-        status_bar = self.statusBar()
-        # status_bar.addWidget(status_label)
 
         self._viewer.status_bar_label = status_label
 
