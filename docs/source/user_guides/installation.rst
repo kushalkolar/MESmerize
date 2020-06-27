@@ -8,7 +8,7 @@ Installation
 .. _snap_install:
 
 Linux
-====
+=====
 
 The easiest way to get Mesmerize is through the Snap Store. You can also install from the GitHub repo.
 

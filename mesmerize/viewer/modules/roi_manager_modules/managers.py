@@ -184,7 +184,18 @@ class ManagerScatterROI(AbstractBaseManager):
         self.create_roi_list()
         self.list_widget = self.roi_list.list_widget
 
-    def add_roi(self, curve, xs, ys, metadata: dict = None) -> ScatterROI:
+    def add_roi(self, curve: np.ndarray, xs, ys, metadata: dict = None) -> ScatterROI:
+        """
+        Add a single ROI
+
+        `xs` and `ys` arguments are 1D numpy arrays.
+
+        :param curve:       curve data, 1-D array, y values/intensity values
+        :param xs:          x-values for the scatter plot to spatially illustrate the ROI
+        :param ys:          corresponding y-values for the scatter plot to spatially illustrate the ROI
+        :param metadata:    Any metadata for this ROI
+        :return:            ScatterROI object
+        """
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
@@ -220,6 +231,7 @@ class ManagerScatterROI(AbstractBaseManager):
         self.roi_list = ROIList(self.ui, ScatterROI, self.vi)
 
     def set_spot_size(self, size: int):
+        """Set the spot size for the scatter plot which illustrates the ROI"""
         for roi in self.roi_list:
             roi.get_roi_graphics_object().setSize(size)
             roi.spot_size = size
@@ -232,14 +244,17 @@ class ManagerVolROI(ManagerScatterROI):
         self.vi.viewer.sigZLevelChanged.connect(self.set_zlevel)
 
     def set_zlevel(self, z: int):
+        """Set the current z-level to be visible in the viewer"""
         for roi in self.roi_list:
             roi.set_zlevel(z)
 
     def create_roi_list(self):
+        """Create new empty ROI list"""
         self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
 
 
 class ManagerVolCNMF(ManagerVolROI):
+    """Manager for 3D CNMF based ROIs"""
     def __init__(self, parent, ui, viewer_interface):
         super(ManagerVolCNMF, self).__init__(parent, ui, viewer_interface)
         self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
@@ -261,7 +276,7 @@ class ManagerVolCNMF(ManagerVolROI):
     def create_roi_list(self):
         self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
 
-    def add_all_components(self, cnmf_data_dict, input_params_dict):
+    def add_all_components(self, cnmf_data_dict: dict, input_params_dict: dict):
         """
         Add all components from a CNMF(E) output. Arguments correspond to CNMF(E) outputs
 

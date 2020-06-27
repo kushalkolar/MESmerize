@@ -434,13 +434,13 @@ class ScatterROI(BaseROI):
 
 
 class VolCNMF(ScatterROI):
-    """3D ROI"""
+    """3D ROI for CNMF data"""
     def __init__(self, curve_plot_item: pg.PlotDataItem	, view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
                  zlevel: int = 0):
 
         self.zlevel = zlevel  # z-level of the ROI that is currently visible, different from zValue!!
-        self.zcenter = None
+        self.zcenter = None   # z-level where this ROI has its center
 
         super(VolCNMF, self).__init__(curve_plot_item, view_box, state, curve_data)
 

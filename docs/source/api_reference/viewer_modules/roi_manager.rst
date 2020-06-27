@@ -22,7 +22,7 @@ The back-end managers that are used by the :ref:`ROI Manager ModuleGUI <API_ROIM
 The managers hold instances of :ref:`ROIs <API_ROITYPES>` in an instance of :ref:`ROIList <API_ROILIST>`
 
 AbstractBaseManager
-------------------
+-------------------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager
     :special-members:
@@ -37,9 +37,36 @@ ManagerManual
     :special-members:
     :members:
     :member-order: bysource
+    
+ManagerScatterROI
+-----------------
+
+.. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerScatterROI
+    :show-inheritance:
+    :special-members:
+    :members:
+    :member-order: bysource
+    
+ManagerVolROI
+-------------
+
+.. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerVolROI
+    :show-inheritance:
+    :special-members:
+    :members:
+    :member-order: bysource
+    
+ManagerVolCNMF
+--------------
+
+.. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerVolCNMF
+    :show-inheritance:
+    :special-members:
+    :members:
+    :member-order: bysource
 
 ManagerCNMFROI
-------------
+--------------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.ManagerCNMFROI
     :show-inheritance:
@@ -91,12 +118,30 @@ ManualROI
     :show-inheritance:
     :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state
     :member-order: bysource
+    
+.. _API_ScatterROI:
+    
+ScatterROI
+----------
+
+.. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.ScatterROI
+    :show-inheritance:
+    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data
+    :member-order: bysource
+
+VolCNMF
+-------
+
+.. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.VolCNMF
+    :show-inheritance:
+    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data, check_visible, zlevel, set_zlevel, zcenter
+    :member-order: bysource
 
 CNMFROI
 -------
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI
     :show-inheritance:
-    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data, _create_scatter_plot
+    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data
     :member-order: bysource
     
