@@ -64,7 +64,7 @@ You can also load tiff files through the :ref:`Viewer Console <ViewerConsole>` o
     image_path = # path to tiff file
     meta_path = # path to json meta data file
     
-    vi.clear_workEnv() # Prevents a confirmation dialog from appearing
+    clear_workEnv() # Prevents a confirmation dialog from appearing
     
     # Get the tiff module
     tio = get_module('tiff_io', hide=True)

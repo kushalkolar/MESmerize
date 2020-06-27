@@ -37,37 +37,41 @@ This example loads 3D sequences from disk & adds them to a batch with 3 paramete
 .. code-block:: python
     :linenos:
     
-    # CNMF Params that we will use for each item
-    cnmf_kwargs = \
-    {
-        'p': 2, 
-        'merge_thresh': 0.8, 
-        'k': 50, 
-        'gSig': (10, 10, 1),
-        'gSiz': (41, 41, 4)
-    }
-    
-    # component evaluation params
-    eval_kwargs = \
-    {
-        'min_SNR': 3.0, 
-        'rval_thr': 0.75, 
-        'decay_time': 1.0, 
-    }
-    
-    # the dict that will be passed to the mesmerize caiman module
-    params = \
-    {
-        "cnmf_kwargs":  cnmf_kwargs,
-        "eval_kwargs":  eval_kwargs,
-        "refit":        True,  # if you want to perform a refit
-        "item_name":    "will set later per file",
-        "use_patches":  False,
-        "use_memmap":   False,  # re-use the memmap from a previous batch item, reduces computation time
-        "memmap_uuid:   None,   # UUID (as a str) of the batch item to use the memmap from
-        "keep_memmmap": False   # keep the memmap of this batch item
+    # just so we can reset the params for each new image file
+    def reset_params():
+        # CNMF Params that we will use for each item
+        cnmf_kwargs = \
+        {
+            'p': 2, 
+            'merge_thresh': 0.8, 
+            'k': 50, 
+            'gSig': (10, 10, 1),
+            'gSiz': (41, 41, 4)
+        }
         
-    }
+        # component evaluation params
+        eval_kwargs = \
+        {
+            'min_SNR': 3.0, 
+            'rval_thr': 0.75, 
+            'decay_time': 1.0, 
+        }
+        
+        # the dict that will be passed to the mesmerize caiman module
+        params = \
+        {
+            "cnmf_kwargs":  cnmf_kwargs,
+            "eval_kwargs":  eval_kwargs,
+            "refit":        True,  # if you want to perform a refit
+            "item_name":    "will set later per file",
+            "use_patches":  False,
+            "use_memmap":   False,  # re-use the memmap from a previous batch item, reduces computation time
+            "memmap_uuid:   None,   # UUID (as a str) of the batch item to use the memmap from
+            "keep_memmmap": False   # keep the memmap of this batch item
+            
+        }
+        
+        return params
 
     # get the 3d cnmf module
     cnmf_mod = get_module('cnmf_3d', hide=True)
@@ -89,15 +93,19 @@ This example loads 3D sequences from disk & adds them to a batch with 3 paramete
                                                     method='imread',     # use imread
                                                     meta_path=meta_path, # json metadata file path
                                                     axes_order=None)     # default axes order
-                                                                         # see Mesmerize Tiff File docs for more info on axes order
+                                                                         # see Mesmerize Tiff file module docs for more info on axes order
         
-        # set it as the current work environment
+        # update the work environment
         vi.update_workEnv()
+        
+        # get the first variant of params
+        params = reset_parmas()
         
         # Set name for this video file
         name = os.path.basename(path)[:-5]
         params["item_name"] = name
         
+        # add batch item with one variant of params
         u = cnmf_mod.add_to_batch(params)
         
         # add the same image but change some params

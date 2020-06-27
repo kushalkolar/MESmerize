@@ -35,37 +35,40 @@ A script can be used to add CNMF batch items. This is much faster than using the
 .. code-block:: python
     :linenos:
     
-    # CNMF Params that we will use for each item
-    cnmf_kwargs = \
-    {
-        'p': 2, 
-        'gnb': 1, 
-        'merge_thresh': 0.25, 
-        'rf': 70, 
-        'stride': 40, 
-        'k': 16, 
-        'gSig': (8, 8), 
-        'gSiz': (33, 33)
-    }
-    
-    # component evaluation params
-    eval_kwargs = \
-    {
-        'min_SNR': 2.5, 
-        'rval_thr': 0.8, 
-        'min_cnn_thr': 0.8,
-        'cnn_lowest': 0.1,
-        'decay_time': 2.0, 
-    }
-    
-    # the dict that will be passed to the mesmerize caiman module
-    params = \
-    {
-        "cnmf_kwargs":  cnmf_kwargs,
-        "eval_kwargs":  eval_kwargs,
-        "refit":        True,  # if you want to perform a refit
-        "item_name":    "will set later per file",
-    }
+    def reset_params():
+        # CNMF Params that we will use for each item
+        cnmf_kwargs = \
+        {
+            'p': 2, 
+            'gnb': 1, 
+            'merge_thresh': 0.25, 
+            'rf': 70, 
+            'stride': 40, 
+            'k': 16, 
+            'gSig': (8, 8), 
+            'gSiz': (33, 33)
+        }
+        
+        # component evaluation params
+        eval_kwargs = \
+        {
+            'min_SNR': 2.5, 
+            'rval_thr': 0.8, 
+            'min_cnn_thr': 0.8,
+            'cnn_lowest': 0.1,
+            'decay_time': 2.0, 
+        }
+        
+        # the dict that will be passed to the mesmerize caiman module
+        params = \
+        {
+            "cnmf_kwargs":  cnmf_kwargs,
+            "eval_kwargs":  eval_kwargs,
+            "refit":        True,  # if you want to perform a refit
+            "item_name":    "will set later per file",
+        }
+        
+        return params
 
     # Get the batch manager
     bm = get_batch_manager()
@@ -85,9 +88,12 @@ A script can be used to add CNMF batch items. This is much faster than using the
         if ix > 12: # You need to set a break point, else the batch grows infinitely
             break
         
+        # get the first variant of params
+        params = reset_parmas()
+        
         # Get the name of the mot cor item
         name = r['name']
-
+        
         # Set the name for the new cnmf item
         params['item_name'] = name
         
