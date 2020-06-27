@@ -1,4 +1,4 @@
-[![Snap Status](https://build.snapcraft.io/badge/kushalkolar/MESmerize.svg)](https://build.snapcraft.io/user/kushalkolar/MESmerize) [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Snap Status](https://build.snapcraft.io/badge/kushalkolar/MESmerize.svg)](https://build.snapcraft.io/user/kushalkolar/MESmerize) [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/mesmerize) &nbsp;&nbsp;
 <a href="https://doi.org/10.1101/840488">
@@ -16,12 +16,17 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 Version 0.2 released.
 
 Changes:
-- The Viewer can handle 3D data and 3D ROIs. Classes are provided for creating Volumetic ROI types, and a Volumetic ROI manager.
-- Caiman 3D CNMF can be used with 3D data.
+
+- Windows is now supported!
+- The Viewer can handle 3D data and 3D ROIs.
+- For development, classes are provided for creating Volumetic ROI types, and a Volumetic ROI manager.
+- Caiman 3D CNMF is supported.
 - Updated CNMF(E) and motion correction modules to use the latest release of CaImAn. Parameter entry GUIs are much more flexible now.
-- CNMF(E) data can be imported from hdf5 files from Caiman, allowing these data to be used for downstream analysis in Mesmerize.
-- Suite2p importer added.
-- Some cleanup with the batch manager.
+- CNMF(E) data can be imported directly from hdf5 files from Caiman. Therefore you can use your own scripts/notebooks and existing CNMF hdf5 files for downstream analysis in Mesmerize.
+- More customizable support for use of caiman modules within the Mesmerize viewer's script editor.
+- Suite2p importer added, allowing you to perform downstream analysis of Suite2p output data in Mesmerize.
+- Some cleanup with the batch manager
+- bug fixes
 
 *Please note that batches from v0.1 and v0.2 are not inter-compatible. Use the v0.1 branch if you need v0.1*
 
@@ -33,7 +38,7 @@ https://doi.org/10.1101/840488
 
 ## Questions/Discussions
 
-We have a room on gitter. For larger bugs/issues please use the issue tracker.
+Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
 
 [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
@@ -43,16 +48,16 @@ Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesme
 
 ## Installation
 
-**The easiest way to get Mesmerize is to install the snap (Linux only). You can also install directly from the repo on Linux & Mac OSX.**
+**The easiest way to get Mesmerize is to install the snap (Linux only). You can also install directly from the repo on Windows, Linux & Mac OSX.**
 
-See the docs for instructions:
+See the docs for installation instructions in all operating systems:
 
 http://mesmerizelab.org/user_guides/installation.html
 
 ### Snap
 [https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize)
 
-**Note: The snap comes with a version of Caiman from ~late 2018. We're currently working on getting Mesmerize up to date with the latest release of Caiman.**
+**Note: The snap comes with a version of Caiman from ~late 2018. We're currently working on getting the snap up to date with the latest release.**
 
 **v0.2 will soon be available on snap**
 
@@ -60,7 +65,7 @@ After installation simply run `mesmerize` in the terminal and the application wi
 
 Command line snap installation:
 ```bash
-sudo snap install mesmerize
+sudo snap install mesmerize.
 ```
 Make sure you have `snapd` installed, which is required for running snap apps.
 If you are on Ubuntu 16.04 or later snapd should be pre-installed.
