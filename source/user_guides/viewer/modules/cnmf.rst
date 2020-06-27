@@ -3,7 +3,7 @@
 CNMF
 ****
 
-Perform CNMFE using the implementation provided by the CaImAn library. This modules basically provides a GUI for parameter entry.
+Perform CNMF using the implementation provided by the CaImAn library. This modules basically provides a GUI for parameter entry.
 
 **I highly recommend going through the following before using this module**
         
@@ -22,12 +22,12 @@ Perform CNMFE using the implementation provided by the CaImAn library. This modu
 
 Please see the CaImAn demo notebook mentioned above to understand the parameters. The Caiman docs also provide descriptions of the parameters: https://caiman.readthedocs.io/
 
-You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example.
+You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example. **Use single quotes if you want to enter string kwargs, do not use double quotes.**
 
 Script usage
 ============
 
-A script can be used to add CNMFE batch items. This is much faster than using the GUI. This example sets the work environment from the output of a batch item. See the :ref:`Caiman Motion Correction script usage examples <MotCorScripts>` for how to load images if you want to add CNMF items from images that are not in a batch.
+A script can be used to add CNMF batch items. This is much faster than using the GUI. This example sets the work environment from the output of a batch item. See the :ref:`Caiman Motion Correction script usage examples <MotCorScripts>` for how to load images if you want to add CNMF items from images that are not in a batch.
 
 .. seealso:: :ref:`Script Editor <module_ScriptEditor>`
 
@@ -69,7 +69,7 @@ A script can be used to add CNMFE batch items. This is much faster than using th
 
     # Get the batch manager
     bm = get_batch_manager()
-    cnmf_mod = get_module('cnmf')
+    cnmf_mod = get_module('cnmf', hide=True)
     
     # Start index if we want to start processing the new items after they have been added
     start_ix = bm.df.index.size + 1

@@ -27,7 +27,7 @@ Perform CNMFE using the implementation provided by the CaImAn library.
 
 Please see the CaImAn demo notebook mentioned above to understand the rest of the parameters. The Caiman docs also provide descriptions of the parameters: https://caiman.readthedocs.io/
 
-You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example.
+You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example. **Use single quotes if you want to enter string kwargs, do not use double quotes.**
 
 .. _module_CNMFE_Usage:
 
@@ -83,11 +83,7 @@ Add Corr PNR batch items from a batch that contains motion corrected items. This
     for ix, r in bm.df.iterrows():
             if ix == start_ix:
                     break
-
-            # Get the name of the mot cor item
-            name = r['name']
-            params['item_name'] = name
-
+                    
             # Load the output of the motion corrected batch item
             # The output will load into the viewer that this script
             # is running in.
@@ -97,6 +93,12 @@ Add Corr PNR batch items from a batch that contains motion corrected items. This
             # You just need the dict with all the correct keys
             # You will just modify the "gSig" and "item_name" keys
             params = cnmfe_mod.get_params(item_type='corr_pnr', group_params=True)
+            
+            # Get the name of the mot cor item
+            name = r['name']
+            params['item_name'] = name
+            
+            params['border_pix'] = border_pix
 
             # Set the gSig and name params
             params['corr_pnr_kwargs']['gSig'] = 8

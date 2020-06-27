@@ -1,9 +1,11 @@
+.. _module_TiffFile:
+
 Tiff file module
 ****************
 
 To open a tiff file go to Modules -> Load Images -> Tiff files.
 
-.. note:: You can also use this module through the console and scripts. See :ref:`API_TiffModule`
+.. note:: You can also use this module through the console and scripts. See :ref:`Tiff module API <API_TiffModule>`.
 
 To open tiff files just click the “Select file” button and choose your file. You can also drag and drop a tiff file (drag and drop doesn't work properly on Windows).
 
@@ -62,10 +64,13 @@ You can also load tiff files through the :ref:`Viewer Console <ViewerConsole>` o
     image_path = # path to tiff file
     meta_path = # path to json meta data file
     
-    vi._clear_workEnv() # Prevents a dialog box from appearing
+    vi.clear_workEnv() # Prevents a confirmation dialog from appearing
     
-    tio = get_module('tiff_io')
+    # Get the tiff module
+    tio = get_module('tiff_io', hide=True)
+    
+    # Load the tiff file
     tio.load_tiff_file(image_path, meta_path, method='imread', axes_order='txy')
 
     
-.. seealso:: :ref:`Viewer Core API <API_ViewerCore>`, :ref:`Overview on consoles <ConsoleOverview>`
+.. seealso:: :ref:`Tiff module API <API_TiffModule>`, :ref:`Viewer Core API <API_ViewerCore>`, :ref:`Overview on consoles <ConsoleOverview>`

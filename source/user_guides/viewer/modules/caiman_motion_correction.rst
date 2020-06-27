@@ -21,7 +21,7 @@ Output bit depth: The motion corrected image sequences are of float32 type. You 
 
 For all other parameters please see the demo notebook mentioned above.
 
-You can also enter parameters as keyword arguments (kwargs) in the text box if you select "Use motion correction kwargs". This is useful if you want to enter parameters that cannot be entered in the GUI for example.
+You can also enter parameters as keyword arguments (kwargs) in the text box if you select "Use motion correction kwargs". This is useful if you want to enter parameters that cannot be entered in the GUI for example. **Use single quotes if you want to enter string kwargs, do not use double quotes.**
 
 Usage
 =====
