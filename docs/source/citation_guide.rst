@@ -33,9 +33,9 @@ Node/Method                                             Cite
 ===================================================     ========================================================================
 :ref:`k-Shape clustering <plot_KShape>`                 | Paparrizos, J., & Gravano, L. (2016). k-Shape. ACM SIGMOD Record, 45(1), 69–76. doi: http://dx.doi.org/10.1145/2723372.2737793
 
-                                                        | Romain Tavenard, Johann Faouzi, Gilles Vandewiele and Felix Divo, Guillaume Androz, Chester Holtz, Marie Payne, Roman Yurchak, Marc Ruβwurm, Kushal Kolar, & Eli Woods. (2017). tslearn: A machine learning toolkit dedicated to time-series data. https://github.com/rtavenar/tslearn
+                                                        | Romain Tavenard, Johann Faouzi, Gilles Vandewiele and Felix Divo, Guillaume Androz, Chester Holtz, Marie Payne, Roman Yurchak, Marc Ruβwurm, Kushal Kolar, & Eli Woods. (2017). Tslearn, A Machine Learning Toolkit for Time Series Data. Journal of Machine Learning Research, (118):1−6, 2020. http://jmlr.org/papers/v21/20-091.html
                                                         
-:ref:`Cross-correlation <plot_CrossCorrelation>`        | Romain Tavenard, Johann Faouzi, Gilles Vandewiele and Felix Divo, Guillaume Androz, Chester Holtz, Marie Payne, Roman Yurchak, Marc Ruβwurm, Kushal Kolar, & Eli Woods. (2017). tslearn: A machine learning toolkit dedicated to time-series data. https://github.com/rtavenar/tslearn
+:ref:`Cross-correlation <plot_CrossCorrelation>`        | Romain Tavenard, Johann Faouzi, Gilles Vandewiele and Felix Divo, Guillaume Androz, Chester Holtz, Marie Payne, Roman Yurchak, Marc Ruβwurm, Kushal Kolar, & Eli Woods. (2017). Tslearn, A Machine Learning Toolkit for Time Series Data. Journal of Machine Learning Research, (118):1−6, 2020. http://jmlr.org/papers/v21/20-091.html
 
 :ref:`TVDiff Node <node_TVDiff>`                        Rick Chartrand, “Numerical Differentiation of Noisy, Nonsmooth Data,” ISRN Applied Mathematics, vol. 2011, Article ID 164564, 11 pages, 2011. https://doi.org/10.5402/2011/164564.
 ===================================================     ========================================================================
