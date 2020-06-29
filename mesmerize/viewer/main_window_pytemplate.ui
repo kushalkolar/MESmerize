@@ -60,17 +60,10 @@
     <addaction name="actionROI_Manager"/>
     <addaction name="actionSuite2p_Importer"/>
     <addaction name="actionStimulus_Mapping"/>
-    <addaction name="actionManual_motion_correction"/>
     <addaction name="actionScript_Editor"/>
     <addaction name="separator"/>
     <addaction name="actionBatch_Manager"/>
     <addaction name="separator"/>
-   </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionMeta_data"/>
    </widget>
    <widget class="QMenu" name="menuCustom_Modules">
     <property name="title">
@@ -97,8 +90,6 @@
     <addaction name="separator"/>
     <addaction name="actionMeasure"/>
     <addaction name="separator"/>
-    <addaction name="actionChange_dtype"/>
-    <addaction name="separator"/>
     <addaction name="menuProjections"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -114,9 +105,9 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionOpen_docs"/>
+    <addaction name="actionVersion_0_2"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
    <addaction name="menuImage"/>
    <addaction name="menuModules"/>
    <addaction name="menuCustom_Modules"/>
@@ -277,7 +268,7 @@
   </action>
   <action name="actionWork_Environment_Info">
    <property name="text">
-    <string>&amp;Work Environment Editor</string>
+    <string>&amp;Work Environment Viewer</string>
    </property>
   </action>
   <action name="actionMean">
@@ -318,6 +309,17 @@
   <action name="actionCaimanImportHDF5">
    <property name="text">
     <string>&amp;Import HDF5 result file</string>
+   </property>
+  </action>
+  <action name="actionVersion_0_2">
+   <property name="text">
+    <string>Version 0.2</string>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
    </property>
   </action>
  </widget>
