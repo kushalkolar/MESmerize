@@ -252,7 +252,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.image_menu = ImageMenu(self.vi)
 
         self.ui.actionReset_Scale.triggered.connect(self.image_menu.reset_scale)
-        self.ui.actionMeasure.triggered.connect(self.image_menu.measure_tool)
+        self.ui.actionMeasure.triggered.connect(self.image_menu.action_measure_line_invoked)
         self.ui.actionResize.triggered.connect(self.image_menu.resize)
         self.ui.actionCrop.triggered.connect(self.image_menu.crop)
 

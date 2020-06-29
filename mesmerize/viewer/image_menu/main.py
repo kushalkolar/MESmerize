@@ -25,11 +25,14 @@ class ImageMenu:
         assert isinstance(viewer_interface, ViewerUtils)
         self.vi = viewer_interface
 
-        self.measure_line = None
-        self.measure_line_ = None
         self.crop_roi = None
 
         self.projection_windows = []
+
+        self.measure_lines = []
+        self._drawing_line = False
+
+        self._prev_mouseclick_pos = None
 
     def reset_scale(self):
         self.vi.update_workEnv()
@@ -42,7 +45,7 @@ class ImageMenu:
     def crop(self):
         if self.crop_roi is None:
             self.vi.viewer.status_bar_label.showMessage('Create your crop region and then click on "Crop" again in the '
-                                                      '"Image" menu to crop to the selected region')
+                                                        '"Image" menu to crop to the selected region')
             self.crop_roi = ROI(pos=[0, 0], size=(0.5 * np.mean([self.vi.viewer.image.shape[1],
                                                                  self.vi.viewer.image.shape[2]])), removable=True)
             self.crop_roi.sigRemoveRequested.connect(self.remove_crop_roi)
@@ -68,58 +71,89 @@ class ImageMenu:
         self.crop_roi = None
         self.vi.viewer.status_bar_label.clearMessage()
 
+    def action_measure_line_invoked(self):
+        if self._drawing_line:
+            QtWidgets.QMessageBox.warning(
+                self.vi.viewer.parent(),
+                'Finish drawing previous line',
+                'Click on the image to finish drawing the previous line before drawing a new one',
+                QtWidgets.QMessageBox.Ok
+            )
+            return
+
+        self._drawing_line = True
+
+        self.vi.viewer.status_bar_label.showMessage(
+            'Click on a point in the image to draw the first point of a line'
+        )
+
+        self.vi.viewer.scene.sigMouseClicked.connect(self.draw_measure_line)
+
     def draw_measure_line(self, ev):
-        if self.measure_line_ is None:
-            self.measure_line_ = self.vi.viewer.view.mapSceneToView(ev.pos())
-            self.vi.viewer.status_bar_label.showMessage('Click on a second point in the image to '
-                                                      'finish drawing the line')
-            # for item in self.vi.viewer.view.items:
-            #     if isinstance(item, LineSegmentROI):
-            #         self.vi.viewer.view.removeItem(item)
+        self._prev_mouseclick_pos = self.vi.viewer.view.mapSceneToView(ev.pos())
 
-        else:
-            self.measure_line = LineSegmentROI(positions=(self.measure_line_,
-                                                         self.vi.viewer.view.mapSceneToView(ev.pos())))
-            self.vi.viewer.view.addItem(self.measure_line)
+        self.vi.viewer.status_bar_label.showMessage(
+            'Click on a second point in the image to finish drawing the line'
+        )
 
-            self.vi.viewer.scene.sigMouseClicked.disconnect(self.draw_measure_line)
-            self.vi.viewer.status_bar_label.showMessage('Now click "Measure" in the "Image" menu once again to get '
-                                                      'your measurements')
+        self.vi.viewer.scene.sigMouseClicked.disconnect(self.draw_measure_line)
+        self.vi.viewer.scene.sigMouseClicked.connect(self._finish_drawing_measure_line)
 
-    def measure_tool(self, ev=False):
-        if self.measure_line is None:
-            self.vi.viewer.status_bar_label.showMessage('Click on a point in the image to draw the first point of a line')
-            self.vi.viewer.scene.sigMouseClicked.connect(self.draw_measure_line)
-            return False
+    def _finish_drawing_measure_line(self, ev):
+        measure_line = LineSegmentROI(
+            positions=(
+                self._prev_mouseclick_pos,
+                self.vi.viewer.view.mapSceneToView(ev.pos())
+            ),
+            removable=True
+        )
+        self.vi.viewer.view.addItem(measure_line)
 
-        elif self.measure_line is not None:
-            dx = abs(self.measure_line.listPoints()[0][0] - self.measure_line.listPoints()[1][0])
-            dy = abs(self.measure_line.listPoints()[0][1] - self.measure_line.listPoints()[1][1])
-            dist = sqrt((dx**2 + dy**2))
-            self.vi.viewer.scene.removeItem(self.measure_line)
-            self.measure_line = None
-            self.measure_line_ = None
-            QtWidgets.QMessageBox.information(None, 'Measurements',
-                                              '\ndx = ' + str(dx) +\
-                                              '\ndy = ' + str(dy) +\
-                                              '\ndistance = ' + str(dist))
-            return True
+        # changing or hovering on the line will display the distances
+        measure_line.sigRegionChanged.connect(self.show_measure_line_distance)
+        measure_line.sigHoverEvent.connect(self.show_measure_line_distance)
+
+        # deleting the line
+        measure_line.sigRemoveRequested.connect(self.measure_lines.remove)
+        measure_line.sigRemoveRequested.connect(self.vi.viewer.scene.removeItem)
+
+        # add to list
+        self.measure_lines.append(measure_line)
+
+        self.vi.viewer.scene.sigMouseClicked.disconnect(self._finish_drawing_measure_line)
+
+        self.show_measure_line_distance(measure_line)
+
+        self._drawing_line = False
+
+    def show_measure_line_distance(self, line: LineSegmentROI):
+        dx = abs(line.listPoints()[0][0] - line.listPoints()[1][0])
+        dy = abs(line.listPoints()[0][1] - line.listPoints()[1][1])
+        dist = sqrt((dx ** 2 + dy ** 2))
+
+        self.vi.viewer.status_bar_label.showMessage(
+            f"Line distance: dx: {dx:.2f} | dy: {dy:.2f} | distance: {dist:.2f}"
+        )
 
     def mean_projection(self):
         self.vi.viewer.status_bar_label.showMessage('Creating Mean Projection of image sequencee, please wait...')
-        w = display_projection('mean', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        w = display_projection('mean', self.vi.viewer.workEnv.imgdata.seq,
+                               self.vi.viewer.ui.label_curr_img_seq_name.text())
         self.projection_windows.append(w)
         self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
     def max_projection(self):
         self.vi.viewer.status_bar_label.showMessage('Creating Max Projection of image sequencee, please wait...')
-        w = display_projection('max', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        w = display_projection('max', self.vi.viewer.workEnv.imgdata.seq,
+                               self.vi.viewer.ui.label_curr_img_seq_name.text())
         self.projection_windows.append(w)
         self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
     def std_projection(self):
-        self.vi.viewer.status_bar_label.showMessage('Creating Standard Deviation Projection of image sequencee, please wait...')
-        w = display_projection('std', self.vi.viewer.workEnv.imgdata.seq, self.vi.viewer.ui.label_curr_img_seq_name.text())
+        self.vi.viewer.status_bar_label.showMessage(
+            'Creating Standard Deviation Projection of image sequencee, please wait...')
+        w = display_projection('std', self.vi.viewer.workEnv.imgdata.seq,
+                               self.vi.viewer.ui.label_curr_img_seq_name.text())
         self.projection_windows.append(w)
         self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
