@@ -231,23 +231,29 @@ class ViewerWorkEnv:
             vmin = meta['LUTstruct']['lower']
             vmax = meta['LUTstruct']['upper']
 
-            meta_d = {'origin':    origin,
-                      'fps':       fps,
-                      'date':      date,
-                      'vmin':      vmin,
-                      'vmax':      vmax,
-                      'orig_meta': meta}
+            meta_d = \
+                {
+                    'origin': origin,
+                    'fps': fps,
+                    'date': date,
+                    'vmin': vmin,
+                    'vmax': vmax,
+                    'orig_meta': meta  # just the entire original meta data dict
+                }
 
             return meta_d
 
         elif origin == 'AwesomeImager' or origin == 'DeepEyes':
-            meta_d = {'origin':     origin,
-                      'version':    meta['version'],
-                      'fps':        meta['framerate'],
-                      'date':       meta['date'] + '_' + meta['time'],
-                      'vmin':       meta['level_min'],
-                      'vmax':       meta['level_max'],
-                      'orig_meta':  meta}
+            meta_d = \
+                {
+                    'origin': origin,
+                    'version': meta['version'],
+                    'fps': meta['framerate'],
+                    'date': meta['date'] + '_' + meta['time'],
+                    'vmin': meta['level_min'],
+                    'vmax': meta['level_max'],
+                    'orig_meta': meta  # just the entire original meta data dict
+                }
             return meta_d
 
         else:
