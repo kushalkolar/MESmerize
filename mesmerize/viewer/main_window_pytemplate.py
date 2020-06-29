@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main_window_pytemplate.ui'
+# Form implementation generated from reading ui file './main_window_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -209,7 +209,7 @@ class Ui_MainWindow(object):
         self.actionChange_dtype.setText(_translate("MainWindow", "Change &dtype"))
         self.actionReset_Scale.setText(_translate("MainWindow", "&Reset Scale"))
         self.actionMeta_data.setText(_translate("MainWindow", "&Meta data"))
-        self.actionMeasure.setText(_translate("MainWindow", "&Measure"))
+        self.actionMeasure.setText(_translate("MainWindow", "&Measure Tool"))
         self.actionStimulus_Mapping.setText(_translate("MainWindow", "&Stimulus Mapping"))
         self.actionConsole.setText(_translate("MainWindow", "&Console"))
         self.actionWork_Environment_Info.setText(_translate("MainWindow", "&Work Environment Editor"))

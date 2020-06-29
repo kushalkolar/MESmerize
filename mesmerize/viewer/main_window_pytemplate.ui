@@ -259,7 +259,7 @@
   </action>
   <action name="actionMeasure">
    <property name="text">
-    <string>&amp;Measure</string>
+    <string>&amp;Measure Tool</string>
    </property>
   </action>
   <action name="actionStimulus_Mapping">
