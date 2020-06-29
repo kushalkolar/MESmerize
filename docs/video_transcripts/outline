@@ -1,0 +1,98 @@
+# Using the viewer
+    - load from tifffile
+    - json format
+    
+## Console & scripts
+    - load image contained in numpy array from console
+    - talk about meta data of imgdata
+
+## ROI Manager
+    - tagging data in the GUI
+    - automated tagging example through console
+    - create ScatterROI through console or script
+
+## Batch manager
+    - GUI & purpose overview
+    - Writing a batch-manager-compatible module
+    - Interacting with the batch manager through the console
+    
+## Caiman modules with the viewer 
+    - motion corr
+        - GUI use
+        - script use
+        
+    - cnmf
+        - GUI use
+        - script use
+        
+    - cnmfe
+        - GUI use
+        - script use
+        
+    - 3D cnmf
+        - GUI use
+        - script use
+        
+    - import hdf5 files that were created externally
+        - GUI use
+        - script use
+    
+## Stimulus mapping
+
+## Import Suite2p outputs
+    - Use with the ROI manager as you otherwise would
+    - GUI & script use
+ 
+## Create your own viewer modules
+    - "Plugins"
+    - submit a PR, I'll be happy to add it as a default module
+
+    
+# Mesmerize project
+
+## Directory structure
+
+## Create a project
+    - Columns based on biological examples
+    - Explain a few examples
+    - You can add/remove columns at any point in the future
+        - replacement value option
+
+## Add data to a project
+    - As long as you have ROIs, regardless of source.
+    
+## Project browser
+    - GUI overview
+    - console interaction
+
+
+# Flowchart
+
+## Concept, nodes, Transmission object
+
+## Get a z-scored heatmap
+    - datapoint tracer
+    - saving interactive plots
+    - maybe show kmeans clustering as a simple example
+    - console
+    
+## Show some more signal processing examples
+    - live fft etc. with both heatmaps & simple plot
+    - some other signal processing things
+
+## Peak detection
+    - peak features
+        - datapoint tracer
+    - kshape clustering
+        - console
+
+## Save flowchart layout
+
+## Save & Load transmission files
+    - Using transmission files in notebooks
+
+
+# Exploring a Mesmerize project
+    - Show my Ciona cells types project
+        - interactive plots to explore the data
+        - project browser to browse all the data

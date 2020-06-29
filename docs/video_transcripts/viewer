@@ -1,0 +1,84 @@
+The Mesmerize viewer is used for visualizing your imaging data, and interfaces with modules that allow you to annotate Regions of Interest, and stimulus or behavioral periods. It can also interface with various Caiman modules for motion correction & signal extraction. You may directly import regions of interest from Caiman or Suite2p output files.
+
+The Viewer is built on top of the pyqtgraph ImageView widget.
+
+There are two GUI modules for opening imaging data in the Viewer.
+
+The tifffile GUI module lets you open 2D or 3D image sequences and the Mesfile module allows you to open imaging data captured by Femtonics microscopes.
+
+The tiffile module can also be used through the console. Similarly, imaging data in any other format for which there is a python library can be opened through the console.
+
+To open a tiff file just open the GUI, choose your tiff file, select a load method. "asarray" is usually the fastest and should work for most files. If that fails "imread" should work for all files.
+
+If you have a json meta data file with the same filename as the tifffile it will be selected automatically, otherwise you can choose a json meta data file.
+Please see the docs for more information on the format of the meta data so that Mesmerize recognizes it since some information, such as the sampling rate of your recording, may be required for downstream processing & analysis.
+
+<Open viewer_work_environment.py>
+
+You can a few lines to the `_organize_meta()` method of the ViewerWorkEnvironment class so that Mesmerize automatically organizes your data data into the necessary format. If you wish to add this to Mesmerize I'll be happy to review a Pull Request
+
+You can also use the console to load meta data in other formats and I'll talk about that in a few minutes.
+
+You can set the axes order of the image if it's not the default [t, x, y] for 2D data, or  [t, z, x, y] for 3D data.
+
+So when you load the image in the viewer it gets loaded in the "Viewer Work Environment". When you add Regions of Interest, Stimulus Maps or any other information they all get stored in the "Viewer Work Environment".
+
+You can view the data that are present in the current work environment by using the Work Environment Viewer. You can also explored the work environment through the console which I will talk about in a few minutes.
+
+There are a few simple tools you can use with the image. The measure tool allows you to measure the distance between two points in pixels. To use it click on the "Measure Tool" option in the menu, click a point on the image, and then click another point. The viewer status bar will show the distances whenever you hover over the measuring line.
+And you can have as many as you want.
+
+You can view mean, max and standard deviations projections of the current image.
+Note that if you are working with 3D data it will show the projection for the current plane over time.
+
+Lastly, you can also open images stored in any other format through using the console using the "Viewer Core API". I'll open the API docs here on the side.
+
+
+For this example I will open an image stored in a numpy array.
+
+First let's clear the current work environment::
+    clear_workEnv()
+
+So let's load this image::
+    import numpy as np
+    a = np.load(....)
+    
+We need to set the axes order of this arrays to [x, y, t]
+If you're loading 3D data it must be ordered as [x, y, t, z]
+Note that this is the axes order used for the Viewer Work Environment, it is not the same as the default axes order used for tiff files.
+    np.reshape(a....)
+
+Let's create a meta data dict. Your meta dict must contain at least these 3 keys:
+    "origin" - The acquisition software or microscope that the data came from
+               This is mostly for your own record
+               
+    "fps" - The sampling rate of your recording
+    
+    "date" - formatted as a string in this format: "YYYYMMDD_HHMMSS"
+    
+    You are free to have any other keys as you wish in this meta data dict.
+    
+So let's just create a simple meta data dict:
+    {"origin":  "Tutorial example",
+     "fps":     10.0,
+     "data":    "20200629_171823"
+    
+Now you can create an ImgData object using this numpy array and meta data dict::
+    imgdata = ImgData(a, m)
+    
+Finally we can create a new Viewer Work Environment with this imgdata object::
+    work_env = ViewerWorkEnvironment(imgdata)
+
+And update the GUI with the changes to the Work Environment::
+    update_workEnv()
+    
+You can also use the console to interact with the work environment directly
+For example, print the 100th frame of the image data
+    get_workEnv().imgdata.seq[:, :, 100]
+    
+Acess the ROI Manager back-end::
+    get_workEnv().roi_manager
+    
+This shows that the ROI Manager is currently using the Manual Manager back-end, which is the default when a new viewer is opened. I'll open the ROI Manager API here on the side. As you can see, some other back-end Managers are used for CNMF ROIs from Caiman, there's a Scatter Manager which can generally be used to create your own ROIs from other sources, like Suite2p. And finally there are back-end Managers for Volumetric ROIs.
+
+For more information see the detailed video on the ROI Manager.
