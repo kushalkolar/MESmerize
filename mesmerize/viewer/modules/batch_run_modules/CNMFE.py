@@ -351,7 +351,7 @@ class Output(QtWidgets.QWidget):
         vi.viewer.workEnv.history_trace.append({'cnmfe': input_params})
 
         roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-        roi_manager_gui.start_scatter_mode('CNMFROI')
+        roi_manager_gui.start_backend('CNMFROI')
 
         roi_manager_gui.manager.add_all_components(
             cnmf_data,

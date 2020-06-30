@@ -130,7 +130,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 return
 
         # get the GUI ROI Manager module and set it in manual mode
-        self.vi.viewer.parent().get_module('roi_manager').start_scatter_mode('ScatterROI')
+        self.vi.viewer.parent().get_module('roi_manager').start_backend('ScatterROI')
 
         # get the backend ROI manager
         roi_manager = self.vi.viewer.workEnv.roi_manager

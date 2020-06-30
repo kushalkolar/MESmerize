@@ -126,27 +126,31 @@ class ModuleGUI(QtWidgets.QDockWidget):
     def btnAddROI_context_menu_requested(self, p):
         self.btnAddROIMenu.exec_(self.ui.btnAddROI.mapToGlobal(p))
 
-    def start_scatter_mode(self, type_str: str):
-        """Start in CNMFE mode. Creates a new back-end manager instance (uses ManagerCNMFROI)"""
-        print('staring scatter mode in roi manager')
+    def start_backend(self, type_str: str):
+        """Choose backend, one of the Manager classes in the managers module."""
 
         if hasattr(self, 'manager'):
             del self.manager
 
-        self.ui.btnAddROI.setDisabled(True)
-        manager = getattr(managers, f'Manager{type_str}')
+        if type_str == 'Manual':
+            self.start_manual_mode()
+            return
+
+        self.ui.btnAddROI.setDisabled(True)  # only used for manual ROIs
+
+        backend = f'Manager{type_str}'
+        manager = getattr(managers, backend)
+
         self.manager = manager(self, self.ui, self.vi)
         self.vi.viewer.workEnv.roi_manager = self.manager
+
         self.ui.btnSwitchToManualMode.setEnabled(True)
 
-    def add_all_cnmfe_components(self, *args, **kwargs):
-        """Import CNMF(E) output data"""
-        assert isinstance(self.manager, managers.ManagerCNMFROI)
-        self.manager.add_all_components(*args, **kwargs)
+        print(f'ROI Manager backend set to: {backend}')
 
     def start_manual_mode(self):
         """Start in manual mode. Creates a new back-end manager instance (Uses ManagerManual)"""
-        print('staring manual mode')
+        print('ROI back-end set to: ManagerManual')
 
         if hasattr(self, 'manager'):
             del self.manager
@@ -192,7 +196,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # All scatter types, CNMF(E), Suite2p, VolCNMF etc.
         if issubclass(globals()[roi_class], ScatterROI):
-            self.start_scatter_mode(states['roi_type'])
+            self.start_backend(states['roi_type'])
             self.manager.restore_from_states(states)
 
         # Manual ROI classes

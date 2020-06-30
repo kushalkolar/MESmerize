@@ -196,7 +196,7 @@ class Output:
         )
 
         roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-        roi_manager_gui.start_scatter_mode('VolCNMF')
+        roi_manager_gui.start_backend('VolCNMF')
 
         roi_manager_gui.manager.add_all_components(
             cnmf_data,

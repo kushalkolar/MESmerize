@@ -72,7 +72,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         # Load data using the appropriate back-end manager
         if self.vi.viewer.workEnv.imgdata.ndim == 4:
             roi_manager_gui = self.vi.viewer.parent().get_module('roi_manager')
-            roi_manager_gui.start_scatter_mode('VolCNMF')
+            roi_manager_gui.start_backend('VolCNMF')
 
             roi_manager_gui.manager.add_all_components(
                 self.cnmf_data,
@@ -80,7 +80,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             )
         else:
             roi_manager_gui = self.vi.viewer.parent().get_module('roi_manager')
-            roi_manager_gui.start_scatter_mode('CNMFROI')
+            roi_manager_gui.start_backend('CNMFROI')
 
             roi_manager_gui.manager.add_all_components(
                 self.cnmf_data,
