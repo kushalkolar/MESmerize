@@ -12,6 +12,7 @@ To open a tiff file just open the GUI, choose your tiff file, select a load meth
 
 If you have a json meta data file with the same filename as the tifffile it will be selected automatically, otherwise you can choose a json meta data file.
 Please see the docs for more information on the format of the meta data so that Mesmerize recognizes it since some information, such as the sampling rate of your recording, may be required for downstream processing & analysis.
+<-- Provide link in video description -->
 
 <Open viewer_work_environment.py>
 
@@ -32,7 +33,7 @@ You can view mean, max and standard deviations projections of the current image.
 Note that if you are working with 3D data it will show the projection for the current plane over time.
 
 Lastly, you can also open images stored in any other format through using the console using the "Viewer Core API". I'll open the API docs here on the side.
-
+<-- Provide link in video description -->
 
 For this example I will open an image stored in a numpy array.
 

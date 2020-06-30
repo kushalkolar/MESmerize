@@ -1,0 +1,167 @@
+The ROI Manager can be used to manage and annotate your ROIs. You can import ROIs from Caiman CNMF outputs, created through the Batch Manager or externally, Suite2p, or create your own.
+
+So I'm just going to open an image ... And the image has opened.
+
+To open the ROI Manager GUI either use click "Modules" on the Viewer Menubar or just use the shortcut key "Ctrl + R". The ROI Manager pops up and you can click this button to pop it into the viewer.
+
+As mentioned in the "Viewer Tutorial", the ROI Manager uses the Manual Manager back-end by default. And you can add a Polygon ROI by clicking on the "Add ROI" button, or an Elliptical ROI by right clicking it. These Manual ROIs are based on the pyqtgraph ROI objects.
+
+When you add a Polygon ROI a rectangular ROI will be placed in the top left corner of the image. You can click the edges of the ROI to add more vertices, and drag the vertices to move them around, and you can remove vertices.
+
+You can either click the "Plot" button to plot the average intensity over time under the ROIs, or check the "Live plot" checkbox if your image isn't very large.
+
+ROIs can be tagged with any number of annotations. You need to have a Mesmerize project open in order to tag annotations. For this example I'm using my Ciona Cell Types project described in the paper, so the available ROI tag types are eanatomical_location, cell_name and morphology.
+
+You can tag as much categorical data as you want to an ROI by adding additional "ROI Type" columns to your "Project Configuration".: <Open Project Config window>"
+<-- Provide link in video description -->
+
+I'll add a few more ROIs and tag labels to them ...
+
+You can also automate the tagging process through the console or scripts, I'll talk about this later.
+
+After you're happy with your ROI tags you can add the current Viewer Work Environment as a Sample to your project. Go to File -> Add to Project. You'll be presented with field entries. Let's fill in an Animal ID, a Trial ID, which together form the SampleID. And fill in the additional information which I've specified the Project Configuration. Click "Add to Project" and wait a few seconds... And now it's done.
+
+We can now open the Project Browser, let's lookup the Sample that we just entered... here it is. And if we double it to open it, we can see that the Viewer Work Environment is restored from the Sample stored in the project, and here are our ROIs with their annotations. Any other information that you've stored in your "Viewer Work Environment", such as stimulus or behavioral maps, will also be restored.
+
+You can use the Viewer to make changes to this Sample that we have opened, and save these changes. So for example I'll add another ROI... tag some information to it..., and let's delete this ROI...
+
+So now let's save these changes. Open the same dialog at File -> Add to Project.
+
+I'll also change some other values just as an examples...
+And now we have the option to "Save Changes", which overwrites this Sample in the project with the current Viewer Work Environment. If you have made changes to the actual image data, the numpy of the image, make sure you click this checkbox. Otherwise you can uncheck it.
+
+And now if I close this Viewer... let's go to the project browser. We can see that the data for this Sample have been updated, and if we open this sample... and open the ROI manager... we can see that the ROIs and annotations have also been updated.
+
+The ROI Manager has additional back-ends to handle ROIs from other sources, such as CNMF, 3D CNMF, and Suite2p.
+
+One way of importing CNMF ROIs is through the Batch Manager. You can also load CNMF HDF5 files that were created externally by Caiman. To import CNMF ROIs from a CNMF or CNMFE batch item just double click that item... And it will take a few seconds to import...
+
+And now we have the ROIs imported into our work environment. You can annotate these ROIs in exactly the same manner that I have shown for annotating Manually drawn ROIs. The procedure for adding this as a Sample to the project and making changes in the future are also exaclty the same.
+
+The main difference, on the GUI-side of things, is that the spatial data & signal data for these ROIs are read only. You can't move them around or change their shape by using your mouse.
+
+You can however delete them. For CNMF, CNMFE and 3D CNMF the deletions are logged. So for example let's delete ROI # ...
+
+Now open the console we can use the following reference to list the CNMF ROIs that are currently displayed:
+    curr = viewer.roi_manager.idx_components
+    
+And the following reference shows indices for all ROIs that were originally present at import:
+    orig = viewer.roi_manager.orig_idx_components
+    
+And this will give you the ROIs that were deleted:
+    set(orig).difference(curr)
+    
+
+Now that we've opened the console, I'll go through how you can interact with the ROI Manager back-ends.
+
+The currently running ROI Manager can always be accessed through:
+    viewer.roi_manager
+    
+And as you can see the CNMF back-end is currently running.
+
+We can get a list of the current ROIs:
+    viewer.roi_manager.roi_list
+
+We can print the signal data for an ROI:
+    viewer.roi_manager.roi_list[4].curve_data
+    
+Or the coordinates bounding the ROI:
+    viewer.roi_manager.roi_list[4].roi_xs
+    
+    viewer.roi_manager.roi_list[4].roi_xs
+    
+And for example we can print the annotations tagged to them:
+    viewer.roi_manager.roi_list[4].get_tag('anatomical_location')
+    
+You can also get all the tags:
+    viewer.roi_manager.roi_list[4].get_all_tags()
+    
+And we can set tags:
+    viewer.roi_manager.roi_list[4].set_tag('cell_name', 'some_name')
+    
+And we can click on that ROI in the GUI ROI Manager and see that it's been updated.
+
+Setting tags in this way could be useful if you want to map your cells to a standard atlas for example. And keep in mind that everything that works in the console will also work in scripts run through the Script editor.
+
+To demonstrate this here's a script that simply assigns whether an ROI is rougly rostral or caudal using the x values of the ROIs in this particular image. You can find this example in the docs.
+< Open script editor & open script>
+<-- Provide link in video description -->
+
+Let's run this..
+
+And now if we scroll through the ROI Manager GUI we can see that these tags have been set!
+
+Lastly, if you're not using either Caiman or Suite2p and you want to import ROIs from any other source you can directly interact with the ScatterROI Manager back-end.
+
+First let's clear the current ROI Manager:
+    viewer.roi_manager.clear()
+    
+Let's start the Scatter ROI Manager back-end:
+    get_module('roi_manager').start_backend('ScatterROI')
+    
+    ^ This calls the GUI ROI Manager and tells it to start the ScatterROI Manager backend.
+    
+The ScatterROI Manager backend should be running now:
+    viewer.roi_manager
+    
+Yup it's running.
+
+Now let's create some xy coordinates for 2 ROIs. I'll just use a function for generating points on a circle to create some x-y points for these ROIs:
+    import numpy as np
+    
+    def circle(r, n, x0, y0):
+        t = np.linspace(0, 2 * np.pi, n)
+        
+        x = r * np.cos(t)
+        x += x0
+        
+        y = r * np.sin(t)
+        y += y0
+        
+        return np.array([x, y])
+    
+    coors1 = circle(5, 15, ...)
+    coors2 = circle(8, 20, ...)
+    
+And let's make some curve data, this would just be the y-values or intensity values of the signal:
+    ... SOME RANDOM WALK FUNCTION
+    
+If you would like to attach any metadata to the ROI (this is different from tags) you can create a dict:
+
+    m1 = {"roi_quality": 0.857,
+          "some_other_field" 34.5}
+          
+    m2 = {"roi_quality": 0.357,
+          "some_other_field" 4.5}
+
+Now we can add these as ROIs:
+    viewer.roi_manager.add_roi(
+        curve=sig1,
+        xs=coors1[:, 0],
+        ys=coors1[:, 1],
+        metadata=m
+        )
+    
+And we can see that this ROI is now shown. Let's add the other one:
+    viewer.roi_manager.add_roi(
+        curve=sig2,
+        xs=coors2[:, 0],
+        ys=coors2[:, 1],
+        metadata=m
+        )
+        
+And that's it!.
+
+
+
+    
+    
+        
+
+    
+
+
+
+
+
+
