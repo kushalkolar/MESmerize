@@ -35,6 +35,8 @@ class ImgData:
         :param meta:    Meta data dict from the imaging source.
         """
 
+        self.seq = None
+
         self.z = None
         self.z_max = None
 
@@ -67,3 +69,12 @@ class ImgData:
 
         self.z = z
         self.seq = self._seq[:, :, :, self.z]
+
+    def clear(self):
+        del self.seq
+        del self._seq
+        del self.meta
+
+        self.seq = None
+        self._seq = None
+        self.meta = None
