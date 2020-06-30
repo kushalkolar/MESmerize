@@ -374,6 +374,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if not self.vi.discard_workEnv():
             QCloseEvent.ignore()
         else:
+            self.vi._clear_workEnv()
             QCloseEvent.accept()
 
     def open_from_dataframe(self, proj_path: str,
