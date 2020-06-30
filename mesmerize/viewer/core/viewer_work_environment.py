@@ -126,7 +126,10 @@ class ViewerWorkEnv:
     def clear(self):
         """Cleanup of the work environment"""
         self.isEmpty = True
-        del self.imgdata.seq
+        if self.imgdata is not None:
+            del self.imgdata.seq
+            del self.imgdata.meta
+
         self.imgdata = None
         if self.roi_manager is not None:
             self.roi_manager.clear()
