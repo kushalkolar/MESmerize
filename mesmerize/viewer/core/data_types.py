@@ -36,6 +36,7 @@ class ImgData:
         """
 
         self.seq = None
+        self._seq = None
 
         self.z = None
         self.z_max = None
