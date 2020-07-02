@@ -40,6 +40,7 @@ class ImgData:
 
         self.z = None
         self.z_max = None
+        self._meta = None
 
         if seq is not None:
             self.ndim = seq.ndim
@@ -63,6 +64,18 @@ class ImgData:
                     }
 
         self.meta = meta.copy()  #: Meta data dict from the imaging source
+
+    @property
+    def meta(self) -> dict:
+        return self._meta
+
+    @meta.setter
+    def meta(self, m: dict):
+        reqs = ['origin', 'fps', 'date']
+        if not all(k in m.keys() for k in reqs):
+            raise ValueError(f"Meta data dict must contain all of the following mandatory fields:\n{reqs}")
+
+        self._meta = m
 
     def set_zlevel(self, z):
         if self._seq.ndim < 4:
