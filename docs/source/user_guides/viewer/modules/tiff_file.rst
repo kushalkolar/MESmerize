@@ -44,7 +44,7 @@ Choose the default axes order or manually enter the axes order if your tiff file
 Meta data
 =========
 
-Check the "Load meta data" checkbox if you wan to load meta data. Alternatively, you can uncheck this box and create a meta data dictionary manually using the console (see 
+Check the "Load meta data" checkbox if you want to load meta data. Alternatively, you can uncheck this box and create a meta data dictionary manually using the console (see the :ref:`Console <module_TiffFile_Console>` section)
 
 You can select a meta data format from the list. This list of formats correspond to the functions available in the module: ``mesmerize.viewer.core.organize_meta``.
 When you select a meta data format, it will automatically try to find a file with the extension specified by the selected format if it has the same name as the selected tiff file.
@@ -60,7 +60,7 @@ If you have questions on meta data formats feel free to drop a message in the `G
     
                                         | All other keys in the JSON file are placed in a sub-dictionary with the key ``orig_meta``
                                         
-                                        | See :ref:`Custom functions <module_TiffFile_CustomFunctions>` below for more info.
+                                        | See :ref:`Minimal dict <module_TiffFile_MinimalDict>` below for more info.
 
     AwesomeImager           .json       Used for 1p imaging in the `Chatzigeorgiou group <https://www.chatzigeorgioulab.com>`_ at the `Sars Center <https://www.uib.no/en/sarssenteret>`_
     ====================    =========   ====================================================
@@ -82,6 +82,8 @@ You may define your own function to organize your meta data. It MUST return a di
 In addition to these 3 keys, you may include any additional keys as you wish.
 
 If you think your meta data organizing function will be useful for others I'll be happy to review a pull request and it can be included by default in Mesmerize. We're happy help you create a meta data function, just contact us on `Gitter <https://gitter.im/mesmerize_discussion/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link>`_ or `create an issue on GitHub <https://github.com/kushalkolar/MESmerize/issues/new>`_.
+
+.. _module_TiffFile_MinimalDict:
 
 Minimal dict
 ^^^^^^^^^^^^
