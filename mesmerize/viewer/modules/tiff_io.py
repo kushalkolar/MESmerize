@@ -167,9 +167,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
             meta_path = None
             meta_format = None
 
-        self.load_tiff_file(tiff_path, method, axes_order, meta_path, meta_format=meta_format)
+        self.load(tiff_path, method, axes_order, meta_path, meta_format=meta_format)
 
-    def load_tiff_file(
+    def load(
             self,
             tiff_path: str,
             method: str,
