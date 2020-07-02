@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>381</height>
+    <width>600</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="floating">
@@ -17,148 +17,222 @@
    <string>Tiff file &amp;I/O</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QPushButton" name="btnSelectTiff">
-        <property name="maximumSize">
-         <size>
-          <width>90</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Select file</string>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Tiff File</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="btnSelectTiff">
+            <property name="maximumSize">
+             <size>
+              <width>90</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Select tiff file</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelFileTiff">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="toolTip">
+           <string>The options for “Load Method” correspond to the tifffile library method that is used for loading the images</string>
+          </property>
+          <property name="title">
+           <string>Image Load Method:</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QRadioButton" name="radioButtonAsArray">
+             <property name="toolTip">
+              <string>Usually faster alternative to imread</string>
+             </property>
+             <property name="text">
+              <string>asarray</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButtonAsArrayMulti">
+             <property name="toolTip">
+              <string>Use if tiff was created in append mode</string>
+             </property>
+             <property name="text">
+              <string>asarray - multi series</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="radioButtonImread">
+             <property name="toolTip">
+              <string>Should work for most tiffs if they were not created in append mode.</string>
+             </property>
+             <property name="text">
+              <string>i&amp;mread</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Image Axes order</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QRadioButton" name="radioButton_axes_default">
+             <property name="toolTip">
+              <string>default option, usual dimensions</string>
+             </property>
+             <property name="text">
+              <string>&amp;2D: [t, x, y]
+3D: [t, z, x, y]</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QRadioButton" name="radioButton_axes_custom">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit_axes_custom">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="maxLength">
+                <number>4</number>
+               </property>
+               <property name="placeholderText">
+                <string>Custom, ex: xyzt</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelFileTiff">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="textInteractionFlags">
-         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <pointsize>14</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Meta data file</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_meta_loader">
+          <property name="toolTip">
+           <string>Select a meta data loader that corresonds to your meta data file.
+See the docs for instructions on how to create your own loader.</string>
+          </property>
+          <property name="title">
+           <string>Load meta data</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QPushButton" name="btnSelectMetaFile">
+               <property name="maximumSize">
+                <size>
+                 <width>130</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Select meta data file</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelFileMeta">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Meta data format:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QListWidget" name="listWidget_meta_data_loader"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QPushButton" name="btnSelectMetaFile">
-        <property name="maximumSize">
-         <size>
-          <width>130</width>
-          <height>32</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Select meta data</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelFileMeta">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="textInteractionFlags">
-         <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="toolTip">
-       <string>The options for “Load Method” correspond to the tifffile library method that is used for loading the images</string>
-      </property>
-      <property name="title">
-       <string>Load Method:</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QRadioButton" name="radioButtonAsArray">
-         <property name="toolTip">
-          <string>Usually faster alternative to imread</string>
-         </property>
-         <property name="text">
-          <string>asarray</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioButtonAsArrayMulti">
-         <property name="toolTip">
-          <string>Use if tiff was created in append mode</string>
-         </property>
-         <property name="text">
-          <string>asarray - multi series</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioButtonImread">
-         <property name="toolTip">
-          <string>Should work for most tiffs if they were not created in append mode.</string>
-         </property>
-         <property name="text">
-          <string>i&amp;mread</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="title">
-       <string>Axes order</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QRadioButton" name="radioButton_axes_default">
-         <property name="toolTip">
-          <string>default option, usual dimensions</string>
-         </property>
-         <property name="text">
-          <string>2D: [t, x, y] || 3D: [t, z, x, y]</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QRadioButton" name="radioButton_axes_custom">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineEdit_axes_custom">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="maxLength">
-            <number>4</number>
-           </property>
-           <property name="placeholderText">
-            <string>Custom, ex: xyzt</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
     </item>
     <item>
      <widget class="QPushButton" name="btnLoadIntoWorkEnv">
@@ -169,7 +243,7 @@
        </sizepolicy>
       </property>
       <property name="text">
-       <string>Load into workEnv</string>
+       <string>Load into Work Environment</string>
       </property>
      </widget>
     </item>
@@ -178,13 +252,15 @@
  </widget>
  <tabstops>
   <tabstop>btnSelectTiff</tabstop>
-  <tabstop>btnSelectMetaFile</tabstop>
-  <tabstop>radioButtonAsArray</tabstop>
   <tabstop>radioButtonAsArrayMulti</tabstop>
+  <tabstop>radioButtonAsArray</tabstop>
   <tabstop>radioButtonImread</tabstop>
   <tabstop>radioButton_axes_default</tabstop>
   <tabstop>radioButton_axes_custom</tabstop>
   <tabstop>lineEdit_axes_custom</tabstop>
+  <tabstop>groupBox_meta_loader</tabstop>
+  <tabstop>btnSelectMetaFile</tabstop>
+  <tabstop>listWidget_meta_data_loader</tabstop>
   <tabstop>btnLoadIntoWorkEnv</tabstop>
  </tabstops>
  <resources/>

@@ -538,7 +538,10 @@ class ManagerCNMFROI(AbstractBaseManager):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
-        self.cnmf_data_dict = states['cnmf_data_dict']
+        if 'cnmf_data_dict' in states.keys():
+            self.cnmf_data_dict = states['cnmf_data_dict']
+        else:
+            self.cnmf_data_dict = None
 
         for state in states['states']:
             roi = CNMFROI.from_state(self.get_plot_item(), self.vi.viewer.getView(), state)
@@ -561,11 +564,6 @@ class ManagerCNMFROI(AbstractBaseManager):
 
         # If the user has manually deleted some ROIs
         new_idx_components = np.array([roi.cnmf_idx for roi in self.roi_list], dtype=np.int64)
-
-        # Make sure nothing weird happened
-        # l = [self.cnmA, self.cnmb, self.cnmC, self.cnm_f, self.cnmYrA, self.orig_idx_components, new_idx_components]
-        # if any(item is None for item in l):
-        #     raise ValueError('One or more pieces of CNMF(E) data are missing')
 
         # Store the actual cnmf attributes as well.
         input_dict = {'input_params_cnmfe': self.input_params_dict,

@@ -14,6 +14,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from .mesfile import *
 from .data_types import ImgData
+from . import organize_metadata
 import numpy as np
 import pickle
 import tifffile
@@ -126,7 +127,8 @@ class ViewerWorkEnv:
     def clear(self):
         """Cleanup of the work environment"""
         self.isEmpty = True
-        self.imgdata.clear()
+        # self.imgdata.clear()
+        del self.imgdata
         self.imgdata = None
         if self.roi_manager is not None:
             self.roi_manager.clear()
@@ -283,21 +285,50 @@ class ViewerWorkEnv:
 
         imgseq, raw_meta = mesfile_object.load_img(img_reference)
 
-        meta_data = ViewerWorkEnv._organize_meta(raw_meta, 'mes')
-        imdata = ImgData(imgseq, meta_data)
+        fps = float(1000 / raw_meta['FoldedFrameInfo']['frameTimeLength'])
+
+        date_meta = raw_meta['MeasurementDate'].split('.')
+        ymd = date_meta[0] + date_meta[1] + date_meta[2]
+        hms_ = date_meta[3].split(':')
+        hms = hms_[0].split(' ')[1] + hms_[1] + hms_[2][:2]
+        date = ymd + '_' + hms
+
+        vmin = raw_meta['LUTstruct']['lower']
+        vmax = raw_meta['LUTstruct']['upper']
+
+        meta = \
+            {
+                'origin': 'mes',
+                'fps': fps,
+                'date': date,
+                'vmin': vmin,
+                'vmax': vmax,
+                'orig_meta': raw_meta  # just the entire original meta data dict
+            }
+
+        imdata = ImgData(imgseq, meta)
         # imdata.stimMaps = (mesfileMaps, 'mesfile')
 
-        return cls(imdata, meta=meta_data)
+        return cls(imdata)
 
     @classmethod
-    def from_tiff(cls, path: str, method: str, meta_path: Optional[str] = '', axes_order: str = None):
+    def from_tiff(
+            cls, path: str,
+            method: str,
+            meta_path: Optional[str] = None,
+            axes_order: Optional[str] = None,
+            meta_format: Optional[str] = None,
+    ):
         """
         Return instance of work environment with ImgData.seq set from the tiff file.
 
         :param path:        path to the tiff file
         :param method:      one of 'imread', 'asarray', or 'asarray-multi'. Refers to usage of either tifffile.imread
                             or tifffile.asarray. 'asarray-multi' will load multi-page tiff files.
-        :param meta_path:   path to a json file containing meta data
+        :param meta_path:   path to a file containing meta data
+        :param meta_format: meta data format, must correspond to the name of a function in viewer.core.organize_meta
+        :param axes_order:  Axes order as a 3 or 4 letter string for 2D or 3D data respectively.
+                            Axes order is assumed to be "txy" or "tzxy" if not specified.
         """
 
         if method == 'imread':
@@ -315,12 +346,25 @@ class ViewerWorkEnv:
         else:
             raise ValueError("Must specify 'imread' or 'asarray' in method argument")
 
-        if meta_path.endswith('.json'):
-            jmd = json.load(open(meta_path, 'r'))
-            if 'source' not in jmd.keys():
-                raise KeyError('Invalid meta data file. Json meta data file must have a "source" entry.')
-            else:
-                meta = ViewerWorkEnv._organize_meta(meta=jmd, origin=jmd['source'])
+        if (meta_path is not None) and (meta_format is not None):
+            try:
+                meta = getattr(organize_metadata, meta_format)(meta_path)
+            except Exception as e:
+                raise TypeError(f"The meta data loader for <{meta_format}> was unable to "
+                                f"load the following file:"
+                                f"\n\n"
+                                f"{meta_path}"
+                                f"\n\n"
+                                f"Make sure that you have chosen the correct `meta_format` "
+                                f"for this file."
+                                f"\n\n"
+                                f"{traceback.format_exc()}")
+
+            required = ['fps', 'date']
+
+            if not all(k in meta.keys() for k in required):
+                raise KeyError(f'Meta data dict must contain all mandatory fields: {required}')
+
         else:
             meta = None
 
