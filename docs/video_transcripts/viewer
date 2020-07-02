@@ -8,34 +8,45 @@ The tifffile GUI module lets you open 2D or 3D image sequences and the Mesfile m
 
 The tiffile module can also be used through the console. Similarly, imaging data in any other format for which there is a python library can be opened through the console.
 
-To open a tiff file just open the GUI, choose your tiff file.
+To open a tiff file, first open the GUI from Modules -> Load images -> Tiff file. Alternatively, if you're on Linux or Mac OSX you can also drag & drop a tiff file into the Viewer window.
 
-If you have a json meta data file with the same filename as the tifffile it will be selected automatically, otherwise you can choose a json meta data file.
-Please see the docs for more information on the format of the meta data that Mesmerize recognizes. Certain information, such as the sampling rate of your recording, may be required for downstream processing & analysis.
-<-- Provide link in video description -->
+Now, first select your tiff file.
 
-You can also use the console to load meta data stored in other formats and I'll talk about that in a few minutes.
+Next, you must select a load method. "asarray" is usually the fastest and should work for most files. "asarray multi" is for multi-page tiff files. Lastly, "imread" should work for all tiff files. I know that the file I've selected is a multi-page tiff so I'll use that.
 
-Now that you've chosen your files, you must select a load method. "asarray" is usually the fastest and should work for most files. "asarray multi" is for multi-page tiff files. Lastly, "imread" should work for all tiff files. I know that the file I've selected is a multi-page tiff so I'll use that.
+You can set the axes order of the image file. Most tiff image files are in [t, x, y] order for 2D data, or  [t, z, x, y] for 3D data. If the axes order is different you can just enter that here.
 
-Finally, you can set the axes order of the image file. Most tiff image files are in [t, x, y] order for 2D data, or  [t, z, x, y] for 3D data. If the axes order is different you can just enter that here.
+Next, we have the option of importing meta data from one of the listed formats. You can also very easily define custom functions to open meta data from other formats. Instructions for this are detailed in the docs.
+<-- Provide link in video description --> user_guides/viewer/modules/tiff_file.html#custom-functions
 
-Ok now we can load this image.
+The json_minimal option is probably the simplest and allows you to load meta data from a json file that has "origin", "fps" and "date" keys. You can include any additional keys beyond these 3, and more details can be found in the docs.
+<< GO TO DOCS AND>> /user_guides/viewer/modules/tiff_file.html#minimal-dict
+<-- Provide link in video description --> user_guides/viewer/modules/tiff_file.html#minimal-dict
+
+If the filename of your meta data file matches that of the tiff file it will be found automatically, otherwise you can manually select it using the button.
+
+Please note that certain information, such as the sampling rate of your recording, may be required for downstream processing & analysis. And if you don't want to use the json_minimal format or write a custom function you can use the console to define your meta data dictionary manually, and I'll talk about that in a few minutes.
+
+Ok so now that we've selected the image & meta data we can load this image.
 
 So now we have an loaded this image into what's called the "Viewer Work Environment". When you add Regions of Interest, Stimulus Maps or any other information they all get stored in the "Viewer Work Environment".
+<< SHOW DIAGRAM OF VIEWER WORK ENVIRONMENT >>
 
-You can view the data that are present in the current work environment by using the Work Environment Viewer. You can also explore the work environment through the console which I will talk about in a few minutes.
+We can use the pyqtgraph GUI to scroll through the video in time, zoom & pan around, and change the min-max levels of the displayed image.
 
-There are a few simple tools you can use with the image. The measure tool allows you to measure the distance between two points in pixels. To use it click on the "Measure Tool" option in the menu, click a point on the image, and then click another point. The viewer status bar will show the distances whenever you hover over the measuring line.
+So back to the concept of the Viewer Work Environment, you can view the data that are present in the current work environment by using the Work Environment Viewer. You can also interact with the work enviroment through the console which I'll go through in other videos regarding the ROI Manager and other modules.
+
+There are a few simple tools that you can use with the image. The measure tool allows you to measure the distance between two points in pixels. To use it click on the "Measure Tool" option in the menu, click a point on the image, and then click another point. The viewer status bar will show the distances whenever you hover over the measuring line.
 And you can have as many as you want.
 
 You can view mean, max and standard deviations projections of the current image.
 Note that if you are working with 3D data it will show the projection for the current plane over time.
 
 Lastly, you can also open images stored in any other format through using the console using the "Viewer Core API". I'll open the API docs here on the side.
-<-- Provide link in video description -->
+<-- Provide link in video description --> api_reference/Viewer_data_types.html
 
-For this example I will open an image stored in a numpy array.
+For this example I will open an image stored in a numpy array. This example is also in the docs
+<-- Provide link in video description -->
 
 First let's clear the current work environment::
     clear_workEnv()
@@ -50,23 +61,22 @@ If you're loading 3D data it must be ordered as [x, y, t, z]. This is the axes o
 Note that this is the axes order used for the Viewer Work Environment, it is not the same as the default axes order used for tiff files.
     a.T.shape
 
-Let's create a meta data dict. Your meta dict must contain at least these 3 keys:
-    "origin" - The acquisition software or microscope that the data came from
-               This is mostly for your own record
-               
-    "fps" - The sampling rate of your recording
-    
-    "date" - formatted as a string in this format: "YYYYMMDD_HHMMSS"
+Let's create a meta data dict. Your meta data dict must minimally contain 3 keys which are outlined in the Tiff file module docs. These keys are required regardless of whether the imaging data was loaded from a tiff file or any other format:
+<< GO TO DOCS AND>> /user_guides/viewer/modules/tiff_file.html#minimal-dict
     
     You are free to have any other keys as you wish in this meta data dict.
     
 So let's just create a simple meta data dict:
-    {"origin":  "Tutorial example",
-     "fps":     10.0,
-     "data":    "20200629_171823"
+    meta = \
+        {
+            "origin":      "Tutorial example",
+            "fps":         10.0,
+            "data":        "20200629_171823",
+            "scanner_pos": [0, 1, 2, 3, 4, 5, 6]
+        }
     
 Now you can create an ImgData object using this numpy array and meta data dict::
-    imgdata = ImgData(a, m)
+    imgdata = ImgData(a.T, m)
     
 Finally we can create a new Viewer Work Environment with this imgdata object::
     viewer.workEnv = ViewerWorkEnv(imgdata)

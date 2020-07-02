@@ -240,6 +240,9 @@ Open image
 .. code-block:: python
     :linenos:
     
+    # clear the viewer work environment
+    clear_workEnv()
+    
     # Get the tiff module
     tio = get_module('tiff_io')
     
@@ -253,28 +256,46 @@ Open image
 
 **Use the ViewerCore API to open any arbitrary image**
 
+This example loads an image stored using numpy.save(), but this is applicable to images stored in any format that can eventually be represented as a numpy array in python. For example, you could also load image files stored in HDF5 format and load the numpy array that represents your image sequence.
+
 .. code-block:: python
     :linenos:
 
-    import tifffile
-    import json
+    import numpy as np
     
-    # Open an image file in whatever way you require
-    seq = tifffile.imread('/path_to_tiff_file')
+    # clear the viewer work environment
+    clear_workEnv()
     
-    meta = ...
+    a = np.load('/path_to_image.npy')
+    
+    # check what the axes order is
+    a.shape
+    
+    # (1000, 512, 512) # for example
+    # looks like this is in [t, x, y]
+    # this can be transposed so we get [x, y, t]
+    # ImgData takes either [x, y, t] or [x, y, t, z] axes order
+    
+    # Define a meta data dict
+    meta = \
+        {
+            "origin":      "Tutorial example",
+            "fps":         10.0,
+            "data":        "20200629_171823",
+            "scanner_pos": [0, 1, 2, 3, 4, 5, 6]
+        }
     
     # Create ImgData instance
-    # Image sequence must be numpy array of shape [x, y, t] or [x, y, t, z]
-    imgdata = ImgData(seq.T, meta)
+    imgdata = ImgData(a.T, meta)  # use a.T to get [x, y, t]
     
     # Create a work environment instance
     work_env = ViewerWorkEnv(imgdata)
     
-    # Set this new work environment instance as the viewer work environment
-    vi.viewer.workEnv = work_end
+    # Set the current Viewer Work Environment from this new instance
+    vi.viewer.workEnv = work_env
     
-    # Update the viewer GUI with the new work envionment
+    # Update the viewer with the new work environment
+    # this MUST be run whenever you replace the viewer work environment (the previous line)
     update_workEnv()
     
     
