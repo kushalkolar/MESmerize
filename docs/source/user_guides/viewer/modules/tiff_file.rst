@@ -26,24 +26,13 @@ Load Method
 
 The options for "Load Method" correspond to the `tifffile <https://pypi.org/project/tifffile/>`_ library method that is used for loading the images.
 
-If you are not sure which method you should use, try all of them and see which one loads your data appropriately. If none of them work, contact us and I may be able to add more methods.
+If you are not sure which method you should use, try all of them and see which one loads your data appropriately. If none of them work, `create an issue on GitHub <https://github.com/kushalkolar/MESmerize/issues/new>`_.
 
-.. note:: If you have an unsaved work environment open (such as a video with ROIs for example) it will prompt you to confirm that you want to clear the work environment before loading the chosen image into the work environment.
+    - **asarray:** Should work for most tiff files, fast method
 
-asarray
--------
-
-Should work for most tiff files, fast method
-
-asarray - multi series
-----------------------
-
-Also fast. Use this if it is a multi-page tiff. For example if the tiff file was created by a program that appends each frame to a file as they are being acquired by the camera.
-
-imread
-------
-
-Usually slower, should work for most tiff files.
+    - **asarray - multi series:** Also fast. Use this if it is a multi-page tiff. For example if the tiff file was created by a program that appends each frame to a file as they are being acquired by the camera.
+    
+    - **imread:** Usually slower, should work for most tiff files.
 
 Axes order
 ==========
@@ -110,7 +99,7 @@ Example of a minimal meta data dict.
 Function outline
 ^^^^^^^^^^^^^^^^
 
-Basic outline of a function that you can add to ``mesmerize.viewer.core.organize_meta`` for organizing your meta data::
+Basic outline of a function that you can add to ``mesmerize.viewer.core.organize_meta`` for organizing your meta data:
 
     #. The function can only take the ``path`` to the meta data file as the argument.
     #. The expected file extension for the meta data must be specified. The files of a single format are allowed to have multiple different file extension but you must only specify the most common one.
