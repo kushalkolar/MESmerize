@@ -326,6 +326,9 @@ class ViewerWorkEnv:
         :param method:      one of 'imread', 'asarray', or 'asarray-multi'. Refers to usage of either tifffile.imread
                             or tifffile.asarray. 'asarray-multi' will load multi-page tiff files.
         :param meta_path:   path to a file containing meta data
+        :param meta_format: meta data format, must correspond to the name of a function in viewer.core.organize_meta
+        :param axes_order:  Axes order as a 3 or 4 letter string for 2D or 3D data respectively.
+                            Axes order is assumed to be "txy" or "tzxy" if not specified.
         """
 
         if method == 'imread':
