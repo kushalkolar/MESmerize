@@ -236,25 +236,8 @@ View history trace
 
 Open image
 ^^^^^^^^^^
-
-.. code-block:: python
-    :linenos:
     
-    # clear the viewer work environment
-    clear_workEnv()
-    
-    # Get the tiff module
-    tio = get_module('tiff_io')
-    
-    # Set the tiff and meta file paths
-    tiff_path = '/path_to_tiff_file.tiff'
-    meta_path = '/path_to_meta_file.json'
-    
-    tio.load_tiff(tiff_path, meta_path, method='asarray')
-    
-.. seealso:: :ref:`Tiff IO API <API_TiffModule>`, Information on the :ref:`meta data format <ConvertMetaData>`
-
-**Use the ViewerCore API to open any arbitrary image**
+**Use the :ref:`Viewer Core API <API_ViewerCore> to open any arbitrary image**
 
 This example loads an image stored using numpy.save(), but this is applicable to images stored in any format that can eventually be represented as a numpy array in python. For example, you could also load image files stored in HDF5 format and load the numpy array that represents your image sequence.
 
