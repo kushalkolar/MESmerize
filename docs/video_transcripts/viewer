@@ -8,23 +8,23 @@ The tifffile GUI module lets you open 2D or 3D image sequences and the Mesfile m
 
 The tiffile module can also be used through the console. Similarly, imaging data in any other format for which there is a python library can be opened through the console.
 
-To open a tiff file just open the GUI, choose your tiff file, select a load method. "asarray" is usually the fastest and should work for most files. If that fails "imread" should work for all files.
+To open a tiff file just open the GUI, choose your tiff file.
 
 If you have a json meta data file with the same filename as the tifffile it will be selected automatically, otherwise you can choose a json meta data file.
-Please see the docs for more information on the format of the meta data so that Mesmerize recognizes it since some information, such as the sampling rate of your recording, may be required for downstream processing & analysis.
+Please see the docs for more information on the format of the meta data that Mesmerize recognizes. Certain information, such as the sampling rate of your recording, may be required for downstream processing & analysis.
 <-- Provide link in video description -->
 
-<Open viewer_work_environment.py>
+You can also use the console to load meta data stored in other formats and I'll talk about that in a few minutes.
 
-You can a few lines to the `_organize_meta()` method of the ViewerWorkEnvironment class so that Mesmerize automatically organizes your data data into the necessary format. If you wish to add this to Mesmerize I'll be happy to review a Pull Request
+Now that you've chosen your files, you must select a load method. "asarray" is usually the fastest and should work for most files. "asarray multi" is for multi-page tiff files. Lastly, "imread" should work for all tiff files. I know that the file I've selected is a multi-page tiff so I'll use that.
 
-You can also use the console to load meta data in other formats and I'll talk about that in a few minutes.
+Finally, you can set the axes order of the image file. Most tiff image files are in [t, x, y] order for 2D data, or  [t, z, x, y] for 3D data. If the axes order is different you can just enter that here.
 
-You can set the axes order of the image if it's not the default [t, x, y] for 2D data, or  [t, z, x, y] for 3D data.
+Ok now we can load this image.
 
-So when you load the image in the viewer it gets loaded in the "Viewer Work Environment". When you add Regions of Interest, Stimulus Maps or any other information they all get stored in the "Viewer Work Environment".
+So now we have an loaded this image into what's called the "Viewer Work Environment". When you add Regions of Interest, Stimulus Maps or any other information they all get stored in the "Viewer Work Environment".
 
-You can view the data that are present in the current work environment by using the Work Environment Viewer. You can also explored the work environment through the console which I will talk about in a few minutes.
+You can view the data that are present in the current work environment by using the Work Environment Viewer. You can also explore the work environment through the console which I will talk about in a few minutes.
 
 There are a few simple tools you can use with the image. The measure tool allows you to measure the distance between two points in pixels. To use it click on the "Measure Tool" option in the menu, click a point on the image, and then click another point. The viewer status bar will show the distances whenever you hover over the measuring line.
 And you can have as many as you want.
@@ -43,11 +43,12 @@ First let's clear the current work environment::
 So let's load this image::
     import numpy as np
     a = np.load(....)
-    
-We need to set the axes order of this arrays to [x, y, t]
-If you're loading 3D data it must be ordered as [x, y, t, z]
+    a.shape
+
+As we can see from the API docs for ImgData, we need to set the axes order of this arrays to [x, y, t]
+If you're loading 3D data it must be ordered as [x, y, t, z]. This is the axes order that Mesmerize uses internally.
 Note that this is the axes order used for the Viewer Work Environment, it is not the same as the default axes order used for tiff files.
-    np.reshape(a....)
+    a.T.shape
 
 Let's create a meta data dict. Your meta dict must contain at least these 3 keys:
     "origin" - The acquisition software or microscope that the data came from
@@ -68,7 +69,7 @@ Now you can create an ImgData object using this numpy array and meta data dict::
     imgdata = ImgData(a, m)
     
 Finally we can create a new Viewer Work Environment with this imgdata object::
-    work_env = ViewerWorkEnvironment(imgdata)
+    viewer.workEnv = ViewerWorkEnv(imgdata)
 
 And update the GUI with the changes to the Work Environment::
     update_workEnv()
