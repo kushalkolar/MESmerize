@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>263</width>
-    <height>811</height>
+    <height>736</height>
    </rect>
   </property>
   <property name="floating">
@@ -278,38 +278,6 @@ Use single quotes for strings, do not use double quotes.</string>
      </layout>
     </item>
     <item>
-     <widget class="QLabel" name="label_20">
-      <property name="text">
-       <string>If do only rigid correction add here</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_15">
-      <item>
-       <widget class="QLineEdit" name="lineEditNameRigid">
-        <property name="placeholderText">
-         <string>Enter name</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnAddToBatchRigid">
-        <property name="text">
-         <string>Add to batch</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="Line" name="line">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QLabel" name="label_17">
       <property name="font">
        <font>
@@ -574,13 +542,13 @@ Use single quotes for strings, do not use double quotes.</string>
   </widget>
  </widget>
  <tabstops>
+  <tabstop>groupBox_motion_correction_kwargs</tabstop>
+  <tabstop>plainTextEdit_mc_kwargs</tabstop>
   <tabstop>comboBoxOutputBitDepth</tabstop>
   <tabstop>spinBoxGSig_filt</tabstop>
   <tabstop>spinboxX</tabstop>
   <tabstop>spinboxY</tabstop>
   <tabstop>spinboxIterRigid</tabstop>
-  <tabstop>lineEditNameRigid</tabstop>
-  <tabstop>btnAddToBatchRigid</tabstop>
   <tabstop>spinboxMaxDev</tabstop>
   <tabstop>spinboxStrides</tabstop>
   <tabstop>sliderStrides</tabstop>
@@ -670,22 +638,6 @@ Use single quotes for strings, do not use double quotes.</string>
     <hint type="destinationlabel">
      <x>170</x>
      <y>489</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lineEditNameRigid</sender>
-   <signal>returnPressed()</signal>
-   <receiver>btnAddToBatchRigid</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>119</x>
-     <y>202</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>166</x>
-     <y>202</y>
     </hint>
    </hints>
   </connection>

@@ -130,9 +130,9 @@ class Ui_DockWidget(object):
 
         self.retranslateUi(DockWidget)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
-        DockWidget.setTabOrder(self.btnSelectTiff, self.radioButtonAsArrayMulti)
-        DockWidget.setTabOrder(self.radioButtonAsArrayMulti, self.radioButtonAsArray)
-        DockWidget.setTabOrder(self.radioButtonAsArray, self.radioButtonImread)
+        DockWidget.setTabOrder(self.btnSelectTiff, self.radioButtonAsArray)
+        DockWidget.setTabOrder(self.radioButtonAsArray, self.radioButtonAsArrayMulti)
+        DockWidget.setTabOrder(self.radioButtonAsArrayMulti, self.radioButtonImread)
         DockWidget.setTabOrder(self.radioButtonImread, self.radioButton_axes_default)
         DockWidget.setTabOrder(self.radioButton_axes_default, self.radioButton_axes_custom)
         DockWidget.setTabOrder(self.radioButton_axes_custom, self.lineEdit_axes_custom)
@@ -162,7 +162,7 @@ class Ui_DockWidget(object):
         self.label_2.setText(_translate("DockWidget", "Meta data file"))
         self.groupBox_meta_loader.setToolTip(_translate("DockWidget", "Select a meta data loader that corresonds to your meta data file.\n"
 "See the docs for instructions on how to create your own loader."))
-        self.groupBox_meta_loader.setTitle(_translate("DockWidget", "Load meta data"))
+        self.groupBox_meta_loader.setTitle(_translate("DockWidget", "&Load meta data"))
         self.btnSelectMetaFile.setText(_translate("DockWidget", "Select meta data file"))
         self.label_3.setText(_translate("DockWidget", "Meta data format:"))
         self.btnLoadIntoWorkEnv.setText(_translate("DockWidget", "Load into Work Environment"))
