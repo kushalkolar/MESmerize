@@ -348,7 +348,7 @@ class ManualROI(BaseROI):
             return roi_graphics_object
 
         elif shape == 'EllipseROI':
-            roi_graphics_object = pg.EllipseROI(pos=[0, 0], size=[x, y], removable=True)
+            roi_graphics_object = pg.EllipseROI(pos=[0, 0], size=[int(x * 0.1), int(y * 0.1)], removable=True)
             return roi_graphics_object
 
     @classmethod
