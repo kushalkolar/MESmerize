@@ -1,6 +1,8 @@
-The Mesmerize viewer is used for visualizing your imaging data, and interfaces with modules that allow you to annotate Regions of Interest, and stimulus or behavioral periods. It can also interface with various Caiman modules for motion correction & signal extraction. You may directly import regions of interest from Caiman or Suite2p output files.
+This quickstart video tutorial is meant to give you an very simple overview of how you can progress from raw imaging data to interactive and traceable plots that can be shared with a Mesmerize project.
 
-There are two GUI modules for opening imaging data in the Viewer.
+To start off, let's open a Viewer. The Mesmerize viewer is used for visualizing your imaging data, and interfaces with modules that allow you to annotate Regions of Interest, and stimulus or behavioral periods. It can also interface with various Caiman modules for motion correction & signal extraction. Alternatively, you may directly import regions of interest from Caiman or Suite2p output files.
+
+To start off, there are two GUI modules for opening imaging data in the Viewer.
 
 The tifffile GUI module lets you open 2D or 3D image sequences and the Mesfile module allows you to open imaging data captured by Femtonics microscopes. You can open images from any format for which there's a python library through the Viewer console. There is a separate video that describes how to do this.
 
@@ -13,7 +15,7 @@ Next, you must select a load method. "asarray" is usually the fastest and should
 
 You can set the axes order of the image file. Most tiff image files are in [t, x, y] order for 2D data, or  [t, z, x, y] for 3D data. If the axes order is different you can just enter that here.
 
-Next, we have the option of importing meta data from one of the listed formats. I have a JSON file which has the minimal amount of required meta data. Some pieces of information, such as the sampling rate of the recording, are necessary for certain downstream processing such as motion correction.
+Finally, we have the option of importing meta data from one of the listed formats. I have a JSON file which has the minimal amount of required meta data. It looks like this. Some pieces of information, such as the sampling rate of the recording, are necessary for certain downstream processing such as motion correction.
 <-- Provide link in video description --> user_guides/viewer/modules/tiff_file.html#minimal-dict
 
 If you have meta data in particular formats you can easily add functions for that and it can appear as an option in this list. For more information see the the documentation link in the description.
@@ -94,15 +96,81 @@ I'll copy & paste the name and add this to the batch.
 
 If you look at the parameters for this item you can see that it's split into two parts; for CNMF and then for component evaluation. The Caiman resources explain this in more detail.
 
-Note how the "fr", or framerate parameter, was automatically found. This is an example of why you must include meta data when initally loading your raw image data.
+Note how the "fr", or framerate parameter, was automatically found. This is an example of why you must include meta data when initially loading your raw image data.
 
 Before I start these CNMF batch items, I'll make a new project so we can add one of our CNMF outputs as a Sample to the project.
 For this simple example I'll just add two ROI Type columns to illustrate how ROIs can be annotated.
 
 Let's add one column named "cell_type" and another named "anatomical_position". You can have as many of these "ROI Type columns" as you want, and they would usually carry categorical data.
 
+One last thing I'd like to change before starting these CNMF items is to reduce the number of threads that they will be allowed to use. This is because CNMF can be quite RAM intensive, and from experience I know that an image of this size will oversaturate the RAM I currently have available. By reducing the number of threads, it will also reduce the RAM usage. So I will set 30 threads.
+
 OK let's select the first CNMF item and run the batch from here onward.
 As usual, you will be able to view the standard out over here. And it will take ~5 minutes for each item.
 
+------------------------------------------------------------
+
+OK so these CNMF items have finished. But before I open them I will make one small change to my project configuration. I will add a column for Categorical Data to enter the age of the animal. So let's go to Project configuration ....
+
+And you can add as many of these custom categorical data columns as you need. You can also add them to an existing project which already has Samples added to it. You'll find more details on this in the documentation.
+
 So now let's take a look at these CNMF outputs.
+
+So these CNMF items have all completed successfully. Let's take a look at them.
+
+I'll open 3 viewers so we can look at all of them at once.
+
+Just double click the CNMF items to open them in a Viewer.
+When you have multiple viewers open you will be prompted for which viewer you want to use for loading the output of the batch item.
+
+Let's dock this ROI Manager. Now I'll load the other 2.
+
+OK so now we have all 3 open. We can see that the number of ROIs in each of them varies. This is because I had set one of the component evaluation parameters differently for these items. We can take a look at the parameters that we used through the console like before.
+
+So for this one the rval_threshold is 0.6 and it has 70... ROIs
+
+For this one the rval_threshold is ____ and it has ___ ROIs
+
+and for this one the rval_thr is ....
+
+OK I'm just going to pick this one for now.
+
+When you click an ROI from the list the spatial localization and Curve are highlighted. And you have a few options for visualization.
+
+You can annotate ROIs by tagging them with labels to each form of categorical data that you have defined in your project configuration.
+
+This annotation process can also be automated through the console or script editor. This can be particularly useful if you want to map your ROIs, or cells, based on a reference atlas. See the dedicated video and documentation for details on how to do this.
+
+OK so I'm just going to label a few of these ROIs. I'll just start from this one. I'll just tag this as "cortical" cell. When you press "Enter" on your keyboard it will take you to the next label. So now I'll tag anatomical_position as "anterior". And now you can press "Page down" on your keyboard to move to the next ROI.
+
+While you're entering your ROI tags in this entry box, you can press the left and right arrow keys on your keyboard to play the video forward and backward. The Home & End keys will take you to the start & end of the video.
+
+After you've annotated all of your information of interest you can add the current Viewer Work Environment as a *Sample* to your project. To do that go to File -> Add to Project. You're presented with an entry GUI. First fill out the Animal ID & Trial ID for this recording. Note that you cannot easily change the Animal ID & Trial ID after adding the Sample to the project. This is because they are partially used as identifiers for referring to the Sample in the project.
+
+If you have defined any Custom categorical data columns you will also be presented to enter that information here. We have one column for animal age so I'll just enter something here.
+
+Lastly you can add any comments you may have about this Sample. I usually use this to note any particularly interesting things about the recording, like if this Sample or Trial had particularly strong responses, or if the video was very noisy, and other sorts of comments.
+
+OK now let's add this to the project...
+
+And now we can open the project browser and see that the Sample is here. You can see the categorical labels, such as ROI tags and the "age".
+
+Finally, as a simple demonstration of interactive plots let's load this data in a flowchart. I'll open a new flowchart from the welcome window. Right click to create a node for loading data. This node can be used to load data from the current Project. I'll Normalize these curves... and create a Heatmap.
+
+The flowchart has a rich variety of nodes which are extensively documented and allow you to do quite an array of analysis. A few examples are also available on the website, and feel free to contact us on Gitter if you need help on performing a particular type of analysis in the flowchart.
+
+Another example which I will demonstrate is to just perform peak detection. A peak detection example is also available in the docs.
+
+So the Peak Detection node takes 3 inputs. It uses Derivatives for finding local maxima & minima. And it also takes Normalized curves and the actual curve data on which you want to place the peaks & bases.
+
+The Normalized curves can be helpful for setting amplitude thresholds, which help to remove false-positive peaks.
+
+There is a free online book by Prof. O'Haver which explains peak detection, and other aspects of signal processing. I've linked it in the description.
+
+I'm going to use just a simple dF/Fo node for this example to use as the input curve on which we'll place peaks & bases. The data are quite noisy so I'll use a ButterWorth Filter. And then normalize the filtered curve, and get the derivative. Now let's feed these into the peak detection node.
+
+Check the option "Fictional bases". This places a fictive base, or local minima, at the first & last index of each curve. You will often run into peak detection errors without this option. It will not effect downstream analysis as long as those bases are not associated with any peak.
+
+Click apply and let's open the GUI to take a look at this.
+
 
