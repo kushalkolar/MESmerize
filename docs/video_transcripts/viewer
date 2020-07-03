@@ -1,43 +1,116 @@
 The Mesmerize viewer is used for visualizing your imaging data, and interfaces with modules that allow you to annotate Regions of Interest, and stimulus or behavioral periods. It can also interface with various Caiman modules for motion correction & signal extraction. You may directly import regions of interest from Caiman or Suite2p output files.
 
-The Viewer is built on top of the pyqtgraph ImageView widget.
-
 There are two GUI modules for opening imaging data in the Viewer.
 
-The tifffile GUI module lets you open 2D or 3D image sequences and the Mesfile module allows you to open imaging data captured by Femtonics microscopes.
-
-The tiffile module can also be used through the console. Similarly, imaging data in any other format for which there is a python library can be opened through the console.
+The tifffile GUI module lets you open 2D or 3D image sequences and the Mesfile module allows you to open imaging data captured by Femtonics microscopes. You can open images from any format for which there's a python library through the Viewer console. There is a separate video that describes how to do this.
 
 To open a tiff file, first open the GUI from Modules -> Load images -> Tiff file. Alternatively, if you're on Linux or Mac OSX you can also drag & drop a tiff file into the Viewer window.
 
-Now, first select your tiff file.
+I'm going to load a file that contains imaging data from a piece of the pvc-7 Allen Brain Institute dataset.
 
-Next, you must select a load method. "asarray" is usually the fastest and should work for most files. "asarray multi" is for multi-page tiff files. Lastly, "imread" should work for all tiff files. I know that the file I've selected is a multi-page tiff so I'll use that.
+Next, you must select a load method. "asarray" is usually the fastest and should work for most files. "imread" should work for all tiff files but can be slower. See the documentation link the description for more details on these load methods.
+<-- Provide link in video description -->
 
 You can set the axes order of the image file. Most tiff image files are in [t, x, y] order for 2D data, or  [t, z, x, y] for 3D data. If the axes order is different you can just enter that here.
 
-Next, we have the option of importing meta data from one of the listed formats. You can also very easily define custom functions to open meta data from other formats. Instructions for this are detailed in the docs.
-<-- Provide link in video description --> user_guides/viewer/modules/tiff_file.html#custom-functions
-
-The json_minimal option is probably the simplest and allows you to load meta data from a json file that has "origin", "fps" and "date" keys. You can include any additional keys beyond these 3, and more details can be found in the docs.
-<< GO TO DOCS AND>> /user_guides/viewer/modules/tiff_file.html#minimal-dict
+Next, we have the option of importing meta data from one of the listed formats. I have a JSON file which has the minimal amount of required meta data. Some pieces of information, such as the sampling rate of the recording, are necessary for certain downstream processing such as motion correction.
 <-- Provide link in video description --> user_guides/viewer/modules/tiff_file.html#minimal-dict
 
-If the filename of your meta data file matches that of the tiff file it will be found automatically, otherwise you can manually select it using the button.
+If you have meta data in particular formats you can easily add functions for that and it can appear as an option in this list. For more information see the the documentation link in the description.
+<-- Provide link in video description --> user_guides/viewer/modules/tiff_file.html#custom-functions
 
-Please note that certain information, such as the sampling rate of your recording, may be required for downstream processing & analysis. And if you don't want to use the json_minimal format or write a custom function you can use the console to define your meta data dictionary manually, and I'll talk about that in a few minutes.
+So the filename of my meta data file matches that of the tiff file so it's found automatically as you can see here, otherwise you can manually select it using the button.
 
-Ok so now that we've selected the image & meta data we can load this image.
+Ok so now that we've selected the image & meta data we can load this image into the Viewer Work Environment.
 
-So now we have an loaded this image into what's called the "Viewer Work Environment". When you add Regions of Interest, Stimulus Maps or any other information they all get stored in the "Viewer Work Environment".
-<< SHOW DIAGRAM OF VIEWER WORK ENVIRONMENT >>
+Now we can use the pyqtgraph GUI to scroll through the video in time, zoom & pan around, and change the min-max levels of the displayed image.
 
-We can use the pyqtgraph GUI to scroll through the video in time, zoom & pan around, and change the min-max levels of the displayed image.
+There are a few simple tools that you can use with the image.
 
-So back to the concept of the Viewer Work Environment, you can view the data that are present in the current work environment by using the Work Environment Viewer. You can also interact with the work enviroment through the console which I'll go through in other videos regarding the ROI Manager and other modules.
+So from scrolling this video you can notice that our cells are on the left, we can crop this out.
 
-There are a few simple tools that you can use with the image. The measure tool allows you to measure the distance between two points in pixels. To use it click on the "Measure Tool" option in the menu, click a point on the image, and then click another point. The viewer status bar will show the distances whenever you hover over the measuring line.
-And you can have as many as you want.
+We also notice movement, so we can use the Caiman library to correct for this. First I'm going to create a new batch so we can batch process the motion correction with a few variants of parameters so we can finally choose the best one. I'm going to create the batch on a fast filesystem since motion corrections steps write large temporary files.
+
+Now that we have a batch directory, let's open the Caiman Motion Correction module for parameter entry. I would highly recommend going through the official Caiman demos & documentation to understand the parameters so you can use this tool more effectively.
+
+But briefly, the "max shifts X" and "max shifts Y" are upper limits for rigid motion correction of the video. One way to do this is to use the measure tool, which allows you to measure the distance between two points in pixel units. To use it click on the "Measure Tool" option in the menu, click a point on the image, and then click another point. The viewer status bar will show the distances whenever you hover over the measuring line.
+
+And you can have as many measure lines as you want. <Draw a few>. I'll get rid of these, I need only one for now.
+
+So you can scroll through and try to find a landmark that seems indicative of full-frame movement. This cell right here seems useful, so I'll try and get the line to span the maximum deviation.
+
+So let's enter a max shifts x & y that's a bit higher than shown here.
+
+Lets do 2 iterations of rigid correction.
+
+The strides & overlaps parameters are for splitting the video into a grid and then performing motion correction in each box. The Caiman papers explain this in detail, which I highly recommend going through.
+
+I'm going to try one variant with 196 & 98
+
+And now let's add this to the batch.
+
+You can see that this motion correction item has been added to the batch. When you click on it you can see all the information that is associated to this item. The first line is the UUID, a unique identifier for this batch item. And down here we can see all the motion correction parameters we entered.
+
+OK, let's add another batch item with this image. I'm going to change the strides & overlaps a bit. 128 & 64.
+
+And another, 96 * 48.
+
+We can see all 3 batch items here, and you can how the parameters differ.
+
+This process of adding batch items with several parameter variants can also be automated & performed much more quickly through the script editor. You can see the link in the description and the dedicated video for details.
+<-- Provide link in video description -->
+
+Now let's start this batch from the top.
+
+When a batch is running, the batch items run in external processes. This allows you to do other things in Mesmerize while a batch is running. The standard out from that process is continuously updated here. You can set the maximum number of threads that batch items are allowed to use by going to System Configuration in the Welcome Window. For more information on the System Configuration settings see the documentation link in the description.
+<-- Provide link in video description -->
+
+This batch will take ~15 minutes to complete so I'll skip ahead.
+
+All of our batch items are green, so that means they've completed successfully.
+
+You can double click on a batch item to view the output. If we scroll through this video you can see that it's definitely less shaky.
+Another way to see this is to get a mean projection, which you can do by going to Image -> Projections -> Mean.
+So there's the mean projection of the motion corrected video.
+We can also load the input for this motion correction item by clickign the "View Input" button in the batch manager. So as you can see from here we've loaded the input image, and let's get a mean projection of this as well.
+So if you look closely at the motion corrected imaged mean & the input image mean you can see that the motion corrected mean is definitely sharper.
+
+Let's check out our other batch items...
+
+So I'm going to pick this one and use it for CNMF.
+Let's open the CNMF GUI, and again I highly recommend looking at the official Caiman demos and their documentation for details on the parameters.
+
+Anyways, first I'm going to select a patch size in which neurons will be found. I'll use the measure tool...
+
+There seem to be about 8 neurons per patch.
+
+Let's use the measure tool again to estimate the radius of the neurons.
+
+I'm going to try 3 different variants with different Signal to Noise Ratio values. Let's set this first one to 2.0.
+
+Lastly, I'll create a manual ROI to estimate the decay time of a neuron. Open the ROI Manager. Right click the "Add ROI" button to add an elliptical ROI. Let's plot under a few neurons. This neuron looks good. We can zoom & pan through the plot to estimate the decay time... The recording is at 31 Hz so that gives us ... And I'll enter that as the decay time.
+
+I'll copy & paste the name and add this to the batch.
+
+If you look at the parameters for this item you can see that it's split into two parts; for CNMF and then for component evaluation. The Caiman resources explain this in more detail.
+
+Note how the "fr", or framerate parameter, was automatically found. This is an example of why you must include meta data when initally loading your raw image data.
+
+Before I start these CNMF batch items, I'll make a new project so we can add one of our CNMF outputs as a Sample to the project.
+For this simple example I'll just add two ROI Type columns to illustrate how ROIs can be annotated.
+
+Let's add one column named "cell_type" and another named "anatomical_position". You can have as many of these "ROI Type columns" as you want, and they would usually carry categorical data.
+
+OK let's select the first CNMF item and run the batch from here onward.
+As usual, you will be able to view the standard out over here. And it will take ~5 minutes for each item.
+
+So now let's take a look at these CNMF outputs.
+
+
+
+
+
+
 
 You can view mean, max and standard deviations projections of the current image.
 Note that if you are working with 3D data it will show the projection for the current plane over time.
