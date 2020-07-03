@@ -184,7 +184,7 @@
 See the docs for instructions on how to create your own loader.</string>
           </property>
           <property name="title">
-           <string>Load meta data</string>
+           <string>&amp;Load meta data</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -252,8 +252,8 @@ See the docs for instructions on how to create your own loader.</string>
  </widget>
  <tabstops>
   <tabstop>btnSelectTiff</tabstop>
-  <tabstop>radioButtonAsArrayMulti</tabstop>
   <tabstop>radioButtonAsArray</tabstop>
+  <tabstop>radioButtonAsArrayMulti</tabstop>
   <tabstop>radioButtonImread</tabstop>
   <tabstop>radioButton_axes_default</tabstop>
   <tabstop>radioButton_axes_custom</tabstop>

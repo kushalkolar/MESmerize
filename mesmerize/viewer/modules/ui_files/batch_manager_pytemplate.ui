@@ -522,16 +522,17 @@ p, li { white-space: pre-wrap; }
   <tabstop>btnDelete</tabstop>
   <tabstop>btnExportShScripts</tabstop>
   <tabstop>btnAbort</tabstop>
+  <tabstop>btnAbort_batch</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnOpen</tabstop>
   <tabstop>btnViewInput</tabstop>
   <tabstop>checkBoxUseWorkDir</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>textBrowserItemInfo</tabstop>
-  <tabstop>scrollAreaOutputInfo</tabstop>
-  <tabstop>textBrowserOutputInfo</tabstop>
   <tabstop>scrollAreaStdOut</tabstop>
   <tabstop>textBrowserStdOut</tabstop>
+  <tabstop>scrollAreaOutputInfo</tabstop>
+  <tabstop>textBrowserOutputInfo</tabstop>
  </tabstops>
  <resources/>
  <connections/>

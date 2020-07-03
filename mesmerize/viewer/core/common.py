@@ -74,10 +74,13 @@ class ViewerUtils:
 
         if self.viewer.workEnv.isEmpty:
             return True
+
+        changes = self.viewer.workEnv.changed_items
+
         if (self.viewer.workEnv.saved is False) and (QtWidgets.QMessageBox.warning(self.viewer, 'Warning!',
                          'You have the following unsaved changes in your work environment. '
                          'Would you like to discard them and continue?\n\n' +
-                             ' > '.join(self.viewer.workEnv.changed_items),
+                             ' > '.join(sorted(set(changes), key=changes.index)),
                          QtWidgets.QMessageBox.Yes,QtWidgets.QMessageBox.No)) == QtWidgets.QMessageBox.No:
             self.viewer.status_bar_label.showMessage('Work environment left unchanged.')
 

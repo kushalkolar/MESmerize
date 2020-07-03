@@ -368,7 +368,16 @@ class ModuleGUI(QtWidgets.QWidget):
         UUID = s.data(3)
         row = self.df.loc[self.df['uuid'] == UUID]
         meta = row['info'].item()
-        info = "\n".join([": ".join([key, str(val)]) for key, val in meta.items()])
+
+        is_pos = lambda x: 1 if x > 0 else 0
+
+        # Format a dict to a nicely readable form
+        format_key = lambda d, t: "\n"*is_pos(t) + \
+                                  "\n".join(
+                                      [": ".join(["\t" * t + k, format_key(v, t + 1)]) for k, v in d.items()]
+                                  ) if isinstance(d, dict) else str(d)
+
+        info = format_key(meta, 0)
 
         self.ui.textBrowserItemInfo.setText(str(UUID) + '\n\n' + info)
 
@@ -380,7 +389,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.ui.textBrowserOutputInfo.setText('Output file does not exist for selected item')
             return
         else:
-            self.ui.textBrowserOutputInfo.setText(pformat(output))
+            self.ui.textBrowserOutputInfo.setText(format_key(output, 0))
 
     def disable_ui_buttons(self, b):
         self.ui.btnStart.setDisabled(b)

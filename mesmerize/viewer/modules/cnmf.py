@@ -27,7 +27,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.ui.btnAddToBatchCNMF.clicked.connect(self.add_to_batch)
+        self.ui.btnAddToBatchCNMF.clicked.connect(lambda: self.add_to_batch())
 
     @present_exceptions()
     def get_params(self, *args, group_params: bool = False) -> dict:
@@ -127,7 +127,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
-    def add_to_batch(self, params : dict = None) -> UUID:
+    def add_to_batch(self, params: dict = None) -> UUID:
         """
         Add a CNMF batch item with the currently set parameters and the current work environment.
         """

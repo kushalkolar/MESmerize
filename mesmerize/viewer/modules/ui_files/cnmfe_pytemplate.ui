@@ -916,6 +916,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>checkBox_low_rank_background</tabstop>
   <tabstop>doubleSpinBox_ring_size_factor</tabstop>
   <tabstop>comboBoxDeconv</tabstop>
+  <tabstop>doubleSpinBoxMergeThresh</tabstop>
   <tabstop>groupBox_cnmf_kwargs</tabstop>
   <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
   <tabstop>spinBoxMinSNR</tabstop>

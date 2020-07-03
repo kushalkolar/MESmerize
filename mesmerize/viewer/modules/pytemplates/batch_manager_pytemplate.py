@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './batch_manager_pytemplate.ui'
+# Form implementation generated from reading ui file 'batch_manager_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -257,16 +257,17 @@ class Ui_Form(object):
         Form.setTabOrder(self.btnStartAtSelection, self.btnDelete)
         Form.setTabOrder(self.btnDelete, self.btnExportShScripts)
         Form.setTabOrder(self.btnExportShScripts, self.btnAbort)
-        Form.setTabOrder(self.btnAbort, self.btnNew)
+        Form.setTabOrder(self.btnAbort, self.btnAbort_batch)
+        Form.setTabOrder(self.btnAbort_batch, self.btnNew)
         Form.setTabOrder(self.btnNew, self.btnOpen)
         Form.setTabOrder(self.btnOpen, self.btnViewInput)
         Form.setTabOrder(self.btnViewInput, self.checkBoxUseWorkDir)
         Form.setTabOrder(self.checkBoxUseWorkDir, self.scrollArea)
         Form.setTabOrder(self.scrollArea, self.textBrowserItemInfo)
-        Form.setTabOrder(self.textBrowserItemInfo, self.scrollAreaOutputInfo)
-        Form.setTabOrder(self.scrollAreaOutputInfo, self.textBrowserOutputInfo)
-        Form.setTabOrder(self.textBrowserOutputInfo, self.scrollAreaStdOut)
+        Form.setTabOrder(self.textBrowserItemInfo, self.scrollAreaStdOut)
         Form.setTabOrder(self.scrollAreaStdOut, self.textBrowserStdOut)
+        Form.setTabOrder(self.textBrowserStdOut, self.scrollAreaOutputInfo)
+        Form.setTabOrder(self.scrollAreaOutputInfo, self.textBrowserOutputInfo)
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
