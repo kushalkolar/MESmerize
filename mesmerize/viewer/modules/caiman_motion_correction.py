@@ -27,7 +27,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.ui.btnAddToBatchRigid.clicked.connect(self.add_to_batch_rig_corr)
         self.ui.btnAddToBatchElastic.clicked.connect(self.add_to_batch_elas_corr)
 
         self.ui.btnShowQuilt.clicked.connect(self.draw_quilt)
@@ -117,9 +116,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
             d.update({**mc_params})
 
         return d
-
-    def add_to_batch_rig_corr(self):
-        pass
 
     def add_to_batch_elas_corr(self):
         """

@@ -31,7 +31,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         # If use another item's memmap, can't keep it's own memmap
         self.ui.groupBox_use_previous_memmap.toggled.connect(self.set_memmap_checkboxes)
 
-        self.ui.pushButton_add_to_batch.clicked.connect(self.add_to_batch)
+        self.ui.pushButton_add_to_batch.clicked.connect(lambda: self.add_to_batch())
 
     def set_memmap_checkboxes(self):
         if self.ui.checkBox_keep_memmap.isChecked():

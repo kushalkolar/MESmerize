@@ -28,8 +28,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui = Ui_DockWidget()
         self.ui.setupUi(self)
 
-        self.ui.btnAddToBatchCorrPNR.clicked.connect(self.add_to_batch_corr_pnr)
-        self.ui.btnAddToBatchCNMFE.clicked.connect(self.add_to_batch_cnmfe)
+        self.ui.btnAddToBatchCorrPNR.clicked.connect(lambda: self.add_to_batch_corr_pnr())
+        self.ui.btnAddToBatchCNMFE.clicked.connect(lambda: self.add_to_batch_cnmfe())
 
     @present_exceptions()
     def get_params(self, item_type: str, group_params: bool = False) -> dict:
