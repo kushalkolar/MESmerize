@@ -37,26 +37,26 @@ class _AbstractBaseROI(metaclass=InheritDocs):
         """
         pass
 
-    @property
-    @abc.abstractmethod
-    def curve_data(self) -> tuple:
-        """
-        The curve data for this ROI
-
-        :return: (x, y), [np.ndarray, np.ndarray]
-        :rtype: tuple
-        """
-        pass
-
-    @curve_data.setter
-    @abc.abstractmethod
-    def curve_data(self, data: tuple):
-        """
-        Set the curve data for this ROI
-
-        :param data: (x, y), [np.ndarray, np.ndarray]
-        """
-        pass
+    # @property
+    # @abc.abstractmethod
+    # def curve_data(self) -> tuple:
+    #     """
+    #     The curve data for this ROI
+    #
+    #     :return: (x, y), [np.ndarray, np.ndarray]
+    #     :rtype: tuple
+    #     """
+    #     pass
+    #
+    # @curve_data.setter
+    # @abc.abstractmethod
+    # def curve_data(self, data: tuple):
+    #     """
+    #     Set the curve data for this ROI
+    #
+    #     :param data: (x, y), [np.ndarray, np.ndarray]
+    #     """
+    #     pass
 
     @abc.abstractmethod
     def get_roi_graphics_object(self) -> QtWidgets.QGraphicsObject:
@@ -168,7 +168,6 @@ class BaseROI(_AbstractBaseROI):
     Inherit from this to make a new ROI class
     """
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: Union[dict, None] = None,
-                 spike_data: np.ndarray = None, dfof_data: np.ndarray = None,
                  metadata: dict = None):
         """
         Instantiate common attributes
@@ -185,9 +184,6 @@ class BaseROI(_AbstractBaseROI):
         else:
             self.curve_plot_item = None
 
-        self.spike_data = spike_data
-        self.dfof_data = dfof_data
-
         if state is None:
             try:
                 # Set the Tags list from the project configuration
@@ -201,8 +197,6 @@ class BaseROI(_AbstractBaseROI):
             # Restore states
             self._tags = state['tags']
             self.curve_data = state['curve_data']
-            self.spike_data = state['spike_data']
-            self.dfof_data = state['dfof_data']
 
         self.view_box = view_box
         self.roi_graphics_object = None
@@ -211,19 +205,19 @@ class BaseROI(_AbstractBaseROI):
 
         self.metadata = metadata
 
-    @property
-    def curve_data(self) -> tuple:
-        return self.curve_plot_item.getData()
-
-    @curve_data.setter
-    def curve_data(self, data: tuple):
-        """
-
-        :rtype: tuple
-        """
-        if self.curve_plot_item is None:
-            return
-        self.curve_plot_item.setData(x=data[0], y=data[1])
+    # @property
+    # def curve_data(self) -> tuple:
+    #     return self.curve_plot_item.getData()
+    #
+    # @curve_data.setter
+    # def curve_data(self, data: tuple):
+    #     """
+    #
+    #     :rtype: tuple
+    #     """
+    #     if self.curve_plot_item is None:
+    #         return
+    #     self.curve_plot_item.setData(x=data[0], y=data[1])
 
     @property
     def zValue(self) -> int:
@@ -310,13 +304,30 @@ class ManualROI(BaseROI):
         """
         assert isinstance(roi_graphics_object, pg.ROI)
 
-        super(ManualROI, self).__init__(curve_plot_item, view_box, state, spike_data=spike_data, dfof_data=dfof_data)
+        super(ManualROI, self).__init__(curve_plot_item, view_box, state)
 
         self.set_roi_graphics_object(roi_graphics_object)
 
         if state is not None:
             self.add_to_viewer()
             self._set_roi_graphics_object_state(state['roi_graphics_object_state'])
+
+    @property
+    def curve_data(self) -> tuple:
+        return self.curve_plot_item.getData()
+
+    @curve_data.setter
+    def curve_data(self, data: tuple):
+        """
+
+        :rtype: tuple
+        """
+        if self.curve_plot_item is None:
+            return
+        if data is None:
+            self.curve_plot_item.clear()
+
+        self.curve_plot_item.setData(x=data[0], y=data[1])
 
     def get_roi_graphics_object(self) -> pg.ROI:
         return self.roi_graphics_object
@@ -390,24 +401,64 @@ class ScatterROI(BaseROI):
         :param kwargs:
         """
         self.spot_size = 1
+        self._curve_data = None
+        self.spike_data = None
+        self.dfof_data = None
 
-        super(ScatterROI, self).__init__(curve_plot_item, view_box, state,
-                                         spike_data=spike_data, dfof_data=dfof_data, metadata=metadata)
+        super(ScatterROI, self).__init__(curve_plot_item, view_box, state, metadata=metadata)
 
         if (xs is not None) and (ys is not None):
             self.set_roi_graphics_object(xs, ys)
 
         if state is None:
             self.set_curve_data(curve_data)
+
+            # set spikes
+            if spike_data is not None:
+                xs = np.arange(len(spike_data))
+                self.spike_data = [xs, spike_data]
+
+            # set dfof
+            if dfof_data is not None:
+                xs = np.arange(len(dfof_data))
+                self.dfof_data = [xs, dfof_data]
+
         else:
             self.restore_state(state)
+
+    # # override to get diff behavior from ManualROI
+    # @property
+    # def curve_data(self) -> tuple:
+    #     return self._curve_data
+    #
+    # @curve_data.setter
+    # def curve_data(self, y_vals: np.ndarray):
+    #     xs = np.arange(len(y_vals))
+    #     self._curve_data = [xs, y_vals]
 
     def set_curve_data(self, y_vals: np.ndarray):
         """Set the curve data"""
         xs = np.arange(len(y_vals))
         self.curve_data = [xs, y_vals]
+        self.set_viewer_curveplot('curve')
+
+    # sets the plot in the viewer
+    def set_viewer_curveplot(self, data_type: str = 'curve'):
+        """
+        :param data_type: one of "curve", "spike", or "dfof"
+        """
+        data = getattr(self, f'{data_type}_data')
+        if data is not None:
+            self.curve_plot_item.setData(x=data[0], y=data[1])
+        else:
+            self.curve_plot_item.clear()
+            warn(f'ROI does not contain the following '
+                 f'data attribute: {data_type}_data')
 
     def restore_state(self, state: dict):
+        self.spike_data = state['spike_data']
+        self.dfof_data = state['dfof_data']
+
         self.roi_xs = state['roi_xs']
         self.roi_ys = state['roi_ys']
 
@@ -417,6 +468,8 @@ class ScatterROI(BaseROI):
         state = {'roi_xs':      self.roi_xs,
                  'roi_ys':      self.roi_ys,
                  'curve_data':  self.curve_data,
+                 'spike_data':  self.spike_data,
+                 'dfof_data':   self.dfof_data,
                  'tags':        self.get_all_tags(),
                  'roi_type':    self.__class__.__name__,}
 
@@ -480,6 +533,8 @@ class VolCNMF(ScatterROI):
 
     def to_state(self) -> dict:
         state = {'curve_data':  self.curve_data,
+                 'spike_data':  self.spike_data,
+                 'dfof_data':   self.dfof_data,
                  'tags':        self.get_all_tags(),
                  'roi_type':    self.__class__.__name__,
                  'coors':       self.coors,

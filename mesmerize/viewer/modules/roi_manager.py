@@ -73,6 +73,14 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.ui.horizontalSliderSpotSize.valueChanged.connect(self.set_spot_size)
 
+        for w in \
+            [
+                self.ui.radioButton_curve_data,
+                self.ui.radioButton_dfof,
+                self.ui.radioButton_spikes
+            ]:
+            w.clicked.connect(self.set_curveplot_datatype)
+
     def eventFilter(self, QObject, QEvent):
         """Set some keyboard shortcuts"""
         if QEvent.type() == QEvent.KeyPress:
@@ -134,9 +142,12 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         if type_str == 'Manual':
             self.start_manual_mode()
+            self.disable_curve_options(True)
+            self.ui.radioButton_curve_data.setChecked(True)
             return
 
         self.ui.btnAddROI.setDisabled(True)  # only used for manual ROIs
+        self.disable_curve_options(False)  # enable dfof and spike options
 
         backend = f'Manager{type_str}'
         manager = getattr(managers, backend)
@@ -145,6 +156,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.workEnv.roi_manager = self.manager
 
         self.ui.btnSwitchToManualMode.setEnabled(True)
+        self.ui.radioButton_curve_data.setChecked(True)
 
         print(f'ROI Manager backend set to: {backend}')
 
@@ -159,6 +171,22 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnAddROI.setEnabled(True)
         self.vi.viewer.workEnv.roi_manager = self.manager
         self.ui.btnSwitchToManualMode.setDisabled(True)
+
+    def set_curveplot_datatype(self):
+        if self.ui.radioButton_curve_data.isChecked():
+            datatype = 'curve'
+        elif self.ui.radioButton_dfof.isChecked():
+            datatype = 'dfof'
+        elif self.ui.radioButton_spikes.isChecked():
+            datatype = 'spike'
+
+        for roi in self.manager.roi_list:
+            roi.set_viewer_curveplot(datatype)
+
+    def disable_curve_options(self, b):
+        self.ui.radioButton_curve_data.setDisabled(b)
+        self.ui.radioButton_dfof.setDisabled(b)
+        self.ui.radioButton_spikes.setDisabled(b)
 
     def add_manual_roi(self, shape: str):
         """Add a manual ROI. Just calls ManagerManual.add_roi"""
@@ -222,6 +250,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.manager.set_spot_size(size)
 
     def request_zlevel(self, roi_ix):
+        if not hasattr(self, 'manager'):
+            return
+
         if not isinstance(self.manager, managers.ManagerVolROI):
             return
 

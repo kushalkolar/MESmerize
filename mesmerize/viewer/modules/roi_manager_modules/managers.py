@@ -188,7 +188,9 @@ class ManagerScatterROI(AbstractBaseManager):
     def add_roi(self, curve: np.ndarray,
                 xs: np.ndarray,
                 ys: np.ndarray,
-                metadata: dict = None) \
+                metadata: dict = None,
+                dfof_data: np.ndarray = None,
+                spike_data: np.ndarray = None) \
             -> ScatterROI:
         """
         Add a single ROI
@@ -209,7 +211,9 @@ class ManagerScatterROI(AbstractBaseManager):
             view_box=self.vi.viewer.getView(),
             curve_data=curve,
             xs=xs,
-            ys=ys
+            ys=ys,
+            dfof_data=dfof_data,
+            spike_data=spike_data
         )
 
         roi.metadata = metadata
@@ -295,12 +299,16 @@ class ManagerVolCNMF(ManagerVolROI):
 
         self.cnmf_data_dict = cnmf_data_dict
 
+        # self.cnmf_obj = load_CNMF(self.cnmf_data_dict)
+
         self.cnmA = self.cnmf_data_dict['estimates']['A']
         self.cnmb = self.cnmf_data_dict['estimates']['b']
         self.cnm_f = self.cnmf_data_dict['estimates']['f']
         self.cnmC = self.cnmf_data_dict['estimates']['C']
         self.cnmYrA = self.cnmf_data_dict['estimates']['YrA']
         self.dims = self.cnmf_data_dict['dims']
+        self.cnmS = self.cnmf_data_dict['estimates']['S']
+        self.cnm_dfof = self.cnmf_data_dict['estimates']['F_dff']
 
         # components are already filtered from the output file
         self.idx_components = np.arange(self.cnmC.shape[0])
@@ -315,6 +323,8 @@ class ManagerVolCNMF(ManagerVolROI):
         self.input_params_dict = self.input_params_dict
         num_components = len(temporal_components)
 
+        self.ui.radioButton_curve_data.setChecked(True)
+
         for ix in range(num_components):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
                                                         + str(ix) + ' / ' + str(num_components))
@@ -326,7 +336,9 @@ class ManagerVolCNMF(ManagerVolROI):
                           view_box=self.vi.viewer.getView(),
                           cnmf_idx=self.idx_components[ix],
                           curve_data=curve_data,
-                          contour=contour)
+                          contour=contour,
+                          dfof_data=self.cnm_dfof[ix] if (self.cnm_dfof is not None) else None,
+                          spike_data=self.cnmS[ix])
 
             self.roi_list.append(roi)
 
@@ -352,6 +364,8 @@ class ManagerVolCNMF(ManagerVolROI):
         self.cnmb = states['cnmf_output']['cnmb']
         self.cnmC = states['cnmf_output']['cnmC']
         self.cnm_f = states['cnmf_output']['cnm_f']
+        self.cnmS = self.cnmf_data_dict['estimates']['S']
+        self.cnm_dfof = self.cnmf_data_dict['estimates']['F_dff']
         self.cnmYrA = states['cnmf_output']['cnmYrA']
         self.idx_components = states['cnmf_output']['idx_components']
         self.orig_idx_components = states['cnmf_output']['orig_idx_components']
@@ -444,6 +458,8 @@ class ManagerCNMFROI(AbstractBaseManager):
         self.cnmb = self.cnmf_data_dict['estimates']['b']
         self.cnm_f = self.cnmf_data_dict['estimates']['f']
         self.cnmC = self.cnmf_data_dict['estimates']['C']
+        self.cnmS = self.cnmf_data_dict['estimates']['S']
+        self.cnm_dfof = self.cnmf_data_dict['estimates']['F_dff']
         self.cnmYrA = self.cnmf_data_dict['estimates']['YrA']
         self.dims = self.cnmf_data_dict['dims']
         self.idx_components = cnmf_data_dict['estimates']['idx_components']
@@ -465,6 +481,8 @@ class ManagerCNMFROI(AbstractBaseManager):
 
         if calc_raw_min_max:
             img = self.vi.viewer.workEnv.imgdata.seq.T
+
+        self.ui.radioButton_curve_data.setChecked(True)
 
         for ix in range(num_components):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
@@ -498,7 +516,9 @@ class ManagerCNMFROI(AbstractBaseManager):
                           cnmf_idx=self.idx_components[ix],
                           curve_data=curve_data,
                           contour=contour,
-                          raw_min_max=raw_min_max)
+                          raw_min_max=raw_min_max,
+                          dfof_data=self.cnm_dfof[ix] if (self.cnm_dfof is not None) else None,
+                          spike_data=self.cnmS[ix])
 
             self.roi_list.append(roi)
 
