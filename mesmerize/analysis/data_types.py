@@ -470,14 +470,6 @@ class BaseTransmission:
 
         return d
 
-    def to_hickle(self, path):
-        """
-        Save as an hdf5 file using hickle (not recommended, use :func:`~to_hdf5`)
-
-        :param path: file path
-        """
-        hickle.dump(self.to_dict(), path)
-
     def to_hdf5(self, path: str):
         """
         Save as an hdf5 file. Uses pytables to save the DataFrame, serielizes the HistoryTrace using JSON.
@@ -498,16 +490,6 @@ class BaseTransmission:
         """
         df, meta = HdfTools.load_dataframe(path)
         return cls(df, **meta)
-
-    @classmethod
-    def from_hickle(cls, path):
-        """
-        Create Transmission from hdf5 file saved using hickle.
-
-        :param path: file path, usually ends in .trn
-        """
-        h = hickle.load(path)
-        return cls(**h)
 
     @classmethod
     def from_pickle(cls, path):
