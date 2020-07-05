@@ -253,6 +253,8 @@ class ControlWidget(QtWidgets.QWidget):
         self.ui.comboBoxLabelsColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
         self.ui.comboBoxDPTCurveColumn.currentTextChanged.connect(lambda: self.sig_changed.emit())
 
+        self.ui.pushButton_set_vmin_vmax.clicked.connect(self.sig_changed.emit)
+
 
 class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
     """Heatmap with an embedded datapoint tracer"""
@@ -360,7 +362,32 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         if (self._transmission is None) or self.update_live:
             super(HeatmapTracerWidget, self).set_input(transmission)
             if self.update_live:
+                self._set_vmin_vmax_limits()
                 self.update_plot()
+
+    def _set_vmin_vmax_limits(self):
+        data_column = self.control_widget.ui.comboBoxDataColumn.currentText()
+        data = np.vstack(self.transmission.df[data_column].values)
+
+        _min = np.nanmin(data)
+        _max = np.nanmax(data)
+
+        range = abs(_min - _max)
+
+        ws = [
+                self.control_widget.ui.doubleSpinBox_vmin,
+                self.control_widget.ui.doubleSpinBox_vmax,
+             ]
+
+        for w in ws:
+            w.setMinimum(_min)
+            w.setMaximum(_max)
+
+        for w in ws:
+            w.setSingleStep(range / 10)
+
+        self.control_widget.ui.doubleSpinBox_vmin.setValue(_min)
+        self.control_widget.ui.doubleSpinBox_vmax.setValue(_max)
 
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
         self.control_widget.ui.comboBoxDataColumn.clear()
@@ -378,13 +405,22 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
 
         :param drop: Drop the non-json compatible objects that are not necessary to restore this plot
         """
+        new_datacolumn = self.control_widget.ui.comboBoxDataColumn.currentText()
+
+        if self.data_column != new_datacolumn:
+            self._set_vmin_vmax_limits()
+
         d = dict(dataframes=self.transmission.df,
-                 data_column=self.control_widget.ui.comboBoxDataColumn.currentText(),
+                 data_column=new_datacolumn,
                  labels_column=self.control_widget.ui.comboBoxLabelsColumn.currentText(),
                  datapoint_tracer_curve_column=self.control_widget.ui.comboBoxDPTCurveColumn.currentText(),
                  cmap=self.control_widget.ui.listWidgetColorMapsData.current_cmap,
                  transmission=self.transmission,
-                 ylabels_cmap=self.control_widget.ui.listWidgetColorMapsLabels.current_cmap)
+                 ylabels_cmap=self.control_widget.ui.listWidgetColorMapsLabels.current_cmap,
+                 vmin=self.control_widget.ui.doubleSpinBox_vmin.value(),
+                 vmax=self.control_widget.ui.doubleSpinBox_vmax.value()
+                 )
+
         if drop:
             for k in self.drop_opts:
                 d.pop(k)
