@@ -20,11 +20,6 @@ occured for the animal that was exposed to in this particular image sequence
 
 """
 import numpy as np
-#from PyQt5 import QtGui
-#import pyqtgraphCore.functions as fn
-#import csv
-#from common import configuration
-#from .misc_funcs import fix_fp_errors
 
 
 class ImgData:
