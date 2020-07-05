@@ -87,7 +87,7 @@ class ImgData:
     def clear(self):
         del self.seq
         del self._seq
-        del self.meta
+        del self._meta
 
         self.seq = None
         self._seq = None
