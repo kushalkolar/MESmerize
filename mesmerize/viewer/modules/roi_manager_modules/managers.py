@@ -12,6 +12,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from caiman.utils.visualization import get_contours as caiman_get_contours
+from caiman.source_extraction.cnmf.cnmf import load_CNMF
 from ....viewer.modules.roi_manager_modules.roi_list import ROIList
 from .roi_types import *
 from ...core.common import ViewerUtils

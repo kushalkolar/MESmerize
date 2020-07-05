@@ -168,6 +168,7 @@ class BaseROI(_AbstractBaseROI):
     Inherit from this to make a new ROI class
     """
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: Union[dict, None] = None,
+                 spike_data: np.ndarray = None, dfof_data: np.ndarray = None,
                  metadata: dict = None):
         """
         Instantiate common attributes
@@ -184,6 +185,9 @@ class BaseROI(_AbstractBaseROI):
         else:
             self.curve_plot_item = None
 
+        self.spike_data = spike_data
+        self.dfof_data = dfof_data
+
         if state is None:
             try:
                 # Set the Tags list from the project configuration
@@ -197,6 +201,8 @@ class BaseROI(_AbstractBaseROI):
             # Restore states
             self._tags = state['tags']
             self.curve_data = state['curve_data']
+            self.spike_data = state['spike_data']
+            self.dfof_data = state['dfof_data']
 
         self.view_box = view_box
         self.roi_graphics_object = None
@@ -296,13 +302,15 @@ class ManualROI(BaseROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem,
                  roi_graphics_object: pg.ROI,
                  view_box: pg.ViewBox,
-                 state: Union[dict, None] = None):
+                 state: Union[dict, None] = None,
+                 spike_data: np.ndarray = None,
+                 dfof_data: np.ndarray = None,):
         """
         :type state: dict
         """
         assert isinstance(roi_graphics_object, pg.ROI)
 
-        super(ManualROI, self).__init__(curve_plot_item, view_box, state)
+        super(ManualROI, self).__init__(curve_plot_item, view_box, state, spike_data=spike_data, dfof_data=dfof_data)
 
         self.set_roi_graphics_object(roi_graphics_object)
 
@@ -371,6 +379,7 @@ class ScatterROI(BaseROI):
     """A class for unmoveable ROIs drawn using scatter points"""
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: Union[dict, None] = None,
                  curve_data: np.ndarray = None, xs: np.ndarray = None, ys: np.ndarray = None, metadata: dict = None,
+                 spike_data: np.ndarray = None, dfof_data: np.ndarray = None,
                  **kwargs):
         """
 
@@ -382,7 +391,8 @@ class ScatterROI(BaseROI):
         """
         self.spot_size = 1
 
-        super(ScatterROI, self).__init__(curve_plot_item, view_box, state, metadata)
+        super(ScatterROI, self).__init__(curve_plot_item, view_box, state,
+                                         spike_data=spike_data, dfof_data=dfof_data, metadata=metadata)
 
         if (xs is not None) and (ys is not None):
             self.set_roi_graphics_object(xs, ys)
@@ -437,12 +447,15 @@ class VolCNMF(ScatterROI):
     """3D ROI for CNMF data"""
     def __init__(self, curve_plot_item: pg.PlotDataItem	, view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
+                 spike_data: np.ndarray = None, dfof_data: np.ndarray = None, metadata: dict = None,
                  zlevel: int = 0):
 
         self.zlevel = zlevel  # z-level of the ROI that is currently visible, different from zValue!!
         self.zcenter = None   # z-level where this ROI has its center
 
-        super(VolCNMF, self).__init__(curve_plot_item, view_box, state, curve_data)
+        super(VolCNMF, self).__init__(curve_plot_item, view_box, state, curve_data,
+                                      spike_data=spike_data, dfof_data=dfof_data,
+                                      metadata=metadata)
 
         if state is None:
             # get the outline from the cnmf output
@@ -524,7 +537,9 @@ class VolCNMF(ScatterROI):
 class CNMFROI(ScatterROI):
     """A class for ROIs imported from CNMF(E) output data"""
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, cnmf_idx: int = None,
-                 curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None, **kwargs):
+                 curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
+                 spike_data: np.ndarray = None, dfof_data: np.ndarray = None, metadata: dict = None,
+                 **kwargs):
         """
         Instantiate attributes.
 
@@ -534,7 +549,9 @@ class CNMFROI(ScatterROI):
         :type  state:       dict
         :param cnmf_idx:    original index of the ROI from cnmf idx_components
         """
-        super(CNMFROI, self).__init__(curve_plot_item, view_box, state, curve_data)
+        super(CNMFROI, self).__init__(curve_plot_item, view_box, state, curve_data,
+                                      spike_data=spike_data, dfof_data=dfof_data,
+                                      metadata=metadata)
 
         self.roi_xs = np.empty(0)  #: numpy array of the x values of the ROI's spatial coordinates
         self.roi_ys = np.empty(0)  #: numpy array of the y values of the ROI's spatial coordinates
@@ -582,7 +599,3 @@ class CNMFROI(ScatterROI):
                  }
 
         return state
-
-    @classmethod
-    def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict):
-        return cls(curve_plot_item=curve_plot_item, view_box=view_box, state=state)
