@@ -22,6 +22,7 @@ from typing import Tuple, List, Dict, Union, Optional
 from itertools import chain
 import os
 import traceback
+from warnings import warn
 from configparser import RawConfigParser
 from ..common.utils import HdfTools, draw_graph
 from ..common import get_proj_config
@@ -612,6 +613,18 @@ class Transmission(BaseTransmission):
         tqdm().pandas()
         df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.progress_apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
 
+        try:
+            df['_SPIKES'] = df['ROI_State'].apply(lambda r: r['spike_data'][1])
+        except KeyError:
+            warn('spikes or data not found, probably is probably from Mesmerize version < 0.2')
+
+        try:
+            df['_DFOF'] = df['ROI_State'].apply(
+                lambda r: r['dfof_data'][1] if (r['dfof_data'] is not None) else None
+            )
+        except KeyError:
+            warn('dfof data not found, probably is probably from Mesmerize version < 0.2')
+
         df.sort_values(by=['SampleID'], inplace=True)
         df = df.reset_index(drop=True)
 
@@ -647,7 +660,13 @@ class Transmission(BaseTransmission):
         meta = pik['meta']
         stim_maps = pik['stim_maps']
         
-        return pd.Series({'_RAW_CURVE': npz.f.curve[1], 'meta': meta, 'stim_maps': [[stim_maps]]})
+        return pd.Series(
+            {
+                '_RAW_CURVE': npz.f.curve[1],
+                'meta': meta,
+                'stim_maps': [[stim_maps]]
+            }
+        )
 
     def get_data_block_dataframe(self, data_block_id: Union[UUID, str]) -> pd.DataFrame:
         """
