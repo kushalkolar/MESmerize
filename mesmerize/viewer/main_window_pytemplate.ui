@@ -54,6 +54,7 @@
      <addaction name="actionCNMF_E"/>
      <addaction name="actionCNMF_3D"/>
      <addaction name="actionCaimanImportHDF5"/>
+     <addaction name="actionCaimanDFOF"/>
     </widget>
     <addaction name="menuLoad_images"/>
     <addaction name="menuCaImAn_toolbox"/>
@@ -313,13 +314,18 @@
   </action>
   <action name="actionVersion_0_2">
    <property name="text">
-    <string>Version 0.2</string>
+    <string>&amp;Version 0.2</string>
    </property>
    <property name="font">
     <font>
      <weight>75</weight>
      <bold>true</bold>
     </font>
+   </property>
+  </action>
+  <action name="actionCaimanDFOF">
+   <property name="text">
+    <string>Detrend ΔF/F</string>
    </property>
   </action>
  </widget>

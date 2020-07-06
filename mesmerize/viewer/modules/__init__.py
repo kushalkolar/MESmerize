@@ -10,5 +10,6 @@ __all__ = [
     'stimulus_mapping',
     'script_editor',
     'suite2p',
-    'caiman_importer'
+    'caiman_importer',
+    'caiman_dfof'
 ]
