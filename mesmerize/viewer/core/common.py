@@ -62,6 +62,14 @@ class ViewerUtils:
 
         self.viewer.status_bar_label.showMessage('Finished updating work environment.')
 
+    def set_statusbar(self, msg):
+        """
+        Set the status bar message in the viewer window.
+
+        :param msg: text to display in the status bar
+        """
+        self.viewer.status_bar_label.showMessage(msg)
+
     def enable_ui(self, b):
         self.viewer.ui.splitter.setEnabled(b)
 
