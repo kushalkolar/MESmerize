@@ -156,6 +156,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.set_proj_buttons_visible(False)
         self.append_recent_projects_list()
 
+        self.setWindowTitle(
+            f'{self.windowTitle()}'
+            f' - '
+            f'{os.path.basename(self.project_manager.root_dir)}'
+        )
+
         # self.initialize_project_browser()
 
     @use_open_dir_dialog('Select Project Directory', '')
@@ -178,6 +184,12 @@ class MainWindow(QtWidgets.QMainWindow):
         pb = start.project_browser()
         pb.reload_all_tabs()
         self.append_recent_projects_list()
+
+        self.setWindowTitle(
+            f'{self.windowTitle()}'
+            f' - '
+            f'{os.path.basename(self.project_manager.root_dir)}'
+        )
 
     def show_project_browser(self):
         get_window_manager().project_browser.show()
