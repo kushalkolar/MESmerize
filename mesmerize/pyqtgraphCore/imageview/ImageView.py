@@ -37,7 +37,7 @@ from ..SignalProxy import SignalProxy
 from .. import getConfigOption
 # from multiprocessing import Process, Queue
 import numpy as np
-#from viewer.core.viewer_work_environment import ViewerWorkEnv
+from ...viewer.core.viewer_work_environment import ViewerWorkEnv
 # from common import configuration
 # from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
 from ...viewer import export
@@ -126,7 +126,7 @@ class ImageView(QtWidgets.QWidget):
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
         # don't exist for certain cases.
-        self.workEnv = None
+        self.workEnv: ViewerWorkEnv = None
 
         self.ignoreTimeLine = False
 

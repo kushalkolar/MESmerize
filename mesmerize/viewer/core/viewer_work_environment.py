@@ -23,7 +23,6 @@ from shutil import rmtree
 from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
-import json
 from typing import Optional, Tuple
 
 
