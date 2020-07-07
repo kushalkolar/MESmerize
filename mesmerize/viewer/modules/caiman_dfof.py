@@ -90,12 +90,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
         ):
             raise TypeError("This module is only for CNMF ROIs")
 
-        roi_manager: (ManagerCNMFROI, ManagerCNMFROI) = self.vi.viewer.workEnv.roi_manager
+        roi_manager: (ManagerCNMFROI, ManagerCNMFROI) = \
+            self.vi.viewer.workEnv.roi_manager
 
         if not (roi_manager.idx_components == roi_manager.orig_idx_components).all():
             raise ValueError("You cannot use this module if you have deleted ROIs."
                              "If you want to delete some ROIs, first use this "
                              "module and then delete the ROIs.")
+
+        self.vi.set_statusbar('Doing caiman detrend_df_f, please wait...')
 
         self.cnmf = get_CNMF_obj(roi_manager.cnmf_data_dict)
         self.cnmf.estimates.detrend_df_f(**kwargs)
@@ -108,5 +111,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
         ):
             xs = np.arange(len(dfof))
             roi.dfof_data = [xs, dfof]
+
+        history = self.vi.work_env.history_trace
+
+        try:
+            next(
+                d for ix, d in enumerate(history) if 'caiman_detrend_df_f' in d
+            )['caiman_detrend_df_f'] = kwargs
+        except StopIteration:
+            self.vi.work_env.history_trace.append({'caiman_detrend_df_f': kwargs})
+
+        self.vi.set_statusbar('Finished caiman detrend_df_f!')
 
         self.vi.viewer.parent().get_module('roi_manager').ui.radioButton_dfof.click()
