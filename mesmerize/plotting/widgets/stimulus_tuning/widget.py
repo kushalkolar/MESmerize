@@ -221,8 +221,8 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
     drop_opts = []
     sig_output_changed = QtCore.pyqtSignal(Transmission)  #: Emits output Transmission containing tuning curves data
 
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self, parent=None)
+    def __init__(self, parent):
+        QtWidgets.QMainWindow.__init__(self, parent=parent)
         BasePlotWidget.__init__(self)
 
         self.setWindowTitle('Tuning Curve Plots')

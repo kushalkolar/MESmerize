@@ -4,6 +4,7 @@ from .common import *
 from ....analysis.data_types import *
 from caiman.source_extraction.cnmf.utilities import detrend_df_f
 from ....analysis.stimulus_extraction import StimulusExtraction
+from ....plotting import TuningCurvesWidget
 
 
 class ExtractStim(CtrlNode):
@@ -48,6 +49,38 @@ class ExtractStim(CtrlNode):
         self.t.last_output = '_ST_CURVE'
 
         return self.t
+
+
+class StimTuning(CtrlNode):
+    """Get stimulus tuning curves"""
+    nodeName = "StimTuning"
+    uiTemplate = [('ShowGUI', 'button', {'text': 'Show GUI'})]
+
+    def __init__(self, name):
+        CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
+        self.widget = TuningCurvesWidget(parent=None)
+        self.widget.sig_output_changed.connect(self._send_output)
+        self.ctrls['ShowGUI'].clicked.connect(self.widget.show)
+        self.output_transmission = None
+
+    def _send_output(self, t: Transmission):
+        self.output_transmission = t
+        self.changed()
+
+    def process(self, output_transmission=False, **kwargs):
+        if self.output_transmission:
+            out = self.output_transmission
+        else:
+            out = self.processData(**kwargs)
+
+        return {'Out': out}
+
+    def processData(self, **kwargs):
+        self.transmissions = kwargs['In']
+        self.transmissions_list = merge_transmissions(self.transmissions)
+        self.t = Transmission.merge(self.transmissions_list)
+        self.widget.set_input(self.t)
+        return None
 
 
 class DetrendDFoF(CtrlNode):
