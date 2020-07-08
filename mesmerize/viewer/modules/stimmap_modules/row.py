@@ -36,6 +36,7 @@ class Row(QtWidgets.QWidget):
 
         self.name = QtWidgets.QLineEdit(self)
         self.name.setPlaceholderText('Stimulus Name')
+        self.name.setMaxLength(32)
         self.hlayout.addWidget(self.name)
 
         self.start = QtWidgets.QLineEdit(self)
