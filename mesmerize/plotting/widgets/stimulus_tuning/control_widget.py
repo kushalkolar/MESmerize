@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_ControlsDock(object):
     def setupUi(self, ControlsDock):
         ControlsDock.setObjectName("ControlsDock")
-        ControlsDock.resize(287, 665)
+        ControlsDock.resize(296, 672)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.dockWidgetContents)
@@ -72,6 +72,9 @@ class Ui_ControlsDock(object):
         self.pushButton_set = QtWidgets.QPushButton(self.dockWidgetContents)
         self.pushButton_set.setObjectName("pushButton_set")
         self.verticalLayout_3.addWidget(self.pushButton_set)
+        self.pushButton_save = QtWidgets.QPushButton(self.dockWidgetContents)
+        self.pushButton_save.setObjectName("pushButton_save")
+        self.verticalLayout_3.addWidget(self.pushButton_save)
         self.line = QtWidgets.QFrame(self.dockWidgetContents)
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -129,6 +132,7 @@ class Ui_ControlsDock(object):
         self.label_5.setText(_translate("ControlsDock", "DPT column: "))
         self.comboBox_DPT_column.setToolTip(_translate("ControlsDock", "data to show in the datapoint tracer"))
         self.pushButton_set.setText(_translate("ControlsDock", "Set"))
+        self.pushButton_save.setText(_translate("ControlsDock", "Save"))
         self.label_6.setText(_translate("ControlsDock", "Select Sample:"))
         self.label_7.setText(_translate("ControlsDock", "Select ROI:"))
 

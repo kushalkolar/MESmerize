@@ -143,6 +143,20 @@ class ControlDock(QtWidgets.QDockWidget):
             name='dpt_column'
         )
 
+        self.widget_registry.register(
+            self.ui.listWidget_samples,
+            setter=lambda l: self.ui.listWidget_samples.setSelectedItems(l),
+            getter=lambda: [self.ui.listWidget_samples.currentItem().text()],
+            name='sample_id'
+        )
+
+        self.widget_registry.register(
+            self.ui.listWidget_rois,
+            setter=lambda l: self.ui.listWidget_rois.setSelectedItems(l),
+            getter=lambda: [self.ui.listWidget_rois.currentItem().text()],
+            name='roi_ix'
+        )
+
         self.ui.pushButton_set.clicked.connect(self._emit_data)
 
         self.ui.listWidget_samples.currentTextChanged.connect(self.sig_sample_changed.emit)
@@ -169,10 +183,14 @@ class PlotArea(MatplotlibWidget):
         MatplotlibWidget.__init__(self)
         self.axs = None  #: array of axis objects used for drawing the means plots, shape is [nrows, ncols]
         self.setParent(parent)
-        self.ncols = 3
+        self.ncols = 2
         self.nrows = None
 
-    def set_plots(self, tuning_curves: np.ndarray, stimulus_names: List[str], y_units: List[str]):
+    def set_plots(
+            self,
+            tuning_curves: Dict[str, np.ndarray],
+            y_units: List[str]
+    ):
         """
         Set the subplots
 
@@ -182,41 +200,22 @@ class PlotArea(MatplotlibWidget):
         :param xzero_pos: set the zero position as the 'zero' position of the input array or the 'maxima' of the input array
         :param error_band: Type of error band to show, one of either 'ci' or 'std'
         """
-        # nrows, ncols = (int(ceil(sqrt(n_clusters))), int(sqrt(n_clusters)))
+        self.clear()
+        self.nrows = ceil(len(tuning_curves.keys()) / self.ncols)
 
-        self.nrows = ceil(len(stimulus_names) / self.ncols)
-
-        self.fig.clear()
         self.axs = self.fig.subplots(self.nrows, self.ncols)
         self.fig.tight_layout()
 
-        for c_ix, i in enumerate(iter_product(range(self.nrows), range(self.ncols))):
-            if c_ix == n_clusters:
-                break
+        for stim_type, plot_ix in zip(
+                tuning_curves.keys(),
+                iter_product(range(self.nrows), range(self.ncols))
+        ):
+            data = tuning_curves[stim_type]
+            self.axs[plot_ix].plot(data[0], data[1])
+            #         axs[plot_ix].
 
-            self.axs[i].set_title(f"cluster {c_ix}")
-
-            ys = input_arrays[y_pred == c_ix]
-
-            if ys.size == 0:
-                self.axs[i].set_title(f"cluster {c_ix}, EMPTY")
-                continue
-
-            xs = []
-
-            for y in ys:
-                if xzero_pos == 'zero':
-                    zero_ix = 0
-                elif xzero_pos == 'maxima':
-                    zero_ix = np.argmax(y)
-                else:
-                    raise ValueError('xzer_post argument accepts only either "zero" or "maxima"')
-                xs.append(np.arange((0 - zero_ix), y.size - zero_ix))
-
-            xsh = np.hstack(xs)
-            ysh = np.hstack(ys)
-
-            lineplot(x=xsh, y=ysh, ax=self.axs[i], err_style='band', color=colors[c_ix], ci=error_band)
+            self.axs[plot_ix].set_xlabel(stim_type)
+            self.axs[plot_ix].set_ylabel(f"{y_units} response")
 
         self.draw()
 
@@ -227,6 +226,7 @@ class PlotArea(MatplotlibWidget):
 
 class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
     drop_opts = []
+    sig_output_changed = QtCore.pyqtSignal(Transmission)  #: Emits output Transmission containing tuning curves data
 
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self, parent=None)
@@ -251,14 +251,17 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.roi_uuid_map = None
 
         self.control_widget.sig_sample_changed.connect(self.set_rois_widget)
+        self.control_widget.sig_roi_changed.connect(self.update_plot)
 
-        tqdm_pandas()
+        self.control_widget.ui.pushButton_save.clicked.connect(self.save_plot_dialog)
 
     def update_tuning_curves(self, params: dict):
         data_column = params['data_column']
         method = params['method']
         start_offset = params['start_offset']
         end_offset = params['end_offset']
+
+        tqdm_pandas()
 
         self.t.df[
                     [f"_TUNE_CURVE_{s}" for s in self.transmission.STIM_DEFS] + \
@@ -275,6 +278,8 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
                 ), axis=1
             )
 
+        self.send_output_transmission()
+
     @BasePlotWidget.signal_blocker
     def set_input(self, transmission: Transmission):
         """Set the input transmission"""
@@ -284,6 +289,8 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @BasePlotWidget.signal_blocker
     def set_rois_widget(self, sample_id):
+        self.plot.clear()
+
         self.sample_id = sample_id
         roi_uuids = self.transmission.df[self.sample_id].uuid_curve.unique().tolist()
 
@@ -303,18 +310,42 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         samples = list(self.transmission.df['SampleID'].unique())
         self.control_widget.fill_widget(samples=samples, data_columns=data_columns)
 
-    @present_exceptions('Plot error', 'Plot error. Make sure you have selected appropriate data columns and parameters')
+    @present_exceptions(
+        'Plot error',
+        'Plot error. Make sure you have selected appropriate data columns and parameters'
+    )
     def update_plot(self, *args, **kwargs):
-        self.plot.clear()
+        roi_ix = self.get_plot_opts()['roi_ix']
+        uuid_curve = self.roi_uuid_map[roi_ix]
+
+        r = self.transmission[self.transmission['uuid_curve'] == uuid_curve]
+
+        # get the tuning curves for all stims
+        tuning_curves = \
+            {
+                s: r[f"_TUNE_CURVE_{s}"] for s in self.transmission.STIM_DEFS
+            }
+
+        # curve made using mean response, or max response etc.
+        y_units = self.get_plot_opts()['method']
+
+        self.plot.set_plots(tuning_curves, y_units)
+
+    def send_output_transmission(self):
+        """Send output Transmission containing cluster labels"""
+        params = self.get_plot_opts()
+
+        t = self.transmission.copy()
+        t.history_trace.add_operation('all', operation='tuning_curves', parameters=params)
+
+        self.sig_output_changed.emit(t)
 
     def set_update_live(self, b: bool):
         pass
 
-    def get_plot_opts(self, drop: bool) -> dict:
+    def get_plot_opts(self, drop: bool = False) -> dict:
         return self.control_widget.get_state()
 
     @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
         self.control_widget.set_state(opts)
-
-    drop_opts = []
