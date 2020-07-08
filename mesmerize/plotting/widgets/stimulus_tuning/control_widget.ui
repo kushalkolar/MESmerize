@@ -47,26 +47,6 @@
         <property name="toolTip">
          <string>method for creating the tuning curve</string>
         </property>
-        <item>
-         <property name="text">
-          <string>mean</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>max</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>median</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>min</string>
-         </property>
-        </item>
        </widget>
       </item>
      </layout>

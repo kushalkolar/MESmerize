@@ -456,8 +456,11 @@ class ScatterROI(BaseROI):
                  f'data attribute: {data_type}_data')
 
     def restore_state(self, state: dict):
-        self.spike_data = state['spike_data']
-        self.dfof_data = state['dfof_data']
+        if 'spike_data' in state.keys():
+            self.spike_data = state['spike_data']
+        if 'dfof_data' in state.keys():
+            self.dfof_data = state['dfof_data']
+
 
         self.roi_xs = state['roi_xs']
         self.roi_ys = state['roi_ys']

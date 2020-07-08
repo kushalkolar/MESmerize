@@ -13,8 +13,10 @@ from ....pyqtgraphCore.widgets.ComboBox import ComboBox
 from math import ceil
 from itertools import product as iter_product
 from typing import *
-from tqdm import tqdm_pandas
+from tqdm import tqdm
 from ....common.qdialogs import *
+from uuid import UUID
+from functools import partial
 
 
 def get_tuning_curves(
@@ -87,7 +89,7 @@ def get_tuning_curves(
         #         ys.append(curve[np.isnan(stim_array)].mean())
 
         # the tuning curve
-        d[f"_TUNE_CURVE_{stim_type}"] = np.hstack([xs, ys])
+        d[f"_TUNE_CURVE_{stim_type}"] = [xs, ys]
 
         # stimulus name at argmax() and argmin() of tuning curve
         d[f"TUNE_MAX_{stim_type}"] = xs[np.argmax(ys)]
@@ -105,6 +107,10 @@ class ControlDock(QtWidgets.QDockWidget):
         QtWidgets.QDockWidget.__init__(self, parent=parent)
         self.ui = Ui_ControlsDock()
         self.ui.setupUi(self)
+
+        self.ui.comboBox_method.setItems(
+            ['mean', 'median', 'max', 'min']
+        )
 
         self.widget_registry = WidgetRegistry()
 
@@ -143,20 +149,6 @@ class ControlDock(QtWidgets.QDockWidget):
             name='dpt_column'
         )
 
-        self.widget_registry.register(
-            self.ui.listWidget_samples,
-            setter=lambda l: self.ui.listWidget_samples.setSelectedItems(l),
-            getter=lambda: [self.ui.listWidget_samples.currentItem().text()],
-            name='sample_id'
-        )
-
-        self.widget_registry.register(
-            self.ui.listWidget_rois,
-            setter=lambda l: self.ui.listWidget_rois.setSelectedItems(l),
-            getter=lambda: [self.ui.listWidget_rois.currentItem().text()],
-            name='roi_ix'
-        )
-
         self.ui.pushButton_set.clicked.connect(self._emit_data)
 
         self.ui.listWidget_samples.currentTextChanged.connect(self.sig_sample_changed.emit)
@@ -170,6 +162,7 @@ class ControlDock(QtWidgets.QDockWidget):
     def fill_widget(self, samples: list, data_columns: list):
         self.ui.comboBox_data_column.setItems(data_columns)
         self.ui.listWidget_samples.setItems(samples)
+        self.ui.comboBox_DPT_column.setItems(data_columns)
 
     def get_state(self) -> dict:
         return self.widget_registry.get_state()
@@ -234,7 +227,7 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.setWindowTitle('Tuning Curve Plots')
 
-        self.plot = PlotArea()
+        self.plot = PlotArea(parent=self)
         self.setCentralWidget(self.plot)
 
         self.control_widget = ControlDock(self)
@@ -242,7 +235,6 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
             QtCore.Qt.LeftDockWidgetArea, self.control_widget
         )
 
-        self.control_widget.sig_sample_changed.connect(self.update_plot)
         self.control_widget.sig_params_changed.connect(self.update_tuning_curves)
 
         self.sample_id = None
@@ -255,20 +247,31 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget.ui.pushButton_save.clicked.connect(self.save_plot_dialog)
 
+        self.datapoint_tracer = DatapointTracerWidget()
+
+        self.datapoint_tracer_dockwidget = QtWidgets.QDockWidget(parent=self)
+        self.datapoint_tracer_dockwidget.setWidget(self.datapoint_tracer)
+        self.addDockWidget(
+            QtCore.Qt.RightDockWidgetArea,
+            self.datapoint_tracer_dockwidget
+        )
+
+        self.update_live = True
+
     def update_tuning_curves(self, params: dict):
         data_column = params['data_column']
         method = params['method']
         start_offset = params['start_offset']
         end_offset = params['end_offset']
 
-        tqdm_pandas()
+        tqdm().pandas()
 
-        self.t.df[
+        self.transmission.df[
                     [f"_TUNE_CURVE_{s}" for s in self.transmission.STIM_DEFS] + \
                     [f"TUNE_MAX_{s}" for s in self.transmission.STIM_DEFS] + \
                     [f"TUNE_MIN_{s}" for s in self.transmission.STIM_DEFS]
                  ] = \
-            self.t.df.progress_apply(
+            self.transmission.df.progress_apply(
                 lambda r: get_tuning_curves(
                     curve=r[data_column],
                     stim_maps=r['stim_maps'][0][0],
@@ -285,14 +288,18 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         """Set the input transmission"""
         if (self._transmission is None) or self.update_live:
             super(TuningCurvesWidget, self).set_input(transmission)
-            self.update_plot()
+            self.plot.clear()
+            # self.update_plot()
 
     @BasePlotWidget.signal_blocker
     def set_rois_widget(self, sample_id):
         self.plot.clear()
 
         self.sample_id = sample_id
-        roi_uuids = self.transmission.df[self.sample_id].uuid_curve.unique().tolist()
+        roi_uuids = \
+            self.transmission.df[
+                self.transmission.df['SampleID'] == self.sample_id
+            ].uuid_curve.unique().tolist()
 
         # user friendly integer map to the ROIs
         self.roi_uuid_map = dict(
@@ -315,21 +322,46 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         'Plot error. Make sure you have selected appropriate data columns and parameters'
     )
     def update_plot(self, *args, **kwargs):
-        roi_ix = self.get_plot_opts()['roi_ix']
+        roi_ix = self.control_widget.ui.listWidget_rois.currentItem().text()
         uuid_curve = self.roi_uuid_map[roi_ix]
 
-        r = self.transmission[self.transmission['uuid_curve'] == uuid_curve]
+        r = self.transmission.df[
+            self.transmission.df['uuid_curve'] == uuid_curve
+        ]
 
         # get the tuning curves for all stims
         tuning_curves = \
             {
-                s: r[f"_TUNE_CURVE_{s}"] for s in self.transmission.STIM_DEFS
+                s: r[f"_TUNE_CURVE_{s}"].item() for s in self.transmission.STIM_DEFS
             }
 
         # curve made using mean response, or max response etc.
         y_units = self.get_plot_opts()['method']
 
         self.plot.set_plots(tuning_curves, y_units)
+
+        block_id = r._BLOCK_
+        if isinstance(block_id, pd.Series):
+            block_id = block_id.item()
+        h = self.transmission.history_trace.get_data_block_history(block_id)
+
+        dpt_column = self.control_widget.ui.comboBox_DPT_column.currentText()
+
+        # self.datapoint_tracer.peak_region.clear_all()
+
+        # TODO: Use the TimelineLinearRegion.add_linear_region to add
+        #       stimulus period illustrations for all stimuli types
+        #       Have some way to get a legend for the colors
+
+        self.datapoint_tracer.set_widget(
+            datapoint_uuid=UUID(uuid_curve),
+            data_column_curve=dpt_column,
+            row=r,
+            proj_path=self.transmission.get_proj_path(),
+            history_trace=h
+        )
+
+        self.plot.fig.suptitle(f"{self.sample_id} : {roi_ix}")
 
     def send_output_transmission(self):
         """Send output Transmission containing cluster labels"""
