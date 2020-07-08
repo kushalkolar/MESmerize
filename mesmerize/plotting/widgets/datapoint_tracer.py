@@ -243,8 +243,8 @@ class TimelineLinearRegion:
         linear_region = LinearRegionItem(values=[frame_start, frame_end],
                                          brush=color, movable=False, bounds=[frame_start, frame_end])
         linear_region.setZValue(0)
-        linear_region.lines[0].setPen(mkColor('#350101'))
-        linear_region.lines[1].setPen(mkColor('#350101'))
+        linear_region.lines[0].setPen(mkColor('#000000'))
+        linear_region.lines[1].setPen(mkColor('#000000'))
 
         self.linear_regions.append(linear_region)
         self.plot_widget.addItem(linear_region)
