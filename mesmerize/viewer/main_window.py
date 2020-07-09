@@ -59,24 +59,6 @@ dock_widget_area = {'roi_manager': QtCore.Qt.LeftDockWidgetArea,
                     'tiff_io': QtCore.Qt.TopDockWidgetArea,
                     tiff_io.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
 
-                    'cnmf': QtCore.Qt.RightDockWidgetArea,
-                    cnmf.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
-
-                    'cnmfe': QtCore.Qt.RightDockWidgetArea,
-                    cnmfe.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
-
-                    'cnmf_3d': QtCore.Qt.RightDockWidgetArea,
-                    cnmf_3d.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
-
-                    'caiman_motion_correction': QtCore.Qt.RightDockWidgetArea,
-                    caiman_motion_correction.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
-
-                    'caiman_importer': QtCore.Qt.TopDockWidgetArea,
-                    caiman_importer.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
-
-                    'caiman_dfof': QtCore.Qt.RightDockWidgetArea,
-                    caiman_dfof.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
-
                     'suite2p_importer': QtCore.Qt.TopDockWidgetArea,
                     suite2p.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
 
@@ -84,21 +66,55 @@ dock_widget_area = {'roi_manager': QtCore.Qt.LeftDockWidgetArea,
                     stimulus_mapping.ModuleGUI: QtCore.Qt.BottomDockWidgetArea
                     }
 
+# caiman modules
+if configuration.HAS_CAIMAN:
+    dock_widget_area.update(
+        {
+            'cnmf': QtCore.Qt.RightDockWidgetArea,
+            cnmf.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+            'cnmfe': QtCore.Qt.RightDockWidgetArea,
+            cnmfe.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+            'cnmf_3d': QtCore.Qt.RightDockWidgetArea,
+            cnmf_3d.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+            'caiman_motion_correction': QtCore.Qt.RightDockWidgetArea,
+            caiman_motion_correction.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+
+            'caiman_importer': QtCore.Qt.TopDockWidgetArea,
+            caiman_importer.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
+
+            'caiman_dfof': QtCore.Qt.RightDockWidgetArea,
+            caiman_dfof.ModuleGUI: QtCore.Qt.RightDockWidgetArea,
+        }
+    )
+
 
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
                         'mesfile': mesfile_io.ModuleGUI,
-                        'cnmf': cnmf.ModuleGUI,
-                        'cnmfe': cnmfe.ModuleGUI,
-                        'cnmf_3d': cnmf_3d.ModuleGUI,
-                        'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
-                        'caiman_importer': caiman_importer.ModuleGUI,
-                        'caiman_dfof': caiman_dfof.ModuleGUI,
                         'roi_manager': roi_manager.ModuleGUI,
                         'suite2p_importer': suite2p.ModuleGUI,
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
                         'script_editor': script_editor.ModuleGUI,
                         }
+
+    # caiman modules
+    if configuration.HAS_CAIMAN:
+        standard_modules.update(
+            {
+                'cnmf': cnmf.ModuleGUI,
+                'cnmfe': cnmfe.ModuleGUI,
+                'cnmf_3d': cnmf_3d.ModuleGUI,
+                'caiman_motion_correction': caiman_motion_correction.ModuleGUI,
+                'caiman_importer': caiman_importer.ModuleGUI,
+                'caiman_dfof': caiman_dfof.ModuleGUI,
+            }
+        )
+
+
+
     available_modules = list(standard_modules.keys())
 
     def __init__(self, parent=None):
@@ -109,16 +125,21 @@ class MainWindow(QtWidgets.QMainWindow):
         # TODO: Integrate viewer initiation here instead of outside
         self.ui.actionMesfile.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
-        self.ui.actionCNMF.triggered.connect(lambda: self.run_module(cnmf.ModuleGUI))
-        self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
-        self.ui.actionCNMF_3D.triggered.connect(lambda: self.run_module(cnmf_3d.ModuleGUI))
-        self.ui.actionMotion_Correction.triggered.connect(lambda: self.run_module(caiman_motion_correction.ModuleGUI))
-        self.ui.actionCaimanImportHDF5.triggered.connect(lambda: self.run_module(caiman_importer.ModuleGUI))
-        self.ui.actionCaimanDFOF.triggered.connect(lambda: self.run_module(caiman_dfof.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
         self.ui.actionSuite2p_Importer.triggered.connect(lambda: self.run_module(suite2p.ModuleGUI))
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
         self.ui.actionScript_Editor.triggered.connect(lambda: self.run_module(script_editor.ModuleGUI))
+
+        # TODO: refactor the actions trigger connections so they're automated based on module name
+        if configuration.HAS_CAIMAN:
+            self.ui.actionCNMF.triggered.connect(lambda: self.run_module(cnmf.ModuleGUI))
+            self.ui.actionCNMF_E.triggered.connect(lambda: self.run_module(cnmfe.ModuleGUI))
+            self.ui.actionCNMF_3D.triggered.connect(lambda: self.run_module(cnmf_3d.ModuleGUI))
+            self.ui.actionMotion_Correction.triggered.connect(
+                lambda: self.run_module(caiman_motion_correction.ModuleGUI)
+            )
+            self.ui.actionCaimanImportHDF5.triggered.connect(lambda: self.run_module(caiman_importer.ModuleGUI))
+            self.ui.actionCaimanDFOF.triggered.connect(lambda: self.run_module(caiman_dfof.ModuleGUI))
 
         self.ui.actionWork_Environment_Info.triggered.connect(self.open_workEnv_editor)
         self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)

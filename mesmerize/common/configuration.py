@@ -16,6 +16,7 @@ import os
 from psutil import cpu_count
 import json
 from configparser import RawConfigParser
+from warnings import warn
 
 #################################################################
 
@@ -29,6 +30,17 @@ if os.name == 'nt':
 else:
     IS_WINDOWS = False
     HOME = 'HOME'
+
+try:
+    import caiman
+except ImportError:
+    warn(
+        "Caiman package not found. "
+        "Caiman features will be disabled."
+    )
+    HAS_CAIMAN = False
+else:
+    HAS_CAIMAN = True
 
 sys_cfg = {}
 

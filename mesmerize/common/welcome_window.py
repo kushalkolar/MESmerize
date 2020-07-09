@@ -89,6 +89,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.flowcharts_dir = None
         self.plots_dir = None
 
+        if not configuration.HAS_CAIMAN:
+            QtWidgets.QMessageBox.info(
+                self,
+                'Caiman not found',
+                'The caiman package could not be found in your python environment. '
+                'Caiman features will be disabled.'
+            )
+
     def initialize_console_widget(self):
         ns = {'configuration': configuration,
               'get_window_manager': get_window_manager,
