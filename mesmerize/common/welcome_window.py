@@ -94,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self,
                 'Caiman not found',
                 'The caiman package could not be found in your python environment. '
-                'Caiman features will be disabled.'
+                'Caiman features will not work.'
             )
 
     def initialize_console_widget(self):
