@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './datapoint_tracer.ui'
+# Form implementation generated from reading ui file 'datapoint_tracer.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -66,8 +66,8 @@ class Ui_DatapointTracer(object):
         sizePolicy.setHeightForWidth(self.groupBoxImageViewAndCurve.sizePolicy().hasHeightForWidth())
         self.groupBoxImageViewAndCurve.setSizePolicy(sizePolicy)
         self.groupBoxImageViewAndCurve.setObjectName("groupBoxImageViewAndCurve")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBoxImageViewAndCurve)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout_groupBoxImageViewAndCurve = QtWidgets.QVBoxLayout(self.groupBoxImageViewAndCurve)
+        self.verticalLayout_groupBoxImageViewAndCurve.setObjectName("verticalLayout_groupBoxImageViewAndCurve")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.label_zlevel = QtWidgets.QLabel(self.groupBoxImageViewAndCurve)
@@ -83,7 +83,7 @@ class Ui_DatapointTracer(object):
         self.horizontalLayout_2.addWidget(self.radioButtonSTDProjection)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.verticalLayout_groupBoxImageViewAndCurve.addLayout(self.horizontalLayout_2)
         self.splitterImageViewAndCurve = QtWidgets.QSplitter(self.groupBoxImageViewAndCurve)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(10)
@@ -106,7 +106,7 @@ class Ui_DatapointTracer(object):
         sizePolicy.setHeightForWidth(self.graphicsViewPlot.sizePolicy().hasHeightForWidth())
         self.graphicsViewPlot.setSizePolicy(sizePolicy)
         self.graphicsViewPlot.setObjectName("graphicsViewPlot")
-        self.verticalLayout_2.addWidget(self.splitterImageViewAndCurve)
+        self.verticalLayout_groupBoxImageViewAndCurve.addWidget(self.splitterImageViewAndCurve)
         self.verticalLayout_3.addWidget(self.splitterMain)
 
         self.retranslateUi(DatapointTracer)

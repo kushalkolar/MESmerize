@@ -106,7 +106,7 @@
       <property name="title">
        <string>Image</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout_groupBoxImageViewAndCurve">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>

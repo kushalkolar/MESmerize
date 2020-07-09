@@ -3,9 +3,12 @@
 import numpy as np
 import pandas as pd
 from ..base import BasePlotWidget
-from ...utils import WidgetRegistry
+from ...utils import WidgetRegistry, get_colormap
 from ....analysis import Transmission
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
+from ....pyqtgraphCore.widgets.ComboBox import ComboBox
+from ....pyqtgraphCore.graphicsItems.ScatterPlotItem import ScatterPlotItem
+from ....pyqtgraphCore import mkColor
 from ..datapoint_tracer import DatapointTracerWidget
 from matplotlib.axes import Axes
 from .control_widget import *
@@ -16,7 +19,6 @@ from typing import *
 from tqdm import tqdm
 from ....common.qdialogs import *
 from uuid import UUID
-from functools import partial
 
 
 def get_tuning_curves(
@@ -204,8 +206,7 @@ class PlotArea(MatplotlibWidget):
                 iter_product(range(self.nrows), range(self.ncols))
         ):
             data = tuning_curves[stim_type]
-            self.axs[plot_ix].plot(data[0], data[1])
-            #         axs[plot_ix].
+            self.axs[plot_ix].plot(data[0], data[1], c='k')
 
             self.axs[plot_ix].set_xlabel(stim_type)
             self.axs[plot_ix].set_ylabel(f"{y_units} response")
@@ -256,6 +257,45 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.datapoint_tracer_dockwidget
         )
 
+        # combobox so user can choose which stims to display using colored regions
+
+        # create hlayout
+        hlayout_datapoint_tracer_stimulus_options = QtWidgets.QHBoxLayout()
+        # qlabel
+        datapoint_tracer_stimulus_options_qlabel = QtWidgets.QLabel(
+            self.datapoint_tracer.ui.groupBoxImageViewAndCurve
+        )
+        datapoint_tracer_stimulus_options_qlabel.setText(
+            'Illustrate stimulus type: '
+        )
+
+        # combobox
+        self.datapoint_tracer_stimulus_options_combobox = ComboBox(
+            self.datapoint_tracer.ui.groupBoxImageViewAndCurve
+        )
+        # add them to the hlayout
+        hlayout_datapoint_tracer_stimulus_options.addWidget(
+            datapoint_tracer_stimulus_options_qlabel
+        )
+        hlayout_datapoint_tracer_stimulus_options.addWidget(
+            self.datapoint_tracer_stimulus_options_combobox
+        )
+        self.datapoint_tracer_stimulus_options_combobox.currentTextChanged.connect(
+            self.set_datapoint_tracer_stimulus_regions
+        )
+        # add hlayout under the curve plot
+        self.datapoint_tracer.ui.verticalLayout_groupBoxImageViewAndCurve.addLayout(
+            hlayout_datapoint_tracer_stimulus_options
+        )
+
+        # datapoint tracer curve plot legend for stimulus region colors
+        self.legend = self.datapoint_tracer.ui.graphicsViewPlot.plotItem.addLegend()
+        self.legend.setParentItem(
+            self.datapoint_tracer.ui.graphicsViewPlot.getPlotItem()
+        )
+        self.color_legend_items = []
+        self.pseudo_plots = []
+
         self.update_live = True
 
     def update_tuning_curves(self, params: dict):
@@ -289,7 +329,11 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         if (self._transmission is None) or self.update_live:
             super(TuningCurvesWidget, self).set_input(transmission)
             self.plot.clear()
-            # self.update_plot()
+
+            # set the stimulus options for visualizing them as colored regions
+            self.datapoint_tracer_stimulus_options_combobox.setItems(
+                self.transmission.STIM_DEFS
+            )
 
     @BasePlotWidget.signal_blocker
     def set_rois_widget(self, sample_id):
@@ -361,7 +405,63 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
             history_trace=h
         )
 
-        self.plot.fig.suptitle(f"{self.sample_id} : {roi_ix}")
+        self.set_datapoint_tracer_stimulus_regions()
+
+    def set_datapoint_tracer_stimulus_regions(self):
+        roi_ix = self.control_widget.ui.listWidget_rois.currentItem().text()
+        uuid_curve = self.roi_uuid_map[roi_ix]
+
+        r = self.transmission.df[
+            self.transmission.df['uuid_curve'] == uuid_curve
+            ]
+
+        selected_stim_type = self.datapoint_tracer_stimulus_options_combobox.currentText()
+        stim_df = r['stim_maps'].item()[0][0][selected_stim_type].sort_values(by='start')
+
+        stims = stim_df.name.unique().astype(str)
+
+        if stims.size < 10:
+            _cm = 'tab10'
+        elif stims.size > 20:
+            _cm = 'hsv'
+        else:
+            _cm = 'tab20'
+
+        cmap = get_colormap(stims, _cm, output='pyqt')
+
+        self.datapoint_tracer.peak_region.clear_all()
+
+        region_samples = dict()
+
+        for ix, stim_period in stim_df.iterrows():
+            start = stim_period['start']
+            end = stim_period['end']
+            color = cmap[stim_period['name']]
+
+            region = self.datapoint_tracer.peak_region.add_linear_region(
+                start, end, color
+            )
+
+            if stim_period['name'] not in region_samples.keys():
+                region_samples[stim_period['name']] = region
+
+        self.clear_legend()
+
+        for k in cmap.keys():
+            p = ScatterPlotItem()
+            p.setData(x=[0], y=[0], brush=cmap[k], symbol='s')
+            self.color_legend_items.append(k)
+            self.legend.addItem(p, k)
+            self.pseudo_plots.append(p)
+
+    def clear_legend(self):
+        """Clear the legend"""
+        for i in range(len(self.pseudo_plots)):
+            del self.pseudo_plots[0]
+
+        for name in self.color_legend_items:
+            self.legend.removeItem(name)
+        self.color_legend_items.clear()
 
     def send_output_transmission(self):
         """Send output Transmission containing cluster labels"""

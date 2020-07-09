@@ -67,6 +67,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.peak_region = TimelineLinearRegion(self.ui.graphicsViewPlot)
         self.roi = None
 
+        self.plot_data_item = None
+
         self.ui.radioButtonMaxProjection.clicked.connect(lambda x: self.set_image('max'))
         self.ui.radioButtonSTDProjection.clicked.connect(lambda x: self.set_image('std'))
 
@@ -133,11 +135,15 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         if (tstart is not None) and (tend is not None):
             self.peak_region.add_linear_region(tstart, tend, color=mkColor('#a80035'))
         try:
-            self.ui.graphicsViewPlot.plot(self.row[data_column_curve].item())
+            self.plot_data_item = \
+                self.ui.graphicsViewPlot.plot(self.row[data_column_curve].item())
         except:
-            self.ui.graphicsViewPlot.plot(self.row[data_column_curve])
+            self.plot_data_item = \
+                self.ui.graphicsViewPlot.plot(self.row[data_column_curve])
 
-        self.ui.graphicsViewPlot.plotItem.setZValue(1)
+        self.plot_data_item.setPen('w', width=2)
+
+        self.plot_data_item.setZValue(1)
 
         if self.roi is not None:
             self.roi.remove_from_viewer()
@@ -239,7 +245,7 @@ class TimelineLinearRegion:
         self.plot_widget = plot_widget
         self.linear_regions = []
 
-    def add_linear_region(self, frame_start: int, frame_end: int, color: QtGui.QColor):
+    def add_linear_region(self, frame_start: int, frame_end: int, color: QtGui.QColor) -> LinearRegionItem:
         linear_region = LinearRegionItem(values=[frame_start, frame_end],
                                          brush=color, movable=False, bounds=[frame_start, frame_end])
         linear_region.setZValue(0)
@@ -248,6 +254,8 @@ class TimelineLinearRegion:
 
         self.linear_regions.append(linear_region)
         self.plot_widget.addItem(linear_region)
+
+        return linear_region
 
     def del_linear_region(self, linear_region: LinearRegionItem):
         self.plot_widget.removeItem(linear_region)
