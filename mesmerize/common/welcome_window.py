@@ -90,7 +90,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.plots_dir = None
 
         if not configuration.HAS_CAIMAN:
-            QtWidgets.QMessageBox.info(
+            QtWidgets.QMessageBox.information(
                 self,
                 'Caiman not found',
                 'The caiman package could not be found in your python environment. '
