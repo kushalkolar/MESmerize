@@ -1,67 +1,33 @@
-import sys
-from setuptools import setup, Extension, find_packages
-import pkg_resources
+from setuptools import setup, find_packages
+from mesmerize import __version__
 
+with open("README.md", 'r') as fh:
+    long_description = fh.read()
 
-def is_building():
-    """
-	Parse the setup.py command and return whether a build is requested.
-	If False is returned, only an informational command is run.
-	If True is returned, information about C extensions will have to
-	be passed to the setup() function.
-	"""
-    if len(sys.argv) < 2:
-        return True
-
-    info_commands = ['--help-commands', '--name', '--version', '-V',
-                     '--fullname', '--author', '--author-email',
-                     '--maintainer', '--maintainer-email', '--contact',
-                     '--contact-email', '--url', '--license', '--description',
-                     '--long-description', '--platforms', '--classifiers',
-                     '--keywords', '--provides', '--requires', '--obsoletes']
-
-    info_commands.extend(['egg_info', 'install_egg_info', 'rotate'])
-
-    for command in info_commands:
-        if command in sys.argv[1:]:
-            return False
-
-    return True
-
-
-s = dict(
+setup(
     name='mesmerize',
-    version='0.2',
-    packages=find_packages(exclude=['use_cases', 'use_cases.*', 'tests']),
+    version=__version__,
+    packages=find_packages(exclude=['tests']),
     include_package_data=True,
     entry_points={'console_scripts': ['mesmerize=mesmerize.__main__:main']},
-    setup_requires=['cython', 'numpy', 'scipy', 'scikit-learn', 'numba', 'joblib'],
+    # setup_requires=['cython', 'numpy', 'scipy', 'scikit-learn', 'numba', 'joblib'],
     url='https://kushalkolar.github.io/MESmerize/',
     license='GNU General Public License v3.0',
     author='Kushal Kolar, Daniel Dondorp',
     author_email='kushalkolar@gmail.com',
-    description='Calcium imaging analysis platform'
+    description='Calcium imaging analysis platform',
+    long_description=long_description,
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows :: Windows 10",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
+        "Topic :: Scientific/Engineering :: Image Recognition",
+        "Topic :: Scientific/Engineering :: Information Analysis",
+        "Topic :: Scientific/Engineering :: Visualization",
+        "Intended Audience :: Science/Research"
+    ],
+    python_requires='>=3.6'
 )
-
-if is_building():
-    try:
-        from Cython.Distutils import build_ext as _build_ext
-        list_pyx = ['cygak', 'cysax', 'cycc', 'soft_dtw_fast']
-        numpy_include = pkg_resources.resource_filename('numpy', 'core/include')
-        ext = [Extension('tslearn.%s' % s, ['tslearn/%s.pyx' % s], include_dirs=[numpy_include]) for s in list_pyx]
-
-        ext += [Extension("caiman.source_extraction.cnmf.oasis",
-                                 sources=["caiman/source_extraction/cnmf/oasis.pyx"],
-                                 include_dirs=[numpy_include],
-                                 language="c++")]
-
-        b = dict(include_dirs=[numpy_include],
-                 ext_modules=ext,
-                 cmdclass={'build_ext': _build_ext})
-    except:
-        b = {}
-    setup(**{**s, **b})
-
-else:
-    setup(**s)
-
