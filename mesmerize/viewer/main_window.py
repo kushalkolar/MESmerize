@@ -113,8 +113,6 @@ class MainWindow(QtWidgets.QMainWindow):
             }
         )
 
-
-
     available_modules = list(standard_modules.keys())
 
     def __init__(self, parent=None):
@@ -145,6 +143,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionAdd_to_project.triggered.connect(self.add_work_env_to_project)
         self.ui.actionSave_work_environment.triggered.connect(self.save_work_environment_dialog)
         self.ui.actionOpen_docs.triggered.connect(doc_pages['viewer'])
+        self.ui.actionReport_issue_bug.triggered.connect(doc_pages['issue-tracker'])
+        self.ui.actionQuestions_discussion.triggered.connect(doc_pages['gitter'])
 
         self.add_to_project_dialog = None
         self.custom_modules = None

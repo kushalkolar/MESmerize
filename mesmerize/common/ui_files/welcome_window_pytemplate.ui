@@ -328,7 +328,7 @@
      <x>0</x>
      <y>0</y>
      <width>715</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConfiguration">
@@ -356,10 +356,14 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionDocs_homepage"/>
+    <addaction name="actionReport_issue_bug"/>
+    <addaction name="actionQuestions_discussion"/>
     <addaction name="separator"/>
+    <addaction name="actionDocs_homepage"/>
     <addaction name="actionNew_Project_Docs"/>
     <addaction name="actionSystem_Configuration_Docs"/>
+    <addaction name="separator"/>
+    <addaction name="action_version"/>
    </widget>
    <addaction name="menuConfiguration"/>
    <addaction name="menuView"/>
@@ -405,12 +409,39 @@
   </action>
   <action name="actionNew_Project_Docs">
    <property name="text">
-    <string>&amp;New Project</string>
+    <string>&amp;New Project help</string>
    </property>
   </action>
   <action name="actionSystem_Configuration_Docs">
    <property name="text">
-    <string>&amp;System Configuration</string>
+    <string>&amp;System Config help</string>
+   </property>
+  </action>
+  <action name="action_version">
+   <property name="text">
+    <string/>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </action>
+  <action name="actionReport_issue_bug">
+   <property name="text">
+    <string>Report issue/bug</string>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </action>
+  <action name="actionQuestions_discussion">
+   <property name="text">
+    <string>Questions/discussion</string>
    </property>
   </action>
  </widget>

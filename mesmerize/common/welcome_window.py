@@ -24,6 +24,7 @@ from glob import glob
 from ..plotting import open_plot_file
 from functools import partial
 from .qdialogs import *
+from .. import __version__
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -69,6 +70,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.actionDocs_homepage.triggered.connect(doc_pages['home'])
         self.ui.actionNew_Project_Docs.triggered.connect(doc_pages['new_project'])
+        self.ui.actionSystem_Configuration_Docs.triggered.connect(doc_pages['sys_config'])
+
+        self.ui.actionReport_issue_bug.triggered.connect(doc_pages['issue-tracker'])
+        self.ui.actionQuestions_discussion.triggered.connect(doc_pages['gitter'])
 
         self.sys_config_gui = system_config_window.SystemConfigGUI()
         self.ui.actionSystem_Configuration.triggered.connect(self.sys_config_gui.show)
@@ -96,6 +101,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 'The caiman package could not be found in your python environment. '
                 'Caiman features will not work.'
             )
+
+        self.ui.action_version.setText(
+            f"Version: {__version__}"
+        )
 
     def initialize_console_widget(self):
         ns = {'configuration': configuration,

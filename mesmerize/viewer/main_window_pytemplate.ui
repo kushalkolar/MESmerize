@@ -106,7 +106,9 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionOpen_docs"/>
-    <addaction name="actionVersion_0_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionReport_issue_bug"/>
+    <addaction name="actionQuestions_discussion"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuImage"/>
@@ -325,7 +327,17 @@
   </action>
   <action name="actionCaimanDFOF">
    <property name="text">
-    <string>Detrend ΔF/F</string>
+    <string>&amp;Detrend ΔF/F</string>
+   </property>
+  </action>
+  <action name="actionReport_issue_bug">
+   <property name="text">
+    <string>Report issue/bug</string>
+   </property>
+  </action>
+  <action name="actionQuestions_discussion">
+   <property name="text">
+    <string>Questions/discussion</string>
    </property>
   </action>
  </widget>

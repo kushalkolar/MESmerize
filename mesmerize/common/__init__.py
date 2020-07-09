@@ -34,17 +34,33 @@ def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
     return proj_cfg
 
 
-docs_dir = os.path.dirname(docs.__file__)
-docs_dir = docs_dir + '/user_guides'
+# docs_dir = os.path.dirname(docs.__file__)
+# docs_dir = docs_dir + '/user_guides'
 
-doc_pages = {'home':            '/../index.html',
-             'new_project':     '/project_organization/new_project/new_project.html',
-             'viewer':          '/viewer/viewer.html',
-             'faq':             '/faq.html'
-             }
+docs_dir = 'http://mesmerizelab.org/'
+
+doc_pages = \
+    {
+        'issue-tracker':    'https://github.com/kushalkolar/MESmerize/issues',
+        'gitter':           'https://gitter.im/mesmerize_discussion/community'
+    }
+
+mesmerize_doc_pages = \
+    {
+        'home':             '',
+        'new_project':      'user_guides/project_organization/new_project/new_project.html',
+        'viewer':           'user_guides/viewer/overview.html',
+        'faq':              'user_guides/faq.html',
+        'sys_config':       'user_guides/general/misc.html#system-configuration'
+    }
+
+doc_pages.update(
+    {k: docs_dir + v for k, v in mesmerize_doc_pages.items()}
+)
+
 
 for k in doc_pages.keys():
-    doc_pages[k] = partial(open_new_web_browser_tab, docs_dir + doc_pages[k])
+    doc_pages[k] = partial(open_new_web_browser_tab, doc_pages[k])
 
 
 class InheritDocs(ABCMeta):
