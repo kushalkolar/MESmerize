@@ -194,6 +194,10 @@ You will also need git: https://gitforwindows.org/
 #. Create a new anaconda environment::
 
     conda create -n mesmerize
+
+#. Activate the environment::
+
+    conda activate mesmerize
     
 #. Install caiman::
 
