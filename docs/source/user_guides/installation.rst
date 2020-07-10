@@ -187,7 +187,7 @@ You will also need git: https://gitforwindows.org/
 
 **All commands are to be run in the powershell**
 
-#. You will need anaconda to be accessible through powershell. You may need to run powershell as administrator for this stepo to work. Close & open a new non-admin powershell after running this::
+#. You will need anaconda to be accessible through powershell. You may need to run powershell as administrator for this step to to work. Close & open a new non-admin powershell after running this::
 
     conda init powershell
 
@@ -202,33 +202,27 @@ You will also need git: https://gitforwindows.org/
 #. Downgrade pandas::
 
     conda install pandas==0.25.3
-    
-#. Install some packages::
-
-    pip install scikit-learn==0.20.2 tifffile==0.15.1 opencv-python opencv-contrib-python Cython tables==3.5.2 Pillow==5.4.1 seaborn==0.9.0 spyder==3.3.3 graphviz
-    
+        
 #. Install tslearn::
 
     conda install -c conda-forge tslearn==0.2.1
     
-#. Install graphviz, this is different from the python interface to graphviz installed through pip::
+#. Install graphviz::
 
-    graphviz
+    conda install graphviz
+    
+#. Install Mesmerize::
+    
+    pip install mesmerize
 
 #. Allow powershell to execute scripts, this is required for the batch manager and k-Shape GUI which launch external processes. This may affect the security of your system by allowing scripts to be executable. I'm not an expert on Windows so if someone knows a better way to do this let me know! As far as I know, I'm not sure why you would even try to execute untrusted scripts so this shouldn't be a concern?::
 
     Set-ExecutionPolicy RemoteSigned
     Set-ExecutionPolicy Bypass -scope Process -Force
     
-#. Clone Mesmerize::
-
-    git clone https://github.com/kushalkolar/MESmerize.git
-    
-#. Add the path to the MESmerize dir to your ``PYTHONPATH``. In the start menu enter "edit environment variables for your account", create a a new variable called ``PYTHONPATH`` and enter the path to the MESmerize dir. Or add the path to the MESmerize dir if you already have a ``PYTHONPATH`` environment variable
-
 #. Launch Mesmerize::
 
-    python <path to MESmerize dir>/mesmerize
+    mesmerize
 
 
 From GitHub (Development)
@@ -249,9 +243,9 @@ First, make sure you have compilers & python3.6 (see the details above for vario
     pip install --upgrade pip setuptools
     pip install Cython numpy
 
-#. Clone the repo::
+#. Fork the main repo on github and clone it::
 
-    git clone https://github.com/kushalkolar/MESmerize.git
+    git clone https://github.com/<your_github_username>/MESmerize.git
     cd MESmerize
     
 #. Switch to new branch::
@@ -261,3 +255,9 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 #. Install in editable mode::
 
     pip install -e .
+
+#. Make your changes to the code & push to your fork::
+
+    git push origin my-new-feature
+    
+#. Create a pull request if you want to incorporate it into the main Mesmerize repo.
