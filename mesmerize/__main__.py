@@ -12,11 +12,14 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 print('Loading, please wait... ')
 from PyQt5.QtWidgets import QApplication
 from mesmerize.common.window_manager import WindowManager
 from mesmerize.project_manager import ProjectManager
 from mesmerize.common.welcome_window import MainWindow
+from mesmerize.scripts import *
 
 
 class App(QApplication):
@@ -24,30 +27,34 @@ class App(QApplication):
     project_manager = ProjectManager()
 
 
-def main():
+def start_welcome_window():
     app = App([])
+    app.window_manager.welcome_window = MainWindow()
+    app.window_manager.welcome_window.show()
+    app.exec_()
 
+
+def start_batch_manager(batch_path: str, item_uuid: str):
+    app = App([])
+    app.window_manager.welcome_window = MainWindow()
+    app.window_manager.welcome_window.show()
+    bm = app.window_manager.get_batch_manager(run_batch=[batch_path, item_uuid])
+    app.exec_()
+
+
+def main():
     if not len(sys.argv) > 1:
-        app.window_manager.welcome_window = MainWindow()
-        app.window_manager.welcome_window.show()
+        start_welcome_window()
 
     elif sys.argv[1] == 'run':
         if sys.argv[2] == 'batch':
-            app.window_manager.welcome_window = MainWindow()
-            app.window_manager.welcome_window.show()
-            bm = app.window_manager.get_batch_manager(run_batch=[sys.argv[3], sys.argv[4]])
-            # bm.run()
+            start_batch_manager(sys.argv[3], sys.argv[4])
 
-    # elif sys.argv[1].endswith('.tiff') or sys.argv[1].endswith('.tif'):
-    #     start.viewer(sys.argv[1])
-    #
-    # elif sys.argv[1].endswith('.fc') or sys.argv[1].endswith('.fcd'):
-    #     start.flowchart(sys.argv[1])
+    elif sys.argv[1] == 'lighten':
+        create_lite_project.main(*sys.argv[2:])
 
     else:
         raise ValueError('Invalid argument')
-
-    app.exec_()
 
 
 if __name__ == '__main__':
