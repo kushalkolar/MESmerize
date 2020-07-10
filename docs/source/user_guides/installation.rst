@@ -3,7 +3,7 @@
 Installation
 ************
 
-**We currently support Linux & Mac OS X. On Windows it is tricky to set up an environment that works reliably with compilers for building some dependencies. From our experience it's much easier to just install Linux and use the Snap.**
+Mesmerize can be installed on Linux, Mac OSX and Windows. For Linux we provide a snap package which comes with everything and doesn't require management of virtual environments or anaconda. On Windows, Mesmerize can be installed in an anaconda environment. For Mac OSX and Linux you may use either virtual environments or conda environments, but we have had much better experience with virtual environments.
 
 .. _snap_install:
 
@@ -29,17 +29,7 @@ After installation simply run ``mesmerize`` in the terminal and the application 
 You can also open an ipython console in the snap environment::
 
     mesmerize.ipython
-    
-.. note:: You might get the following warnings when you launch the snap, this is normal. Just be patient and wait a few minutes:
-
-        | warnings.warn('%s%s' % (e, warn))
-        | /snap/mesmerize/x1/lib/python3.6/site-packages/matplotlib/font_manager.py:281: UserWarning: Matplotlib is building the font cache using fc-list. This may take a moment.
-        | 'Matplotlib is building the font cache using fc-list. '
-        | Bokeh could not be loaded. Either it is not installed or you are not running within a notebook
-        | Loading, please wait... 
-        | Qt: Session management error: Authentication Rejected, reason : None of the authentication protocols specified are supported and host-based authentication failed
-
-    
+        
 Requirements
 ^^^^^^^^^^^^
 
@@ -74,71 +64,69 @@ Alternatively you can install the snap in devmode (gives that snap broad access 
 	
 .. warning:: Analysis graphs do not work in the snap version at the moment.
 
-From GitHub
------------
+.. _pypi_install:
 
-First, make sure you have compilers & python.
+pip (PyPI)
+==========
 
-**For Debian & Ubuntu based distros**
+**You will need python==3.6, there is a bug with Qt & python3.7**
 
-Get build tools and other things::
-
-    sudo apt-get install build-essential
-    
-For other distros look for the equivalent meta-package that contains gcc, glibc, etc.
-
-If you don't have python3.6::
-
+Install python 3.6::
+    # Debian & Ubuntu based
     sudo apt-get install python3.6
+    # Fedora/CentOS
+    sudo dnf install python36
 
-For other distros lookup how to install python3.6 through their package manager.
+Install build tools and other dependencies::
     
-Install dependencies::
-
-    sudo apt-get install qt5-default tcl graphviz git
-
-For other distros these packages probably have the same or similar names.
-
-**Create a virtual environment & install Mesmerize**
+    # Debian & Ubuntu based distros
+    sudo apt-get install build-essential python3-devel qt5-default tcl graphviz git
     
-#. Create a virtual environment::
+    # Fedora/CentOS
+    sudo dnf install @development-tools
+    sudo dnf install python3-devel tcl graphviz
     
-    # Choose a path to house the virtual environment
-    python3.6 -m venv /path/to/venv
+It should be easy to google and find the name of the meta-package your your distribution uses to get necessary build tools.
+
+If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using::
+    sudo dnf install redhat-rpm-config
     
-#. Activate the virtual environment::
+Create a new virtual environment::
 
-    source /path/to/venv/bin/activate
+    python3.6 -m venv <new_venv_path>
 
-#. Clone the repo::
-
-    git clone https://github.com/kushalkolar/MESmerize.git
-
-
-#. cd & switch to the snap branch::
+Activate this environment::
     
-    cd MESmerize
-    git checkout snap
+    source <new_venv_path/bin/activate>
 
-#. Install some build dependencies::
-
-    pip install Cython numpy python-dateutil
+Make sure you have a recent version of pip and setuptools::
     
-#. Install remaining dependencies::
+    pip install --upgrade pip setuptools
 
-    pip install -r requirements.txt
+install Cython & numpy::
 
-#. Build some things::
+    pip install Cython numpy
 
-    python setup.py build_ext -i
+Install mesmerize::
 
-#. Add to PYTHONPATH environment variable. You will always need to add the path to MESmerize to the PYTHONPATH environment varible before launching.::
+    pip install mesmerize
 
-    export PYTHONPATH=$PWD:$PYTHONPATH
+Now you should be be able to launch mesmerize from the terminal::
+
+    mesmerize
     
-#. Launch::
+You will always need to activate the environment for Mesmerize before launching it.
 
-    python ./mesmerize
+If you want Caiman features you'll need to install caiman into this environment::
+
+    git clone https://github.com/flatironinstitute/CaImAn
+    cd CaImAn/
+    source activate caiman
+    pip install .
+
+More information on caiman installation::
+
+    https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
 
     
 Mac OSX
@@ -164,36 +152,23 @@ This might take a while.
 
     source activate mesmerize
 
+#. Install ``caiman`` for Caiman features::
+
+    conda install -c conda-forge caiman
+
 #. Install cython, numpy and pandas::
 
-    conda install cython numpy pandas
-
-#. Clone the mesmerize repo and enter it::
-
-    git clone https://github.com/kushalkolar/MESmerize.git
-    cd MESmerize
-
-#. Checkout the snap branch::
-
-    git checkout snap
-
-#. Install more dependencies::
-
-    pip install -r requirements.txt
+    conda install cython numpy pandas~=0.25.3
 
 #. Install Mesmerize::
 
-    CFLAGS='-stdlib=libc++' python setup.py build_ext -i
+    pip install mesmerize
 
-**Launching Mesmerize**
+#. To launch Mesmerize call it from the terminal::
 
-#. Export the path to the MESmerize repo directory::
-
-    export PYTHONPATH=<path_to_MESmerize_dir>
-
-#. Launch. It may take a few minutes the first time::
-
-    python <path_to_MESmerize_dir>/mesmerize
+    mesmerize
+    
+You will always need to activate the environment for Mesmerize before launching it.
 
 **You might get a matplotlib error, if so execute the following which appends the default matplotlib backend-option. Note that this will probably affect matplotlib in all your environments**::
 
@@ -255,14 +230,34 @@ You will also need git: https://gitforwindows.org/
 
     python <path to MESmerize dir>/mesmerize
 
-    
-Troubleshooting
-===============
 
-Qt version
-----------
+From GitHub (Development)
+=========================
+First, make sure you have compilers & python3.6 (see the details above for various Linux distros or Mac OSX)
     
-.. _pip_install:
+#. Create a virtual environment::
+    
+    # Choose a path to house the virtual environment
+    python3.6 -m venv /path/to/venv
+    
+#. Activate the virtual environment::
 
-PyPI
-====
+    source /path/to/venv/bin/activate
+    
+#. Upgrade pip & setuptools & install some build dependencies::
+
+    pip install --upgrade pip setuptools
+    pip install Cython numpy
+
+#. Clone the repo::
+
+    git clone https://github.com/kushalkolar/MESmerize.git
+    cd MESmerize
+    
+#. Switch to new branch::
+
+    git checkout -b my-new-feature
+
+#. Install in editable mode::
+
+    pip install -e .
