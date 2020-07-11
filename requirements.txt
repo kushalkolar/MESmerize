@@ -39,3 +39,5 @@ tensorflow~=1.15
 tk
 tcl
 yapf
+qtap
+
