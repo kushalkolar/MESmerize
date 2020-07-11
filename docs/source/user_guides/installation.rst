@@ -156,9 +156,9 @@ This might take a while.
 
     conda install -c conda-forge caiman
 
-#. Install cython, numpy and pandas::
+#. Install cython, and downgrade pandas::
 
-    conda install cython numpy pandas~=0.25.3, 
+    conda install Cython pandas~=0.25.3, 
 
 #. Install tslearn::
 
@@ -181,7 +181,7 @@ You will always need to activate the environment for Mesmerize before launching 
 Windows
 =======
 
-Only Windows 10 is supported.
+Tested on Windows 10, not sure if it'll work on earlier Windows versions.
 
 Download & install Anaconda for Python 3: https://www.anaconda.com/distribution/
 
@@ -195,6 +195,8 @@ You will also need git: https://gitforwindows.org/
 
     conda init powershell
 
+You will need a relatively recent version of Anaconda in order to run conda commands through the powershell.
+    
 #. Create a new anaconda environment::
 
     conda create -n mesmerize
@@ -207,10 +209,10 @@ You will also need git: https://gitforwindows.org/
 
     conda install -c conda-forge caiman
     
-#. Downgrade pandas::
+#. Downgrade pandas, install Cython::
 
-    conda install pandas==0.25.3
-        
+    conda install Cython pandas~=0.25.3
+    
 #. Install tslearn::
 
     conda install -c conda-forge tslearn==0.2.1
