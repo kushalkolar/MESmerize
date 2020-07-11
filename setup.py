@@ -23,8 +23,8 @@ install_requires = \
         "python-dateutil>=2.8.0",
         "QtPy>=1.6.0",
         "scikit-image==0.17.2",  # do not change
-        "scikit-learn==0.20.2",  # do not change
-        "scipy==1.2.1",  # do not change
+        "scikit-learn>=0.20.2",  # do not change
+        "scipy>=1.2.1",  # do not change
         "seaborn==0.9.0",  # do not change
         "spyder==3.3.3",  # do not change
         "tifffile",  # do not change
@@ -65,7 +65,7 @@ with open("README.md", 'r') as fh:
 
 setup(
     name='mesmerize',
-    version='0.2.0',
+    version='0.2.15',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     entry_points=entry_points,

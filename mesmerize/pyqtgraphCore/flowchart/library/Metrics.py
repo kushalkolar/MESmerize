@@ -1,7 +1,5 @@
 from .common import *
 import numpy as np
-from sklearn.metrics import calinski_harabaz_score
-from sklearn.cluster import KMeans
 from ....analysis.math import drfft_dtw
 
 
