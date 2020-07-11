@@ -1,10 +1,15 @@
 name: mesmerize
 base: core18
-version: 0.1.0
+version: 0.2.0
 grade: stable
 summary: Platform for Calcium Imaging analysis
 description: >
-  Calcium imaging anlaysis platform. Website: mesmerizelab.org
+    Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. It encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and aids in the creation of FAIR-functionally linked datasets. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.
+    Version 0.2 comes with many new features including 3D support. See the github repo for details.
+    Packaged with CaImAn version: 1.8.4
+    GitHub: https://github.com/kushalkolar/MESmerize
+    biorxiv manuscript: https://www.biorxiv.org/content/10.1101/840488v1
+    
 confinement: strict
 
 architectures:

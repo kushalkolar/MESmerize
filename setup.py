@@ -1,6 +1,5 @@
 from setuptools import setup, find_packages
 
-
 entry_points = {'console_scripts': ['mesmerize=mesmerize.__main__:main']}
 
 install_requires = \
@@ -23,8 +22,8 @@ install_requires = \
         "python-dateutil>=2.8.0",
         "QtPy>=1.6.0",
         "scikit-image==0.17.2",  # do not change
-        "scikit-learn==0.20.2",  # do not change
-        "scipy==1.2.1",  # do not change
+        "scikit-learn~=0.23.1",  # do not change
+        "scipy~=1.5.1",  # do not change
         "seaborn==0.9.0",  # do not change
         "spyder==3.3.3",  # do not change
         "tifffile",  # do not change
@@ -63,10 +62,44 @@ classifiers = \
 with open("README.md", 'r') as fh:
     long_description = fh.read()
 
+# Caiman stuff
+
+import os
+from os import path
+import sys
+import numpy as np
+from Cython.Build import cythonize
+from setuptools.extension import Extension
+from distutils.command.build_ext import build_ext
+
+binaries = ['caimanmanager.py']
+extra_dirs = ['bin', 'model']
+data_files = []
+
+for part in extra_dirs:
+    newpart = [("share/caiman/" + d, [os.path.join(d, f) for f in files]) for d, folders, files in os.walk(part)]
+    for newcomponent in newpart:
+        data_files.append(newcomponent)
+
+data_files.append(['bin', binaries])
+
+extra_compiler_args = []
+
+ext_modules = [Extension("caiman.source_extraction.cnmf.oasis",
+                         sources=["caiman/source_extraction/cnmf/oasis.pyx"],
+                         include_dirs=[np.get_include()],
+                         language="c++",
+                         extra_compile_args=extra_compiler_args,
+                         extra_link_args=extra_compiler_args,
+                         )]
+
 setup(
     name='mesmerize',
     version='0.2.0',
     packages=find_packages(exclude=['tests']),
+    data_files=data_files,
+    ext_modules=cythonize(ext_modules),
+    cmd_class={'build_ext': build_ext},
     include_package_data=True,
     entry_points=entry_points,
     url='https://github.com/kushalkolar/MESmerize',
