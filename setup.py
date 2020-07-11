@@ -32,7 +32,7 @@ install_requires = \
         "PeakUtils",
         "tables>=3.6.1",
         "joblib>=0.15.1",
-        "tslearn~=0.2.2",  # do not change
+        #"tslearn~=0.2.2",  # had to remove because of windows
         "graphviz>=0.13",
         "numba>=0.50.0",
         "bottleneck==1.2.1",  # do not change

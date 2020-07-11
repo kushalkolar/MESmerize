@@ -71,13 +71,13 @@ pip (PyPI)
 
 **You will need python==3.6, there is a bug with Qt & python3.7**
 
-Install python 3.6::
+#. Install python 3.6::
     # Debian & Ubuntu based
     sudo apt-get install python3.6
     # Fedora/CentOS
     sudo dnf install python36
 
-Install build tools and other dependencies::
+#. Install build tools and other dependencies::
     
     # Debian & Ubuntu based distros
     sudo apt-get install build-essential python3-devel qt5-default tcl graphviz git
@@ -86,38 +86,38 @@ Install build tools and other dependencies::
     sudo dnf install @development-tools
     sudo dnf install python3-devel tcl graphviz
     
-It should be easy to google and find the name of the meta-package your your distribution uses to get necessary build tools.
+For other distributions install the equivalent meta package to get build tools.
 
 If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using::
     sudo dnf install redhat-rpm-config
     
-Create a new virtual environment::
+#. Create a new virtual environment::
 
     python3.6 -m venv <new_venv_path>
 
-Activate this environment::
+#. Activate this environment::
     
     source <new_venv_path/bin/activate>
 
-Make sure you have a recent version of pip and setuptools::
+#. Make sure you have a recent version of pip and setuptools::
     
     pip install --upgrade pip setuptools
 
-install Cython & numpy::
+#. Install tslearn::
 
-    pip install Cython numpy
+    pip install tslearn~=0.2.2
 
-Install mesmerize::
+#. Install mesmerize::
 
     pip install mesmerize
 
-Now you should be be able to launch mesmerize from the terminal::
+#. Now you should be be able to launch mesmerize from the terminal::
 
     mesmerize
     
 You will always need to activate the environment for Mesmerize before launching it.
 
-If you want Caiman features you'll need to install caiman into this environment::
+#. If you want Caiman features you'll need to install caiman into this environment::
 
     git clone https://github.com/flatironinstitute/CaImAn
     cd CaImAn/
@@ -132,7 +132,7 @@ More information on caiman installation::
 Mac OSX
 =======
 
-This requires Anaconda and will install Mesmerize in an Anaconda environment. Tested on macOS Catalina 10.15.1
+This requires Anaconda and will install Mesmerize in an Anaconda environment. If you want to install into a python virtual environment use the instructions for the Linux installation from step #3 onward. Tested on macOS Catalina 10.15.1
 
 Download Anaconda for Python 3: https://www.anaconda.com/distribution/
     
@@ -158,8 +158,12 @@ This might take a while.
 
 #. Install cython, numpy and pandas::
 
-    conda install cython numpy pandas~=0.25.3
+    conda install cython numpy pandas~=0.25.3, 
 
+#. Install tslearn::
+
+    conda install -c conda-forge tslearn==0.2.1
+    
 #. Install Mesmerize::
 
     pip install mesmerize
