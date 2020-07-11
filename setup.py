@@ -22,6 +22,7 @@ install_requires = \
         "PyQt5>=5.9.2,<=5.12",
         "python-dateutil>=2.8.0",
         "QtPy>=1.6.0",
+        "qtap",
         "scikit-image==0.17.2",  # do not change
         "scikit-learn>=0.20.2",  # do not change
         "scipy>=1.2.1",  # do not change
