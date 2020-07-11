@@ -219,7 +219,7 @@ You will also need git: https://gitforwindows.org/
     
     pip install mesmerize
 
-#. Allow powershell to execute scripts, this is required for the batch manager and k-Shape GUI which launch external processes. This may affect the security of your system by allowing scripts to be executable. I'm not an expert on Windows so if someone knows a better way to do this let me know! As far as I know, I'm not sure why you would even try to execute untrusted scripts so this shouldn't be a concern?::
+#. Allow powershell to execute scripts, this is required for the batch manager and k-Shape GUI which launch external processes. This may affect the security of your system by allowing scripts to be executable. I'm not an expert on Windows so if someone knows a better way to do this let me know! As far as I know, I'm not sure why you would try to execute untrusted scripts so this shouldn't be a concern?::
 
     Set-ExecutionPolicy RemoteSigned
     Set-ExecutionPolicy Bypass -scope Process -Force
