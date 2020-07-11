@@ -56,39 +56,15 @@ Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesme
 
 ## Installation
 
-**The easiest way to get Mesmerize is to install the snap (Linux only). You can also install directly from the repo on Windows, Linux & Mac OSX.**
+If you're familiar with virtual environments and have necessary build tools, installation is as simple as:
 
-See the docs for installation instructions in all operating systems:
+```
+pip install tslearn~=0.2.2
+pip install mesmerize
+```
+
+After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
+
+If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
 
 http://mesmerizelab.org/user_guides/installation.html
-
-### Snap
-[https://snapcraft.io/mesmerize](https://snapcraft.io/mesmerize)
-
-**Note: The snap comes with a version of Caiman from ~late 2018. We're currently working on getting the snap up to date with the latest release.**
-
-**v0.2 will soon be available on snap**
-
-After installation simply run `mesmerize` in the terminal and the application will launch in ~10-30 seconds.
-
-Command line snap installation:
-```bash
-sudo snap install mesmerize.
-```
-Make sure you have `snapd` installed, which is required for running snap apps.
-If you are on Ubuntu 16.04 or later snapd should be pre-installed.
-
-You should be able to install `snapd` through apt for most Debian based distros
-```bash
-sudo apt update
-sudo apt install snapd
-```
-
-Installing `snapd` on Fedora
-```bash
-sudo dnf install snapd
-```
-
-To install `snapd` on other distros please see: [https://docs.snapcraft.io/installing-snapd](https://docs.snapcraft.io/installing-snapd).
-
-The snap has been tested to work on Ubuntu 18.04, Debian 9 (Stretch) and Fedora 29.
