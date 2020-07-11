@@ -71,7 +71,7 @@ if IS_WINDOWS:
     _prefix_commands += \
         [
             "# If using anaconda, you may need a command to activate the conda environment.",
-            "# If this is the case, uncomment the following line."
+            "# If this is the case, uncomment the following line.",
             "# conda activate mesmerize",
             "\n"
         ]
