@@ -238,7 +238,10 @@ You will need a relatively recent version of Anaconda in order to run conda comm
 
     mesmerize
 
+    
+.. note:: In order to use some features, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the conda environment that mesmerize is installed in. By default the pre-run commands contain ``# conda activate mesmerize`` but you will need to uncomment the line (remove the ``#``) or change it if you are using an environment with a different name.
 
+    
 From GitHub (Development)
 =========================
 First, make sure you have compilers & python3.6 (see the details above for various Linux distros or Mac OSX)

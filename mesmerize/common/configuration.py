@@ -54,15 +54,27 @@ console_history_path = os.path.join(sys_cfg_dir, 'console_history')
 if not os.path.isdir(console_history_path):
     os.makedirs(console_history_path)
 
-_prefix_comments = ['# For example if you are running in an anaconda environment',
-                    '# export PATH="/home/<user>/anaconda3:$PATH"',
-                    '# source activate my_environment',
-                    '# Or if you are using a python virtual environment',
-                    '# source /home/<>/python_envs/my_venv/bin/activate',
-                    '# Adjust these according to your hardware']
+_prefix_comments = \
+    [
+        '# For example if you are running in an anaconda environment',
+        '# export PATH="/home/<user>/anaconda3:$PATH"',
+        '# source activate my_environment',
+        '# Or if you are using a python virtual environment',
+        '# source /home/<>/python_envs/my_venv/bin/activate',
+        '# Adjust these according to your hardware'
+    ]
 
 _prefix_commands = _prefix_comments + ["export MKL_NUM_THREADS=1",
                                        "export OPENBLAS_NUM_THREADS=1", '\n']
+
+if IS_WINDOWS:
+    _prefix_commands += \
+        [
+            "# If using anaconda, you may need a command to activate the conda environment.",
+            "# If this is the case, uncomment the following line."
+            "# conda activate mesmerize",
+            "\n"
+        ]
 
 default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       '_MESMERIZE_USE_CUDA': False,
@@ -173,4 +185,4 @@ def open_proj_config():
 
 
 def set_proj_special():
-        special['Timings'] = proj_cfg.options('STIM_DEFS')
+    special['Timings'] = proj_cfg.options('STIM_DEFS')
