@@ -134,6 +134,9 @@ class KShapeMeansPlot(MatplotlibWidget):
         self.fig.tight_layout()
 
         for c_ix, i in enumerate(iter_product(range(self.nrows), range(self.ncols))):
+            if self.nrows == 1:  # matplotlib just uses a 1D axes array if nrows=1
+                i = i[1]
+
             if c_ix == n_clusters:
                 break
 
@@ -769,6 +772,9 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         """Update the curve plots (raw samples)"""
         max_num_curves = self.control_widget.ui.spinBoxMaxNumCurves.value()
         show_centers = self.control_widget.ui.checkBoxShowKShapeCenters.isChecked()
+
+        if self.control_widget.ui.listWidgetClusterNumber.currentItem() is None:
+            self.control_widget.ui.listWidgetClusterNumber.setCurrentRow(0)
 
         cluster_num = int(self.control_widget.ui.listWidgetClusterNumber.currentItem().text())
 
