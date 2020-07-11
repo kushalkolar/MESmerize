@@ -17,9 +17,50 @@ architectures:
     run-on: amd64
 
 parts:
+  caiman:
+    after: [desktop-qt5]
+    plugin: python
+    python-version: python3
+    python-packages: [Cython, python-dateutil, numpy]
+    source ./CaImAn
+    build-packages:
+      - tcl
+      - python3
+      - python3-tk
+      - python3-pyqt5
+      - gcc
+      - g++
+      - libatlas-base-dev
+      - gfortran
+      - libblas3
+      - liblapack3
+      - libopenblas-dev
+      - liblapack-dev
+      - libblas-dev
+      - cython3
+      - graphviz
+    stage-packages:
+      - gcc
+      - g++
+      - libatlas-base-dev
+      - gfortran
+      - libblas3
+      - liblapack3
+      - libopenblas-dev
+      - liblapack-dev
+      - libblas-dev
+      - tcl
+      - python3
+      - python3-tk
+      - python3-pyqt5
+      - libc-bin
+      - locales
+      - cython3
+      - qtwayland5
+      - graphviz
     # Should try including desktop-gtk3 at some time to see if it fixes warnings on Fedora?
   mesmerize:
-    after: [desktop-qt5]
+    after: [caiman]
     plugin: python
     #requirements: requirements.txt
     # Cython is required for setup.py, python-dateutils is required by pandas and for whatever reason doesn't get installed automatically
@@ -27,7 +68,7 @@ parts:
     python-version: python3
     source: .
 #    source-type: git
-    source-branch: snap-v0.2
+    #source-branch: snap-v0.2
     build-packages:
       - tcl
       - python3
