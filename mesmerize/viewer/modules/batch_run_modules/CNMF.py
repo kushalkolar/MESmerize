@@ -32,16 +32,14 @@ import json
 import logging
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
-                    format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
-
-
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI
     from ...core import ViewerUtils, ViewerWorkEnv
 
 
 def run(batch_dir: str, UUID: str):
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                        format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
