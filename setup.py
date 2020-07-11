@@ -68,7 +68,6 @@ setup(
     name='mesmerize',
     version='0.2.15',
     packages=find_packages(exclude=['tests']),
-    include_package_data=True,
     entry_points=entry_points,
     url='https://github.com/kushalkolar/MESmerize',
     license='GNU General Public License v3.0',

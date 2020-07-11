@@ -18,11 +18,11 @@ architectures:
 
 parts:
   caiman:
-    after: [desktop-qt5]
+    after: [mesmerize]
     plugin: python
     python-version: python3
-    python-packages: [Cython, python-dateutil, numpy]
-    source ./CaImAn
+    #python-packages: [Cython, python-dateutil, numpy]
+    source: ./CaImAn
     build-packages:
       - tcl
       - python3
@@ -59,12 +59,56 @@ parts:
       - qtwayland5
       - graphviz
     # Should try including desktop-gtk3 at some time to see if it fixes warnings on Fedora?
+    
+  # dummy to get Cython and numpy installed since snap doesn't use pyproject.toml AFAIK
+  dummy-setup:
+    after: [desktop-qt5]
+    plugin: python
+    python-packages: [Cython, python-dateutil, numpy]
+    python-version: python3
+    source: ./dummy_setup
+    build-packages:
+      - tcl
+      - python3
+      - python3-tk
+      - python3-pyqt5
+      - gcc
+      - g++
+      - libatlas-base-dev
+      - gfortran
+      - libblas3
+      - liblapack3
+      - libopenblas-dev
+      - liblapack-dev
+      - libblas-dev
+      - cython3
+      - graphviz
+    stage-packages:
+      - gcc
+      - g++
+      - libatlas-base-dev
+      - gfortran
+      - libblas3
+      - liblapack3
+      - libopenblas-dev
+      - liblapack-dev
+      - libblas-dev
+      - tcl
+      - python3
+      - python3-tk
+      - python3-pyqt5
+      - libc-bin
+      - locales
+      - cython3
+      - qtwayland5
+      - graphviz
+      
   mesmerize:
-    after: [caiman]
+    after: [dummy-setup]
     plugin: python
     #requirements: requirements.txt
     # Cython is required for setup.py, python-dateutils is required by pandas and for whatever reason doesn't get installed automatically
-    python-packages: [Cython, python-dateutil, numpy]
+    #python-packages: [Cython, python-dateutil, numpy]
     python-version: python3
     source: .
 #    source-type: git
@@ -162,9 +206,9 @@ apps:
       - network
       - network-bind
       - removable-media
-      
   jupyter:
     command: bin/jupyter
+    environment:
         # To work on Fedora
         DISABLE_WAYLAND: 1
         PYTHONPATH: ' '
@@ -179,9 +223,9 @@ apps:
       - network
       - network-bind
       - removable-media
-
   jupyter-lab:
     command: bin/jupyter-lab
+    environment:
         # To work on Fedora
         DISABLE_WAYLAND: 1
         PYTHONPATH: ' '
@@ -196,14 +240,12 @@ apps:
       - network
       - network-bind
       - removable-media
-      
   caimanmanager:
     command: bin/caimanmanager.py
+    environment:
         PYTHONPATH: ' '
     plugs:
       - home
       - network
       - network-bind
       - removable-media
-    
-    
