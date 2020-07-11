@@ -31,7 +31,7 @@ import traceback
 # import numba
 from glob import glob
 from time import time
-
+import logging
 
 if not sys.argv[0] == __file__:
     from ...core.common import ViewerUtils
@@ -39,6 +39,8 @@ if not sys.argv[0] == __file__:
 
 
 def run(batch_dir: str, UUID: str):
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                        format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}

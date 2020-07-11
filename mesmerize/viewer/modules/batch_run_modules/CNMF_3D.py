@@ -31,14 +31,15 @@ from glob import glob
 import json
 import shutil
 
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
-                    format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
 
 if not sys.argv[0] == __file__:
     from ...core import ViewerUtils, ViewerWorkEnv
 
 
 def run(work_dir: str, UUID: str, save_temp_files: str):
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                        format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
+
     start_time = time()
 
     batch_dir = os.environ['CURR_BATCH_DIR']

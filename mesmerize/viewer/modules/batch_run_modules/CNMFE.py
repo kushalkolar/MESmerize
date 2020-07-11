@@ -28,10 +28,6 @@ from functools import partial
 import traceback
 from time import time, sleep
 import logging
-
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
-                    format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
-
 import caiman as cm
 from caiman.source_extraction import cnmf
 from caiman.utils.utils import load_dict_from_hdf5
@@ -50,6 +46,9 @@ if not sys.argv[0] == __file__:
 
 
 def run(batch_dir: str, UUID: str):
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                        format="%(relativeCreated)12d [%(filename)s:%(funcName)20s():%(lineno)s] [%(process)d] %(message)s")
+
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
