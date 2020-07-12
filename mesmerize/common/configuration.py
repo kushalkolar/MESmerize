@@ -85,6 +85,9 @@ default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       'recent_projects': []
                       }
 
+if IS_WINDOWS:
+    default_sys_config.update({'_MESMERIZE_PYTHON_CALL': 'python3'})
+
 
 class SysConfig:
     def __init__(self, n_threads: int,
