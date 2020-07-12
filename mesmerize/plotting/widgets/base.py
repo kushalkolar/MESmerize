@@ -194,6 +194,7 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
         plot_state['type'] = self.__class__.__name__
         self.transmission.plot_state = plot_state
         self.transmission.to_hdf5(path)
+        print(f"{self.__class__.__name__} plot saved to: {path}")
 
     @use_open_dir_dialog('Select Project Folder', None)
     @use_open_file_dialog('Choose plot file', None, ['*.ptrn'])
