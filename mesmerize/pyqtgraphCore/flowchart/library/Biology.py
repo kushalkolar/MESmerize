@@ -57,7 +57,7 @@ class StimTuning(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
-        self.widget = TuningCurvesWidget(parent=None)
+        self.widget = TuningCurvesWidget()
         self.widget.sig_output_changed.connect(self._send_output)
         self.ctrls['ShowGUI'].clicked.connect(self.widget.show)
         self.output_transmission = None

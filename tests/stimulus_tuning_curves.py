@@ -8,7 +8,7 @@ def main():
     t.set_proj_path('/share/data/temp/kushal/pvc7_subdataset_mesmerize')
     t.set_proj_config()
 
-    w = TuningCurvesWidget(None)
+    w = TuningCurvesWidget()
     w.set_input(t)
     w.show()
     return w
