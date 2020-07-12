@@ -13,7 +13,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 from .datapoint_tracer_pytemplate import *
 from ...analysis.history_widget import HistoryTreeWidget
-from ...pyqtgraphCore import ImageView, LinearRegionItem, mkColor
+from ...pyqtgraphCore import ImageView, LinearRegionItem, mkColor, PlotDataItem
 from uuid import UUID
 import pandas as pd
 import tifffile
@@ -67,7 +67,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         self.peak_region = TimelineLinearRegion(self.ui.graphicsViewPlot)
         self.roi = None
 
-        self.plot_data_item = None
+        self.plot_data: np.ndarray = None
+        self.plot_data_item: PlotDataItem = None
 
         self.ui.radioButtonMaxProjection.clicked.connect(lambda x: self.set_image('max'))
         self.ui.radioButtonSTDProjection.clicked.connect(lambda x: self.set_image('std'))
@@ -77,7 +78,8 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
     def set_widget(self, datapoint_uuid: UUID, data_column_curve: str, row: pd.Series, proj_path: str,
                    history_trace: Optional[list] = None, peak_ix: Optional[int] = None, tstart: Optional[int] = None,
-                   tend: Optional[int] = None, roi_color: Optional[Union[str, float, int, tuple]] = 'ff0000'):
+                   tend: Optional[int] = None, roi_color: Optional[Union[str, float, int, tuple]] = 'ff0000',
+                   clear_linear_regions: bool = True):
         """
         Set the widget from the datapoint.
 
@@ -130,16 +132,26 @@ class DatapointTracerWidget(QtWidgets.QWidget):
         elif self.ui.radioButtonSTDProjection.isChecked():
             self.img_proj = 'std'
 
-        self.peak_region.clear_all()
-        self.ui.graphicsViewPlot.clear()
+        if clear_linear_regions:
+            self.peak_region.clear_all()
+
         if (tstart is not None) and (tend is not None):
             self.peak_region.add_linear_region(tstart, tend, color=mkColor('#a80035'))
+
+        # get the plot data
         try:
-            self.plot_data_item = \
-                self.ui.graphicsViewPlot.plot(self.row[data_column_curve].item())
+            self.plot_data = self.row[data_column_curve].item()
         except:
-            self.plot_data_item = \
-                self.ui.graphicsViewPlot.plot(self.row[data_column_curve])
+            self.plot_data = self.row[data_column_curve]
+
+        # get a new pyqtgraph plot data item
+        if self.plot_data_item is None:
+            self.plot_data_item = self.ui.graphicsViewPlot.plot(self.plot_data)
+
+        # or set the existing one
+        else:
+            self.plot_data_item.clear()
+            self.plot_data_item.setData(self.plot_data)
 
         self.plot_data_item.setPen('w', width=2)
 

@@ -215,7 +215,6 @@ class PlotArea(MatplotlibWidget):
 
     def clear(self):
         self.fig.clear()
-        self._ax = self.fig.add_subplot(111)
 
 
 class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
@@ -296,6 +295,8 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.color_legend_items = []
         self.pseudo_plots = []
 
+        self.current_stim_region_plot: str = None
+
         self.update_live = True
 
     def update_tuning_curves(self, params: dict):
@@ -356,6 +357,7 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget.ui.listWidget_rois.clear()
         self.control_widget.ui.listWidget_rois.setItems(self.roi_uuid_map.keys())
+        self.current_stim_region_plot = None
 
     @BasePlotWidget.signal_blocker
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
@@ -407,12 +409,21 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
             data_column_curve=dpt_column,
             row=r,
             proj_path=self.transmission.get_proj_path(),
-            history_trace=h
+            history_trace=h,
+            clear_linear_regions=False
         )
 
         self.set_datapoint_tracer_stimulus_regions()
 
     def set_datapoint_tracer_stimulus_regions(self):
+        selected_stim_type = self.datapoint_tracer_stimulus_options_combobox.currentText()
+
+        # don't redraw
+        if self.current_stim_region_plot == selected_stim_type:
+            return
+
+        self.current_stim_region_plot = selected_stim_type
+
         roi_ix = self.control_widget.ui.listWidget_rois.currentItem().text()
         uuid_curve = self.roi_uuid_map[roi_ix]
 
@@ -420,7 +431,6 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.transmission.df['uuid_curve'] == uuid_curve
             ]
 
-        selected_stim_type = self.datapoint_tracer_stimulus_options_combobox.currentText()
         stim_df = r['stim_maps'].item()[0][0][selected_stim_type].sort_values(by='start')
 
         stims = stim_df.name.unique().astype(str)
@@ -477,6 +487,17 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.sig_output_changed.emit(t)
 
+    def save_plot(self, path):
+        t = self.transmission.copy()
+
+        params = self.params['kwargs']
+        params.update({'data_column': self.data_column})
+
+        self.transmission.history_trace.add_operation('all', operation='tuning_curves', parameters=params)
+        super(TuningCurvesWidget, self).save_plot(path)
+
+        self.transmission = t
+
     def set_update_live(self, b: bool):
         pass
 
@@ -485,4 +506,9 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
-        self.control_widget.set_state(opts)
+        # it will try to set the roi index without
+        # any Sample having been selected
+        try:
+            self.control_widget.set_state(opts)
+        except AttributeError:
+            pass
