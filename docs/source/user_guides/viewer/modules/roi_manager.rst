@@ -52,6 +52,10 @@ Add Tag to ROI Def...       Set the tag for the current selection in the Tags li
 Set ROI Tag                 Click to set the tag, or just press return in the text entry above
 ========================    ==========================================
 
+
+.. note:: It is generally advisable to keep your ROI tags short with lowercase letters. When sharing your project you can provide a mapping for all your keys. This helps maintain consistency throughout your project and makes the data more readable.
+
+
 **Keyboard shortcuts**.
 
 These only work when the ROI manager is docked within the Viewer and while you are typing in the *Add Tag to ROI Definition* text entry.

@@ -34,6 +34,8 @@ Import and Export are not implemented yet.
 
 .. warning:: At the moment, only "frames" are properly supported for the time units.
 
+.. note:: It is generally advisable to keep your stimulus names short with lowercase letters. When sharing your project you can provide a mapping for all your keys. This helps maintain consistency throughout your project and makes the data more readable.
+
 Script
 ======
 

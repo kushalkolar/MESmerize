@@ -53,6 +53,8 @@ Categorical Data Columns
 
 .. note:: You can change the project configuration at any point in the future by adding new columns or changing the visible/hidden columns.
 
+.. note:: It is generally advisable to keep the names of your categorical data columns short with lowercase letters. When sharing your project you can provide a mapping for all your keys. This helps maintain consistency throughout your project and makes the data more readable.
+
 .. _ROITypeColumns:
 
 ROI Type Columns
