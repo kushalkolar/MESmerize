@@ -22,7 +22,7 @@ Associated bioRxiv paper: https://doi.org/10.1101/840488
 
 ## Installation
 
-If you're familiar with anaconda or virtual environments, and have the necessary build tools, installation is as simple as:
+If you're familiar with anaconda or virtual environments, installation is as simple as:
 
 ```
 pip install tslearn~=0.2.2
