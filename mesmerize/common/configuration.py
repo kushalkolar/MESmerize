@@ -86,7 +86,7 @@ default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       }
 
 if IS_WINDOWS:
-    default_sys_config.update({'_MESMERIZE_PYTHON_CALL': 'python3'})
+    default_sys_config.update({'_MESMERIZE_PYTHON_CALL': 'python'})
 
 
 class SysConfig:
