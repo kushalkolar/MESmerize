@@ -61,12 +61,12 @@ classifiers = \
         "Intended Audience :: Science/Research"
     ]
 
-with open("README.md", 'r') as fh:
+with open("readme-pypi.md", 'r') as fh:
     long_description = fh.read()
 
 setup(
     name='mesmerize',
-    version='0.2.15',
+    version='0.2.0',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     entry_points=entry_points,
