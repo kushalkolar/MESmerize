@@ -12,10 +12,14 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from collections import UserList
-from PyQt5 import QtCore, QtWidgets
-# from . import is_app
+from PyQt5 import QtCore, QtGui, QtWidgets
 from . import start
 from functools import partial
+import os
+
+
+mpath = os.path.abspath(__file__)
+mdir = os.path.dirname(mpath)
 
 
 class WindowManager:
@@ -71,6 +75,7 @@ class WindowList(UserList):
         # self.list_widget.addItem(str(self.__len__() + 1))
         window.setWindowTitle('{} - {}'.format(self.window_name, self.__len__() + 1))
         window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        window.setWindowIcon(QtGui.QIcon(mdir + '/icons/main_icon.gif'))
         super(WindowList, self).append(window)
 
     # def _get_selected_window(self) -> QtWidgets.QMainWindow:
