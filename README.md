@@ -4,7 +4,33 @@
 
 Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
 
-## News & upcoming
+## Installation
+
+If you're familiar with virtual environments and have necessary build tools, installation is as simple as:
+
+```
+pip install tslearn~=0.2.2
+pip install mesmerize
+```
+
+After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
+
+If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
+http://mesmerizelab.org/user_guides/installation.html
+
+
+## Documentation
+Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesmerizelab.org/)
+
+## Questions/Discussions
+
+Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
+
+[![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+**Issue tracker:** https://github.com/kushalkolar/MESmerize/issues
+
+## News
 
 **July 2020**
 
@@ -43,27 +69,8 @@ https://doi.org/10.1101/840488
 <img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
 </a>
 
-## Questions/Discussions
+## Upcoming
 
-Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
-
-[![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-
-## Documentation
-Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesmerizelab.org/)
-
-## Installation
-
-If you're familiar with virtual environments and have necessary build tools, installation is as simple as:
-
-```
-pip install tslearn~=0.2.2
-pip install mesmerize
-```
-
-After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
-
-If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
-
-http://mesmerizelab.org/user_guides/installation.html
+**Towards v0.3**
+- Full support for recordings from Femtonics microscopes.
+- Export lite versions of projects for easier sharing
