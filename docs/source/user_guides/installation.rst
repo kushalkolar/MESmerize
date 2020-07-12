@@ -258,7 +258,7 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 #. Upgrade pip & setuptools & install some build dependencies::
 
     pip install --upgrade pip setuptools
-    pip install Cython numpy
+    pip install Cython numpy tslearn==0.2.2
 
 #. Fork the main repo on github and clone it::
 
