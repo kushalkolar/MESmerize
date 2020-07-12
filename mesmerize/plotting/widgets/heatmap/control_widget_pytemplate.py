@@ -57,7 +57,7 @@ class Ui_ControlWidget(object):
         self.verticalLayout_2.addWidget(self.doubleSpinBox_vmax)
         self.horizontalLayout_2.addLayout(self.verticalLayout_2)
         self.pushButton_set_vmin_vmax = QtWidgets.QPushButton(ControlWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButton_set_vmin_vmax.sizePolicy().hasHeightForWidth())
