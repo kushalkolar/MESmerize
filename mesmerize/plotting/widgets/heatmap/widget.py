@@ -390,14 +390,14 @@ class HeatmapTracerWidget(BasePlotWidget, HeatmapSplitterWidget):
         self.control_widget.ui.doubleSpinBox_vmax.setValue(_max)
 
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
-        self.control_widget.ui.comboBoxDataColumn.clear()
-        self.control_widget.ui.comboBoxDataColumn.addItems(data_columns)
+        # self.control_widget.ui.comboBoxDataColumn.clear()
+        self.control_widget.ui.comboBoxDataColumn.setItems(data_columns)
 
-        self.control_widget.ui.comboBoxLabelsColumn.clear()
-        self.control_widget.ui.comboBoxLabelsColumn.addItems(categorical_columns)
+        # self.control_widget.ui.comboBoxLabelsColumn.clear()
+        self.control_widget.ui.comboBoxLabelsColumn.setItems(categorical_columns)
 
-        self.control_widget.ui.comboBoxDPTCurveColumn.clear()
-        self.control_widget.ui.comboBoxDPTCurveColumn.addItems(data_columns)
+        # self.control_widget.ui.comboBoxDPTCurveColumn.clear()
+        self.control_widget.ui.comboBoxDPTCurveColumn.setItems(data_columns)
 
     def get_plot_opts(self, drop: bool = False) -> dict:
         """
