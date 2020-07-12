@@ -94,4 +94,7 @@ https://doi.org/10.1101/840488
 
 ## Acknowledgements
 
-I'd like to thank the [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. The [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with. Simon Daste provided sample data and assistance which allowed for creation of the Suite2p importer module. Jordi Zwiggelaar created the Mesmerize logo & banner.
+- [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. 
+- [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with.
+- Simon Daste provided sample data and assistance which allowed for creation of the Suite2p importer module.
+- Jordi Zwiggelaar created the Mesmerize logo & banner.
