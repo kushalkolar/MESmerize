@@ -8,6 +8,8 @@ Chat: [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](h
 
 Downloads: [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize)
 
+Maintenance: ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kushalkolar/MESmerize)
+
 Code analysis: [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability)
 
 Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
