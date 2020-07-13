@@ -1,5 +1,17 @@
+# 0.2.2
+
+### Fixed
+- Heatmap plot widget properly handles live updates from input data
+- Saving of Stimulus tuning curve plots
+- Stimulus plots is faster since linear regions aren't redrawn for the same stiulus type.
+- Curve plot now shows up when the sample is opened via the datapoint tracer.
+
+### Modified
+- Tuning curve plot widget returns stimulus xlabels and yvals to seperate dataframe columns instead of being together in one column as a list.
+
 # 0.2.1
 
+### Fixed
 - Changed default python call in system config for Windows to be ``python`` instead of ``python3``.
 
 # 0.2.0
