@@ -156,17 +156,17 @@ This might take a while.
 
     conda install -c conda-forge caiman
 
+#. Install Mesmerize. On Mac installing tslearn before mesmerize creates problems on anaconda for some reason::
+
+    pip install mesmerize
+    
 #. Install cython, and downgrade pandas::
 
-    conda install Cython pandas~=0.25.3, 
+    conda install Cython pandas~=0.25.3
 
 #. Install tslearn::
 
     conda install -c conda-forge tslearn==0.2.1
-    
-#. Install Mesmerize::
-
-    pip install mesmerize
 
 #. To launch Mesmerize call it from the terminal::
 
@@ -174,7 +174,16 @@ This might take a while.
     
 You will always need to activate the environment for Mesmerize before launching it.
 
-**You might get a matplotlib error, if so execute the following which appends the default matplotlib backend-option. Note that this will probably affect matplotlib in all your environments**::
+**You might get a matplotlib error similar to below**::
+
+    Bad val 'qt5' on line #1
+    "backend: qt5
+    
+    in file "/Users/kushal/.matplotlib/matplotlibrc"
+    Key backend: Unrecognized backend string 'qt5': valid strings are ['GTK3Agg', 'GTK3Cairo', 'MacOSX', 'nbAgg', 'Qt4Agg', 'Qt4Cairo', 'Qt5Agg', 'Qt5Cairo', 'TkAgg', 'TkCairo', 'WebAgg', 'WX', 'WXAgg', 'WXCairo', 'agg', 'cairo', 'pdf', 'pgf', 'ps', 'svg', 'template']
+
+
+**To fix this, execute the following which appends the default matplotlib backend-option. Note that this will probably affect matplotlib in all your environments**::
 
     echo "backend: qt5" >> ~/.matplotlib/matplotlibrc
 
@@ -199,7 +208,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
     
 #. Create a new anaconda environment::
 
-    conda create -n mesmerize
+    conda create -n mesmerize python=3.6
 
 #. Activate the environment::
 
