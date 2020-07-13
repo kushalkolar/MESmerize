@@ -30,7 +30,7 @@ install_requires = \
         "spyder==3.3.3",  # do not change
         "tifffile",  # do not change
         "tqdm>=4.37.0",
-        "PeakUtils",
+        "PeakUtils",  # caiman requirement
         "tables>=3.6.1",
         "joblib>=0.15.1",
         #"tslearn~=0.2.2",  # had to remove because of windows
@@ -39,12 +39,11 @@ install_requires = \
         "bottleneck==1.2.1",  # do not change
         "holoviews",
         "jupyter",
-        "pynwb",
+        "pynwb",  # caiman requirement
         "pyqtgraph",
-        #"tensorflow~=1.15.0",  # do not change
+        #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
         "tcl",
-        "yapf"
     ]
 
 classifiers = \
