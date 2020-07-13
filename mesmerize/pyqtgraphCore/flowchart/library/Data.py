@@ -8,9 +8,11 @@ from ....analysis.history_widget import HistoryTreeWidget
 from ....common import get_project_manager
 from ....common.qdialogs import *
 import os
-from tslearn.preprocessing import TimeSeriesScalerMinMax
 import pickle
 from glob import glob
+from ....common.configuration import HAS_TSLEARN
+if HAS_TSLEARN:
+    from tslearn.preprocessing import TimeSeriesScalerMinMax
 
 
 class LoadProjDF(CtrlNode):
