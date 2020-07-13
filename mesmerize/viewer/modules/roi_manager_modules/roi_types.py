@@ -314,13 +314,15 @@ class ManualROI(BaseROI):
 
     @property
     def curve_data(self) -> tuple:
+        """
+        :return: tuple of (xs, ys)
+        """
         return self.curve_plot_item.getData()
 
     @curve_data.setter
     def curve_data(self, data: tuple):
         """
-
-        :rtype: tuple
+        Curve data as (xs, ys)
         """
         if self.curve_plot_item is None:
             return
@@ -439,7 +441,7 @@ class ScatterROI(BaseROI):
     def set_curve_data(self, y_vals: np.ndarray):
         """Set the curve data"""
         xs = np.arange(len(y_vals))
-        self.curve_data = [xs, y_vals]
+        self.curve_data = [xs, y_vals]  #: list of [xs, ys], xs and ys are 1D numpy arrays
         self.set_viewer_curveplot('curve')
 
     # sets the plot in the viewer
