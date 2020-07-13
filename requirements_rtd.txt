@@ -21,3 +21,4 @@ graphviz>=0.13
 numba>=0.50.0
 tk
 tcl
+sphinxcontrib-images
