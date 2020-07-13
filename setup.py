@@ -41,7 +41,7 @@ install_requires = \
         "jupyter",
         "pynwb",
         "pyqtgraph",
-        "tensorflow~=1.15",  # do not change
+        #"tensorflow~=1.15.0",  # do not change
         "tk",  # do not change
         "tcl",
         "yapf"
