@@ -471,10 +471,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 raise ValueError('roi_index must be either a cnmf index or the direct list index of the ROI_List object')
 
             roi_list.list_widget.setCurrentRow(list_index)
-            rm = self.get_module('roi_manager')
+            rm: roi_manager.ModuleGUI = self.get_module('roi_manager')
             if rm.ui.checkBoxShowAll.isChecked():
                 rm.ui.checkBoxShowAll.click()
             rm.hide()
+
+            # dirty fix for now to get the plot to draw
+            rm.set_curveplot_datatype()
 
         if sample_id is not None:
             self.vi.viewer.ui.label_curr_img_seq_name.setText(sample_id)
