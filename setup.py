@@ -36,7 +36,7 @@ install_requires = \
         #"tslearn~=0.2.2",  # had to remove because of windows
         "graphviz>=0.13",
         "numba>=0.50.0",
-        "bottleneck==1.2.1",  # do not change
+        #"bottleneck==1.2.1",  # do not change
         "holoviews",
         "jupyter",
         "pynwb",  # caiman requirement
