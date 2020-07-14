@@ -356,7 +356,7 @@ Plot
 
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.Plot>`
     
-    For information on the plot widget see :ref:`<plot_SimplePlot>`
+    For information on the plot widget see :ref:`Simple Plot <plot_SimplePlot>`
     
 	A simple plot.
 

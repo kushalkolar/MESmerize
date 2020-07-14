@@ -35,7 +35,7 @@ Dir             Purpose
 =============   ===================================================================================
 dataframes      Contains an file storing the project dataframe, root.dfr, and backups.
 
-                A new backup is created every time a :ref:`Sample <ProjectSample>` is added to the project.
+                A new backup is created every time a a new *Sample* is :ref:`added to the project <add-to-project>`.
                 
                 Restore a backup by renaming it to "root.dfr".
 

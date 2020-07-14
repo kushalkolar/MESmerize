@@ -11,7 +11,7 @@ ROI Manager
 
 The ROI Manager has a manual mode, to draw ROIs manually, and a CNMF(E) mode where ROIs can be imported from CNMF(E) outputs.
 
-.. seealso:: :ref:`CNMF <module_CNMF>`, :ref:`CNMF 3D <_module_CNMF_3D>`, and :ref:`CNMFE <module_CNMFE>`.
+.. seealso:: :ref:`CNMF <module_CNMF>`, :ref:`CNMF 3D <module_CNMF_3D>`, and :ref:`CNMFE <module_CNMFE>`.
 
 .. note:: You cannot combine manual and CNMF(E) ROIs in the same sample.
 
