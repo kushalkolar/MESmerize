@@ -72,29 +72,6 @@ Welcome to Mesmerize's documentation!
 
 	./user_guides/general/misc
 
-.. toctree::
-    :maxdepth: 1
-    :caption: Developer Guide
-    :glob:
-    
-    ./developer_guide/*
-
-.. toctree::
-	:maxdepth: 2
-	:caption: API Reference
-	:glob:
-	
-	./api_reference/common
-	./api_reference/Viewer_data_types
-	./api_reference/viewer_modules/viewer_modules
-	./api_reference/viewer_modules/roi_manager
-	./api_reference/viewer_modules/stimulus_mapping
-	./api_reference/Analysis_data_types
-	./api_reference/analysis
-	./api_reference/nodes
-	./api_reference/plotting/utils
-	./api_reference/plotting/widgets/*
-
 
 
 Indices and tables
