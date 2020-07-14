@@ -10,7 +10,7 @@ SpaceMap
 
 Spatially map a categorical variable onto a projection of a Sample's image sequence
 
-.. thumbnail:: ./spacemap.png
+.. image:: ./spacemap.png
 
 .. note:: Image produced from the following dataset:
     Garner, Aleena (2014): In vivo calcium imaging of layer 4 cells in the mouse using sinusoidal grating stimuli. CRCNS.org.

@@ -64,6 +64,6 @@ Create shareable interactive plots where the analysis history of every datapoint
 
 **Interactive Cross-correlation analysis**
 
-.. thumbnail:: ./user_guides/plots/cross_cor.gif
+.. image:: ./user_guides/plots/cross_cor.gif
 
 Other types of plots: Beeswarm, Violins, KShape, Proportions, Scatter

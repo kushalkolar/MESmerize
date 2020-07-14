@@ -7,11 +7,11 @@ Explore `Cross-correlation functions <https://en.wikipedia.org/wiki/Cross-correl
 
 This is an interactive widget. You can click on the individual cells in the heatmap to view the individual curves, the cross-correlation function of the two curves, and the spatial localization of the ROI that they originate from.
 
-.. thumbnail:: ./cross_cor.gif
+.. image:: ./cross_cor.gif
 
 Layout
 ======
- .. thumbnail:: ./cross_correlation_layout.png
+ .. image:: ./cross_correlation_layout.png
 
 **Left**: Lag or Maxima Matrix (see below) with thresholds applied and visualized as a heatmap. When you click on the individual cells it will open/update the :ref:`DatapointTracer` according to the two curves the cell corresponds to.
 

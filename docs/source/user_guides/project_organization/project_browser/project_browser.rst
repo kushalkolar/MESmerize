@@ -53,7 +53,7 @@ The result is a DataFrame containing all rows where the cell_name contains 'aten
 
 If you go to View -> Current dataframe you can see the whole dataframe.
 
-.. thumbnail:: ./simple_filter_result_2.png
+.. image:: ./simple_filter_result_2.png
 
 To see how the filter translates to pandas commands go to View -> Current tab filter history
 
@@ -96,7 +96,7 @@ If you view the pandas filter history (View -> Current tab filter history) you c
 
 The dataframe
 
-.. thumbnail:: ./multiple_columns_result_dataframe.png
+.. image:: ./multiple_columns_result_dataframe.png
 
 
 .. _ProjectBrowserModifiers:
@@ -129,7 +129,7 @@ Editor
 
 You can view and edit the Project DataFrame directly in a GUI using the DataFrame editor.
 
-.. thumbnail:: ./dataframe_editor.png
+.. image:: ./dataframe_editor.png
 
 .. warning:: Make sure you know what you are doing when you directly modify the Project DataFrame. Changes cannot be undone but you can restore a backup from the project's :ref:`dataframe directory <ProjectStructure>`. For example, do not modify data under the following columns: CurvePath, ImgInfoPath, ImgPath, ROI_State, any uuid column.
 

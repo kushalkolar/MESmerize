@@ -18,7 +18,7 @@ The Batch Manager processes the batch items in external processes, allowing you 
 Layout
 ======
 
-.. thumbnail:: ./batch_manager.png
+.. image:: ./batch_manager.png
 
 Window title: Name of batch directory
 

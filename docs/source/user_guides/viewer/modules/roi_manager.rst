@@ -7,7 +7,7 @@ ROI Manager
 
 **Manage and annotate ROIs**
 
-.. thumbnail:: ./roi_manager_viewer.png
+.. image:: ./roi_manager_viewer.png
 
 The ROI Manager has a manual mode, to draw ROIs manually, and a CNMF(E) mode where ROIs can be imported from CNMF(E) outputs.
 
