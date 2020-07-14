@@ -1,4 +1,4 @@
-# 0.2.2 (not yet released)
+# 0.2.2 (in progress)
 
 ### Fixed
 - Heatmap plot widget properly handles live updates from input data
