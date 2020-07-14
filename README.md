@@ -1,7 +1,7 @@
 ![banner](./banner.png)
 
 | <span> | <span> | <span> | <span> |
--------- |--------|--------|--------|
+|--------|--------|--------|--------|
 | PyPI | [![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) | Downloads | [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) |
 | License | [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) | Maintenance | ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kushalkolar/MESmerize) |
 | Documentation | [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](https://mesmerize.readthedocs.io/en/master/?badge=master) | Code analysis | [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) |
