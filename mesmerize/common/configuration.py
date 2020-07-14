@@ -42,6 +42,19 @@ except ImportError:
 else:
     HAS_CAIMAN = True
 
+
+try:
+    import tslearn
+except ImportError:
+    warn(
+        "tslearn package not found. "
+        "tslearn features will be disabled."
+    )
+    HAS_TSLEARN = False
+else:
+    HAS_TSLEARN = True
+
+
 sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]

@@ -144,8 +144,8 @@ class BeeswarmPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         data_columns = opts['data_columnns']
 
-        for col in data_columns:
-            data =
+        # for col in data_columns:
+        #     data =
 
     def set_current_datapoint(self, identifier: Union[UUID, str]):
         self.current_datapoint = identifier

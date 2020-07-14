@@ -12,7 +12,7 @@ Visualize numerical arrays in the form of a heatmap. Also used for visualization
 
 **Layout**
 
-.. thumbnail:: ./heatmap_layout.png
+.. image:: ./heatmap_layout.png
 
 **Left:** The heatmap. Clicking the heatmap highlights the selected row and upates the :ref:`DatapointTracer`. Right click on the heatmap to clear the selection highlight on the heatmap. You can zoom and pan the heatmap using the tools above the plot area. You can zoom/pan in the legend and heatmap. The up and down keys on your keyboard can be used to move the current row selection.
 
@@ -46,7 +46,7 @@ Parameters
 
 **Layout to visualize Hierarchical Clustering**
 
-.. thumbnail:: ./heatmap_clustering.png
+.. image:: ./heatmap_clustering.png
 
 This plot widget can also be used to visualize a dendrogram on top of a heatmap of data.
 

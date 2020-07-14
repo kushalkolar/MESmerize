@@ -10,10 +10,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 import sys
-from tslearn.clustering import KShape
 import numpy as np
 import pickle
 import os
+from ....common.configuration import HAS_TSLEARN
+if HAS_TSLEARN:
+    from tslearn.clustering import KShape
 
 
 def run(data_path: str, params_path: str):

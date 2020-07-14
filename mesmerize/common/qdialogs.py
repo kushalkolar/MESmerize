@@ -186,9 +186,11 @@ def use_open_dir_dialog(title: str = 'Open directory', start_dir: Union[str, Non
 
     Example:
 
-    @use_open_dir_dialog('Select Project Directory', '')
-    def load_data(self, path, *args, **kwargs):
-        my_func_to_do_stuff_and_load_data(path)
+    .. code-block:: python
+
+        @use_open_dir_dialog('Select Project Directory', '')
+        def load_data(self, path, *args, **kwargs):
+            my_func_to_do_stuff_and_load_data(path)
 
     """
     def wrapper(func):

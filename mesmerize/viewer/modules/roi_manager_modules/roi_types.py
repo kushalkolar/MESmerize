@@ -14,11 +14,10 @@ import abc
 import numpy as np
 from PyQt5 import QtWidgets
 from .... import pyqtgraphCore as pg
-# from typing import Type, TypeVar
 from ....common import get_proj_config, NoProjectOpen, InheritDocs
 from warnings import warn
 from copy import deepcopy
-from typing import Union
+from typing import Union, List
 
 
 class _AbstractBaseROI(metaclass=InheritDocs):
@@ -314,13 +313,15 @@ class ManualROI(BaseROI):
 
     @property
     def curve_data(self) -> tuple:
+        """
+        :return: tuple of (xs, ys)
+        """
         return self.curve_plot_item.getData()
 
     @curve_data.setter
     def curve_data(self, data: tuple):
         """
-
-        :rtype: tuple
+        Curve data as (xs, ys)
         """
         if self.curve_plot_item is None:
             return
@@ -401,6 +402,7 @@ class ScatterROI(BaseROI):
         :param kwargs:
         """
         self.spot_size = 1
+        self.curve_data: List[np.ndarray, np.ndarray] = None  #: list of [xs, ys], xs and ys are 1D numpy arrays
         self._curve_data = None
         self.spike_data = None
         self.dfof_data = None
@@ -506,8 +508,8 @@ class VolCNMF(ScatterROI):
                  spike_data: np.ndarray = None, dfof_data: np.ndarray = None, metadata: dict = None,
                  zlevel: int = 0):
 
-        self.zlevel = zlevel  # z-level of the ROI that is currently visible, different from zValue!!
-        self.zcenter = None   # z-level where this ROI has its center
+        self.zlevel: int = zlevel  #: z-level of the ROI that is currently visible, different from zValue!!
+        self.zcenter: int = None   #: z-level where this ROI has its center
 
         super(VolCNMF, self).__init__(curve_plot_item, view_box, state, curve_data,
                                       spike_data=spike_data, dfof_data=dfof_data,

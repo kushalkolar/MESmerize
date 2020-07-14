@@ -69,7 +69,7 @@ Create ROI-bound *categories* with which you want to group your data. Enter the 
 
 .. seealso:: :ref:`ROI Manager <ROIManager>` to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.
 
-.. _StimulusTypeColums:
+.. _StimulusTypeColumns:
 
 Stimulus Type Columns
 ^^^^^^^^^^^^^^^^^^^^^
@@ -104,7 +104,7 @@ When you add samples to your project from the viewer, you will be prompted to en
 
 .. seealso:: :ref:`Add to Project guide <add-to-project>`
 
-.. thumbnail:: ./add_to_proj.png
+.. image:: ./add_to_proj.png
 
 
 ----

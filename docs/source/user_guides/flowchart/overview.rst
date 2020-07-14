@@ -8,7 +8,7 @@ The Flowchart is based on the `pyqtgraph flowchart widgets <http://www.pyqtgraph
 
 **Flowchart Window**
 
-.. thumbnail:: ./flowchart_overview.png
+.. image:: ./flowchart_overview.png
 
 **Add node**: Right click -> Add node -> Choose from selection
 
@@ -41,7 +41,7 @@ Almost every node uses a Transmission object for input and output. A Transmissio
 
 	**Transmission DataFrame**
 
-	The Transmission DataFrame is created from your :ref:`ProjectDataFrame` (or sub-DataFrame) by the :ref:`node_Load_Proj_DF` node. This initial DataFrame will contain the same columns as your Project DataFrame, and a new column named **_RAW_CURVE**. Each element (row) in the **_RAW_CURVE** column is a 1-D numerical array representing a single raw curve extracted from an ROI. 
+	The Transmission DataFrame is created from your :ref:`Project DataFrame <ProjectBrowser>` (or sub-DataFrame) by the :ref:`Load_Proj_DF node <nodeLoadProjDF>`. This initial DataFrame will contain the same columns as your Project DataFrame, and a new column named **_RAW_CURVE**. Each element (row) in the **_RAW_CURVE** column is a 1-D numerical array representing a single raw curve extracted from an ROI. 
 
 	A new column named **_BLOCK_** is also added which contains the `UUID <https://en.wikipedia.org/wiki/Universally_unique_identifier>`_ for logging the analysis history of this newly created block of DataFrame rows, known as a *data block*. This allows you to merge Transmissions (see :ref:`Merge node <node_Merge>`) and maintain their independent analysis logs prior to the merge.
         
@@ -75,7 +75,7 @@ Call ``get_nodes()`` to view a dict of all nodes in the flowchart. You can acces
 
 **Example, directly accessing DataFrame elements through the flowchart console**
 
-.. thumbnail:: ./flowchart_console.png
+.. image:: ./flowchart_console.png
 
 
 .. _TransmissionFiles:

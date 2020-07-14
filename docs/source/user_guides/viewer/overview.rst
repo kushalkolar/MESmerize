@@ -14,7 +14,7 @@ Based on the `pyqtgraph ImageView <http://www.pyqtgraph.org/documentation/widget
 Layout
 ======
 
-.. thumbnail:: ./overview/1.png
+.. image:: ./overview/1.png
 
 To access Viewer modules choose the module you want to run from the Modules menu at the top. All modules, except the Batch Manager, are small floating windows which you can dock into the Viewer by dragging them to an edge of the viewer.
 
@@ -23,7 +23,7 @@ To access Viewer modules choose the module you want to run from the Modules menu
 
 When viewing 3D data a slider on the left allows you to move through the z axis.
 
-.. thumbnail:: ./overview/viewer_3d.png
+.. image:: ./overview/viewer_3d.png
 
 The image stack shown above is from Martin Haesemeyer's dataset from the following paper:
 
@@ -153,7 +153,7 @@ Work Envionment Editor
 
 Explore the data in your work environment using a GUI.
 
-.. thumbnail:: ./overview/8.png
+.. image:: ./overview/8.png
 
 .. note:: This is read only, you cannot edit via this GUI.
 
@@ -170,7 +170,7 @@ You can view your meta data more quickly using the console.
 Open the console by going to View -> Console.
 You can then call ``get_meta()`` to print the meta data dict.
 
-.. thumbnail:: ./overview/11.png
+.. image:: ./overview/11.png
 
 Console
 ^^^^^^^

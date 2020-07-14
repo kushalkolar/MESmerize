@@ -14,7 +14,7 @@ Scatter
 Layout
 ======
 
-.. thumbnail:: ./scatter.png
+.. image:: ./scatter.png
 
 **Left:** Controls
 
