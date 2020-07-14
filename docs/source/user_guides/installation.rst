@@ -19,6 +19,7 @@ pip (PyPI)
 
     # Debian & Ubuntu based
     sudo apt-get install python3.6
+    
     # Fedora/CentOS
     sudo dnf install python36
 
