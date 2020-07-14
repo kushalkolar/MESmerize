@@ -1,14 +1,11 @@
 ![banner](https://raw.githubusercontent.com/kushalkolar/MESmerize/master/banner.png)
 
-PyPi: [![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize)
-
-License: [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
-Chat: [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-Downloads: [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize)
-
-Code analysis: [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability)
+| <span> | <span> | <span> | <span> |
+|--------|--------|--------|--------|
+| PyPI | [![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) | Downloads | [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) |
+| License | [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) | Maintenance | ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kushalkolar/MESmerize) |
+| Documentation | [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](https://mesmerize.readthedocs.io/en/master/?badge=master) | Code analysis | [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) |
+| Chat & Help | [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) | Issue tracker | ![GitHub issues](https://img.shields.io/github/issues/kushalkolar/MESmerize) |
 
 Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
 
@@ -20,10 +17,9 @@ Associated bioRxiv paper: https://doi.org/10.1101/840488
 
 ## Installation
 
-If you're familiar with anaconda or virtual environments, and have the necessary build tools, installation is as simple as:
+If you're familiar with anaconda or virtual environments, installation is as simple as:
 
 ```
-pip install tslearn~=0.2.2
 pip install mesmerize
 ```
 
@@ -32,7 +28,15 @@ After installation simply call ``mesmerize`` from inside the virtual environment
 If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
 http://mesmerizelab.org/user_guides/installation.html
 
-In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details.
+#### Caiman
+In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: https://mesmerize.readthedocs.io/en/master/user_guides/installation.html
+
+Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
+
+#### tslearn
+In order to use tslearn features you will need ``tslearn~=0.2.2``. This can be installed via pip or conda, see the detailed installation instructions for more details: https://mesmerize.readthedocs.io/en/master/user_guides/installation.html
+
+tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes
 
 ## Documentation
 Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesmerizelab.org/)
@@ -88,9 +92,12 @@ https://doi.org/10.1101/840488
 
 **Towards v0.3**
 - Full support for recordings from Femtonics microscopes.
-- Export lite versions of projects for easier sharing
+- Export lite versions of projects for easier sharing.
+- Cross correlation analysis with stimulus maps.
 
 ## Acknowledgements
 
-I'd like to thank the [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. The [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with. Simon Daste provided sample data and assistance which allowed for creation of the Suite2p importer module. Jordi Zwiggelaar created the Mesmerize logo & banner.
-pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. The [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with. Simon Daste provided sample data and assistance which allowed for creation of the Suite2p importer module. Jordi Zwiggelaar created the Mesmerize logo & banner.
+- [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. 
+- [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with.
+- Simon Daste provided sample data and assistance which allowed for creation of the Suite2p importer module.
+- [Jordi Zwiggelaar](https://github.com/Blastorios) created the Mesmerize logo & banner.
