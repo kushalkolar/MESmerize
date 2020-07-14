@@ -35,7 +35,6 @@ Welcome to Mesmerize's documentation!
 	:caption: Viewer
 
 	./user_guides/viewer/overview
-	./user_guides/convert_meta_data
 	./user_guides/viewer/add_to_project
 	
 .. toctree::

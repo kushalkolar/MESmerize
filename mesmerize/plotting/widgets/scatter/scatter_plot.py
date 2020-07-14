@@ -125,7 +125,7 @@ class ScatterPlotWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.setWindowTitle('Scatter Plot')
 
         self.central_widget = CentralWidget(self)
-        self.plot_variant = self.central_widget.plot_variant
+        self.plot_variant: PgScatterPlot = self.central_widget.plot_variant  #: the plot variant used for the actual plot area.
         self.graphics_view = self.central_widget.graphics_view
         self.status_label = self.central_widget.status_label
         self.status_label.mousePressEvent = self.show_exception_info

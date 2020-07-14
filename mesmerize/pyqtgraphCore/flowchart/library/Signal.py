@@ -142,8 +142,10 @@ class PowerSpectralDensity(CtrlNode):
 
 
 class Resample(CtrlNode):
-    """Resample 1D data, uses scipy.signal.resample. "Rs": New sampling rate in "Tu" units of time.
-    If "Tu" = 1, then Rs is the new sampling rate in Hertz\nOutput Column -> Input Column"""
+    """
+    Resample 1D data, uses scipy.signal.resample. "Rs" is the new sampling rate in "Tu" units of time.
+    If "Tu" = 1, then Rs is the new sampling rate in Hertz.
+    """
 
     nodeName = 'Resample'
     uiTemplate = [('data_column', 'combo', {}),

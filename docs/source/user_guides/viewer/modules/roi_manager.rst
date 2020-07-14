@@ -11,7 +11,7 @@ ROI Manager
 
 The ROI Manager has a manual mode, to draw ROIs manually, and a CNMF(E) mode where ROIs can be imported from CNMF(E) outputs.
 
-.. seealso:: :ref:`CNMF Usage <module_CNMF_Usage>` and :ref:`CNMFE Usage <module_CNMFE_Usage>`.
+.. seealso:: :ref:`CNMF <module_CNMF>`, :ref:`CNMF 3D <_module_CNMF_3D>`, and :ref:`CNMFE <module_CNMFE>`.
 
 .. note:: You cannot combine manual and CNMF(E) ROIs in the same sample.
 
@@ -82,7 +82,7 @@ Hovering over the ROI selects it in the ROI list.
 Console
 =======
 
-Access the back-end ROI Manager through the viewer console or :ref:`Script editor <ScriptEditor>` to interact with the ROIs.
+Access the back-end ROI Manager through the viewer console or :ref:`Script editor <module_ScriptEditor>` to interact with the ROIs.
 
 .. seealso:: :ref:`Back-end ROI Manager APIs <API_ROIManagers>`, :ref:`ROIList API <API_ROIList>`, :ref:`ROI Type APIs <API_ROITypes>`
 

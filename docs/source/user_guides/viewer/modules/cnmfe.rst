@@ -50,7 +50,7 @@ This module creates two types of batch items, one where you can inspect the Corr
 
 .. seealso:: This modules uses the :ref:`Batch Manager <module_BatchManager>`.
 
-.. note:: The parameters used for CNMFE are stored in the work environment of the viewer and this log is carried over and saved in :ref:`Project Samples` as well. To see the parameters that were used for CNMFE in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the 'cnmfe' entry.
+.. note:: The parameters used for CNMFE are stored in the work environment of the viewer and this log is carried over and saved in *Project Samples* as well. To see the parameters that were used for CNMFE in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the 'cnmfe' entry.
 
 Script Usage
 ============

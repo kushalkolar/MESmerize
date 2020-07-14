@@ -13,9 +13,9 @@ Scatter plot with docked Control Widget, :ref:`Datapoint Tracer <API_DatapointTr
 
 .. autoclass:: mesmerize.plotting.ScatterPlotWidget
     :show-inheritance:
-    :members: plot_variant, set_update_live, set_current_datapoint, set_input, get_plot_opts, set_plot_opts, update_plot, transmission, set_input, save_plot_dialog, save_plot, open_plot_dialog, open_plot, live_datapoint_tracer
+    :members: set_update_live, set_current_datapoint, set_input, get_plot_opts, set_plot_opts, update_plot, transmission, save_plot_dialog, save_plot, open_plot_dialog, open_plot, live_datapoint_tracer
     :member-order: bysource
-
+    
 .. _API_Variant_PgScatterPlot:
 
 Variant

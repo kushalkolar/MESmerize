@@ -18,7 +18,7 @@ ROIs
 		- Yes, just add it to your :ref:`Project Configuration <project-configuration>`
 
 	#. Can some samples in my project have ROIs that originate from CNMF(E) and others that are manually drawn?
-		- Yes, but be aware that you must separate the CNMF(E) and manual data in downstream analysis if you use flowchart nodes that only work with CNMF(E) data, such as :ref:`NormRaw <node_NormRawMinMax>` and :ref:`DetrendDFoF <node_DetrendDFoF>.`
+		- Yes, but be aware that you may need to separate the CNMF(E) and manual data in downstream analysis if using flowchart nodes that work with data from specific sources.
 
 CNMFE
 =====

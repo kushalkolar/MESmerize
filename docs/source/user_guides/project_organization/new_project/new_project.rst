@@ -69,7 +69,7 @@ Create ROI-bound *categories* with which you want to group your data. Enter the 
 
 .. seealso:: :ref:`ROI Manager <ROIManager>` to understand how labels can be tagged onto ROIs using these categories that you have defined in the ROI Type Columns.
 
-.. _StimulusTypeColums:
+.. _StimulusTypeColumns:
 
 Stimulus Type Columns
 ^^^^^^^^^^^^^^^^^^^^^
