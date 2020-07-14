@@ -11,7 +11,6 @@ from webbrowser import open_new_tab as open_new_web_browser_tab
 import configparser
 from datetime import datetime
 from time import time
-from .. import docs
 from .configuration import get_sys_config, console_history_path
 from functools import partial
 from PyQt5.QtWidgets import QApplication
@@ -37,7 +36,7 @@ def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
 # docs_dir = os.path.dirname(docs.__file__)
 # docs_dir = docs_dir + '/user_guides'
 
-docs_dir = 'http://mesmerizelab.org/'
+docs_dir = 'https://mesmerize.readthedocs.io/en/master/'
 
 doc_pages = \
     {
