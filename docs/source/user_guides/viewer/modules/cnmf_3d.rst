@@ -24,6 +24,8 @@ Please see the CaImAn demo notebook mentioned above to understand the parameters
 
 You can also enter parameters for CNMF and component evaluation as keyword arguments (kwargs) in the the respective text boxes if you select "Use CNMF kwrags" or "Use evaluation params". This is useful if you want to enter parameters that cannot be entered in the GUI for example. **Use single quotes if you want to enter string kwargs, do not use double quotes.**
 
+.. note:: The parameters used for 3D CNMF are stored in the work environment of the viewer and this log is carried over and saved in *Project Samples* as well. To see the parameters that were used for 3D CNMF in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the 'cnmf_3d' entry.
+
 Script Usage
 ============
 

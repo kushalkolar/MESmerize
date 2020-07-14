@@ -13,10 +13,6 @@ Welcome to Mesmerize's documentation!
 
 .. |gitter_badge| image:: https://badges.gitter.im/mesmerize_discussion/community.svg
                     :target: https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
-
-Docs for older versions
------------------------
-`v0.1 <v0.1/index.html>`_
                     
 .. toctree::
 	:maxdepth: 1
@@ -39,7 +35,6 @@ Docs for older versions
 	:caption: Viewer
 
 	./user_guides/viewer/overview
-	./user_guides/convert_meta_data
 	./user_guides/viewer/add_to_project
 	
 .. toctree::

@@ -35,7 +35,7 @@ Dir             Purpose
 =============   ===================================================================================
 dataframes      Contains an file storing the project dataframe, root.dfr, and backups.
 
-                A new backup is created every time a :ref:`Sample <ProjectSample>` is added to the project.
+                A new backup is created every time a a new *Sample* is :ref:`added to the project <add-to-project>`.
                 
                 Restore a backup by renaming it to "root.dfr".
 
@@ -43,7 +43,7 @@ images          Contains the image sequences and work environment data for all s
 
 curves          Contains the curves for every sample in the project
 
-batches         Used for storing batches used by the :ref:`Batch Manager <BatchManager>` if you wish.
+batches         Used for storing batches used by the :ref:`Batch Manager <module_BatchManager>` if you wish.
 
 flowcharts      Used for storing *.fc* flowchart files that save the layout of nodes in a flowchart.
 
@@ -53,14 +53,6 @@ plots           Used for storing *.ptrn* interactive plot files.
 .. seealso:: :ref:`Flowchart Overview <FlowchartOverview>` and :ref:`Saving Plots <save_ptrn>`
 
 .. warning:: Do not manually modify the data under the **images** or **curves** directories
-
-.. _ProjectSample:
-
-Project Sample
-==============
-
-
-
 
 
 .. _ConsoleOverview:
@@ -129,19 +121,17 @@ This window is accessible through the :ref:`Welcome Window <WelcomeWindow>` menu
 
 .. image:: ./system_config_window.png
 
-**Maximum number of threads to use:** The maximum number of threads that Mesmerize is allowed to use, this includes proccesses started by the :ref:`Batch Manager <BatchManager>`, various analysis proccesses in the flowchart, and the viewer as well.
+**Maximum number of threads to use:** The maximum number of threads that Mesmerize is allowed to use, this includes proccesses started by the :ref:`Batch Manager <module_BatchManager>`, various analysis proccesses in the flowchart, and the viewer as well.
 
-**Python call:** Many parts of Mesmerize, such as the :ref:`Batch Manager <BatchManager>` use external processes to run a python script. This setting sets which python call should be used. The default setting of "python3" should work for both :ref:`snap <snap_install>` and :ref:`pip <pip_install>` installations unless you have written a custom expansion that uses python2.
+**Python call:** Many parts of Mesmerize, such as the :ref:`Batch Manager <module_BatchManager>` use external processes to run a python script. This setting sets which python call should be used. ``python3`` should work for Linux & Mac OSX. We've found that this needs to be set to ``python`` to work within Anaconda environments on Windows.
 
-**Use CUDA:** Use CUDA accerlation if you have a GPU with CUDA cores. Only works with the :ref:`pip installation <pip_install>`, and you must have pycuda and scikit-cuda (as well as the `nvidia CUDA toolkit <https://developer.nvidia.com/cuda-toolkit>`_) installed. In Mesmerize CUDA is currently used only by :ref:`Caiman Motion Correction <module_caiman_motion_correction>`. We plan to expand CUDA support to computationally intensive tasks that are performed by flowchart nodes.
+**Use CUDA:** Use CUDA accerlation if you have a GPU with CUDA cores. You must have pycuda and scikit-cuda (as well as the `nvidia CUDA toolkit <https://developer.nvidia.com/cuda-toolkit>`_) installed. CUDA accerlation isn't used much currently.
 
 **Work dir:** Many parts of Mesmerize use a working directory for temporary files. If you have a fast filesystem you can use that for this purpose.
 
 **Pre-run commands (large text entry):** Mesmerize runs some computationally intensive tasks in subprocesses. These commands are run prior to the python script that performs the task.
 
-    - If you are using Mesmerize in a virtual environment (such as a :ref:`pip installed <pip_install>` Mesmerize) you will need activate the environment so you must include the line ``source /path_to_venv/bin/activate`` to the pre-run commands
-    
-    - Simiarly if you are using Mesmerize in an Anaconda environment you will need include commands to activate the environment.
+    - If you are using Mesmerize in a virtual environment or conda environment you will need activate the environment so you must include the line ``source /path_to_venv/bin/activate`` or ``conda activate <env_name>`` to the pre-run commands.
     
     - If you are using an Intel CPU you should get optimal performance by installing `Math Kernel Library (MKL) <https://software.intel.com/en-us/get-started-with-mkl-for-linux>`_ and including ``export MKL_NUM_THREADS=1`` to the pre-run commands.
     

@@ -7,8 +7,10 @@ from ....analysis import Transmission
 from scipy import signal
 from scipy import fftpack
 import pandas as pd
-from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from ....analysis.compute_peak_features import ComputePeakFeatures
+from ....common.configuration import HAS_TSLEARN
+if HAS_TSLEARN:
+    from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
 
 class ButterWorth(CtrlNode):
@@ -140,8 +142,10 @@ class PowerSpectralDensity(CtrlNode):
 
 
 class Resample(CtrlNode):
-    """Resample 1D data, uses scipy.signal.resample. "Rs": New sampling rate in "Tu" units of time.
-    If "Tu" = 1, then Rs is the new sampling rate in Hertz\nOutput Column -> Input Column"""
+    """
+    Resample 1D data, uses scipy.signal.resample. "Rs" is the new sampling rate in "Tu" units of time.
+    If "Tu" = 1, then Rs is the new sampling rate in Hertz.
+    """
 
     nodeName = 'Resample'
     uiTemplate = [('data_column', 'combo', {}),

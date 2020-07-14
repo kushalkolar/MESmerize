@@ -8,12 +8,12 @@ The easiest way to create a plot module is by subclassing the :ref:`BasePlotWidg
 General Design
 ==============
 
-This shows how you can design a plot using the :ref:`SpaceMapPlot <API_SpaceMapPlot>` as a simple example. It will generally consist of a class for the main plot area, plot control, and the plot window which contains the controls and plot area.
+This shows how you can design a plot using the :ref:`SpaceMapPlot <API_SpaceMap>` as a simple example. It will generally consist of a class for the main plot area, plot control, and the plot window which contains the controls and plot area.
 
 Plot Area
 =========
 
-A class which holds the actual plot, could be a matplotlib widget or pyqtgraph plot widget for example. In the :ref:`SpaceMapPlot <API_SpaceMapPlot>` this is simply a subclass of the pyqtgraph matplotlib widget with a few more attributes and a helper method. The `error_label` attribute is simply a QLabel used for displaying a plot error summary and is handled by the `exceptions_label` decorator from :ref:`qdialogs <common-qdialogs>`.
+A class which holds the actual plot, could be a matplotlib widget or pyqtgraph plot widget for example. In the :ref:`SpaceMapPlot <API_SpaceMap>` this is simply a subclass of the pyqtgraph matplotlib widget with a few more attributes and a helper method. The `error_label` attribute is simply a QLabel used for displaying a plot error summary and is handled by the `exceptions_label` decorator from :ref:`qdialogs <common-qdialogs>`.
 
 Plot Controls
 =============

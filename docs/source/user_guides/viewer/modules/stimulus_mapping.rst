@@ -3,7 +3,7 @@
 Stimulus Mapping
 ****************
 
-:ref:`API Reference <module_StimulusMapping>`
+:ref:`API Reference <API_StimulusMapping>`
 
 **Map temporal information such as stimulus or behavioral periods.**
 
@@ -15,7 +15,7 @@ Stimulus periods illustrated on the viewer timeline
 
 .. image:: ./stim_maps_viewer.png
 
-The tabs that are available in the stimulus mapping module corresponds to the stimulus types in your :ref:`Project Configuration<StimulusTypeColums>`.
+The tabs that are available in the stimulus mapping module corresponds to the stimulus types in your :ref:`Project Configuration <StimulusTypeColumns>`.
 
 You can add stimulus periods either manually or through a script.
 
@@ -39,9 +39,9 @@ Import and Export are not implemented yet.
 Script
 ======
 
-.. seealso:: :ref:`API Reference <module_StimulusMapping>`
+.. seealso:: :ref:`API Reference <API_StimulusMapping>`
 
-You can also use the :ref:`Stimulus Mapping module's API <module_StimulusMapping>` to set the stimulus mappings from a pandas DataFrame.
+You can also use the :ref:`Stimulus Mapping module's API <API_StimulusMapping>` to set the stimulus mappings from a pandas DataFrame.
 
 This example creates a pandas DataFrame from a csv file to set the stimulus mappings. It uses the csv file from the pvc-7 dataset availble on CRCNS: http://dx.doi.org/10.6080/K0C8276G
 

@@ -81,7 +81,7 @@ class HeatmapSplitterWidget(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self)
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
-        self.plot_variant = Heatmap(highlight_mode=highlight_mode)  #: That plot variant used by this plot widget
+        self.plot_variant: Heatmap = Heatmap(highlight_mode=highlight_mode)  #: That plot variant used by this plot widget
 
         self.labelSort = QtWidgets.QLabel(self)
         self.labelSort.setText('Sort heatmap according to column:')

@@ -29,7 +29,7 @@ Heatmap with an embedded :ref:`Datapoint Tracer <API_DatapointTracer>` that can 
 
 .. autoclass:: mesmerize.plotting.HeatmapTracerWidget
     :show-inheritance:
-    :members: plot_variant, set_update_live, set_current_datapoint, set_input, get_plot_opts, set_plot_opts, update_plot, get_cluster_kwrags, set_data, transmission, set_input, save_plot_dialog, save_plot, open_plot_dialog, open_plot, live_datapoint_tracer
+    :members: set_update_live, set_current_datapoint, set_input, get_plot_opts, set_plot_opts, update_plot, get_cluster_kwargs, set_data, transmission, set_input, save_plot_dialog, save_plot, open_plot_dialog, open_plot, live_datapoint_tracer
     :member-order: bysource
     
     .. autoattribute:: drop_opts
