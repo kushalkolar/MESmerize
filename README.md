@@ -26,7 +26,7 @@ pip install mesmerize
 After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
 
 If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
-http://mesmerizelab.org/user_guides/installation.html
+https://mesmerize.readthedocs.io/en/master/user_guides/installation.html
 
 #### Caiman
 In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: https://mesmerize.readthedocs.io/en/master/user_guides/installation.html
@@ -39,7 +39,7 @@ In order to use tslearn features you will need ``tslearn~=0.2.2``. This can be i
 tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes
 
 ## Documentation
-Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesmerizelab.org/)
+Documentation is available here: [https://mesmerize.readthedocs.io/en/master/](https://mesmerize.readthedocs.io/en/master/)
 
 ## Questions/Discussions
 
