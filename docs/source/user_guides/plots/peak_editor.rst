@@ -21,7 +21,7 @@ Usage
 Layout
 ------
 
-..  thumbnail:: ./peak_editor.png
+.. image:: ./peak_editor.png
 
 Bottom
 ^^^^^^
