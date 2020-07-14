@@ -51,6 +51,8 @@ Feel free to ask questions or discuss things on gitter. For larger bugs/issues p
 
 ## News
 
+See the [changelog](https://github.com/kushalkolar/MESmerize/blob/master/CHANGELOG.md) for more details
+
 **July 2020**
 
 Changes:
