@@ -7,7 +7,7 @@ Used for visualization of data points using a pseudo-scatter and violin plots.
 
 **Layout**
 
-.. thumbnail:: ./beeswarm.png
+.. image:: ./beeswarm.png
 
 You can click on individual datapoints and view the associated data using the :ref:`Datapoint Tracer <DatapointTracer>`. To show the Datapoint Tracer, in the menubar go to View -> Live datapoint tracer
 

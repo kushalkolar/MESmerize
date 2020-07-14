@@ -8,7 +8,7 @@ The Flowchart is based on the `pyqtgraph flowchart widgets <http://www.pyqtgraph
 
 **Flowchart Window**
 
-.. thumbnail:: ./flowchart_overview.png
+.. image:: ./flowchart_overview.png
 
 **Add node**: Right click -> Add node -> Choose from selection
 
@@ -75,7 +75,7 @@ Call ``get_nodes()`` to view a dict of all nodes in the flowchart. You can acces
 
 **Example, directly accessing DataFrame elements through the flowchart console**
 
-.. thumbnail:: ./flowchart_console.png
+.. image:: ./flowchart_console.png
 
 
 .. _TransmissionFiles:

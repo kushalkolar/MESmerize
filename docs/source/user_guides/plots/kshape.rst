@@ -16,7 +16,7 @@ This GUI uses the `tslearn.clustering.KShape <https://tslearn.readthedocs.io/en/
 
 **Layout**
 
-.. thumbnail:: ./kshape.png
+.. image:: ./kshape.png
 
 **Left:** KShape parameters and Plot parameters
 

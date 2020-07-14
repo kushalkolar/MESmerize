@@ -15,7 +15,7 @@ The Welcome Window is the first window that you are presented with when you laun
 
 .. seealso:: :ref:`User guide on creating new projects <CreateNewProject>` and :ref:`Consoles <ConsoleOverview>`
 
-.. thumbnail:: ./welcome_window.png
+.. image:: ./welcome_window.png
 
 .. _ProjectStructure:
 

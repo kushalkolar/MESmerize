@@ -104,7 +104,7 @@ When you add samples to your project from the viewer, you will be prompted to en
 
 .. seealso:: :ref:`Add to Project guide <add-to-project>`
 
-.. thumbnail:: ./add_to_proj.png
+.. image:: ./add_to_proj.png
 
 
 ----
