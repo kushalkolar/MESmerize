@@ -16,6 +16,7 @@ pip (PyPI)
 **You will need python==3.6, there is a bug with Qt & python3.7**
 
 #. Install python 3.6::
+
     # Debian & Ubuntu based
     sudo apt-get install python3.6
     # Fedora/CentOS
@@ -33,6 +34,7 @@ pip (PyPI)
 For other distributions install the equivalent meta package to get build tools.
 
 If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using::
+
     sudo dnf install redhat-rpm-config
     
 #. Create a new virtual environment::
@@ -68,9 +70,7 @@ You will always need to activate the environment for Mesmerize before launching 
     source activate caiman
     pip install .
 
-More information on caiman installation::
-
-    https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+More information on caiman installation: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
 
     
 Mac OSX
@@ -111,6 +111,10 @@ This might take a while.
 #. Install tslearn (optional)::
 
     conda install -c conda-forge tslearn==0.2.1
+    
+#. Install bottleneck (optional)::
+
+    pip install bottleneck==1.2.1
 
 #. To launch Mesmerize call it from the terminal::
 
@@ -172,7 +176,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
     
 #. Install bottleneck (optional)::
 
-    bottleneck==1.2.1
+    pip install bottleneck==1.2.1
     
 #. Install graphviz::
 

@@ -7,7 +7,7 @@ Batch Manager
 
 .. seealso:: :ref:`Batch Manager API <API_BatchManager>`
 
-This is currently used for :ref:`Caiman Motion Correction <module_CaimanMotionCorrection>`, :ref:`CNMF <module_CNMF>`, :ref:`<module_CNMF_3D>` and  :ref:`CNMFE <module_CNMFE>`.
+This is currently used for :ref:`Caiman Motion Correction <module_CaimanMotionCorrection>`, :ref:`CNMF <module_CNMF>`, :ref:`CNMF 3D <module_CNMF_3D>` and  :ref:`CNMFE <module_CNMFE>`.
 
 The Batch Manager can be accessed in the viewer through Modules -> Batch Manager. If you don't have a batch open you will be prompted with a dialog to open a batch or to select a location for a new batch.
 

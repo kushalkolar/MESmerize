@@ -3,6 +3,7 @@ Add a Sample to the Project
 When you are happy with the ROIs in the viewer for the current CNMF(E) derived or manually created ROIs, you can add this as a *Sample* to your project.
 
 Each sample in your project contains the following:
+
 	- The imaging data from which ROIs were extracted (the video)
 	- All the ROIs with their spatial location, temporal dynamics, and any tags that you have entered in the ROI Manager.
 	- Stimulus mappings, if your project is configured for this.
