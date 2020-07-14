@@ -1,4 +1,4 @@
-# 0.2.2 (in progress)
+# 0.2.2
 
 ### Fixed
 - Heatmap plot widget properly handles live updates from input data
@@ -8,6 +8,7 @@
 
 ### Modified
 - Tuning curve plot widget returns stimulus xlabels and yvals to seperate dataframe columns instead of being together in one column as a list.
+- tslearn and bottleneck are optional dependencies.
 
 # 0.2.1
 
