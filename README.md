@@ -1,16 +1,11 @@
 ![banner](./banner.png)
 
-PyPi: [![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize)
-
-License: [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-
-Chat: [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-Downloads: [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize)
-
-Maintenance: ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kushalkolar/MESmerize)
-
-Code analysis: [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability)
+| <span> | <span> | <span> | <span> |
+-------- |--------|--------|--------|
+| PyPI | [![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) | Downloads | [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) |
+| License | [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) | Maintenance | ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kushalkolar/MESmerize) |
+| Documentation | [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](https://mesmerize.readthedocs.io/en/master/?badge=master) | Code analysis | [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) |
+| Chat & Help | [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) | Issue tracker | ![GitHub issues](https://img.shields.io/github/issues/kushalkolar/MESmerize) |
 
 Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
 
