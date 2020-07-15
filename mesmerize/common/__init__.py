@@ -15,6 +15,7 @@ from .configuration import get_sys_config, console_history_path
 from functools import partial
 from PyQt5.QtWidgets import QApplication
 from abc import ABCMeta
+from .. import __version__
 
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
@@ -33,10 +34,7 @@ def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
     return proj_cfg
 
 
-# docs_dir = os.path.dirname(docs.__file__)
-# docs_dir = docs_dir + '/user_guides'
-
-docs_dir = 'https://mesmerize.readthedocs.io/en/master/'
+docs_dir = f'https://docs.mesmerizelab.org/en/{__version__}/'
 
 doc_pages = \
     {
