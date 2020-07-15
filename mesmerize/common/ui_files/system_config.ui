@@ -209,6 +209,13 @@ symbolic link to python3.</string>
  </widget>
  <tabstops>
   <tabstop>spinBoxThreads</tabstop>
+  <tabstop>lineEditPythonCall</tabstop>
+  <tabstop>checkBoxUseCUDA</tabstop>
+  <tabstop>pushButtonCUDAError</tabstop>
+  <tabstop>lineEditWorkDir</tabstop>
+  <tabstop>plainTextEditPrefixCommands</tabstop>
+  <tabstop>lineEditCustomModulesDir</tabstop>
+  <tabstop>pushButtonResetDefaults</tabstop>
   <tabstop>btnReloadConfigFile</tabstop>
   <tabstop>btnClose</tabstop>
   <tabstop>btnApply</tabstop>

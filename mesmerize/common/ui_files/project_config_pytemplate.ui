@@ -391,7 +391,7 @@
        <item>
         <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>Stimulus Type Columns</string>
+          <string>Stimulus/Behavior Type Columns</string>
          </property>
         </widget>
        </item>
@@ -522,13 +522,21 @@
   <tabstop>listwInclude</tabstop>
   <tabstop>listwExclude</tabstop>
   <tabstop>listwROIDefs</tabstop>
-  <tabstop>listwStimDefs</tabstop>
   <tabstop>lineEdNewROIDef</tabstop>
   <tabstop>btnAddNewROICol</tabstop>
+  <tabstop>listwStimDefs</tabstop>
   <tabstop>lineEdNewStimCol</tabstop>
   <tabstop>btnAddNewStimCol</tabstop>
-  <tabstop>btnSave</tabstop>
+  <tabstop>listwCustomColumns</tabstop>
+  <tabstop>lineEditCustomColumnName</tabstop>
+  <tabstop>radioButtonStr</tabstop>
+  <tabstop>radioButtonInt64</tabstop>
+  <tabstop>radioButtonFloat64</tabstop>
+  <tabstop>radioButtonBoolean</tabstop>
+  <tabstop>lineEditCustomColumnReplacementValue</tabstop>
+  <tabstop>btnAddCustomColumn</tabstop>
   <tabstop>btnClose</tabstop>
+  <tabstop>btnSave</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -256,7 +256,7 @@ class Ui_Form(object):
         self.radioButtonBoolean.setText(_translate("Form", "boolean (True/False &values)"))
         self.btnClose.setText(_translate("Form", "Close"))
         self.btnSave.setText(_translate("Form", "Save and apply"))
-        self.label_5.setText(_translate("Form", "Stimulus Type Columns"))
+        self.label_5.setText(_translate("Form", "Stimulus/Behavior Type Columns"))
         self.lineEdNewStimCol.setPlaceholderText(_translate("Form", "Enter New Stim Column Name"))
         self.btnAddNewStimCol.setText(_translate("Form", "Add"))
         self.label_6.setText(_translate("Form", "Custom Columns"))

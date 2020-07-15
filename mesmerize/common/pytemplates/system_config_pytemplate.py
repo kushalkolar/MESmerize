@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './system_config.ui'
+# Form implementation generated from reading ui file 'system_config.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -107,7 +107,14 @@ class Ui_Form(object):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-        Form.setTabOrder(self.spinBoxThreads, self.btnReloadConfigFile)
+        Form.setTabOrder(self.spinBoxThreads, self.lineEditPythonCall)
+        Form.setTabOrder(self.lineEditPythonCall, self.checkBoxUseCUDA)
+        Form.setTabOrder(self.checkBoxUseCUDA, self.pushButtonCUDAError)
+        Form.setTabOrder(self.pushButtonCUDAError, self.lineEditWorkDir)
+        Form.setTabOrder(self.lineEditWorkDir, self.plainTextEditPrefixCommands)
+        Form.setTabOrder(self.plainTextEditPrefixCommands, self.lineEditCustomModulesDir)
+        Form.setTabOrder(self.lineEditCustomModulesDir, self.pushButtonResetDefaults)
+        Form.setTabOrder(self.pushButtonResetDefaults, self.btnReloadConfigFile)
         Form.setTabOrder(self.btnReloadConfigFile, self.btnClose)
         Form.setTabOrder(self.btnClose, self.btnApply)
 
