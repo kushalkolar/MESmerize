@@ -44,8 +44,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>569</width>
-        <height>319</height>
+        <width>573</width>
+        <height>315</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -68,14 +68,17 @@
    </item>
    <item row="1" column="2">
     <widget class="QComboBox" name="comboBoxTimeUnits">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <item>
       <property name="text">
-       <string>seconds</string>
+       <string>frames</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>frames</string>
+       <string>seconds</string>
       </property>
      </item>
     </widget>

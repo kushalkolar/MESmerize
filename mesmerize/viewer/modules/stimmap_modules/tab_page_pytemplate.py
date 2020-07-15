@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './tab_page.ui'
+# Form implementation generated from reading ui file 'tab_page.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -23,7 +23,7 @@ class Ui_TabPage(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 569, 319))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 573, 315))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -32,6 +32,7 @@ class Ui_TabPage(object):
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout.addWidget(self.scrollArea, 0, 0, 1, 4)
         self.comboBoxTimeUnits = QtWidgets.QComboBox(TabPage)
+        self.comboBoxTimeUnits.setEnabled(False)
         self.comboBoxTimeUnits.setObjectName("comboBoxTimeUnits")
         self.comboBoxTimeUnits.addItem("")
         self.comboBoxTimeUnits.addItem("")
@@ -47,7 +48,7 @@ class Ui_TabPage(object):
         _translate = QtCore.QCoreApplication.translate
         TabPage.setWindowTitle(_translate("TabPage", "Form"))
         self.btnAddRow.setText(_translate("TabPage", "Add Row"))
-        self.comboBoxTimeUnits.setItemText(0, _translate("TabPage", "seconds"))
-        self.comboBoxTimeUnits.setItemText(1, _translate("TabPage", "frames"))
+        self.comboBoxTimeUnits.setItemText(0, _translate("TabPage", "frames"))
+        self.comboBoxTimeUnits.setItemText(1, _translate("TabPage", "seconds"))
         self.label.setText(_translate("TabPage", "units: "))
 

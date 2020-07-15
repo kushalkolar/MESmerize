@@ -201,7 +201,7 @@ See the docs for instructions on how to create your own loader.</string>
                 </size>
                </property>
                <property name="text">
-                <string>Select meta data file</string>
+                <string>Select file</string>
                </property>
               </widget>
              </item>
