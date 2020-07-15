@@ -1,9 +1,11 @@
-#@author: kushal
+# @author: kushal
 
-#Chatzigeorgiou Group
-#Sars International Centre for Marine Molecular Biology
+# Chatzigeorgiou Group
+# Sars International Centre for Marine Molecular Biology
 
-#GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+# GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+
+__version__ = '0.2.2'
 
 
 import os
@@ -15,7 +17,6 @@ from .configuration import get_sys_config, console_history_path
 from functools import partial
 from PyQt5.QtWidgets import QApplication
 from abc import ABCMeta
-from .. import __version__
 
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
