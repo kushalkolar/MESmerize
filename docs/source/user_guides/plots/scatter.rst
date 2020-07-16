@@ -10,6 +10,14 @@ Scatter
 .. note::
     :ref:`This plot can be saved in an interactive form <save_ptrn>`
 
+Video Tutorial
+==============
+
+From 13:04 onward this tutorial shows how you can perform PCA and visualize the transformed data using the Scatter Plot.
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/FtMPmXldf9E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Layout
 ======

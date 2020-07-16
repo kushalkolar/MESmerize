@@ -7,6 +7,15 @@ Batch Manager
 
 .. seealso:: :ref:`Batch Manager API <API_BatchManager>`
 
+Video Tutorial
+==============
+
+This tutorial shows how to create a New Project, open images in the Viewer, use the Stimulus Mapping module and perform Caiman motion correction
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/D9zKhFkcKTk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 This is currently used for :ref:`Caiman Motion Correction <module_CaimanMotionCorrection>`, :ref:`CNMF <module_CNMF>`, :ref:`CNMF 3D <module_CNMF_3D>` and  :ref:`CNMFE <module_CNMFE>`.
 
 The Batch Manager can be accessed in the viewer through Modules -> Batch Manager. If you don't have a batch open you will be prompted with a dialog to open a batch or to select a location for a new batch.

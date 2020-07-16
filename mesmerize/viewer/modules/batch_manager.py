@@ -239,12 +239,12 @@ class ModuleGUI(QtWidgets.QWidget):
             self.lwd = ListWidgetDialog()
             self.lwd.listWidget.addItems([str(i + 1) for i in range(len(viewers))])
             self.lwd.label.setText('Viewer to show input in:')
-            self.lwd.btnOK.clicked.connect(partial(self.load_item_input, viewers, r))
+            self.lwd.btnOK.clicked.connect(partial(self.load_item_input, viewers, r, UUID))
         else:
             self.load_item_input(viewers[0], r)
 
     @present_exceptions('Cannot load input', 'The following occurred when trying to load the input')
-    def load_item_input(self, viewers: Union[ViewerWindow, UserList], r: pandas.Series = None, UUID: uuid.UUID = None):
+    def load_item_input(self, viewers: Union[ViewerWindow, UserList], r: pandas.Series = None, UUID: uuid.UUID = None, *args):
         """
         Pass either the batch DataFrame row or UUID of the item of which to load the input into a viewer
 

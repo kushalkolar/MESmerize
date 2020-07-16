@@ -2,10 +2,18 @@
 
 ROI Manager
 ***********
-The GUI QDockWidget that communicates with the :ref:`back-end managers <API_ROIManagers>`
+
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/a1UO2-OhIHw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ModuleGUI
 =========
+
+The GUI QDockWidget that communicates with the :ref:`back-end managers <API_ROIManagers>`
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager.ModuleGUI
     :special-members:
@@ -23,6 +31,8 @@ The managers hold instances of :ref:`ROIs <API_ROITYPES>` in an instance of :ref
 
 AbstractBaseManager
 -------------------
+
+Subclass this if you want to make your own Manager Back-end.
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager
     :special-members:
@@ -105,6 +115,8 @@ AbstractBaseROI
 
 BaseROI
 -------
+
+Subclass from this if you want to make your own ROI Type.
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI
     :show-inheritance:
