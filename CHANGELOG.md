@@ -1,3 +1,12 @@
+# 0.2.3 (in progress)
+
+### Fixed
+- Batch Manager view input bug with multiple viewers.
+- Transmission.from_proj() bug spiking data are None.
+
+### Modified
+- Transmissions spawned fro Load_Proj_DF node no longer have the ``last_output`` attribute set to ``"_RAW_CURVE"``. This allows the ``"_DFOF"`` and ``"_SPIKES"`` data to be used immediately with certain nodes.
+
 # 0.2.2
 
 ### Fixed
