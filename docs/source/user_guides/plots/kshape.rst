@@ -194,7 +194,7 @@ Hide legend
 
 Hide/show legend in the proportions plot
 
-.. code-block:: pyton
+.. code-block:: python
 
     get_plot_proportions().ax.legend().set_visible(True)
     get_plot_proportions().draw()
