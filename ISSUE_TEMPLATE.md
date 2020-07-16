@@ -1,11 +1,9 @@
 ## Operating System
 
 ## Details about your Mesmerize install
-  - **Are you using the snap?**
-  - **which branch if cloned from github?**
-  - **are you using anaconda or venvs (the python built-in virtual environment management)** 
-
-## Mesmerize version (v0.1 or v0.2)
+  - **Are you using the pip install? If so which version?**
+  - **Are you using a clone of the master branch from the GitHub repo?**
+  - **are you using anaconda or venv (the python built-in virtual environment management)** 
 
 ## Describe the issue, please be as explicit and detailed as possible.
 
