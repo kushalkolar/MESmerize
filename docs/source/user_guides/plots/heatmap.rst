@@ -10,7 +10,17 @@ Heatmap
 
 Visualize numerical arrays in the form of a heatmap. Also used for visualization of Hierarchical clusterting dendrograms. :ref:`DatapointTracer` is embedded.
 
-**Layout**
+Video Tutorial
+==============
+
+This tutorial shows how the Heatmap plot can be used along with the Datapoint Tracer during the latter half of this tutorial.
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/ghB38QR1yuE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Layout
+======
 
 .. image:: ./heatmap_layout.png
 

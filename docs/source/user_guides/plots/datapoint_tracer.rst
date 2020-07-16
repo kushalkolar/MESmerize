@@ -9,7 +9,20 @@ The Datapoint Tracer is attached to many plots, allowing you to interactively ex
 
 The Datapoint Tracer is embedded in some plots, and in others you can open it by going to View -> Live Datapoint Tracer.
 
-**Datapoint Tracer Layout**
+Video Tutorial
+==============
+
+This tutorial shows how the Heatmap plot can be used along with the Datapoint Tracer during the latter half of this tutorial.
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/ghB38QR1yuE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Part 5, 6 & 8 of the main tutorial series also show how the Datapoint Tracer can be used along with other types of plots:
+https://www.youtube.com/playlist?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg
+
+Layout
+======
 
 .. image:: ./datapoint_tracer.png
 

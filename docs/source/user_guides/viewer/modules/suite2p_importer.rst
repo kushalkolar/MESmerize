@@ -7,6 +7,16 @@ You can load Suite2p output files to import ROIs into the current :ref:`work env
 
 .. image:: ./suite2p_importer.png
 
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/OvGfrdRSNE8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Script Usage
+============
+
 You can also use this module through the :ref:`viewer console <ViewerConsole>`, or in the :ref:`Script Editor <module_ScriptEditor>` instead of clicking buttons.
 
 **Example**

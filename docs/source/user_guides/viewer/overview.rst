@@ -11,6 +11,15 @@ Based on the `pyqtgraph ImageView <http://www.pyqtgraph.org/documentation/widget
 * Use modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.
 * You can also make modifications to an existing Sample in your project by opening it in the Viewer. See Modify Sample and Overwrite guide.
 
+Video Tutorial
+==============
+
+This tutorial shows how to create a New Project, open images in the Viewer, use the Stimulus Mapping module and perform Caiman motion correction
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/D9zKhFkcKTk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 Layout
 ======
 
@@ -212,6 +221,13 @@ get_batch_manager()     Get the batch manager.
 update_workEnv()        Update the viewer GUI with the viewer work environment (vi.viewer.workEnv)
 clear_workEnv()         Clear the current work envionment, cleanup the GUI and free the RAM
 =====================   ====================================================================
+
+Video Tutorial
+--------------
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/a1UO2-OhIHw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Examples
 --------

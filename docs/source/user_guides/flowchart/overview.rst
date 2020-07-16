@@ -30,6 +30,18 @@ Click on a node to highlight the Control Widget
 
 **Reset View button**: Reset the view, for example if you zoom out or pan too far.
 
+
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/ghB38QR1yuE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    
+Part 5 - 9 of the Main Tutorial series also provide various examples for how the flowchart can be used:
+https://www.youtube.com/playlist?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg
+
+
 .. _concept_Transmission:
 
 Transmission

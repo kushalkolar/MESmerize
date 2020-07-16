@@ -18,6 +18,15 @@ The ROI Manager has a manual mode, to draw ROIs manually, and a CNMF(E) mode whe
 
 The ImageJ ROI import uses the read-roi package by Hadrien Mary https://pypi.org/project/read-roi/
 
+
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/0iWV7NRock4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    
 Layout
 ======
 

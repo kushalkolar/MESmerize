@@ -31,3 +31,10 @@ Every Sample in a project has a unique **SampleID** which is the combination of 
 .. warning:: AnimalID and TrialID are separated by the ``-_-`` character combination when stored as a SampleID. Therefore do not use that character combination within your AnimalID or TrialID.
 
 
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/0iWV7NRock4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    
