@@ -16,10 +16,10 @@ Associated bioRxiv paper: https://doi.org/10.1101/840488
 </a>
 
 ## Video Tutorials!
-We have recently created detailed video tutorials! The main tutorial series provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations!
+We have recently created detailed video tutorials! The main tutorial series provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations:\
 https://www.youtube.com/playlist?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg
 
-Additional videos on specific aspects of Mesmerize will be posted here:
+Additional videos on specific aspects of Mesmerize will be posted here:\
 https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
 
 More tutorial videos will be available soon.
