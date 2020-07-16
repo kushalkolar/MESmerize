@@ -1,4 +1,4 @@
-# 0.2.3 (in progress)
+# 0.2.3
 
 ### Fixed
 - Batch Manager view input bug with multiple viewers.
