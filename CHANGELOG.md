@@ -6,6 +6,8 @@
 
 ### Modified
 - Transmissions spawned fro Load_Proj_DF node no longer have the ``last_output`` attribute set to ``"_RAW_CURVE"``. This allows the ``"_DFOF"`` and ``"_SPIKES"`` data to be used immediately with certain nodes.
+- Units combobox for stimulus mapping module is disabled.
+- Doc links in Help menus now point to the online docs for the current Mesmerize version instead of having built-in docs.
 
 # 0.2.2
 
