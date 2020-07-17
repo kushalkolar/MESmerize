@@ -52,6 +52,9 @@ class Ui_CrossCorrelationControls(object):
         self.comboBoxLabelsColumn = QtWidgets.QComboBox(self.layoutWidget)
         self.comboBoxLabelsColumn.setObjectName("comboBoxLabelsColumn")
         self.verticalLayout_6.addWidget(self.comboBoxLabelsColumn)
+        self.checkBox_use_stimulus_maps = QtWidgets.QCheckBox(self.layoutWidget)
+        self.checkBox_use_stimulus_maps.setObjectName("checkBox_use_stimulus_maps")
+        self.verticalLayout_6.addWidget(self.checkBox_use_stimulus_maps)
         self.horizontalLayout_2.addLayout(self.verticalLayout_6)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -204,6 +207,20 @@ class Ui_CrossCorrelationControls(object):
 
         self.retranslateUi(CrossCorrelationControls)
         QtCore.QMetaObject.connectSlotsByName(CrossCorrelationControls)
+        CrossCorrelationControls.setTabOrder(self.comboBoxDataColumn, self.comboBoxLabelsColumn)
+        CrossCorrelationControls.setTabOrder(self.comboBoxLabelsColumn, self.checkBox_use_stimulus_maps)
+        CrossCorrelationControls.setTabOrder(self.checkBox_use_stimulus_maps, self.radioButtonLag)
+        CrossCorrelationControls.setTabOrder(self.radioButtonLag, self.radioButtonMaxima)
+        CrossCorrelationControls.setTabOrder(self.radioButtonMaxima, self.checkBoxAbsoluteValue)
+        CrossCorrelationControls.setTabOrder(self.checkBoxAbsoluteValue, self.doubleSpinBoxLagThreshold)
+        CrossCorrelationControls.setTabOrder(self.doubleSpinBoxLagThreshold, self.doubleSpinBoxMaximaThreshold)
+        CrossCorrelationControls.setTabOrder(self.doubleSpinBoxMaximaThreshold, self.pushButtonComputeAllData)
+        CrossCorrelationControls.setTabOrder(self.pushButtonComputeAllData, self.pushButtonExportAllData)
+        CrossCorrelationControls.setTabOrder(self.pushButtonExportAllData, self.lineEditCurve1UUID)
+        CrossCorrelationControls.setTabOrder(self.lineEditCurve1UUID, self.graphicsViewCurve1)
+        CrossCorrelationControls.setTabOrder(self.graphicsViewCurve1, self.lineEditCurve2UUID)
+        CrossCorrelationControls.setTabOrder(self.lineEditCurve2UUID, self.graphicsViewCurve2)
+        CrossCorrelationControls.setTabOrder(self.graphicsViewCurve2, self.listWidgetSampleID)
 
     def retranslateUi(self, CrossCorrelationControls):
         _translate = QtCore.QCoreApplication.translate
@@ -211,6 +228,7 @@ class Ui_CrossCorrelationControls(object):
         self.label_5.setText(_translate("CrossCorrelationControls", "Parameters"))
         self.label_10.setText(_translate("CrossCorrelationControls", "Data column:"))
         self.label_12.setText(_translate("CrossCorrelationControls", "Labels column:"))
+        self.checkBox_use_stimulus_maps.setText(_translate("CrossCorrelationControls", "Use Stimulus Maps"))
         self.label_2.setText(_translate("CrossCorrelationControls", "Visualization:"))
         self.radioButtonLag.setText(_translate("CrossCorrelationControls", "&lag"))
         self.radioButtonMaxima.setText(_translate("CrossCorrelationControls", "&maxima"))

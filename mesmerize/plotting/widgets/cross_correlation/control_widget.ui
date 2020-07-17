@@ -73,6 +73,13 @@
                <item>
                 <widget class="QComboBox" name="comboBoxLabelsColumn"/>
                </item>
+               <item>
+                <widget class="QCheckBox" name="checkBox_use_stimulus_maps">
+                 <property name="text">
+                  <string>Use Stimulus Maps</string>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </item>
              <item>
@@ -349,6 +356,23 @@
    <header>....pyqtgraphCore</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>comboBoxDataColumn</tabstop>
+  <tabstop>comboBoxLabelsColumn</tabstop>
+  <tabstop>checkBox_use_stimulus_maps</tabstop>
+  <tabstop>radioButtonLag</tabstop>
+  <tabstop>radioButtonMaxima</tabstop>
+  <tabstop>checkBoxAbsoluteValue</tabstop>
+  <tabstop>doubleSpinBoxLagThreshold</tabstop>
+  <tabstop>doubleSpinBoxMaximaThreshold</tabstop>
+  <tabstop>pushButtonComputeAllData</tabstop>
+  <tabstop>pushButtonExportAllData</tabstop>
+  <tabstop>lineEditCurve1UUID</tabstop>
+  <tabstop>graphicsViewCurve1</tabstop>
+  <tabstop>lineEditCurve2UUID</tabstop>
+  <tabstop>graphicsViewCurve2</tabstop>
+  <tabstop>listWidgetSampleID</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
