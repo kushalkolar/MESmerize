@@ -1050,6 +1050,16 @@ StaticDFoFo
     ============    =========================================
 
     
+.. _node_StimTuning
+
+StimTuning
+^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.StimTuning>`
+    
+    Stimulus Tuning analysis. For more information see :ref:`Stimulus Tuning Plot <plot_StimulusTuning>`
+    
+
 ----------------------
 
 .. _nodes_Clustering:
