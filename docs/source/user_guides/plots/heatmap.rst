@@ -49,7 +49,7 @@ Parameters
 
 **Plot:** Updates data input from the flowchart.
 
-**Save:** `Save the plot data and state in an interactive form <save_ptrn>`
+**Save:** :ref:`Save the plot data and state in an interactive form <save_ptrn>`
 
 **Load:** Load a plot that has been saved as a ".ptrn" file.
 

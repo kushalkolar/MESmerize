@@ -1,3 +1,5 @@
+.. _plot_StimulusTuning
+
 Stimulus Tuning
 ***************
 
@@ -20,9 +22,9 @@ Layout
 
 .. image:: ./stim_tuning.png
 
-============    ===============================================
+============    ============================================================================
 Parameter       Description
-============    ===============================================
+============    ============================================================================
 data_column     Data column used to determine the stimulus tuning of the cells
 method          Use one of ``mean``, ``median``, ``max`` or ``min`` response within a stimulus period to determine the tuning
 start offset    Use a start offset for the stimulus periods (can be either positive or negative)
@@ -30,7 +32,7 @@ end offset      Use a end offset for the stimulus periods (can be either positiv
 DPT column      Data column that is shown in the :ref:`DatapointTracer`.
 Set             Set the stimulus extraction parameters defined above.
 Save            :ref:`Save the plot data and state in an interactive form <save_ptrn>`
-============    ===============================================
+============    ============================================================================
 
 
 Usage
