@@ -490,8 +490,7 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def save_plot(self, path):
         t = self.transmission.copy()
 
-        params = self.params['kwargs']
-        params.update({'data_column': self.data_column})
+        params = self.get_plot_opts()
 
         self.transmission.history_trace.add_operation('all', operation='tuning_curves', parameters=params)
         super(TuningCurvesWidget, self).save_plot(path)

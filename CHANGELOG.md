@@ -1,3 +1,15 @@
+# 0.3.0 (in progress)
+
+### New
+- Cross correlation plots with stimuli.
+- Experimental use of a bioformats importer for the Viewer.
+- Support for Femtonics .mes and .mesc recordings.
+
+# 0.2.4 (in progress)
+
+### Fixed
+- Bug fix with saving Stimulus Tuning plots
+
 # 0.2.3
 
 ### Fixed
