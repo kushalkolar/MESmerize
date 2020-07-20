@@ -1050,7 +1050,7 @@ StaticDFoFo
     ============    =========================================
 
     
-.. _node_StimTuning
+.. _node_StimTuning:
 
 StimTuning
 ^^^^^^^^^^
@@ -1084,7 +1084,7 @@ KMeans
 
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Clustering.KMeans>`
 
-	Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
+    Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
 
 
 ----------------------
