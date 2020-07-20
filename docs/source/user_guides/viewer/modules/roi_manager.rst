@@ -7,17 +7,26 @@ ROI Manager
 
 **Manage and annotate ROIs**
 
-.. thumbnail:: ./roi_manager_viewer.png
+.. image:: ./roi_manager_viewer.png
 
 The ROI Manager has a manual mode, to draw ROIs manually, and a CNMF(E) mode where ROIs can be imported from CNMF(E) outputs.
 
-.. seealso:: :ref:`CNMF Usage <module_CNMF_Usage>` and :ref:`CNMFE Usage <module_CNMFE_Usage>`.
+.. seealso:: :ref:`CNMF <module_CNMF>`, :ref:`CNMF 3D <module_CNMF_3D>`, and :ref:`CNMFE <module_CNMFE>`.
 
 .. note:: You cannot combine manual and CNMF(E) ROIs in the same sample.
 
 
 The ImageJ ROI import uses the read-roi package by Hadrien Mary https://pypi.org/project/read-roi/
 
+
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/0iWV7NRock4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    
 Layout
 ======
 
@@ -52,6 +61,10 @@ Add Tag to ROI Def...       Set the tag for the current selection in the Tags li
 Set ROI Tag                 Click to set the tag, or just press return in the text entry above
 ========================    ==========================================
 
+
+.. note:: It is generally advisable to keep your ROI tags short with lowercase letters. When sharing your project you can provide a mapping for all your keys. This helps maintain consistency throughout your project and makes the data more readable.
+
+
 **Keyboard shortcuts**.
 
 These only work when the ROI manager is docked within the Viewer and while you are typing in the *Add Tag to ROI Definition* text entry.
@@ -78,7 +91,7 @@ Hovering over the ROI selects it in the ROI list.
 Console
 =======
 
-Access the back-end ROI Manager through the viewer console or :ref:`Script editor <ScriptEditor>` to interact with the ROIs.
+Access the back-end ROI Manager through the viewer console or :ref:`Script editor <module_ScriptEditor>` to interact with the ROIs.
 
 .. seealso:: :ref:`Back-end ROI Manager APIs <API_ROIManagers>`, :ref:`ROIList API <API_ROIList>`, :ref:`ROI Type APIs <API_ROITypes>`
 

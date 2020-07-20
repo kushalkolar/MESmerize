@@ -20,7 +20,7 @@
 from fcsugar import *
 from ..containers import TransmissionContainer
 import numpy as np
-from tslearn.clustering import  KShape
+from tslearn.clustering import KShape
 from typing import *
 
 

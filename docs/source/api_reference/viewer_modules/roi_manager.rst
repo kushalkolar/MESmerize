@@ -2,10 +2,18 @@
 
 ROI Manager
 ***********
-The GUI QDockWidget that communicates with the :ref:`back-end managers <API_ROIManagers>`
+
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/a1UO2-OhIHw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ModuleGUI
 =========
+
+The GUI QDockWidget that communicates with the :ref:`back-end managers <API_ROIManagers>`
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager.ModuleGUI
     :special-members:
@@ -23,6 +31,8 @@ The managers hold instances of :ref:`ROIs <API_ROITYPES>` in an instance of :ref
 
 AbstractBaseManager
 -------------------
+
+Subclass this if you want to make your own Manager Back-end.
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.managers.AbstractBaseManager
     :special-members:
@@ -106,9 +116,11 @@ AbstractBaseROI
 BaseROI
 -------
 
+Subclass from this if you want to make your own ROI Type.
+
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.BaseROI
     :show-inheritance:
-    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state
+    :members: __init__, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state
     :member-order: bysource
     
 ManualROI
@@ -126,7 +138,7 @@ ScatterROI
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.ScatterROI
     :show-inheritance:
-    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data
+    :members: __init__, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data
     :member-order: bysource
 
 VolCNMF
@@ -134,7 +146,7 @@ VolCNMF
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.VolCNMF
     :show-inheritance:
-    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data, check_visible, zlevel, set_zlevel, zcenter
+    :members: __init__, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data, check_visible, set_zlevel
     :member-order: bysource
 
 CNMFROI
@@ -142,6 +154,6 @@ CNMFROI
 
 .. autoclass:: mesmerize.viewer.modules.roi_manager_modules.roi_types.CNMFROI
     :show-inheritance:
-    :members: __init__, curve_data, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data
+    :members: __init__, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data
     :member-order: bysource
     

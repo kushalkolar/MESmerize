@@ -21,7 +21,6 @@ from ....analysis import Transmission, organize_dataframe_columns
 import numpy as np
 from functools import partial
 from collections import deque
-from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
 from ....pyqtgraphCore.console import ConsoleWidget
 from itertools import product as iter_product
@@ -32,7 +31,10 @@ from math import sqrt, ceil
 from ...utils import auto_colormap
 from typing import Union
 
-from ....common.configuration import IS_WINDOWS
+from ....common.configuration import HAS_TSLEARN, IS_WINDOWS
+
+if HAS_TSLEARN:
+    from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
 if not IS_WINDOWS:
     from signal import SIGKILL
@@ -302,11 +304,9 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self._input_arrays = a
 
     @property
-    def ks(self) -> kshape_process.KShape:
+    def ks(self):
         """
-        KShape object
-
-        :rtype: kshape_process.KShape
+        tslearn KShape object
         """
 
         if self._ks is None:
@@ -315,7 +315,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         return self._ks
 
     @ks.setter
-    def ks(self, ks: kshape_process.KShape):
+    def ks(self, ks):
 
         if not isinstance(ks, kshape_process.KShape):
             raise TypeError('Must pass KShape instance')

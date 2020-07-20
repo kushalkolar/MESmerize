@@ -6,19 +6,17 @@ from ..base import BasePlotWidget
 from ...utils import WidgetRegistry, get_colormap
 from ....analysis import Transmission
 from ....pyqtgraphCore.widgets.MatplotlibWidget import MatplotlibWidget
-from ....pyqtgraphCore.widgets.ComboBox import ComboBox
 from ....pyqtgraphCore.graphicsItems.ScatterPlotItem import ScatterPlotItem
-from ....pyqtgraphCore import mkColor
 from ..datapoint_tracer import DatapointTracerWidget
 from matplotlib.axes import Axes
 from .control_widget import *
 from ....pyqtgraphCore.widgets.ComboBox import ComboBox
 from math import ceil
 from itertools import product as iter_product
-from typing import *
 from tqdm import tqdm
 from ....common.qdialogs import *
 from uuid import UUID
+from collections import OrderedDict
 
 
 def get_tuning_curves(
@@ -44,10 +42,11 @@ def get_tuning_curves(
 
     """
     # empty output dict
-    d = dict.fromkeys(
-        [f"_TUNE_CURVE_{k}" for k in stim_maps.keys()] +   # used for the tuning curve
-        [f"TUNE_MAX_{k}" for k in stim_maps.keys()] + # used for stimulus at argmax(tuning_curve)
-        [f"TUNE_MIN_{k}" for k in stim_maps.keys()]   # used for stimulus at argmin(tuning_curve)
+    d = OrderedDict.fromkeys(
+        [f"TUNE_CURVE_{k}_xlabels" for k in stim_maps.keys()] +   # used for the tuning curve
+        [f"_TUNE_CURVE_{k}_yvals" for k in stim_maps.keys()] +
+        [f"TUNE_MAX_{k}" for k in stim_maps.keys()] +  # used for stimulus at argmax(tuning_curve)
+        [f"TUNE_MIN_{k}" for k in stim_maps.keys()]    # used for stimulus at argmin(tuning_curve)
     )
 
     # each stimulus datafame
@@ -91,7 +90,8 @@ def get_tuning_curves(
         #         ys.append(curve[np.isnan(stim_array)].mean())
 
         # the tuning curve
-        d[f"_TUNE_CURVE_{stim_type}"] = [xs, ys]
+        d[f"TUNE_CURVE_{stim_type}_xlabels"] = xs
+        d[f"_TUNE_CURVE_{stim_type}_yvals"] = ys
 
         # stimulus name at argmax() and argmin() of tuning curve
         d[f"TUNE_MAX_{stim_type}"] = xs[np.argmax(ys)]
@@ -176,10 +176,10 @@ class ControlDock(QtWidgets.QDockWidget):
 class PlotArea(MatplotlibWidget):
     def __init__(self, parent):
         MatplotlibWidget.__init__(self)
-        self.axs = None  #: array of axis objects used for drawing the means plots, shape is [nrows, ncols]
+        self.axs: Axes = None  #: array of axis objects used for drawing the means plots, shape is [nrows, ncols]
         self.setParent(parent)
         self.ncols = 2
-        self.nrows = None
+        self.nrows: int = None  # determined at plot time
 
     def set_plots(
             self,
@@ -215,15 +215,14 @@ class PlotArea(MatplotlibWidget):
 
     def clear(self):
         self.fig.clear()
-        self._ax = self.fig.add_subplot(111)
 
 
 class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
     drop_opts = []
     sig_output_changed = QtCore.pyqtSignal(Transmission)  #: Emits output Transmission containing tuning curves data
 
-    def __init__(self, parent):
-        QtWidgets.QMainWindow.__init__(self, parent=parent)
+    def __init__(self):
+        QtWidgets.QMainWindow.__init__(self, parent=None)
         BasePlotWidget.__init__(self)
 
         self.setWindowTitle('Tuning Curve Plots')
@@ -241,7 +240,7 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.sample_id = None
         self.roi_uuid = None
 
-        self.roi_uuid_map = None
+        self.roi_uuid_map: dict = None
 
         self.control_widget.sig_sample_changed.connect(self.set_rois_widget)
         self.control_widget.sig_roi_changed.connect(self.update_plot)
@@ -296,6 +295,8 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.color_legend_items = []
         self.pseudo_plots = []
 
+        self.current_stim_region_plot: str = None
+
         self.update_live = True
 
     def update_tuning_curves(self, params: dict):
@@ -307,8 +308,9 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         tqdm().pandas()
 
         self.transmission.df[
-                    [f"_TUNE_CURVE_{s}" for s in self.transmission.STIM_DEFS] + \
-                    [f"TUNE_MAX_{s}" for s in self.transmission.STIM_DEFS] + \
+                    [f"TUNE_CURVE_{s}_xlabels" for s in self.transmission.STIM_DEFS] +
+                    [f"_TUNE_CURVE_{s}_yvals" for s in self.transmission.STIM_DEFS] +
+                    [f"TUNE_MAX_{s}" for s in self.transmission.STIM_DEFS] +
                     [f"TUNE_MIN_{s}" for s in self.transmission.STIM_DEFS]
                  ] = \
             self.transmission.df.progress_apply(
@@ -355,6 +357,7 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget.ui.listWidget_rois.clear()
         self.control_widget.ui.listWidget_rois.setItems(self.roi_uuid_map.keys())
+        self.current_stim_region_plot = None
 
     @BasePlotWidget.signal_blocker
     def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
@@ -374,9 +377,13 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         ]
 
         # get the tuning curves for all stims
+        # pass it as a x-y list
         tuning_curves = \
             {
-                s: r[f"_TUNE_CURVE_{s}"].item() for s in self.transmission.STIM_DEFS
+                s: [
+                    r[f"TUNE_CURVE_{s}_xlabels"].item(),
+                    r[f"_TUNE_CURVE_{s}_yvals"].item()
+                ] for s in self.transmission.STIM_DEFS
             }
 
         # curve made using mean response, or max response etc.
@@ -402,12 +409,21 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
             data_column_curve=dpt_column,
             row=r,
             proj_path=self.transmission.get_proj_path(),
-            history_trace=h
+            history_trace=h,
+            clear_linear_regions=False
         )
 
         self.set_datapoint_tracer_stimulus_regions()
 
     def set_datapoint_tracer_stimulus_regions(self):
+        selected_stim_type = self.datapoint_tracer_stimulus_options_combobox.currentText()
+
+        # don't redraw
+        if self.current_stim_region_plot == selected_stim_type:
+            return
+
+        self.current_stim_region_plot = selected_stim_type
+
         roi_ix = self.control_widget.ui.listWidget_rois.currentItem().text()
         uuid_curve = self.roi_uuid_map[roi_ix]
 
@@ -415,7 +431,6 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.transmission.df['uuid_curve'] == uuid_curve
             ]
 
-        selected_stim_type = self.datapoint_tracer_stimulus_options_combobox.currentText()
         stim_df = r['stim_maps'].item()[0][0][selected_stim_type].sort_values(by='start')
 
         stims = stim_df.name.unique().astype(str)
@@ -472,6 +487,17 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.sig_output_changed.emit(t)
 
+    def save_plot(self, path):
+        t = self.transmission.copy()
+
+        params = self.params['kwargs']
+        params.update({'data_column': self.data_column})
+
+        self.transmission.history_trace.add_operation('all', operation='tuning_curves', parameters=params)
+        super(TuningCurvesWidget, self).save_plot(path)
+
+        self.transmission = t
+
     def set_update_live(self, b: bool):
         pass
 
@@ -480,4 +506,9 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     @BasePlotWidget.signal_blocker
     def set_plot_opts(self, opts: dict):
-        self.control_widget.set_state(opts)
+        # it will try to set the roi index without
+        # any Sample having been selected
+        try:
+            self.control_widget.set_state(opts)
+        except AttributeError:
+            pass

@@ -42,6 +42,19 @@ except ImportError:
 else:
     HAS_CAIMAN = True
 
+
+try:
+    import tslearn
+except ImportError:
+    warn(
+        "tslearn package not found. "
+        "tslearn features will be disabled."
+    )
+    HAS_TSLEARN = False
+else:
+    HAS_TSLEARN = True
+
+
 sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]
@@ -84,6 +97,9 @@ default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       '_MESMERIZE_WORKDIR': '',
                       'recent_projects': []
                       }
+
+if IS_WINDOWS:
+    default_sys_config.update({'_MESMERIZE_PYTHON_CALL': 'python'})
 
 
 class SysConfig:

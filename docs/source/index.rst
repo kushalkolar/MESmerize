@@ -3,8 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Mesmerize's documentation!
-=====================================
+Mesmerize Documentation
+***********************
+   
+.. image:: ./banner.png
+
 
 | biorxiv: https://doi.org/10.1101/840488
 | GitHub: https://github.com/kushalkolar/MESmerize
@@ -14,10 +17,22 @@ Welcome to Mesmerize's documentation!
 .. |gitter_badge| image:: https://badges.gitter.im/mesmerize_discussion/community.svg
                     :target: https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
-Docs for older versions
------------------------
-`v0.1 <v0.1/index.html>`_
-                    
+New: Video Tutorials!
+=====================
+
+**The Main Overview Tutorial playlist provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations:**
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+|
+
+**Additional tutorials on other aspects of Mesmerize will be placed in this playlist:**
+https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
+
+    
+
 .. toctree::
 	:maxdepth: 1
 	:caption: Overview
@@ -39,7 +54,6 @@ Docs for older versions
 	:caption: Viewer
 
 	./user_guides/viewer/overview
-	./user_guides/convert_meta_data
 	./user_guides/viewer/add_to_project
 	
 .. toctree::

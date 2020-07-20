@@ -8,7 +8,7 @@ Transmission
 **Inherits from BaseTransmission**
 
 .. autoclass:: mesmerize.Transmission
-	:members: __init__, empty_df, from_pickle, to_pickle, from_hicke, to_hickle, from_hdf5, to_hdf5, get_proj_path, set_proj_path, to_dict, from_proj, _load_files, merge
+	:members: __init__, empty_df, from_pickle, to_pickle, from_hdf5, to_hdf5, get_proj_path, set_proj_path, to_dict, from_proj, _load_files, merge
 	:member-order: bysource
 
 BaseTransmission

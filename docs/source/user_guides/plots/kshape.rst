@@ -16,7 +16,7 @@ This GUI uses the `tslearn.clustering.KShape <https://tslearn.readthedocs.io/en/
 
 **Layout**
 
-.. thumbnail:: ./kshape.png
+.. image:: ./kshape.png
 
 **Left:** KShape parameters and Plot parameters
 
@@ -194,7 +194,7 @@ Hide legend
 
 Hide/show legend in the proportions plot
 
-.. code-block:: pyton
+.. code-block:: python
 
     get_plot_proportions().ax.legend().set_visible(True)
     get_plot_proportions().draw()

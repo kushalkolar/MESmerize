@@ -596,7 +596,10 @@ class Transmission(BaseTransmission):
         df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.progress_apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
 
         try:
-            df['_SPIKES'] = df['ROI_State'].apply(lambda r: r['spike_data'][1])
+            df['_SPIKES'] = df['ROI_State'].apply(
+                lambda r: r['spike_data'][1] if (r['spike_data'] is not None) else None
+            )
+
         except KeyError:
             warn('spikes or data not found, probably is probably from Mesmerize version < 0.2')
 
@@ -626,7 +629,7 @@ class Transmission(BaseTransmission):
             raise ValueError('Could not read project configuration when creating Transmission'
                              '\n' + traceback.format_exc())
 
-        return cls(df, proj_path=proj_path, history_trace=h, last_output='_RAW_CURVE', last_unit='time',
+        return cls(df, proj_path=proj_path, history_trace=h, last_output=None, last_unit='time',
                    ROI_DEFS=roi_type_defs, STIM_DEFS=stim_type_defs, CUSTOM_COLUMNS=custom_columns)
 
     @staticmethod

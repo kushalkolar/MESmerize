@@ -1,4 +1,4 @@
-.. _module_StimulusMapping:
+.. _API_StimulusMapping:
 
 Stimulus Mapping
 ****************

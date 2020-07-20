@@ -3,6 +3,7 @@ Add a Sample to the Project
 When you are happy with the ROIs in the viewer for the current CNMF(E) derived or manually created ROIs, you can add this as a *Sample* to your project.
 
 Each sample in your project contains the following:
+
 	- The imaging data from which ROIs were extracted (the video)
 	- All the ROIs with their spatial location, temporal dynamics, and any tags that you have entered in the ROI Manager.
 	- Stimulus mappings, if your project is configured for this.
@@ -30,3 +31,10 @@ Every Sample in a project has a unique **SampleID** which is the combination of 
 .. warning:: AnimalID and TrialID are separated by the ``-_-`` character combination when stored as a SampleID. Therefore do not use that character combination within your AnimalID or TrialID.
 
 
+Video Tutorial
+==============
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/0iWV7NRock4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    

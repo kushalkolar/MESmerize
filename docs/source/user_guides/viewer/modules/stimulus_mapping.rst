@@ -3,7 +3,17 @@
 Stimulus Mapping
 ****************
 
-:ref:`API Reference <module_StimulusMapping>`
+:ref:`API Reference <API_StimulusMapping>`
+
+Video Tutorial
+==============
+
+This tutorial shows how to create a New Project, open images in the Viewer, use the Stimulus Mapping module and perform Caiman motion correction
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/D9zKhFkcKTk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    
 
 **Map temporal information such as stimulus or behavioral periods.**
 
@@ -15,7 +25,7 @@ Stimulus periods illustrated on the viewer timeline
 
 .. image:: ./stim_maps_viewer.png
 
-The tabs that are available in the stimulus mapping module corresponds to the stimulus types in your :ref:`Project Configuration<StimulusTypeColums>`.
+The tabs that are available in the stimulus mapping module corresponds to the stimulus types in your :ref:`Project Configuration <StimulusTypeColumns>`.
 
 You can add stimulus periods either manually or through a script.
 
@@ -34,12 +44,14 @@ Import and Export are not implemented yet.
 
 .. warning:: At the moment, only "frames" are properly supported for the time units.
 
+.. note:: It is generally advisable to keep your stimulus names short with lowercase letters. When sharing your project you can provide a mapping for all your keys. This helps maintain consistency throughout your project and makes the data more readable.
+
 Script
 ======
 
-.. seealso:: :ref:`API Reference <module_StimulusMapping>`
+.. seealso:: :ref:`API Reference <API_StimulusMapping>`
 
-You can also use the :ref:`Stimulus Mapping module's API <module_StimulusMapping>` to set the stimulus mappings from a pandas DataFrame.
+You can also use the :ref:`Stimulus Mapping module's API <API_StimulusMapping>` to set the stimulus mappings from a pandas DataFrame.
 
 This example creates a pandas DataFrame from a csv file to set the stimulus mappings. It uses the csv file from the pvc-7 dataset availble on CRCNS: http://dx.doi.org/10.6080/K0C8276G
 
@@ -52,38 +64,44 @@ You can also download the csv here: :download:`stimulus_pvc7.csv <./stimulus_pvc
     from mesmerize.plotting.utils import get_colormap
 
     # Load dataframe from CSV
-    df = pd.read_csv('/share/data/longterm/4/kushal/crcns_datasets/pvc-7/122008_140124_windowmix/stimulus.csv')
+    df = pd.read_csv('/share/data/longterm/4/kushal/allen_data_pvc7_chunks/stimulus_pvc7.csv')
 
-    # Sort according to time (stimulus "start" frame column)
+    # Sort according to time
     df.sort_values(by='start').reset_index(drop=True, inplace=True)
 
-    # Trim off the periods that are not in the current image sequence
-    # This is just because this example doesn't use the whole experiment
+    # Trim off the stimulus periods that are not in the current image sequence
     trim = get_image().shape[2]
     df = df[df['start'] <= trim]
 
-    # Remove the unused columns
-    df.drop(columns=['sf', 'tf', 'contrast'])
+    # get one dataframe for each of the stimulus types
+    ori_df = df.drop(columns=['sf', 'tf', 'contrast'])  # contains ori stims
+    sf_df = df.drop(columns=['ori', 'tf', 'contrast'])  # contains sf stims
+    tf_df = df.drop(columns=['sf', 'ori', 'contrast'])  # contains tf stims
 
     # Rename the stimulus column of interest to "name"
-    df.rename(columns={'ori': 'name'}, inplace=True)
+    ori_df.rename(columns={'ori': 'name'}, inplace=True)
+    sf_df.rename(columns={'sf': 'name'}, inplace=True)
+    tf_df.rename(columns={'tf': 'name'}, inplace=True)
 
-    # Get the names of the stimulus periods to create a colormap for illustration in the curves plot area
-    oris = df['name'].unique()
-    oris.sort()
-
-    # Create colormap to visualize the stimuli in the viewer's curve plots area
-    oris_cmap = get_colormap(oris, 'tab10', output='pyqt', alpha=0.6)
-
-    # Create a column with colors that correspond to the orientations column values
-    df['color'] = df['name'].map(oris_cmap)
-
-    # name column must be str type for stimulus mapping module
-    # the ori data from the original csv is integers so you must change it
-    df['name'] = df['name'].apply(str)
 
     # Get the stimulus mapping module
     smm = get_module('stimulus_mapping')
 
-    # Set the ori colormap
-    smm.maps['ori'].set_data(df)
+    # set the stimulus map in Mesmerize for each of the 3 stimulus types
+    for stim_type, _df in zip(['ori', 'sf', 'tf'], [ori_df, sf_df, tf_df]):
+        # data in the name column must be `str` type for stimulus mapping module
+        _df['name'] = _df['name'].apply(str)
+
+        # Get the names of the stimulus periods
+        stimuli = _df['name'].unique()
+        stimuli.sort()
+
+        # Create colormap with the stimulus names
+        stimuli_cmap = get_colormap(stimuli, 'tab10', output='pyqt', alpha=0.6)
+
+        # Create a column with colors that correspond to the stimulus names
+        # This is for illustrating the stimulus periods in the viewer plot
+        _df['color'] = _df['name'].map(stimuli_cmap)
+
+        # Set the data in the Stimulus Mapping module
+        smm.maps[stim_type].set_data(_df)

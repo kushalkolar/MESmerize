@@ -13,7 +13,7 @@ install_requires = \
         "ipython>=7.15.0",
         "ipyparallel>=6.3",
         "MarkupSafe>=1.1.1",
-        "matplotlib>=3.2.2",
+        "matplotlib<=3.2.1",
         "opencv-contrib-python>=4.2",
         "opencv-python>=4.2",
         "pandas~=0.25.3",  # do not change
@@ -30,21 +30,20 @@ install_requires = \
         "spyder==3.3.3",  # do not change
         "tifffile",  # do not change
         "tqdm>=4.37.0",
-        "PeakUtils",
+        "PeakUtils",  # caiman requirement
         "tables>=3.6.1",
         "joblib>=0.15.1",
         #"tslearn~=0.2.2",  # had to remove because of windows
         "graphviz>=0.13",
         "numba>=0.50.0",
-        "bottleneck==1.2.1",  # do not change
+        #"bottleneck==1.2.1",  # do not change
         "holoviews",
         "jupyter",
-        "pynwb",
+        "pynwb",  # caiman requirement
         "pyqtgraph",
-        "tensorflow~=1.15",  # do not change
+        #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
         "tcl",
-        "yapf"
     ]
 
 classifiers = \
@@ -61,12 +60,12 @@ classifiers = \
         "Intended Audience :: Science/Research"
     ]
 
-with open("README.md", 'r') as fh:
+with open("readme-pypi.md", 'r') as fh:
     long_description = fh.read()
 
 setup(
     name='mesmerize',
-    version='0.2.15',
+    version='0.2.3',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     entry_points=entry_points,

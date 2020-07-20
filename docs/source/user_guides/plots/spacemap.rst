@@ -10,13 +10,23 @@ SpaceMap
 
 Spatially map a categorical variable onto a projection of a Sample's image sequence
 
-.. thumbnail:: ./spacemap.png
+.. image:: ./spacemap.png
 
 .. note:: Image produced from the following dataset:
     Garner, Aleena (2014): In vivo calcium imaging of layer 4 cells in the mouse using sinusoidal grating stimuli. CRCNS.org.
     http://dx.doi.org/10.6080/K0C8276G
 
 
+Video Tutorial
+==============
+
+This shows how you can view a space map that shows the tuning of cells. The Space map plot itself is shows after 3:38.
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/FtMPmXldf9E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    
+    
 Controls
 ========
 

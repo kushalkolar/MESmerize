@@ -10,11 +10,11 @@
 
 
 import numpy as np
-from tslearn.cycc import normalized_cc
 from itertools import product
 from ...common.utils import HdfTools
-# from tslearn.preprocessing import TimeSeriesScalerMeanVariance, TimeSeriesScalerMinMax
-# from sklearn.metrics import pairwise_distances
+from ...common.configuration import HAS_TSLEARN
+if HAS_TSLEARN:
+    from tslearn.cycc import normalized_cc
 
 
 def ncc_c(x: np.ndarray, y: np.ndarray) -> np.ndarray:

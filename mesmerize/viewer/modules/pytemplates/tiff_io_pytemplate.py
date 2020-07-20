@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './tiff_io_pytemplate.ui'
+# Form implementation generated from reading ui file 'tiff_io_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -163,7 +163,7 @@ class Ui_DockWidget(object):
         self.groupBox_meta_loader.setToolTip(_translate("DockWidget", "Select a meta data loader that corresonds to your meta data file.\n"
 "See the docs for instructions on how to create your own loader."))
         self.groupBox_meta_loader.setTitle(_translate("DockWidget", "&Load meta data"))
-        self.btnSelectMetaFile.setText(_translate("DockWidget", "Select meta data file"))
+        self.btnSelectMetaFile.setText(_translate("DockWidget", "Select file"))
         self.label_3.setText(_translate("DockWidget", "Meta data format:"))
         self.btnLoadIntoWorkEnv.setText(_translate("DockWidget", "Load into Work Environment"))
 

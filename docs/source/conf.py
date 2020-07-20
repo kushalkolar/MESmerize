@@ -15,7 +15,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-
+from mesmerize import __version__
 
 # -- Project information -----------------------------------------------------
 
@@ -24,9 +24,9 @@ copyright = '2019, Kushal Kolar'
 author = 'Kushal Kolar'
 
 # The short X.Y version
-version = '0.2'
+version = f"{__version__.split('.')[0]}.{__version__.split('.')[1]}"
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -47,7 +47,6 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'sphinxcontrib.images',
 ]
 napoleon_use_param = True
 set_type_checking_flag = True

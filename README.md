@@ -1,23 +1,74 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![banner](./banner.png)
 
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/mesmerize) &nbsp;&nbsp;
+| <span> | <span> | <span> | <span> |
+|--------|--------|--------|--------|
+| PyPI | [![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) | Downloads | [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) |
+| License | [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) | Maintenance | [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kushalkolar/MESmerize)](https://github.com/kushalkolar/MESmerize/commits/master) |
+| Documentation | [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](http://docs.mesmerizelab.org/en/master/?badge=master) | Code analysis | [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) |
+| Chat & Help | [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) | Issue tracker | [![GitHub issues](https://img.shields.io/github/issues/kushalkolar/MESmerize)](https://github.com/kushalkolar/MESmerize/issues) |
+
+Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
+
+Associated bioRxiv paper: https://doi.org/10.1101/840488
+
 <a href="https://doi.org/10.1101/840488">
 <img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
 </a>
 
-# Mesmerize
+## Video Tutorials!
+We have recently created detailed video tutorials! The main tutorial series provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations:\
+https://www.youtube.com/playlist?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg
 
-Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. It encompasses the entire process of calcium imaging analysis from raw data to semi-final publication figures that are interactive, and aids in the creation of FAIR-functionally linked datasets. It is applicable for a broad range of experiments and is intended to be used by users with and without a programming background.
+Additional videos on specific aspects of Mesmerize will be posted here:\
+[https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_](https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_)
 
-## News & upcoming
+More tutorial videos will be available soon.
+
+## Installation
+
+If you're familiar with anaconda or virtual environments, installation is as simple as:
+
+```
+pip install mesmerize
+```
+
+After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
+
+If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
+http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+
+#### Caiman
+In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+
+Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
+
+#### tslearn
+In order to use tslearn features you will need ``tslearn~=0.2.2``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+
+tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes
+
+## Documentation
+Documentation is available here: [http://docs.mesmerizelab.org/](http://docs.mesmerizelab.org/)
+
+## Questions/Discussions
+
+Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
+
+[![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+**Issue tracker:** https://github.com/kushalkolar/MESmerize/issues
+
+## News
+
+See the [changelog](https://github.com/kushalkolar/MESmerize/blob/master/CHANGELOG.md) for more details
 
 **July 2020**
 
 Changes:
-- Mesmerize can be installed via pip.
+- Mesmerize can now be installed via pip.
 - Much easier to import imaging meta data from other sources.
 - Create stimulus tuning curve plots.
-- ΔF/F can now be extracted at the Viewer stage for caiman data, or set through other methods. Spikes and ΔF/F can be visualized in the Viewer.
+- ΔF/F must now be extracted at the Viewer stage for caiman data, or set through other methods. Spikes and ΔF/F can be visualized in the Viewer.
 
 **June 2020**
 
@@ -44,27 +95,20 @@ See our recent biorxiv manuscript where we use Mesmerize to analyze a calcium im
 
 https://doi.org/10.1101/840488
 
-## Questions/Discussions
+<a href="https://doi.org/10.1101/840488">
+<img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
+</a>
 
-Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
+## Upcoming
 
-[![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+**Towards v0.3**
+- Full support for recordings from Femtonics microscopes.
+- Export lite versions of projects for easier sharing.
+- Cross correlation analysis with stimulus maps.
 
+## Acknowledgements
 
-## Documentation
-Documentation is available here: [http://www.mesmerizelab.org/](http://www.mesmerizelab.org/)
-
-## Installation
-
-If you're familiar with virtual environments and have necessary build tools, installation is as simple as:
-
-```
-pip install tslearn~=0.2.2
-pip install mesmerize
-```
-
-After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
-
-If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
-
-http://mesmerizelab.org/user_guides/installation.html
+- [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. 
+- [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with.
+- Simon Daste provided sample data and assistance which allowed for creation of the Suite2p importer module.
+- [Jordi Zwiggelaar](https://github.com/Blastorios) created the Mesmerize logo & banner.

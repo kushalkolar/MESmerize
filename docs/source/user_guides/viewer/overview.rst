@@ -11,10 +11,19 @@ Based on the `pyqtgraph ImageView <http://www.pyqtgraph.org/documentation/widget
 * Use modules to perform things like motion correction, CNMF(E), ROI labeling, and stimulus mapping. See their respective guides for details.
 * You can also make modifications to an existing Sample in your project by opening it in the Viewer. See Modify Sample and Overwrite guide.
 
+Video Tutorial
+==============
+
+This tutorial shows how to create a New Project, open images in the Viewer, use the Stimulus Mapping module and perform Caiman motion correction
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/D9zKhFkcKTk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 Layout
 ======
 
-.. thumbnail:: ./overview/1.png
+.. image:: ./overview/1.png
 
 To access Viewer modules choose the module you want to run from the Modules menu at the top. All modules, except the Batch Manager, are small floating windows which you can dock into the Viewer by dragging them to an edge of the viewer.
 
@@ -23,7 +32,7 @@ To access Viewer modules choose the module you want to run from the Modules menu
 
 When viewing 3D data a slider on the left allows you to move through the z axis.
 
-.. thumbnail:: ./overview/viewer_3d.png
+.. image:: ./overview/viewer_3d.png
 
 The image stack shown above is from Martin Haesemeyer's dataset from the following paper:
 
@@ -153,7 +162,7 @@ Work Envionment Editor
 
 Explore the data in your work environment using a GUI.
 
-.. thumbnail:: ./overview/8.png
+.. image:: ./overview/8.png
 
 .. note:: This is read only, you cannot edit via this GUI.
 
@@ -170,7 +179,7 @@ You can view your meta data more quickly using the console.
 Open the console by going to View -> Console.
 You can then call ``get_meta()`` to print the meta data dict.
 
-.. thumbnail:: ./overview/11.png
+.. image:: ./overview/11.png
 
 Console
 ^^^^^^^
@@ -212,6 +221,13 @@ get_batch_manager()     Get the batch manager.
 update_workEnv()        Update the viewer GUI with the viewer work environment (vi.viewer.workEnv)
 clear_workEnv()         Clear the current work envionment, cleanup the GUI and free the RAM
 =====================   ====================================================================
+
+Video Tutorial
+--------------
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/a1UO2-OhIHw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Examples
 --------

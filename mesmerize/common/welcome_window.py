@@ -81,7 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.initialize_console_widget()
 
         self.resize(914, 900)
-        # configuration.projPath = '/home/kushal/mesmerize_test_proj'
+        self.setWindowIcon(QtGui.QIcon(mdir + '/icons/main_icon.gif'))
 
         self._batch_manager = None
 

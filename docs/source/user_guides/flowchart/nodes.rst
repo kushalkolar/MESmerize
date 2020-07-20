@@ -356,7 +356,7 @@ Plot
 
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Display.Plot>`
     
-    For information on the plot widget see :ref:`<plot_SimplePlot>`
+    For information on the plot widget see :ref:`Simple Plot <plot_SimplePlot>`
     
 	A simple plot.
 
@@ -397,15 +397,6 @@ ScatterPlot
 	Create scatter plot of numerical data containing [X, Y] values
 	
 	For information on the plot widget see :ref:`Scatter Plot <plot_ScatterPlot>`
-
-.. _node_TimeSeries:
-
-TimeSeries
-^^^^^^^^^^
-
-	Plot the means along with confidence intervals or standard eviation of numerical arrays representing time series data.
-
-	For more information see :ref:`plot_TimeSeries`
 
 
 --------------------
@@ -1084,7 +1075,8 @@ KMeans
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Clustering.KMeans>`
 
 	Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
-    
+
+
 ----------------------
 
 

@@ -1,6 +1,25 @@
 This quickstart video tutorial is meant to give you an very simple overview of how you can progress from raw imaging data to interactive and traceable plots that can be shared with a Mesmerize project.
 
-To start off, let's open a Viewer. The Mesmerize viewer is used for visualizing your imaging data, and interfaces with modules that allow you to annotate Regions of Interest, and stimulus or behavioral periods. It can also interface with various Caiman modules for motion correction & signal extraction. Alternatively, you may directly import regions of interest from Caiman or Suite2p output files.
+For this tutorial I will use a simple dataset from the Allen Institute, which consists of a 2p recording in the visual cortex while the mouse is be presented with sinusoidal gratings at various orientations. I decided to use something that most people are familiar with, however many features of Mesmerize which I'm about to show you can be applied to a broad range of experiments and organisms. For more details you can check out our paper and other videos.
+
+When you open Mesmerize you get the Welcome Window. From here you can open a Viewer for viewing image sequences, a flowchart for analysis, and open or create a Mesmerize project. The `Help` menu has links to useful resources. If you want to report an issue, this takes you right to the issue tracker on GitHub. This will take you to the gitter. These will take you to the documentation... And at the bottom it displays the version of Mesmerize that you are currently running.
+
+To start off, I'm going to create a simple Mesmerize project. You don't need to create a project right in the beginning for using many of the Viewer features in Mesmerize, such as the Caiman modules. However for this tutorial I will create one from the beginning so I can map stimulus information from the Allen dataset.
+
+So let's click this to start a new project. Let's create it here, and I will name it "tutorial_example". The "finished" version of this project will be available for you to download, it's linked in the video description and on the docs website.
+
+The stimuli in this dataset are sinusoidal grating that have 3 different features, the orientation of the gratings, a spatial frequency and temporal frequency. So I will create 3 Stimulus Type columns called "ori", "sf", and "tf". You can create as many `Stimulus Type` columns as you want.
+
+To later illustrate how ROIs can be annotated, I will add two ROI Type columns.
+Let's add one column named "cell_type" and another named "anatomical_position". You can have as many of these "ROI Type columns" as you want, and they would usually carry categorical data.
+
+Lastly, you can add additional "Custom" Categorical data Columns. These columns are used for storing information that relates to entire Samples, such as an animal's age, genotype, or strain. I will add a column to enter the age of the animal.
+
+So now I'm done with the project configuration for this new project. You can modify the project configuration at any time in the future, you can add new Stimulus, ROI Type and Custom Columns at any point in the future.
+
+You can read much more about the `Project Configuration` in the docs, you can open these docs directly from the `Help` menu -> New Project Help. And you will find detailed information about how to think about your project configuration.
+
+OK now let's open a Viewer. The Mesmerize viewer is used for visualizing your imaging data, and interfaces with modules that allow you to annotate Regions of Interest, and stimulus or behavioral periods. It can also interface with various Caiman modules for motion correction & signal extraction. Alternatively, you may directly import regions of interest from Caiman or Suite2p output files.
 
 To start off, there are two GUI modules for opening imaging data in the Viewer.
 
@@ -31,7 +50,21 @@ There are a few simple tools that you can use with the image.
 
 So from scrolling this video you can notice that our cells are on the left, we can crop this out.
 
-We also notice movement, so we can use the Caiman library to correct for this. First I'm going to create a new batch so we can batch process the motion correction with a few variants of parameters so we can finally choose the best one. I'm going to create the batch on a fast filesystem since motion corrections steps write large temporary files.
+As I mentioned earlier this dataset contains stimulus information. We can use the `Stimulus Mapping` Module to add the stimulus data to the Viewer Work Environment. Data entered through the Stimulus Mapping Module carries over in downstream analysis.
+
+When you open the stimulus mapping module you get 3 tabs. These tabs correspond to the "Stimulus Type" columns you set in you `Project Configuration`.
+You can add stimulus periods manually by clicking the "Add Row" button. For example let's add one called "90" for "90 degrees" in the "orientation" page. You can choose a color for visualization in the Viewer plot.
+Let's add two stimuli for "sf"...
+And two for "tf".
+
+Now you can click "Set all maps" to set the stimulus maps.
+And you can choose which stimulus you want to visualize in the plot area.
+
+All the stimulus information for this recording is contained in a csv file, so we can just import it using the script editor. This script basically loads the csv as a pandas dataframe, and splits it into 3 dataframes - one for orientation, spatial frequency and temporal frequency. The Mesmerize `Stimulus Mapping` Module is then able to directly take a dataframe for each of these 3 stimulus types. You'll find this script in the documentation for the `Stimulus Mapping` module.
+
+So let's run the script, and now you can see all the stimulus periods have been loaded for all 3 stimulus types. And they can all be visualized in Viewer.
+
+OK so back to the image. When scrolling through the video you can notice movement, so we can use the Caiman library to correct for this. First I'm going to create a new batch so we can batch process the motion correction with a few variants of parameters, and finally choose the best one. I'm going to create the batch on a fast filesystem since motion corrections steps write large files.
 
 Now that we have a batch directory, let's open the Caiman Motion Correction module for parameter entry. I would highly recommend going through the official Caiman demos & documentation to understand the parameters so you can use this tool more effectively.
 
@@ -98,11 +131,6 @@ If you look at the parameters for this item you can see that it's split into two
 
 Note how the "fr", or framerate parameter, was automatically found. This is an example of why you must include meta data when initially loading your raw image data.
 
-Before I start these CNMF batch items, I'll make a new project so we can add one of our CNMF outputs as a Sample to the project.
-For this simple example I'll just add two ROI Type columns to illustrate how ROIs can be annotated.
-
-Let's add one column named "cell_type" and another named "anatomical_position". You can have as many of these "ROI Type columns" as you want, and they would usually carry categorical data.
-
 One last thing I'd like to change before starting these CNMF items is to reduce the number of threads that they will be allowed to use. This is because CNMF can be quite RAM intensive, and from experience I know that an image of this size will oversaturate the RAM I currently have available. By reducing the number of threads, it will also reduce the RAM usage. So I will set 30 threads.
 
 OK let's select the first CNMF item and run the batch from here onward.
@@ -110,7 +138,7 @@ As usual, you will be able to view the standard out over here. And it will take 
 
 ------------------------------------------------------------
 
-OK so these CNMF items have finished. But before I open them I will make one small change to my project configuration. I will add a column for Categorical Data to enter the age of the animal. So let's go to Project configuration ....
+OK so these CNMF items have finished.
 
 And you can add as many of these custom categorical data columns as you need. You can also add them to an existing project which already has Samples added to it. You'll find more details on this in the documentation.
 

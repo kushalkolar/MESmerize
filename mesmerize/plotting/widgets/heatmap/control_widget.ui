@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="comboBoxDataColumn"/>
+    <widget class="ComboBox" name="comboBoxDataColumn"/>
    </item>
    <item>
     <widget class="QLabel" name="label_3">
@@ -32,7 +32,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="comboBoxLabelsColumn"/>
+    <widget class="ComboBox" name="comboBoxLabelsColumn"/>
    </item>
    <item>
     <widget class="QLabel" name="label_5">
@@ -42,7 +42,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="comboBoxDPTCurveColumn"/>
+    <widget class="ComboBox" name="comboBoxDPTCurveColumn"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -90,8 +90,15 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_set_vmin_vmax">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
-        <string>Set</string>
+        <string>Set
+vmin vmax</string>
        </property>
       </widget>
      </item>
@@ -254,7 +261,28 @@
    <extends>QListWidget</extends>
    <header>...utils</header>
   </customwidget>
+  <customwidget>
+   <class>ComboBox</class>
+   <extends>QComboBox</extends>
+   <header>....pyqtgraphCore.widgets.ComboBox</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>comboBoxDataColumn</tabstop>
+  <tabstop>comboBoxLabelsColumn</tabstop>
+  <tabstop>comboBoxDPTCurveColumn</tabstop>
+  <tabstop>doubleSpinBox_vmin</tabstop>
+  <tabstop>doubleSpinBox_vmax</tabstop>
+  <tabstop>pushButton_set_vmin_vmax</tabstop>
+  <tabstop>listWidgetColorMapsData</tabstop>
+  <tabstop>listWidgetColorMapsLabels</tabstop>
+  <tabstop>checkBoxLiveUpdate</tabstop>
+  <tabstop>pushButtonPlot</tabstop>
+  <tabstop>pushButtonSave</tabstop>
+  <tabstop>pushButtonLoad</tabstop>
+  <tabstop>checkBoxShowStimuli</tabstop>
+  <tabstop>pushButtonShowHideConsole</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

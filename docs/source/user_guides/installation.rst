@@ -3,77 +3,23 @@
 Installation
 ************
 
-Mesmerize can be installed on Linux, Mac OSX and Windows. For Linux we provide a snap package which comes with everything and doesn't require management of virtual environments or anaconda. On Windows, Mesmerize can be installed in an anaconda environment. For Mac OSX and Linux you may use either virtual environments or conda environments, but we have had much better experience with virtual environments.
-
-.. _snap_install:
+Mesmerize can be installed on Linux, Mac OSX and Windows. On Windows, Mesmerize can be installed in an anaconda environment. For Mac OSX and Linux you may use either virtual environments or conda environments, but we have had much better experience with virtual environments.
 
 Linux
 =====
 
-The easiest way to get Mesmerize is through the Snap Store. You can also install from the GitHub repo.
-
-Snap
-----
-
-.. image:: https://snapcraft.io/static/images/badges/en/snap-store-black.svg
-  :target: https://snapcraft.io/mesmerize
-
-Command line snap installation::
-
-    sudo snap install mesmerize
-
-After installation simply run ``mesmerize`` in the terminal and the application will launch in ~10-30 seconds. Make sure your PYTHONPATH environment variable is empty otherwise it might conflict with the snap::
-
-    export PYTHONPATH=
-    
-You can also open an ipython console in the snap environment::
-
-    mesmerize.ipython
-        
-Requirements
-^^^^^^^^^^^^
-
-Make sure you have ``snapd`` installed, which is required for running snap apps.
-Ubuntu 16.04 and later usually come pre-installed with snapd.
-
-You should be able to install ``snapd`` through apt for most Debian based distros::
-
-	sudo apt update
-	sudo apt install snapd
-
-Installing ``snapd`` on Fedora::
-
-	sudo dnf install snapd
-
-To install ``snapd`` on other distros please see: https://docs.snapcraft.io/installing-snapd
-
-If you have trouble installing Mesmerize via snap you might need to install `core18 <https://snapcraft.io/core18>`_ first::
-
-	sudo snap install core18
-
-Limitations
-^^^^^^^^^^^
-
-The snap installation has several limitations, most importantly you will not be able to access arbitrary filesystems. If you need this you will have to install directly from the repo (see From GitHub). If you are able to mount your external filesystem in /media (or wherever your distro places removeable media) then you should be able to access these filesystems if you do the following::
-
-    sudo snap connect mesmerize:removable-media
-
-Alternatively you can install the snap in devmode (gives that snap broad access to the system)::
-
-    sudo snap install mesmerize --devmode
-	
-.. warning:: Analysis graphs do not work in the snap version at the moment.
-
-.. _pypi_install:
+The snap is currently discontinued in favor of a pypi package.
 
 pip (PyPI)
-==========
+----------
 
 **You will need python==3.6, there is a bug with Qt & python3.7**
 
 #. Install python 3.6::
+
     # Debian & Ubuntu based
     sudo apt-get install python3.6
+    
     # Fedora/CentOS
     sudo dnf install python36
 
@@ -89,6 +35,7 @@ pip (PyPI)
 For other distributions install the equivalent meta package to get build tools.
 
 If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using::
+
     sudo dnf install redhat-rpm-config
     
 #. Create a new virtual environment::
@@ -103,9 +50,9 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
     
     pip install --upgrade pip setuptools
 
-#. Install tslearn::
+#. Install tslearn & bottleneck (optional)::
 
-    pip install tslearn~=0.2.2
+    pip install tslearn~=0.2.2 bottleneck==1.2.1
 
 #. Install mesmerize::
 
@@ -124,9 +71,7 @@ You will always need to activate the environment for Mesmerize before launching 
     source activate caiman
     pip install .
 
-More information on caiman installation::
-
-    https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+More information on caiman installation: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
 
     
 Mac OSX
@@ -156,17 +101,21 @@ This might take a while.
 
     conda install -c conda-forge caiman
 
+#. Install Mesmerize. On Mac installing tslearn before mesmerize creates problems on anaconda for some reason::
+
+    pip install mesmerize
+    
 #. Install cython, and downgrade pandas::
 
-    conda install Cython pandas~=0.25.3, 
+    conda install Cython pandas~=0.25.3
 
-#. Install tslearn::
+#. Install tslearn (optional)::
 
     conda install -c conda-forge tslearn==0.2.1
     
-#. Install Mesmerize::
+#. Install bottleneck (optional)::
 
-    pip install mesmerize
+    pip install bottleneck==1.2.1
 
 #. To launch Mesmerize call it from the terminal::
 
@@ -174,7 +123,16 @@ This might take a while.
     
 You will always need to activate the environment for Mesmerize before launching it.
 
-**You might get a matplotlib error, if so execute the following which appends the default matplotlib backend-option. Note that this will probably affect matplotlib in all your environments**::
+**You might get a matplotlib error similar to below**::
+
+    Bad val 'qt5' on line #1
+    "backend: qt5
+    
+    in file "/Users/kushal/.matplotlib/matplotlibrc"
+    Key backend: Unrecognized backend string 'qt5': valid strings are ['GTK3Agg', 'GTK3Cairo', 'MacOSX', 'nbAgg', 'Qt4Agg', 'Qt4Cairo', 'Qt5Agg', 'Qt5Cairo', 'TkAgg', 'TkCairo', 'WebAgg', 'WX', 'WXAgg', 'WXCairo', 'agg', 'cairo', 'pdf', 'pgf', 'ps', 'svg', 'template']
+
+
+**To fix this, execute the following which appends the default matplotlib backend-option. Note that this will probably affect matplotlib in all your environments**::
 
     echo "backend: qt5" >> ~/.matplotlib/matplotlibrc
 
@@ -199,7 +157,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
     
 #. Create a new anaconda environment::
 
-    conda create -n mesmerize
+    conda create -n mesmerize python=3.6
 
 #. Activate the environment::
 
@@ -213,9 +171,13 @@ You will need a relatively recent version of Anaconda in order to run conda comm
 
     conda install Cython pandas~=0.25.3
     
-#. Install tslearn::
+#. Install tslearn (optional)::
 
     conda install -c conda-forge tslearn==0.2.1
+    
+#. Install bottleneck (optional)::
+
+    pip install bottleneck==1.2.1
     
 #. Install graphviz::
 
@@ -258,7 +220,7 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 #. Upgrade pip & setuptools & install some build dependencies::
 
     pip install --upgrade pip setuptools
-    pip install Cython numpy
+    pip install Cython numpy tslearn==0.2.2
 
 #. Fork the main repo on github and clone it::
 
