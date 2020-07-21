@@ -14,9 +14,9 @@ python:
 
 install:
 #required for tslearn to succesfully install
-- pip install --progress-bar off numpy Cython
+- pip install -q numpy Cython
 #allow the installation of all requirements before initializing mesmerize
-- pip install --progress-bar off -r requirements.txt
+- pip install -q -r requirements.txt
 
 script:
 - pytest
@@ -32,12 +32,13 @@ jobs:
       language: shell       # 'language: python' is an error on Travis CI macOS
       addons:
         homebrew:
-        packages: python3
+        packages: python3.6.5
       before_install:
         - pip3 install --progress-bar off virtualenv
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
       before_script:
+        - ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy
         - ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok ) & fi
         - sleep 3 && prove -bv t
 
@@ -46,7 +47,7 @@ jobs:
       language: shell       # 'language: python' is an error on Travis CI Windows
       before_install:
         - choco install python --version 3.6.7
-        - python -m pip install off --upgrade pip
+        - python -m pip install --upgrade pip
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
     - stage: PyPi Deployment
