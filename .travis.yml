@@ -20,9 +20,6 @@ install:
 - pip install -q numpy Cython
 
 script:
-#Apply a pip installation script to enable the osx environment to apply the numpy allocation before installing tslearn
-- ./scripts/travisScript.sh
-
 #Needed instead of just 'pytest' since older python versions in travis environments cause the newer pytest to exit with error 127. Will need to change the hardcoded line to UNIX variables
     # :Exit code 0: All tests were collected and passed successfully
     # :Exit code 1: Tests were collected and run but some of the tests failed
@@ -39,7 +36,7 @@ jobs:
     - name: "Python 3.6.7 on Xenial Linux"
       python: 3.6.7
       before_install:
-        - chmod +x build.sh
+        - chmod +x ./scripts/travisScript.sh
       before_script:
         - python -m pip install -q -r requirements.txt
     - name: "Python 3.6.5 on macOS" #Using 3.6.5 since 3.6.7 is currently not supported
@@ -50,18 +47,18 @@ jobs:
         homebrew:
           packages: python3.6.5  #custom install as it was found that xcode9.4 does not support python =< 3.6. Therefore manually installing the environment.
       before_install:
-        - chmod +x build.sh
+        - chmod +x ./scripts/travisScript.sh
         - pip3 install --progress-bar off virtualenv
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
       before_script: #Manually enabling xvfb in macOS since the travis xvfb service is not supported. Still required to run openCV
+        - ./scripts/travisScript.sh
         - ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )
         - sleep 3 && prove -bv t
     - name: "Python 3.6.7 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
       before_install:
-        - chmod +x build.sh
         - choco install python --version 3.6.7
         - python -m pip install --upgrade pip
       before_script:
