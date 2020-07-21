@@ -38,6 +38,8 @@ jobs:
     #The required environments: Linux / macOS / Windows, on which Mesmerize can run.
     - name: "Python 3.6.7 on Xenial Linux"
       python: 3.6.7
+      before_install:
+        - chmod +x build.sh
       before_script:
         - python -m pip install -q -r requirements.txt
     - name: "Python 3.6.5 on macOS" #Using 3.6.5 since 3.6.7 is currently not supported
@@ -48,16 +50,18 @@ jobs:
         homebrew:
           packages: python3.6.5  #custom install as it was found that xcode9.4 does not support python =< 3.6. Therefore manually installing the environment.
       before_install:
+        - chmod +x build.sh
         - pip3 install --progress-bar off virtualenv
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
       before_script: #Manually enabling xvfb in macOS since the travis xvfb service is not supported. Still required to run openCV
-        - sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok
+        - ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )
         - sleep 3 && prove -bv t
     - name: "Python 3.6.7 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
       before_install:
+        - chmod +x build.sh
         - choco install python --version 3.6.7
         - python -m pip install --upgrade pip
       before_script:
