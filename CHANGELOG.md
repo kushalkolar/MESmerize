@@ -5,6 +5,9 @@
 - Experimental use of a bioformats importer for the Viewer.
 - Support for Femtonics .mes and .mesc recordings.
 
+### Fixed
+- Unnoticable bug with viewer modules that don't have defined dock areas
+
 # 0.2.4 (in progress)
 
 ### Fixed
