@@ -13,6 +13,7 @@ python:
 - 3.6.7
 
 install:
+- ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy
 #required for tslearn to succesfully install
 - pip install -q numpy Cython
 #allow the installation of all requirements before initializing mesmerize
@@ -20,7 +21,7 @@ install:
 
 script:
 #Needed instead of just 'pytest' since older python versions in travis environments cause the newer pytest to exit with error 127
-- python -m pytest MESmerize/tests
+- python -m pytest /home/travis/build/Blastorios/MESmerize/tests
 
 jobs:
   include:
@@ -29,17 +30,17 @@ jobs:
 
     - name: "Python 3.6.5 on macOS"
       os: osx
-      osx_image: xcode9.4  # Python 3.6.5 running on macOS 9.4
+      osx_image: xcode9.4  # The base macOS originally running Python 3.6
       language: shell       # 'language: python' is an error on Travis CI macOS
       addons:
         homebrew:
-        packages: python3.6.5
+          packages: python3.6.5  #custom install as it was found that xcode9.4 does not support python =< 3.6. Therefore manually installing the env.
       before_install:
         - pip3 install --progress-bar off virtualenv
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
       before_script:
-        - ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy
+       # - ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy
         - ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok ) & fi
         - sleep 3 && prove -bv t
 
