@@ -98,6 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         'suite2p_importer': suite2p.ModuleGUI,
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
                         'script_editor': script_editor.ModuleGUI,
+                        'mesc_importer': femtonics_mesc.ModuleGUI,
                         }
 
     # caiman modules
@@ -122,6 +123,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.running_modules = []
         # TODO: Integrate viewer initiation here instead of outside
         self.ui.actionMesfile.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
+        self.ui.action_mesc_importer.triggered.connect(lambda: self.run_module(femtonics_mesc.ModuleGUI))
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
         self.ui.actionSuite2p_Importer.triggered.connect(lambda: self.run_module(suite2p.ModuleGUI))
@@ -268,7 +270,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.running_modules[-1].hide()
 
-        if (module_class in self.standard_modules.values()) and dock_widget_area.keys():
+        if (module_class in self.standard_modules.values()) and (module_class in dock_widget_area.keys()):
             self.addDockWidget(dock_widget_area[module_class], m)
 
         return self.running_modules[-1]

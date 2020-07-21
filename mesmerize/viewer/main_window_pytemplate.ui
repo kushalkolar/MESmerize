@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>30</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -42,8 +42,16 @@
      <property name="title">
       <string>&amp;Load images</string>
      </property>
+     <widget class="QMenu" name="menuFemtonics">
+      <property name="title">
+       <string>Femtonics</string>
+      </property>
+      <addaction name="action_mesc_importer"/>
+      <addaction name="action_mes_importer"/>
+     </widget>
      <addaction name="actionMesfile"/>
      <addaction name="actionTiff_file"/>
+     <addaction name="menuFemtonics"/>
     </widget>
     <widget class="QMenu" name="menuCaImAn_toolbox">
      <property name="title">
@@ -332,12 +340,27 @@
   </action>
   <action name="actionReport_issue_bug">
    <property name="text">
-    <string>Report issue/bug</string>
+    <string>&amp;Report issue/bug</string>
    </property>
   </action>
   <action name="actionQuestions_discussion">
    <property name="text">
-    <string>Questions/discussion</string>
+    <string>&amp;Questions/discussion</string>
+   </property>
+  </action>
+  <action name="actionFemtonicsc">
+   <property name="text">
+    <string>Femtonicsc</string>
+   </property>
+  </action>
+  <action name="action_mesc_importer">
+   <property name="text">
+    <string>.mesc importer</string>
+   </property>
+  </action>
+  <action name="action_mes_importer">
+   <property name="text">
+    <string>.mes importer</string>
    </property>
   </action>
  </widget>
