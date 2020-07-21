@@ -24,6 +24,18 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
     Use to catch exceptions and present them to the user in a QMessageBox warning dialog.
     The traceback from the exception is also shown.
 
+    This decorator can be stacked on top of other decorators.
+
+    Example:
+
+    .. code-block: python
+
+            @present_exceptions('Error loading file')
+            @use_open_file_dialog('Choose file')
+                def select_file(self, path: str, *args):
+                    pass
+
+
     :param title:       Title of the dialog box
     :param msg:         Message to display above the traceback in the dialog box
     :param help_func:   A helper function which is called if the user clicked the "Help" button
