@@ -1,11 +1,14 @@
+#Overall the lightest distribution to use
 dist: xenial
 
-#required for Travis to support openCV. xvfb is required for headless GUI testing
+#required for Travis to support openCV.
 services:
   - xvfb
 
 language: python
 cache: pip
+
+#email notifications turned off for development but should be turned on during deployment
 notifications:
   email: false
 
@@ -19,8 +22,15 @@ install:
 script:
 #Apply a pip installation script to enable the osx environment to apply the numpy allocation before installing tslearn
 - ./scripts/travisScript.sh
+
 #Needed instead of just 'pytest' since older python versions in travis environments cause the newer pytest to exit with error 127. Will need to change the hardcoded line to UNIX variables
-- python -m pytest ./MESmerize/tests
+    # :Exit code 0: All tests were collected and passed successfully
+    # :Exit code 1: Tests were collected and run but some of the tests failed
+    # :Exit code 2: Test execution was interrupted by the user
+    # :Exit code 3: Internal error happened while executing tests
+    # :Exit code 4: pytest command line usage error
+    # :Exit code 5: No tests were collected
+- python -m pytest
 
 jobs:
   #All jobs to take into the CI
@@ -30,7 +40,6 @@ jobs:
       python: 3.6.7
       before_script:
         - python -m pip install -q -r requirements.txt
-
     - name: "Python 3.6.5 on macOS" #Using 3.6.5 since 3.6.7 is currently not supported
       os: osx
       osx_image: xcode9.4  # The base macOS originally running Python 3.6
@@ -45,7 +54,6 @@ jobs:
       before_script: #Manually enabling xvfb in macOS since the travis xvfb service is not supported. Still required to run openCV
         - sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok
         - sleep 3 && prove -bv t
-
     - name: "Python 3.6.7 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
@@ -54,8 +62,8 @@ jobs:
         - python -m pip install --upgrade pip
       before_script:
         - python -m pip install -q -r requirements.txt
+        - python -m pip install -q pytest
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
-
 
     - stage: PyPi Deployment
       if: tag IS present
