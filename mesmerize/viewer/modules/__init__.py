@@ -6,7 +6,8 @@ __all__ = [
     'tiff_io',
     'stimulus_mapping',
     'script_editor',
-    'suite2p'
+    'suite2p',
+    'femtonics_mesc'
 ]
 
 if HAS_CAIMAN:
