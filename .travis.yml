@@ -18,9 +18,9 @@ install:
 
 script:
 #Apply a pip installation script to enable the osx environment to apply the numpy allocation before installing tslearn
-- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy && python -m pip3 install -q -r requirements.txt )
+- ./scripts/travisScript.sh
 #Needed instead of just 'pytest' since older python versions in travis environments cause the newer pytest to exit with error 127. Will need to change the hardcoded line to UNIX variables
-- python -m pytest /home/travis/build/Blastorios/MESmerize/tests
+- python -m pytest ./MESmerize/tests
 
 jobs:
   #All jobs to take into the CI
@@ -43,7 +43,7 @@ jobs:
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
       before_script: #Manually enabling xvfb in macOS since the travis xvfb service is not supported. Still required to run openCV
-        - ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok ) & fi
+        - sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok
         - sleep 3 && prove -bv t
 
     - name: "Python 3.6.7 on Windows"
