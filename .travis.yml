@@ -19,7 +19,8 @@ install:
 - pip install -q -r requirements.txt
 
 script:
-- pytest
+#Needed instead of just 'pytest' since older python versions in travis environments cause the newer pytest to exit with error 127
+- python -m pytest MESmerize/tests
 
 jobs:
   include:
