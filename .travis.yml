@@ -22,6 +22,13 @@ jobs:
       os: osx
       osx_image: xcode9.4  # Python 3.6.5 running on macOS 9.4
       language: shell       # 'language: python' is an error on Travis CI macOS
+      addons:
+        homebrew:
+        packages: python3
+      before_install:
+        - pip3 install virtualenv
+        - virtualenv -p python3 ~/venv
+        - source ~/venv/bin/activate
     - name: "Python 3.6.7 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
