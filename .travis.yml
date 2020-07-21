@@ -13,34 +13,36 @@ python:
 - 3.6.7
 
 install:
-- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy )
 #required for tslearn to succesfully install
 - pip install -q numpy Cython
-#allow the installation of all requirements before initializing mesmerize
-- pip install -q -r requirements.txt
 
 script:
-#Needed instead of just 'pytest' since older python versions in travis environments cause the newer pytest to exit with error 127
+#Apply a pip installation script to enable the osx environment to apply the numpy allocation before installing tslearn
+- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy && python -m pip3 install -q -r requirements.txt )
+#Needed instead of just 'pytest' since older python versions in travis environments cause the newer pytest to exit with error 127. Will need to change the hardcoded line to UNIX variables
 - python -m pytest /home/travis/build/Blastorios/MESmerize/tests
 
 jobs:
+  #All jobs to take into the CI
   include:
+    #The required environments: Linux / macOS / Windows, on which Mesmerize can run.
     - name: "Python 3.6.7 on Xenial Linux"
-      python: 3.6.7           # this works for Linux but is ignored on macOS or Windows
+      python: 3.6.7
+      before_script:
+        - python -m pip install -q -r requirements.txt
 
-    - name: "Python 3.6.5 on macOS"
+    - name: "Python 3.6.5 on macOS" #Using 3.6.5 since 3.6.7 is currently not supported
       os: osx
       osx_image: xcode9.4  # The base macOS originally running Python 3.6
       language: shell       # 'language: python' is an error on Travis CI macOS
       addons:
         homebrew:
-          packages: python3.6.5  #custom install as it was found that xcode9.4 does not support python =< 3.6. Therefore manually installing the env.
+          packages: python3.6.5  #custom install as it was found that xcode9.4 does not support python =< 3.6. Therefore manually installing the environment.
       before_install:
         - pip3 install --progress-bar off virtualenv
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
-      before_script:
-       # - ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy
+      before_script: #Manually enabling xvfb in macOS since the travis xvfb service is not supported. Still required to run openCV
         - ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok ) & fi
         - sleep 3 && prove -bv t
 
@@ -50,7 +52,10 @@ jobs:
       before_install:
         - choco install python --version 3.6.7
         - python -m pip install --upgrade pip
+      before_script:
+        - python -m pip install -q -r requirements.txt
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
+
 
     - stage: PyPi Deployment
       if: tag IS present
