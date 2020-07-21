@@ -13,7 +13,7 @@ python:
 - 3.6.7
 
 install:
-- ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy
+- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( ln -s /usr/local/lib/python36/site-packages/numpy/core/include/numpy numpy )
 #required for tslearn to succesfully install
 - pip install -q numpy Cython
 #allow the installation of all requirements before initializing mesmerize
