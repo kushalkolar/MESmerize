@@ -1,4 +1,9 @@
 dist: xenial
+
+#required for Travis to support openCV. xvfb is required for headless GUI testing
+services:
+  - xvfb
+
 language: python
 cache: pip
 notifications:
@@ -18,7 +23,8 @@ jobs:
     - name: "Python 3.6.7 on Xenial Linux"
       python: 3.6.7           # this works for Linux but is ignored on macOS or Windows
       before_install:
-        - pip install numpy Cython pytest
+        #required for tslearn to succesfully download
+        - pip install numpy Cython
 
     - name: "Python 3.6.5 on macOS"
       os: osx
@@ -28,7 +34,8 @@ jobs:
         homebrew:
         packages: python3
       before_install:
-        - pip3 install virtualenv
+        #'numpy and Cython' required for tslearn to succesfully download
+        - pip3 install virtualenv numpy Cython
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
 
@@ -38,7 +45,8 @@ jobs:
       before_install:
         - choco install python --version 3.6.7
         - python -m pip install --upgrade pip
-        - pip install numpy Cython pytest
+        #'numpy and Cython' required for tslearn to succesfully download
+        - pip install numpy Cython
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
     - stage: PyPi Deployment
