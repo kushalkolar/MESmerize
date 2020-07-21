@@ -1,11 +1,11 @@
-.. _plot_StimulusTuning
+.. _plot_StimulusTuning:
 
 Stimulus Tuning
 ***************
 
 Get the stimulus tuning and tuning curves of neurons.
 
-**The output from this plot node can be used for various things, such as hierarchical clustering to sort your cells based on their tuning, visualizing the tuning of each neuron using a :ref:`SpaceMap plot <plot_SpaceMap>`, and much more. See the video tutorial for examples.**
+The output from this plot node can also be used for various things downstream, such as hierarchical clustering to sort your cells based on their tuning, visualizing the tuning of each neuron using a :ref:`SpaceMap plot <plot_SpaceMap>`, and much more. See the video tutorial for examples.
 
 Video Tutorial
 ==============
@@ -21,6 +21,9 @@ Layout
 ======
 
 .. image:: ./stim_tuning.png
+
+Controls
+========
 
 ============    ============================================================================
 Parameter       Description
