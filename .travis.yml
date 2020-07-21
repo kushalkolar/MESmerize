@@ -13,6 +13,9 @@ python:
 - 3.6.7
 
 install:
+#required for tslearn to succesfully install
+- pip install numpy Cython
+#allow the installation of all requirements before initializing mesmerize
 - pip install -r requirements.txt
 
 script:
@@ -22,9 +25,6 @@ jobs:
   include:
     - name: "Python 3.6.7 on Xenial Linux"
       python: 3.6.7           # this works for Linux but is ignored on macOS or Windows
-      before_install:
-        #required for tslearn to succesfully download
-        - pip install numpy Cython
 
     - name: "Python 3.6.5 on macOS"
       os: osx
@@ -34,8 +34,7 @@ jobs:
         homebrew:
         packages: python3
       before_install:
-        #'numpy and Cython' required for tslearn to succesfully download
-        - pip3 install virtualenv numpy Cython
+        - pip3 install virtualenv
         - virtualenv -p python3 ~/venv
         - source ~/venv/bin/activate
 
@@ -45,8 +44,7 @@ jobs:
       before_install:
         - choco install python --version 3.6.7
         - python -m pip install --upgrade pip
-        #'numpy and Cython' required for tslearn to succesfully download
-        - pip install numpy Cython
+        - pip install
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
 
     - stage: PyPi Deployment
