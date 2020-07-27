@@ -11,33 +11,49 @@ from ..core import ViewerUtils, ViewerWorkEnv
 from ..core.data_types import ImgData
 from typing import List, Union
 from re import sub as regex_sub
+from ...pyqtgraphCore import PlotWidget
+import numpy as np
 
 
 # Navigator object which helps control the
 # user's file navigation through the .mesc file
-class MEScNavigator(QtCore.QObject):
+class MEScNavigator(QtWidgets.QWidget):
+    # emitted every time the hdf path changes
+    # used by ModuleGUI() to determine if Import Image button should be enabled
+    sig_hpath_changed = QtCore.pyqtSignal(dict)
+
+    # when a Channel_X item is double clicked
+    sig_channel_doubleclicked = QtCore.pyqtSignal(dict)
+
     def __init__(self, parent, list_widgets: List[ListWidget]):
         """
         :param parent: parent dockWidget
         :param list_widgets: list of ListWidget ui objects, in the following order:
                              [sessions_list_widget, units_list_widget, channels_list_widget]
         """
-        QtCore.QObject.__init__(parent)
+        QtWidgets.QWidget.__init__(self, parent=parent)
 
         self.path: str = ''
         self.file: h5py.File = None
 
         self.session: str = ''  # currently selected MSession
-        self.sessions: List[str] = list(self.file.keys())  # list of MSession options available in current file
+        self.sessions: List[str] = []  # list of MSession options available in current file
         self.listw_sessions = list_widgets[0]  # ui list of MSession options
+        self.listw_sessions.itemClicked.connect(self.set_session)  # sets the current MSession
+        self.listw_sessions.currentItemChanged.connect(self.set_session)
 
         self.unit: str = ''  # currently selected MUnit
         self.units: List[str] = []  # list of MUnit options available in current MSession
         self.listw_units = list_widgets[1]  # ui list of MUnit options
+        self.listw_units.itemClicked.connect(self.set_unit)  # sets the current MUnit
+        self.listw_units.currentItemChanged.connect(self.set_unit)
 
         self.channel: str = ''  # currently selected Channel
         self.channels: List[str] = []  # list of Channel options available in current MUnit
         self.listw_channels = list_widgets[2]  # ui list of Channel options
+        self.listw_channels.itemClicked.connect(self.set_channel)  # sets the current channel
+        self.listw_channels.currentItemChanged.connect(self.set_channel)
+        self.listw_channels.itemDoubleClicked.connect(self.channel_clicked)
 
     def set_file_path(self, path: str):
         """
@@ -65,6 +81,7 @@ class MEScNavigator(QtCore.QObject):
         # just clear out everything
         self.session: str = ''
         self.sessions: List[str] = list(self.file.keys())
+        self._sort_list(self.sessions)
         self.listw_sessions.setItems(self.sessions)
 
         self.unit: str = ''
@@ -75,31 +92,102 @@ class MEScNavigator(QtCore.QObject):
         self.channels: List[str] = []
         self.listw_units.clear()
 
-    def set_session(self, key: str):
+        self.sig_hpath_changed.emit(self.get_hpath(dict))
+
+    def close_file(self):
+        """
+        Close the h5py file handle that is currently open.
+
+        *args are not used, its just there because it's passed through the btn_close_file.clicked signal.
+
+        :param args: not used
+        :return:
+        """
+        if self.file is None:
+            raise ValueError(
+                'No file is currently open'
+            )
+
+        # close the hpy file handle
+        self.file.close()
+
+        # reset attributes to None
+        self.file = None
+        self.path = ''
+
+        self.session: str = ''
+        self.sessions: List[str] = []
+        self.listw_sessions.clear()
+
+        self.unit: str = ''
+        self.units: List[str] = []
+        self.listw_units.clear()
+
+        self.channel: str = ''
+        self.channels: List[str] = []
+        self.listw_channels.clear()
+
+        self.sig_hpath_changed.emit(self.get_hpath(dict))
+
+    def set_session(self, key: Union[str, QtWidgets.QListWidgetItem]):
+        key = self._get_listw_text(key)
+        if key is None:
+            return
+
         if key not in self.sessions:
-            raise KeyError("Session not found in current file")
+            raise KeyError(f"Session <{key}> not found in current file")
 
         self.session = key
 
         self.unit = ''
         self.units = list(self.file[self.session].keys())
+        self._sort_list(self.units)
         self.listw_units.setItems(self.units)
 
         self.channel = ''
         self.channels: List[str] = []
         self.listw_channels.clear()
 
-    def set_unit(self, key: str):
+        self.sig_hpath_changed.emit(self.get_hpath(dict))
+
+    def set_unit(self, key: Union[str, QtWidgets.QListWidgetItem]):
+        key = self._get_listw_text(key)
+        if key is None:
+            return
+
+        if isinstance(key, QtWidgets.QListWidgetItem):
+            key = key.text()
+
         if key not in self.units:
-            raise KeyError("Unit not found in current session")
+            raise KeyError(f"Unit <{key}> not found in current MSession")
 
         self.unit = key
 
         self.channel = ''
         self.channels = list(self.file[self.session][self.unit].keys())
+        self._sort_list(self.channels)
         self.listw_channels.setItems(self.channels)
+        self.listw_channels.setCurrentRow(0)
 
-    def get_hdf_path(self, astype: type) -> Union[str, list, dict]:
+        self.sig_hpath_changed.emit(self.get_hpath(dict))
+
+    def set_channel(self, key: Union[str, QtWidgets.QListWidgetItem]):
+        key = self._get_listw_text(key)
+        if key is None:
+            return
+
+        if key not in self.channels:
+            raise KeyError(f"Channel <{key}> not found in current MUnit")
+
+        self.channel = key
+
+        self.sig_hpath_changed.emit(self.get_hpath(dict))
+
+    def channel_clicked(self):
+        if self.channel:
+            self.sig_channel_doubleclicked.emit(self.get_hpath(dict))
+
+    def get_hpath(self, astype: type) -> Union[str, list, dict]:
         """
         get the current hdf path
 
@@ -120,55 +208,53 @@ class MEScNavigator(QtCore.QObject):
             return {
                 'session':  self.session,
                 'unit':     self.unit,
-                'channels': self.channel
+                'channel': self.channel
             }
+
+    def _get_listw_text(self, item: [str, QtWidgets.QListWidgetItem]) -> str:
+        if isinstance(item, QtWidgets.QListWidgetItem):
+            return item.text()
+        else:
+            return item
+
+    def _sort_list(self, l: list):
+        l.sort(
+            key=lambda name: int(
+                regex_sub(r"[^0-9]*", '', name)
+            )
+        )
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
-    def __init__(self, parent, viewer_ref: ViewerUtils):  # when a ModuleGUI() is instantiated the
-                                                          # Viewer Window passes the viewer reference (viewer_ref)
-                                                          # which can be used to interface with the viewer
+    def __init__(self, parent, viewer_ref):  # when a ModuleGUI() is instantiated the
+                                             # Viewer Window passes the viewer reference (viewer_ref)
+                                             # which can be used to interface with the viewer
         self.vi = ViewerUtils(viewer_ref)  # this is used to interface with the viewer
         QtWidgets.QDockWidget.__init__(self, parent)
 
-        # setup the GUI layout
-        self.setFloating(True)
+        self.ui = Ui_DockWidget()
+        self.ui.setupUi(self)
         self.setWindowTitle('.mesc importer')
 
-        self.widget = QtWidgets.QWidget(self)
+        self.ui.pushButton_open_file.clicked.connect(self.set_file)
+        self.ui.pushButton_close_file.clicked.connect(self.close_file)
+        self.ui.pushButton_import_image.clicked.connect(self.import_recording)
 
-        self.vlayout = QtWidgets.QVBoxLayout(self.widget)
-        self.hlayout_btns = QtWidgets.QHBoxLayout(self.widget)
+        # the list widgets for navigation
+        list_widgets = [
+            self.ui.listWidget_session,
+            self.ui.listWidget_unit,
+            self.ui.listWidget_channel
+        ]
 
-        self.btn_open_file = QtWidgets.QPushButton(self)
-        self.btn_open_file.setText('Open File')
-        self.btn_open_file.clicked.connect(self.set_file)
-        self.hlayout_btns.addWidget(self.btn_open_file)
+        self.mesc_navigator = MEScNavigator(self, list_widgets)
+        self.mesc_navigator.sig_hpath_changed.connect(self._enable_import_button)
 
-        self.btn_close_file = QtWidgets.QPushButton(self)
-        self.btn_close_file.setText('Close File')
-        self.btn_close_file.setToolTip(
-            'Close the file handle, allows the file to be accessible by other programs'
+        self.mesc_navigator.sig_channel_doubleclicked.connect(
+            self._channel_doubleclicked
         )
-        self.btn_close_file.clicked.connect(self.close_file)
-        self.hlayout_btns.addWidget(self.btn_close_file)
 
-        self.qlabel_current_file_name = QtWidgets.QLabel(self)
-        self.vlayout.addWidget(self.qlabel_current_file_name)
-
-        self.vlayout.addLayout(self.hlayout_btns)
-
-        self.listwidget_recordings = QtWidgets.QListWidget(self)
-        self.listwidget_recordings.setToolTip(
-            'Double click on a recording to import it into the Viewer'
-        )
-        self.listwidget_recordings.itemDoubleClicked.connect(self.import_recording)
-        self.vlayout.addWidget(self.listwidget_recordings)
-
-        self.setWidget(self.widget)
-
-        self.current_file: h5py.File = None  #: h5py file handle to the `.mesc` file
-        self.current_recordings: List[str] = None  #: list of `MUnit_X` recordings in the current file
+        self.plot_widgets = []
 
     @present_exceptions(
         'Could not load file',
@@ -185,38 +271,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
         :type path: str
         :param args: not used
         """
-        # Create the file handle
-        f = h5py.File(path, mode='r')
-
-        if 'MSession_0' not in f.keys():
-            raise TypeError(
-                "The chosen file does not appear to be a valid "
-                "`.mesc` file since it does not contain the "
-                "'MSession_0' data group."
-            )
-
-        # close previous file handle if present
-        if self.current_file is not None:
-            self.current_file.close()
-
-        # attribute to access the current file handle
-        self.current_file = f
-
-        # get a list of the `MUnit_X` recordings stored in this file
-        self.current_recordings = list(f['MSession_0'].keys())
-
-        # numerically sort the list of recordings
-        self.current_recordings.sort(
-            key=lambda name: int(
-                regex_sub(r"[^0-9]*", '', name)
-            )
-        )
-
-        # set the list widget with the current_recordings
-        self.listwidget_recordings.addItems(self.current_recordings)
+        self.mesc_navigator.set_file_path(path)
 
         # set the name of the current file in the GUI label
-        self.qlabel_current_file_name.setText(
+        self.ui.label_current_file_name.setText(
             os.path.basename(path)
         )
 
@@ -226,60 +284,77 @@ class ModuleGUI(QtWidgets.QDockWidget):
     )
     def close_file(self, *args):
         """
-        Close the h5py file handle that is currently open.
+        Close the file handle
 
-        *args are not used, its just there because it's passed through the btn_close_file.clicked signal.
-
-        :param args: not used
+        :param args: *args not used, just there for compatibility with the decorator
         :return:
         """
-        if self.current_file is None:
-            raise ValueError(
-                'No file is currently open'
-            )
+        self.mesc_navigator.close_file()
+        self.ui.label_current_file_name.clear()
 
-        # close the hpy file handle
-        self.current_file.close()
+    def _enable_import_button(self, hpath: dict):
+        if hpath['channel']:
+            self.ui.pushButton_import_image.setEnabled(True)
+            self.ui.pushButton_import_stim_map.setEnabled(True)
 
-        # reset attributes to None
-        self.current_file = None
-        self.current_recordings = None
+        else:
+            self.ui.pushButton_import_image.setEnabled(False)
+            self.ui.pushButton_import_stim_map.setEnabled(False)
 
-        # clear the GUI
-        self.listwidget_recordings.clear()
-        self.qlabel_current_file_name.clear()
+    def _channel_doubleclicked(self, hpath: dict):
+        if hpath['channel'].startswith('Channel'):
+            self.import_recording()
+
+        elif hpath['channel'].startswith('Curve'):
+            f = self.mesc_navigator.file
+            hpath = self.mesc_navigator.get_hpath(str)
+
+            ys = f[hpath]['CurveDataYRawData'][()]
+
+            if 'CurveDataXRawData' in f[hpath].keys():
+                xs = f[hpath]['CurveDataXRawData'][()]
+            else:
+                xs = np.arange(ys.size)
+
+            pw = PlotWidget(parent=None)
+            pw.plot(xs, ys, title=hpath)
+            pw.show()
+
+            self.plot_widgets.append(pw)
 
     @present_exceptions(
         'Could not import recording',
         'The following error occurred while trying to import the chosen recording'
     )
-    def import_recording(self, item: Union[QtWidgets.QListWidgetItem, str]):
+    def import_recording(self, *args):
         """
-        Imports the chosen ``MUnit_X`` recording into the Viewer Work Environment.
+        Imports the chosen recording into the Viewer Work Environment based
+        on the user selected hpath from the list widgets
 
-        :param item: the `MUnit_X` recording to be imported
-        :type item: Union[str, QtWidgets.QListWidgetItem]
-        :return:
+        *args not used, just there for compatibility with the decorator
         """
         if not self.vi.discard_workEnv():
             return
 
-        if isinstance(item, QtWidgets.QListWidgetItem):
-            item = item.text()
-
         # Load the image sequence stored in this `MUnit_X`
-        img_seq = self.current_file['MSession_0'][item]['Channel_0'][()]
+        f = self.mesc_navigator.file  # hdf file handle
+        hpath = self.mesc_navigator.get_hpath(str)  # hdf path
+        img_seq = f[hpath][()]  # image array
 
+        sess = self.mesc_navigator.get_hpath(dict)['session']
+        unit = self.mesc_navigator.get_hpath(dict)['unit']
         # get the time for a single frame
         frame_time = \
-            self.current_file['MSession_0'][item].attrs['ZAxisConversionConversionLinearScale'] + \
-            self.current_file['MSession_0'][item].attrs['ZAxisConversionConversionLinearOffset']
+            f[sess][unit].attrs['ZAxisConversionConversionLinearScale'] + \
+            f[sess][unit].attrs['ZAxisConversionConversionLinearOffset']
 
         # get the sampling rate
         fps = 1 / (frame_time / 1000)  # for now just assuming the frame time are always in milliseconds
 
         # get the date of the recording
-        date = datetime.fromtimestamp(self.current_file['MSession_0'][item].attrs['MeasurementDatePosix'])
+        date = datetime.fromtimestamp(
+            f[sess][unit].attrs['MeasurementDatePosix']
+        )
 
         # format the date into YYYYMMDD_HHMMSS
         date_str = date.strftime('%Y%m%d_%H%M%S')

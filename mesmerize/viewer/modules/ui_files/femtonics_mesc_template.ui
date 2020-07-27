@@ -6,9 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
-    <height>846</height>
+    <width>639</width>
+    <height>697</height>
    </rect>
+  </property>
+  <property name="floating">
+   <bool>true</bool>
   </property>
   <property name="windowTitle">
    <string>Doc&amp;kWidget</string>
@@ -50,6 +53,33 @@
              <size>
               <width>40</width>
               <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="pushButton_close_file">
+            <property name="toolTip">
+             <string>Close the file handle, allows the file to be accessible by other programs</string>
+            </property>
+            <property name="text">
+             <string>Close file</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>37</width>
+              <height>33</height>
              </size>
             </property>
            </spacer>
@@ -137,14 +167,14 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="pushButton_import_image">
             <property name="text">
              <string>Image</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="pushButton_import_stim_map">
             <property name="text">
              <string>Stim Map</string>
             </property>
@@ -184,6 +214,16 @@
    <header>....pyqtgraphCore.widgets.ListWidget</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>pushButton_open_file</tabstop>
+  <tabstop>pushButton_close_file</tabstop>
+  <tabstop>listWidget_session</tabstop>
+  <tabstop>listWidget_unit</tabstop>
+  <tabstop>listWidget_channel</tabstop>
+  <tabstop>pushButton_import_image</tabstop>
+  <tabstop>pushButton_import_stim_map</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
