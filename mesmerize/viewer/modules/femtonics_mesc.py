@@ -13,6 +13,21 @@ from typing import List, Union
 from re import sub as regex_sub
 from ...pyqtgraphCore import PlotWidget
 import numpy as np
+from cv2 import bitwise_not
+
+
+def ascii_to_str(array: np.ndarray):
+    """
+    Get a string from an array of ascii integers
+
+    :param array: array of integers representing ascii chars
+    :return: string represented by the array
+    """
+    return ''.join(
+        map(
+            chr, filter(None, array)
+        )
+    )
 
 
 # Navigator object which helps control the
@@ -248,6 +263,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         ]
 
         self.mesc_navigator = MEScNavigator(self, list_widgets)
+        self.mesc_navigator.sig_hpath_changed.connect(self.set_comment_line)
         self.mesc_navigator.sig_hpath_changed.connect(self._enable_import_button)
 
         self.mesc_navigator.sig_channel_doubleclicked.connect(
@@ -322,6 +338,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
             self.plot_widgets.append(pw)
 
+    def set_comment_line(self, hpath: dict):
+        if hpath['unit']:
+            f = self.mesc_navigator.file
+            comment = f[hpath['session']][hpath['unit']].attrs['Comment']
+            comment = ascii_to_str(comment)
+            self.ui.lineEdit_comment.setText(comment)
+
+        else:
+            self.ui.lineEdit_comment.clear()
+
     @present_exceptions(
         'Could not import recording',
         'The following error occurred while trying to import the chosen recording'
@@ -339,7 +365,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         # Load the image sequence stored in this `MUnit_X`
         f = self.mesc_navigator.file  # hdf file handle
         hpath = self.mesc_navigator.get_hpath(str)  # hdf path
-        img_seq = f[hpath][()]  # image array
+        img_seq = bitwise_not(  # load & invert image array
+            f[hpath][()]
+        )
 
         sess = self.mesc_navigator.get_hpath(dict)['session']
         unit = self.mesc_navigator.get_hpath(dict)['unit']
@@ -347,6 +375,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
         frame_time = \
             f[sess][unit].attrs['ZAxisConversionConversionLinearScale'] + \
             f[sess][unit].attrs['ZAxisConversionConversionLinearOffset']
+
+        z_units = ascii_to_str(f[sess][unit].attrs['ZAxisConversionUnitName'])
+        if z_units != 'ms':
+            raise TypeError(f"Z-axis units <{z_units}> not supported")
 
         # get the sampling rate
         fps = 1 / (frame_time / 1000)  # for now just assuming the frame time are always in milliseconds
@@ -376,3 +408,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         # Update the GUI according to the new ViewerWorkEnv
         self.vi.update_workEnv()
+
+        # set the "Current Image sequence" in the Viewer
+        self.vi.viewer.ui.label_curr_img_seq_name.setText(hpath)

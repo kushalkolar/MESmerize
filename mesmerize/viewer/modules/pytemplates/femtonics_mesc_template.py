@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/femtonics_mesc_template.ui'
+# Form implementation generated from reading ui file './femtonics_mesc_template.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -85,6 +85,16 @@ class Ui_DockWidget(object):
         self.verticalLayout_3.addWidget(self.listWidget_channel)
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.label_5 = QtWidgets.QLabel(self.tab_mesc_file)
+        self.label_5.setObjectName("label_5")
+        self.horizontalLayout_5.addWidget(self.label_5)
+        self.lineEdit_comment = QtWidgets.QLineEdit(self.tab_mesc_file)
+        self.lineEdit_comment.setReadOnly(True)
+        self.lineEdit_comment.setObjectName("lineEdit_comment")
+        self.horizontalLayout_5.addWidget(self.lineEdit_comment)
+        self.verticalLayout_5.addLayout(self.horizontalLayout_5)
         self.label_4 = QtWidgets.QLabel(self.tab_mesc_file)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -119,7 +129,8 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.pushButton_close_file, self.listWidget_session)
         DockWidget.setTabOrder(self.listWidget_session, self.listWidget_unit)
         DockWidget.setTabOrder(self.listWidget_unit, self.listWidget_channel)
-        DockWidget.setTabOrder(self.listWidget_channel, self.pushButton_import_image)
+        DockWidget.setTabOrder(self.listWidget_channel, self.lineEdit_comment)
+        DockWidget.setTabOrder(self.lineEdit_comment, self.pushButton_import_image)
         DockWidget.setTabOrder(self.pushButton_import_image, self.pushButton_import_stim_map)
 
     def retranslateUi(self, DockWidget):
@@ -131,6 +142,8 @@ class Ui_DockWidget(object):
         self.label.setText(_translate("DockWidget", "Session"))
         self.label_2.setText(_translate("DockWidget", "Unit"))
         self.label_3.setText(_translate("DockWidget", "Channel"))
+        self.label_5.setText(_translate("DockWidget", "Comment:"))
+        self.lineEdit_comment.setToolTip(_translate("DockWidget", "Comment stored in the selected MUnit"))
         self.label_4.setText(_translate("DockWidget", "Import:"))
         self.pushButton_import_image.setText(_translate("DockWidget", "Image"))
         self.pushButton_import_stim_map.setText(_translate("DockWidget", "Stim Map"))

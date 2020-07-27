@@ -151,6 +151,27 @@
          </layout>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Comment:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_comment">
+            <property name="toolTip">
+             <string>Comment stored in the selected MUnit</string>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QLabel" name="label_4">
           <property name="font">
            <font>
@@ -221,6 +242,7 @@
   <tabstop>listWidget_session</tabstop>
   <tabstop>listWidget_unit</tabstop>
   <tabstop>listWidget_channel</tabstop>
+  <tabstop>lineEdit_comment</tabstop>
   <tabstop>pushButton_import_image</tabstop>
   <tabstop>pushButton_import_stim_map</tabstop>
  </tabstops>
