@@ -2,7 +2,7 @@
 Module for importing data from MESc HDF5 files created from Femtonics microscopes.
 """
 
-from PyQt5 import QtCore, QtWidgets
+from .pytemplates.femtonics_mesc_template import *
 import h5py
 from datetime import datetime
 import os
@@ -11,6 +11,117 @@ from ..core import ViewerUtils, ViewerWorkEnv
 from ..core.data_types import ImgData
 from typing import List, Union
 from re import sub as regex_sub
+
+
+# Navigator object which helps control the
+# user's file navigation through the .mesc file
+class MEScNavigator(QtCore.QObject):
+    def __init__(self, parent, list_widgets: List[ListWidget]):
+        """
+        :param parent: parent dockWidget
+        :param list_widgets: list of ListWidget ui objects, in the following order:
+                             [sessions_list_widget, units_list_widget, channels_list_widget]
+        """
+        QtCore.QObject.__init__(parent)
+
+        self.path: str = ''
+        self.file: h5py.File = None
+
+        self.session: str = ''  # currently selected MSession
+        self.sessions: List[str] = list(self.file.keys())  # list of MSession options available in current file
+        self.listw_sessions = list_widgets[0]  # ui list of MSession options
+
+        self.unit: str = ''  # currently selected MUnit
+        self.units: List[str] = []  # list of MUnit options available in current MSession
+        self.listw_units = list_widgets[1]  # ui list of MUnit options
+
+        self.channel: str = ''  # currently selected Channel
+        self.channels: List[str] = []  # list of Channel options available in current MUnit
+        self.listw_channels = list_widgets[2]  # ui list of Channel options
+
+    def set_file_path(self, path: str):
+        """
+        set the path to the .mesc file
+
+        :param path: path to the .mesc hdf5 file
+        """
+        f = h5py.File(path, mode='r')
+
+        # Check if "MSession_X" keys exist in the file
+        has_session_key = any(
+            k.startswith('MSession') for k in f.keys()
+        )
+
+        if not has_session_key:
+            raise TypeError(
+                "The chosen file does not appear to be a valid "
+                "`.mesc` file since it does not contain any "
+                "'MSession_X' data group(s)."
+            )
+
+        self.path = path
+        self.file = f
+
+        # just clear out everything
+        self.session: str = ''
+        self.sessions: List[str] = list(self.file.keys())
+        self.listw_sessions.setItems(self.sessions)
+
+        self.unit: str = ''
+        self.units: List[str] = []
+        self.listw_units.clear()
+
+        self.channel: str = ''
+        self.channels: List[str] = []
+        self.listw_units.clear()
+
+    def set_session(self, key: str):
+        if key not in self.sessions:
+            raise KeyError("Session not found in current file")
+
+        self.session = key
+
+        self.unit = ''
+        self.units = list(self.file[self.session].keys())
+        self.listw_units.setItems(self.units)
+
+        self.channel = ''
+        self.channels: List[str] = []
+        self.listw_channels.clear()
+
+    def set_unit(self, key: str):
+        if key not in self.units:
+            raise KeyError("Unit not found in current session")
+
+        self.unit = key
+
+        self.channel = ''
+        self.channels = list(self.file[self.session][self.unit].keys())
+        self.listw_channels.setItems(self.channels)
+
+    def get_hdf_path(self, astype: type) -> Union[str, list, dict]:
+        """
+        get the current hdf path
+
+        :param astype: one of `str`, `list`, or `dict`
+        :return: the hdf path as the chosen data type
+        """
+        path = [self.session, self.unit, self.channel]
+
+        if astype is str:
+            return '/'.join(
+                filter(None, path)
+            )
+
+        elif astype is list:
+            return path
+
+        elif astype is dict:
+            return {
+                'session':  self.session,
+                'unit':     self.unit,
+                'channels': self.channel
+            }
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
