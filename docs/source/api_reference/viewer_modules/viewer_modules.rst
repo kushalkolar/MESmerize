@@ -92,4 +92,3 @@ Takes care of navigating through the HDF5 data structure of the .mesc file.
 .. autoclass:: mesmerize.viewer.modules.femtonics_mesc.MEScNavigator
     :members:
     :member-order: bysource
-    

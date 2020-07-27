@@ -35,10 +35,9 @@ def ascii_to_str(array: np.ndarray):
 class MEScNavigator(QtWidgets.QWidget):
     # emitted every time the hdf path changes
     # used by ModuleGUI() to determine if Import Image button should be enabled
-    sig_hpath_changed = QtCore.pyqtSignal(dict)
+    sig_hpath_changed: QtCore.pyqtSignal = QtCore.pyqtSignal(dict)  #: emitted every time the hdf path changes
 
-    # when a Channel_X item is double clicked
-    sig_channel_doubleclicked = QtCore.pyqtSignal(dict)
+    sig_channel_doubleclicked: QtCore.pyqtSignal = QtCore.pyqtSignal(dict)  #: emitted when a ``Channel`` or ``Curve`` item is double clicked
 
     def __init__(self, parent, list_widgets: List[ListWidget]):
         """
@@ -48,27 +47,27 @@ class MEScNavigator(QtWidgets.QWidget):
         """
         QtWidgets.QWidget.__init__(self, parent=parent)
 
-        self.path: str = ''
-        self.file: h5py.File = None
+        self.path: str = ''  #: system path to the hdf5 file
+        self.file: h5py.File = None  #: h5py file handle
 
-        self.session: str = ''  # currently selected MSession
-        self.sessions: List[str] = []  # list of MSession options available in current file
-        self.listw_sessions = list_widgets[0]  # ui list of MSession options
-        self.listw_sessions.itemClicked.connect(self.set_session)  # sets the current MSession
+        self.session: str = ''  #: currently selected MSession
+        self.sessions: List[str] = []  #: list of ``MSession`` options available in current file
+        self.listw_sessions: ListWidget = list_widgets[0]  #: ui list of ``MSession`` options
+        self.listw_sessions.itemClicked.connect(self.set_session)  #: sets the current ``MSession``
         self.listw_sessions.currentItemChanged.connect(self.set_session)
 
-        self.unit: str = ''  # currently selected MUnit
-        self.units: List[str] = []  # list of MUnit options available in current MSession
-        self.listw_units = list_widgets[1]  # ui list of MUnit options
-        self.listw_units.itemClicked.connect(self.set_unit)  # sets the current MUnit
+        self.unit: str = ''  #: currently selected ``MUnit``
+        self.units: List[str] = []  #: list of ``MUnit`` options available in current ``MSession``
+        self.listw_units: ListWidget = list_widgets[1]  #: ui list of ``MUnit`` options
+        self.listw_units.itemClicked.connect(self.set_unit)  #: sets the current MUnit
         self.listw_units.currentItemChanged.connect(self.set_unit)
 
-        self.channel: str = ''  # currently selected Channel
-        self.channels: List[str] = []  # list of Channel options available in current MUnit
-        self.listw_channels = list_widgets[2]  # ui list of Channel options
-        self.listw_channels.itemClicked.connect(self.set_channel)  # sets the current channel
+        self.channel: str = ''  #: currently selected ``Channel``
+        self.channels: List[str] = []  #: list of ``Channel`` options available in current MUnit
+        self.listw_channels: ListWidget = list_widgets[2]  #: ui list of ``Channel`` options
+        self.listw_channels.itemClicked.connect(self.set_channel)  #: sets the current ``Channel``
         self.listw_channels.currentItemChanged.connect(self.set_channel)
-        self.listw_channels.itemDoubleClicked.connect(self.channel_clicked)
+        self.listw_channels.itemDoubleClicked.connect(self._channel_clicked)
 
     def set_file_path(self, path: str):
         """
@@ -145,6 +144,12 @@ class MEScNavigator(QtWidgets.QWidget):
         self.sig_hpath_changed.emit(self.get_hpath(dict))
 
     def set_session(self, key: Union[str, QtWidgets.QListWidgetItem]):
+        """
+        Set the MSession option
+
+        :param key: a valid ``MSession``
+        :return:
+        """
         key = self._get_listw_text(key)
         if key is None:
             return
@@ -166,6 +171,12 @@ class MEScNavigator(QtWidgets.QWidget):
         self.sig_hpath_changed.emit(self.get_hpath(dict))
 
     def set_unit(self, key: Union[str, QtWidgets.QListWidgetItem]):
+        """
+        Set the MUnit option
+
+        :param key: a valid ``MUnit``
+        :return:
+        """
         key = self._get_listw_text(key)
         if key is None:
             return
@@ -187,6 +198,12 @@ class MEScNavigator(QtWidgets.QWidget):
         self.sig_hpath_changed.emit(self.get_hpath(dict))
 
     def set_channel(self, key: Union[str, QtWidgets.QListWidgetItem]):
+        """
+        Set a Channel or Curve option
+
+        :param key: a valid ``Channel`` or ``Curve``
+        :return:
+        """
         key = self._get_listw_text(key)
         if key is None:
             return
@@ -198,7 +215,7 @@ class MEScNavigator(QtWidgets.QWidget):
 
         self.sig_hpath_changed.emit(self.get_hpath(dict))
 
-    def channel_clicked(self):
+    def _channel_clicked(self):
         if self.channel:
             self.sig_channel_doubleclicked.emit(self.get_hpath(dict))
 
@@ -262,15 +279,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.ui.listWidget_channel
         ]
 
-        self.mesc_navigator = MEScNavigator(self, list_widgets)
-        self.mesc_navigator.sig_hpath_changed.connect(self.set_comment_line)
+        self.mesc_navigator = MEScNavigator(self, list_widgets)  #: instance of ``MEScNavigator``
+        self.mesc_navigator.sig_hpath_changed.connect(self._set_comment_line)
         self.mesc_navigator.sig_hpath_changed.connect(self._enable_import_button)
 
         self.mesc_navigator.sig_channel_doubleclicked.connect(
             self._channel_doubleclicked
         )
 
-        self.plot_widgets = []
+        self.plot_widgets = []  #: list of plot widgets
 
     @present_exceptions(
         'Could not load file',
@@ -281,7 +298,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         """
         Create an h5py file handle from the `.mesc` file at the given ``path``.
 
-        *args are not used, its just there because it's passed through the btn_open_file.clicked signal.
+        *args are not used, its just there for compatibility with the decorator.
 
         :param path: path to the `.mes` file
         :type path: str
@@ -303,7 +320,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         Close the file handle
 
         :param args: *args not used, just there for compatibility with the decorator
-        :return:
         """
         self.mesc_navigator.close_file()
         self.ui.label_current_file_name.clear()
@@ -338,7 +354,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
             self.plot_widgets.append(pw)
 
-    def set_comment_line(self, hpath: dict):
+    def _set_comment_line(self, hpath: dict):
         if hpath['unit']:
             f = self.mesc_navigator.file
             comment = f[hpath['session']][hpath['unit']].attrs['Comment']
