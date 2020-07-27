@@ -111,11 +111,6 @@ class MEScNavigator(QtWidgets.QWidget):
     def close_file(self):
         """
         Close the h5py file handle that is currently open.
-
-        *args are not used, its just there because it's passed through the btn_close_file.clicked signal.
-
-        :param args: not used
-        :return:
         """
         if self.file is None:
             raise ValueError(
