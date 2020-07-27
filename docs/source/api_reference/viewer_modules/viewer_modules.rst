@@ -72,3 +72,24 @@ Can be used with scripts for adding batch items.
     :members:
     :member-order: bysource
     
+MESc Importer
+=============
+
+MESc importer for exploring & importing image sequences from .mesc HDF5 files.
+
+ModuleGUI
+---------
+
+.. autoclass:: mesmerize.viewer.modules.femtonics_mesc.ModuleGUI
+    :members:
+    :member-order: bysource
+
+MEScNavigator
+-------------
+
+Takes care of navigating through the HDF5 data structure of the .mesc file.
+
+.. autoclass:: mesmerize.viewer.modules.femtonics_mesc.MEScNavigator
+    :members:
+    :member-order: bysource
+    
