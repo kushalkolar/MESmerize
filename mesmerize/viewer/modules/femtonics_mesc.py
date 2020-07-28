@@ -63,7 +63,7 @@ class MEScNavigator(QtWidgets.QWidget):
         self.listw_units.currentItemChanged.connect(self.set_unit)
 
         self.channel: str = ''  #: currently selected ``Channel``
-        self.channels: List[str] = []  #: list of ``Channel`` options available in current MUnit
+        self.channels: List[str] = []  #: list of ``Channel`` options available in current ``MUnit``
         self.listw_channels: ListWidget = list_widgets[2]  #: ui list of ``Channel`` options
         self.listw_channels.itemClicked.connect(self.set_channel)  #: sets the current ``Channel``
         self.listw_channels.currentItemChanged.connect(self.set_channel)
