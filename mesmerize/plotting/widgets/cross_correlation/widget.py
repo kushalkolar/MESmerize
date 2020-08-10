@@ -69,6 +69,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.doubleSpinBoxLagThreshold.valueChanged.connect(self.set_heatmap)
         self.datapoint_tracer = DatapointTracerWidget()
 
+        self.stimulus_labels: List[str] = []
+
         self.roi_2 = None
 
     def set_heatmap(self):
@@ -97,7 +99,7 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         sub_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
 
         labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
-        ylabels = sub_df[labels_col]
+        ylabels = sub_df[labels_col].tolist() + self.stimulus_labels
 
         # Since it's just same curve vs. same curves in the cc_matrix
         xlabels = ylabels
@@ -267,8 +269,10 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
             if self.transmission.STIM_DEFS:
                 self.cc_data[sample_id].labels = np.concatenate([labels, stim_names]).astype(np.unicode)
+                self.stimulus_labels = stim_names
             else:
                 self.cc_data[sample_id].labels = labels
+                self.stimulus_labels = []
 
         self.set_current_sample()
 
