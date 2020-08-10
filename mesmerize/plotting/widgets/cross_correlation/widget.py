@@ -21,6 +21,7 @@ from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColo
 import pandas as pd
 from ....common.qdialogs import *
 from ....common.utils import HdfTools
+from .stims import get_binary_stims
 
 
 class ControlWidget(QtWidgets.QWidget):
@@ -203,7 +204,13 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.comboBoxDataColumn.clear()
         self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
 
+        self.control_widget.ui.comboBoxLabelsColumn.clear()
         self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
+
+        self.control_widget.ui.comboBoxStimulusType.clear()
+        self.control_widget.ui.comboBoxStimulusType.addItems(
+            self.transmission.STIM_DEFS
+        )
 
         self.reset_sample_id_list_widget()
         self.control_widget.ui.listWidgetSampleID.setCurrentRow(0)
@@ -230,14 +237,38 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         for sample_id in self.sample_list:
             sub_df = self.transmission.df[self.transmission.df.SampleID == sample_id]
 
+            if self.transmission.STIM_DEFS:
+                stim_type = self.control_widget.ui.comboBoxStimulusType.currentText()
+
+                stim_df = sub_df.iloc[0].stim_maps[0][0][stim_type]
+                index_size = sub_df[self.data_column].values[0].size
+
+                binary_stims_array, stim_names = get_binary_stims(
+                    stim_df=stim_df,
+                    index_size=index_size,
+                    start_offset=0,
+                    end_offset=0
+                )
+
             data = np.vstack(sub_df[self.data_column].values)
+
+            # append the stimulus array too
+            if self.transmission.STIM_DEFS:
+                data = np.vstack([data, binary_stims_array])
+
             r = get_sampling_rate(self.transmission)
             self.sampling_rate = r
 
             self.cc_data[sample_id] = compute_cc_data(data)
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
             self.cc_data[sample_id].curve_uuids = np.array(list(map(str, sub_df['uuid_curve'].values))) # convert all UUIDs to str representation
-            self.cc_data[sample_id].labels = sub_df[labels_col].values.astype(np.unicode)
+
+            labels = sub_df[labels_col].values.astype(np.unicode)
+
+            if self.transmission.STIM_DEFS:
+                self.cc_data[sample_id].labels = np.concatenate([labels, stim_names]).astype(np.unicode)
+            else:
+                self.cc_data[sample_id].labels = labels
 
         self.set_current_sample()
 
