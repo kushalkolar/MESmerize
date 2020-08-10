@@ -48,4 +48,4 @@ def get_binary_stims(
 
         binarized_arrays.append(stim_array)
 
-    return np.vstack(binarized_arrays), stims
+    return np.vstack(binarized_arrays), stims.tolist()
