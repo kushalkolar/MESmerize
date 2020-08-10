@@ -136,30 +136,47 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         else:
             i = indices[0]
             j = indices[1]
-            x = self.curve_data[i]
-            y = self.curve_data[j]
+            x = self.cc_data[self.current_sample_id].input_data[i]
+            y = self.cc_data[self.current_sample_id].input_data[j]
+            # x = self.curve_data[i]
+            # y = self.curve_data[j]
 
             self.curve_plot_1.clear()
             self.curve_plot_2.clear()
 
             sub_df = self.transmission.df[self.transmission.df.SampleID == self.current_sample_id].reset_index(drop=True)
-            ux = sub_df.uuid_curve.iloc[i]
-            uy = sub_df.uuid_curve.iloc[j]
 
-            r = sub_df[sub_df.uuid_curve == ux]
-            db_id = r._BLOCK_.item()
-            r2 = sub_df[sub_df.uuid_curve == uy]
+            if i < sub_df.uuid_curve.size:
+                ux = sub_df.uuid_curve.iloc[i]
+            else:
+                ux = False
 
-            self.datapoint_tracer.set_widget(datapoint_uuid=ux, data_column_curve=self.data_column,
-                                             row=r, proj_path=self.transmission.get_proj_path(),
-                                             history_trace=self.transmission.history_trace.get_data_block_history(db_id),
-                                             roi_color='m')
+            if j < sub_df.uuid_curve.size:
+                uy = sub_df.uuid_curve.iloc[j]
+            else:
+                uy = False
+
+            if ux:
+                r = sub_df[sub_df.uuid_curve == ux]
+                db_id = r._BLOCK_.item()
+
+                self.datapoint_tracer.set_widget(
+                    datapoint_uuid=ux, data_column_curve=self.data_column,
+                    row=r, proj_path=self.transmission.get_proj_path(),
+                    history_trace=self.transmission.history_trace.get_data_block_history(db_id),
+                    roi_color='m'
+                )
             self.datapoint_tracer.ui.graphicsViewPlot.clear()
-            self.add_second_roi_to_datapoint_tracer(r2)
-            self.datapoint_tracer.show()
 
-            self.control_widget.ui.lineEditCurve1UUID.setText(ux)
-            self.control_widget.ui.lineEditCurve2UUID.setText(uy)
+            if uy:
+                r2 = sub_df[sub_df.uuid_curve == uy]
+                self.add_second_roi_to_datapoint_tracer(r2)
+
+            if (ux or uy):
+                self.datapoint_tracer.show()
+
+            self.control_widget.ui.lineEditCurve1UUID.setText(ux if ux else '')
+            self.control_widget.ui.lineEditCurve2UUID.setText(uy if uy else '')
 
             self.curve_plot_1.setData(x=np.linspace(0, (len(x) / self.sampling_rate), len(x)), y=x, pen=mkPen(color='m', width=2))
             self.curve_plot_2.setData(x=np.linspace(0, (len(y) / self.sampling_rate), len(y)), y=y, pen=mkPen(color='c', width=2))
