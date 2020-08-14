@@ -204,8 +204,9 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         elif roi_state['roi_type'] == 'ManualROI':
             self.roi_2 = ManualROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
 
-        self.roi_2.get_roi_graphics_object().setPen(mkColor('c'))
-        self.roi_2.add_to_viewer()
+        if self.roi_2 is not None:
+            self.roi_2.get_roi_graphics_object().setPen(mkColor('c'))
+            self.roi_2.add_to_viewer()
 
     def _get_xticks_linspace(self, ncc) -> np.ndarray:
             m = ncc.size
