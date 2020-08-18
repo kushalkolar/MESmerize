@@ -26,11 +26,12 @@ pip (PyPI)
 #. Install build tools and other dependencies::
     
     # Debian & Ubuntu based distros
-    sudo apt-get install build-essential python3-devel qt5-default tcl graphviz git
+    sudo apt-get install build-essential python3-devel qt5-default tcl graphviz git llvm
     
     # Fedora/CentOS
     sudo dnf install @development-tools
     sudo dnf install python3-devel tcl graphviz
+    sudo dnf install llvm
     
 For other distributions install the equivalent meta package to get build tools.
 
