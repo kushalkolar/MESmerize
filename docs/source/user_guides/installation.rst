@@ -22,11 +22,17 @@ pip (PyPI)
     
     # Fedora/CentOS
     sudo dnf install python36
+    
+.. note:: If you're using Ubuntu 20.04 you'll need to add a PPA to get python3.6::
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt update
+    sudo apt install python3.6
+
 
 #. Install build tools and other dependencies::
     
     # Debian & Ubuntu based distros
-    sudo apt-get install build-essential python3-devel qt5-default tcl graphviz git llvm
+    sudo apt-get install build-essential python3.6-dev python3.6-venv qt5-default tcl graphviz git llvm
     
     # Fedora/CentOS
     sudo dnf install @development-tools
