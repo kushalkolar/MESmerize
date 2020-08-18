@@ -44,6 +44,7 @@ install_requires = \
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
         "tcl",
+        "bokeh~=2.1.0"
     ]
 
 classifiers = \
