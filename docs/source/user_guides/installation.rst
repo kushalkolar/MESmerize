@@ -49,6 +49,10 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
 #. Make sure you have a recent version of pip and setuptools::
     
     pip install --upgrade pip setuptools
+    
+#. Install numpy & cython::
+
+    pip install numpy cython
 
 #. Install tslearn & bottleneck (optional)::
 
