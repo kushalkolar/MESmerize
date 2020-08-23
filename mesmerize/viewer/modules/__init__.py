@@ -7,7 +7,8 @@ __all__ = [
     'stimulus_mapping',
     'script_editor',
     'suite2p',
-    'femtonics_mesc'
+    'femtonics_mesc',
+    'nuset_segment'
 ]
 
 if HAS_CAIMAN:
