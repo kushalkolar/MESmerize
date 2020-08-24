@@ -21,11 +21,15 @@ import skimage
 import numpy as np
 import numexpr
 from nuset import Nuset
+from tqdm import tqdm
+from typing import List
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from qtap import Function
-from ..core import ViewerUtils
+from ..core import ViewerUtils, ViewerWorkEnv
 from ...pyqtgraphCore import GraphicsLayoutWidget, ImageItem, ViewBox
+from ...pyqtgraphCore.console.Console import ConsoleWidget
+from multiprocessing import Pool, cpu_count
 
 
 def get_projection(img: np.ndarray, proj: str = 'std') -> np.ndarray:
@@ -79,10 +83,14 @@ def get_preprocess(
     return img
 
 
+def wrap_preprocess(kwargs):
+    return get_preprocess(**kwargs)
+
+
 # from NuSeT processing cleanimage function
 def get_postprocess(
         img: np.ndarray,
-        do_postprocess: bool = True,
+        do_postprocess: bool = False,
         abs_obj_threshold: int = -1,
         rel_obj_threshold: int = 5,
         obj_connectivity: int = 2,
@@ -92,6 +100,9 @@ def get_postprocess(
     ) -> np.ndarray:
 
     if not do_postprocess:
+        return img
+
+    if not img.size > 0:
         return img
 
     image = img.astype(np.bool)
@@ -148,6 +159,15 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.left_widget = QtWidgets.QWidget(self.splitter)
         self.left_widget.setLayout(self.left_layout)
+
+        hlayout_custom_img = QtWidgets.QHBoxLayout(self.left_widget)
+        self.lineedit_custom_img_path = QtWidgets.QLineEdit(self.left_widget)
+        self.lineedit_custom_img_path.setPlaceholderText("Path to custom image or stack")
+        self.lineedit_custom_img_path.setToolTip(
+            "Use a different image or stack for segmentation, such as an image or stack of nuclei."
+        )
+        self.button_use_custom = QtWidgets.QPushButton(self.left_widget)
+
 
         hlayout_projection_radios = QtWidgets.QHBoxLayout(self.left_widget)
         self.radio_std = QtWidgets.QRadioButton(self.left_widget)
@@ -324,6 +344,15 @@ class ModuleGUI(QtWidgets.QWidget):
         hlayout_nuset.addWidget(self.postprocess_controls.widget)
         self.right_layout.addLayout(hlayout_nuset)
 
+        self.checkbox_segment_current_plane = QtWidgets.QCheckBox(self.nuset_controls.widget)
+        self.checkbox_segment_current_plane.setText("Only segment current plane")
+        self.checkbox_segment_current_plane.setToolTip(
+            "Performs segmentation for only the current plane, "
+            "useful for trying out parameters."
+        )
+        self.checkbox_segment_current_plane.setChecked(True)
+        self.nuset_controls.vlayout.addWidget(self.checkbox_segment_current_plane)
+
         self.glw_segmented = GraphicsLayoutWidget(self.right_widget)
         self.imgitem_segmented = ImageItem()
         self.imgitem_segmented_underlay = ImageItem()
@@ -388,23 +417,68 @@ class ModuleGUI(QtWidgets.QWidget):
         self.right_layout.addWidget(self.glw_segmented)
         self.splitter.addWidget(self.right_widget)
 
-        self.image_projection: np.ndarray = np.empty(0)
-        self.image_preprocess: np.ndarray = np.empty(0)
-        self.image_segmented: np.ndarray = np.empty(0)
-        self.image_postprocessed: np.ndarray = np.empty(0)
+        self.image_projections: List[np.ndarray] = []
+        self.image_preprocesses: List[np.ndarray] = []
+        self.image_segmentations: List[np.ndarray] = []
+        self.image_postprocesses: List[np.ndarray] = []
+
+        self.input_img: np.ndarray = np.empty(0)
+        self.zlevel = 0
+        self.z_max: int = 0
+
+        # self.vi.sig_workEnv_changed.connect(self.set_input)
+
+        self.console_widget = ConsoleWidget(parent=self, namespace={'self': self})
+        self.console_widget.setMaximumHeight(400)
+        self.vlayout.addWidget(self.console_widget)
+
+        self.process_pool = Pool(cpu_count())
 
         self.error_label = QtWidgets.QLabel(self)
         self.error_label.setMaximumHeight(20)
         self.error_label.setStyleSheet("font-weight: bold; color: red")
         self.vlayout.addWidget(self.error_label)
 
-    def set_input(self):
+    def set_input(self, workEnv: ViewerWorkEnv):
+        self.input_img = workEnv.imgdata._seq
+        if workEnv.imgdata.z_max is None:
+            self.z_max = 0
+        else:
+            self.z_max = workEnv.imgdata.z_max
+
+        self.zslider.valueChanged.disconnect(self.update_zlevel)
+        self.zslider.setValue(0)
+        self.zslider.setMaximum(self.z_max)
+        self.spinbox_zlevel.setMaximum(self.z_max)
+        self.zslider.valueChanged.connect(self.update_zlevel)
+
         self.clear_widget()
 
     def update_zlevel(self, z: int):
-        pass
+        self.zlevel = z
+
+        for imgitem, imglist in zip(
+            [
+                self.imgitem_raw,
+                self.imgitem_preprocess,
+                self.imgitem_segmented_underlay,
+                self.imgitem_segmented
+            ],
+            [
+                self.image_projections,
+                self.image_preprocesses,
+                self.image_preprocesses,
+                self.image_postprocesses
+            ]
+        ):
+            if imglist:  # set if the list is not empty
+                imgitem.setImage(imglist[z])
 
     def update_projection(self):
+        if not self.input_img.size > 0:
+            self.error_label.setText("No input image")
+            return
+
         if self.radio_std.isChecked():
             opt = 'std'
         elif self.radio_max.isChecked():
@@ -415,45 +489,75 @@ class ModuleGUI(QtWidgets.QWidget):
         if self.projection_option == opt:
             return
 
+        func = getattr(np, opt)
+
+        print("Updating Projection(s)")
+        if self.input_img.ndim == 4:
+            self.image_projections = [func(self.input_img[:, :, :, z], axis=2) for z in tqdm(self.z_max)]
+        else:
+            self.image_projections = [func(self.input_img, axis=2)]
+
     def update_preprocess(self, params):
-        if not self.image_projection.size > 0:
+        if not self.image_projections:
             self.error_label.setText("Projection Image is Empty")
             return
 
-        self.image_preprocess = get_preprocess(self.image_projection, **params)
-        self.imgitem_preprocess.setImage(self.image_preprocess)
-        self.imgitem_segmented_underlay.setImage(self.image_preprocess)
+        print("Preprocessing Image(s)")
+
+        # self.image_preprocesses = [
+        #     get_preprocess(p, **params) for p in tqdm(self.image_projections)
+        # ]
+
+        kwargs = [{'img': img, **params} for img in self.image_projections]
+
+        self.image_preprocesses = self.process_pool.map(wrap_preprocess, kwargs)
+
+        self.imgitem_preprocess.setImage(self.image_preprocesses[self.zlevel])
+        self.imgitem_segmented_underlay.setImage(self.image_preprocesses[self.zlevel])
         self.error_label.clear()
 
     def update_segmentation(self, params):
-        if not self.image_preprocess.size > 0:
+        if not self.image_preprocesses:
             self.error_label.setText("Preprocess Image is Empty")
             return
 
-        self.image_segmented = self.nuset_model.predict(self.image_preprocess, **params)
-
-        if self.postprocess_controls.arguments.do_postprocess.val:
-            self.update_postprocess(self.postprocess_controls.get_data())
-
+        print("Segmenting Image(s)")
+        if not self.checkbox_segment_current_plane.isChecked():
+            self.image_segmentations = [
+                self.nuset_model.predict(img, **params) for img in tqdm(self.image_preprocesses)
+            ]
         else:
-            self.imgitem_segmented.setImage(self.image_segmented)
+            self.image_segmentations = [
+                np.empty(0) for i in range(self.z_max + 1)
+            ]
+
+            self.image_segmentations[self.zlevel] = self.nuset_model.predict(
+                self.image_preprocesses[self.zlevel], **params
+            )
+
+        # postprocess funciton will just return the segmented img if do_postprocess is False
+        self.update_postprocess(self.postprocess_controls.get_data())
 
         self.error_label.clear()
 
     def update_postprocess(self, params):
-        if not self.image_segmented.size > 0:
+        if not self.image_segmentations:
             self.error_label.setText("Segmented Image is Empty")
             return
 
-        self.image_postprocessed = get_postprocess(self.image_segmented, **params)
-        self.imgitem_segmented.setImage(self.image_postprocessed)
+        print("Postprocessing Image(s)")
+        self.image_postprocesses = [
+            get_postprocess(img, **params) for img in tqdm(self.image_segmentations)
+        ]
+
+        self.imgitem_segmented.setImage(self.image_postprocesses[self.zlevel])
         self.error_label.clear()
 
     def clear_widget(self):
-        self.image_projection = np.empty(0)
-        self.image_preprocess = np.empty(0)
-        self.image_segmented = np.empty(0)
-        self.image_postprocessed = np.empty(0)
+        self.image_projections.clear()
+        self.image_preprocesses.clear()
+        self.image_segmentations.clear()
+        self.image_postprocesses.clear()
 
         self.imgitem_raw.clear()
         self.imgitem_preprocess.clear()
