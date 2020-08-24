@@ -16,6 +16,8 @@ from .pytemplates.cnmf_pytemplate import *
 from ...common import get_window_manager
 from ...common.qdialogs import *
 from uuid import UUID
+from shutil import copy
+import os
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -152,6 +154,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
         name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMF: ' + name + ' to batch...')
 
+        if self.ui.groupBox_seed_components.isChecked():
+            d['use_seeds'] = True
+
         batch_manager = get_window_manager().get_batch_manager()
         u = batch_manager.add_item(
             module='CNMF',
@@ -164,6 +169,11 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if u is None:
             self.vi.viewer.status_bar_label.clearMessage()
             return
+
+        if self.ui.groupBox_seed_components.isChecked():
+            print("Copying component seeds files")
+            seed_path = self.ui.lineEdit_seed_components_path.text()
+            copy(seed_path, os.path.join(batch_manager.batch_path, f'{u}.ain'))
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')
         self.ui.lineEdName.clear()

@@ -69,9 +69,22 @@ def run(batch_dir: str, UUID: str):
         Yr, dims, T = cm.load_memmap(memmap_fname)
         Y = np.reshape(Yr.T, [T] + list(dims), order='F')
 
+        Ain = None
+
+        # seed components
+        if 'use_seeds' in input_params.keys():
+            if input_params['use_seeds']:
+                try:
+                    Ain = np.load(f'{UUID}.ain')
+                except Exception as e:
+                    output['warnings'] = f'Could not seed components, make sure that ' \
+                        f'the .ain file exists in the batch dir: {e}'
+
+
         cnm = cnmf.CNMF(
             dview=dview,
             n_processes=n_processes,
+            Ain=Ain,
             **input_params['cnmf_kwargs'],
         )
 

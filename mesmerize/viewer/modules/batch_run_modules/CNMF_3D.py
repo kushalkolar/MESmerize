@@ -96,11 +96,23 @@ def run(work_dir: str, UUID: str, save_temp_files: str):
 
         images = np.reshape(Yr.T, [T] + list(dims), order='F')
 
+        Ain = None
+
+        # seed components
+        if 'use_seeds' in input_params.keys():
+            if input_params['use_seeds']:
+                try:
+                    Ain = np.load(f'{UUID}.ain')
+                except Exception as e:
+                    output['warnings'] = f'Could not seed components, make sure that ' \
+                        f'the .ain file exists in the batch dir: {e}'
+
         if input_params['use_patches']:
             cnm = cnmf.CNMF(
                 n_processes=n_processes,
                 dview=dview,
                 only_init_patch=True,
+                Ain=Ain,
                 **input_params['cnmf_kwargs']
             )
 
@@ -108,6 +120,7 @@ def run(work_dir: str, UUID: str, save_temp_files: str):
             cnm = cnmf.CNMF(
                 n_processes,
                 dview=dview,
+                Ain=Ain,
                 **input_params['cnmf_kwargs']
             )
 

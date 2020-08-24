@@ -22,17 +22,18 @@ import numpy as np
 import numexpr
 from nuset import Nuset
 from tqdm import tqdm
-from typing import List
+from typing import List, Tuple
 from matplotlib import cm
 from matplotlib.colors import LinearSegmentedColormap
+from multiprocessing import Pool, cpu_count
+from scipy.ndimage import label as label_image
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from qtap import Function
 from ..core import ViewerUtils, ViewerWorkEnv
 from ...pyqtgraphCore import GraphicsLayoutWidget, ImageItem, ViewBox
 from ...pyqtgraphCore.console.Console import ConsoleWidget
-from multiprocessing import Pool, cpu_count
-
+from ...common.qdialogs import *
 
 cmap_magenta = LinearSegmentedColormap.from_list('magentas', [(0, 0, 0), (0,)*3, (1, 0, 1)])
 cmap_cyan = LinearSegmentedColormap.from_list('cyans', [(0, 0, 0), (0,)*3, (0, 1, 1)])
@@ -148,6 +149,33 @@ def normalize_image(img, dtype):
     imgN = imgN.astype(dtype)
 
     return imgN
+
+
+# adapted from https://github.com/flatironinstitute/CaImAn/blob/master/caiman/base/rois.py#L88
+def get_sparse_mask(segmented_img: np.ndarray, raw_img_shape: tuple):
+    # allocate array with same size as the raw input image
+    # so that the dims match for CNMF
+    img = np.zeros(raw_img_shape, dtype=segmented_img.dtype)
+
+    # fill the allocated array with vals from the NuSeT segmentation
+    # sometimes the segmented image has its dims trimmed by a few pixels
+    if len(raw_img_shape) == 3:
+        img[:, :segmented_img.shape[1], :segmented_img.shape[2]] = segmented_img
+    else:
+        img[:segmented_img.shape[0], :segmented_img.shape[1]] = segmented_img
+
+    areas = label_image(img)
+    A = np.zeros((np.prod(img.shape), areas[1]), dtype=bool)
+
+    selem: np.array = np.ones((3,)*len(segmented_img.shape))
+
+    for i in range(areas[1]):
+        temp = (areas[0] == i + 1)
+        temp = skimage.morphology.closing(temp, selem=selem)
+
+        A[:, i] = temp.flatten('F')
+
+    return A
 
 
 class ModuleGUI(QtWidgets.QWidget):
@@ -590,3 +618,23 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.projection_option = ''
 
+    @use_save_file_dialog('Save masks', None, '.npy')
+    @present_exceptions()
+    def save_masks(self, path, *args):
+        if not self.image_segmentations:
+            raise ValueError("You must segment images before you can proceed.")
+
+        for img in self.image_segmentations:
+            if not img.size > 0:
+                raise ValueError("Your must segment the entire stack before you can proceed.")
+        if self.z_max > 0:
+            seg_img = np.stack(self.image_segmentations)
+            shape = np.stack(self.image_projections).shape
+
+        else:
+            seg_img = self.image_segmentations[0].T
+            shape = self.image_projections[0].T.shape
+
+        Ain = get_sparse_mask(seg_img, shape)
+
+        np.save(path, Ain)
