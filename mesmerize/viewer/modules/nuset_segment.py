@@ -23,6 +23,8 @@ import numexpr
 from nuset import Nuset
 from tqdm import tqdm
 from typing import List
+from matplotlib import cm
+from matplotlib.colors import LinearSegmentedColormap
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from qtap import Function
@@ -30,6 +32,10 @@ from ..core import ViewerUtils, ViewerWorkEnv
 from ...pyqtgraphCore import GraphicsLayoutWidget, ImageItem, ViewBox
 from ...pyqtgraphCore.console.Console import ConsoleWidget
 from multiprocessing import Pool, cpu_count
+
+
+cmap_magenta = LinearSegmentedColormap.from_list('magentas', [(0, 0, 0), (0,)*3, (1, 0, 1)])
+cmap_cyan = LinearSegmentedColormap.from_list('cyans', [(0, 0, 0), (0,)*3, (0, 1, 1)])
 
 
 def get_projection(img: np.ndarray, proj: str = 'std') -> np.ndarray:
@@ -360,6 +366,18 @@ class ModuleGUI(QtWidgets.QWidget):
         self.viewbox_segmented.setAspectLocked(True)
         self.viewbox_segmented.addItem(self.imgitem_segmented)
         self.viewbox_segmented.addItem(self.imgitem_segmented_underlay)
+
+        # colormaps for the mask overlay plot
+        cm_cyan = cm.get_cmap(cmap_cyan)
+        cm_cyan._init()
+        lut_cyan = (cm_cyan._lut * 255).view(np.ndarray)[100:-5]
+        self.imgitem_segmented_underlay.setLookupTable(lut_cyan)
+
+        # colormaps for the mask overlay plot
+        cm_magenta = cm.get_cmap(cmap_magenta)
+        cm_magenta._init()
+        lut_magenta = (cm_magenta._lut * 255).view(np.ndarray)[:-5]  # so it displays as a mask
+        self.imgitem_segmented.setLookupTable(lut_magenta)
 
         # allow transparency
         # self.imgitem_segmented.setCompositionMode(QtGui.QPainter.CompositionMode_Overlay)
