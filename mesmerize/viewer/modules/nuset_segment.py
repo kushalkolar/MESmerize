@@ -285,7 +285,8 @@ class ModuleGUI(QtWidgets.QWidget):
 
                 'rescale_ratio': {
                     'minmax': (0.1, 10.0),
-                    'step': 0.5
+                    'step': 0.5,
+                    'val': 1.1  # not working if set to 1.0 with pyqtgraph ImageItem for some reason
                 }
 
             }
@@ -370,7 +371,7 @@ class ModuleGUI(QtWidgets.QWidget):
         # colormaps for the mask overlay plot
         cm_cyan = cm.get_cmap(cmap_cyan)
         cm_cyan._init()
-        lut_cyan = (cm_cyan._lut * 255).view(np.ndarray)[100:-5]
+        lut_cyan = (cm_cyan._lut * 255).view(np.ndarray)[128:-5]
         self.imgitem_segmented_underlay.setLookupTable(lut_cyan)
 
         # colormaps for the mask overlay plot
@@ -490,7 +491,8 @@ class ModuleGUI(QtWidgets.QWidget):
             ]
         ):
             if imglist:  # set if the list is not empty
-                imgitem.setImage(imglist[z])
+                if imglist[z].size > 0:
+                    imgitem.setImage(imglist[z])
 
     def update_projection(self):
         if not self.input_img.size > 0:
