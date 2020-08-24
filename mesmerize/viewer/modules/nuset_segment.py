@@ -22,7 +22,7 @@ import numpy as np
 import numexpr
 from nuset import Nuset
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 from qtap import Function
 from ..core import ViewerUtils
 from ...pyqtgraphCore import GraphicsLayoutWidget, ImageItem, ViewBox
@@ -149,6 +149,38 @@ class ModuleGUI(QtWidgets.QWidget):
         self.left_widget = QtWidgets.QWidget(self.splitter)
         self.left_widget.setLayout(self.left_layout)
 
+        hlayout_projection_radios = QtWidgets.QHBoxLayout(self.left_widget)
+        self.radio_std = QtWidgets.QRadioButton(self.left_widget)
+        self.radio_std.setText("Std. Deviation")
+        self.radio_max = QtWidgets.QRadioButton(self.left_widget)
+        self.radio_max.setText("Max")
+        self.radio_mean = QtWidgets.QRadioButton(self.left_widget)
+        self.radio_mean.setText("Mean")
+
+        self.projection_option: str = ''
+
+        for w in [self.radio_std, self.radio_max, self.radio_mean]:
+            hlayout_projection_radios.addWidget(w)
+            w.clicked.connect(self.update_projection)
+
+        label_projections = QtWidgets.QLabel(self.left_widget)
+        label_projections.setText("Choose Input Projection")
+        label_projections.setStyleSheet("font-weight: bold")
+
+        self.left_layout.addWidget(label_projections)
+        self.left_layout.addLayout(hlayout_projection_radios)
+
+        # projection image
+        self.glw_raw = GraphicsLayoutWidget(self.left_widget)
+        self.imgitem_raw = ImageItem()
+        self.viewbox_raw = self.glw_raw.addViewBox()
+        self.viewbox_raw.setAspectLocked(True)
+        self.viewbox_raw.addItem(self.imgitem_raw)
+
+        self.left_layout.addWidget(self.glw_raw)
+
+        hlayout_preprocess = QtWidgets.QHBoxLayout(self.left_widget)
+
         arg_opts_preprocess = \
             {
                 'img': {'ignore': True},
@@ -168,35 +200,29 @@ class ModuleGUI(QtWidgets.QWidget):
         self.preprocess_controls.sig_changed.connect(self.update_preprocess)
         self.preprocess_controls.set_title("Pre-process Settings")
 
-        hlayout_projection_radios = QtWidgets.QHBoxLayout(self.left_widget)
-        self.radio_std = QtWidgets.QRadioButton(self.left_widget)
-        self.radio_std.setText("Std. Deviation")
-        self.radio_max = QtWidgets.QRadioButton(self.left_widget)
-        self.radio_max.setText("Max")
-        self.radio_mean = QtWidgets.QRadioButton(self.left_widget)
-        self.radio_mean.setText("Mean")
+        hlayout_preprocess.addWidget(self.preprocess_controls.widget)
 
-        for w in [self.radio_std, self.radio_max, self.radio_mean]:
-            hlayout_projection_radios.addWidget(w)
+        self.zslider = QtWidgets.QSlider(parent=self.left_widget, orientation=QtCore.Qt.Vertical)
+        self.zslider.setInvertedAppearance(True)
+        self.zslider.setSingleStep(1)
+        self.zslider.valueChanged.connect(self.update_zlevel)
 
-        label_projections = QtWidgets.QLabel(self.left_widget)
-        label_projections.setText("Choose Input Projection")
-        label_projections.setStyleSheet("font-weight: bold")
+        label_zslider = QtWidgets.QLabel(self.left_widget)
+        label_zslider.setText("z-level")
 
-        self.left_layout.addWidget(label_projections)
-        self.left_layout.addLayout(hlayout_projection_radios)
+        self.spinbox_zlevel = QtWidgets.QSpinBox(self.left_widget)
+        self.spinbox_zlevel.setSingleStep(1)
+        self.spinbox_zlevel.valueChanged.connect(self.zslider.setValue)
+        self.zslider.valueChanged.connect(self.spinbox_zlevel.setValue)
 
-        # projection image
-        self.glw_raw = GraphicsLayoutWidget(self.left_widget)
-        self.imgitem_raw = ImageItem()
-        self.viewbox_raw = self.glw_raw.addViewBox()
-        self.viewbox_raw.setAspectLocked(True)
-        self.viewbox_raw.addItem(self.imgitem_raw)
 
-        self.left_layout.addWidget(self.glw_raw)
-        self.left_layout.addWidget(self.preprocess_controls.widget)
+        hlayout_preprocess.addWidget(label_zslider)
+        hlayout_preprocess.addWidget(self.zslider)
+        hlayout_preprocess.addWidget(self.spinbox_zlevel)
 
-        # preprocess image
+        self.left_layout.addLayout(hlayout_preprocess)
+
+        # preprocess image item
         self.glw_preprocess = GraphicsLayoutWidget(self.left_widget)
         self.imgitem_preprocess = ImageItem()
         self.viewbox_preprocess = self.glw_preprocess.addViewBox()
@@ -306,10 +332,58 @@ class ModuleGUI(QtWidgets.QWidget):
         self.viewbox_segmented.addItem(self.imgitem_segmented)
         self.viewbox_segmented.addItem(self.imgitem_segmented_underlay)
 
+        # allow transparency
+        # self.imgitem_segmented.setCompositionMode(QtGui.QPainter.CompositionMode_Overlay)
+        self.imgitem_segmented_underlay.setCompositionMode(QtGui.QPainter.CompositionMode_SourceOver)
+
         self.imgitem_segmented.setZValue(2)
         self.imgitem_segmented.setOpacity(0.5)
         self.imgitem_segmented_underlay.setZValue(1)
         self.imgitem_segmented_underlay.setOpacity(0.3)
+
+        self.slider_underlay_opacity = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.slider_underlay_opacity.setMinimum(0)
+        self.slider_underlay_opacity.setMaximum(100)
+        self.slider_underlay_opacity.setValue(30)
+        self.slider_underlay_opacity.valueChanged.connect(
+            lambda v: self.imgitem_segmented_underlay.setOpacity(v / 100)
+        )
+        label_underlay_opacity = QtWidgets.QLabel(self.nuset_controls.widget)
+        label_underlay_opacity.setText("Underlay opacity")
+        self.nuset_controls.vlayout.addWidget(label_underlay_opacity)
+        self.nuset_controls.vlayout.addWidget(self.slider_underlay_opacity)
+
+        self.slider_mask_opacity = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.slider_mask_opacity.setMinimum(0)
+        self.slider_mask_opacity.setMaximum(100)
+        self.slider_mask_opacity.setValue(50)
+        self.slider_mask_opacity .valueChanged.connect(
+            lambda v: self.imgitem_segmented.setOpacity(v / 100)
+        )
+        label_segmented_opacity = QtWidgets.QLabel(self.nuset_controls.widget)
+        label_segmented_opacity.setText("Segmentation opacity")
+        self.nuset_controls.vlayout.addWidget(label_segmented_opacity)
+        self.nuset_controls.vlayout.addWidget(self.slider_mask_opacity)
+
+        self.combo_blend_mode = QtWidgets.QComboBox(self.nuset_controls.widget)
+        self.combo_blend_mode.addItems(
+            [
+                'SourceOver',
+                'Overlay',
+                'Plus',
+                'Multiply'
+            ]
+        )
+        self.combo_blend_mode.setCurrentIndex(0)
+        self.combo_blend_mode.currentTextChanged.connect(
+            lambda opt: self.imgitem_segmented.setCompositionMode(
+                getattr(QtGui.QPainter, f'CompositionMode_{opt}')
+            )
+        )
+        label_blend_mode = QtWidgets.QLabel(self.nuset_controls.widget)
+        label_blend_mode.setText('Blend mode:')
+        self.nuset_controls.vlayout.addWidget(label_blend_mode)
+        self.nuset_controls.vlayout.addWidget(self.combo_blend_mode)
 
         self.right_layout.addWidget(self.glw_segmented)
         self.splitter.addWidget(self.right_widget)
@@ -324,8 +398,22 @@ class ModuleGUI(QtWidgets.QWidget):
         self.error_label.setStyleSheet("font-weight: bold; color: red")
         self.vlayout.addWidget(self.error_label)
 
-    def update_projection(self):
+    def set_input(self):
+        self.clear_widget()
+
+    def update_zlevel(self, z: int):
         pass
+
+    def update_projection(self):
+        if self.radio_std.isChecked():
+            opt = 'std'
+        elif self.radio_max.isChecked():
+            opt = 'max'
+        elif self.radio_mean.isChecked():
+            opt = 'mean'
+
+        if self.projection_option == opt:
+            return
 
     def update_preprocess(self, params):
         if not self.image_projection.size > 0:
@@ -360,3 +448,21 @@ class ModuleGUI(QtWidgets.QWidget):
         self.image_postprocessed = get_postprocess(self.image_segmented, **params)
         self.imgitem_segmented.setImage(self.image_postprocessed)
         self.error_label.clear()
+
+    def clear_widget(self):
+        self.image_projection = np.empty(0)
+        self.image_preprocess = np.empty(0)
+        self.image_segmented = np.empty(0)
+        self.image_postprocessed = np.empty(0)
+
+        self.imgitem_raw.clear()
+        self.imgitem_preprocess.clear()
+        self.imgitem_segmented.clear()
+        self.imgitem_segmented_underlay.clear()
+
+        self.radio_std.setChecked(False)
+        self.radio_max.setChecked(False)
+        self.radio_mean.setChcked(False)
+
+        self.projection_option = ''
+
