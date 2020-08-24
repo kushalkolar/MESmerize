@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>702</height>
+    <width>756</width>
+    <height>812</height>
    </rect>
   </property>
   <property name="floating">
@@ -460,6 +460,43 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QGroupBox" name="groupBox_seed_components">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>80</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Seed components from &amp;masks</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLineEdit" name="lineEdit_seed_components_path">
+           <property name="placeholderText">
+            <string>Enter path to .npy file</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <widget class="QGroupBox" name="groupBox_cnmf_kwargs">
         <property name="toolTip">
          <string>You can enter additional kwargs to pass for CNMF instantiation.
@@ -799,6 +836,8 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>spinBox_tsub</tabstop>
   <tabstop>comboBox_method_init</tabstop>
   <tabstop>lineEditAin</tabstop>
+  <tabstop>groupBox_seed_components</tabstop>
+  <tabstop>lineEdit_seed_components_path</tabstop>
   <tabstop>groupBox_cnmf_kwargs</tabstop>
   <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
   <tabstop>doubleSpinBoxMinSNR</tabstop>

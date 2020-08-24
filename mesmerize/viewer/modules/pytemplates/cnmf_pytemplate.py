@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './cnmf_pytemplate.ui'
+# Form implementation generated from reading ui file './ui_files/cnmf_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -12,7 +12,7 @@ class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(703, 702)
+        DockWidget.resize(756, 812)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -29,7 +29,7 @@ class Ui_DockWidget(object):
         self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
         self.spinBoxP = QtWidgets.QSpinBox(self.dockWidgetContents)
-        self.spinBoxP.setMinimum(2)
+        self.spinBoxP.setMinimum(0)
         self.spinBoxP.setMaximum(10)
         self.spinBoxP.setSingleStep(1)
         self.spinBoxP.setProperty("value", 2)
@@ -194,6 +194,23 @@ class Ui_DockWidget(object):
         self.horizontalLayout_6.addLayout(self.verticalLayout)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.groupBox_seed_components = QtWidgets.QGroupBox(self.dockWidgetContents)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBox_seed_components.sizePolicy().hasHeightForWidth())
+        self.groupBox_seed_components.setSizePolicy(sizePolicy)
+        self.groupBox_seed_components.setMinimumSize(QtCore.QSize(0, 80))
+        self.groupBox_seed_components.setFlat(False)
+        self.groupBox_seed_components.setCheckable(True)
+        self.groupBox_seed_components.setChecked(False)
+        self.groupBox_seed_components.setObjectName("groupBox_seed_components")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.groupBox_seed_components)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.lineEdit_seed_components_path = QtWidgets.QLineEdit(self.groupBox_seed_components)
+        self.lineEdit_seed_components_path.setObjectName("lineEdit_seed_components_path")
+        self.verticalLayout_4.addWidget(self.lineEdit_seed_components_path)
+        self.verticalLayout_2.addWidget(self.groupBox_seed_components)
         self.groupBox_cnmf_kwargs = QtWidgets.QGroupBox(self.dockWidgetContents)
         self.groupBox_cnmf_kwargs.setStatusTip("")
         self.groupBox_cnmf_kwargs.setCheckable(True)
@@ -335,7 +352,9 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.spinBox_ssub, self.spinBox_tsub)
         DockWidget.setTabOrder(self.spinBox_tsub, self.comboBox_method_init)
         DockWidget.setTabOrder(self.comboBox_method_init, self.lineEditAin)
-        DockWidget.setTabOrder(self.lineEditAin, self.groupBox_cnmf_kwargs)
+        DockWidget.setTabOrder(self.lineEditAin, self.groupBox_seed_components)
+        DockWidget.setTabOrder(self.groupBox_seed_components, self.lineEdit_seed_components_path)
+        DockWidget.setTabOrder(self.lineEdit_seed_components_path, self.groupBox_cnmf_kwargs)
         DockWidget.setTabOrder(self.groupBox_cnmf_kwargs, self.plainTextEdit_cnmf_kwargs)
         DockWidget.setTabOrder(self.plainTextEdit_cnmf_kwargs, self.doubleSpinBoxMinSNR)
         DockWidget.setTabOrder(self.doubleSpinBoxMinSNR, self.doubleSpinBoxRvalThr)
@@ -371,6 +390,8 @@ class Ui_DockWidget(object):
         self.comboBox_method_init.setItemText(0, _translate("DockWidget", "greedy_roi"))
         self.comboBox_method_init.setItemText(1, _translate("DockWidget", "sparse_nmf"))
         self.label_5.setText(_translate("DockWidget", "Ain:"))
+        self.groupBox_seed_components.setTitle(_translate("DockWidget", "Seed components from &masks"))
+        self.lineEdit_seed_components_path.setPlaceholderText(_translate("DockWidget", "Enter path to .npy file"))
         self.groupBox_cnmf_kwargs.setToolTip(_translate("DockWidget", "You can enter additional kwargs to pass for CNMF instantiation.\n"
 "Use single quotes for strings, do not use double quotes."))
         self.groupBox_cnmf_kwargs.setTitle(_translate("DockWidget", "Use CNMF &kwargs"))

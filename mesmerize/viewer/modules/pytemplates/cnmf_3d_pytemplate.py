@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './cnmf_3d_pytemplate.ui'
+# Form implementation generated from reading ui file './ui_files/cnmf_3d_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_CNMF3D_template(object):
     def setupUi(self, CNMF3D_template):
         CNMF3D_template.setObjectName("CNMF3D_template")
-        CNMF3D_template.resize(573, 662)
+        CNMF3D_template.resize(590, 704)
         CNMF3D_template.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -21,6 +21,16 @@ class Ui_CNMF3D_template(object):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.groupBox_seed_components = QtWidgets.QGroupBox(self.dockWidgetContents)
+        self.groupBox_seed_components.setCheckable(True)
+        self.groupBox_seed_components.setChecked(False)
+        self.groupBox_seed_components.setObjectName("groupBox_seed_components")
+        self.verticalLayout_9 = QtWidgets.QVBoxLayout(self.groupBox_seed_components)
+        self.verticalLayout_9.setObjectName("verticalLayout_9")
+        self.lineEdit_seed_components_path = QtWidgets.QLineEdit(self.groupBox_seed_components)
+        self.lineEdit_seed_components_path.setObjectName("lineEdit_seed_components_path")
+        self.verticalLayout_9.addWidget(self.lineEdit_seed_components_path)
+        self.verticalLayout_4.addWidget(self.groupBox_seed_components)
         self.label_6 = QtWidgets.QLabel(self.dockWidgetContents)
         self.label_6.setObjectName("label_6")
         self.verticalLayout_4.addWidget(self.label_6)
@@ -175,6 +185,8 @@ class Ui_CNMF3D_template(object):
         self.retranslateUi(CNMF3D_template)
         self.lineEdit_name.returnPressed.connect(self.pushButton_add_to_batch.click)
         QtCore.QMetaObject.connectSlotsByName(CNMF3D_template)
+        CNMF3D_template.setTabOrder(self.groupBox_seed_components, self.lineEdit_seed_components_path)
+        CNMF3D_template.setTabOrder(self.lineEdit_seed_components_path, self.spinBox_p)
         CNMF3D_template.setTabOrder(self.spinBox_p, self.groupBox_use_patches)
         CNMF3D_template.setTabOrder(self.groupBox_use_patches, self.spinBox_rf)
         CNMF3D_template.setTabOrder(self.spinBox_rf, self.spinBox_stride)
@@ -196,10 +208,14 @@ class Ui_CNMF3D_template(object):
         CNMF3D_template.setTabOrder(self.groupBox_use_previous_memmap, self.lineEdit_memmap_uuid)
         CNMF3D_template.setTabOrder(self.lineEdit_memmap_uuid, self.lineEdit_name)
         CNMF3D_template.setTabOrder(self.lineEdit_name, self.pushButton_add_to_batch)
+        CNMF3D_template.setTabOrder(self.pushButton_add_to_batch, CNMF3D_template.lineEdit_memmap_uuid_2)
 
     def retranslateUi(self, CNMF3D_template):
         _translate = QtCore.QCoreApplication.translate
         CNMF3D_template.setWindowTitle(_translate("CNMF3D_template", "&CNMF 3D"))
+        self.groupBox_seed_components.setToolTip(_translate("CNMF3D_template", "Useful if trying out different paramters for the same input image stack."))
+        self.groupBox_seed_components.setTitle(_translate("CNMF3D_template", "Seed components from masks"))
+        self.lineEdit_seed_components_path.setPlaceholderText(_translate("CNMF3D_template", "Enter path to .npy file"))
         self.label_6.setText(_translate("CNMF3D_template", "p"))
         self.groupBox_use_patches.setTitle(_translate("CNMF3D_template", "&Use patches"))
         self.label.setText(_translate("CNMF3D_template", "rf"))
