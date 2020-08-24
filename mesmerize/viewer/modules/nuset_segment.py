@@ -149,10 +149,19 @@ class ModuleGUI(QtWidgets.QWidget):
         self.left_widget = QtWidgets.QWidget(self.splitter)
         self.left_widget.setLayout(self.left_layout)
 
+        arg_opts_preprocess = \
+            {
+                'img': {'ignore': True},
+
+                'sigmoid_gain': {
+                    'step': 0.01
+                }
+            }
+
         self.preprocess_controls = \
             Function(
                 get_preprocess,
-                arg_opts={'img': {'ignore': True}},
+                arg_opts=arg_opts_preprocess,
                 parent=self.left_widget
             )
         self.preprocess_controls.button_set.hide()
@@ -236,8 +245,8 @@ class ModuleGUI(QtWidgets.QWidget):
                 parent=self.right_widget
             )
 
-        self.nuset_controls.button_set.hide()
-        self.nuset_controls.sig_changed.connect(self.update_segmentation)
+        # self.nuset_controls.button_set.hide()
+        self.nuset_controls.sig_set_clicked.connect(self.update_segmentation)
         self.nuset_controls.set_title("NuSeT Parameters")
         hlayout_nuset.addWidget(self.nuset_controls.widget)
 
@@ -291,48 +300,63 @@ class ModuleGUI(QtWidgets.QWidget):
 
         self.glw_segmented = GraphicsLayoutWidget(self.right_widget)
         self.imgitem_segmented = ImageItem()
+        self.imgitem_segmented_underlay = ImageItem()
         self.viewbox_segmented = self.glw_segmented.addViewBox()
+        self.viewbox_segmented.setAspectLocked(True)
         self.viewbox_segmented.addItem(self.imgitem_segmented)
+        self.viewbox_segmented.addItem(self.imgitem_segmented_underlay)
+
+        self.imgitem_segmented.setZValue(2)
+        self.imgitem_segmented.setOpacity(0.5)
+        self.imgitem_segmented_underlay.setZValue(1)
+        self.imgitem_segmented_underlay.setOpacity(0.3)
 
         self.right_layout.addWidget(self.glw_segmented)
         self.splitter.addWidget(self.right_widget)
 
-        self._image_projection: np.ndarray = np.empty(0)
-        self._image_preprocess: np.ndarray = np.empty(0)
-        self._image_segmented: np.ndarray = np.empty(0)
+        self.image_projection: np.ndarray = np.empty(0)
+        self.image_preprocess: np.ndarray = np.empty(0)
+        self.image_segmented: np.ndarray = np.empty(0)
+        self.image_postprocessed: np.ndarray = np.empty(0)
+
+        self.error_label = QtWidgets.QLabel(self)
+        self.error_label.setMaximumHeight(20)
+        self.error_label.setStyleSheet("font-weight: bold; color: red")
+        self.vlayout.addWidget(self.error_label)
 
     def update_projection(self):
         pass
 
     def update_preprocess(self, params):
-        pass
+        if not self.image_projection.size > 0:
+            self.error_label.setText("Projection Image is Empty")
+            return
+
+        self.image_preprocess = get_preprocess(self.image_projection, **params)
+        self.imgitem_preprocess.setImage(self.image_preprocess)
+        self.imgitem_segmented_underlay.setImage(self.image_preprocess)
+        self.error_label.clear()
 
     def update_segmentation(self, params):
-        pass
+        if not self.image_preprocess.size > 0:
+            self.error_label.setText("Preprocess Image is Empty")
+            return
+
+        self.image_segmented = self.nuset_model.predict(self.image_preprocess, **params)
+
+        if self.postprocess_controls.arguments.do_postprocess.val:
+            self.update_postprocess(self.postprocess_controls.get_data())
+
+        else:
+            self.imgitem_segmented.setImage(self.image_segmented)
+
+        self.error_label.clear()
 
     def update_postprocess(self, params):
-        print(params)
+        if not self.image_segmented.size > 0:
+            self.error_label.setText("Segmented Image is Empty")
+            return
 
-    @property
-    def image_projection(self) -> np.ndarray:
-        return self._image_projection
-
-    @image_projection.setter
-    def image_projection(self, img: np.ndarray):
-        pass
-
-    @property
-    def image_preprocess(self) -> np.ndarray:
-        return self._image_preprocess
-
-    @image_preprocess.setter
-    def image_preprocess(self, img: np.ndarray):
-        pass
-
-    @property
-    def image_segmented(self) -> np.ndarray:
-        return self._image_segmented
-
-    @image_segmented.setter
-    def image_segmented(self, img: np.ndarray):
-        pass
+        self.image_postprocessed = get_postprocess(self.image_segmented, **params)
+        self.imgitem_segmented.setImage(self.image_postprocessed)
+        self.error_label.clear()

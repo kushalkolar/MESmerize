@@ -12,5 +12,6 @@ if __name__ == '__main__':
     w.show()
 
     w.imgitem_raw.setImage(img)
+    w.image_projection = img
 
     app.exec_()
