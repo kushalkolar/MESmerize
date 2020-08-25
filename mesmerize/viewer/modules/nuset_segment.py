@@ -247,7 +247,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
 
 class NusetWidget(QtWidgets.QWidget):
     def __init__(self, parent, viewer_ref):
-        # self.vi = ViewerUtils(viewer_ref)
+        self.vi = ViewerUtils(viewer_ref)
         QtWidgets.QWidget.__init__(self, parent)
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
@@ -534,16 +534,16 @@ class NusetWidget(QtWidgets.QWidget):
         self.right_layout.addWidget(self.glw_segmented)
         self.splitter.addWidget(self.right_widget)
 
-        self.image_projections: List[np.ndarray] = []
-        self.image_preprocesses: List[np.ndarray] = []
-        self.image_segmentations: List[np.ndarray] = []
-        self.image_postprocesses: List[np.ndarray] = []
+        self.imgs_projected: List[np.ndarray] = []
+        self.imgs_preprocessed: List[np.ndarray] = []
+        self.imgs_segmented: List[np.ndarray] = []
+        self.imgs_postprocessed: List[np.ndarray] = []
 
         self.input_img: np.ndarray = np.empty(0)
         self.zlevel = 0
         self.z_max: int = 0
 
-        # self.vi.sig_workEnv_changed.connect(self.set_input)
+        self.vi.sig_workEnv_changed.connect(self.set_input)
 
         self.process_pool = Pool(cpu_count())
 
@@ -556,7 +556,13 @@ class NusetWidget(QtWidgets.QWidget):
         self.params_final = None
 
     def set_input(self, workEnv: ViewerWorkEnv):
-        self.input_img = workEnv.imgdata._seq
+        self.clear_widget()
+
+        try:
+            self.input_img = workEnv.imgdata._seq
+        except:
+            return
+
         if workEnv.imgdata.z_max is None:
             self.z_max = 0
         else:
@@ -567,8 +573,6 @@ class NusetWidget(QtWidgets.QWidget):
         self.zslider.setMaximum(self.z_max)
         self.spinbox_zlevel.setMaximum(self.z_max)
         self.zslider.valueChanged.connect(self.update_zlevel)
-
-        self.clear_widget()
 
     def update_zlevel(self, z: int):
         self.zlevel = z
@@ -581,10 +585,10 @@ class NusetWidget(QtWidgets.QWidget):
                 self.imgitem_segmented
             ],
             [
-                self.image_projections,
-                self.image_preprocesses,
-                self.image_preprocesses,
-                self.image_postprocesses
+                self.imgs_projected,
+                self.imgs_preprocessed,
+                self.imgs_preprocessed,
+                self.imgs_postprocessed
             ]
         ):
             if imglist:  # set if the list is not empty
@@ -610,12 +614,12 @@ class NusetWidget(QtWidgets.QWidget):
 
         print("Updating Projection(s)")
         if self.input_img.ndim == 4:
-            self.image_projections = [func(self.input_img[:, :, :, z], axis=2) for z in tqdm(self.z_max)]
+            self.imgs_projected = [func(self.input_img[:, :, :, z], axis=2) for z in tqdm(self.z_max)]
         else:
-            self.image_projections = [func(self.input_img, axis=2)]
+            self.imgs_projected = [func(self.input_img, axis=2)]
 
     def update_preprocess(self, params):
-        if not self.image_projections:
+        if not self.imgs_projected:
             self.error_label.setText("Projection Image is Empty")
             return
 
@@ -625,31 +629,31 @@ class NusetWidget(QtWidgets.QWidget):
         #     get_preprocess(p, **params) for p in tqdm(self.image_projections)
         # ]
 
-        kwargs = [{'img': img, **params} for img in self.image_projections]
+        kwargs = [{'img': img, **params} for img in self.imgs_projected]
 
-        self.image_preprocesses = self.process_pool.map(wrap_preprocess, kwargs)
+        self.imgs_preprocessed = self.process_pool.map(wrap_preprocess, kwargs)
 
-        self.imgitem_preprocess.setImage(self.image_preprocesses[self.zlevel])
-        self.imgitem_segmented_underlay.setImage(self.image_preprocesses[self.zlevel])
+        self.imgitem_preprocess.setImage(self.imgs_preprocessed[self.zlevel])
+        self.imgitem_segmented_underlay.setImage(self.imgs_preprocessed[self.zlevel])
         self.error_label.clear()
 
     def update_segmentation(self, params):
-        if not self.image_preprocesses:
+        if not self.imgs_preprocessed:
             self.error_label.setText("Preprocess Image is Empty")
             return
 
         print("Segmenting Image(s)")
         if not self.checkbox_segment_current_plane.isChecked():
-            self.image_segmentations = [
-                self.nuset_model.predict(img, **params) for img in tqdm(self.image_preprocesses)
+            self.imgs_segmented = [
+                self.nuset_model.predict(img, **params) for img in tqdm(self.imgs_preprocessed)
             ]
         else:
-            self.image_segmentations = [
+            self.imgs_segmented = [
                 np.empty(0) for i in range(self.z_max + 1)
             ]
 
-            self.image_segmentations[self.zlevel] = self.nuset_model.predict(
-                self.image_preprocesses[self.zlevel], **params
+            self.imgs_segmented[self.zlevel] = self.nuset_model.predict(
+                self.imgs_preprocessed[self.zlevel], **params
             )
 
         # postprocess funciton will just return the segmented img if do_postprocess is False
@@ -667,23 +671,23 @@ class NusetWidget(QtWidgets.QWidget):
         self.error_label.clear()
 
     def update_postprocess(self, params):
-        if not self.image_segmentations:
+        if not self.imgs_segmented:
             self.error_label.setText("Segmented Image is Empty")
             return
 
         print("Postprocessing Image(s)")
-        self.image_postprocesses = [
-            get_postprocess(img, **params) for img in tqdm(self.image_segmentations)
+        self.imgs_postprocessed = [
+            get_postprocess(img, **params) for img in tqdm(self.imgs_segmented)
         ]
 
-        self.imgitem_segmented.setImage(self.image_postprocesses[self.zlevel])
+        self.imgitem_segmented.setImage(self.imgs_postprocessed[self.zlevel])
         self.error_label.clear()
 
     def clear_widget(self):
-        self.image_projections.clear()
-        self.image_preprocesses.clear()
-        self.image_segmentations.clear()
-        self.image_postprocesses.clear()
+        self.imgs_projected.clear()
+        self.imgs_preprocessed.clear()
+        self.imgs_segmented.clear()
+        self.imgs_postprocessed.clear()
 
         self.imgitem_raw.clear()
         self.imgitem_preprocess.clear()
@@ -699,10 +703,10 @@ class NusetWidget(QtWidgets.QWidget):
     @use_save_file_dialog('Save masks', None, '.h5')
     @present_exceptions()
     def save_masks(self, path, *args):
-        if not self.image_segmentations:
+        if not self.imgs_segmented:
             raise ValueError("You must segment images before you can proceed.")
 
-        for img in self.image_segmentations:
+        for img in self.imgs_segmented:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
@@ -713,12 +717,12 @@ class NusetWidget(QtWidgets.QWidget):
             return
 
         if self.z_max > 0:
-            seg_img = np.stack(self.image_segmentations)
-            shape = np.stack(self.image_projections).shape
+            seg_img = np.stack(self.imgs_segmented)
+            shape = np.stack(self.imgs_projected).shape
 
         else:
-            seg_img = self.image_segmentations[0].T
-            shape = self.image_projections[0].T.shape
+            seg_img = self.imgs_segmented[0].T
+            shape = self.imgs_projected[0].T.shape
 
         Ain = get_sparse_mask(seg_img, shape)
 
