@@ -34,6 +34,7 @@ from ..core import ViewerUtils, ViewerWorkEnv
 from ...pyqtgraphCore import GraphicsLayoutWidget, ImageItem, ViewBox
 from ...pyqtgraphCore.console.Console import ConsoleWidget
 from ...common.qdialogs import *
+from ...common.configuration import console_history_path
 
 cmap_magenta = LinearSegmentedColormap.from_list('magentas', [(0, 0, 0), (0,)*3, (1, 0, 1)])
 cmap_cyan = LinearSegmentedColormap.from_list('cyans', [(0, 0, 0), (0,)*3, (0, 1, 1)])
@@ -169,7 +170,8 @@ def get_sparse_mask(segmented_img: np.ndarray, raw_img_shape: tuple):
 
     selem: np.array = np.ones((3,)*len(segmented_img.shape))
 
-    for i in range(areas[1]):
+    print("Creating sparse matrix, this could take a while...")
+    for i in tqdm(range(areas[1])):
         temp = (areas[0] == i + 1)
         temp = skimage.morphology.closing(temp, selem=selem)
 
@@ -178,11 +180,72 @@ def get_sparse_mask(segmented_img: np.ndarray, raw_img_shape: tuple):
     return A
 
 
-class ModuleGUI(QtWidgets.QWidget):
+class ModuleGUI(QtWidgets.QMainWindow):
+    def __init__(self, parent, viewer_ref):
+        QtWidgets.QMainWindow.__init__(self)
+
+        self.resize(1000, 900)
+        self.menubar = self.menuBar()
+        # self.setMenuBar(self.menubar)
+        # self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 900))
+        # self.menubar.setObjectName("menubar")
+
+
+        self.widget = NusetWidget(self, viewer_ref)
+
+        self.setCentralWidget(self.widget)
+
+        self.dock_console = QtWidgets.QDockWidget(self)
+        self.dock_console.setFeatures(
+            QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable
+        )
+        # self.dockWidgetContents = QtWidgets.QWidget()
+        # self.dock_console.setWidget(self.dockWidgetContents)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dock_console)
+        self.dock_console.hide()
+
+        histfile = os.path.join(console_history_path, 'nuset_widget.pik')
+        self.console_widget = ConsoleWidget(
+            parent=self, namespace={'self': self}, historyFile=histfile
+        )
+        self.dock_console.setWidget(self.console_widget)
+        self.dock_console.setWindowTitle("Console")
+        self.dock_console.hide()
+
+        self.menu_export = self.menubar.addMenu('&Export')
+
+        self.action_export_cnmf_seeds = QtWidgets.QAction(text='CNMF seeds')
+        self.action_export_cnmf_seeds.setToolTip(
+            "Export as sparse matrix that can be used for \n"
+            "seeding spatial components in Caiman CNMF"
+        )
+        self.menu_export.addAction(self.action_export_cnmf_seeds)
+
+        self.action_export_viewer = QtWidgets.QAction("Manual ROIs - Viewer")
+        self.menu_export.addAction(self.action_export_viewer)
+        self.action_export_viewer.setToolTip(
+            "Export as Manual ROIs into the Viewer"
+        )
+
+        self.menu_view = self.menubar.addMenu('&View')
+
+        self.action_view_console = QtWidgets.QAction(text="Console")
+        self.menu_view.addAction(self.action_view_console)
+        self.action_view_console.setText("Console")
+        self.action_view_console.setCheckable(True)
+        self.action_view_console.setChecked(False)
+
+        self.action_view_console.triggered.connect(
+            lambda: self.dock_console.setVisible(True)
+        )
+
+        self.action_export_cnmf_seeds.triggered.connect(self.widget.save_masks)
+
+
+class NusetWidget(QtWidgets.QWidget):
     def __init__(self, parent, viewer_ref):
         # self.vi = ViewerUtils(viewer_ref)
         QtWidgets.QWidget.__init__(self, parent)
-        self.resize(1000, 900)
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
@@ -201,7 +264,11 @@ class ModuleGUI(QtWidgets.QWidget):
             "Use a different image or stack for segmentation, such as an image or stack of nuclei."
         )
         self.button_use_custom = QtWidgets.QPushButton(self.left_widget)
-
+        self.button_use_custom.setMaximumWidth(50)
+        self.button_use_custom.setText("Set")
+        hlayout_custom_img.addWidget(self.lineedit_custom_img_path)
+        hlayout_custom_img.addWidget(self.button_use_custom)
+        self.left_layout.addLayout(hlayout_custom_img)
 
         hlayout_projection_radios = QtWidgets.QHBoxLayout(self.left_widget)
         self.radio_std = QtWidgets.QRadioButton(self.left_widget)
@@ -475,10 +542,6 @@ class ModuleGUI(QtWidgets.QWidget):
 
         # self.vi.sig_workEnv_changed.connect(self.set_input)
 
-        self.console_widget = ConsoleWidget(parent=self, namespace={'self': self})
-        self.console_widget.setMaximumHeight(400)
-        self.vlayout.addWidget(self.console_widget)
-
         self.process_pool = Pool(cpu_count())
 
         self.error_label = QtWidgets.QLabel(self)
@@ -627,6 +690,13 @@ class ModuleGUI(QtWidgets.QWidget):
         for img in self.image_segmentations:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
+
+        if QtWidgets.QMessageBox.question(
+            self, 'Export for CNMF?', 'This may take a few minutes, and could take ~30 minutes '
+                                      'if segmenting a large 3D stack. Proceed?',
+            ) == QtWidgets.QMessageBox.no:
+            return
+
         if self.z_max > 0:
             seg_img = np.stack(self.image_segmentations)
             shape = np.stack(self.image_projections).shape
