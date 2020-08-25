@@ -247,7 +247,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
 
 class NusetWidget(QtWidgets.QWidget):
     def __init__(self, parent, viewer_ref):
-        self.vi = ViewerUtils(viewer_ref)
+        # self.vi = ViewerUtils(viewer_ref)
         QtWidgets.QWidget.__init__(self, parent)
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
@@ -543,7 +543,7 @@ class NusetWidget(QtWidgets.QWidget):
         self.zlevel = 0
         self.z_max: int = 0
 
-        self.vi.sig_workEnv_changed.connect(self.set_input)
+        # self.vi.sig_workEnv_changed.connect(self.set_input)
 
         self.process_pool = Pool(cpu_count())
 
@@ -555,18 +555,29 @@ class NusetWidget(QtWidgets.QWidget):
         self.projection_option = ''
         self.params_final = None
 
+    @use_open_file_dialog('Open image file', None, ['*.tiff', '*.tif'])
+    @present_exceptions('Error', 'Error loading custom input image')
+    def set_custom_input(self, path, *args):
+        img = tifffile.imread(path)
+        self._set_input_image(img.T)
+
     def set_input(self, workEnv: ViewerWorkEnv):
         self.clear_widget()
 
         try:
-            self.input_img = workEnv.imgdata._seq
+            img = workEnv.imgdata._seq
         except:
             return
 
-        if workEnv.imgdata.z_max is None:
-            self.z_max = 0
+        self._set_input_image(img)
+
+    def _set_input_image(self, img: np.ndarray):
+        self.input_img = img
+
+        if self.input_img.ndim == 4:
+            self.z_max = self.input_img.shape[3] - 1
         else:
-            self.z_max = workEnv.imgdata.z_max
+            self.z_max = 0
 
         self.zslider.valueChanged.disconnect(self.update_zlevel)
         self.zslider.setValue(0)
