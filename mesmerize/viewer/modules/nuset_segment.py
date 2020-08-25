@@ -35,6 +35,7 @@ from ...pyqtgraphCore import GraphicsLayoutWidget, ImageItem, ViewBox
 from ...pyqtgraphCore.console.Console import ConsoleWidget
 from ...common.qdialogs import *
 from ...common.configuration import console_history_path
+from ...common.utils import HdfTools
 
 cmap_magenta = LinearSegmentedColormap.from_list('magentas', [(0, 0, 0), (0,)*3, (1, 0, 1)])
 cmap_cyan = LinearSegmentedColormap.from_list('cyans', [(0, 0, 0), (0,)*3, (0, 1, 1)])
@@ -206,7 +207,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
 
         histfile = os.path.join(console_history_path, 'nuset_widget.pik')
         self.console_widget = ConsoleWidget(
-            parent=self, namespace={'self': self}, historyFile=histfile
+            parent=self, namespace={'this': self.widget}, historyFile=histfile
         )
         self.dock_console.setWidget(self.console_widget)
         self.dock_console.setWindowTitle("Console")
@@ -235,8 +236,10 @@ class ModuleGUI(QtWidgets.QMainWindow):
         self.action_view_console.setCheckable(True)
         self.action_view_console.setChecked(False)
 
-        self.action_view_console.triggered.connect(
-            lambda: self.dock_console.setVisible(True)
+        self.action_view_console.toggled.connect(
+            lambda: self.dock_console.setVisible(
+                self.action_view_console.isChecked()
+            )
         )
 
         self.action_export_cnmf_seeds.triggered.connect(self.widget.save_masks)
@@ -549,6 +552,9 @@ class NusetWidget(QtWidgets.QWidget):
         self.error_label.setStyleSheet("font-weight: bold; color: red")
         self.vlayout.addWidget(self.error_label)
 
+        self.projection_option = ''
+        self.params_final = None
+
     def set_input(self, workEnv: ViewerWorkEnv):
         self.input_img = workEnv.imgdata._seq
         if workEnv.imgdata.z_max is None:
@@ -649,6 +655,15 @@ class NusetWidget(QtWidgets.QWidget):
         # postprocess funciton will just return the segmented img if do_postprocess is False
         self.update_postprocess(self.postprocess_controls.get_data())
 
+        self.params_final = \
+            {
+                'method': 'NuSeT',
+                'projection_option': self.projection_option,
+                **self.preprocess_controls.get_data(),
+                **self.nuset_controls.get_data(),
+                **self.postprocess_controls.get_data(),
+            }
+
         self.error_label.clear()
 
     def update_postprocess(self, params):
@@ -681,7 +696,7 @@ class NusetWidget(QtWidgets.QWidget):
 
         self.projection_option = ''
 
-    @use_save_file_dialog('Save masks', None, '.npy')
+    @use_save_file_dialog('Save masks', None, '.h5')
     @present_exceptions()
     def save_masks(self, path, *args):
         if not self.image_segmentations:
@@ -694,7 +709,7 @@ class NusetWidget(QtWidgets.QWidget):
         if QtWidgets.QMessageBox.question(
             self, 'Export for CNMF?', 'This may take a few minutes, and could take ~30 minutes '
                                       'if segmenting a large 3D stack. Proceed?',
-            ) == QtWidgets.QMessageBox.no:
+            ) == QtWidgets.QMessageBox.No:
             return
 
         if self.z_max > 0:
@@ -707,4 +722,5 @@ class NusetWidget(QtWidgets.QWidget):
 
         Ain = get_sparse_mask(seg_img, shape)
 
-        np.save(path, Ain)
+        d = {'sparse_mask': Ain, 'segment_params': self.params_final}
+        HdfTools.save_dict(d, path, 'data')

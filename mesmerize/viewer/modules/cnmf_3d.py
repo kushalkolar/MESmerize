@@ -13,6 +13,7 @@ from ..core.common import ViewerUtils
 from .pytemplates.cnmf_3d_pytemplate import *
 from ...common import get_window_manager
 from ...common.qdialogs import *
+from ...common.utils import HdfTools
 from uuid import UUID
 from shutil import copy
 import os
@@ -169,7 +170,17 @@ class ModuleGUI(QtWidgets.QDockWidget):
             bm.df.loc[bm.df['uuid'] == memmap_uuid, 'save_temp_files'] = 1
 
         if self.ui.groupBox_seed_components.isChecked():
-            d['use_seeds'] = True
+            if self.ui.groupBox_seed_components.isChecked():
+                seed_path = self.ui.lineEdit_seed_components_path.text()
+                if not os.path.isfile(seed_path):
+                    raise FileNotFoundError(
+                        "Seed file does not exist, check the path"
+                    )
+
+                seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+
+                d['use_seeds'] = True
+                d['seed_params'] = seed_params
 
         u = bm.add_item(
             module='CNMF_3D',
@@ -183,9 +194,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.vi.viewer.status_bar_label.clearMessage()
             return
 
-        if self.ui.groupBox_seed_components.isChecked():
+        if d['use_seeds']:
             print("Copying component seeds files")
-            seed_path = self.ui.lineEdit_seed_components_path.text()
             copy(seed_path, os.path.join(bm.batch_path, f'{u}.ain'))
 
         if d['keep_memmap']:

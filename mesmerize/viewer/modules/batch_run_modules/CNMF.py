@@ -30,6 +30,7 @@ import pickle
 import traceback
 import json
 import logging
+from mesmerize.common.utils import HdfTools
 
 
 if not sys.argv[0] == __file__:
@@ -75,11 +76,18 @@ def run(batch_dir: str, UUID: str):
         if 'use_seeds' in input_params.keys():
             if input_params['use_seeds']:
                 try:
-                    Ain = np.load(f'{UUID}.ain')
-                except Exception as e:
-                    output['warnings'] = f'Could not seed components, make sure that ' \
-                        f'the .ain file exists in the batch dir: {e}'
-
+                    # see if it's an h5 file produced by the nuset_segment GUI
+                    hdict = HdfTools.load_dict(
+                        os.path.join(f'{filename}.ain'),
+                        'data'
+                    )
+                    Ain = hdict['sparse_mask']
+                except:
+                    try:
+                        Ain = np.load(f'{UUID}.ain')
+                    except Exception as e:
+                        output['warnings'] = f'Could not seed components, make sure that ' \
+                            f'the .ain file exists in the batch dir: {e}'
 
         cnm = cnmf.CNMF(
             dview=dview,

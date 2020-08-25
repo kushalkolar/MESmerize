@@ -15,6 +15,7 @@ from ..core.common import ViewerUtils
 from .pytemplates.cnmf_pytemplate import *
 from ...common import get_window_manager
 from ...common.qdialogs import *
+from ...common.utils import HdfTools
 from uuid import UUID
 from shutil import copy
 import os
@@ -129,6 +130,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
+    @present_exceptions()
     def add_to_batch(self, params: dict = None) -> UUID:
         """
         Add a CNMF batch item with the currently set parameters and the current work environment.
@@ -155,7 +157,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMF: ' + name + ' to batch...')
 
         if self.ui.groupBox_seed_components.isChecked():
+            seed_path = self.ui.lineEdit_seed_components_path.text()
+            if not os.path.isfile(seed_path):
+                raise FileNotFoundError(
+                    "Seed file does not exist, check the path"
+                )
+
+            seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+
             d['use_seeds'] = True
+            d['seed_params'] = seed_params
 
         batch_manager = get_window_manager().get_batch_manager()
         u = batch_manager.add_item(
@@ -170,9 +181,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.vi.viewer.status_bar_label.clearMessage()
             return
 
-        if self.ui.groupBox_seed_components.isChecked():
-            print("Copying component seeds files")
-            seed_path = self.ui.lineEdit_seed_components_path.text()
+        if d['use_seeds']:
+            print("Copying component seed file")
             copy(seed_path, os.path.join(batch_manager.batch_path, f'{u}.ain'))
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')
