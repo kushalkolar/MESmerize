@@ -180,6 +180,18 @@ class ManagerManual(AbstractBaseManager):
             self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
+    def add_roi_from_points(self, xs, ys):
+        ps = list(zip(xs, ys))
+
+        roi = ManualROI.from_positions(
+            positions=ps,
+            curve_plot_item=self.get_plot_item(),
+            view_box=self.vi.viewer.getView()
+        )
+
+        self.roi_list.append(roi)
+        self.roi_list.reindex_colormap()
+
 
 class ManagerScatterROI(AbstractBaseManager):
     """Manager for unmoveable ROIs drawn using scatterplots"""
