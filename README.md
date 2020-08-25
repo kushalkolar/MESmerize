@@ -32,7 +32,7 @@ If you're familiar with anaconda or virtual environments, installation is as sim
 pip install mesmerize
 ```
 
-After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
+After installation just call ``mesmerize`` from inside the virtual environment to launch it.
 
 If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html
@@ -105,6 +105,7 @@ https://doi.org/10.1101/840488
 - Full support for recordings from Femtonics microscopes.
 - Export lite versions of projects for easier sharing.
 - Cross correlation analysis with stimulus maps.
+- Segmentation using deep learning via NuSeT.
 
 ## Acknowledgements
 

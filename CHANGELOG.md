@@ -1,17 +1,15 @@
 # 0.3.0 (in progress)
 
 ### New
-- Cross correlation plots with stimuli.
+- Cross correlation plots with stimulus maps.
 - Experimental use of a bioformats importer for the Viewer.
 - Support for Femtonics .mes and .mesc recordings.
-
-### Fixed
-- Unnoticable bug with viewer modules that don't have defined dock areas
-
-# 0.2.4 (in progress)
+- Export lite versions of projects for easier sharing.
+- Segmentation using deep learning via NuSeT.
 
 ### Fixed
 - Bug fix with saving Stimulus Tuning plots
+- Unnoticable bug with viewer modules that don't have defined dock areas
 
 # 0.2.3
 
