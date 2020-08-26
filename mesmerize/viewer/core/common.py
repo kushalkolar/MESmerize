@@ -27,6 +27,7 @@ class ViewerUtils(QtCore.QObject):
 
         :type viewer_reference: ImageView
         """
+        QtCore.QObject.__init__(self)
         # assert isinstance(viewer_reference, ImageView)
         self.viewer = viewer_reference  #: reference to the pyqtgraph ImageView widget instance (viewer)
         self.work_env = self.viewer.workEnv  #: ViewerWorkEnv instance
