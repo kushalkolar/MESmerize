@@ -56,7 +56,7 @@ def get_preprocess(
         sigmoid_gain: float = 0.10,
         sigmoid_invert: bool = False,
         do_equalize: bool = True,
-        equalize_lower: float = 0.1,
+        equalize_lower: float = -0.1,
         equalize_upper: float = 1.0,
         equalize_kernel: int = 8,
 ) -> np.ndarray:
