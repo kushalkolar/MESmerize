@@ -17,7 +17,8 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 import tifffile
 from matplotlib import pyplot as plt
-import skimage
+import skimage.exposure
+import skimage.morphology
 import numpy as np
 import numexpr
 from nuset import Nuset
@@ -154,7 +155,12 @@ def normalize_image(img, dtype):
 
 
 # adapted from https://github.com/flatironinstitute/CaImAn/blob/master/caiman/base/rois.py#L88
-def get_sparse_mask(segmented_img: np.ndarray, raw_img_shape: tuple):
+def get_sparse_mask(
+        segmented_img: np.ndarray,
+        raw_img_shape: tuple,
+        edge_method: str,
+        selem: int
+    ):
     # allocate array with same size as the raw input image
     # so that the dims match for CNMF
     img = np.zeros(raw_img_shape, dtype=segmented_img.dtype)
@@ -169,12 +175,13 @@ def get_sparse_mask(segmented_img: np.ndarray, raw_img_shape: tuple):
     areas = label_image(img)
     A = np.zeros((np.prod(img.shape), areas[1]), dtype=bool)
 
-    selem: np.array = np.ones((3,)*len(segmented_img.shape))
+    selem: np.array = np.ones((selem,)*len(segmented_img.shape))
 
     print("Creating sparse matrix, this could take a while...")
     for i in tqdm(range(areas[1])):
         temp = (areas[0] == i + 1)
-        temp = skimage.morphology.closing(temp, selem=selem)
+        edge_func = getattr(skimage.morphology, edge_method)
+        temp = edge_method(temp, selem=selem)
 
         A[:, i] = temp.flatten('F')
 
@@ -215,20 +222,27 @@ class ModuleGUI(QtWidgets.QMainWindow):
 
         self.menu_export = self.menubar.addMenu('&Export')
 
-        self.action_export_cnmf_seeds = QtWidgets.QAction(text='CNMF seeds')
-        self.action_export_cnmf_seeds.setToolTip(
+        self.action_export_options = QtWidgets.QAction(text='Export Options')
+        self.action_export_options.setToolTip(
             "Export as sparse matrix that can be used for \n"
             "seeding spatial components in Caiman CNMF"
         )
-        self.menu_export.addAction(self.action_export_cnmf_seeds)
+        self.menu_export.addAction(self.action_export_options)
 
-        self.action_export_viewer = QtWidgets.QAction("Manual ROIs - Viewer")
-        self.menu_export.addAction(self.action_export_viewer)
-        self.action_export_viewer.setToolTip(
-            "Export as Manual ROIs into the Viewer"
-        )
-
-        self.menu_view = self.menubar.addMenu('&View')
+        # self.action_export_cnmf_seeds = QtWidgets.QAction(text='CNMF seeds')
+        # self.action_export_cnmf_seeds.setToolTip(
+        #     "Export as sparse matrix that can be used for \n"
+        #     "seeding spatial components in Caiman CNMF"
+        # )
+        # self.menu_export.addAction(self.action_export_cnmf_seeds)
+        #
+        # self.action_export_viewer = QtWidgets.QAction("Manual ROIs - Viewer")
+        # self.menu_export.addAction(self.action_export_viewer)
+        # self.action_export_viewer.setToolTip(
+        #     "Export as Manual ROIs into the Viewer"
+        # )
+        #
+        # self.menu_view = self.menubar.addMenu('&View')
 
         self.action_view_console = QtWidgets.QAction(text="Console")
         self.menu_view.addAction(self.action_view_console)
@@ -242,12 +256,192 @@ class ModuleGUI(QtWidgets.QMainWindow):
             )
         )
 
-        self.action_export_cnmf_seeds.triggered.connect(self.widget.save_masks)
+        self.action_export_options.triggered.connect(self.widget.export_widget.show())
+
+
+class ExportWidget(QtWidgets.QWidget):
+    def __init__(self, parent):
+        QtWidgets.QWidget.__init__(parent=parent)
+
+        self.nuset_widget = parent
+
+        self.vlayout = QtWidgets.QVBoxLayout(self)
+
+        label_threshold = QtWidgets.QLabel(self)
+        label_threshold.setText("separation threshold:")
+        self.vlayout.addWidget(label_threshold)
+
+        self.spinbox_thr = QtWidgets.QDoubleSpinBox(self)
+        self.spinbox_thr.setMaximum(1.0)
+        self.spinbox_thr.setMinimum(0.0)
+        self.spinbox_thr.setValue(0.5)
+        self.spinbox_thr.setDecimals(2)
+        self.spinbox_thr.setToolTip(
+            "Threshold for cell separation"
+        )
+        self.vlayout.addWidget(self.spinbox_thr)
+
+        self.slider_thr = QtWidgets.QSlider(self)
+        self.slider_thr.setMaximum(100)
+        self.slider_thr.setMinimum(0)
+        self.slider_thr.setToolTip(
+            "Threshold for cell separation"
+        )
+        self.slider_thr.valueChanged.connect(
+            lambda v: self.spinbox_thr.setValue(float(v) / 100.0)
+        )
+        self.vlayout.addWidget(self.slider_thr)
+
+        self.spinbox_thr.valueChanged.connect(
+            lambda v: self.slider_thr.setValue(int(v * 100))
+        )
+
+        label_minsize = QtWidgets.QLabel(self)
+        label_minsize.setText('min size (pixels)')
+        label_minsize.setToolTip(
+            "Minimum size for accepting an object, in pixels"
+        )
+        self.vlayout.addWidget(label_minsize)
+
+        self.spinbox_minsize = QtWidgets.QSpinBox(self)
+        self.spinbox_minsize.setMinimum(0)
+        self.spinbox_minsize.setMaximum(999)
+        self.spinbox_minsize.setValue(1)
+        self.spinbox_minsize.setToolTip(
+            "Minimum size for accepting an object, in pixels"
+        )
+        self.vlayout.addWidget(self.spinbox_minsize)
+
+        label_connectivity = QtWidgets.QLabel(self)
+        label_connectivity.setText("connectivity")
+        self.vlayout.addWidget(label_connectivity)
+
+        self.spinbox_connectivity = QtWidgets.QSpinBox(self)
+        self.spinbox_connectivity.setMinimum(1)
+        self.spinbox_connectivity.setMaximum(99)
+        self.spinbox_connectivity.setValue(1)
+        self.spinbox_connectivity.setToolTip(
+            "Connectivity around each pixel"
+        )
+        self.vlayout.addWidget(self.spinbox_connectivity)
+
+        label_selem = QtWidgets.QLabel(self)
+        label_selem.setText("structural_element")
+        self.vlayout.addWidget(label_selem)
+
+        self.spinbox_selem = QtWidgets.QSpinBox(self)
+        self.spinbox_selem.setMinimum(0)
+        self.spinbox_selem.setMaximum(50)
+        self.spinbox_selem.setValue(3)
+        self.vlayout.addWidget(self.spinbox_selem)
+
+        label_edge_method = QtWidgets.QLabel(self)
+        label_edge_method.setText("Edge method")
+        self.vlayout.addWidget(label_edge_method)
+
+        self.combo_edge_method = QtWidgets.QComboBox(self)
+        self.combo_edge_method.addItems(
+            ['closing', 'erosion', 'dilation']
+        )
+        self.combo_edge_method.setToolTip(
+            "Method to deal with object edges"
+        )
+        self.vlayout.addWidget(self.combo_edge_method)
+
+        button_apply_thr_params = QtWidgets.QPushButton(self)
+        button_apply_thr_params.setText("Apply threshold & edge params")
+        self.vlayout.addWidget(button_apply_thr_params)
+
+        hlayout_export_buttons = QtWidgets.QHBoxLayout(self)
+
+        button_export_cnmf = QtWidgets.QPushButton(self)
+        button_export_cnmf.setText("Export CNMF Seeds")
+        hlayout_export_buttons.addWidget(button_export_cnmf)
+
+        button_export_viewer_rois = QtWidgets.QPushButton(self)
+        button_export_viewer_rois.setText("Manual ROIs - Viewer")
+        button_export_viewer_rois.setStyleSheet("font-weight: bold")
+        hlayout_export_buttons.addWidget(button_export_viewer_rois)
+
+        self.vlayout.addLayout(hlayout_export_buttons)
+
+        self.glw = GraphicsLayoutWidget(self)
+        self.imgitem = ImageItem()
+        self.viewbox = self.glw_raw.addViewBox()
+        self.viewbox.setAspectLocked(True)
+        self.viewbox.addItem(self.imgitem)
+
+        self.vlayout.addWidget(self.glw)
+
+        self.threshold_img: np.ndarray = np.empty(0)
+
+    def get_params(self):
+        selem = self.spinbox_selem.value()
+
+        return {
+            'thr': self.spinbox_thr.value(),
+            'selem': selem if selem > 0 else None,
+            'edges': self.combo_edge_method.currentText(),
+            'minsize': self.spinbox_minsize.value(),
+            'connectivity': self.spinbox_connectivity.value()
+        }
+
+    def apply_threshold(self):
+        pass
+
+    @use_save_file_dialog('Save masks', None, '.h5')
+    @present_exceptions()
+    def save_masks(self, path, *args):
+        if not self.nuset_widget.imgs_segmented:
+            raise ValueError("You must segment images before you can proceed.")
+
+        for img in self.nuset_widget.imgs_segmented:
+            if not img.size > 0:
+                raise ValueError("Your must segment the entire stack before you can proceed.")
+
+        if QtWidgets.QMessageBox.question(
+            self, 'Export for CNMF?', 'This may take a few minutes, and could take ~30 minutes '
+                                      'if segmenting a large 3D stack. Proceed?',
+            ) == QtWidgets.QMessageBox.No:
+            return
+
+        if self.nuset_widget.z_max > 0:
+            seg_img = np.stack(self.nuset_widget.imgs_segmented)
+            shape = np.stack(self.nuset_widget.imgs_projected).shape
+
+        else:
+            seg_img = self.nuset_widget.imgs_segmented[0].T
+            shape = self.nuset_widget.imgs_projected[0].T.shape
+
+        Ain = get_sparse_mask(seg_img, shape)
+
+        d = \
+            {
+                'sparse_mask': Ain,
+                'segment_params': self.nuset_widget.params_final,
+                'threshold_params': self.get_params(),
+            }
+
+        HdfTools.save_dict(d, path, 'data')
+
+    def export_to_viewer(self):
+        roi_manager = self.nuset_widget.vi.viewer.parent().get_module('roi_manager')
+        roi_manager.start_backend('Manual')
+
+        self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points
+
 
 
 class NusetWidget(QtWidgets.QWidget):
+    sig_zlevel_changed = QtCore.pyqtSignal(int)
+
     def __init__(self, parent, viewer_ref):
-        # self.vi = ViewerUtils(viewer_ref)
+        if viewer_ref is None:
+            print("Assuming testing mode")
+        else:
+            self.vi = ViewerUtils(viewer_ref)
+            self.vi.sig_workEnv_changed.connect(self.set_input)
+
         QtWidgets.QWidget.__init__(self, parent)
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
@@ -534,6 +728,8 @@ class NusetWidget(QtWidgets.QWidget):
         self.right_layout.addWidget(self.glw_segmented)
         self.splitter.addWidget(self.right_widget)
 
+        self.export_widget = ExportWidget(self)
+
         self.imgs_projected: List[np.ndarray] = []
         self.imgs_preprocessed: List[np.ndarray] = []
         self.imgs_segmented: List[np.ndarray] = []
@@ -542,8 +738,6 @@ class NusetWidget(QtWidgets.QWidget):
         self.input_img: np.ndarray = np.empty(0)
         self.zlevel = 0
         self.z_max: int = 0
-
-        # self.vi.sig_workEnv_changed.connect(self.set_input)
 
         self.process_pool = Pool(cpu_count())
 
@@ -558,6 +752,7 @@ class NusetWidget(QtWidgets.QWidget):
     @use_open_file_dialog('Open image file', None, ['*.tiff', '*.tif'])
     @present_exceptions('Error', 'Error loading custom input image')
     def set_custom_input(self, path, *args):
+        self.clear_widget()
         img = tifffile.imread(path)
         self._set_input_image(img.T)
 
@@ -587,6 +782,7 @@ class NusetWidget(QtWidgets.QWidget):
 
     def update_zlevel(self, z: int):
         self.zlevel = z
+        self.sig_zlevel_changed.emit(z)
 
         for imgitem, imglist in zip(
             [
@@ -710,32 +906,3 @@ class NusetWidget(QtWidgets.QWidget):
         self.radio_mean.setChcked(False)
 
         self.projection_option = ''
-
-    @use_save_file_dialog('Save masks', None, '.h5')
-    @present_exceptions()
-    def save_masks(self, path, *args):
-        if not self.imgs_segmented:
-            raise ValueError("You must segment images before you can proceed.")
-
-        for img in self.imgs_segmented:
-            if not img.size > 0:
-                raise ValueError("Your must segment the entire stack before you can proceed.")
-
-        if QtWidgets.QMessageBox.question(
-            self, 'Export for CNMF?', 'This may take a few minutes, and could take ~30 minutes '
-                                      'if segmenting a large 3D stack. Proceed?',
-            ) == QtWidgets.QMessageBox.No:
-            return
-
-        if self.z_max > 0:
-            seg_img = np.stack(self.imgs_segmented)
-            shape = np.stack(self.imgs_projected).shape
-
-        else:
-            seg_img = self.imgs_segmented[0].T
-            shape = self.imgs_projected[0].T.shape
-
-        Ain = get_sparse_mask(seg_img, shape)
-
-        d = {'sparse_mask': Ain, 'segment_params': self.params_final}
-        HdfTools.save_dict(d, path, 'data')
