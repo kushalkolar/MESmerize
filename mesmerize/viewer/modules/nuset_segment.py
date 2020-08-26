@@ -56,6 +56,8 @@ def get_preprocess(
         sigmoid_gain: float = 0.10,
         sigmoid_invert: bool = False,
         do_equalize: bool = True,
+        equalize_lower: float = 0.1,
+        equalize_upper: float = 1.0,
         equalize_kernel: int = 8,
 ) -> np.ndarray:
     """
@@ -83,8 +85,14 @@ def get_preprocess(
         )
 
     if do_equalize:
-        # equalize_hist works more easily with 16 bit integers
-        img = normalize_image(img, np.uint16)
+        # equalize_hist need floats that stay in the range of -1 to 1
+        rng = (equalize_lower, equalize_upper)  # user specified range
+
+        min_t = np.nanmin(img)
+        max_t = np.nanmax(img)
+        range_t = max_t - min_t
+        nomin = (img - min_t) * (rng[1] - rng[0])
+        img = nomin / range_t + rng[0]  # normalized img
         img = skimage.exposure.equalize_adapthist(img, kernel_size=equalize_kernel)
 
     # float32 is best for GPU I think?
@@ -271,6 +279,7 @@ class ExportWidget(QtWidgets.QWidget):
         label_threshold.setText("separation threshold:")
         self.vlayout.addWidget(label_threshold)
 
+        # TODO: I should really use qtap here
         self.spinbox_thr = QtWidgets.QDoubleSpinBox(self)
         self.spinbox_thr.setMaximum(1.0)
         self.spinbox_thr.setMinimum(0.0)
@@ -383,6 +392,7 @@ class ExportWidget(QtWidgets.QWidget):
 
         self.setLayout(self.vlayout)
 
+    # TODO: I should really use qtap here
     def get_params(self):
         selem = self.spinbox_selem.value()
 
@@ -554,6 +564,14 @@ class NusetWidget(QtWidgets.QWidget):
 
                 'sigmoid_gain': {
                     'step': 0.01
+                },
+                'equalize_lower': {
+                    'step': 0.01,
+                    'minmax': (-1.0, 1.0)
+                },
+                'equalize_upper': {
+                    'step': 0.01,
+                    'minmax': (-1.0, 1.0)
                 }
             }
 
@@ -878,10 +896,13 @@ class NusetWidget(QtWidgets.QWidget):
         print("Updating Projection(s)")
         if self.input_img.ndim == 4:
             self.imgs_projected = [
-                func(self.input_img[:, :, :, z], axis=2) for z in tqdm(range(self.z_max))
+                func(self.input_img[:, :, :, z], axis=2) for z in tqdm(range(self.z_max + 1))
             ]
         else:
             self.imgs_projected = [func(self.input_img, axis=2)]
+
+        self.imgitem_raw.setImage(self.imgs_projected[self.zlevel])
+        self.error_label.clear()
 
     def update_preprocess(self, params):
         if not self.imgs_projected:
