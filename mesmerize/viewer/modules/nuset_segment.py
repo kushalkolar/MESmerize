@@ -805,7 +805,6 @@ class NusetWidget(QtWidgets.QWidget):
             self.vi.sig_workEnv_changed.connect(self.set_input)
             self.set_input(self.vi.viewer.workEnv)
 
-
     @use_open_file_dialog('Open image file', None, ['*.tiff', '*.tif'])
     @present_exceptions('Error', 'Error loading custom input image')
     def set_custom_input(self, path, *args):
@@ -960,6 +959,6 @@ class NusetWidget(QtWidgets.QWidget):
 
         self.radio_std.setChecked(False)
         self.radio_max.setChecked(False)
-        self.radio_mean.setChcked(False)
+        self.radio_mean.setCheckedFalse)
 
         self.projection_option = ''
