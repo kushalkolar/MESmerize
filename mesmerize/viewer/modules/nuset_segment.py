@@ -959,6 +959,6 @@ class NusetWidget(QtWidgets.QWidget):
 
         self.radio_std.setChecked(False)
         self.radio_max.setChecked(False)
-        self.radio_mean.setCheckedFalse)
+        self.radio_mean.setChecked(False)
 
         self.projection_option = ''
