@@ -491,13 +491,6 @@ class NusetWidget(QtWidgets.QWidget):
     sig_zlevel_changed = QtCore.pyqtSignal(int)
 
     def __init__(self, parent, viewer_ref):
-        if viewer_ref is None:
-            print("Assuming testing mode")
-        else:
-            self.vi = ViewerUtils(viewer_ref)
-            self.vi.sig_workEnv_changed.connect(self.set_input)
-            self.set_input(self.vi.viewer.workEnv)
-
         QtWidgets.QWidget.__init__(self, parent)
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
@@ -804,6 +797,14 @@ class NusetWidget(QtWidgets.QWidget):
 
         self.projection_option = ''
         self.params_final = None
+
+        if viewer_ref is None:
+            print("Assuming testing mode")
+        else:
+            self.vi = ViewerUtils(viewer_ref)
+            self.vi.sig_workEnv_changed.connect(self.set_input)
+            self.set_input(self.vi.viewer.workEnv)
+
 
     @use_open_file_dialog('Open image file', None, ['*.tiff', '*.tif'])
     @present_exceptions('Error', 'Error loading custom input image')
