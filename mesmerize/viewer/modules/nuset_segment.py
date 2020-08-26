@@ -877,7 +877,9 @@ class NusetWidget(QtWidgets.QWidget):
 
         print("Updating Projection(s)")
         if self.input_img.ndim == 4:
-            self.imgs_projected = [func(self.input_img[:, :, :, z], axis=2) for z in tqdm(self.z_max)]
+            self.imgs_projected = [
+                func(self.input_img[:, :, :, z], axis=2) for z in tqdm(range(self.z_max))
+            ]
         else:
             self.imgs_projected = [func(self.input_img, axis=2)]
 
