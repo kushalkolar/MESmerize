@@ -487,7 +487,6 @@ class ExportWidget(QtWidgets.QWidget):
         self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points
 
 
-
 class NusetWidget(QtWidgets.QWidget):
     sig_zlevel_changed = QtCore.pyqtSignal(int)
 
@@ -497,6 +496,7 @@ class NusetWidget(QtWidgets.QWidget):
         else:
             self.vi = ViewerUtils(viewer_ref)
             self.vi.sig_workEnv_changed.connect(self.set_input)
+            self.set_input(self.vi.viewer.workEnv)
 
         QtWidgets.QWidget.__init__(self, parent)
 
