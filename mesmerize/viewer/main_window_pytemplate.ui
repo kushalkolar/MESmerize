@@ -44,7 +44,7 @@
      </property>
      <widget class="QMenu" name="menuFemtonics">
       <property name="title">
-       <string>Femtonics</string>
+       <string>&amp;Femtonics</string>
       </property>
       <addaction name="action_mesc_importer"/>
       <addaction name="action_mes_importer"/>
@@ -67,6 +67,7 @@
     <addaction name="menuLoad_images"/>
     <addaction name="menuCaImAn_toolbox"/>
     <addaction name="actionROI_Manager"/>
+    <addaction name="actionNuSeT_Segmentation"/>
     <addaction name="actionSuite2p_Importer"/>
     <addaction name="actionStimulus_Mapping"/>
     <addaction name="actionScript_Editor"/>
@@ -355,12 +356,17 @@
   </action>
   <action name="action_mesc_importer">
    <property name="text">
-    <string>.mesc importer</string>
+    <string>.&amp;mesc importer</string>
    </property>
   </action>
   <action name="action_mes_importer">
    <property name="text">
-    <string>.mes importer</string>
+    <string>.mes &amp;importer</string>
+   </property>
+  </action>
+  <action name="actionNuSeT_Segmentation">
+   <property name="text">
+    <string>NuSeT Segmentation</string>
    </property>
   </action>
  </widget>
