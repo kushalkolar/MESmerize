@@ -55,7 +55,7 @@ class SummaryStatsWidget(QtWidgets.QWidget):
 
     @use_save_file_dialog("Save summary stats file", ext='.stats')
     @present_exceptions()
-    def save_to_file(self, path, args):
+    def save_to_file(self, path, *args):
         if not self.data:
             raise ValueError(
                 "Summary stats are empty, nothing to save."
