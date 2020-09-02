@@ -3,7 +3,7 @@ from glob import glob
 import os
 from matplotlib import cm as matplotlib_color_map
 from typing import *
-from mesmerize.pyqtgraphCore import mkColor
+from ..pyqtgraphCore.functions import mkColor
 import numpy as np
 from collections import OrderedDict
 from warnings import warn
