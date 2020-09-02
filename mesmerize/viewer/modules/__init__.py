@@ -8,7 +8,8 @@ __all__ = [
     'script_editor',
     'suite2p',
     'femtonics_mesc',
-    'nuset_segment'
+    'nuset_segment',
+    'exporter'
 ]
 
 if HAS_CAIMAN:

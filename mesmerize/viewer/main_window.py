@@ -99,7 +99,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
                         'script_editor': script_editor.ModuleGUI,
                         'mesc_importer': femtonics_mesc.ModuleGUI,
-                        'nuset_segment': nuset_segment.ModuleGUI
+                        'nuset_segment': nuset_segment.ModuleGUI,
+                        'exporter': exporter.ModuleGUI,
                         }
 
     # caiman modules
@@ -202,6 +203,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.run_module(roi_manager.ModuleGUI, hide=True)
         self.roi_manager = self.running_modules[-1]
+
+        self._viewer.ui.btnExportWorkEnv.clicked.connect(
+            partial(self.run_module, 'exporter')
+        )
 
         status_label = self.statusBar()
 

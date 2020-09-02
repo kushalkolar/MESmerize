@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ImageViewTemplate.ui'
+# Form implementation generated from reading ui file 'ImageViewTemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -113,7 +113,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.btnExportWorkEnv.setText(_translate("Form", "Export workEnv"))
+        self.btnExportWorkEnv.setText(_translate("Form", "Export Video"))
         self.label.setText(_translate("Form", "Current image sequence:"))
         self.groupBoxZLevel.setTitle(_translate("Form", "z-level"))
         self.verticalSliderZLevel.setToolTip(_translate("Form", "move along the z-axis"))
