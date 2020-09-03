@@ -45,7 +45,8 @@ install_requires = \
         "tk",  # do not change
         "tcl",
         "bokeh~=2.1.0",
-        "nuset-lib"
+        "nuset-lib",
+        "sk-video"
     ]
 
 classifiers = \
