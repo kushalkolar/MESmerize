@@ -23,7 +23,7 @@ install_requires = \
         "python-dateutil>=2.8.0",
         "QtPy>=1.6.0",
         "qtap",
-        "scikit-image==0.17.2",  # do not change
+        "scikit-image~=0.15.0",  # do not change
         "scikit-learn>=0.20.2",  # do not change
         "scipy>=1.2.1",  # do not change
         "seaborn==0.9.0",  # do not change
