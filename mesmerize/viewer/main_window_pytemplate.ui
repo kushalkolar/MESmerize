@@ -49,7 +49,6 @@
       <addaction name="action_mesc_importer"/>
       <addaction name="action_mes_importer"/>
      </widget>
-     <addaction name="actionMesfile"/>
      <addaction name="actionTiff_file"/>
      <addaction name="menuFemtonics"/>
     </widget>
@@ -149,14 +148,6 @@
     <string>&amp;Save work environment</string>
    </property>
   </action>
-  <action name="actionMesfile">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Mesfile</string>
-   </property>
-  </action>
   <action name="actionTiff_file">
    <property name="checkable">
     <bool>false</bool>
@@ -192,22 +183,9 @@
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionManual_motion_correction">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Manual motion correction</string>
-   </property>
-  </action>
   <action name="actionScript_Editor">
    <property name="text">
     <string>Script &amp;Editor</string>
-   </property>
-  </action>
-  <action name="actionReload_list">
-   <property name="text">
-    <string>&amp;Reload list</string>
    </property>
   </action>
   <action name="actionCNMF_E">
@@ -238,16 +216,6 @@
   <action name="actionCrop">
    <property name="text">
     <string>&amp;Crop</string>
-   </property>
-  </action>
-  <action name="actionView_info">
-   <property name="text">
-    <string>View info</string>
-   </property>
-  </action>
-  <action name="actionChange_dtype">
-   <property name="text">
-    <string>Change &amp;dtype</string>
    </property>
   </action>
   <action name="actionReset_Scale">
@@ -349,11 +317,6 @@
     <string>&amp;Questions/discussion</string>
    </property>
   </action>
-  <action name="actionFemtonicsc">
-   <property name="text">
-    <string>Femtonicsc</string>
-   </property>
-  </action>
   <action name="action_mesc_importer">
    <property name="text">
     <string>.&amp;mesc importer</string>
@@ -366,7 +329,7 @@
   </action>
   <action name="actionNuSeT_Segmentation">
    <property name="text">
-    <string>NuSeT Segmentation</string>
+    <string>&amp;NuSeT Segmentation</string>
    </property>
   </action>
  </widget>
