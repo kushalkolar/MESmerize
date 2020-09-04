@@ -124,7 +124,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.running_modules = []
         # TODO: Integrate viewer initiation here instead of outside
-        self.ui.actionMesfile.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
+        self.ui.action_mes_importer.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
         self.ui.action_mesc_importer.triggered.connect(lambda: self.run_module(femtonics_mesc.ModuleGUI))
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))

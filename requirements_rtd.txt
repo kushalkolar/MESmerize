@@ -23,3 +23,4 @@ tk
 tcl
 sphinx>=2.0
 sphinxcontrib-images
+tensorflow~=1.15

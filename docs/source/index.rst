@@ -71,6 +71,7 @@ https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
     ./user_guides/viewer/modules/caiman_hdf5_importer
     ./user_guides/viewer/modules/suite2p_importer
     ./user_guides/viewer/modules/script_editor
+    ./user_guides/viewer/modules/femtonics_importers
     
 .. toctree::
 	:maxdepth: 1

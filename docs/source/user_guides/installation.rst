@@ -232,10 +232,16 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 
     pip install --upgrade pip setuptools
     pip install Cython numpy tslearn==0.2.2
+    
+#. Install ``tensorflow`` or ``tensorflow-gpu``, you must use version ``~=1.15``::
 
-#. Fork the main repo on github and clone it::
+    pip install tensorflow~=1.15
 
-    git clone https://github.com/<your_github_username>/MESmerize.git
+#. Fork the main repo on github and clone it, or install from our repo::
+    
+    git clone https://github.com/kushalkolar/MESmerize.git
+    # or your own form
+    # git clone https://github.com/<your_github_username>/MESmerize.git
     cd MESmerize
     
 #. Switch to new branch::
