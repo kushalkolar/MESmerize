@@ -19,6 +19,16 @@ from uuid import UUID
 from collections import OrderedDict
 
 
+def tonumeric(s: str):
+    try:
+        if float(s).is_integer():
+            return int(s)
+        else:
+            return float(s)
+    except:
+        return False
+
+
 def get_tuning_curves(
         curve: np.ndarray,
         stim_maps: dict,
@@ -71,6 +81,12 @@ def get_tuning_curves(
 
         # instantiate lists for the tuning curves
         all_stimuli = np.unique(stim_array)  # [stim_array != ''])
+        ln = [tonumeric(v) for v in all_stimuli if tonumeric(v) is not False]
+        ls = [v for v in all_stimuli if tonumeric(v) is False]
+        ln.sort()
+        ls.sort()
+        all_stimuli = np.array(ls + ln, dtype=np.dtype('<U32'))
+
         xs = np.empty(all_stimuli.size, dtype=np.dtype('<U32'))
         #         xs = []
         ys = np.empty(all_stimuli.size)
