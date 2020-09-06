@@ -362,7 +362,7 @@ class ExportWidget(QtWidgets.QWidget):
         button_apply_thr_params = QtWidgets.QPushButton(self)
         button_apply_thr_params.setText("Apply threshold & edge params")
         button_apply_thr_params.clicked.connect(
-            self.apply_threshold
+            lambda: self.apply_threshold()
         )
         self.vlayout.addWidget(button_apply_thr_params)
 
