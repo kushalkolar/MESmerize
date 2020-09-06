@@ -293,7 +293,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
 
         self.menu_export = self.menubar.addMenu('&Export')
 
-        self.action_export_options = QtWidgets.QAction(text='Export Options')
+        self.action_export_options = QtWidgets.QAction(text='Open Exporter')
         self.action_export_options.setToolTip(
             "Export as sparse matrix that can be used for \n"
             "seeding spatial components in Caiman CNMF"
@@ -423,7 +423,8 @@ class ExportWidget(QtWidgets.QWidget):
         self.vlayout.addWidget(self.combo_edge_method)
 
         button_apply_thr_params = QtWidgets.QPushButton(self)
-        button_apply_thr_params.setText("Apply threshold & edge params")
+        button_apply_thr_params.setText("Apply")
+        button_apply_thr_params.setStyleSheet("font-weight: bold")
         button_apply_thr_params.clicked.connect(
             self.apply_threshold
         )
