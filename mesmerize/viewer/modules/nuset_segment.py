@@ -28,6 +28,9 @@ from matplotlib import cm
 from matplotlib.colors import LinearSegmentedColormap
 from multiprocessing import Pool, cpu_count
 from scipy.ndimage import label as label_image
+from joblib import Parallel, delayed
+import scipy.sparse
+from scipy.spatial import cKDTree
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from qtap import Function
@@ -162,13 +165,21 @@ def normalize_image(img, dtype):
     return imgN
 
 
+def _get_sparse_mask(areas, i, edge_method, selem):
+    temp = (areas[0] == i + 1)
+    edge_func = getattr(skimage.morphology, edge_method)
+    temp = edge_func(temp, selem=selem)
+
+    return scipy.sparse.csr_matrix(temp.flatten('F'))
+
+
 # adapted from https://github.com/flatironinstitute/CaImAn/blob/master/caiman/base/rois.py#L88
-def get_sparse_mask(
+def get_sparse_masks(
         segmented_img: np.ndarray,
         raw_img_shape: tuple,
         edge_method: str,
         selem: int
-    ):
+    ) -> np.ndarray:
     # allocate array with same size as the raw input image
     # so that the dims match for CNMF
     img = np.zeros(raw_img_shape, dtype=segmented_img.dtype)
@@ -177,23 +188,75 @@ def get_sparse_mask(
     # sometimes the segmented image has its dims trimmed by a few pixels
     if len(raw_img_shape) == 3:
         img[:, :segmented_img.shape[1], :segmented_img.shape[2]] = segmented_img
+        struc = np.array(
+            [[[0, 0, 0],
+              [0, 0, 0],
+              [0, 0, 0]],
+             [[1, 1, 1],
+              [1, 1, 1],
+              [1, 1, 1]],
+             [[0, 0, 0],
+              [0, 0, 0],
+              [0, 0, 0]]]
+        )
+
     else:
         img[:segmented_img.shape[0], :segmented_img.shape[1]] = segmented_img
+        struc = None
 
-    areas = label_image(img)
-    A = np.zeros((np.prod(img.shape), areas[1]), dtype=bool)
+    areas = label_image(img, structure=struc)
+    # A = np.zeros((np.prod(img.shape), areas[1]), dtype=bool)
 
     selem: np.array = np.ones((selem,)*len(segmented_img.shape))
 
-    print("Creating sparse matrix, this could take a while...")
-    for i in tqdm(range(areas[1])):
-        temp = (areas[0] == i + 1)
-        edge_func = getattr(skimage.morphology, edge_method)
-        temp = edge_func(temp, selem=selem)
+    sparses = Parallel(n_jobs=cpu_count(), verbose=5)(
+        delayed(_get_sparse_mask)(areas, i, edge_method, selem) for i in range(areas[1])
+    )
 
-        A[:, i] = temp.flatten('F')
+    A = scipy.sparse.vstack(sparses).T.toarray()
 
     return A
+
+    # print("Creating sparse matrix, this could take a while...")
+    # for i in tqdm(range(areas[1])):
+    #     temp = (areas[0] == i + 1)
+    #     edge_func = getattr(skimage.morphology, edge_method)
+    #     temp = edge_func(temp, selem=selem)
+    #
+    #     A[:, i] = temp.flatten('F')
+    #
+    # return A
+
+
+def get_colored_mask(m: np.ndarray, shape: tuple):
+    random_colors = np.random.choice(range(24), m.shape[1], replace=True)
+
+    colored_mask = np.zeros(shape, dtype=np.uint16)
+
+    for i in tqdm(range(m.shape[1])):
+        colored_mask[m[:, i].reshape(shape)] = random_colors[i]
+
+    return colored_mask
+
+
+def area_to_vertices(a: np.ndarray):
+    """
+    Get the vertices of the area in a binary mask
+    """
+    xs, ys = np.where(a)
+
+    points = np.array((xs, ys)).T
+
+    kdt = cKDTree(points)
+    vertices = []
+
+    for p in points:
+        if len(kdt.query_ball_point(p, 1)) < 5:
+            vertices.append(p)
+
+    vs = np.vstack(vertices)
+
+    return vs
 
 
 class ModuleGUI(QtWidgets.QMainWindow):
@@ -230,7 +293,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
 
         self.menu_export = self.menubar.addMenu('&Export')
 
-        self.action_export_options = QtWidgets.QAction(text='Export Options')
+        self.action_export_options = QtWidgets.QAction(text='Open Exporter')
         self.action_export_options.setToolTip(
             "Export as sparse matrix that can be used for \n"
             "seeding spatial components in Caiman CNMF"
@@ -271,7 +334,7 @@ class ExportWidget(QtWidgets.QWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self)
 
-        self.nuset_widget = parent
+        self.nuset_widget: NusetWidget = parent
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
@@ -360,7 +423,8 @@ class ExportWidget(QtWidgets.QWidget):
         self.vlayout.addWidget(self.combo_edge_method)
 
         button_apply_thr_params = QtWidgets.QPushButton(self)
-        button_apply_thr_params.setText("Apply threshold & edge params")
+        button_apply_thr_params.setText("Apply")
+        button_apply_thr_params.setStyleSheet("font-weight: bold")
         button_apply_thr_params.clicked.connect(
             lambda: self.apply_threshold()
         )
@@ -388,7 +452,13 @@ class ExportWidget(QtWidgets.QWidget):
 
         self.vlayout.addWidget(self.glw)
 
-        self.threshold_img: np.ndarray = np.empty(0)
+        self.colored_mask: np.ndarray = np.empty(0)
+        self.masks: np.ndarray = np.empty(0)
+        self.binary_shape: tuple = None
+
+        self.nuset_widget.sig_zlevel_changed.connect(
+            self.set_colored_mask
+        )
 
         self.setLayout(self.vlayout)
 
@@ -403,6 +473,12 @@ class ExportWidget(QtWidgets.QWidget):
             'minsize': self.spinbox_minsize.value(),
             'connectivity': self.spinbox_connectivity.value()
         }
+
+    def set_colored_mask(self, z):
+        if self.colored_mask.size > 0:
+            self.imgitem.setImage(
+                self.colored_mask[:, :, z]
+            )
 
     @present_exceptions()
     def apply_threshold(self):
@@ -442,18 +518,24 @@ class ExportWidget(QtWidgets.QWidget):
                 binary, min_size=params['minsize'], connectivity=params['connectivity']
             )
 
-        areas = label_image(binary)
+        # areas = label_image(binary)
 
         print("Creating sparse masks")
-        masks = get_sparse_mask(
+        self.masks = get_sparse_masks(
             segmented_img=binary,
             raw_img_shape=shape,
             edge_method=params['edge_method'],
             selem=params['selem']
         )
 
+        self.colored_mask = get_colored_mask(self.masks, binary.shape)
 
-
+        if self.colored_mask.ndim > 2:
+            self.imgitem.setImage(
+                self.colored_mask[:, :, self.nuset_widget.zlevel]
+            )
+        else:
+            self.imgitem.setImage(self.colored_mask)
 
     @use_save_file_dialog('Save masks', None, '.h5')
     @present_exceptions()
@@ -479,7 +561,7 @@ class ExportWidget(QtWidgets.QWidget):
             seg_img = self.nuset_widget.imgs_segmented[0].T
             shape = self.nuset_widget.imgs_projected[0].T.shape
 
-        Ain = get_sparse_mask(seg_img, shape)
+        Ain = get_sparse_masks(seg_img, shape)
 
         d = \
             {
@@ -494,7 +576,13 @@ class ExportWidget(QtWidgets.QWidget):
         roi_manager = self.nuset_widget.vi.viewer.parent().get_module('roi_manager')
         roi_manager.start_backend('Manual')
 
-        self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points
+        for i in self.masks.shape[1]:
+            vs = area_to_vertices(
+                self.masks[:, i].reshape(self.binary_shape)
+            )
+            self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
+                xs=vs[:, 0], ys=vs[:, 1]
+            )
 
 
 class NusetWidget(QtWidgets.QWidget):
