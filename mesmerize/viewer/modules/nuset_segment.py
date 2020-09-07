@@ -262,6 +262,7 @@ def area_to_vertices(a: np.ndarray):
 class ModuleGUI(QtWidgets.QMainWindow):
     def __init__(self, parent, viewer_ref):
         QtWidgets.QMainWindow.__init__(self)
+        self.setWindowTitle('Nuset Segmentation')
 
         self.resize(1000, 900)
         self.menubar = self.menuBar()
@@ -333,7 +334,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
 class ExportWidget(QtWidgets.QWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self)
-
+        self.setWindowTitle('Nuset Exporter')
         self.nuset_widget: NusetWidget = parent
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
@@ -440,6 +441,9 @@ class ExportWidget(QtWidgets.QWidget):
         button_export_viewer_rois = QtWidgets.QPushButton(self)
         button_export_viewer_rois.setText("Export to Viewer as Manual ROIs")
         button_export_viewer_rois.setStyleSheet("font-weight: bold")
+        button_export_viewer_rois.clicked.connect(
+            lambda: self.export_to_viewer()
+        )
         hlayout_export_buttons.addWidget(button_export_viewer_rois)
 
         self.vlayout.addLayout(hlayout_export_buttons)
@@ -523,6 +527,8 @@ class ExportWidget(QtWidgets.QWidget):
             binary[:binary_.shape[0], :binary_.shape[1], :binary_.shape[2]] = binary_
         else:
             binary[:binary_.shape[0], :binary_.shape[1]] = binary_
+
+        self.binary_shape = binary.shape
 
         if params['minsize'] > 0:
             print("Removing small objs")
