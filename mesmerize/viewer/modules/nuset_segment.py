@@ -30,7 +30,7 @@ from multiprocessing import Pool, cpu_count
 from scipy.ndimage import label as label_image
 from joblib import Parallel, delayed
 import scipy.sparse
-from scipy.spatial import cKDTree
+from scipy.spatial import cKDTree, ConvexHull
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from qtap import Function
@@ -256,6 +256,14 @@ def area_to_vertices(a: np.ndarray):
 
     vs = np.vstack(vertices)
 
+    return vs
+
+
+def area_to_hull(a):
+    xs, ys = np.where(a)
+    points = np.array((xs, ys)).T
+    hull = ConvexHull(points, qhull_options='Qs')
+    vs = points[hull.vertices]
     return vs
 
 
@@ -594,8 +602,18 @@ class ExportWidget(QtWidgets.QWidget):
         roi_manager = self.nuset_widget.vi.viewer.parent().get_module('roi_manager')
         roi_manager.start_backend('Manual')
 
-        for i in range(self.masks.shape[1]):
-            vs = area_to_vertices(
+        if QtWidgets.QMessageBox.question(
+            self, 'Use Convex Hull?',
+            'Use a Convex Hull to get the vertices?\n'
+            'This is faster & recommended if you are importing as ManualROIs',
+            QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes
+        ) == QtWidgets.QMessageBox.Yes:
+            method = 'hull'
+        else:
+            method = 'full'
+
+        for i in tqdm(range(self.masks.shape[1])):
+            vs = area_to_hull(
                 self.masks[:, i].reshape(self.binary_shape)
             )
             self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
