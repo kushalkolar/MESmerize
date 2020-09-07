@@ -456,6 +456,11 @@ class ExportWidget(QtWidgets.QWidget):
         self.masks: np.ndarray = np.empty(0)
         self.binary_shape: tuple = None
 
+        colormap = cm.get_cmap("nipy_spectral")  # cm.get_cmap("CMRmap")
+        colormap._init()
+        lut = (colormap._lut * 255).view(np.ndarray)
+        self.imgitem.setLookupTable(lut)
+
         self.nuset_widget.sig_zlevel_changed.connect(
             self.set_colored_mask
         )
