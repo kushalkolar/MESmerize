@@ -583,7 +583,7 @@ class ExportWidget(QtWidgets.QWidget):
         roi_manager = self.nuset_widget.vi.viewer.parent().get_module('roi_manager')
         roi_manager.start_backend('Manual')
 
-        for i in self.masks.shape[1]:
+        for i in range(self.masks.shape[1]):
             vs = area_to_vertices(
                 self.masks[:, i].reshape(self.binary_shape)
             )
