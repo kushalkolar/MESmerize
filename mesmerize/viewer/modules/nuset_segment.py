@@ -31,6 +31,7 @@ from scipy.ndimage import label as label_image
 from joblib import Parallel, delayed
 import scipy.sparse
 from scipy.spatial import cKDTree, ConvexHull
+from scipy.spatial.qhull import QhullError
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 from qtap import Function
@@ -613,9 +614,13 @@ class ExportWidget(QtWidgets.QWidget):
             method = 'full'
 
         for i in tqdm(range(self.masks.shape[1])):
-            vs = area_to_hull(
-                self.masks[:, i].reshape(self.binary_shape)
-            )
+            try:
+                vs = area_to_hull(
+                    self.masks[:, i].reshape(self.binary_shape)
+                )
+            except QhullError:
+                print(f"Skipping {i}, not enough points for convex hull")
+
             self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
                 xs=vs[:, 0], ys=vs[:, 1]
             )
