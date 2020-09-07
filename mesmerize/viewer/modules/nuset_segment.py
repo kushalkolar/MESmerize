@@ -509,8 +509,15 @@ class ExportWidget(QtWidgets.QWidget):
 
         print("Thresholding")
         # binary array
-        binary = np.full(shape, False, dtype=np.bool)
-        binary[seg_img > params['thr']] = True
+        binary_ = np.full(seg_img.shape, False, dtype=np.bool)
+        binary_[seg_img > params['thr']] = True
+
+        binary = np.full(shape, False, np.bool)
+
+        if len(shape) > 2:
+            binary[:binary_.shape[0], :binary_.shape[1], :binary_.shape[2]] = binary_
+        else:
+            binary[:binary_.shape[0], :binary_.shape[1]] = binary_
 
         if params['minsize'] > 0:
             print("Removing small objs")
