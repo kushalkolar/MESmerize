@@ -492,6 +492,19 @@ class ExportWidget(QtWidgets.QWidget):
             'connectivity': self.spinbox_connectivity.value()
         }
 
+    def get_all_params(self):
+        """
+        All params, including those used for segmentation before the export GUI.
+        :return:
+        """
+        d = \
+            {
+                'nuset_segment_params': self.nuset_widget.params_final,
+                'nuset_export_params': self.get_params(),
+            }
+
+        return d
+
     def set_colored_mask(self, z):
         if self.colored_mask.size > 0:
             self.imgitem.setImage(
@@ -510,7 +523,7 @@ class ExportWidget(QtWidgets.QWidget):
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
         if QtWidgets.QMessageBox.question(
-                self, 'Export for CNMF?', 'This may take a few minutes, and could take ~30 minutes '
+                self, 'Export for CNMF?', 'This may take a few minutes, and could take ~10 minutes '
                                           'if segmenting a large 3D stack. Proceed?',
         ) == QtWidgets.QMessageBox.No:
             return
@@ -593,8 +606,7 @@ class ExportWidget(QtWidgets.QWidget):
         d = \
             {
                 'sparse_mask': Ain,
-                'segment_params': self.nuset_widget.params_final,
-                'threshold_params': self.get_params(),
+                **self.get_all_params()
             }
 
         HdfTools.save_dict(d, path, 'data')
@@ -609,9 +621,10 @@ class ExportWidget(QtWidgets.QWidget):
             'This is faster & recommended if you are importing as ManualROIs',
             QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes
         ) == QtWidgets.QMessageBox.Yes:
-            method = 'hull'
+            method = 'ConvexHull'
         else:
-            method = 'full'
+            method = 'ConvexHull'
+            # method = 'cKDTree'
 
         for i in tqdm(range(self.masks.shape[1])):
             try:
@@ -624,6 +637,16 @@ class ExportWidget(QtWidgets.QWidget):
             self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
                 xs=vs[:, 0], ys=vs[:, 1]
             )
+
+        self.nuset_widget.vi.viewer.workEnv.history_trace.append(
+            {
+                'nuset_segmentation': \
+                    {
+                        **self.get_all_params(),
+                        'vertex_method': method
+                    }
+            }
+        )
 
 
 class NusetWidget(QtWidgets.QWidget):
