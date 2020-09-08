@@ -210,9 +210,18 @@ def get_sparse_masks(
 
     selem: np.array = np.ones((selem,)*len(segmented_img.shape))
 
-    sparses = Parallel(n_jobs=cpu_count(), verbose=5)(
-        delayed(_get_sparse_mask)(areas, i, edge_method, selem) for i in range(areas[1])
-    )
+    if areas[1] < 50:
+        print("Less than 50 regions, not parallelizing")
+        sparses = []
+        for i in tqdm(range(areas[1])):
+            sparses.append(
+                _get_sparse_mask(areas, i, edge_method, selem)
+            )
+    else:
+        print("Greater than 50 regions, parallelizing with joblib")
+        sparses = Parallel(n_jobs=cpu_count(), verbose=5)(
+            delayed(_get_sparse_mask)(areas, i, edge_method, selem) for i in range(areas[1])
+        )
 
     A = scipy.sparse.vstack(sparses).T.toarray()
 
