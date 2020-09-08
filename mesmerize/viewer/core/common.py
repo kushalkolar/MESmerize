@@ -19,12 +19,11 @@ import numpy as np
 
 
 class ViewerUtils(QtCore.QObject):
-    sig_workEnv_changed = QtCore.pyqtSignal(object)
-
+    """
+    Some utility functions for interfacing viewer.core.ViewerWorkEnv with the pyqtgraphCore.ImageView widget
+    """
     def __init__(self, viewer_reference: ImageView):
         """
-        Some utility functions for interfacing viewer.core.ViewerWorkEnv with the pyqtgraphCore.ImageView widget
-
         :type viewer_reference: ImageView
         """
         QtCore.QObject.__init__(self)
@@ -63,7 +62,7 @@ class ViewerUtils(QtCore.QObject):
             except:
                 pass
 
-        self.sig_workEnv_changed.emit(self.viewer.workEnv)
+        self.viewer.sig_workEnv_changed.emit(self.viewer.workEnv)
 
         self.viewer.status_bar_label.showMessage('Finished updating work environment.')
 

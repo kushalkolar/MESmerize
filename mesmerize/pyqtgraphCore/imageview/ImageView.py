@@ -40,7 +40,7 @@ import numpy as np
 from ...viewer.core.viewer_work_environment import ViewerWorkEnv
 # from common import configuration
 # from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
-from ...viewer import export
+# from ...viewer import export
 try:
     from bottleneck import nanmin, nanmax
 except ImportError:
@@ -81,6 +81,7 @@ class ImageView(QtWidgets.QWidget):
     sigTimeChanged = QtCore.Signal(object, object)
     sigProcessingChanged = QtCore.Signal(object)
     sigZLevelChanged = QtCore.Signal(object)
+    sig_workEnv_changed = QtCore.Signal(object)
 
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, *args):
         """
