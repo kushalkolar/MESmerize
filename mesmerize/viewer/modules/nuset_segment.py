@@ -949,7 +949,7 @@ class NusetWidget(QtWidgets.QWidget):
             print("Assuming testing mode")
         else:
             self.vi = ViewerUtils(viewer_ref)
-            self.vi.sig_workEnv_changed.connect(self.set_input)
+            self.vi.viewer.sig_workEnv_changed.connect(self.set_input)
             self.set_input(self.vi.viewer.workEnv)
 
     @use_open_file_dialog('Open image file', None, ['*.tiff', '*.tif'])
