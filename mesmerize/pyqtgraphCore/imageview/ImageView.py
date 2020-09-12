@@ -193,6 +193,8 @@ class ImageView(QtWidgets.QWidget):
         self.ui.verticalSliderZLevel.valueChanged.connect(self.set_zlevel)
         self.set_zlevel_ui_visible(False)
 
+        self.current_zlevel = self.ui.verticalSliderZLevel.value()
+
     def set_zlevel_ui_visible(self, b: bool):
         self.ui.groupBoxZLevel.setVisible(b)
 
@@ -220,6 +222,7 @@ class ImageView(QtWidgets.QWidget):
             if hasattr(self.workEnv.roi_manager, 'set_zlevel'):
                 self.workEnv.roi_manager.set_zlevel(z)
 
+        self.current_zlevel = z
         self.sigZLevelChanged.emit(z)
 
     def get_workEnv(self):

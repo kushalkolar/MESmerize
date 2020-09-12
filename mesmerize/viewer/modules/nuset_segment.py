@@ -1051,6 +1051,8 @@ class NusetWidget(QtWidgets.QWidget):
 
         if self.projection_option == opt:
             return
+        
+        self.projection_option = opt
 
         func = getattr(np, opt)
 

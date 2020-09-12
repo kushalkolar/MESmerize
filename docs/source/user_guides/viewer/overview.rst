@@ -128,11 +128,15 @@ Measure the distance (in pixels) between two points in the image sequence.
 
 #. After clicking this option in the menubar, click on a point in the image sequence. You will not see anything yet.
 
-#. Click on a second point in the image sequence, a line will appear connecting the first and second points that you clicked.
+#. Click on a second point in the image sequence, a line will appear connecting the first and second point that you clicked.
 
 #. You can use the handles at the endpoints of the line to change the line.
 
-#. To measure the distance of the line go to Image -> Measure. A window will pop up displaying the change in x, y, and length of the line in pixels.
+#. The displacement in the x, y, and along the line will be displayed in the status bar (bottom left corner of the Viewer Window) when you hover over a measuring line.
+
+#. You can create as many measuring lines as you want.
+
+#. To remove a measuring line, right click on a handle and click "Remove ROI"
 
 Change dtype
 ^^^^^^^^^^^^

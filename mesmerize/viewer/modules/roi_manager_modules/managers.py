@@ -427,6 +427,174 @@ class ManagerVolCNMF(ManagerVolROI):
             roi.spot_size = size
 
 
+class ManagerVolMultiCNMF(ManagerVolROI):
+    """Manager for 3D data using one CNMF per plane"""
+    def __init__(self, parent, ui, viewer_interface):
+        super(ManagerVolMultiCNMF, self).__init__(parent, ui, viewer_interface)
+
+        self.roi_list = ROIList(self.ui, VolMultiCNMFROI, self.vi)
+
+        self.input_params_dict: dict = None
+        self.idx_components: List[np.ndarray] = None
+        self.orig_idx_components: List[np.ndarray] = None
+
+        self.cnmf_data_dicts: List[dict] = []
+
+        self.cnmA: List[np.ndarray] = []
+        self.cnmb: List[np.ndarray] = []
+        self.cnmC: List[np.ndarray] = []
+        self.cnm_f: List[np.ndarray] = []
+        self.cnmYrA: List[np.ndarray] = []
+        self.cnmS: List[np.ndarray] = []
+        self.cnm_dfof: List[np.ndarray] = []
+        self.dims: List[tuple] = []
+
+        self.num_zlevels: int = 0
+
+    def create_roi_list(self):
+        self.roi_list = ROIList(self.ui, VolMultiCNMFROI, self.vi)
+
+    def add_all_components(
+            self,
+            cnmf_data_dicts: List[dict],
+            input_params_dict: dict,
+    ):
+        self.input_params_dict = input_params_dict
+
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
+        self.cnmf_data_dicts = cnmf_data_dicts
+
+        self.num_zlevels = len(self.cnmf_data_dicts)
+
+        for zcenter, cnmf_data_dict in enumerate(self.cnmf_data_dicts):
+            self.cnmA.append(cnmf_data_dict['estimates']['A'])
+            self.cnmb.append(cnmf_data_dict['estimates']['b'])
+            self.cnm_f.append(cnmf_data_dict['estimates']['f'])
+            self.cnmC.append(cnmf_data_dict['estimates']['C'])
+            self.cnmS.append(cnmf_data_dict['estimates']['S'])
+            self.cnm_dfof.append(cnmf_data_dict['estimates']['F_dff'])
+            self.cnmYrA.append(cnmf_data_dict['estimates']['YrA'])
+            self.dims.append(cnmf_data_dict['dims'])
+            self.idx_components.append(cnmf_data_dict['estimates']['idx_components'])
+
+            if self.idx_components[-1] is None:
+                self.idx_components[-1] = np.arange(self.cnmC[-1].shape[0])
+
+            self.orig_idx_components.append(
+                deepcopy(
+                    self.idx_components[-1]
+                )
+            )
+
+            contours = caiman_get_contours(
+                self.cnmA[-1][:, self.idx_components[-1]],
+                self.dims[-1]
+            )
+
+            num_components = len(self.cnmC[-1])
+
+            self.ui.radioButton_curve_data.setChecked(True)
+
+            for ix in range(num_components):
+                self.vi.viewer.status_bar_label.showMessage(
+                    f"Please wait, adding component {ix} / {num_components} "
+                    f"on zlevel {zcenter} / {self.num_zlevels}"
+                )
+
+                curve_data = self.cnmC[-1][ix]
+                contour = contours[ix]
+
+                roi = VolMultiCNMFROI(
+                    curve_plot_item=self.get_plot_item(),
+                    view_box=self.vi.viewer.getView(),
+                    cnmf_idx=self.idx_components[-1][ix],
+                    curve_data=curve_data,
+                    contour=contour,
+                    spike_data=self.cnmS[-1][ix],
+                    dfof_data=self.cnm_dfof[-1][ix] if (self.cnm_dfof[-1][ix] is not None) else None,
+                    zcenter=zcenter,
+                    zlevel=self.vi.viewer.current_zlevel
+                )
+
+                self.roi_list.append(roi)
+
+        self.roi_list.reindex_colormap()
+
+        self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
+
+    def add_roi(self):
+        """Not implemented, uses add_all_components to import all ROIs instead"""
+        raise NotImplementedError('Not implemented for CNMFE ROIs')
+    
+    def restore_from_states(self, states: dict):
+        if 'metadata' in states.keys():
+            self.metadata = states['metadata']
+
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
+        self.cnmf_data_dicts = states['cnmf_data_dicts']
+
+        for state in states['states']:
+            roi = VolMultiCNMFROI.from_state(
+                self.get_plot_item(),
+                self.vi.viewer.getView(),
+                state
+            )
+
+            self.roi_list.append(roi)
+
+        self.input_params_dict = states['input_params_cnmf']
+        self.num_zlevels = states['num_zlevels']
+
+        self.cnmA = states['cnmf_output']['cnmA']
+        self.cnmb = states['cnmf_output']['cnmb']
+        self.cnmC = states['cnmf_output']['cnmC']
+        self.cnm_f = states['cnmf_output']['cnm_f']
+        self.cnmYrA = states['cnmf_output']['cnmYrA']
+        self.idx_components = states['cnmf_output']['idx_components']
+        self.orig_idx_components = states['cnmf_output']['orig_idx_components']
+
+        self.roi_list.reindex_colormap()
+
+    def get_all_states(self) -> dict:
+        states = super(ManagerVolMultiCNMF, self).get_all_states()
+
+        new_idx_components: List[np.ndarray] = []
+        # if the user has manually deleted some ROIs
+        for zlevel in range(self.num_zlevels):
+            # get all cnmf_ixs for this zlevel
+            roi_cnmf_idxs = [roi.cnmf for roi in self.roi_list if roi.zcenter == zlevel]
+            roi_cnmf_idxs.sort()
+            new_idx_components.append(
+                np.ndarray(roi_cnmf_idxs, dtype=np.uint64)
+            )
+
+        # store the cnmf attributes as well
+        input_dict = \
+            {
+                'input_params_cnmf': self.input_params_dict,
+                'cnmf_data_dicts': self.cnmf_data_dicts,
+                'num_zlevels': self.num_zlevels,
+                'cnmf_output':
+                    {
+                        'cnmA': self.cnmA,
+                        'cnmb': self.cnmb,
+                        'cnmC': self.cnmC,
+                        'cnm_f': self.cnm_f,
+                        'cnmYrA': self.cnmYrA,
+                        'idx_components': new_idx_components,
+                        'orig_idx_components': self.orig_idx_components
+                    }
+            }
+
+        states.update(input_dict)
+
+        return states
+
+
 class ManagerCNMFROI(AbstractBaseManager):
     """Manager for ROIs imported from CNMF or CNMFE outputs"""
     def __init__(self, parent, ui, viewer_interface):

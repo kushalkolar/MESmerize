@@ -594,6 +594,93 @@ class VolCNMF(ScatterROI):
         self.roi_graphics_object.setData(self.roi_xs, self.roi_ys)#, symbol='s', size=self.spot_size)
 
 
+class VolMultiCNMFROI(ScatterROI):
+    """3D ROI for CNMF data created by runing CNMF independently on each plane"""
+    def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, cnmf_idx: int = None,
+                 curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
+                 spike_data: np.ndarray = None, dfof_data: np.ndarray = None, metadata: dict = None,
+                 zlevel: int = 0, zcenter: int = None, **kwargs):
+        self.zlevel: int = zlevel  #: z-level of the ROI that is currently visible, different from zValue!!
+        self.zcenter: int = zcenter  #: z-level where this ROI has its center, must be specified
+
+        super(VolMultiCNMFROI, self).__init__(curve_plot_item, view_box, state, curve_data,
+                                              spike_data=spike_data, dfof_data=dfof_data,
+                                              metadata=metadata)
+
+        if self.zcenter is None:
+            raise ValueError(
+                "zcenter must not be None"
+            )
+
+        self.roi_xs = np.empty(0)
+        self.roi_ys = np.empty(0)
+
+        if 'raw_min_max' in kwargs.keys():
+            self.raw_min_max = kwargs.pop('raw_min_max')
+        else:
+            self.raw_min_max = None
+
+        if state is None:
+            # get the outline from the cnmf output
+            cors = contour['coordinates']
+            cors = cors[~np.isnan(cors).any(axis=1)]
+
+            xs = cors[:, 0].flatten()
+            ys = cors[:, 1].flatten()
+
+            self.set_roi_graphics_object(xs, ys)
+
+            self.set_curve_data(curve_data)
+            self.cnmf_idx = cnmf_idx  #: original index of the ROI from cnmf idx_components
+        else:
+            self.restore_state(state)
+
+        self.check_visible()
+
+    def restore_state(self, state):
+        super(VolMultiCNMFROI, self).restore_state(state)
+        # self.curve_data = state['curve_data']
+        self.cnmf_idx = state['cnmf_idx']
+
+        if 'raw_min' in state.keys() and 'raw_max' in state.keys():
+            self.raw_min = state.pop('raw_min')
+            self.raw_max = state.pop('raw_max')
+        else:
+            self.raw_min = None
+            self.raw_max = None
+
+        self.zcenter = state['zcenter']
+
+    def to_state(self) -> dict:
+        state = super(VolMultiCNMFROI, self).to_state()
+
+        state = {**state,
+                 'cnmf_idx': self.cnmf_idx,
+                 'raw_min_max': self.raw_min_max
+                 }
+
+        return state
+
+    def check_visible(self):
+        if self.zlevel == self.zcenter:
+            self.visible = True
+            self.roi_graphics_object.show()
+        else:
+            self.visible = False
+            self.roi_graphics_object.hide()
+
+    def set_zlevel(self, z: int):
+        """
+        Set the z-level of the ROI to correspond with the
+        z-level of the image.
+
+        Different from `setZValue`!!
+        """
+
+        self.zlevel = z
+        self.check_visible()
+
+
 class CNMFROI(ScatterROI):
     """A class for ROIs imported from CNMF(E) output data"""
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, cnmf_idx: int = None,
