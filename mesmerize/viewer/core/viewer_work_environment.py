@@ -27,7 +27,7 @@ from typing import Optional, Tuple
 
 
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
+    def __init__(self, imgdata: ImgData = None, sample_id='', UUID=None, meta=None, stim_maps=None,
                  roi_manager=None, roi_states=None, comments='', origin_file='',
                  custom_cols = None, history_trace: list = None,
                  additional_data: dict = None,
@@ -56,12 +56,12 @@ class ViewerWorkEnv:
 
         if imgdata is not None:
             self.isEmpty = False  #: Return True if the work environment is empty
-            self.imgdata = imgdata
+            self.imgdata: ImgData = imgdata
             if isinstance(self.imgdata, ImgData):
                 if meta is not None:
                     self.imgdata.meta = meta
         else:
-            self.imgdata = ImgData()  #: ImgData instance
+            self.imgdata: ImgData = ImgData()  #: ImgData instance
             self.isEmpty = True
         self.meta = meta
 
