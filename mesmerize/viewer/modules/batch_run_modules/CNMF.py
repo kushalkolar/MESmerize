@@ -214,9 +214,11 @@ def run_multi(batch_dir, UUID, output):
                         'data'
                     )
                     Ain = hdict[f'sparse_mask'][str(z)]
+                    print('Using seeds')
                 except:
                     try:
                         Ain = np.load(f'{UUID}.ain')
+                        print('Using seeds')
                     except Exception as e:
                         output['warnings'] = f'Could not seed components, make sure that ' \
                             f'the .ain file exists in the batch dir: {e}'
