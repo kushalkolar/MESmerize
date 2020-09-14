@@ -488,7 +488,7 @@ class ExportWidget(QtWidgets.QWidget):
         self.vlayout.addWidget(self.glw)
 
         self.colored_mask: np.ndarray = np.empty(0)
-        self.masks: np.ndarray = np.empty(0)
+        self.masks: Union[np.ndarray, List[np.ndarray]] = np.empty(0)
         self.binary_shape: tuple = None
 
         colormap = cm.get_cmap("nipy_spectral")  # cm.get_cmap("CMRmap")
@@ -619,7 +619,7 @@ class ExportWidget(QtWidgets.QWidget):
                 )
             )
 
-        self.masks = np.stack(masks)
+        self.masks = masks
 
         print("Coloring masks")
         colored_masks = []
@@ -630,8 +630,8 @@ class ExportWidget(QtWidgets.QWidget):
                 )
             )
 
-        self.colored_mask = np.stack(colored_masks)
-        self.imgitem.setImage(self.colored_mask[:, : self.nuset_widget.zlevel])
+        self.colored_mask = np.stack(colored_masks).T
+        self.imgitem.setImage(self.colored_mask[:, :, self.nuset_widget.zlevel])
 
     @present_exceptions()
     def apply_threshold(self):
@@ -666,7 +666,7 @@ class ExportWidget(QtWidgets.QWidget):
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
-        if not self.masks.size > 0:
+        if not len(self.masks) > 0:
             raise ValueError("You must apply the threshold before you can proceed")
 
     @use_save_file_dialog('Save masks', None, '.h5')
