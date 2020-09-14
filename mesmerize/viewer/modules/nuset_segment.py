@@ -554,7 +554,7 @@ class ExportWidget(QtWidgets.QWidget):
         return binary
 
     def _apply_threshold_2d(self):
-        params = self.get_all_params()
+        params = self.get_params()
         seg_img = self.nuset_widget.imgs_segmented[0].T
         shape = self.nuset_widget.imgs_projected[0].T.shape
 
@@ -581,7 +581,7 @@ class ExportWidget(QtWidgets.QWidget):
 
         print("Thresholding")
         # binary array
-        binary = self._make_binary(seg_img, params['thr'], shape)
+        binary = self._make_binary(seg_img, params, shape)
         self.binary_shape = binary.shape
 
         print("Creating sparse masks")
@@ -598,7 +598,7 @@ class ExportWidget(QtWidgets.QWidget):
         )
 
     def _apply_threshold_2d_multi(self):
-        params = self.get_all_params()
+        params = self.get_params()
 
         shape = self.nuset_widget.imgs_projected[0].T.shape
 
@@ -635,8 +635,6 @@ class ExportWidget(QtWidgets.QWidget):
 
     @present_exceptions()
     def apply_threshold(self):
-        params = self.get_params()
-
         if not self.nuset_widget.imgs_segmented:
             raise ValueError("You must segment images before you can proceed.")
 
