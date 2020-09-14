@@ -160,6 +160,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         print(f'ROI Manager backend set to: {backend}')
 
+        return self.manager
+
     def start_manual_mode(self):
         """Start in manual mode. Creates a new back-end manager instance (Uses ManagerManual)"""
         print('ROI back-end set to: ManagerManual')
