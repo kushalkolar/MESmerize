@@ -441,6 +441,14 @@ class ExportWidget(QtWidgets.QWidget):
         )
         self.vlayout.addWidget(self.combo_edge_method)
 
+        self.checkbox_multi2d = QtWidgets.QCheckBox(self)
+        self.checkbox_multi2d.setText("Use multi-2D for 3D data")
+        self.checkbox_multi2d.setToolTip(
+            "Creates a separate sparse array for each z-plane, "
+            "instead of a single sparse array for the entire stack."
+        )
+        self.vlayout.addWidget(self.checkbox_multi2d)
+
         button_apply_thr_params = QtWidgets.QPushButton(self)
         button_apply_thr_params.setText("Apply")
         button_apply_thr_params.setStyleSheet("font-weight: bold")
@@ -451,10 +459,15 @@ class ExportWidget(QtWidgets.QWidget):
 
         hlayout_export_buttons = QtWidgets.QHBoxLayout(self)
 
-        button_export_cnmf = QtWidgets.QPushButton(self)
-        button_export_cnmf.setText("Export CNMF Seeds")
-        button_export_cnmf.setStyleSheet("font-weight: bold")
-        hlayout_export_buttons.addWidget(button_export_cnmf)
+        button_export_cnmf_2d = QtWidgets.QPushButton(self)
+        button_export_cnmf_2d.setText("Export 2D CNMF Seeds")
+        button_export_cnmf_2d.setStyleSheet("font-weight: bold")
+        hlayout_export_buttons.addWidget(button_export_cnmf_2d)
+
+        button_export_cnmf_3d = QtWidgets.QPushButton(self)
+        button_export_cnmf_3d.setText("Export 3D CNMF Seeds")
+        button_export_cnmf_3d.setStyleSheet("font-weight: bold")
+        hlayout_export_buttons.addWidget(button_export_cnmf_3d)
 
         button_export_viewer_rois = QtWidgets.QPushButton(self)
         button_export_viewer_rois.setText("Export to Viewer as Manual ROIs")
@@ -498,7 +511,8 @@ class ExportWidget(QtWidgets.QWidget):
             'selem': selem if selem > 0 else None,
             'edge_method': self.combo_edge_method.currentText(),
             'minsize': self.spinbox_minsize.value(),
-            'connectivity': self.spinbox_connectivity.value()
+            'connectivity': self.spinbox_connectivity.value(),
+            'multi-2d': self.checkbox_multi2d.isChecked()
         }
 
     def get_all_params(self):
@@ -520,6 +534,105 @@ class ExportWidget(QtWidgets.QWidget):
                 self.colored_mask[:, :, z]
             )
 
+    def _make_binary(self, seg_img, params, shape):
+        binary_ = np.full(seg_img.shape, False, dtype=np.bool)
+        binary_[seg_img > params['thr']] = True
+
+        binary = np.full(shape, False, np.bool)
+
+        if len(shape) > 2:
+            binary[:binary_.shape[0], :binary_.shape[1], :binary_.shape[2]] = binary_
+        else:
+            binary[:binary_.shape[0], :binary_.shape[1]] = binary_
+
+        if params['minsize'] > 0:
+            print("Removing small objs")
+            binary = skimage.morphology.remove_small_objects(
+                binary, min_size=params['minsize'], connectivity=params['connectivity']
+            )
+
+        return binary
+
+    def _apply_threshold_2d(self):
+        params = self.get_all_params()
+        seg_img = self.nuset_widget.imgs_segmented[0].T
+        shape = self.nuset_widget.imgs_projected[0].T.shape
+
+        print("Thresholding")
+        binary = self._make_binary(seg_img, params, shape)
+        self.binary_shape = binary.shape
+
+        print("Creating sparse masks")
+        self.masks = get_sparse_masks(
+            segmented_img=binary,
+            raw_img_shape=shape,
+            edge_method=params['edge_method'],
+            selem=params['selem']
+        )
+
+        self.colored_mask = get_colored_mask(self.masks, binary.shape)
+        self.imgitem.setImage(self.colored_mask)
+
+    def _apply_threshold_3d(self):
+        params = self.get_params()
+        # 3D
+        seg_img = np.stack(self.nuset_widget.imgs_segmented)
+        shape = np.stack(self.nuset_widget.imgs_projected).shape
+
+        print("Thresholding")
+        # binary array
+        binary = self._make_binary(seg_img, params['thr'], shape)
+        self.binary_shape = binary.shape
+
+        print("Creating sparse masks")
+        self.masks = get_sparse_masks(
+            segmented_img=binary,
+            raw_img_shape=shape,
+            edge_method=params['edge_method'],
+            selem=params['selem']
+        )
+
+        self.colored_mask = get_colored_mask(self.masks, binary.T.shape)
+        self.imgitem.setImage(
+            self.colored_mask[:, :, self.nuset_widget.zlevel]
+        )
+
+    def _apply_threshold_2d_multi(self):
+        params = self.get_all_params()
+
+        shape = self.nuset_widget.imgs_projected[0].T.shape
+
+        masks = []
+        print("Thresholding & Creating sparse masks")
+        for ix in tqdm(range(len(self.nuset_widget.imgs_segmented))):
+            seg_img = self.nuset_widget.imgs_segmented[ix].T
+
+            binary = self._make_binary(seg_img, params, shape)
+            self.binary_shape = binary.shape
+
+            masks.append(
+                get_sparse_masks(
+                    segmented_img=binary,
+                    raw_img_shape=shape,
+                    edge_method=params['edge_method'],
+                    selem=params['selem']
+                )
+            )
+
+        self.masks = np.stack(masks)
+
+        print("Coloring masks")
+        colored_masks = []
+        for ix in tqdm(range(len(self.masks))):
+            colored_masks.append(
+                get_colored_mask(
+                    self.masks[ix], binary.shape
+                )
+            )
+
+        self.colored_mask = np.stack(colored_masks)
+        self.imgitem.setImage(self.colored_mask[:, : self.nuset_widget.zlevel])
+
     @present_exceptions()
     def apply_threshold(self):
         params = self.get_params()
@@ -539,56 +652,15 @@ class ExportWidget(QtWidgets.QWidget):
 
         # 3D
         if self.nuset_widget.z_max > 0:
-            seg_img = np.stack(self.nuset_widget.imgs_segmented)
-            shape = np.stack(self.nuset_widget.imgs_projected).shape
-
+            if self.checkbox_multi2d.isChecked():
+                self._apply_threshold_2d_multi()
+            else:
+                self._apply_threshold_3d()
         # 2D
         else:
-            seg_img = self.nuset_widget.imgs_segmented[0].T
-            shape = self.nuset_widget.imgs_projected[0].T.shape
+            self._apply_threshold_2d()
 
-        print("Thresholding")
-        # binary array
-        binary_ = np.full(seg_img.shape, False, dtype=np.bool)
-        binary_[seg_img > params['thr']] = True
-
-        binary = np.full(shape, False, np.bool)
-
-        if len(shape) > 2:
-            binary[:binary_.shape[0], :binary_.shape[1], :binary_.shape[2]] = binary_
-        else:
-            binary[:binary_.shape[0], :binary_.shape[1]] = binary_
-
-        self.binary_shape = binary.shape
-
-        if params['minsize'] > 0:
-            print("Removing small objs")
-            binary = skimage.morphology.remove_small_objects(
-                binary, min_size=params['minsize'], connectivity=params['connectivity']
-            )
-
-        # areas = label_image(binary)
-
-        print("Creating sparse masks")
-        self.masks = get_sparse_masks(
-            segmented_img=binary,
-            raw_img_shape=shape,
-            edge_method=params['edge_method'],
-            selem=params['selem']
-        )
-
-        if len(shape) > 2:
-            self.colored_mask = get_colored_mask(self.masks, binary.T.shape)
-            self.imgitem.setImage(
-                self.colored_mask[:, :, self.nuset_widget.zlevel]
-            )
-        else:
-            self.colored_mask = get_colored_mask(self.masks, binary.shape)
-            self.imgitem.setImage(self.colored_mask)
-
-    @use_save_file_dialog('Save masks', None, '.h5')
-    @present_exceptions()
-    def save_masks(self, path, *args):
+    def _check_save_masks(self):
         if not self.nuset_widget.imgs_segmented:
             raise ValueError("You must segment images before you can proceed.")
 
@@ -596,31 +668,55 @@ class ExportWidget(QtWidgets.QWidget):
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
-        if QtWidgets.QMessageBox.question(
-            self, 'Export for CNMF?', 'This may take a few minutes, and could take ~30 minutes '
-                                      'if segmenting a large 3D stack. Proceed?',
-            ) == QtWidgets.QMessageBox.No:
-            return
+        if not self.masks.size > 0:
+            raise ValueError("You must apply the threshold before you can proceed")
 
-        if self.nuset_widget.z_max > 0:
-            seg_img = np.stack(self.nuset_widget.imgs_segmented)
-            shape = np.stack(self.nuset_widget.imgs_projected).shape
-
-        else:
-            seg_img = self.nuset_widget.imgs_segmented[0].T
-            shape = self.nuset_widget.imgs_projected[0].T.shape
-
-        Ain = get_sparse_masks(seg_img, shape)
+    @use_save_file_dialog('Save masks', None, '.h5')
+    @present_exceptions()
+    def save_masks_3d(self, path):
+        self._check_save_masks()
 
         d = \
             {
-                'sparse_mask': Ain,
-                **self.get_all_params()
+                'sparse_mask': self.masks,
+                'nuset_params': self.get_all_params()
             }
 
         HdfTools.save_dict(d, path, 'data')
 
+    @use_save_file_dialog('Save masks', None, '.h5')
+    @present_exceptions()
+    def save_masks_2d(self, path):
+        if not self.nuset_widget.imgs_segmented:
+            raise ValueError("You must segment images before you can proceed.")
+
+        for img in self.nuset_widget.imgs_segmented:
+            if not img.size > 0:
+                raise ValueError("Your must segment the entire stack before you can proceed.")
+
+        if not self.masks.size > 0:
+            raise ValueError("You must apply the threshold before you can proceed")
+
+        d = \
+            {
+                'sparse_mask': self.masks,
+                'nuset_params': self.get_all_params()
+            }
+
+        HdfTools.save_dict(d, path, 'data')
+
+    @present_exceptions()
     def export_to_viewer(self):
+        if not self.nuset_widget.imgs_segmented:
+            raise ValueError("You must segment images before you can proceed.")
+
+        for img in self.nuset_widget.imgs_segmented:
+            if not img.size > 0:
+                raise ValueError("Your must segment the entire stack before you can proceed.")
+
+        if not self.masks.size > 0:
+            raise ValueError("You must apply the threshold before you can proceed")
+
         roi_manager = self.nuset_widget.vi.viewer.parent().get_module('roi_manager')
         roi_manager.start_backend('Manual')
 
