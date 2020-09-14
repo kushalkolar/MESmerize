@@ -104,6 +104,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         if self.vi.work_env.imgdata.ndim == 4:
             is_3d = True
+        else:
+            is_3d = False
 
         # Make the output dict
         d = \
