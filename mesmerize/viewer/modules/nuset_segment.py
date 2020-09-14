@@ -577,13 +577,13 @@ class ExportWidget(QtWidgets.QWidget):
             selem=params['selem']
         )
 
-        self.colored_mask = get_colored_mask(self.masks, binary.shape)
-
-        if self.colored_mask.ndim > 2:
+        if len(shape) > 2:
+            self.colored_mask = get_colored_mask(self.masks, binary.T.shape)
             self.imgitem.setImage(
                 self.colored_mask[:, :, self.nuset_widget.zlevel]
             )
         else:
+            self.colored_mask = get_colored_mask(self.masks, binary.shape)
             self.imgitem.setImage(self.colored_mask)
 
     @use_save_file_dialog('Save masks', None, '.h5')
