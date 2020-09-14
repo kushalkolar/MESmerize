@@ -172,21 +172,23 @@ def run_multi(batch_dir, UUID, output):
     filename = [file_path + '_input.tiff']
     input_params = pickle.load(open(file_path + '.params', 'rb'))
 
-    seq = tifffile.TiffFile(filename).asarray()
+    seq = tifffile.TiffFile(filename[0]).asarray()
+    seq_shape = seq.shape
 
     # assume default tzxy
     for z in range(seq.shape[1]):
         tifffile.imsave(f'{file_path}_z{z}.tiff', seq[:, z, :, :])
 
+    del seq
 
     print('*********** Creating Process Pool ***********')
     c, dview, n_processes = cm.cluster.setup_cluster(
         backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
     )
     output_files = []
-    for z in range(seq.shape[1]):
-        print(f"Plane {z} / {seq.shape[1]}")
-        filename = ['{file_path}_z{z}.tiff']
+    for z in range(seq_shape[1]):
+        print(f"Plane {z} / {seq_shape[1]}")
+        filename = [f'{file_path}_z{z}.tiff']
         print('Creating memmap')
 
         memmap_fname = cm.save_memmap(
@@ -278,17 +280,34 @@ class Output:
         input_params_path = os.path.join(batch_path, f'{UUID}.params')
         input_params = pickle.load(open(input_params_path, 'rb'))
 
-        cnmf_data = load_dict_from_hdf5(
-            os.path.join(batch_path, f'{UUID}_results.hdf5')
-        )
+        if input_params['is_3d']:
+            roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
+            manager = roi_manager_gui.start_backend('VolMultiCNMF')
 
-        roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-        roi_manager_gui.start_backend('CNMFROI')
+            cnmf_data_dicts = \
+                [
+                    load_dict_from_hdf5(
+                        os.path.join(batch_path, f'{UUID}_results_z{z}.hdf5')
+                    )
+                    for z in range(vi.viewer.workEnv.imgdata.z_max + 1)
+                ]
 
-        roi_manager_gui.manager.add_all_components(
-            cnmf_data,
-            input_params_dict=input_params,
-        )
+            manager.add_all_components(
+                cnmf_data_dicts,
+                input_params
+            )
+        else:
+            cnmf_data = load_dict_from_hdf5(
+                os.path.join(batch_path, f'{UUID}_results.hdf5')
+            )
+
+            roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
+            roi_manager_gui.start_backend('CNMFROI')
+
+            roi_manager_gui.manager.add_all_components(
+                cnmf_data,
+                input_params_dict=input_params,
+            )
 
         name = input_params['item_name']
         vi.viewer.ui.label_curr_img_seq_name.setText(f'CNMF: {name}')

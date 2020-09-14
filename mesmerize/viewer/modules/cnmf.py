@@ -167,7 +167,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
                     "Seed file does not exist, check the path"
                 )
 
-            seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+            try:
+                seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+            except:
+                seed_params = 'unknown'
 
             d['use_seeds'] = True
             d['seed_params'] = seed_params

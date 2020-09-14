@@ -683,9 +683,8 @@ class ExportWidget(QtWidgets.QWidget):
         d = \
             {
                 'sparse_mask': sm,
-                'nuset_params': self.get_all_params()
+                'segment_params': self.get_all_params()
             }
-
         HdfTools.save_dict(d, path, 'data')
 
     @present_exceptions()
