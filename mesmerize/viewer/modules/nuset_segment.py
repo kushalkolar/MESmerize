@@ -671,33 +671,18 @@ class ExportWidget(QtWidgets.QWidget):
 
     @use_save_file_dialog('Save masks', None, '.h5')
     @present_exceptions()
-    def save_masks_3d(self, path):
-        self._check_save_masks()
+    def save_masks_cnmf(self, path):
+
+        if self.get_params()['multi-2d']:
+            sm = {}
+            for z in range(len(self.masks)):
+                sm[str(z)] = self.masks[z]  # each plane is addressed as an hdf5 group
+        else:
+            sm = self.masks
 
         d = \
             {
-                'sparse_mask': self.masks,
-                'nuset_params': self.get_all_params()
-            }
-
-        HdfTools.save_dict(d, path, 'data')
-
-    @use_save_file_dialog('Save masks', None, '.h5')
-    @present_exceptions()
-    def save_masks_2d(self, path):
-        if not self.nuset_widget.imgs_segmented:
-            raise ValueError("You must segment images before you can proceed.")
-
-        for img in self.nuset_widget.imgs_segmented:
-            if not img.size > 0:
-                raise ValueError("Your must segment the entire stack before you can proceed.")
-
-        if not self.masks.size > 0:
-            raise ValueError("You must apply the threshold before you can proceed")
-
-        d = \
-            {
-                'sparse_mask': self.masks,
+                'sparse_mask': sm,
                 'nuset_params': self.get_all_params()
             }
 
