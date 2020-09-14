@@ -210,7 +210,7 @@ def run_multi(batch_dir, UUID, output):
                 try:
                     # see if it's an h5 file produced by the nuset_segment GUI
                     hdict = HdfTools.load_dict(
-                        os.path.join(f'{filename}.ain'),
+                        os.path.join(f'{file_path}.ain'),
                         'data'
                     )
                     Ain = hdict[f'sparse_mask'][str(z)]
