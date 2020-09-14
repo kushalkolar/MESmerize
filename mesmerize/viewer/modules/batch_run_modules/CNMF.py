@@ -31,6 +31,7 @@ import traceback
 import json
 import logging
 from mesmerize.common.utils import HdfTools
+import tifffile
 
 
 if not sys.argv[0] == __file__:
@@ -44,6 +45,37 @@ def run(batch_dir: str, UUID: str):
     start_time = time()
 
     output = {'status': 0, 'output_info': ''}
+
+    file_path = os.path.join(batch_dir, UUID)
+    input_params = pickle.load(open(file_path + '.params', 'rb'))
+
+    try:
+        if 'is_3d' in input_params.keys():
+            if input_params['is_3d']:
+                run_multi(batch_dir, UUID, output)
+            else:
+                run_single(batch_dir, UUID, output)
+        else:
+            run_single(batch_dir, UUID, output)
+
+    except Exception as e:
+        output.update({'status': 0, 'output_info': traceback.format_exc()})
+
+    for mf in glob(batch_dir + '/memmap-*'):
+        try:
+            os.remove(mf)
+        except:
+            pass
+
+    end_time = time()
+    proc_time = (end_time - start_time) / 60
+
+    output.update({'processing_time': proc_time})
+
+    json.dump(output, open(file_path + '.out', 'w'))
+
+
+def run_single(batch_dir, UUID, output):
     n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
     file_path = os.path.join(batch_dir, UUID)
@@ -56,7 +88,107 @@ def run(batch_dir: str, UUID: str):
         backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
     )
 
-    try:
+    memmap_fname = cm.save_memmap(
+        filename,
+        base_name='memmap-',
+        order='C',
+        border_to_0=input_params['border_pix'],
+        dview=dview
+    )
+
+    Yr, dims, T = cm.load_memmap(memmap_fname)
+    Y = np.reshape(Yr.T, [T] + list(dims), order='F')
+
+    Ain = None
+
+    # seed components
+    if 'use_seeds' in input_params.keys():
+        if input_params['use_seeds']:
+            try:
+                # see if it's an h5 file produced by the nuset_segment GUI
+                hdict = HdfTools.load_dict(
+                    os.path.join(f'{filename}.ain'),
+                    'data'
+                )
+                Ain = hdict['sparse_mask']
+            except:
+                try:
+                    Ain = np.load(f'{UUID}.ain')
+                except Exception as e:
+                    output['warnings'] = f'Could not seed components, make sure that ' \
+                        f'the .ain file exists in the batch dir: {e}'
+
+    cnm = cnmf.CNMF(
+        dview=dview,
+        n_processes=n_processes,
+        Ain=Ain,
+        **input_params['cnmf_kwargs'],
+    )
+
+    cnm.fit(Y)
+
+    if input_params['refit']:
+        cnm = cnm.refit(Y, dview=dview)
+
+    cnm.params.change_params(params_dict=input_params['eval_kwargs'])
+
+    cnm.estimates.evaluate_components(
+        Y,
+        cnm.params,
+        dview=dview
+    )
+
+    cnm.estimates.select_components(use_object=True)
+
+    out_filename = f'{UUID}_results.hdf5'
+    cnm.save(out_filename)
+
+    output_files = [out_filename]
+
+    output.update(
+        {
+            'output': UUID,
+            'status': 1,
+            'output_files': output_files
+        }
+    )
+
+    dview.terminate()
+
+    return output
+
+
+def run_multi(batch_dir, UUID, output):
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
+    n_processes = int(n_processes)
+    file_path = os.path.join(batch_dir, UUID)
+
+
+    print('*********** Creating Process Pool ***********')
+    c, dview, n_processes = cm.cluster.setup_cluster(
+        backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
+    )
+
+    filename = [file_path + '_input.tiff']
+    input_params = pickle.load(open(file_path + '.params', 'rb'))
+
+    seq = tifffile.TiffFile(filename[0]).asarray()
+    seq_shape = seq.shape
+
+    # assume default tzxy
+    for z in range(seq.shape[1]):
+        tifffile.imsave(f'{file_path}_z{z}.tiff', seq[:, z, :, :])
+
+    del seq
+
+    print('*********** Creating Process Pool ***********')
+    c, dview, n_processes = cm.cluster.setup_cluster(
+        backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
+    )
+    output_files = []
+    for z in range(seq_shape[1]):
+        print(f"Plane {z} / {seq_shape[1]}")
+        filename = [f'{file_path}_z{z}.tiff']
         print('Creating memmap')
 
         memmap_fname = cm.save_memmap(
@@ -81,7 +213,7 @@ def run(batch_dir: str, UUID: str):
                         os.path.join(f'{filename}.ain'),
                         'data'
                     )
-                    Ain = hdict['sparse_mask']
+                    Ain = hdict[f'sparse_mask'][str(z)]
                 except:
                     try:
                         Ain = np.load(f'{UUID}.ain')
@@ -111,36 +243,22 @@ def run(batch_dir: str, UUID: str):
 
         cnm.estimates.select_components(use_object=True)
 
-        out_filename = f'{UUID}_results.hdf5'
+        out_filename = f'{UUID}_results_z{z}.hdf5'
         cnm.save(out_filename)
 
-        output_files = [out_filename]
+        output_files.append(out_filename)
 
-        output.update(
-            {
-                'output': UUID,
-                'status': 1,
-                'output_files': output_files
-            }
-        )
-
-    except Exception as e:
-        output.update({'status': 0, 'output_info': traceback.format_exc()})
+    output.update(
+        {
+            'output': UUID,
+            'status': 1,
+            'output_files': output_files
+        }
+    )
 
     dview.terminate()
 
-    for mf in glob(batch_dir + '/memmap-*'):
-        try:
-            os.remove(mf)
-        except:
-            pass
-
-    end_time = time()
-    proc_time = (end_time - start_time) / 60
-
-    output.update({'processing_time': proc_time})
-
-    json.dump(output, open(file_path + '.out', 'w'))
+    return output
 
 
 class Output:
@@ -162,17 +280,34 @@ class Output:
         input_params_path = os.path.join(batch_path, f'{UUID}.params')
         input_params = pickle.load(open(input_params_path, 'rb'))
 
-        cnmf_data = load_dict_from_hdf5(
-            os.path.join(batch_path, f'{UUID}_results.hdf5')
-        )
+        if input_params['is_3d']:
+            roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
+            manager = roi_manager_gui.start_backend('VolMultiCNMF')
 
-        roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-        roi_manager_gui.start_backend('CNMFROI')
+            cnmf_data_dicts = \
+                [
+                    load_dict_from_hdf5(
+                        os.path.join(batch_path, f'{UUID}_results_z{z}.hdf5')
+                    )
+                    for z in range(vi.viewer.workEnv.imgdata.z_max + 1)
+                ]
 
-        roi_manager_gui.manager.add_all_components(
-            cnmf_data,
-            input_params_dict=input_params,
-        )
+            manager.add_all_components(
+                cnmf_data_dicts,
+                input_params
+            )
+        else:
+            cnmf_data = load_dict_from_hdf5(
+                os.path.join(batch_path, f'{UUID}_results.hdf5')
+            )
+
+            roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
+            roi_manager_gui.start_backend('CNMFROI')
+
+            roi_manager_gui.manager.add_all_components(
+                cnmf_data,
+                input_params_dict=input_params,
+            )
 
         name = input_params['item_name']
         vi.viewer.ui.label_curr_img_seq_name.setText(f'CNMF: {name}')

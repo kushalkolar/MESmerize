@@ -102,12 +102,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
             except:
                 raise ValueError("Evaluation kwargs not formatted properly.")
 
+        if self.vi.work_env.imgdata.ndim == 4:
+            is_3d = True
+
         # Make the output dict
         d = \
             {
                 'item_name': self.ui.lineEdName.text(),
                 'refit': self.ui.checkBoxRefit.isChecked(),
-                'border_pix': bord_px
+                'border_pix': bord_px,
+                'is_3d': is_3d
             }
 
         # Group the kwargs of the two parts seperately
@@ -163,7 +167,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
                     "Seed file does not exist, check the path"
                 )
 
-            seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+            try:
+                seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+            except:
+                seed_params = 'unknown'
 
             d['use_seeds'] = True
             d['seed_params'] = seed_params
