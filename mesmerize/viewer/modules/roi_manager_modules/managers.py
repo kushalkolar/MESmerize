@@ -357,7 +357,7 @@ class ManagerVolCNMF(ManagerVolROI):
 
             self.roi_list.append(roi)
 
-        self.roi_list.reindex_colormap()
+        self.roi_list.reindex_colormap(random_shuffle=True)
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
 
     def add_roi(self):
@@ -435,8 +435,8 @@ class ManagerVolMultiCNMF(ManagerVolROI):
         self.roi_list = ROIList(self.ui, VolMultiCNMFROI, self.vi)
 
         self.input_params_dict: dict = None
-        self.idx_components: List[np.ndarray] = None
-        self.orig_idx_components: List[np.ndarray] = None
+        self.idx_components: List[np.ndarray] = []
+        self.orig_idx_components: List[np.ndarray] = []
 
         self.cnmf_data_dicts: List[dict] = []
 
@@ -490,7 +490,8 @@ class ManagerVolMultiCNMF(ManagerVolROI):
 
             contours = caiman_get_contours(
                 self.cnmA[-1][:, self.idx_components[-1]],
-                self.dims[-1]
+                self.dims[-1],
+                swap_dim=True
             )
 
             num_components = len(self.cnmC[-1])
@@ -506,6 +507,11 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                 curve_data = self.cnmC[-1][ix]
                 contour = contours[ix]
 
+                if self.cnm_dfof[-1] is not None:
+                    dfof_data = self.cnm_dfof[-1][ix]
+                else:
+                    dfof_data = None
+
                 roi = VolMultiCNMFROI(
                     curve_plot_item=self.get_plot_item(),
                     view_box=self.vi.viewer.getView(),
@@ -513,14 +519,14 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                     curve_data=curve_data,
                     contour=contour,
                     spike_data=self.cnmS[-1][ix],
-                    dfof_data=self.cnm_dfof[-1][ix] if (self.cnm_dfof[-1][ix] is not None) else None,
+                    dfof_data=dfof_data,
                     zcenter=zcenter,
                     zlevel=self.vi.viewer.current_zlevel
                 )
 
                 self.roi_list.append(roi)
 
-        self.roi_list.reindex_colormap()
+        self.roi_list.reindex_colormap(random_shuffle=True)
 
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
 
