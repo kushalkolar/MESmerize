@@ -82,12 +82,12 @@
         <item>
          <widget class="QLabel" name="label_27">
           <property name="text">
-           <string>gnb:</string>
+           <string>nb:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBoxGnb">
+         <widget class="QSpinBox" name="spinBoxnb">
           <property name="maximum">
            <number>99</number>
           </property>
@@ -815,7 +815,7 @@ Use single quotes for strings, do not use double quotes</string>
  </widget>
  <tabstops>
   <tabstop>spinBoxP</tabstop>
-  <tabstop>spinBoxGnb</tabstop>
+  <tabstop>spinBoxnb</tabstop>
   <tabstop>doubleSpinBoxMergeThresh</tabstop>
   <tabstop>spinBoxRf</tabstop>
   <tabstop>spinBoxStrideCNMF</tabstop>

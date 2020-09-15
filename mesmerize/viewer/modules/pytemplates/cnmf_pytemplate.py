@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './cnmf_pytemplate.ui'
+# Form implementation generated from reading ui file 'cnmf_pytemplate.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -46,11 +46,11 @@ class Ui_DockWidget(object):
         self.label_27 = QtWidgets.QLabel(self.dockWidgetContents)
         self.label_27.setObjectName("label_27")
         self.horizontalLayout_19.addWidget(self.label_27)
-        self.spinBoxGnb = QtWidgets.QSpinBox(self.dockWidgetContents)
-        self.spinBoxGnb.setMaximum(99)
-        self.spinBoxGnb.setProperty("value", 1)
-        self.spinBoxGnb.setObjectName("spinBoxGnb")
-        self.horizontalLayout_19.addWidget(self.spinBoxGnb)
+        self.spinBoxnb = QtWidgets.QSpinBox(self.dockWidgetContents)
+        self.spinBoxnb.setMaximum(99)
+        self.spinBoxnb.setProperty("value", 1)
+        self.spinBoxnb.setObjectName("spinBoxnb")
+        self.horizontalLayout_19.addWidget(self.spinBoxnb)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_19.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout_19)
@@ -335,8 +335,8 @@ class Ui_DockWidget(object):
         self.retranslateUi(DockWidget)
         self.lineEdName.returnPressed.connect(self.btnAddToBatchCNMF.click)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
-        DockWidget.setTabOrder(self.spinBoxP, self.spinBoxGnb)
-        DockWidget.setTabOrder(self.spinBoxGnb, self.doubleSpinBoxMergeThresh)
+        DockWidget.setTabOrder(self.spinBoxP, self.spinBoxnb)
+        DockWidget.setTabOrder(self.spinBoxnb, self.doubleSpinBoxMergeThresh)
         DockWidget.setTabOrder(self.doubleSpinBoxMergeThresh, self.spinBoxRf)
         DockWidget.setTabOrder(self.spinBoxRf, self.spinBoxStrideCNMF)
         DockWidget.setTabOrder(self.spinBoxStrideCNMF, self.spinBoxK)
@@ -345,7 +345,8 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.spinBox_gSig_y, self.spinBox_ssub)
         DockWidget.setTabOrder(self.spinBox_ssub, self.spinBox_tsub)
         DockWidget.setTabOrder(self.spinBox_tsub, self.comboBox_method_init)
-        DockWidget.setTabOrder(self.comboBox_method_init, self.lineEdit_seed_components_path)
+        DockWidget.setTabOrder(self.comboBox_method_init, self.groupBox_seed_components)
+        DockWidget.setTabOrder(self.groupBox_seed_components, self.lineEdit_seed_components_path)
         DockWidget.setTabOrder(self.lineEdit_seed_components_path, self.groupBox_cnmf_kwargs)
         DockWidget.setTabOrder(self.groupBox_cnmf_kwargs, self.plainTextEdit_cnmf_kwargs)
         DockWidget.setTabOrder(self.plainTextEdit_cnmf_kwargs, self.doubleSpinBoxMinSNR)
@@ -365,7 +366,7 @@ class Ui_DockWidget(object):
         self.label_22.setText(_translate("DockWidget", "Order of the autoregressive system"))
         self.label.setText(_translate("DockWidget", "p:"))
         self.label_28.setText(_translate("DockWidget", "Global number of background components"))
-        self.label_27.setText(_translate("DockWidget", "gnb:"))
+        self.label_27.setText(_translate("DockWidget", "nb:"))
         self.label_11.setText(_translate("DockWidget", "Merging threshold, max correlation allowed"))
         self.label_10.setText(_translate("DockWidget", "merge_thresh:"))
         self.label_24.setText(_translate("DockWidget", "Half size of patch in pixels"))
