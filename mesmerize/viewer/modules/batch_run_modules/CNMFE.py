@@ -110,7 +110,7 @@ def run(batch_dir: str, UUID: str):
 
 
         memmap_path = cm.save_memmap(
-            filename, base_name=f'memmap-', order='C', dview=dview, border_to_0=input_params['border_pix'],
+            filename, base_name=f'memmap-{UUID}', order='C', dview=dview, border_to_0=input_params['border_pix'],
 
         )
 
