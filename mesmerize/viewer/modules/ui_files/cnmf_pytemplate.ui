@@ -182,6 +182,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="checkBoxRfNone">
+          <property name="toolTip">
+           <string>Set `rf` as `None`</string>
+          </property>
+          <property name="text">
+           <string>None</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_10">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -249,7 +259,7 @@
         <item>
          <widget class="QLabel" name="label_31">
           <property name="text">
-           <string>k:</string>
+           <string>K:</string>
           </property>
          </widget>
         </item>
@@ -496,7 +506,7 @@ Use single quotes for strings, do not use double quotes.</string>
          <string/>
         </property>
         <property name="title">
-         <string>Use CNMF &amp;kwargs</string>
+         <string>Use additional CNMF params</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -614,6 +624,23 @@ Use single quotes for strings, do not use double quotes.</string>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_15">
         <item>
+         <widget class="QCheckBox" name="checkBoxUseCNN">
+          <property name="text">
+           <string>use_cnn</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_26">
           <property name="text">
            <string>cnn_thr:</string>
@@ -633,23 +660,6 @@ Use single quotes for strings, do not use double quotes.</string>
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer_16">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
@@ -671,7 +681,7 @@ Use single quotes for strings, do not use double quotes.</string>
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_3">
+         <spacer name="horizontalSpacer_16">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -733,7 +743,7 @@ Use single quotes for strings, do not use double quotes.</string>
 Use single quotes for strings, do not use double quotes</string>
         </property>
         <property name="title">
-         <string>Use e&amp;valuation params</string>
+         <string>Use additional &amp;quality (evaluation) params</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -818,6 +828,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>spinBoxnb</tabstop>
   <tabstop>doubleSpinBoxMergeThresh</tabstop>
   <tabstop>spinBoxRf</tabstop>
+  <tabstop>checkBoxRfNone</tabstop>
   <tabstop>spinBoxStrideCNMF</tabstop>
   <tabstop>spinBoxK</tabstop>
   <tabstop>spinBox_gSig_x</tabstop>
@@ -831,6 +842,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
   <tabstop>doubleSpinBoxMinSNR</tabstop>
   <tabstop>doubleSpinBoxRvalThr</tabstop>
+  <tabstop>checkBoxUseCNN</tabstop>
   <tabstop>doubleSpinBoxCNNThr</tabstop>
   <tabstop>doubleSpinBox_cnn_lowest</tabstop>
   <tabstop>spinBoxDecayTime</tabstop>
