@@ -26,6 +26,7 @@ from time import time
 import caiman as cm
 from caiman.source_extraction.cnmf import cnmf as cnmf
 from caiman.utils.utils import load_dict_from_hdf5
+from caiman.source_extraction.cnmf.params import CNMFParams
 import pickle
 import traceback
 import json
@@ -61,7 +62,7 @@ def run(batch_dir: str, UUID: str):
     except Exception as e:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
-    for mf in glob(batch_dir + '/memmap-*'):
+    for mf in glob(os.path.join(batch_dir, f'memmap-{UUID}*')):
         try:
             os.remove(mf)
         except:
@@ -90,7 +91,7 @@ def run_single(batch_dir, UUID, output):
 
     memmap_fname = cm.save_memmap(
         filename,
-        base_name='memmap-',
+        base_name=f'memmap-{UUID}',
         order='C',
         border_to_0=input_params['border_pix'],
         dview=dview
@@ -107,22 +108,33 @@ def run_single(batch_dir, UUID, output):
             try:
                 # see if it's an h5 file produced by the nuset_segment GUI
                 hdict = HdfTools.load_dict(
-                    os.path.join(f'{filename}.ain'),
+                    os.path.join(f'{file_path}.ain'),
                     'data'
                 )
                 Ain = hdict['sparse_mask']
             except:
                 try:
-                    Ain = np.load(f'{UUID}.ain')
+                    Ain = np.load(f'{file_path}.ain')
                 except Exception as e:
                     output['warnings'] = f'Could not seed components, make sure that ' \
                         f'the .ain file exists in the batch dir: {e}'
+
+    # seeded
+    if Ain is not None:
+        input_params['cnmf_kwargs'].update(
+            {
+                'only_init': False,
+                'rf': None
+            }
+        )
+
+    cnmf_params = CNMFParams(params_dict=input_params['cnmf_kwargs'])
 
     cnm = cnmf.CNMF(
         dview=dview,
         n_processes=n_processes,
         Ain=Ain,
-        **input_params['cnmf_kwargs'],
+        params=cnmf_params,
     )
 
     cnm.fit(Y)
@@ -193,7 +205,7 @@ def run_multi(batch_dir, UUID, output):
 
         memmap_fname = cm.save_memmap(
             filename,
-            base_name='memmap-',
+            base_name=f'memmap-{UUID}',
             order='C',
             border_to_0=input_params['border_pix'],
             dview=dview
@@ -205,29 +217,33 @@ def run_multi(batch_dir, UUID, output):
         Ain = None
 
         # seed components
-        if 'use_seeds' in input_params.keys():
-            if input_params['use_seeds']:
-                try:
-                    # see if it's an h5 file produced by the nuset_segment GUI
-                    hdict = HdfTools.load_dict(
-                        os.path.join(f'{file_path}.ain'),
-                        'data'
-                    )
-                    Ain = hdict[f'sparse_mask'][str(z)]
-                    print('Using seeds')
-                except:
-                    try:
-                        Ain = np.load(f'{UUID}.ain')
-                        print('Using seeds')
-                    except Exception as e:
-                        output['warnings'] = f'Could not seed components, make sure that ' \
-                            f'the .ain file exists in the batch dir: {e}'
+        # see if it's an h5 file produced by the nuset_segment GUI
+        try:
+            hdict = HdfTools.load_dict(os.path.join(f'{file_path}.ain'), 'data')
+            Ain = hdict[f'sparse_mask'][str(z)]
+        except Exception as e:
+            output['warnings'] = f'Could not seed components, make sure that ' \
+                f'the .ain file exists in the batch dir: {e}'
+
+        #print(Ain)
+        #raise Exception
+
+        # seeded
+        if Ain is not None:
+            input_params['cnmf_kwargs'].update(
+                {
+                    'only_init': False,
+                    'rf': None
+                }
+            )
+
+        cnmf_params = CNMFParams(params_dict=input_params['cnmf_kwargs'])
 
         cnm = cnmf.CNMF(
             dview=dview,
             n_processes=n_processes,
             Ain=Ain,
-            **input_params['cnmf_kwargs'],
+            params=cnmf_params,
         )
 
         cnm.fit(Y)
@@ -235,7 +251,7 @@ def run_multi(batch_dir, UUID, output):
         if input_params['refit']:
             cnm = cnm.refit(Y, dview=dview)
 
-        cnm.params.change_params(params_dict=input_params['eval_kwargs'])
+        cnm.params.set('quality', input_params['eval_kwargs'])
 
         cnm.estimates.evaluate_components(
             Y,
@@ -249,6 +265,8 @@ def run_multi(batch_dir, UUID, output):
         cnm.save(out_filename)
 
         output_files.append(out_filename)
+
+        os.remove(filename[0])
 
     output.update(
         {

@@ -54,15 +54,17 @@ class ModuleGUI(QtWidgets.QDockWidget):
         except StopIteration:
             bord_px = 0
 
+        rf = self.ui.spinBoxRf.value()
+
         # CNMF kwargs
         cnmf_kwargs = \
             {
                 'p': self.ui.spinBoxP.value(),
-                'gnb': self.ui.spinBoxGnb.value(),
+                'nb': self.ui.spinBoxnb.value(),
                 'merge_thresh': self.ui.doubleSpinBoxMergeThresh.value(),
-                'rf': self.ui.spinBoxRf.value(),
+                'rf': rf if not self.ui.checkBoxRfNone.isChecked() else None,
                 'stride': self.ui.spinBoxStrideCNMF.value(),
-                'k': self.ui.spinBoxK.value(),
+                'K': self.ui.spinBoxK.value(),
                 'gSig': [
                             self.ui.spinBox_gSig_x.value(),
                             self.ui.spinBox_gSig_y.value()
@@ -87,6 +89,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             {
                 'min_SNR': self.ui.doubleSpinBoxMinSNR.value(),
                 'rval_thr': self.ui.doubleSpinBoxRvalThr.value(),
+                'use_cnn': self.ui.checkBoxUseCNN.isChecked(),
                 'min_cnn_thr': self.ui.doubleSpinBoxCNNThr.value(),
                 'cnn_lowest': self.ui.doubleSpinBox_cnn_lowest.value(),
                 'decay_time': self.ui.spinBoxDecayTime.value(),
@@ -176,6 +179,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
             d['use_seeds'] = True
             d['seed_params'] = seed_params
+        else:
+            d['use_seeds'] = False
 
         batch_manager = get_window_manager().get_batch_manager()
         u = batch_manager.add_item(
