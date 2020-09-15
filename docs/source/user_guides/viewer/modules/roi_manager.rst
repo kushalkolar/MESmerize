@@ -64,6 +64,7 @@ Set ROI Tag                 Click to set the tag, or just press return in the te
 
 .. note:: It is generally advisable to keep your ROI tags short with lowercase letters. When sharing your project you can provide a mapping for all your keys. This helps maintain consistency throughout your project and makes the data more readable.
 
+.. note:: When using 3D data, the ROIs are colored randomly along the list (not linearly as shown in the image). If you want to set the colors linearly call this in the Viewer Console: ``get_workEnv().roi_manager.roi_list.reindex_colormap(random_shuffle=False)``
 
 **Keyboard shortcuts**.
 
