@@ -117,9 +117,22 @@ class ROIList(list):
         self.list_widget.clear()
         self.list_widget_tags.clear()
         self.disconnect_all()
-        for i in range(self.__len__()):
-            self.vi.viewer.status_bar_label.showMessage('Removing ROIs #:' + str(i))
-            self.__delitem__(0)
+        self._clear()
+        # for i in range(self.__len__()):
+        #     self.vi.viewer.status_bar_label.showMessage('Removing ROIs #:' + str(i))
+        #     self.__delitem__(0)
+
+    def _clear(self):
+        for key in range(self.__len__()):
+            self.vi.viewer.status_bar_label.showMessage('Removing ROIs #:' + str(key))
+            self.vi.workEnv_changed('ROI Removed')
+            roi = self.__getitem__(0)
+            roi.remove_from_viewer()
+            super(ROIList, self).__delitem__(0)
+            if self.__len__() == 0:
+                self.list_widget.clear()
+                self.list_widget_tags.clear()
+                return
 
     def __delitem__(self, key):
         """Delete an ROI from the list and cleanup from the viewer, reindex the colors etc."""
