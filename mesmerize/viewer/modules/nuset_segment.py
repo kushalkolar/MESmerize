@@ -535,6 +535,9 @@ class ExportWidget(QtWidgets.QWidget):
         button_export_cnmf_2d = QtWidgets.QPushButton(self)
         button_export_cnmf_2d.setText("Export 2D CNMF Seeds")
         button_export_cnmf_2d.setStyleSheet("font-weight: bold")
+        button_export_cnmf_2d.clicked.connect(
+            lambda: self.save_masks_cnmf()
+        )
         hlayout_export_buttons.addWidget(button_export_cnmf_2d)
 
         # button_export_cnmf_3d = QtWidgets.QPushButton(self)
@@ -749,7 +752,7 @@ class ExportWidget(QtWidgets.QWidget):
     @use_save_file_dialog('Save masks', None, '.h5')
     @present_exceptions()
     def save_masks_cnmf(self, path):
-
+        print("Please wait, saving masks...")
         if self.get_params()['multi-2d']:
             sm = {}
             for z in range(len(self.masks)):
@@ -763,6 +766,7 @@ class ExportWidget(QtWidgets.QWidget):
                 'segment_params': self.get_all_params()
             }
         HdfTools.save_dict(d, path, 'data')
+        print("Finishing saving masks!")
 
     @present_exceptions()
     def export_to_viewer(self):
