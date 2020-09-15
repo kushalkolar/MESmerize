@@ -8,6 +8,7 @@
 - Segmentation using deep learning via NuSeT.
 
 ### Fixed
+- ROI removal is much faster when clearing the work environment
 - Bug fix with saving Stimulus Tuning plots
 - Unnoticable bug with viewer modules that don't have defined dock areas
 
