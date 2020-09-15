@@ -27,7 +27,7 @@ from typing import List, Tuple
 from matplotlib import cm
 from matplotlib.colors import LinearSegmentedColormap
 from multiprocessing import Pool, cpu_count
-from scipy.ndimage import label as label_image
+from scipy.ndimage import label as label_image, generate_binary_structure
 from joblib import Parallel, delayed
 import scipy.sparse
 from scipy.spatial import cKDTree, ConvexHull
@@ -164,6 +164,34 @@ def normalize_image(img, dtype):
     imgN = imgN.astype(dtype)
 
     return imgN
+
+
+# adapted from skimage.morphology.remove_small_objects
+def remove_large_objects(ar, max_size=128, connectivity=1):
+    if max_size == -1:  # shortcut for efficiency
+        return ar
+
+    out = ar.copy()
+
+    if out.dtype == bool:
+        selem = generate_binary_structure(ar.ndim, connectivity)
+        ccs = np.zeros_like(ar, dtype=np.int32)
+        label_image(ar, selem, output=ccs)
+    else:
+        ccs = out
+
+    try:
+        component_sizes = np.bincount(ccs.ravel())
+    except ValueError:
+        raise ValueError("Negative value labels are not supported. Try "
+                         "relabeling the input with `scipy.ndimage.label` or "
+                         "`skimage.morphology.label`.")
+
+    too_big = component_sizes > max_size
+    too_big_mask = too_big[ccs]
+    out[too_big_mask] = 0
+
+    return out
 
 
 def _get_sparse_mask(areas, i, edge_method, selem):
@@ -352,14 +380,16 @@ class ModuleGUI(QtWidgets.QMainWindow):
 class ExportWidget(QtWidgets.QWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self)
+        self.resize(600, 850)
         self.setWindowTitle('Nuset Exporter')
         self.nuset_widget: NusetWidget = parent
 
         self.vlayout = QtWidgets.QVBoxLayout(self)
 
+        hlayout_threshold = QtWidgets.QHBoxLayout(self)
         label_threshold = QtWidgets.QLabel(self)
         label_threshold.setText("separation threshold:")
-        self.vlayout.addWidget(label_threshold)
+        hlayout_threshold.addWidget(label_threshold)
 
         # TODO: I should really use qtap here
         self.spinbox_thr = QtWidgets.QDoubleSpinBox(self)
@@ -371,30 +401,37 @@ class ExportWidget(QtWidgets.QWidget):
         self.spinbox_thr.setToolTip(
             "Threshold for cell separation"
         )
-        self.vlayout.addWidget(self.spinbox_thr)
+        hlayout_threshold.addWidget(self.spinbox_thr)
+        hlayout_threshold.addItem(
+            QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        )
+        self.vlayout.addLayout(hlayout_threshold)
 
-        self.slider_thr = QtWidgets.QSlider(self, orientation=QtCore.Qt.Horizontal)
-        self.slider_thr.setMaximum(100)
-        self.slider_thr.setMinimum(0)
-        self.slider_thr.setValue(50)
-        self.slider_thr.setToolTip(
-            "Threshold for cell separation"
-        )
-        self.slider_thr.valueChanged.connect(
-            lambda v: self.spinbox_thr.setValue(float(v) / 100.0)
-        )
-        self.vlayout.addWidget(self.slider_thr)
+        # sliders are overrated
+        # self.slider_thr = QtWidgets.QSlider(self, orientation=QtCore.Qt.Horizontal)
+        # self.slider_thr.setMaximum(100)
+        # self.slider_thr.setMinimum(0)
+        # self.slider_thr.setValue(50)
+        # self.slider_thr.setToolTip(
+        #     "Threshold for cell separation"
+        # )
+        # self.slider_thr.valueChanged.connect(
+        #     lambda v: self.spinbox_thr.setValue(float(v) / 100.0)
+        # )
+        # self.vlayout.addWidget(self.slider_thr)
+        #
+        # self.spinbox_thr.valueChanged.connect(
+        #     lambda v: self.slider_thr.setValue(int(v * 100))
+        # )
 
-        self.spinbox_thr.valueChanged.connect(
-            lambda v: self.slider_thr.setValue(int(v * 100))
-        )
+        hlayout_minmax_size = QtWidgets.QHBoxLayout(self)
 
         label_minsize = QtWidgets.QLabel(self)
         label_minsize.setText('min size (pixels)')
         label_minsize.setToolTip(
             "Minimum size for accepting an object, in pixels"
         )
-        self.vlayout.addWidget(label_minsize)
+        hlayout_minmax_size.addWidget(label_minsize)
 
         self.spinbox_minsize = QtWidgets.QSpinBox(self)
         self.spinbox_minsize.setMinimum(0)
@@ -403,11 +440,35 @@ class ExportWidget(QtWidgets.QWidget):
         self.spinbox_minsize.setToolTip(
             "Minimum size for accepting an object, in pixels"
         )
-        self.vlayout.addWidget(self.spinbox_minsize)
+        hlayout_minmax_size.addWidget(self.spinbox_minsize)
+
+
+        label_maxsize = QtWidgets.QLabel(self)
+        label_maxsize.setText("max size (pixels)")
+        label_maxsize.setToolTip(
+            "Maximum size of accepting an object, in pixels"
+        )
+        hlayout_minmax_size.addWidget(label_maxsize)
+
+        self.spinbox_maxsize = QtWidgets.QSpinBox(self)
+        self.spinbox_maxsize.setMinimum(-1)
+        self.spinbox_maxsize.setMaximum(999999)
+        self.spinbox_maxsize.setValue(-1)
+        self.spinbox_maxsize.setToolTip(
+            "Maximum size of accepting an object, in pixels.\nSet as -1 to disable."
+        )
+
+        hlayout_minmax_size.addWidget(self.spinbox_maxsize)
+        hlayout_minmax_size.addItem(
+            QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        )
+        self.vlayout.addLayout(hlayout_minmax_size)
+
+        hlayout_conn_struc = QtWidgets.QHBoxLayout(self)
 
         label_connectivity = QtWidgets.QLabel(self)
         label_connectivity.setText("connectivity")
-        self.vlayout.addWidget(label_connectivity)
+        hlayout_conn_struc.addWidget(label_connectivity)
 
         self.spinbox_connectivity = QtWidgets.QSpinBox(self)
         self.spinbox_connectivity.setMinimum(1)
@@ -416,21 +477,28 @@ class ExportWidget(QtWidgets.QWidget):
         self.spinbox_connectivity.setToolTip(
             "Connectivity around each pixel"
         )
-        self.vlayout.addWidget(self.spinbox_connectivity)
+        hlayout_conn_struc.addWidget(self.spinbox_connectivity)
 
         label_selem = QtWidgets.QLabel(self)
         label_selem.setText("structural_element")
-        self.vlayout.addWidget(label_selem)
+        hlayout_conn_struc.addWidget(label_selem)
 
         self.spinbox_selem = QtWidgets.QSpinBox(self)
         self.spinbox_selem.setMinimum(0)
         self.spinbox_selem.setMaximum(50)
         self.spinbox_selem.setValue(3)
-        self.vlayout.addWidget(self.spinbox_selem)
+        hlayout_conn_struc.addWidget(self.spinbox_selem)
+
+        hlayout_conn_struc.addItem(
+            QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        )
+        self.vlayout.addLayout(hlayout_conn_struc)
+
+        hlayout_edge_multi_2d = QtWidgets.QHBoxLayout(self)
 
         label_edge_method = QtWidgets.QLabel(self)
         label_edge_method.setText("Edge method")
-        self.vlayout.addWidget(label_edge_method)
+        hlayout_edge_multi_2d.addWidget(label_edge_method)
 
         self.combo_edge_method = QtWidgets.QComboBox(self)
         self.combo_edge_method.addItems(
@@ -439,7 +507,7 @@ class ExportWidget(QtWidgets.QWidget):
         self.combo_edge_method.setToolTip(
             "Method to deal with object edges"
         )
-        self.vlayout.addWidget(self.combo_edge_method)
+        hlayout_edge_multi_2d.addWidget(self.combo_edge_method)
 
         self.checkbox_multi2d = QtWidgets.QCheckBox(self)
         self.checkbox_multi2d.setText("Use multi-2D for 3D data")
@@ -447,7 +515,12 @@ class ExportWidget(QtWidgets.QWidget):
             "Creates a separate sparse array for each z-plane, "
             "instead of a single sparse array for the entire stack."
         )
-        self.vlayout.addWidget(self.checkbox_multi2d)
+        hlayout_edge_multi_2d.addWidget(self.checkbox_multi2d)
+
+        hlayout_edge_multi_2d.addItem(
+            QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        )
+        self.vlayout.addLayout(hlayout_edge_multi_2d)
 
         button_apply_thr_params = QtWidgets.QPushButton(self)
         button_apply_thr_params.setText("Apply")
@@ -464,10 +537,10 @@ class ExportWidget(QtWidgets.QWidget):
         button_export_cnmf_2d.setStyleSheet("font-weight: bold")
         hlayout_export_buttons.addWidget(button_export_cnmf_2d)
 
-        button_export_cnmf_3d = QtWidgets.QPushButton(self)
-        button_export_cnmf_3d.setText("Export 3D CNMF Seeds")
-        button_export_cnmf_3d.setStyleSheet("font-weight: bold")
-        hlayout_export_buttons.addWidget(button_export_cnmf_3d)
+        # button_export_cnmf_3d = QtWidgets.QPushButton(self)
+        # button_export_cnmf_3d.setText("Export 3D CNMF Seeds")
+        # button_export_cnmf_3d.setStyleSheet("font-weight: bold")
+        # hlayout_export_buttons.addWidget(button_export_cnmf_3d)
 
         button_export_viewer_rois = QtWidgets.QPushButton(self)
         button_export_viewer_rois.setText("Export to Viewer as Manual ROIs")
@@ -511,6 +584,7 @@ class ExportWidget(QtWidgets.QWidget):
             'selem': selem if selem > 0 else None,
             'edge_method': self.combo_edge_method.currentText(),
             'minsize': self.spinbox_minsize.value(),
+            'maxsize': self.spinbox_maxsize.value(),
             'connectivity': self.spinbox_connectivity.value(),
             'multi-2d': self.checkbox_multi2d.isChecked()
         }
@@ -549,6 +623,9 @@ class ExportWidget(QtWidgets.QWidget):
             print("Removing small objs")
             binary = skimage.morphology.remove_small_objects(
                 binary, min_size=params['minsize'], connectivity=params['connectivity']
+            )
+            binary = remove_large_objects(
+                binary, params['maxsize'], connectivity=params['connectivity']
             )
 
         return binary
@@ -800,6 +877,11 @@ class NusetWidget(QtWidgets.QWidget):
         arg_opts_preprocess = \
             {
                 'img': {'ignore': True},
+
+                'sigmoid_cutoff': {
+                    'step': 10,
+                    'minmax': (0, 9999.9)
+                },
 
                 'sigmoid_gain': {
                     'step': 0.01
