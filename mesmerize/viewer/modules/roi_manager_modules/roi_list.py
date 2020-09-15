@@ -183,7 +183,7 @@ class ROIList(list):
         for i in range(self.list_widget.count()):
             self.list_widget.item(i).setText(str(i))
 
-    def reindex_colormap(self):
+    def reindex_colormap(self, random_shuffle=False):
         """Reindex the colors so they sequentially follow the HSV colormap"""
         cm = matplotlib_color_map.get_cmap('hsv')
         cm._init()
@@ -191,8 +191,14 @@ class ROIList(list):
 
         cm_ixs = np.linspace(0, 210, self.__len__(), dtype=int)
 
-        for ix in range(self.__len__()):
-            c = lut[cm_ixs[ix]]
+        ixs = np.arange(self.__len__())
+        color_ixs = np.copy(ixs)
+
+        if random_shuffle:
+            np.random.shuffle(color_ixs)
+
+        for ix, color_ix in zip(ixs, color_ixs):
+            c = lut[cm_ixs[color_ix]]
             try:
                 roi = self.__getitem__(ix)
             except IndexError:
