@@ -494,7 +494,9 @@ class ScatterROI(BaseROI):
 
     def _draw(self):
         """Create the scatter plot that is used for visualization of the spatial localization"""
-        self.roi_graphics_object = pg.ScatterPlotItem(self.roi_xs, self.roi_ys, symbol='s', size=self.spot_size)
+        self.roi_graphics_object = pg.ScatterPlotItem(
+            self.roi_xs, self.roi_ys, symbol='s', size=self.spot_size, pxMode=True
+        )
 
     @classmethod
     def from_state(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, state: dict, **kwargs):
