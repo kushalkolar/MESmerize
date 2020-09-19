@@ -81,7 +81,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.vi.viewer.status_bar_label.showMessage('Loading image sequence from mesfile please wait...')
             self.vi.viewer.workEnv = ViewerWorkEnv.from_mesfile(self.mesfile, s.text().split(': ')[0])
         except KeyError as ke:
-            QtWidgets.QMessageBox.warning(self, 'Error', str(ke), QtWidgets.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self, f'KeyError: {ke}', traceback.format_exc(), QtWidgets.QMessageBox.Ok)
             self.vi.viewer.status_bar_label.clearMessage()
             return
 
