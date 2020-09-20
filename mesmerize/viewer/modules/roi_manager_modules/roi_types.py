@@ -601,7 +601,9 @@ class VolMultiCNMFROI(ScatterROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
                  spike_data: np.ndarray = None, dfof_data: np.ndarray = None, metadata: dict = None,
-                 zlevel: int = 0, zcenter: int = None, **kwargs):
+                 zlevel: int = 0, zcenter: int = None, parent_manager=None, roi_crs: np.ndarray = None,
+                 roi_ix: int = None, roi_ixs: np.ndarray = None,
+                 scatter_plot: pg.ScatterPlotItem = None, **kwargs):
         self.zlevel: int = zlevel  #: z-level of the ROI that is currently visible, different from zValue!!
         self.zcenter: int = zcenter  #: z-level where this ROI has its center, must be specified
 
@@ -638,7 +640,48 @@ class VolMultiCNMFROI(ScatterROI):
             self.restore_state(state)
 
         self.check_visible()
+        ##########################################################################
+        # self.parent_manager = parent_manager
+        self.roi_crs = roi_crs
+        self.roi_ixs = roi_ixs
+        self.roi_ix = roi_ix
+        self.scatter_plot = scatter_plot
 
+    def get_roi_graphics_object(self) -> QtWidgets.QGraphicsObject:
+        pass
+
+    def set_roi_graphics_object(self, *args, **kwargs):
+        pass
+
+    def reset_color(self):
+        pass
+
+    def set_original_color(self, color):
+        colors = self.roi_crs
+        self.scatter_plot.setBrush(map(pg.mkBrush, colors))
+        self.scatter_plot.setPen(map(pg.mkPen, colors))
+
+    def get_color(self):
+        pass
+
+    def set_color(self, color: Union[np.ndarray, str], *args, **kwargs):
+        colors = np.copy(self.roi_crs)
+        # np.array([255., 255., 255., 255.])
+        colors[self.roi_ixs == self.roi_ix] = pg.mkColor(color)
+
+        brushes = map(pg.mkBrush, self.roi_crs)
+        pens = map(pg.mkPen, self.roi_crs)
+
+        self.scatter_plot.setBrush(brushes)
+        self.scatter_plot.setPen(pens)
+
+    def add_to_viewer(self):
+        pass
+
+    def remove_from_viewer(self):
+        pass
+
+    ##########################################################################
     def restore_state(self, state):
         super(VolMultiCNMFROI, self).restore_state(state)
         # self.curve_data = state['curve_data']

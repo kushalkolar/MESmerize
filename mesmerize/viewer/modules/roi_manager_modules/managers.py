@@ -19,6 +19,7 @@ from copy import deepcopy
 from .read_imagej import read_roi_zip as read_imagej
 from ....common.configuration import HAS_CAIMAN
 from matplotlib import cm as matplotlib_color_map
+from ....pyqtgraphCore import ScatterPlotItem, mkBrush, mkPen, mkColor
 
 if HAS_CAIMAN:
     from caiman.utils.visualization import get_contours as caiman_get_contours
@@ -450,9 +451,10 @@ class ManagerVolMultiCNMF(ManagerVolROI):
         self.cnm_dfof: List[np.ndarray] = []
         self.dims: List[tuple] = []
 
-        self.roi_xy: List[np.ndarray] = []  # roi x-y coordinates
-        self.roi_ix: List[np.ndarray] = []  # the roi index that each coordinate maps to
-        self.roi_cr: List[np.ndarray] = []  # the color that each roi index maps to
+        self.roi_xys: List[np.ndarray] = []  # roi x-y coordinates
+        self.roi_ixs: List[np.ndarray] = []  # the roi index that each coordinate maps to
+        self.roi_crs: List[np.ndarray] = []  # the color that each roi index maps to
+        self.roi_sps: List[ScatterPlotItem] = []  # ROIs represented as scatterplots
 
         self.num_zlevels: int = 0
 
@@ -504,32 +506,56 @@ class ManagerVolMultiCNMF(ManagerVolROI):
             self.ui.radioButton_curve_data.setChecked(True)
 
             # TODO: to be continued at home...
-            # roi_ix = []
-            # roi_xy = []
-            #
-            # for ix in range(len(contours)):
-            #     coors = contours[ix]['coordinates']
-            #     coors = coors[~np.isnan(coors).any(axis=1)]
-            #     roi_xy += [coors]
-            #     roi_ix += [ix] * coors.shape[0]
-            #
-            # roi_xy = np.vstack(roi_xy)
-            # roi_ix = np.vstack(roi_ix)
-            #
-            # self.roi_xy.append(roi_xy)
-            # self.roi_ix.append(roi_ix)
-            #
-            # cm = matplotlib_color_map.get_cmap('hsv')
-            # cm._init()
-            # lut = (cm._lut * 255).view(np.ndarray)
-            #
-            # cm_ixs = np.linspace(0, 210, np.unique(roi_ix).size, dtype=int)
-            #
-            # ixs = np.arange(np.unique(roi_ix).size)
-            # color_ixs = np.copy(ixs)
-            #
-            # for ix, color_ix in zip(ixs, color_ixs):
-            #     c = lut[cm_ixs[color_ix]]
+            ##########################################################################
+            roi_ixs = []
+            roi_xy = []
+
+            for ix in range(len(contours)):
+                coors = contours[ix]['coordinates']
+                coors = coors[~np.isnan(coors).any(axis=1)]
+                roi_xy += [coors]
+                roi_ixs += [ix] * coors.shape[0]
+
+            roi_xy = np.vstack(roi_xy)
+            roi_ixs = np.vstack(roi_ixs)
+
+            self.roi_xys.append(roi_xy)
+            self.roi_ixs.append(roi_ixs)
+
+            cm = matplotlib_color_map.get_cmap('hsv')
+            cm._init()
+            lut = (cm._lut * 255).view(np.ndarray)
+
+            cm_ixs = np.linspace(0, 210, np.unique(roi_ixs).size, dtype=int)
+
+            ixs = np.unique(roi_ixs)
+            color_ixs = np.copy(ixs)
+
+            for ix, color_ix in zip(ixs, color_ixs):
+                c = lut[cm_ixs[color_ix]]
+                self.roi_crs.append(
+                    np.array([c] * roi_ixs.size)  # color array for each spot
+                )
+
+            roi_crs = np.concatenate(self.roi_crs)
+            self.roi_crs.append(roi_crs)
+
+            xy_coors = self.roi_xys[-1]
+
+            brushes = map(mkBrush, self.roi_crs)
+            pens = map(mkPen, self.roi_crs)
+
+            sp = ScatterPlotItem(
+                xy_coors[:, 0],
+                xy_coors[:, 1],
+                symbol='s',
+                size=1,
+                pxMode=True,
+                brush=brushes,
+                pen=pens
+            )
+            ##########################################################################
+            self.roi_sps.append(sp)
 
             for ix in range(num_components):
                 self.vi.viewer.status_bar_label.showMessage(
@@ -554,7 +580,10 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                     spike_data=self.cnmS[-1][ix],
                     dfof_data=dfof_data,
                     zcenter=zcenter,
-                    zlevel=self.vi.viewer.current_zlevel
+                    zlevel=self.vi.viewer.current_zlevel,
+                    roi_ix=ix,
+                    roi_ixs=roi_ixs,
+                    roi_crs=roi_crs,
                 )
 
                 self.roi_list.append(roi)
