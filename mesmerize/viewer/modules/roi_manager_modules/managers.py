@@ -19,7 +19,7 @@ from copy import deepcopy
 from .read_imagej import read_roi_zip as read_imagej
 from ....common.configuration import HAS_CAIMAN
 from matplotlib import cm as matplotlib_color_map
-from ....pyqtgraphCore import ScatterPlotItem, mkBrush, mkPen, mkColor
+
 
 if HAS_CAIMAN:
     from caiman.utils.visualization import get_contours as caiman_get_contours
@@ -129,6 +129,8 @@ class ManagerManual(AbstractBaseManager):
         self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
+        self.vi.viewer.workEnv_changed("ROIs imported")
+
         return roi
 
     def restore_from_states(self, states: dict):
@@ -236,6 +238,8 @@ class ManagerScatterROI(AbstractBaseManager):
         roi.metadata = metadata
         self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
+
+        self.vi.viewer.workEnv_changed("ROI Added")
 
         return roi
 
@@ -359,6 +363,7 @@ class ManagerVolCNMF(ManagerVolROI):
 
             self.roi_list.append(roi)
 
+        self.vi.viewer.workEnv_changed("ROIs imported")
         self.roi_list.reindex_colormap(random_shuffle=True)
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
 
@@ -454,7 +459,7 @@ class ManagerVolMultiCNMF(ManagerVolROI):
         self.roi_xys: List[np.ndarray] = []  # roi x-y coordinates
         self.roi_ixs: List[np.ndarray] = []  # the roi index that each coordinate maps to
         self.roi_crs: List[np.ndarray] = []  # the color that each roi index maps to
-        self.roi_sps: List[ScatterPlotItem] = []  # ROIs represented as scatterplots
+        self.roi_sps: List[pg.ScatterPlotItem] = []  # ROIs represented as scatterplots
 
         self.num_zlevels: int = 0
 
@@ -526,26 +531,25 @@ class ManagerVolMultiCNMF(ManagerVolROI):
             cm._init()
             lut = (cm._lut * 255).view(np.ndarray)
 
-            cm_ixs = np.linspace(0, 210, np.unique(roi_ixs).size, dtype=int)
+            cm_ixs = np.linspace(0, 210, np.unique(roi_ixs).size + 1, dtype=int)
 
-            ixs = np.unique(roi_ixs)
-            color_ixs = np.copy(ixs)
+            roi_crs = []
 
-            for ix, color_ix in zip(ixs, color_ixs):
-                c = lut[cm_ixs[color_ix]]
-                self.roi_crs.append(
-                    np.array([c] * roi_ixs.size)  # color array for each spot
+            for roi_ix, cm_ix in zip(np.unique(roi_ixs), cm_ixs):
+                c = lut[cm_ix]
+                roi_crs.append(
+                    np.array([c] * roi_ixs[roi_ixs == roi_ix].size)  # color for each spot
                 )
 
-            roi_crs = np.concatenate(self.roi_crs)
+            roi_crs = np.vstack(roi_crs)
             self.roi_crs.append(roi_crs)
 
             xy_coors = self.roi_xys[-1]
 
-            brushes = map(mkBrush, self.roi_crs)
-            pens = map(mkPen, self.roi_crs)
+            brushes = list(map(pg.mkBrush, roi_crs))
+            pens = list(map(pg.mkPen, roi_crs))
 
-            sp = ScatterPlotItem(
+            sp = pg.ScatterPlotItem(
                 xy_coors[:, 0],
                 xy_coors[:, 1],
                 symbol='s',
@@ -554,13 +558,15 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                 brush=brushes,
                 pen=pens
             )
-            ##########################################################################
+
+            self.vi.viewer.getView().addItem(sp)
+            sp.hide()
             self.roi_sps.append(sp)
 
             for ix in range(num_components):
                 self.vi.viewer.status_bar_label.showMessage(
                     f"Please wait, adding component {ix} / {num_components} "
-                    f"on zlevel {zcenter} / {self.num_zlevels}"
+                    f"on zlevel {zcenter} / {self.num_zlevels - 1}"
                 )
 
                 curve_data = self.cnmC[-1][ix]
@@ -582,15 +588,31 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                     zcenter=zcenter,
                     zlevel=self.vi.viewer.current_zlevel,
                     roi_ix=ix,
-                    roi_ixs=roi_ixs,
-                    roi_crs=roi_crs,
+                    scatter_plot=sp,
+                    parent_manager=self,
                 )
 
                 self.roi_list.append(roi)
 
-        self.roi_list.reindex_colormap(random_shuffle=True)
+        self.roi_list.list_widget.addItems(
+            list(map(str, range(len(self.roi_list))))
+        )
+
+        self.vi.workEnv_changed("ROIs imported")
+
+        # self.roi_list.reindex_colormap(random_shuffle=True)
+        self.roi_sps[self.vi.viewer.current_zlevel].show()
 
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
+
+    def set_zlevel(self, z: int):
+        """Set the current z-level to be visible in the viewer"""
+        super(ManagerVolMultiCNMF, self).set_zlevel(z)
+        for i in range(len(self.roi_sps)):
+            if i == z:
+                self.roi_sps[i].show()
+            else:
+                self.roi_sps[i].hide()
 
     def add_roi(self):
         """Not implemented, uses add_all_components to import all ROIs instead"""
@@ -625,7 +647,7 @@ class ManagerVolMultiCNMF(ManagerVolROI):
         self.idx_components = states['cnmf_output']['idx_components']
         self.orig_idx_components = states['cnmf_output']['orig_idx_components']
 
-        self.roi_list.reindex_colormap()
+        # self.roi_list.reindex_colormap()
 
     def get_all_states(self) -> dict:
         states = super(ManagerVolMultiCNMF, self).get_all_states()

@@ -197,6 +197,7 @@ def run_multi(batch_dir, UUID, output):
     c, dview, n_processes = cm.cluster.setup_cluster(
         backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
     )
+    num_components = 0
     output_files = []
     for z in range(seq_shape[1]):
         print(f"Plane {z} / {seq_shape[1]}")
@@ -261,6 +262,8 @@ def run_multi(batch_dir, UUID, output):
 
         cnm.estimates.select_components(use_object=True)
 
+        num_components += len(cnm.C)
+
         out_filename = f'{UUID}_results_z{z}.hdf5'
         cnm.save(out_filename)
 
@@ -272,7 +275,8 @@ def run_multi(batch_dir, UUID, output):
         {
             'output': UUID,
             'status': 1,
-            'output_files': output_files
+            'output_files': output_files,
+            'num_components': num_components
         }
     )
 
@@ -309,6 +313,7 @@ class Output:
                     load_dict_from_hdf5(
                         os.path.join(batch_path, f'{UUID}_results_z{z}.hdf5')
                     )
+                    # for z in range(5)
                     for z in range(vi.viewer.workEnv.imgdata.z_max + 1)
                 ]
 
