@@ -66,6 +66,8 @@ Set ROI Tag                 Click to set the tag, or just press return in the te
 
 .. note:: When using 3D data, the ROIs are colored randomly along the list (not linearly as shown in the image). If you want to set the colors linearly call this in the Viewer Console: ``get_workEnv().roi_manager.roi_list.reindex_colormap(random_shuffle=False)``
 
+.. warning:: Importing several *thousands* of ROIs can take 15-30 minutes. You will be able to track the progress of the import in the Viewer Window's status bar.
+
 **Keyboard shortcuts**.
 
 These only work when the ROI manager is docked within the Viewer and while you are typing in the *Add Tag to ROI Definition* text entry.

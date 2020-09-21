@@ -26,6 +26,7 @@ You can also enter parameters for CNMF and component evaluation as keyword argum
 
 .. note:: The parameters used for CNMF are stored in the work environment of the viewer and this log is carried over and saved in *Project Samples* as well. To see the parameters that were used for CNMF in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the 'cnmf' entry.
 
+.. warning:: Importing several *thousands* of ROIs into the Viewer can take 15-30 minutes. You will be able to track the progress of the import in the Viewer Window's status bar.
 
 Script usage
 ============
