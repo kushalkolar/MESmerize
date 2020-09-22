@@ -306,7 +306,7 @@ class Output:
 
         if input_params['is_3d']:
             roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-            manager = roi_manager_gui.start_backend('VolMultiCNMF')
+            manager = roi_manager_gui.start_backend('VolMultiCNMFROI')
 
             cnmf_data_dicts = \
                 [

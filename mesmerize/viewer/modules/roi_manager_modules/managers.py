@@ -19,6 +19,7 @@ from copy import deepcopy
 from .read_imagej import read_roi_zip as read_imagej
 from ....common.configuration import HAS_CAIMAN
 from matplotlib import cm as matplotlib_color_map
+from tqdm import tqdm
 
 
 if HAS_CAIMAN:
@@ -434,10 +435,10 @@ class ManagerVolCNMF(ManagerVolROI):
             roi.spot_size = size
 
 
-class ManagerVolMultiCNMF(ManagerVolROI):
+class ManagerVolMultiCNMFROI(ManagerVolROI):
     """Manager for 3D data using one CNMF per plane"""
     def __init__(self, parent, ui, viewer_interface):
-        super(ManagerVolMultiCNMF, self).__init__(parent, ui, viewer_interface)
+        super(ManagerVolMultiCNMFROI, self).__init__(parent, ui, viewer_interface)
 
         self.roi_list = ROIList(self.ui, VolMultiCNMFROI, self.vi)
 
@@ -605,7 +606,7 @@ class ManagerVolMultiCNMF(ManagerVolROI):
 
     def set_zlevel(self, z: int):
         """Set the current z-level to be visible in the viewer"""
-        super(ManagerVolMultiCNMF, self).set_zlevel(z)
+        super(ManagerVolMultiCNMFROI, self).set_zlevel(z)
         for i in range(len(self.roi_sps)):
             if i == z:
                 self.roi_sps[i].show()
@@ -649,7 +650,8 @@ class ManagerVolMultiCNMF(ManagerVolROI):
         if not hasattr(self, 'roi_list'):
             self.create_roi_list()
 
-        for zcenter in range(len(self.num_zlevels)):
+        for zcenter in range(self.num_zlevels):
+            print(f"Loading z-level {zcenter}")
             contours = caiman_get_contours(
                 self.cnmA[zcenter][:, self.idx_components[zcenter]],
                 self.dims[zcenter],
@@ -711,7 +713,7 @@ class ManagerVolMultiCNMF(ManagerVolROI):
             sp.hide()
             self.roi_sps.append(sp)
 
-            for ix in range(len(self.idx_components[zcenter])):
+            for ix in tqdm(range(len(self.idx_components[zcenter]))):
                 self.vi.viewer.status_bar_label.showMessage(
                     f"Please wait, adding component {ix} / {num_components} "
                     f"on zlevel {zcenter} / {self.num_zlevels - 1}"
@@ -720,19 +722,14 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                 curve_data = self.cnmC[zcenter][self.idx_components[zcenter][ix]]
                 contour = contours[ix]
 
-                if self.cnm_dfof[zcenter][self.idx_components[zcenter][ix]] is not None:
-                    dfof_data = self.cnm_dfof[zcenter][self.idx_components[zcenter][ix]]
-                else:
-                    dfof_data = None
+                cnmf_idx = self.idx_components[zcenter][ix]
 
                 roi = VolMultiCNMFROI(
                     curve_plot_item=self.get_plot_item(),
                     view_box=self.vi.viewer.getView(),
-                    cnmf_idx=self.idx_components[zcenter][ix],
+                    cnmf_idx=cnmf_idx,
                     curve_data=curve_data,
                     contour=contour,
-                    spike_data=self.cnmS[zcenter][ix],
-                    dfof_data=dfof_data,
                     zcenter=zcenter,
                     zlevel=self.vi.viewer.current_zlevel,
                     roi_ix=ix,
@@ -742,13 +739,16 @@ class ManagerVolMultiCNMF(ManagerVolROI):
 
                 roi_state = list(
                     filter(
-                        lambda r: roi.cnmf_idx == self.idx_components[zcenter][ix],
+                        lambda r: r['cnmf_idx'] == cnmf_idx,
                         states['states'][zcenter]
                     )
                 )[0]
 
                 for k in roi_state['tags'].keys():
                     roi.set_tag(k, roi_state['tags'][k])
+
+                roi.dfof_data = roi_state['dfof_data']
+                roi.spike_data = roi_state['spike_data']
 
                 self.roi_list.append(roi)
 
@@ -793,7 +793,7 @@ class ManagerVolMultiCNMF(ManagerVolROI):
             roi_cnmf_idxs = [roi.cnmf_idx for roi in roi_list_sorted[zlevel]]
             roi_cnmf_idxs.sort()
             new_idx_components.append(
-                np.ndarray(roi_cnmf_idxs, dtype=np.uint64)
+                np.array(roi_cnmf_idxs, dtype=np.uint64)
             )
 
         # store the cnmf attributes as well

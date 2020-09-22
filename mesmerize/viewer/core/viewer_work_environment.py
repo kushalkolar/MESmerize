@@ -411,16 +411,32 @@ class ViewerWorkEnv:
 
         if self.roi_manager is not None:
             if not self.roi_manager.is_empty():
-                rois = self.roi_manager.get_all_states()
-
-                for ix in range(len(rois['states'])):
-                    for roi_def in rois['states'][ix]['tags'].keys():
-                        if rois['states'][ix]['tags'][roi_def] == '':
-                            rois['states'][ix]['tags'][roi_def] = 'untagged'
+                rois = self._curate_roi_tags(
+                    self.roi_manager.get_all_states()
+                )
 
                 d['roi_states'] = rois
 
         return d
+
+    def _curate_roi_tags(self, rois):
+        # I'm sorry
+        if rois['roi_type'] == 'VolMultiCNMFROI':
+            for z in range(len(rois['states'])):
+                for ix in range(len(rois['states'][z])):
+                    for roi_def in rois['states'][z][ix]['tags'].keys():
+                        if rois['states'][z][ix]['tags'][roi_def] == '':
+                            rois['states'][z][ix]['tags'][roi_def] = 'untagged'
+
+            return rois
+
+        else:
+            for ix in range(len(rois['states'])):
+                for roi_def in rois['states'][ix]['tags'].keys():
+                    if rois['states'][ix]['tags'][roi_def] == '':
+                        rois['states'][ix]['tags'][roi_def] = 'untagged'
+
+            return rois
 
     def _prepare_export(
             self,
@@ -589,77 +605,67 @@ class ViewerWorkEnv:
 
         rois = self.roi_manager.get_all_states()
 
-        for ix in range(len(rois['states'])):
-            curve_data = rois['states'][ix]['curve_data']
+        if rois['roi_type'] != 'VolMultiCNMFROI':
+            for ix in range(len(rois['states'])):
+                curve_data = rois['states'][ix]['curve_data']
 
-            for roi_def in rois['states'][ix]['tags'].keys():
-                if rois['states'][ix]['tags'][roi_def] == '':
-                    rois['states'][ix]['tags'][roi_def] = 'untagged'
+                for roi_def in rois['states'][ix]['tags'].keys():
+                    if rois['states'][ix]['tags'][roi_def] == '':
+                        rois['states'][ix]['tags'][roi_def] = 'untagged'
 
-            roi_tags = rois['states'][ix]['tags']
-            curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
+                roi_tags = rois['states'][ix]['tags']
+                curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
 
-            np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
+                np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
-            # if rois['states'][ix]['roi_type'] == 'ManualROI':
-            #     roi_state = {'type': 'ManualROI',
-            #                  'graphics_object': rois['states'][ix]['roi_graphics_object_state'],
-            #                  'shape': rois['states'][ix]['shape']
-            #                  }
-            # elif rois['states'][ix]['roi_type'] == 'CNMFROI':
-            #     roi_state = {'type': 'CNMFROI',
-            #                  'roi_xs': rois['states'][ix]['roi_xs'],
-            #                  'roi_ys': rois['states'][ix]['roi_ys']
-            #                  }
+                d = {'SampleID': self.sample_id,
+                     'AnimalID': self.sample_id.split('-_-')[0],
+                     'CurvePath': os.path.relpath(curve_path, proj_path),
+                     'ImgUUID': str(UUID),
+                     'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
+                     'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
+                     'ROI_State': rois['states'][ix],
+                     'date': date,
+                     'uuid_curve': str(uuid4()),
+                     'comments': comments,
+                     'misc': self.misc
+                     }
 
-            d = {'SampleID': self.sample_id,
-                 'AnimalID': self.sample_id.split('-_-')[0],
-                 'CurvePath': os.path.relpath(curve_path, proj_path),
-                 'ImgUUID': str(UUID),
-                 'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
-                 'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
-                 'ROI_State': rois['states'][ix],
-                 'date': date,
-                 'uuid_curve': str(uuid4()),
-                 'comments': comments,
-                 'misc': self.misc
-                 }
+                dicts.append({**d,
+                              **self.custom_cols,
+                              **stimuli_unique_sets,
+                              **roi_tags})
+        else:
+            for z in range(len(rois['states'])):
+                for ix in range(len(rois['states'][z])):
+                    curve_data = rois['states'][z][ix]['curve_data']
 
-            dicts.append({**d,
-                          **self.custom_cols,
-                          **stimuli_unique_sets,
-                          **roi_tags})
+                    for roi_def in rois['states'][z][ix]['tags'].keys():
+                        if rois['states'][z][ix]['tags'][roi_def] == '':
+                            rois['states'][z][ix]['tags'][roi_def] = 'untagged'
 
-        # for ix in range(0, len(self.CurvesList)):
-        #     curvePath = curvesDir + '/CURVE_' + str(ix).zfill(3) + '.npz'
-        #
-        #     if self.rois['origin'] == 'manual':
-        #         if isinstance(self.CurvesList[ix], np.ndarray):
-        #             curve = self.CurvesList[ix]
-        #         else:
-        #             curve = self.CurvesList[ix].getData()
-        #
-        #         np.savez(curvePath, curve=curve,
-        #                  roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
-        #
-        #     elif self.rois['origin'] == 'CNMFE':
-        #         pass
-        #
-        #     d = {'SampleID':    self.sample_id,
-        #          'CurvePath':   curvePath.split(proj_path)[1],
-        #          'ImgPath':     img_path.split(proj_path)[1] + '.tiff',
-        #          'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
-        #          }
-        #
-        #     # Final list of dicts that are each appended as rows to the project DataFrame
-        #     dicts.append({**d,
-        #                   **self.custom_columns_dict,
-        #                   **stimMapsSet,
-        #                   **self.ROIList[ix].tags,
-        #                   'Date':       date,
-        #                   'uuid_curve': UUID,
-        #                   'comments':   comments
-        #                   })
+                    roi_tags = rois['states'][z][ix]['tags']
+                    curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
+
+                    np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
+
+                    d = {'SampleID': self.sample_id,
+                         'AnimalID': self.sample_id.split('-_-')[0],
+                         'CurvePath': os.path.relpath(curve_path, proj_path),
+                         'ImgUUID': str(UUID),
+                         'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
+                         'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
+                         'ROI_State': rois['states'][z][ix],
+                         'date': date,
+                         'uuid_curve': str(uuid4()),
+                         'comments': comments,
+                         'misc': self.misc
+                         }
+
+                    dicts.append({**d,
+                                  **self.custom_cols,
+                                  **stimuli_unique_sets,
+                                  **roi_tags})
 
         self.saved = True
         return dicts
