@@ -506,12 +506,10 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                 # swap_dim=True
             )
 
-            num_components = len(self.cnmC[-1])
+            num_components = len(self.idx_components[-1])
 
             self.ui.radioButton_curve_data.setChecked(True)
 
-            # TODO: to be continued at home...
-            ##########################################################################
             roi_ixs = []
             roi_xy = []
 
@@ -627,14 +625,14 @@ class ManagerVolMultiCNMF(ManagerVolROI):
 
         self.cnmf_data_dicts = states['cnmf_data_dicts']
 
-        for state in states['states']:
-            roi = VolMultiCNMFROI.from_state(
-                self.get_plot_item(),
-                self.vi.viewer.getView(),
-                state
-            )
-
-            self.roi_list.append(roi)
+        # for state in states['states']:
+        #     roi = VolMultiCNMFROI.from_state(
+        #         self.get_plot_item(),
+        #         self.vi.viewer.getView(),
+        #         state
+        #     )
+        #
+        #     self.roi_list.append(roi)
 
         self.input_params_dict = states['input_params_cnmf']
         self.num_zlevels = states['num_zlevels']
@@ -646,17 +644,153 @@ class ManagerVolMultiCNMF(ManagerVolROI):
         self.cnmYrA = states['cnmf_output']['cnmYrA']
         self.idx_components = states['cnmf_output']['idx_components']
         self.orig_idx_components = states['cnmf_output']['orig_idx_components']
+        self.dims = states['cnmf_output']['dims']
 
-        # self.roi_list.reindex_colormap()
+        if not hasattr(self, 'roi_list'):
+            self.create_roi_list()
+
+        for zcenter in range(len(self.num_zlevels)):
+            contours = caiman_get_contours(
+                self.cnmA[zcenter][:, self.idx_components[zcenter]],
+                self.dims[zcenter],
+                # swap_dim=True
+            )
+
+            num_components = len(self.idx_components[zcenter])
+
+            self.ui.radioButton_curve_data.setChecked(True)
+
+            roi_ixs = []
+            roi_xy = []
+
+            for ix in range(len(contours)):
+                coors = contours[ix]['coordinates']
+                coors = coors[~np.isnan(coors).any(axis=1)]
+                roi_xy += [coors]
+                roi_ixs += [ix] * coors.shape[0]
+
+            roi_xy = np.vstack(roi_xy)
+            roi_ixs = np.vstack(roi_ixs)
+
+            self.roi_xys.append(roi_xy)
+            self.roi_ixs.append(roi_ixs)
+
+            cm = matplotlib_color_map.get_cmap('hsv')
+            cm._init()
+            lut = (cm._lut * 255).view(np.ndarray)
+
+            cm_ixs = np.linspace(0, 210, np.unique(roi_ixs).size + 1, dtype=int)
+
+            roi_crs = []
+
+            for roi_ix, cm_ix in zip(np.unique(roi_ixs), cm_ixs):
+                c = lut[cm_ix]
+                roi_crs.append(
+                    np.array([c] * roi_ixs[roi_ixs == roi_ix].size)  # color for each spot
+                )
+
+            roi_crs = np.vstack(roi_crs)
+            self.roi_crs.append(roi_crs)
+
+            xy_coors = self.roi_xys[-1]
+
+            brushes = list(map(pg.mkBrush, roi_crs))
+            pens = list(map(pg.mkPen, roi_crs))
+
+            sp = pg.ScatterPlotItem(
+                xy_coors[:, 0],
+                xy_coors[:, 1],
+                symbol='s',
+                size=1,
+                pxMode=True,
+                brush=brushes,
+                pen=pens
+            )
+
+            self.vi.viewer.getView().addItem(sp)
+            sp.hide()
+            self.roi_sps.append(sp)
+
+            for ix in range(len(self.idx_components[zcenter])):
+                self.vi.viewer.status_bar_label.showMessage(
+                    f"Please wait, adding component {ix} / {num_components} "
+                    f"on zlevel {zcenter} / {self.num_zlevels - 1}"
+                )
+
+                curve_data = self.cnmC[zcenter][self.idx_components[zcenter][ix]]
+                contour = contours[ix]
+
+                if self.cnm_dfof[zcenter][self.idx_components[zcenter][ix]] is not None:
+                    dfof_data = self.cnm_dfof[zcenter][self.idx_components[zcenter][ix]]
+                else:
+                    dfof_data = None
+
+                roi = VolMultiCNMFROI(
+                    curve_plot_item=self.get_plot_item(),
+                    view_box=self.vi.viewer.getView(),
+                    cnmf_idx=self.idx_components[zcenter][ix],
+                    curve_data=curve_data,
+                    contour=contour,
+                    spike_data=self.cnmS[zcenter][ix],
+                    dfof_data=dfof_data,
+                    zcenter=zcenter,
+                    zlevel=self.vi.viewer.current_zlevel,
+                    roi_ix=ix,
+                    scatter_plot=sp,
+                    parent_manager=self,
+                )
+
+                roi_state = list(
+                    filter(
+                        lambda r: roi.cnmf_idx == self.idx_components[zcenter][ix],
+                        states['states'][zcenter]
+                    )
+                )[0]
+
+                for k in roi_state['tags'].keys():
+                    roi.set_tag(k, roi_state['tags'][k])
+
+                self.roi_list.append(roi)
+
+        self.roi_list.list_widget.addItems(
+            list(map(str, range(len(self.roi_list))))
+        )
+
+        self.vi.workEnv_changed("ROIs imported")
+
+        # self.roi_list.reindex_colormap(random_shuffle=True)
+        self.roi_sps[self.vi.viewer.current_zlevel].show()
+
+        self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
 
     def get_all_states(self) -> dict:
-        states = super(ManagerVolMultiCNMF, self).get_all_states()
+        roi_list_sorted = \
+        [
+            [
+                roi for roi in self.roi_list if roi.zcenter == zlevel
+            ] for zlevel in range(self.num_zlevels)
+        ]
 
+        states = \
+            {
+                'roi_type': self.roi_list.roi_types.__name__,
+                'states': [],
+                'metadata': self.metadata
+            }
+
+        roi_states = \
+        [
+            [
+                roi.to_state() for roi in rois_zlevel
+            ] for rois_zlevel in roi_list_sorted
+        ]
+
+        states['states'] = roi_states
+
+        # make a new idx_components list in case the user has manually deleted some ROIs
         new_idx_components: List[np.ndarray] = []
-        # if the user has manually deleted some ROIs
-        for zlevel in range(self.num_zlevels):
-            # get all cnmf_ixs for this zlevel
-            roi_cnmf_idxs = [roi.cnmf for roi in self.roi_list if roi.zcenter == zlevel]
+        for zlevel in range(len(roi_list_sorted)):
+            roi_cnmf_idxs = [roi.cnmf_idx for roi in roi_list_sorted[zlevel]]
             roi_cnmf_idxs.sort()
             new_idx_components.append(
                 np.ndarray(roi_cnmf_idxs, dtype=np.uint64)
@@ -676,7 +810,8 @@ class ManagerVolMultiCNMF(ManagerVolROI):
                         'cnm_f': self.cnm_f,
                         'cnmYrA': self.cnmYrA,
                         'idx_components': new_idx_components,
-                        'orig_idx_components': self.orig_idx_components
+                        'orig_idx_components': self.orig_idx_components,
+                        'dims': self.dims
                     }
             }
 

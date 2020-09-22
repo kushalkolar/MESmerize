@@ -636,6 +636,12 @@ class VolMultiCNMFROI(ScatterROI):
         self.roi_ix = roi_ix
         self.scatter_plot = scatter_plot
 
+        ix = (self.parent_manager.roi_ixs[self.zcenter] == self.roi_ix).flatten()
+        roi_xys = self.parent_manager.roi_xys[self.zcenter][ix]
+
+        self.roi_xs = roi_xys[:, 0]
+        self.roi_ys = roi_xys[:, 1]
+
     def get_roi_graphics_object(self) -> QtWidgets.QGraphicsObject:
         pass
 
@@ -667,8 +673,6 @@ class VolMultiCNMFROI(ScatterROI):
         self.parent_manager.roi_ixs[self.zcenter] = self.parent_manager.roi_ixs[self.zcenter][new_ixs]
         self.parent_manager.roi_xys[self.zcenter] = self.parent_manager.roi_xys[self.zcenter][new_ixs]
         self.parent_manager.roi_crs[self.zcenter] = self.parent_manager.roi_crs[self.zcenter][new_ixs]
-
-        print("*********** ROI DELETION ***********")
 
         xys = self.parent_manager.roi_xys[self.zcenter]
         crs = self.parent_manager.roi_crs[self.zcenter]
@@ -705,6 +709,8 @@ class VolMultiCNMFROI(ScatterROI):
         state = {'cnmf_idx': self.cnmf_idx,
                  'zcenter': self.zcenter,
                  'roi_ix': self.roi_ix,
+                 'roi_xs': self.roi_xs,
+                 'roi_ys': self.roi_ys,
                  'raw_min_max': self.raw_min_max,
                  'curve_data': self.curve_data,
                  'spike_data': self.spike_data,
