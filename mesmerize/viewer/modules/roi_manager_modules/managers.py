@@ -276,6 +276,10 @@ class ManagerVolROI(ManagerScatterROI):
 
     def set_zlevel(self, z: int):
         """Set the current z-level to be visible in the viewer"""
+        if not hasattr(self, 'roi_list'):
+            warn('roi list does not exist, probably empty work environment')
+            return
+
         for roi in self.roi_list:
             roi.set_zlevel(z)
 
