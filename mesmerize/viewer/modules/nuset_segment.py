@@ -207,7 +207,8 @@ def get_sparse_masks(
         segmented_img: np.ndarray,
         raw_img_shape: tuple,
         edge_method: str,
-        selem: int
+        selem: int,
+        transpose=True
     ) -> np.ndarray:
     # allocate array with same size as the raw input image
     # so that the dims match for CNMF
@@ -251,19 +252,10 @@ def get_sparse_masks(
             delayed(_get_sparse_mask)(areas, i, edge_method, selem) for i in range(areas[1])
         )
 
-    A = scipy.sparse.vstack(sparses).T.toarray()
-
-    return A
-
-    # print("Creating sparse matrix, this could take a while...")
-    # for i in tqdm(range(areas[1])):
-    #     temp = (areas[0] == i + 1)
-    #     edge_func = getattr(skimage.morphology, edge_method)
-    #     temp = edge_func(temp, selem=selem)
-    #
-    #     A[:, i] = temp.flatten('F')
-    #
-    # return A
+    if transpose:
+        return scipy.sparse.vstack(sparses).T.toarray()
+    else:
+        return scipy.sparse.vstack(sparses).toarray()
 
 
 def get_colored_mask(m: np.ndarray, shape: tuple):
@@ -635,11 +627,11 @@ class ExportWidget(QtWidgets.QWidget):
 
     def _apply_threshold_2d(self):
         params = self.get_params()
-        seg_img = self.nuset_widget.imgs_segmented[0].T
         shape = self.nuset_widget.imgs_projected[0].T.shape
+        seg_img = self.nuset_widget.imgs_postprocessed[0].T
 
         print("Thresholding")
-        binary = self._make_binary(seg_img, params, shape)
+        binary = self._make_binary(seg_img, params, shape)#.T
         self.binary_shape = binary.shape
 
         print("Creating sparse masks")
@@ -647,16 +639,16 @@ class ExportWidget(QtWidgets.QWidget):
             segmented_img=binary,
             raw_img_shape=shape,
             edge_method=params['edge_method'],
-            selem=params['selem']
+            selem=params['selem'],
         )
 
-        self.colored_mask = get_colored_mask(self.masks, binary.shape)
+        self.colored_mask = get_colored_mask(self.masks, binary.T.shape)
         self.imgitem.setImage(self.colored_mask)
 
     def _apply_threshold_3d(self):
         params = self.get_params()
         # 3D
-        seg_img = np.stack(self.nuset_widget.imgs_segmented)
+        seg_img = np.stack(self.nuset_widget.imgs_postprocessed)
         shape = np.stack(self.nuset_widget.imgs_projected).shape
 
         print("Thresholding")
@@ -684,8 +676,8 @@ class ExportWidget(QtWidgets.QWidget):
 
         masks = []
         print("Thresholding & Creating sparse masks")
-        for ix in tqdm(range(len(self.nuset_widget.imgs_segmented))):
-            seg_img = self.nuset_widget.imgs_segmented[ix].T
+        for ix in tqdm(range(len(self.nuset_widget.imgs_postprocessed))):
+            seg_img = self.nuset_widget.imgs_postprocessed[ix].T
 
             binary = self._make_binary(seg_img, params, shape)
             self.binary_shape = binary.shape
@@ -715,10 +707,10 @@ class ExportWidget(QtWidgets.QWidget):
 
     @present_exceptions()
     def apply_threshold(self):
-        if not self.nuset_widget.imgs_segmented:
+        if not self.nuset_widget.imgs_postprocessed:
             raise ValueError("You must segment images before you can proceed.")
 
-        for img in self.nuset_widget.imgs_segmented:
+        for img in self.nuset_widget.imgs_postprocessed:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
@@ -739,10 +731,10 @@ class ExportWidget(QtWidgets.QWidget):
             self._apply_threshold_2d()
 
     def _check_save_masks(self):
-        if not self.nuset_widget.imgs_segmented:
+        if not self.nuset_widget.imgs_postprocessed:
             raise ValueError("You must segment images before you can proceed.")
 
-        for img in self.nuset_widget.imgs_segmented:
+        for img in self.nuset_widget.imgs_postprocessed:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
@@ -770,10 +762,10 @@ class ExportWidget(QtWidgets.QWidget):
 
     @present_exceptions()
     def export_to_viewer(self):
-        if not self.nuset_widget.imgs_segmented:
+        if not self.nuset_widget.imgs_postprocessed:
             raise ValueError("You must segment images before you can proceed.")
 
-        for img in self.nuset_widget.imgs_segmented:
+        for img in self.nuset_widget.imgs_postprocessed:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
@@ -794,10 +786,15 @@ class ExportWidget(QtWidgets.QWidget):
             method = 'ConvexHull'
             # method = 'cKDTree'
 
+        if self.nuset_widget.z_max > 0:
+            shape = self.binary_shape
+        else:
+            shape = self.binary_shape[::-1]
+
         for i in tqdm(range(self.masks.shape[1])):
             try:
                 vs = area_to_hull(
-                    self.masks[:, i].reshape(self.binary_shape)
+                    self.masks[:, i].reshape(shape)
                 )
             except QhullError:
                 print(f"Skipping {i}, not enough points for convex hull")
@@ -1218,7 +1215,7 @@ class NusetWidget(QtWidgets.QWidget):
         
         self.projection_option = opt
 
-        func = getattr(np, opt)
+        func = getattr(np, f'nan{opt}')
 
         print("Updating Projection(s)")
         if self.input_img.ndim == 4:
