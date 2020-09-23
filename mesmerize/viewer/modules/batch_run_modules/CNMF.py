@@ -306,15 +306,16 @@ class Output:
 
         if input_params['is_3d']:
             roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-            manager = roi_manager_gui.start_backend('VolMultiCNMF')
+            manager = roi_manager_gui.start_backend('VolMultiCNMFROI')
 
             cnmf_data_dicts = \
                 [
                     load_dict_from_hdf5(
                         os.path.join(batch_path, f'{UUID}_results_z{z}.hdf5')
                     )
-                    # for z in range(5)
-                    for z in range(vi.viewer.workEnv.imgdata.z_max + 1)
+                    for z in range(5)
+                    # for z in range(
+                    # vi.viewer.workEnv.imgdata.z_max + 1)
                 ]
 
             manager.add_all_components(
