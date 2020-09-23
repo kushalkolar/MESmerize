@@ -595,7 +595,7 @@ class ManagerVolMultiCNMFROI(ManagerVolROI):
                     parent_manager=self,
                 )
 
-                self.roi_list.append(roi)
+                self.roi_list.append(roi, add_to_list_widget=False)
 
         self.roi_list.list_widget.addItems(
             list(map(str, range(len(self.roi_list))))

@@ -262,7 +262,7 @@ def run_multi(batch_dir, UUID, output):
 
         cnm.estimates.select_components(use_object=True)
 
-        num_components += len(cnm.C)
+        num_components += len(cnm.estimates.C)
 
         out_filename = f'{UUID}_results_z{z}.hdf5'
         cnm.save(out_filename)
