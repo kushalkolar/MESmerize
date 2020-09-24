@@ -151,15 +151,24 @@ class ModuleGUI(QtWidgets.QDockWidget):
             roi_manager: ManagerVolMultiCNMFROI,
             kwargs: dict
     ):
+        roi_manager.cnm_dfof.clear()
+
         for cnmf_data_dict in roi_manager.cnmf_data_dicts:
             cnmf = get_CNMF_obj(cnmf_data_dict)
             cnmf.estimates.detrend_df_f(**kwargs)
 
-            roi_manager.cnm_dfof = cnmf.estimates.F_dff
+            roi_manager.cnm_dfof.append(cnmf.estimates.F_dff)
 
-            for roi, dfof in zip(
-                    roi_manager.roi_list,
-                    roi_manager.cnm_dfof
-            ):
-                xs = np.arange(len(dfof))
-                roi.dfof_data = [xs, dfof]
+        dfofs = np.vstack(roi_manager.cnm_dfof)
+
+        print(
+            f"dfof shape:\t{dfofs.shape}\n"
+            f"roi_list len:\t{len(roi_manager.roi_list)}"
+        )
+
+        for roi, f in zip(
+                roi_manager.roi_list,
+                dfofs
+        ):
+            xs = np.arange(len(f))
+            roi.dfof_data = [xs, f]

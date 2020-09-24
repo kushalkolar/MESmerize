@@ -428,6 +428,8 @@ class ScatterROI(BaseROI):
         else:
             self.restore_state(state)
 
+        self.curve_data_type = 'curve'
+
     # # override to get diff behavior from ManualROI
     # @property
     # def curve_data(self) -> tuple:
@@ -597,6 +599,8 @@ class VolCNMF(ScatterROI):
         self.roi_xs = self.current_coors[:, 1].flatten().astype(int)
         self.roi_ys = self.current_coors[:, 0].flatten().astype(int)
 
+        self.set_viewer_curveplot(self.curve_data_type)
+
         self.roi_graphics_object.setData(self.roi_xs, self.roi_ys)#, symbol='s', size=self.spot_size)
 
 
@@ -733,7 +737,7 @@ class VolMultiCNMFROI(ScatterROI):
     def check_visible(self):
         if self.zlevel == self.zcenter:
             self.visible = True
-            self.set_viewer_curveplot()
+            self.set_viewer_curveplot(self.curve_data_type)
         else:
             self.visible = False
             self.curve_plot_item.clear()
