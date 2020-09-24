@@ -54,4 +54,6 @@ Post-process
 Export
 ======
 
+If you export using a Convex Hull masks containing only a few pixels, which may be noise, will be removed.
+
 .. note:: Segmentation will utilize all threads available on your system (regardless of the value set in your System Configuration). However it only takes a few seconds if exporting a 2D image, and make take ~10 minutes if exporting a large 3D stack.
