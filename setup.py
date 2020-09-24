@@ -68,7 +68,7 @@ with open("readme-pypi.md", 'r') as fh:
 
 setup(
     name='mesmerize',
-    version='0.2.3',
+    version='0.3.0',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     entry_points=entry_points,
