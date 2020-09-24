@@ -59,7 +59,7 @@ def get_preprocess(
         sigmoid_cutoff: float = 40.0,
         sigmoid_gain: float = 0.10,
         sigmoid_invert: bool = False,
-        do_equalize: bool = True,
+        do_equalize: bool = False,
         equalize_lower: float = -0.1,
         equalize_upper: float = 1.0,
         equalize_kernel: int = 8,
@@ -114,10 +114,10 @@ def get_postprocess(
         img: np.ndarray,
         do_postprocess: bool = False,
         abs_obj_threshold: int = -1,
-        rel_obj_threshold: int = 5,
+        rel_obj_threshold: int = -1,
         obj_connectivity: int = 2,
         abs_hol_threshold: int = -1,
-        rel_hol_threshold: int = 5,
+        rel_hol_threshold: int = 1,
         hol_connectivity: int = 2
     ) -> np.ndarray:
 
@@ -132,10 +132,12 @@ def get_postprocess(
     num_cells = np.max(im_label)
     mean_area = np.sum(image).astype(np.float32) / num_cells
 
-    if abs_obj_threshold == -1:
+    if rel_obj_threshold != -1:
         min_obj_size = mean_area / rel_obj_threshold
-    else:
+    elif abs_hol_threshold != -1:
         min_obj_size = abs_obj_threshold
+    else:
+        min_obj_size = 0
     image = skimage.morphology.remove_small_objects(image, min_size=min_obj_size, connectivity=obj_connectivity)
 
     if abs_hol_threshold == -1:
@@ -207,7 +209,8 @@ def get_sparse_masks(
         segmented_img: np.ndarray,
         raw_img_shape: tuple,
         edge_method: str,
-        selem: int
+        selem: int,
+        transpose=True
     ) -> np.ndarray:
     # allocate array with same size as the raw input image
     # so that the dims match for CNMF
@@ -251,19 +254,10 @@ def get_sparse_masks(
             delayed(_get_sparse_mask)(areas, i, edge_method, selem) for i in range(areas[1])
         )
 
-    A = scipy.sparse.vstack(sparses).T.toarray()
-
-    return A
-
-    # print("Creating sparse matrix, this could take a while...")
-    # for i in tqdm(range(areas[1])):
-    #     temp = (areas[0] == i + 1)
-    #     edge_func = getattr(skimage.morphology, edge_method)
-    #     temp = edge_func(temp, selem=selem)
-    #
-    #     A[:, i] = temp.flatten('F')
-    #
-    # return A
+    if transpose:
+        return scipy.sparse.vstack(sparses).T.toarray()
+    else:
+        return scipy.sparse.vstack(sparses).toarray()
 
 
 def get_colored_mask(m: np.ndarray, shape: tuple):
@@ -277,9 +271,11 @@ def get_colored_mask(m: np.ndarray, shape: tuple):
     return colored_mask
 
 
-def area_to_vertices(a: np.ndarray):
+def area_to_vertices(a: np.ndarray) -> np.ndarray:
     """
     Get the vertices of the area in a binary mask
+    :param a: binary mask
+    :return: 2D array of x-y coordinates for all the vertices of the area in the mask
     """
     xs, ys = np.where(a)
 
@@ -297,7 +293,12 @@ def area_to_vertices(a: np.ndarray):
     return vs
 
 
-def area_to_hull(a):
+def area_to_hull(a: np.ndarray) -> np.ndarray:
+    """
+    Get the vertices of a convex hull generated from an area represented by a binary mask
+    :param a: binary mask
+    :return: 2D array of x-y coordinates for the hull vertices
+    """
     xs, ys = np.where(a)
     points = np.array((xs, ys)).T
     hull = ConvexHull(points, qhull_options='Qs')
@@ -635,11 +636,11 @@ class ExportWidget(QtWidgets.QWidget):
 
     def _apply_threshold_2d(self):
         params = self.get_params()
-        seg_img = self.nuset_widget.imgs_segmented[0].T
         shape = self.nuset_widget.imgs_projected[0].T.shape
+        seg_img = self.nuset_widget.imgs_postprocessed[0].T
 
         print("Thresholding")
-        binary = self._make_binary(seg_img, params, shape)
+        binary = self._make_binary(seg_img, params, shape)#.T
         self.binary_shape = binary.shape
 
         print("Creating sparse masks")
@@ -647,16 +648,16 @@ class ExportWidget(QtWidgets.QWidget):
             segmented_img=binary,
             raw_img_shape=shape,
             edge_method=params['edge_method'],
-            selem=params['selem']
+            selem=params['selem'],
         )
 
-        self.colored_mask = get_colored_mask(self.masks, binary.shape)
+        self.colored_mask = get_colored_mask(self.masks, binary.T.shape)
         self.imgitem.setImage(self.colored_mask)
 
     def _apply_threshold_3d(self):
         params = self.get_params()
         # 3D
-        seg_img = np.stack(self.nuset_widget.imgs_segmented)
+        seg_img = np.stack(self.nuset_widget.imgs_postprocessed)
         shape = np.stack(self.nuset_widget.imgs_projected).shape
 
         print("Thresholding")
@@ -684,8 +685,8 @@ class ExportWidget(QtWidgets.QWidget):
 
         masks = []
         print("Thresholding & Creating sparse masks")
-        for ix in tqdm(range(len(self.nuset_widget.imgs_segmented))):
-            seg_img = self.nuset_widget.imgs_segmented[ix].T
+        for ix in tqdm(range(len(self.nuset_widget.imgs_postprocessed))):
+            seg_img = self.nuset_widget.imgs_postprocessed[ix].T
 
             binary = self._make_binary(seg_img, params, shape)
             self.binary_shape = binary.shape
@@ -715,18 +716,19 @@ class ExportWidget(QtWidgets.QWidget):
 
     @present_exceptions()
     def apply_threshold(self):
-        if not self.nuset_widget.imgs_segmented:
+        if not self.nuset_widget.imgs_postprocessed:
             raise ValueError("You must segment images before you can proceed.")
 
-        for img in self.nuset_widget.imgs_segmented:
+        for img in self.nuset_widget.imgs_postprocessed:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
-        if QtWidgets.QMessageBox.question(
-                self, 'Export for CNMF?', 'This may take a few minutes, and could take ~10 minutes '
-                                          'if segmenting a large 3D stack. Proceed?',
-        ) == QtWidgets.QMessageBox.No:
-            return
+        if self.nuset_widget.z_max > 0:
+            if QtWidgets.QMessageBox.question(
+                    self, 'Export for CNMF?', 'This may take a few minutes, and could take ~10 minutes '
+                                              'if segmenting a large stack. Proceed?',
+            ) == QtWidgets.QMessageBox.No:
+                return
 
         # 3D
         if self.nuset_widget.z_max > 0:
@@ -739,10 +741,10 @@ class ExportWidget(QtWidgets.QWidget):
             self._apply_threshold_2d()
 
     def _check_save_masks(self):
-        if not self.nuset_widget.imgs_segmented:
+        if not self.nuset_widget.imgs_postprocessed:
             raise ValueError("You must segment images before you can proceed.")
 
-        for img in self.nuset_widget.imgs_segmented:
+        for img in self.nuset_widget.imgs_postprocessed:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
@@ -770,10 +772,10 @@ class ExportWidget(QtWidgets.QWidget):
 
     @present_exceptions()
     def export_to_viewer(self):
-        if not self.nuset_widget.imgs_segmented:
+        if not self.nuset_widget.imgs_postprocessed:
             raise ValueError("You must segment images before you can proceed.")
 
-        for img in self.nuset_widget.imgs_segmented:
+        for img in self.nuset_widget.imgs_postprocessed:
             if not img.size > 0:
                 raise ValueError("Your must segment the entire stack before you can proceed.")
 
@@ -785,26 +787,25 @@ class ExportWidget(QtWidgets.QWidget):
 
         if QtWidgets.QMessageBox.question(
             self, 'Use Convex Hull?',
-            'Use a Convex Hull to get the vertices?\n'
-            'This is faster & recommended if you are importing as ManualROIs',
+            'Use a Convex Hull to get the vertices? [Yes]\n'
+            'This is recommended if you are importing as ManualROIs.\n'
+            'If you select [No] ALL vertices for the masks will be imported and '
+            'this could be extremely slow!',
             QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes
         ) == QtWidgets.QMessageBox.Yes:
             method = 'ConvexHull'
         else:
-            method = 'ConvexHull'
-            # method = 'cKDTree'
+            method = 'cKDTree'
 
-        for i in tqdm(range(self.masks.shape[1])):
-            try:
-                vs = area_to_hull(
-                    self.masks[:, i].reshape(self.binary_shape)
-                )
-            except QhullError:
-                print(f"Skipping {i}, not enough points for convex hull")
+        if self.nuset_widget.z_max > 0:
+            shape = self.binary_shape
+        else:
+            shape = self.binary_shape[::-1]
 
-            self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
-                xs=vs[:, 0], ys=vs[:, 1]
-            )
+        if method == 'ConvexHull':
+            self._export_hulls(shape)
+        elif method == 'cKDTree':
+            self._export_ckdtrees(shape)
 
         self.nuset_widget.vi.viewer.workEnv.history_trace.append(
             {
@@ -815,6 +816,29 @@ class ExportWidget(QtWidgets.QWidget):
                     }
             }
         )
+
+    def _export_hulls(self, shape):
+        for i in tqdm(range(self.masks.shape[1])):
+            try:
+                vs = area_to_hull(
+                    self.masks[:, i].reshape(shape)
+                )
+            except QhullError:
+                print(f"Skipping {i}, not enough points for convex hull")
+            else:
+                self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
+                    xs=vs[:, 0], ys=vs[:, 1]
+                )
+
+    def _export_ckdtrees(self, shape):
+        for i in tqdm(range(self.masks.shape[1])):
+            vs = area_to_vertices(
+                self.masks[:, i].reshape(shape)
+            )
+
+            self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
+                xs=vs[:, 0], ys=vs[:, 1]
+            )
 
 
 class NusetWidget(QtWidgets.QWidget):
@@ -1218,7 +1242,7 @@ class NusetWidget(QtWidgets.QWidget):
         
         self.projection_option = opt
 
-        func = getattr(np, opt)
+        func = getattr(np, f'nan{opt}')
 
         print("Updating Projection(s)")
         if self.input_img.ndim == 4:

@@ -78,7 +78,11 @@ class ROIList(list):
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
-    def append(self, roi: Union[ScatterROI, ManualROI]):
+    def append(
+            self,
+            roi: Union[ScatterROI, ManualROI, VolMultiCNMFROI],
+            add_to_list_widget: bool = True,
+    ):
         """Add an ROI instance to the list"""
         roi.add_to_viewer()
 
@@ -91,10 +95,9 @@ class ROIList(list):
             roi_graphics_object.sigRemoveRequested.connect(partial(self.__delitem__, roi))
             roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, roi))
 
-        # self.vi.workEnv_changed('ROI Added')
-        # item = QtWidgets.QListWidgetItem(self.list_widget)
-        # item.setData(QtCore.Qt.UserRole, "<b>{0}</b>".format((self.__len__())))
-        # self.list_widget.addItem(str(self.__len__()))
+        if add_to_list_widget:
+            self.list_widget.addItem(str(self.__len__()))
+            
         super(ROIList, self).append(roi)
 
     # def clear_all(self):
