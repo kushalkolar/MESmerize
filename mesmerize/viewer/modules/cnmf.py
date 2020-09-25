@@ -105,7 +105,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             except:
                 raise ValueError("Evaluation kwargs not formatted properly.")
 
-        if self.vi.work_env.imgdata.ndim == 4:
+        if self.vi.viewer.work_env.imgdata.ndim == 4:
             is_3d = True
         else:
             is_3d = False

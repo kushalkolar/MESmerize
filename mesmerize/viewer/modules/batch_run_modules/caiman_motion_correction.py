@@ -204,7 +204,7 @@ def run_multi(batch_dir, UUID, output):
             m_els = m_els.astype(np.uint16)
 
         if z == 0:
-            mc_out = np.zeros(m_els.shape, dtype=m_els.dtype)
+            mc_out = np.zeros(seq_shape, dtype=m_els.dtype)
 
         mc_out[:, z, :, :] = m_els
 
