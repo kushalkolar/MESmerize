@@ -2,10 +2,12 @@
 
 ### New
 - Cross correlation plots with stimulus maps.
-- Experimental use of a bioformats importer for the Viewer.
-- Support for Femtonics .mes and .mesc recordings.
-- Export lite versions of projects for easier sharing.
 - Segmentation using deep learning via NuSeT.
+- Easy seeding of CNMF with binary masks (such as those created through NuSeT predictions).
+- Export pseudocolor videos from the Viewer.    
+- Support for Femtonics .mes and .mesc recordings.
+- Experimental use of a bioformats importer for the Viewer.
+- Export lite versions of projects for easier sharing.
 
 ### Fixed
 - ROI removal is much faster when clearing the work environment
