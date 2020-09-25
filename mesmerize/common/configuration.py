@@ -77,17 +77,18 @@ _prefix_comments = \
         '# Adjust these according to your hardware'
     ]
 
-_prefix_commands = _prefix_comments + ["export MKL_NUM_THREADS=1",
-                                       "export OPENBLAS_NUM_THREADS=1", '\n']
-
 if IS_WINDOWS:
-    _prefix_commands += \
+    _prefix_commands = \
         [
             "# If using anaconda, you may need a command to activate the conda environment.",
             "# If this is the case, uncomment the following line.",
             "# conda activate mesmerize",
             "\n"
         ]
+
+else:
+    _prefix_commands = _prefix_comments + ["export MKL_NUM_THREADS=1",
+                                           "export OPENBLAS_NUM_THREADS=1", '\n']
 
 default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       '_MESMERIZE_USE_CUDA': False,
