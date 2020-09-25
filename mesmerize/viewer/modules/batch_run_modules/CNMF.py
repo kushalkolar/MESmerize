@@ -175,12 +175,6 @@ def run_multi(batch_dir, UUID, output):
     n_processes = int(n_processes)
     file_path = os.path.join(batch_dir, UUID)
 
-
-    print('*********** Creating Process Pool ***********')
-    c, dview, n_processes = cm.cluster.setup_cluster(
-        backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
-    )
-
     filename = [file_path + '_input.tiff']
     input_params = pickle.load(open(file_path + '.params', 'rb'))
 

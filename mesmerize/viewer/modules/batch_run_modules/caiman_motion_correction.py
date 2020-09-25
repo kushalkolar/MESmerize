@@ -45,6 +45,32 @@ def run(batch_dir: str, UUID: str):
 
     output = {'status': 0, 'output_info': ''}
     file_path = os.path.join(batch_dir, UUID)
+
+    input_params = pickle.load(open(file_path + '.params', 'rb'))
+
+    try:
+        if 'is_3d' in input_params.keys():
+            if input_params['is_3d']:
+                run_multi(batch_dir, UUID, output)
+            else:
+                run_single(batch_dir, UUID, output)
+        else:
+            run_single(batch_dir, UUID, output)
+
+    except Exception as e:
+        output.update({'status': 0, 'output_info': traceback.format_exc()})
+
+    end_time = time()
+    processing_time = (end_time - start_time) / 60
+
+    output.update({'processing_time': processing_time})
+
+    json.dump(output, open(file_path + '.out', 'w'))
+
+
+def run_single(batch_dir, UUID, output):
+    file_path = os.path.join(batch_dir, UUID)
+
     n_processes = os.environ['_MESMERIZE_N_THREADS']
     n_processes = int(n_processes)
 
@@ -52,25 +78,108 @@ def run(batch_dir: str, UUID: str):
         backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
     )
 
-    try:
-        fname = [file_path + '_input.tiff']
-        input_params = pickle.load(open(file_path + '.params', 'rb'))
-        # TODO: Should just unpack the input params as kwargs
-        mc_kwargs = input_params['mc_kwargs']
+    fname = [file_path + '_input.tiff']
+    # TODO: Should just unpack the input params as kwargs
+    input_params = pickle.load(open(file_path + '.params', 'rb'))
+    mc_kwargs = input_params['mc_kwargs']
 
-        splits_rig = n_processes
+    splits_rig = n_processes
 
-        splits_els = n_processes
+    splits_els = n_processes
 
-        if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
-            USE_CUDA = True
-        else:
-            USE_CUDA = False
+    if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
+        USE_CUDA = True
+    else:
+        USE_CUDA = False
 
-        min_mov = cm.load(fname[0], subindices=range(200)).min()
+    min_mov = cm.load(fname[0], subindices=range(200)).min()
+
+    mc = MotionCorrect(
+        fname[0], min_mov,
+        dview=dview,
+        splits_rig=splits_rig,
+        splits_els=splits_els,
+        shifts_opencv=True,
+        nonneg_movie=True,
+        use_cuda=USE_CUDA,
+        **mc_kwargs
+    )
+
+    mc.motion_correct_pwrigid(save_movie=True)
+    m_els = cm.load(mc.fname_tot_els)
+    bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
+                                     np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
+
+    m_els -= np.nanmin(m_els)
+
+    if input_params['output_bit_depth'] == 'Do not convert':
+        pass
+    elif input_params['output_bit_depth'] == '8':
+        m_els = m_els.astype(np.uint8, copy=False)
+    elif input_params['output_bit_depth'] == '16':
+        m_els = m_els.astype(np.uint16)
+
+    img_out_path = os.path.join(batch_dir, f'{UUID}_mc.tiff')
+    tifffile.imsave(img_out_path, m_els, bigtiff=True, imagej=True, compress=1)
+    output['output_files'] = UUID + '_mc.tiff'
+
+    output.update({'status': 1, 'bord_px': int(bord_px_els)})
+
+    for mf in glob(os.path.join(batch_dir, UUID + '*.mmap')):
+        try:
+            os.remove(mf)
+        except:
+            pass
+
+    dview.terminate()
+
+    return output
+
+
+def run_multi(batch_dir, UUID, output):
+    file_path = os.path.join(batch_dir, UUID)
+
+    n_processes = os.environ['_MESMERIZE_N_THREADS']
+    n_processes = int(n_processes)
+
+    filename = [file_path + '_input.tiff']
+
+    seq = tifffile.TiffFile(filename[0]).asarray()
+    seq_shape = seq.shape
+
+    # assume default tzxy
+    for z in range(seq.shape[1]):
+        tifffile.imsave(f'{file_path}_z{z}.tiff', seq[:, z, :, :])
+
+    del seq
+
+    print("******** Creating process pool ********")
+    c, dview, n_processes = cm.cluster.setup_cluster(
+        backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
+    )
+
+    # TODO: Should just unpack the input params as kwargs
+    input_params = pickle.load(open(file_path + '.params', 'rb'))
+    mc_kwargs = input_params['mc_kwargs']
+
+    splits_rig = n_processes
+    splits_els = n_processes
+
+    if os.environ['_MESMERIZE_USE_CUDA'] == 'True':
+        USE_CUDA = True
+    else:
+        USE_CUDA = False
+
+    output_files = []
+    for z in range(seq_shape[1]):
+        print(f"Plane {z} / {seq_shape[1]}")
+        filename = [f'{file_path}_z{z}.tiff']
+        print('Creating memmap')
+
+        min_mov = cm.load(filename[0], subindices=range(200)).min()
 
         mc = MotionCorrect(
-            fname[0], min_mov,
+            filename[0], min_mov,
             dview=dview,
             splits_rig=splits_rig,
             splits_els=splits_els,
@@ -94,13 +203,22 @@ def run(batch_dir: str, UUID: str):
         elif input_params['output_bit_depth'] == '16':
             m_els = m_els.astype(np.uint16)
 
-        img_out_path = os.path.join(batch_dir, f'{UUID}_mc.tiff')
-        tifffile.imsave(img_out_path, m_els, bigtiff=True, imagej=True, compress=1)
+        if z == 0:
+            mc_out = np.zeros(m_els.shape, dtype=m_els.dtype)
 
-        output.update({'status': 1, 'bord_px': int(bord_px_els)})
+        mc_out[:, z, :, :] = m_els
 
-    except Exception:
-        output.update({'status': 0, 'output_info': traceback.format_exc()})
+    img_out_path = os.path.join(batch_dir, f'{UUID}_mc.tiff')
+    tifffile.imsave(img_out_path, m_els, bigtiff=True, imagej=True, compress=1)
+    output['output_files'] = UUID + '_mc.tiff'
+
+    output.update(
+        {
+            'status': 1,
+            'bord_px': int(bord_px_els),
+            'output_files': output_files
+        }
+    )
 
     for mf in glob(os.path.join(batch_dir, UUID + '*.mmap')):
         try:
@@ -110,15 +228,7 @@ def run(batch_dir: str, UUID: str):
 
     dview.terminate()
 
-    end_time = time()
-    processing_time = (end_time - start_time) / 60
-
-    output_files_list = [UUID + '_mc.tiff']
-
-    output.update({'processing_time': processing_time,
-                   'output_files': output_files_list})
-
-    json.dump(output, open(file_path + '.out', 'w'))
+    return output
 
 
 class Output:
