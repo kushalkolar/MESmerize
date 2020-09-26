@@ -109,7 +109,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             _kwargs = self.ui.plainTextEdit_mc_kwargs.toPlainText()
             mc_params.update(eval(f"dict({_kwargs})"))
 
-        if self.vi.viewer.work_env.imgdata.ndim == 4:
+        if self.vi.viewer.workEnv.imgdata.ndim == 4:
             is_3d = True
         else:
             is_3d = False
