@@ -1,4 +1,4 @@
-from ...common.configuration import HAS_CAIMAN
+from ...common.configuration import HAS_CAIMAN, HAS_TENSORFLOW
 
 __all__ = [
     'mesfile_io',
@@ -8,7 +8,6 @@ __all__ = [
     'script_editor',
     'suite2p',
     'femtonics_mesc',
-    'nuset_segment',
     'exporter'
 ]
 
@@ -22,3 +21,9 @@ if HAS_CAIMAN:
         'caiman_importer',
         'caiman_dfof'
     ]
+
+if HAS_TENSORFLOW:
+    __all__ += \
+        [
+            'nuset_segment',
+        ]
