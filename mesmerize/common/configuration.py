@@ -42,6 +42,15 @@ except ImportError:
 else:
     HAS_CAIMAN = True
 
+try:
+    import tensorflow
+except ImportError:
+    warn(
+        "tensorflow not found. Nuset segementaiton will be disabled"
+    )
+    HAS_TENSORFLOW = False
+else:
+    HAS_TENSORFLOW = True
 
 try:
     import tslearn
