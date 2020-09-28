@@ -175,12 +175,6 @@ def run_multi(batch_dir, UUID, output):
     n_processes = int(n_processes)
     file_path = os.path.join(batch_dir, UUID)
 
-
-    print('*********** Creating Process Pool ***********')
-    c, dview, n_processes = cm.cluster.setup_cluster(
-        backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
-    )
-
     filename = [file_path + '_input.tiff']
     input_params = pickle.load(open(file_path + '.params', 'rb'))
 
@@ -197,6 +191,7 @@ def run_multi(batch_dir, UUID, output):
     c, dview, n_processes = cm.cluster.setup_cluster(
         backend='local', n_processes=n_processes, single_thread=False, ignore_preexisting=True
     )
+    num_components = 0
     output_files = []
     for z in range(seq_shape[1]):
         print(f"Plane {z} / {seq_shape[1]}")
@@ -261,6 +256,8 @@ def run_multi(batch_dir, UUID, output):
 
         cnm.estimates.select_components(use_object=True)
 
+        num_components += len(cnm.estimates.C)
+
         out_filename = f'{UUID}_results_z{z}.hdf5'
         cnm.save(out_filename)
 
@@ -272,7 +269,8 @@ def run_multi(batch_dir, UUID, output):
         {
             'output': UUID,
             'status': 1,
-            'output_files': output_files
+            'output_files': output_files,
+            'num_components': num_components
         }
     )
 
@@ -302,14 +300,16 @@ class Output:
 
         if input_params['is_3d']:
             roi_manager_gui = vi.viewer.parent().get_module('roi_manager')
-            manager = roi_manager_gui.start_backend('VolMultiCNMF')
+            manager = roi_manager_gui.start_backend('VolMultiCNMFROI')
 
             cnmf_data_dicts = \
                 [
                     load_dict_from_hdf5(
                         os.path.join(batch_path, f'{UUID}_results_z{z}.hdf5')
                     )
-                    for z in range(vi.viewer.workEnv.imgdata.z_max + 1)
+                    for z in range(5)
+                    # for z in range(
+                    # vi.viewer.workEnv.imgdata.z_max + 1)
                 ]
 
             manager.add_all_components(

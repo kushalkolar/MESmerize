@@ -428,6 +428,8 @@ class ScatterROI(BaseROI):
         else:
             self.restore_state(state)
 
+        self.curve_data_type = 'curve'
+
     # # override to get diff behavior from ManualROI
     # @property
     # def curve_data(self) -> tuple:
@@ -438,17 +440,21 @@ class ScatterROI(BaseROI):
     #     xs = np.arange(len(y_vals))
     #     self._curve_data = [xs, y_vals]
 
-    def set_curve_data(self, y_vals: np.ndarray):
+    def set_curve_data(self, y_vals: np.ndarray, set_plot: bool = True):
         """Set the curve data"""
         xs = np.arange(len(y_vals))
         self.curve_data = [xs, y_vals]
-        self.set_viewer_curveplot('curve')
+        if set_plot:
+            self.set_viewer_curveplot('curve')
 
     # sets the plot in the viewer
     def set_viewer_curveplot(self, data_type: str = 'curve'):
         """
         :param data_type: one of "curve", "spike", or "dfof"
         """
+        if self.curve_plot_item is None:
+            return
+
         data = getattr(self, f'{data_type}_data')
         if data is not None:
             self.curve_plot_item.setData(x=data[0], y=data[1])
@@ -593,6 +599,8 @@ class VolCNMF(ScatterROI):
         self.roi_xs = self.current_coors[:, 1].flatten().astype(int)
         self.roi_ys = self.current_coors[:, 0].flatten().astype(int)
 
+        self.set_viewer_curveplot(self.curve_data_type)
+
         self.roi_graphics_object.setData(self.roi_xs, self.roi_ys)#, symbol='s', size=self.spot_size)
 
 
@@ -601,9 +609,21 @@ class VolMultiCNMFROI(ScatterROI):
     def __init__(self, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, cnmf_idx: int = None,
                  curve_data: np.ndarray = None, contour: dict = None, state: Union[dict, None] = None,
                  spike_data: np.ndarray = None, dfof_data: np.ndarray = None, metadata: dict = None,
-                 zlevel: int = 0, zcenter: int = None, **kwargs):
+                 zlevel: int = 0, zcenter: int = None, parent_manager=None, roi_ix: int = None,
+                 scatter_plot: pg.ScatterPlotItem = None, **kwargs):
         self.zlevel: int = zlevel  #: z-level of the ROI that is currently visible, different from zValue!!
         self.zcenter: int = zcenter  #: z-level where this ROI has its center, must be specified
+
+        self.parent_manager = parent_manager
+
+        self.roi_ix = roi_ix
+        self.scatter_plot = scatter_plot
+
+        if self.parent_manager is not None:
+            ix = (self.parent_manager.roi_ixs[self.zcenter] == self.roi_ix).flatten()
+            roi_xys = self.parent_manager.roi_xys[self.zcenter][ix]
+            self.roi_xs = roi_xys[:, 0]
+            self.roi_ys = roi_xys[:, 1]
 
         super(VolMultiCNMFROI, self).__init__(curve_plot_item, view_box, state, curve_data,
                                               spike_data=spike_data, dfof_data=dfof_data,
@@ -614,30 +634,72 @@ class VolMultiCNMFROI(ScatterROI):
                 "zcenter must not be None"
             )
 
-        self.roi_xs = np.empty(0)
-        self.roi_ys = np.empty(0)
-
         if 'raw_min_max' in kwargs.keys():
             self.raw_min_max = kwargs.pop('raw_min_max')
         else:
             self.raw_min_max = None
 
         if state is None:
-            # get the outline from the cnmf output
-            cors = contour['coordinates']
-            cors = cors[~np.isnan(cors).any(axis=1)]
-
-            xs = cors[:, 0].flatten()
-            ys = cors[:, 1].flatten()
-
-            self.set_roi_graphics_object(xs, ys)
-
-            self.set_curve_data(curve_data)
+            self.set_curve_data(curve_data, set_plot=False)
             self.cnmf_idx = cnmf_idx  #: original index of the ROI from cnmf idx_components
         else:
             self.restore_state(state)
 
         self.check_visible()
+
+    def get_roi_graphics_object(self) -> QtWidgets.QGraphicsObject:
+        return self.roi_graphics_object
+
+    def set_roi_graphics_object(self, *args, **kwargs):
+        pass
+
+    def get_color(self):
+        pass
+
+    def set_color(self, color: Union[np.ndarray, str], *args, **kwargs):
+        # just assume white color for now
+        colors = np.copy(self.parent_manager.roi_crs[self.zcenter])
+        color = np.array([255., 255., 255., 255.])
+        colors[(self.parent_manager.roi_ixs[self.zcenter] == self.roi_ix).flatten()] = color
+
+        brushes = list(map(pg.mkBrush, colors))
+        pens = list(map(pg.mkPen, colors))
+
+        self.scatter_plot.setBrush(brushes)
+        self.scatter_plot.setPen(pens)
+
+        # self.curve_plot_item.setSize(pg.mkPen('w', width=2))
+
+    def add_to_viewer(self):
+        if self.parent_manager is None:
+            super(VolMultiCNMFROI, self).add_to_viewer()
+
+    def remove_from_viewer(self):
+        if self.parent_manager is None:
+            super(VolMultiCNMFROI, self).remove_from_viewer()
+            return
+        
+        new_ixs = (self.parent_manager.roi_ixs[self.zcenter] != self.roi_ix).flatten()
+        self.parent_manager.roi_ixs[self.zcenter] = self.parent_manager.roi_ixs[self.zcenter][new_ixs]
+        self.parent_manager.roi_xys[self.zcenter] = self.parent_manager.roi_xys[self.zcenter][new_ixs]
+        self.parent_manager.roi_crs[self.zcenter] = self.parent_manager.roi_crs[self.zcenter][new_ixs]
+
+        xys = self.parent_manager.roi_xys[self.zcenter]
+        crs = self.parent_manager.roi_crs[self.zcenter]
+
+        self.scatter_plot.setData(
+            xys[:, 0],
+            xys[:, 1],
+            symbol='s',
+            size=1,
+            pxMode=True,
+            brush=list(map(pg.mkBrush, crs)),
+            pen=list(map(pg.mkPen, crs))
+        )
+
+        if self.curve_plot_item is not None:
+            self.curve_plot_item.clear()
+        del self.curve_plot_item
 
     def restore_state(self, state):
         super(VolMultiCNMFROI, self).restore_state(state)
@@ -653,12 +715,21 @@ class VolMultiCNMFROI(ScatterROI):
 
         self.zcenter = state['zcenter']
 
-    def to_state(self) -> dict:
-        state = super(VolMultiCNMFROI, self).to_state()
+        if self.parent_manager is None:
+            self._draw()
 
-        state = {**state,
-                 'cnmf_idx': self.cnmf_idx,
-                 'raw_min_max': self.raw_min_max
+    def to_state(self) -> dict:
+        state = {'cnmf_idx': self.cnmf_idx,
+                 'zcenter': self.zcenter,
+                 'roi_ix': self.roi_ix,
+                 'roi_xs': self.roi_xs,
+                 'roi_ys': self.roi_ys,
+                 'raw_min_max': self.raw_min_max,
+                 'curve_data': self.curve_data,
+                 'spike_data': self.spike_data,
+                 'dfof_data': self.dfof_data,
+                 'tags': self.get_all_tags(),
+                 'roi_type': self.__class__.__name__,
                  }
 
         return state
@@ -666,10 +737,10 @@ class VolMultiCNMFROI(ScatterROI):
     def check_visible(self):
         if self.zlevel == self.zcenter:
             self.visible = True
-            self.roi_graphics_object.show()
+            self.set_viewer_curveplot(self.curve_data_type)
         else:
             self.visible = False
-            self.roi_graphics_object.hide()
+            self.curve_plot_item.clear()
 
     def set_zlevel(self, z: int):
         """

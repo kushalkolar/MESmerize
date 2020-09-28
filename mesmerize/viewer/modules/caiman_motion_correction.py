@@ -109,6 +109,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
             _kwargs = self.ui.plainTextEdit_mc_kwargs.toPlainText()
             mc_params.update(eval(f"dict({_kwargs})"))
 
+        if self.vi.viewer.workEnv.imgdata.ndim == 4:
+            is_3d = True
+        else:
+            is_3d = False
+
+        d['is_3d'] = is_3d
+
         if group_params:
             d.update({'mc_kwargs': mc_params})
 
@@ -121,7 +128,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
         """
         Add a batch item with the currently set parameters and the current work environment.
         """
-        d = self.get_params()
 
         name = self.ui.lineEditNameElastic.text()
 

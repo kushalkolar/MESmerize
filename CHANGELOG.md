@@ -1,13 +1,23 @@
-# 0.3.0 (in progress)
+# 0.3.1 (in progress)
+
+### New
+- Experimental use of the bioformats importer for the Viewer.
+- Export lite versions of projects for easier sharing.
+
+### Fixed
+
+- Improved performance when importing a project dataframe in the flowchart
+- Spacemap plot supports 3D data
+- Unlabelled stimulus periods can be excluded for Stimulus Tuning plots
+
+# 0.3.0
 
 ### New
 - Cross correlation plots with stimulus maps.
-- Segmentation using deep learning via NuSeT.
-- Easy seeding of CNMF with binary masks (such as those created through NuSeT predictions).
-- Export pseudocolor videos from the Viewer.    
 - Support for Femtonics .mes and .mesc recordings.
-- Experimental use of a bioformats importer for the Viewer.
-- Export lite versions of projects for easier sharing.
+- Segmentation using deep learning via NuSeT.
+- Caiman NoRMCorr motion correction can be used for 3D data, just treats each plane as an individual 2D recording
+- Caiman 2D CNMF can be used on 3D data, useful if you can assume each cell appears in only 1 plane
 
 ### Fixed
 - ROI removal is much faster when clearing the work environment

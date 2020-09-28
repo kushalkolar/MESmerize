@@ -103,8 +103,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
 
         # Since it's just same curve vs. same curves in the cc_matrix
         xlabels = ylabels
-
-        self.plot_variant.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels, linewidths=.5, linecolor='k')
+                                                                                     #  lines make large matrices hard to see
+        self.plot_variant.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels)#, linewidths=.5, linecolor='k')
         # self.plot_widget.ax_ylabel_bar.set_axis_off()
 
         self.plot_variant.plot.ax_heatmap.set_xlabel('Curve 1, magenta')

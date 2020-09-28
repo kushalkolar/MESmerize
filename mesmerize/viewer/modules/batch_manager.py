@@ -297,6 +297,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.lwd.close()
             self.lwd = None
 
+    @present_exceptions('Cannot load output', 'The following error occurred when trying to load the output')
     def on_list_widget_batch_doubleclicked(self, s: QtWidgets.QListWidgetItem):
         self.ui.scrollAreaOutputInfo.show()
         UUID = s.data(3)
@@ -313,6 +314,10 @@ class ModuleGUI(QtWidgets.QWidget):
 
         if output['status'] == 1:
             viewers = get_window_manager().viewers
+
+            if len(viewers) == 0:
+                raise IndexError("No Viewers are currently open, you must open a Viewer to view outputs.")
+
             if len(get_window_manager().viewers) > 1:
                 self.lwd = ListWidgetDialog()
                 self.lwd.listWidget.addItems([str(i + 1) for i in range(len(viewers))])

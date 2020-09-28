@@ -26,6 +26,18 @@ You can also enter parameters for CNMF and component evaluation as keyword argum
 
 .. note:: The parameters used for 3D CNMF are stored in the work environment of the viewer and this log is carried over and saved in *Project Samples* as well. To see the parameters that were used for 3D CNMF in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the 'cnmf_3d' entry.
 
+.. warning:: Importing several *thousands* of ROIs into the Viewer can take 15-30 minutes. You will be able to track the progress of the import in the Viewer Window's status bar.
+
+Usage
+=====
+
+This module adds a "CNMF_3D" *item* to the batch. Set the desired parameters (see Caiman docs & demos) and then enter a name to add it as an *item* to the batch. After the batch item is processed, **double-click the batch item** to import the CNMF output into a Viewer. You can then annotate and curate ROIs, and add the data as a *Sample* to your project.
+
+.. seealso:: This modules uses the :ref:`Batch Manager <module_BatchManager>`.
+
+.. warning:: It's recommended to open a new Viewer when you want to import 3D CNMF data. Full garbage collection of 3D data in the Viewer Work environment is a WIP for when you want to clear & import 3D data into the same viewer. However when you close the Viewer entirely it is garbage collected entirely.
+
+
 Script Usage
 ============
 

@@ -99,9 +99,13 @@ class MainWindow(QtWidgets.QMainWindow):
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
                         'script_editor': script_editor.ModuleGUI,
                         'mesc_importer': femtonics_mesc.ModuleGUI,
-                        'nuset_segment': nuset_segment.ModuleGUI,
                         'exporter': exporter.ModuleGUI,
                         }
+
+    if configuration.HAS_TENSORFLOW:
+        standard_modules.update(
+            {'nuset_segment': nuset_segment.ModuleGUI}
+        )
 
     # caiman modules
     if configuration.HAS_CAIMAN:
@@ -129,9 +133,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
         self.ui.actionSuite2p_Importer.triggered.connect(lambda: self.run_module(suite2p.ModuleGUI))
-        self.ui.actionNuSeT_Segmentation.triggered.connect(lambda: self.run_module(nuset_segment.ModuleGUI))
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
         self.ui.actionScript_Editor.triggered.connect(lambda: self.run_module(script_editor.ModuleGUI))
+
+        if configuration.HAS_TENSORFLOW:
+            self.ui.actionNuSeT_Segmentation.triggered.connect(lambda: self.run_module(nuset_segment.ModuleGUI))
+
 
         # TODO: refactor the actions trigger connections so they're automated based on module name
         if configuration.HAS_CAIMAN:

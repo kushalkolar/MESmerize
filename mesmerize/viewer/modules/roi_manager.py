@@ -182,8 +182,15 @@ class ModuleGUI(QtWidgets.QDockWidget):
         elif self.ui.radioButton_spikes.isChecked():
             datatype = 'spike'
 
-        for roi in self.manager.roi_list:
-            roi.set_viewer_curveplot(datatype)
+        if isinstance(self.manager, managers.ManagerVolMultiCNMFROI):
+            for roi in self.manager.roi_list:
+                roi.curve_data_type = datatype
+                if roi.visible:
+                    roi.set_viewer_curveplot(datatype)
+
+        else:
+            for roi in self.manager.roi_list:
+                roi.set_viewer_curveplot(datatype)
 
     def disable_curve_options(self, b):
         self.ui.radioButton_curve_data.setDisabled(b)
