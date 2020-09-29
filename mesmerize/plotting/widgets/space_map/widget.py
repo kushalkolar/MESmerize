@@ -34,6 +34,9 @@ class ControlDock(QtWidgets.QDockWidget):
 
         self.widget_registry = WidgetRegistry()
 
+        self.ui.cmap_img.set_cmap('inferno')
+        self.ui.cmap_patches.set_cmap('tab10')
+
         self.widget_registry.register(self.ui.combo_categorical_column,
                                       setter=self.ui.combo_categorical_column.setText,
                                       getter=self.ui.combo_categorical_column.currentText,
@@ -178,6 +181,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.img: np.ndarray = np.empty(0)
         self.control_widget.ui.verticalSliderZLevel.valueChanged.connect(self._update_img)
+        self.previous_sample_id: str = None
 
     def set_update_live(self, b: bool):
         self.control_widget.ui.checkBoxLiveUpdate.setChecked(b)
@@ -211,19 +215,31 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.plot.ax.set_title(sample_id)
 
-        img = self.load_image(projection)
+        self.sample_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
 
-        if img.ndim > 2:
+        self.img = self.load_image(projection)
+
+        if self.img.ndim > 2:
             self.control_widget.ui.groupBox.setVisible(True)
-            self.control_widget.ui.verticalSliderZLevel.setMaximum(img.shape[0])
-            self.control_widget.ui.spinBoxZLevel.setMaximum(img.shape[0])
+            self.control_widget.ui.verticalSliderZLevel.setMaximum(self.img.shape[0])
+            self.control_widget.ui.spinBoxZLevel.setMaximum(self.img.shape[0])
+            # self.control_widget.ui.spinBoxZLevel.setValue(0)
+            if self.previous_sample_id == sample_id:
+                self._update_img(
+                    self.control_widget.ui.verticalSliderZLevel.value()
+                )
+            else:
+                self.control_widget.ui.verticalSliderZLevel.setValue(0)
+                self._update_img(0)
+                self.previous_sample_id = sample_id
         else:
             self.control_widget.ui.groupBox.setVisible(False)
+            self._update_img()
 
     def _update_img(self, zlevel: int = 0):
+        self.plot.ax.cla()
         plot_opts = self.control_widget.widget_registry.get_state()
 
-        sample_id = plot_opts['selected_sample'][0]
         categorical_column = plot_opts['categorical_column']
 
         if len(plot_opts['selected_sample']) < 1:
@@ -235,7 +251,6 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         line_width = plot_opts['line_width']
         alpha = plot_opts['alpha']
 
-        self.sample_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
         labels = self.sample_df[categorical_column]
         cmap_labels = get_colormap(labels=labels.unique(), cmap=cmap_patches)
 
@@ -253,10 +268,15 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         for ix, r in self.sample_df.iterrows():
             roi = r['ROI_State']
+
+            if roi['roi_type'] == 'VolMultiCNMFROI':
+                if not roi['zcenter'] == zlevel:
+                    continue
+
             if roi['roi_type'] == 'VolCNMF':
                 coors3d = roi['coors'][zlevel]
                 current_coors = coors3d[~np.isnan(coors3d).any(axis=1)]
-                if not current_coors.size > 0: # roi not visible in current plane
+                if not current_coors.size > 0:  # roi not visible in current plane
                     continue
 
                 xs = current_coors[:, 1].flatten().astype(int)
@@ -297,7 +317,7 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
             z = 0
             imgs = []
             while True:
-                img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{sample_id}-_-{img_uuid}_max_proj-{z}.tiff')
+                img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{sample_id}-_-{img_uuid}_{projection}_proj-{z}.tiff')
                 if os.path.isfile(img_path):
                     imgs.append(tifffile.TiffFile(img_path).asarray())
                     z += 1
