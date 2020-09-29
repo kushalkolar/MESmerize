@@ -82,6 +82,9 @@ def get_tuning_curves(
 
         # instantiate lists for the tuning curves
         all_stimuli = np.unique(stim_array)  # [stim_array != ''])
+        if not include_unlabelled:
+            all_stimuli = all_stimuli[all_stimuli != "None"]
+
         ln = [tonumeric(v) for v in all_stimuli if tonumeric(v) is not False]
         ls = [v for v in all_stimuli if tonumeric(v) is False]
         ln.sort()
@@ -94,9 +97,6 @@ def get_tuning_curves(
 
         # create the tuning curves
         for i, stimulus in enumerate(all_stimuli):
-            if (stimulus == "None") and (not include_unlabelled):
-                continue
-
             xs[i] = stimulus  # stimulus name
 
             # get ALL the y values from the curve where
