@@ -40,6 +40,7 @@ from glob import glob
 from collections import UserList
 from typing import *
 from pprint import pformat
+import re
 from ...common.configuration import IS_WINDOWS
 
 if not IS_WINDOWS:
@@ -197,7 +198,7 @@ class ModuleGUI(QtWidgets.QWidget):
     def create_new_batch_dialog(self, path: str):
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
 
-        if any(s in name for s in [' ', '(', ')', '?']):
+        if not re.match("^[A-Za-z0-9_-]*$", name):
             QtWidgets.QMessageBox.warning(self, 'Invalid name',
                                           'Batch name can only contain alphanumeric characters')
             return
