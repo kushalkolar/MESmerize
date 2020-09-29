@@ -25,6 +25,9 @@ class Ui_ControlsDock(object):
         self.comboBox_data_column.setObjectName("comboBox_data_column")
         self.horizontalLayout.addWidget(self.comboBox_data_column)
         self.verticalLayout_3.addLayout(self.horizontalLayout)
+        self.checkBoxIncludeUnlabelled = QtWidgets.QCheckBox(self.dockWidgetContents)
+        self.checkBoxIncludeUnlabelled.setObjectName("checkBoxIncludeUnlabelled")
+        self.verticalLayout_3.addWidget(self.checkBoxIncludeUnlabelled)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.label_2 = QtWidgets.QLabel(self.dockWidgetContents)
@@ -102,12 +105,14 @@ class Ui_ControlsDock(object):
 
         self.retranslateUi(ControlsDock)
         QtCore.QMetaObject.connectSlotsByName(ControlsDock)
-        ControlsDock.setTabOrder(self.comboBox_data_column, self.comboBox_method)
+        ControlsDock.setTabOrder(self.comboBox_data_column, self.checkBoxIncludeUnlabelled)
+        ControlsDock.setTabOrder(self.checkBoxIncludeUnlabelled, self.comboBox_method)
         ControlsDock.setTabOrder(self.comboBox_method, self.spinBox_start_offset)
         ControlsDock.setTabOrder(self.spinBox_start_offset, self.spinBox_end_offset)
         ControlsDock.setTabOrder(self.spinBox_end_offset, self.comboBox_DPT_column)
         ControlsDock.setTabOrder(self.comboBox_DPT_column, self.pushButton_set)
-        ControlsDock.setTabOrder(self.pushButton_set, self.listWidget_samples)
+        ControlsDock.setTabOrder(self.pushButton_set, self.pushButton_save)
+        ControlsDock.setTabOrder(self.pushButton_save, self.listWidget_samples)
         ControlsDock.setTabOrder(self.listWidget_samples, self.listWidget_rois)
 
     def retranslateUi(self, ControlsDock):
@@ -115,6 +120,9 @@ class Ui_ControlsDock(object):
         ControlsDock.setWindowTitle(_translate("ControlsDock", "Co&ntrols"))
         self.label.setText(_translate("ControlsDock", "data_column: "))
         self.comboBox_data_column.setToolTip(_translate("ControlsDock", "data column from which stimulus periods will be extracted"))
+        self.checkBoxIncludeUnlabelled.setToolTip(_translate("ControlsDock", "If checked, any time periods that are not labelled with a stimulus will be considered as \"None\".\n"
+"If unchecked, these unlabelled regions are ignored."))
+        self.checkBoxIncludeUnlabelled.setText(_translate("ControlsDock", "Include unlabelled regions as \"None\""))
         self.label_2.setText(_translate("ControlsDock", "method: "))
         self.comboBox_method.setToolTip(_translate("ControlsDock", "method for creating the tuning curve"))
         self.label_3.setText(_translate("ControlsDock", "start offset:"))
