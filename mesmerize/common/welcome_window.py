@@ -24,6 +24,7 @@ from glob import glob
 from ..plotting import open_plot_file
 from functools import partial
 from .qdialogs import *
+import re
 from .. import __version__
 
 
@@ -150,7 +151,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Project Name:', QtWidgets.QLineEdit.Normal, '')
 
-        if any(s in name for s in [' ', '(', ')', '?']):
+        if not re.match("^[A-Za-z0-9_-]*$", name):
             QtWidgets.QMessageBox.warning(self, 'Invalid Name', 'Project Name can only contain alphanumeric characters')
             return
 
