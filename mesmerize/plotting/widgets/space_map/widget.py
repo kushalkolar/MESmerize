@@ -144,6 +144,8 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.control_widget.ui.pushButtonSave.clicked.connect(self.save_plot_dialog)
         self.control_widget.ui.pushButtonLoad.clicked.connect(self.open_plot_dialog)
 
+        self.control_widget.ui.groupBox.setVisible(False)
+
         cmd_history_file = os.path.join(console_history_path, 'space_map.pik')
 
         ns = {'this': self,
@@ -174,6 +176,9 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.sample_df = None  #: sub-dataframe of the current sample
 
+        self.img: np.ndarray = np.empty(0)
+        self.control_widget.ui.verticalSliderZLevel.valueChanged.connect(self._update_img)
+
     def set_update_live(self, b: bool):
         self.control_widget.ui.checkBoxLiveUpdate.setChecked(b)
         self.update_live = b
@@ -197,38 +202,68 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         plot_opts = self.control_widget.widget_registry.get_state()
 
+        if plot_opts['max_projection']:
+            projection = 'max'
+        elif plot_opts['std_projection']:
+            projection = 'std'
+
+        sample_id = plot_opts['selected_sample'][0]
+
+        self.plot.ax.set_title(sample_id)
+
+        img = self.load_image(projection)
+
+        if img.ndim > 2:
+            self.control_widget.ui.groupBox.setVisible(True)
+            self.control_widget.ui.verticalSliderZLevel.setMaximum(img.shape[0])
+            self.control_widget.ui.spinBoxZLevel.setMaximum(img.shape[0])
+        else:
+            self.control_widget.ui.groupBox.setVisible(False)
+
+    def _update_img(self, zlevel: int = 0):
+        plot_opts = self.control_widget.widget_registry.get_state()
+
+        sample_id = plot_opts['selected_sample'][0]
         categorical_column = plot_opts['categorical_column']
 
         if len(plot_opts['selected_sample']) < 1:
             raise ValueError('No Sample selected')
 
-        sample_id = plot_opts['selected_sample'][0]
         cmap_img = plot_opts['cmap_img']
         cmap_patches = plot_opts['cmap_patches']
         fill_patches = plot_opts['fill_patches']
         line_width = plot_opts['line_width']
         alpha = plot_opts['alpha']
 
-        if plot_opts['max_projection']:
-            projection = 'max'
-        elif plot_opts['std_projection']:
-            projection = 'std'
-
         self.sample_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
         labels = self.sample_df[categorical_column]
         cmap_labels = get_colormap(labels=labels.unique(), cmap=cmap_patches)
 
-        img = self.load_image(projection)
-
-        self.plot.ax.set_title(sample_id)
-
-        vmax = np.nanmedian(img) + (10 * np.nanstd(img))
-        self.plot.ax.imshow(img.transpose(1, 0), origin='lower', cmap=cmap_img, vmax=vmax)
+        if self.img.ndim > 2:
+            vmax = np.nanmedian(self.img[zlevel, :, :]) + (10 * np.nanstd(self.img))
+            self.plot.ax.imshow(
+                self.img[zlevel, :, :].transpose(1, 0),
+                origin='lower',cmap
+                =cmap_img,
+                vmax=vmax
+            )
+        else:
+            vmax = np.nanmedian(self.img) + (10 * np.nanstd(self.img))
+            self.plot.ax.imshow(self.img.transpose(1, 0), origin='lower', cmap=cmap_img, vmax=vmax)
 
         for ix, r in self.sample_df.iterrows():
             roi = r['ROI_State']
-            xs = roi['roi_xs']
-            ys = roi['roi_ys']
+            if roi['roi_type'] == 'VolCNMF':
+                coors3d = roi['coors'][zlevel]
+                current_coors = coors3d[~np.isnan(coors3d).any(axis=1)]
+                if not current_coors.size > 0: # roi not visible in current plane
+                    continue
+
+                xs = current_coors[:, 1].flatten().astype(int)
+                ys = current_coors[:, 0].flatten().astype(int)
+            else:
+                xs = roi['roi_xs']
+                ys = roi['roi_ys']
 
             cors = np.dstack([xs, ys])[0]
             label = r[categorical_column]
@@ -255,16 +290,25 @@ class SpaceMapWidget(QtWidgets.QMainWindow, BasePlotWidget):
             raise ValueError('Datatype for Projection Path must be pandas.Series or str, it is currently : ' + str(
                 type(img_uuid)))
 
-        if projection == 'max':
-            suffix = '_max_proj.tiff'
-        elif projection == 'std':
-            suffix = '_std_proj.tiff'
+        # see if data are 3D
+        if os.path.isfile(
+            os.path.join(self.transmission.get_proj_path(), 'images', f'{sample_id}-_-{img_uuid}_max_proj-0.tiff')
+        ):
+            z = 0
+            imgs = []
+            while True:
+                img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{sample_id}-_-{img_uuid}_max_proj-{z}.tiff')
+                if os.path.isfile(img_path):
+                    imgs.append(tifffile.TiffFile(img_path).asarray())
+                    z += 1
+                else:
+                    break
+
+            img = np.stack(imgs)
         else:
-            raise ValueError('Can only accept "max" and "std" arguments')
+            img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{sample_id}-_-{img_uuid}_{projection}_proj.tiff')
+            img = tifffile.TiffFile(img_path).asarray()
 
-        img_path = os.path.join(self.transmission.get_proj_path(), 'images', f'{sample_id}-_-{img_uuid}{suffix}')
-
-        img = tifffile.TiffFile(img_path).asarray()
         return img
 
     @BasePlotWidget.signal_blocker
