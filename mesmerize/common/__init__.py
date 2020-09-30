@@ -5,7 +5,7 @@
 
 # GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 
 import os
