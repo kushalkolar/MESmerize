@@ -34,7 +34,8 @@ def get_tuning_curves(
         stim_maps: dict,
         method: str = 'mean',
         start_offset: int = 0,
-        end_offset: int = 0
+        end_offset: int = 0,
+        include_unlabelled: bool = False,
 ) -> pd.Series:
     """
     Returns a pandas series with tuning curves for all stimuli for a single curve
@@ -81,6 +82,9 @@ def get_tuning_curves(
 
         # instantiate lists for the tuning curves
         all_stimuli = np.unique(stim_array)  # [stim_array != ''])
+        if not include_unlabelled:
+            all_stimuli = all_stimuli[all_stimuli != "None"]
+
         ln = [tonumeric(v) for v in all_stimuli if tonumeric(v) is not False]
         ls = [v for v in all_stimuli if tonumeric(v) is False]
         ln.sort()
@@ -165,6 +169,13 @@ class ControlDock(QtWidgets.QDockWidget):
             setter=self.ui.comboBox_DPT_column.setText,
             getter=self.ui.comboBox_DPT_column.currentText,
             name='dpt_column'
+        )
+
+        self.widget_registry.register(
+            self.ui.checkBoxIncludeUnlabelled,
+            setter=self.ui.checkBoxIncludeUnlabelled.setChecked,
+            getter=self.ui.checkBoxIncludeUnlabelled.isChecked,
+            name='include_unlabelled'
         )
 
         self.ui.pushButton_set.clicked.connect(self._emit_data)

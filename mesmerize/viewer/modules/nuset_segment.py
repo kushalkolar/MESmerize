@@ -993,8 +993,8 @@ class NusetWidget(QtWidgets.QWidget):
 
                 'rescale_ratio': {
                     'minmax': (0.1, 10.0),
-                    'step': 0.5,
-                    'val': 1.1  # not working if set to 1.0 with pyqtgraph ImageItem for some reason
+                    'step': 0.25,
+                    'val': 1.25  # not working if set to 1.0 with pyqtgraph ImageItem for some reason
                 }
 
             }

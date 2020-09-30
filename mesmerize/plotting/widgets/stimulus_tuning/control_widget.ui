@@ -34,6 +34,17 @@
      </layout>
     </item>
     <item>
+     <widget class="QCheckBox" name="checkBoxIncludeUnlabelled">
+      <property name="toolTip">
+       <string>If checked, any time periods that are not labelled with a stimulus will be considered as &quot;None&quot;.
+If unchecked, these unlabelled regions are ignored.</string>
+      </property>
+      <property name="text">
+       <string>Include unlabelled regions as &quot;None&quot;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QLabel" name="label_2">
@@ -194,11 +205,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>comboBox_data_column</tabstop>
+  <tabstop>checkBoxIncludeUnlabelled</tabstop>
   <tabstop>comboBox_method</tabstop>
   <tabstop>spinBox_start_offset</tabstop>
   <tabstop>spinBox_end_offset</tabstop>
   <tabstop>comboBox_DPT_column</tabstop>
   <tabstop>pushButton_set</tabstop>
+  <tabstop>pushButton_save</tabstop>
   <tabstop>listWidget_samples</tabstop>
   <tabstop>listWidget_rois</tabstop>
  </tabstops>
