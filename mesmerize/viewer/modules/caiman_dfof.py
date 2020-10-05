@@ -17,6 +17,7 @@ from qtap import Function
 from caiman.source_extraction.cnmf.cnmf import CNMF, Estimates, CNMFParams
 from .roi_manager_modules.managers import ManagerCNMFROI, ManagerVolCNMF, ManagerVolMultiCNMFROI
 import numpy as np
+from tqdm import tqdm
 
 
 # just need the function signature
@@ -109,7 +110,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         elif isinstance(self.vi.viewer.workEnv.roi_manager, ManagerVolMultiCNMFROI):
             for zlevel in range(len(roi_manager.idx_components)):
-                if not (roi_manager.idx_components[0] == roi_manager.orig_idx_components[0]).all():
+                if not (roi_manager.idx_components[zlevel] == roi_manager.orig_idx_components[zlevel]).all():
                     raise ValueError("You cannot use this module if you have deleted ROIs."
                                      "If you want to delete some ROIs, first use this "
                                      "module and then delete the ROIs.")
@@ -153,7 +154,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     ):
         roi_manager.cnm_dfof.clear()
 
-        for cnmf_data_dict in roi_manager.cnmf_data_dicts:
+        for cnmf_data_dict in tqdm(roi_manager.cnmf_data_dicts, total=len(roi_manager.cnmf_data_dicts)):
             cnmf = get_CNMF_obj(cnmf_data_dict)
             cnmf.estimates.detrend_df_f(**kwargs)
 
