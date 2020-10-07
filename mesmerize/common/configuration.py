@@ -63,7 +63,6 @@ except ImportError:
 else:
     HAS_TSLEARN = True
 
-
 sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]
@@ -110,6 +109,23 @@ default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
 
 if IS_WINDOWS:
     default_sys_config.update({'_MESMERIZE_PYTHON_CALL': 'python'})
+
+
+# patching in something that will probably be used in mesmerize v1.0 to simplify sys config things
+class ENVIRONMENT:
+    def __init__(self):
+        self.LRU_CACHE_MAXSIZE: int = 64  # `maxsize` argument for @lru_cache
+
+
+# update the default env vars with any that are specified in the env
+def get_environment() -> ENVIRONMENT:
+    e = ENVIRONMENT()
+    for opt, val in e.__dict__.items():
+        # user can prefix the env vars with "MESMERIZE" if they want, but not necessary
+        if (opt in os.environ.keys()) or (f'MESMERIZE_{opt}' in os.environ.keys()):
+            setattr(e, opt, type(val)(os.environ[opt]))  # to convert str to other types, like str -> int/float
+
+    return e
 
 
 class SysConfig:
@@ -187,7 +203,7 @@ def create_new_proj_config():
     defaultInclude = ['SampleID', 'date', 'comments']
     proj_cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
-    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'ImgUUID', 'ROI_State', 'uuid_curve', 'misc', 'AnimalID']
+    defaultExclude = ['ImgInfoPath', 'ImgPath', 'ImgUUID', 'ROI_State', 'uuid_curve', 'misc', 'AnimalID']
     proj_cfg['EXCLUDE'] = dict.fromkeys(defaultExclude)
 
     proj_cfg['ROI_DEFS'] = {}

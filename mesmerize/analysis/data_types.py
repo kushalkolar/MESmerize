@@ -11,9 +11,7 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
-import sys
 import pandas as pd
-import numpy as np
 import pickle
 import json
 from copy import deepcopy
@@ -26,7 +24,9 @@ from warnings import warn
 from configparser import RawConfigParser
 from ..common.utils import HdfTools, draw_graph
 from ..common import get_proj_config
+from ..common.configuration import get_environment
 from tqdm import tqdm
+from functools import lru_cache
 
 
 class _HistoryTraceExceptions(Exception):
@@ -591,12 +591,25 @@ class Transmission(BaseTransmission):
 
         """
         df = dataframe.copy()
-        # df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+        print('Collecting image metadata')
         tqdm().pandas()
-        df[['_RAW_CURVE', 'meta', 'stim_maps']] = df.progress_apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+        df[['meta', 'stim_maps']] = df.progress_apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
+
+        Transmission._load_imginfo.cache_clear()
 
         try:
-            df['_SPIKES'] = df['ROI_State'].apply(
+            print('Collecting curve data')
+            df['_RAW_CURVE'] = df['ROI_State'].progress_apply(
+                    lambda r: r['curve_data'][1]
+                )
+        except:
+            raise IndexError("Curve data missing from one of your samples.\n"
+                             "See the progress bar to get the row index of "
+                             "the project dataframe where the curve data are missing")
+
+        try:
+            print('Collecting curve data')
+            df['_SPIKES'] = df['ROI_State'].progress_apply(
                 lambda r: r['spike_data'][1] if (r['spike_data'] is not None) else None
             )
 
@@ -604,7 +617,8 @@ class Transmission(BaseTransmission):
             warn('spikes or data not found, probably is probably from Mesmerize version < 0.2')
 
         try:
-            df['_DFOF'] = df['ROI_State'].apply(
+            print('Collecting dfof data')
+            df['_DFOF'] = df['ROI_State'].progress_apply(
                 lambda r: r['dfof_data'][1] if (r['dfof_data'] is not None) else None
             )
         except KeyError:
@@ -633,21 +647,22 @@ class Transmission(BaseTransmission):
                    ROI_DEFS=roi_type_defs, STIM_DEFS=stim_type_defs, CUSTOM_COLUMNS=custom_columns)
 
     @staticmethod
+    @lru_cache(maxsize=get_environment().LRU_CACHE_MAXSIZE)
+    def _load_imginfo(path: str) -> dict:
+        return pickle.load(open(path, 'rb'))
+
+    @staticmethod
     def _load_files(proj_path: str, row: pd.Series) -> pd.Series:
         """Loads npz of curve data and pickle files containing metadata using the paths specified in each row of the
         chosen sub-dataframe of the project"""
 
-        path = os.path.join(proj_path, row['CurvePath'])
-        npz = np.load(path)
-
         pik_path = os.path.join(proj_path, row['ImgInfoPath'])
-        pik = pickle.load(open(pik_path, 'rb'))
+        pik = Transmission._load_imginfo(pik_path)
         meta = pik['meta']
         stim_maps = pik['stim_maps']
-        
+
         return pd.Series(
             {
-                '_RAW_CURVE': npz.f.curve[1],
                 'meta': meta,
                 'stim_maps': [[stim_maps]]
             }

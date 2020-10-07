@@ -19,7 +19,6 @@ import numpy as np
 import pickle
 import tifffile
 import os
-from shutil import rmtree
 from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
@@ -521,10 +520,8 @@ class ViewerWorkEnv:
             UUID = uuid4()
         else:
             UUID = self.UUID
-        curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{str(UUID)}')
 
         if modify_options is not None:
-            rmtree(curves_dir)
             if modify_options['overwrite_img_seq']:
                 save_img_seq = True
             else:
@@ -598,29 +595,21 @@ class ViewerWorkEnv:
         else:
             comments = self.comments
 
-        if os.path.isdir(curves_dir) is False:
-            os.mkdir(curves_dir)
-
         dicts = []
 
         rois = self.roi_manager.get_all_states()
 
         if rois['roi_type'] != 'VolMultiCNMFROI':
             for ix in range(len(rois['states'])):
-                curve_data = rois['states'][ix]['curve_data']
 
                 for roi_def in rois['states'][ix]['tags'].keys():
                     if rois['states'][ix]['tags'][roi_def] == '':
                         rois['states'][ix]['tags'][roi_def] = 'untagged'
 
                 roi_tags = rois['states'][ix]['tags']
-                curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
-
-                np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
                 d = {'SampleID': self.sample_id,
                      'AnimalID': self.sample_id.split('-_-')[0],
-                     'CurvePath': os.path.relpath(curve_path, proj_path),
                      'ImgUUID': str(UUID),
                      'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
                      'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
@@ -638,20 +627,16 @@ class ViewerWorkEnv:
         else:
             for z in range(len(rois['states'])):
                 for ix in range(len(rois['states'][z])):
-                    curve_data = rois['states'][z][ix]['curve_data']
 
                     for roi_def in rois['states'][z][ix]['tags'].keys():
                         if rois['states'][z][ix]['tags'][roi_def] == '':
                             rois['states'][z][ix]['tags'][roi_def] = 'untagged'
 
                     roi_tags = rois['states'][z][ix]['tags']
-                    curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
 
-                    np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
 
                     d = {'SampleID': self.sample_id,
                          'AnimalID': self.sample_id.split('-_-')[0],
-                         'CurvePath': os.path.relpath(curve_path, proj_path),
                          'ImgUUID': str(UUID),
                          'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
                          'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
