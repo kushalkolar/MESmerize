@@ -5,9 +5,6 @@
 
 # GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-__version__ = '0.3.1'
-
-
 import os
 from webbrowser import open_new_tab as open_new_web_browser_tab
 import configparser
@@ -17,6 +14,11 @@ from .configuration import get_sys_config, console_history_path
 from functools import partial
 from PyQt5.QtWidgets import QApplication
 from abc import ABCMeta
+from pathlib import Path
+
+
+with open(Path(__file__).parent.parent.parent.joinpath('VERSION'), 'r') as vf:
+    __version__ = vf.read()
 
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:

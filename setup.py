@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+from pathlib import Path
 
 
 entry_points = {'console_scripts': ['mesmerize=mesmerize.__main__:main']}
@@ -66,9 +67,14 @@ classifiers = \
 with open("readme-pypi.md", 'r') as fh:
     long_description = fh.read()
 
+
+with open(Path(__file__).parent.joinpath('VERSION'), 'r') as vf:
+    vesion_str = vf.read()
+
+
 setup(
     name='mesmerize',
-    version='0.3.1',
+    version=vesion_str,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     entry_points=entry_points,
