@@ -18,7 +18,7 @@ from pathlib import Path
 
 
 with open(Path(__file__).parent.parent.parent.joinpath('VERSION'), 'r') as vf:
-    __version__ = vf.read()
+    __version__ = vf.read().split('\n')[0]
 
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:

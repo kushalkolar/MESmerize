@@ -69,7 +69,7 @@ with open("readme-pypi.md", 'r') as fh:
 
 
 with open(Path(__file__).parent.joinpath('VERSION'), 'r') as vf:
-    vesion_str = vf.read()
+    vesion_str = vf.read().split('\n')[0]
 
 
 setup(
