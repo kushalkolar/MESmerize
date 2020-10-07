@@ -1,12 +1,18 @@
-# 0.3.1 (in progress)
+# 0.5.0 (planned)
 
 ### New
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
-### Fixed
+# 0.4.0 (in progress)
 
+### Modified
 - Improved performance when importing a project dataframe in the flowchart
+
+# 0.3.1
+
+### Modified
+
 - Spacemap plot supports 3D data
 - Unlabelled stimulus periods can be excluded for Stimulus Tuning plots
 
