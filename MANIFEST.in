@@ -1,4 +1,4 @@
-include VERSION
+include mesmerize/VERSION
 include LICENSE
 include README.md
 include CHANGELOG.md

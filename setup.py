@@ -68,7 +68,7 @@ with open("readme-pypi.md", 'r') as fh:
     long_description = fh.read()
 
 
-with open(Path(__file__).parent.joinpath('VERSION'), 'r') as vf:
+with open(Path(__file__).joinpath('mesmerize').joinpath('VERSION'), 'r') as vf:
     vesion_str = vf.read().split('\n')[0]
 
 

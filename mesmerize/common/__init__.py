@@ -17,7 +17,7 @@ from abc import ABCMeta
 from pathlib import Path
 
 
-with open(Path(__file__).parent.parent.parent.joinpath('VERSION'), 'r') as vf:
+with open(Path(__file__).parent.parent.joinpath('VERSION'), 'r') as vf:
     __version__ = vf.read().split('\n')[0]
 
 
