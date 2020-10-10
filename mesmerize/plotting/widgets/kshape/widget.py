@@ -50,21 +50,57 @@ class KShapeControlDock(QtWidgets.QDockWidget):
         self.ui.setupUi(self)
         self.setFloating(False)
 
+        self.ui.checkBoxUseGridsearch.clicked.connect(
+            partial(
+                self.set_checkbox_use_grid_or_single,
+                self.ui.checkBoxUseGridsearch
+            )
+        )
+
+        self.ui.checkBoxUseSingle.clicked.connect(
+            partial(
+                self.set_checkbox_use_grid_or_single,
+                self.ui.checkBoxUseSingle
+            )
+        )
+
+    def set_checkbox_use_grid_or_single(self, w: QtWidgets.QCheckBox):
+        if w is self.ui.checkBoxUseGridsearch:
+            self.ui.checkBoxUseSingle.setChecked(False)
+        elif w is self.ui.checkBoxUseSingle:
+            self.ui.checkBoxUseGridsearch.setChecked(False)
+
     def get_params(self) -> dict:
         if self.ui.checkBoxRandom.isChecked():
             random_state = None
         else:
             random_state = self.ui.spinBoxRandom.value()
 
-        d = {'n_clusters':      self.ui.spinBoxN_clusters.value(),
-             'max_iter':        self.ui.spinBoxMaxIter.value(),
-             'tol':             10 ** self.ui.spinBoxTol.value(),
-             'n_init':          self.ui.spinBoxN_init.value(),
-             'random_state':    random_state,
-             'train_percent':   self.ui.spinBoxTrainSubsetPercentage.value()
-             }
+        if self.ui.checkBoxUseGridsearch.isChecked():
+            return\
+                {
+                    'npartitions_range': (self.ui.spinBoxNPartMin.value(), self.ui.spinBoxNPartMax.value()),
+                    'ncombinations': self.ui.spinBoxNCombinations.value(),
+                    'sortby': self.ui.comboBoxSortBy.value(),
+                    'max_iter': self.ui.spinBoxMaxIter.value(),
+                    'tol': 10 ** self.ui.spinBoxTol.value(),
+                    'train_percent': self.ui.spinBoxTrainSubsetPercentage.value()
+                }
 
-        return d
+        elif self.ui.checkBoxUseSingle.isChecked():
+            return \
+                {
+                    'n_clusters': self.ui.spinBoxN_clusters.value(),
+                    'max_iter': self.ui.spinBoxMaxIter.value(),
+                    'tol': 10 ** self.ui.spinBoxTol.value(),
+                    'n_init': self.ui.spinBoxN_init.value(),
+                    'random_state': random_state,
+                    'train_percent': self.ui.spinBoxTrainSubsetPercentage.value()
+                }
+        else:
+            raise ValueError(
+                'Must select one of "Use Gridsearch" or "Use Single" in kShape params.'
+            )
 
     def set_active(self):
         self.ui.pushButtonStart.setDisabled(True)
