@@ -13,7 +13,7 @@ import sys
 import numpy as np
 import pickle
 import os
-from ....common.configuration import HAS_TSLEARN, get_sys_config
+from mesmerize.common.configuration import HAS_TSLEARN, get_sys_config
 if HAS_TSLEARN:
     from tslearn.clustering import KShape
 from joblib import Parallel, delayed
@@ -39,13 +39,13 @@ def run(data_path: str, params_path: str):
     train = X[np.random.choice(X.shape[0], size=n_train, replace=False)]
 
     if params['do_single']:
-        run_single(X, train, params, workdir, out)
+        run_single(X, train, params['kwargs'], workdir, out)
     else:
-        run_grid(X, train, params, workdir, out)
+        run_grid(X, train, params['kwargs'], workdir, out)
 
 
 def run_single(X, train, params, workdir, out):
-    kwargs = params['kwargs']
+    kwargs = params
     ks = KShape(**kwargs)
 
     ks.fit(train)
@@ -93,7 +93,7 @@ def kshape_grid_iter(X_partitioned: List[np.array], kshape_kwargs: dict) -> KSha
         n_clusters=len(seed_ixs),
         init=init,
         verbose=True,
-        random_state=None
+        random_state=None,
         **kshape_kwargs
     )
 
@@ -120,7 +120,7 @@ def run_grid(X, train, params, workdir, out):
     n_jobs = int(get_sys_config()['_MESMERIZE_N_THREADS'] / 2)
     kg = Parallel(n_jobs=n_jobs, verbose=5)(
         delayed(kshape_grid_iter)(
-            np.array_split(X_sorted, nparts, axis=0),
+            np.array_split(X_sorted, nparts, axis=0), params
             ) for nparts in range(*p_range) \
                 for i in range(ncombinations)
     )

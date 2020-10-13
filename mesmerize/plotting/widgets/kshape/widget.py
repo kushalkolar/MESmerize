@@ -84,7 +84,7 @@ class KShapeControlDock(QtWidgets.QDockWidget):
                 {
                     'npartitions_range': (self.ui.spinBoxNPartMin.value(), self.ui.spinBoxNPartMax.value()),
                     'ncombinations': self.ui.spinBoxNCombinations.value(),
-                    'sortby': self.ui.comboBoxSortBy.value(),
+                    'sortby': self.ui.comboBoxSortBy.currentText(),
                     'max_iter': self.ui.spinBoxMaxIter.value(),
                     'tol': 10 ** self.ui.spinBoxTol.value(),
                     'n_init': self.ui.spinBoxN_init.value(),
@@ -454,8 +454,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         kgl = [self._create_model(model) for model in ksgrid_json]
 
         kga = np.array(kgl, dtype=object).reshape(
-            self.params['ncombinations'],
-            len(range(*self.params['npartitions_range']))
+            self.params['kwargs']['ncombinations'],
+            len(range(*self.params['kwargs']['npartitions_range']))
         )
 
         self.ksgrid = kga
