@@ -454,8 +454,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         kgl = [self._create_model(model) for model in ksgrid_json]
 
         kga = np.array(kgl, dtype=object).reshape(
+            len(range(*self.params['kwargs']['npartitions_range'])),  # same shape as the nested loop
             self.params['kwargs']['ncombinations'],
-            len(range(*self.params['kwargs']['npartitions_range']))
         )
 
         self.ksgrid = kga
@@ -825,7 +825,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self._ksgrid_json = json.load(open(ksg_path, 'r'))
 
     def update_ksgrid_selection(self, ix: Tuple[int, int]):
-        self.ks = self.ksgrid[ix]
+        self.ks = self.ksgrid.T[ix]
 
         self.y_pred = self.ks.predict(
             self.pad_input_data(self.input_arrays, method='fill-size')
