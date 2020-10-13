@@ -83,7 +83,7 @@ class KShapeControlDock(QtWidgets.QDockWidget):
             return\
                 {
                     'npartitions_range': (self.ui.spinBoxNPartMin.value(), self.ui.spinBoxNPartMax.value()),
-                    'ncombinations': self.ui.spinBoxNCombinations.value(),
+                    'ncombinations': 10 ** self.ui.spinBoxNCombinations.value(),
                     'sortby': self.ui.comboBoxSortBy.currentText(),
                     'max_iter': self.ui.spinBoxMaxIter.value(),
                     'tol': 10 ** self.ui.spinBoxTol.value(),
