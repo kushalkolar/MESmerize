@@ -380,7 +380,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def ksgrid(self, ksgrid: np.ndarray):
         self._ksgrid = ksgrid
 
-        p_range = self.params['npartitions_range']
+        p_range = self.params['kwargs']['npartitions_range']
 
         kga_inertia = np.zeros(self.ksgrid.shape, dtype=np.float64)
         for ij in iter_product(range(self.ksgrid.shape[0]), range(self.ksgrid.shape[1])):
@@ -388,7 +388,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.kga_inertia_heatmap.set(
             kga_inertia,
-            ylabels=list(range(p_range)),
+            ylabels=list(range(*p_range)),
             cmap='viridis',
             annot=True
         )
@@ -822,12 +822,14 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
     def load_output_grid(self):
         ksg_path = os.path.join(self.params['workdir'], 'kga.json')
-        self._ksgrid_json = json.loads(ksg_path)
+        self._ksgrid_json = json.load(open(ksg_path, 'r'))
 
     def update_ksgrid_selection(self, ix: Tuple[int, int]):
         self.ks = self.ksgrid[ix]
 
-        self.y_pred = self.ks.predict(self.input_arrays)
+        self.y_pred = self.ks.predict(
+            self.pad_input_data(self.input_arrays, method='fill-size')
+        )
         self.n_clusters = self.ks.n_clusters
 
         self.update_output()
