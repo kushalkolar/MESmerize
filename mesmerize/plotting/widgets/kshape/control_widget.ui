@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>549</width>
-    <height>941</height>
+    <width>524</width>
+    <height>935</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,6 +152,24 @@
               </widget>
              </item>
              <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>n_init:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinBoxN_init">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
               <spacer name="horizontalSpacer_9">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -232,13 +250,20 @@
               <layout class="QHBoxLayout" name="horizontalLayout_18">
                <item>
                 <widget class="QLabel" name="label_15">
+                 <property name="toolTip">
+                  <string>Range of partitions (and therefore n_clusters) to try</string>
+                 </property>
                  <property name="text">
-                  <string>npart rng</string>
+                  <string>npart rng:</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBoxNPartMin"/>
+                <widget class="QSpinBox" name="spinBoxNPartMin">
+                 <property name="minimum">
+                  <number>2</number>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QSpinBox" name="spinBoxNPartMax">
@@ -271,6 +296,9 @@
                 <layout class="QHBoxLayout" name="horizontalLayout_6">
                  <item>
                   <widget class="QLabel" name="label_16">
+                   <property name="toolTip">
+                    <string>Number of seed combinations to try out</string>
+                   </property>
                    <property name="text">
                     <string>ncombs: 10^</string>
                    </property>
@@ -289,32 +317,61 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <spacer name="horizontalSpacer_11">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
                 </layout>
                </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_20">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_20">
+                <widget class="QLabel" name="label_17">
+                 <property name="toolTip">
+                  <string>Sort the input arrays by half-peak-width or amplitude before partitioning to pick centroid seeds</string>
+                 </property>
+                 <property name="text">
+                  <string>sortby</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="comboBoxSortBy">
                  <item>
-                  <widget class="QLabel" name="label_17">
-                   <property name="text">
-                    <string>sortby</string>
-                   </property>
-                  </widget>
+                  <property name="text">
+                   <string>width</string>
+                  </property>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="comboBoxSortBy">
-                   <item>
-                    <property name="text">
-                     <string>width</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>amplitude</string>
-                    </property>
-                   </item>
-                  </widget>
+                  <property name="text">
+                   <string>amplitude</string>
+                  </property>
                  </item>
-                </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_12">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -334,24 +391,6 @@
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_4">
-                 <item>
-                  <widget class="QLabel" name="label_4">
-                   <property name="text">
-                    <string>n_init:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QSpinBox" name="spinBoxN_init">
-                   <property name="minimum">
-                    <number>1</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
@@ -751,20 +790,6 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QPushButton" name="pushButtonExportMeans">
-           <property name="text">
-            <string>Export means</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="pushButtonExportRaw">
-           <property name="text">
-            <string>Export raw</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
       </layout>
@@ -797,8 +822,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButtonApplyPlotOptions</tabstop>
   <tabstop>pushButtonSave</tabstop>
   <tabstop>pushButtonLoad</tabstop>
-  <tabstop>pushButtonExportMeans</tabstop>
-  <tabstop>pushButtonExportRaw</tabstop>
   <tabstop>spinBoxN_init</tabstop>
   <tabstop>spinBoxN_clusters</tabstop>
   <tabstop>checkBoxUseSingle</tabstop>
