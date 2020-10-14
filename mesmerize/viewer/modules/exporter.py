@@ -33,7 +33,7 @@ class ModuleGUI(QtWidgets.QWidget):
         )
 
         self.ui.btnExport.clicked.connect(lambda: self.export())
-        self.ui.listWidget.set_cmap('jet')
+        self.ui.listWidget.set_cmap('gnuplot2')
         self.ui.btnChoosePath.clicked.connect(
             lambda: self.set_path()
         )
