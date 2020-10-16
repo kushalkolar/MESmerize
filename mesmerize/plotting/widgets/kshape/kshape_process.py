@@ -117,8 +117,10 @@ def run_grid(X, train, params, workdir, out):
     p_range = params.pop('npartitions_range')
     ncombinations = params.pop('ncombinations')
 
-    n_jobs = int(get_sys_config()['_MESMERIZE_N_THREADS'] / 2)
-    kg = Parallel(n_jobs=n_jobs, verbose=5)(
+    n_jobs = get_sys_config()['_MESMERIZE_N_THREADS']
+    tmpdir = os.path.join(workdir, 'joblib_tmp')
+
+    kg = Parallel(n_jobs=n_jobs, verbose=5, temp_folder=tmpdir)(
         delayed(kshape_grid_iter)(
             np.array_split(X_sorted, nparts, axis=0), params
             ) for nparts in range(*p_range) \
