@@ -1,6 +1,9 @@
 from .common import *
 from sklearn import cluster as skcluster
-from ....plotting.widgets import KShapeWidget
+from ....common.configuration import HAS_TSLEARN
+from warnings import warn
+if HAS_TSLEARN:
+    from ....plotting.widgets import KShapeWidget
 
 
 class KShape(CtrlNode):
@@ -11,9 +14,12 @@ class KShape(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}, 'Out': {'io': 'out'}})
         self.output_transmission = False
-        self.kshape_widget = KShapeWidget(parent=None)
-        self.kshape_widget.sig_output_changed.connect(self._send_output)
-        self.ctrls['ShowGUI'].clicked.connect(self.kshape_widget.show)
+        if HAS_TSLEARN:
+            self.kshape_widget = KShapeWidget(parent=None)
+            self.kshape_widget.sig_output_changed.connect(self._send_output)
+            self.ctrls['ShowGUI'].clicked.connect(self.kshape_widget.show)
+        else:
+            warn("tslearn not installed, KShape is disabled.")
 
     def _send_output(self, t: Transmission):
         self.output_transmission = t
