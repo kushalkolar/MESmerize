@@ -4,6 +4,7 @@ from bokeh.models import HoverTool, ColumnDataSource, TapTool, Slider, TextInput
 from bokeh.models.mappers import LogColorMapper
 from bokeh.transform import jitter
 from bokeh.layouts import gridplot, column, row
+from typing import *
 
 
 class BokehCallbackSignal:
@@ -37,17 +38,33 @@ class BokehCallbackSignal:
         elif func in self.callbacks_data:
             self.callbacks_data.remove(func)
 
-    def trigger(self, attr, old, new):
-        if len(new) != 1:
+    def trigger(self, attr, old, val):
+        """
+        The function signature must have 3 and only 3 args, bokeh is very picky
+
+        :param attr: name of the attribute
+
+        :param old: old value of the attribute
+
+        :param val: the index within `self.source_data` (such as from a glyph using a `ColumnDataSource`)
+                    or the new value (such as from a widget)
+        :type val:  Union[List[int], Any]
+
+        :return:
+        """
+        # if there are multiple values
+        # such as if multiple datapoints were selected in a glyph
+        if len(val) != 1:
             return
 
         out = dict.fromkeys(self.source_data.column_names)
 
         for k in out.keys():
-            out[k] = self.source_data.data[k][new][0]
+            # create a dict of the source_data values at the requested index `val`
+            out[k] = self.source_data.data[k][val][0]
 
         for f in self.callbacks_data:
-            f(out)
+            f(out)  # send out the source_data present at the `val` index
 
         for f in self.callbacks:
-            f(new)
+            f(val)  # send out val directly
