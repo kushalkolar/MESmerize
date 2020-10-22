@@ -6,8 +6,12 @@
 
 # 0.4.0 (in progress)
 
+### New
+- k-Shape "gridsearch", select a n-partitions range and number of combinations, returns heatmap of all k-Shape runs with inertia values
+
 ### Modified
 - Improved performance when importing a project dataframe in the flowchart
+- Project browser supports filtering of list-type columns, such as stimulus/behavioral names
 
 # 0.3.1
 

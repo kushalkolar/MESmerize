@@ -10,7 +10,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .control_widget_pytemplate import *
-from . import kshape_process
 import psutil
 import os
 from ....common.utils import make_workdir, make_runfile
@@ -30,11 +29,15 @@ from ..base import BasePlotWidget
 from math import sqrt, ceil
 from ...utils import auto_colormap
 from typing import Union
+from ...variants import Heatmap
+import json
 
 from ....common.configuration import HAS_TSLEARN, IS_WINDOWS
 
 if HAS_TSLEARN:
     from tslearn.preprocessing import TimeSeriesScalerMeanVariance
+    from tslearn.clustering import KShape
+    from . import kshape_process
 
 if not IS_WINDOWS:
     from signal import SIGKILL
@@ -50,21 +53,58 @@ class KShapeControlDock(QtWidgets.QDockWidget):
         self.ui.setupUi(self)
         self.setFloating(False)
 
+        self.ui.checkBoxUseGridsearch.clicked.connect(
+            partial(
+                self.set_checkbox_use_grid_or_single,
+                self.ui.checkBoxUseGridsearch
+            )
+        )
+
+        self.ui.checkBoxUseSingle.clicked.connect(
+            partial(
+                self.set_checkbox_use_grid_or_single,
+                self.ui.checkBoxUseSingle
+            )
+        )
+
+    def set_checkbox_use_grid_or_single(self, w: QtWidgets.QCheckBox):
+        if w is self.ui.checkBoxUseGridsearch:
+            self.ui.checkBoxUseSingle.setChecked(False)
+        elif w is self.ui.checkBoxUseSingle:
+            self.ui.checkBoxUseGridsearch.setChecked(False)
+
     def get_params(self) -> dict:
         if self.ui.checkBoxRandom.isChecked():
             random_state = None
         else:
             random_state = self.ui.spinBoxRandom.value()
 
-        d = {'n_clusters':      self.ui.spinBoxN_clusters.value(),
-             'max_iter':        self.ui.spinBoxMaxIter.value(),
-             'tol':             10 ** self.ui.spinBoxTol.value(),
-             'n_init':          self.ui.spinBoxN_init.value(),
-             'random_state':    random_state,
-             'train_percent':   self.ui.spinBoxTrainSubsetPercentage.value()
-             }
+        if self.ui.checkBoxUseGridsearch.isChecked():
+            return\
+                {
+                    'npartitions_range': (self.ui.spinBoxNPartMin.value(), self.ui.spinBoxNPartMax.value()),
+                    'ncombinations': 10 ** self.ui.spinBoxNCombinations.value(),
+                    'sortby': self.ui.comboBoxSortBy.currentText(),
+                    'max_iter': self.ui.spinBoxMaxIter.value(),
+                    'tol': 10 ** self.ui.spinBoxTol.value(),
+                    'n_init': self.ui.spinBoxN_init.value(),
+                    'train_percent': self.ui.spinBoxTrainSubsetPercentage.value()
+                }
 
-        return d
+        elif self.ui.checkBoxUseSingle.isChecked():
+            return \
+                {
+                    'n_clusters': self.ui.spinBoxN_clusters.value(),
+                    'max_iter': self.ui.spinBoxMaxIter.value(),
+                    'tol': 10 ** self.ui.spinBoxTol.value(),
+                    'n_init': self.ui.spinBoxN_init.value(),
+                    'random_state': random_state,
+                    'train_percent': self.ui.spinBoxTrainSubsetPercentage.value()
+                }
+        else:
+            raise ValueError(
+                'Must select one of "Use Gridsearch" or "Use Single" in kShape params.'
+            )
 
     def set_active(self):
         self.ui.pushButtonStart.setDisabled(True)
@@ -112,7 +152,8 @@ class KShapeMeansPlot(MatplotlibWidget):
         :param input_arrays: padded input arrays (2D),  shape is [num_samples, padded_peak_curve_length]
         :param n_clusters: number of clusters
         :param y_pred: cluster predictions (labels)
-        :param xzero_pos: set the zero position as the 'zero' position of the input array or the 'maxima' of the input array
+        :param xzero_pos: set the zero position as the 'zero' position of
+                          the input array or the 'maxima' of the input array
         :param error_band: Type of error band to show, one of either 'ci' or 'std'
         """
         # nrows, ncols = (int(ceil(sqrt(n_clusters))), int(sqrt(n_clusters)))
@@ -264,6 +305,12 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.dockConsole.setWidget(ConsoleWidget(parent=self, namespace=ns, text=txt, historyFile=cmd_history_file))
         self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dockConsole)
 
+        self._ksgrid = None
+        self.__ksgrid_json = None
+        self.kga_inertia_heatmap: Heatmap = Heatmap(highlight_mode='item')
+        self.kga_inertia_heatmap.hide()
+        self.kga_inertia_heatmap.sig_selection_changed.connect(self.update_ksgrid_selection)
+
         self.resize(1500, 900)
 
     def set_update_live(self, b: bool):
@@ -304,7 +351,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self._input_arrays = a
 
     @property
-    def ks(self):
+    def ks(self) -> KShape:
         """
         tslearn KShape object
         """
@@ -321,6 +368,97 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
             raise TypeError('Must pass KShape instance')
 
         self._ks = ks
+
+    @property
+    def ksgrid(self) -> np.ndarray:
+        if self._ksgrid is None:
+            raise AttributeError('`ksgrid` not set')
+        else:
+            return self._ksgrid
+
+    @ksgrid.setter
+    def ksgrid(self, ksgrid: np.ndarray):
+        self._ksgrid = ksgrid
+
+        p_range = self.params['kwargs']['npartitions_range']
+
+        kga_inertia = np.zeros(self.ksgrid.shape, dtype=np.float64)
+        for ij in iter_product(range(self.ksgrid.shape[0]), range(self.ksgrid.shape[1])):
+            kga_inertia[ij] = self.ksgrid[ij].inertia_
+
+        self.kga_inertia_heatmap.set(
+            kga_inertia,
+            ylabels=list(range(*p_range)),
+            cmap='viridis',
+            annot=False
+        )
+
+        self.kga_inertia_heatmap.show()
+
+    def _lists_to_arrays(self, model):
+        for k in model['model_params'].keys():
+            param = model['model_params'][k]
+            if type(param) is list:
+                arr = np.array(param)
+                if arr.dtype == object:
+                    # Then maybe it was rather a list of arrays
+                    # This is very hacky...
+                    arr = [np.array(p) for p in param]
+                model['model_params'][k] = arr
+
+    def _create_model(self, model):
+        """
+        A messy function until the latest tslearn is out
+        with a fix for array-based hyper-parameters
+        """
+        # Convert the lists back to arrays
+        for k in model['model_params'].keys():
+            param = model['model_params'][k]
+            if type(param) is list:
+                arr = np.array(param)
+                if arr.dtype == object:
+                    # Then maybe it was rather a list of arrays
+                    # This is very hacky...
+                    arr = [np.array(p) for p in param]
+                model['model_params'][k] = arr
+
+        for k in model['hyper_params'].keys():
+            param = model['hyper_params'][k]
+            if type(param) is list:
+                arr = np.array(param)
+                if arr.dtype == object:
+                    # Then maybe it was rather a list of arrays
+                    # This is very hacky...
+                    arr = [np.array(p) for p in param]
+                model['hyper_params'][k] = arr
+        hyper_params = model['hyper_params']
+        model_params = model['model_params']
+
+        inst = KShape(**hyper_params)
+
+        for p in model_params.keys():
+            setattr(inst, p, model_params[p])
+
+        return inst
+
+    @property
+    def _ksgrid_json(self):
+        if self.__ksgrid_json is None:
+            raise AttributeError('`__ksgrid_json` not set')
+        return self.__ksgrid_json
+
+    @_ksgrid_json.setter
+    def _ksgrid_json(self, ksgrid_json: str):
+        self.__ksgrid_json = ksgrid_json
+        # create the models from the json strings
+        kgl = [self._create_model(model) for model in ksgrid_json]
+
+        kga = np.array(kgl, dtype=object).reshape(
+            len(range(*self.params['kwargs']['npartitions_range'])),  # same shape as the nested loop
+            self.params['kwargs']['ncombinations'],
+        )
+
+        self.ksgrid = kga
 
     @property
     def n_clusters(self) -> int:
@@ -560,9 +698,14 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.clear_workdir()
 
-        self.params = {'kwargs': self.control_widget.get_params(),
-                       'workdir': workdir,
-                       'out': workdir + '/out'}
+        self.params = \
+            {
+                'kwargs': self.control_widget.get_params(),
+                'workdir': workdir,
+                'out': os.path.join(workdir, 'out'),
+                'do_single': self.control_widget.ui.checkBoxUseSingle.isChecked(),
+                'do_grid': self.control_widget.ui.checkBoxUseGridsearch.isChecked()
+            }
 
         params_path = os.path.abspath(workdir + '/params.pickle')
         pickle.dump(self.params, open(params_path, 'wb'))
@@ -657,6 +800,12 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         if open(self.params['out'], 'r').read() == 0:
             return
 
+        if self.params['do_single']:
+            self.load_output_single()
+        elif self.params['do_grid']:
+            self.load_output_grid()
+
+    def load_output_single(self):
         ks_path = os.path.join(self.params['workdir'], 'ks.pickle')
         self.ks = pickle.load(open(ks_path, 'rb'))
 
@@ -669,6 +818,23 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.n_clusters = self.params['kwargs']['n_clusters']
         self.cluster_centers = self.ks.cluster_centers_
 
+        self.update_output()
+
+    def load_output_grid(self):
+        ksg_path = os.path.join(self.params['workdir'], 'kga.json')
+        self._ksgrid_json = json.load(open(ksg_path, 'r'))
+
+    def update_ksgrid_selection(self, ix: Tuple[int, int]):
+        self.ks = self.ksgrid.T[ix]
+
+        self.y_pred = self.ks.predict(
+            self.pad_input_data(self.input_arrays, method='fill-size')
+        )
+        self.n_clusters = self.ks.n_clusters
+
+        self.update_output()
+
+    def update_output(self):
         padded = self.pad_input_data(self.input_arrays)
         scaled = TimeSeriesScalerMeanVariance().fit_transform(padded)[:, :, 0]
         means = []
@@ -755,6 +921,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
                 'y_pred':           self.y_pred.tolist(),
                 'cluster_centers':  self.cluster_centers.tolist(),
                 'cluster_means':    self.cluster_means.tolist(),
+                '_ksgrid_json':     self._ksgrid_json,
                 'ui_state':
                                 {'data_column':     self.data_column,
                                  'show_centers':    self.control_widget.ui.checkBoxShowKShapeCenters.isChecked(),
