@@ -70,7 +70,7 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
     
 #. Install tslearn & bottleneck (optional)::
 
-    pip install tslearn~=0.2.2 bottleneck==1.2.1
+    pip install tslearn bottleneck==1.2.1
 
 #. Install mesmerize::
 
@@ -131,7 +131,7 @@ This might take a while.
 
 #. Install tslearn (optional)::
 
-    conda install -c conda-forge tslearn==0.2.1
+    conda install -c conda-forge tslearn
     
 #. Install bottleneck (optional)::
 
@@ -197,7 +197,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
     
 #. Install tslearn (optional)::
 
-    conda install -c conda-forge tslearn==0.2.1
+    conda install -c conda-forge tslearn
     
 #. Install bottleneck (optional)::
 
@@ -245,7 +245,7 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 #. Upgrade pip & setuptools & install some build dependencies::
 
     pip install --upgrade pip setuptools
-    pip install Cython numpy tslearn==0.2.2
+    pip install Cython numpy tslearn
     
 #. Install ``tensorflow`` or ``tensorflow-gpu``, you must use version ``~=1.15``::
 
