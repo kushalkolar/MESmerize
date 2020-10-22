@@ -81,7 +81,7 @@ _prefix_comments = \
         '# export PATH="/home/<user>/anaconda3:$PATH"',
         '# source activate my_environment',
         '# Or if you are using a python virtual environment',
-        '# source /home/<>/python_envs/my_venv/bin/activate',
+        '# source /<path_to_env>/activate',
         '# Adjust these according to your hardware'
     ]
 

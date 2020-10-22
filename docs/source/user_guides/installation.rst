@@ -61,6 +61,13 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
 
     pip install numpy cython
 
+#. Install `tensorflow` v1.15 (v2 is not supported) if you want to use Caiman or Nuset::
+    
+    # CPU bound
+    pip install tensorflow~=1.15
+    # GPU
+    pip install tensorflow-gpu~=1.15
+    
 #. Install tslearn & bottleneck (optional)::
 
     pip install tslearn~=0.2.2 bottleneck==1.2.1
@@ -75,14 +82,16 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
     
 You will always need to activate the environment for Mesmerize before launching it.
 
-#. If you want Caiman features you'll need to install caiman into this environment::
+#. If you want Caiman features you'll need to install caiman into the same environment as mesmerize::
 
     git clone https://github.com/flatironinstitute/CaImAn
     cd CaImAn/
-    source activate caiman
+    source <new_venv_path/bin/activate>
     pip install .
 
-More information on caiman installation: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+#. You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+
+#. In order to use some features that launch subprocesses, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the environment that mesmerize is installed in. By default the pre-run commands contain ``# source /<path_to_env>/activate'``, you will need to uncomment the line (remove the ``#``) and set the path to your environment.
 
     
 Mac OSX
@@ -146,6 +155,10 @@ You will always need to activate the environment for Mesmerize before launching 
 **To fix this, execute the following which appends the default matplotlib backend-option. Note that this will probably affect matplotlib in all your environments**::
 
     echo "backend: qt5" >> ~/.matplotlib/matplotlibrc
+    
+You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+
+In order to use some features that launch subprocesses, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the environment that mesmerize is installed in.
 
 Windows
 =======
@@ -211,6 +224,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
 
     mesmerize
 
+You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
     
 .. note:: In order to use some features, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the conda environment that mesmerize is installed in. By default the pre-run commands contain ``# conda activate mesmerize`` but you will need to uncomment the line (remove the ``#``) or change it if you are using an environment with a different name.
 
@@ -237,6 +251,15 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 
     pip install tensorflow~=1.15
 
+#. If you want Caiman features you'll need to install caiman into the same environment as mesmerize::
+
+    git clone https://github.com/flatironinstitute/CaImAn
+    cd CaImAn/
+    source <new_venv_path/bin/activate>
+    pip install .
+
+#. You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+    
 #. Fork the main repo on github and clone it, or install from our repo::
     
     git clone https://github.com/kushalkolar/MESmerize.git
@@ -257,3 +280,5 @@ First, make sure you have compilers & python3.6 (see the details above for vario
     git push origin my-new-feature
     
 #. Create a pull request if you want to incorporate it into the main Mesmerize repo.
+
+
