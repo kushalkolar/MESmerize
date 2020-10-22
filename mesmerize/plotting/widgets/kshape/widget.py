@@ -10,7 +10,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from .control_widget_pytemplate import *
-from . import kshape_process
 import psutil
 import os
 from ....common.utils import make_workdir, make_runfile
@@ -38,6 +37,7 @@ from ....common.configuration import HAS_TSLEARN, IS_WINDOWS
 if HAS_TSLEARN:
     from tslearn.preprocessing import TimeSeriesScalerMeanVariance
     from tslearn.clustering import KShape
+    from . import kshape_process
 
 if not IS_WINDOWS:
     from signal import SIGKILL
