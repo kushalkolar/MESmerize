@@ -390,7 +390,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
             kga_inertia,
             ylabels=list(range(*p_range)),
             cmap='viridis',
-            annot=True
+            annot=False
         )
 
         self.kga_inertia_heatmap.show()
