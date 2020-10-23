@@ -5,14 +5,34 @@ from bokeh.models.mappers import LogColorMapper
 from bokeh.transform import jitter
 from bokeh.layouts import gridplot, column, row
 from typing import *
+import pandas
+from uuid import UUID
+import inspect
 
 
 class BokehCallbackSignal:
-    def __init__(self, source):
-        self.source_data: ColumnDataSource = source
+    def __init__(
+        self,
+        dataframe: Optional[pandas.DataFrame] = None,
+        source: Optional[ColumnDataSource] = None
+    ):
+        """
+
+        :param dataframe: associate a DataFrame with this signal
+                          ``dataframe`` is generally a superset of ``source``
+
+        :param source:  associate a ColumnDataSource with this signal.
+                        the data contained in ``source`` must be a subset of ``dataframe``.
+                        ``source`` typically does not contain some columns from ``dataframe``
+                        due to incompatibility of the ``ColumnDataSource`` type.
+        """
+        self.dataframe: Union[pandas.DataFrame] = dataframe
+        self.source_data: Union[ColumnDataSource, None] = source
 
         self.callbacks = []
         self.callbacks_data = []
+
+        self._pause_state = False
 
     def connect(self, func: callable):
         """
@@ -23,14 +43,17 @@ class BokehCallbackSignal:
         """
         self.callbacks.append(func)
 
-    def connect_data(self, func: callable):
+    def connect_data(self, func: callable, identifier: str):
         """
-        Use this to pass the new source data as a dict to the callback function
+        Use this to pass a sub dataframe to the callback function.
+
+        ``self.dataframe`` and
 
         :param func:
         :return:
         """
-        self.callbacks_data.append(func)
+
+        self.callbacks_data.append((func, identifier))
 
     def disconnect(self, func: callable):
         if func in self.callbacks:
@@ -38,9 +61,21 @@ class BokehCallbackSignal:
         elif func in self.callbacks_data:
             self.callbacks_data.remove(func)
 
+    def pause(self):
+        """
+        Disable callback trigger
+        """
+        self._pause_state = True
+
+    def unpause(self):
+        """
+        Enable callback trigger
+        """
+        self._pause_state = False
+
     def trigger(self, attr, old, val):
         """
-        The function signature must have 3 and only 3 args, bokeh is very picky
+        This function signature must have 3 and only 3 args, bokeh is very picky
 
         :param attr: name of the attribute
 
@@ -52,19 +87,63 @@ class BokehCallbackSignal:
 
         :return:
         """
+        if self._pause_state:
+            return
+
         # if there are multiple values
         # such as if multiple datapoints were selected in a glyph
         if len(val) != 1:
             return
 
-        out = dict.fromkeys(self.source_data.column_names)
+        if self.source_data is not None:
+            self._trigger_callbacks_data(val)
 
-        for k in out.keys():
-            # create a dict of the source_data values at the requested index `val`
-            out[k] = self.source_data.data[k][val][0]
+        self._trigger_callbacks(val)
 
-        for f in self.callbacks_data:
-            f(out)  # send out the source_data present at the `val` index
+    def _trigger_callbacks(self, val: Any):
+        """
+        Trigger callbacks which directly take a value, such as from a widget
 
-        for f in self.callbacks:
-            f(val)  # send out val directly
+        :param val:
+        :return:
+        """
+        for func in self.callbacks:
+            if bool(inspect.signature(func).parameters):  # make sure the function takes arguments
+                func(val)  # send out val directly
+            else:
+                func()  # else just call the function
+
+    def _trigger_callbacks_data(self, val: List[int]):
+        """
+        Trigger the callbacks which take a subdataframe as the argument
+
+        :param val: list containing a single integer, which is an index for source_data
+        :return:
+        """
+
+        for func, identifier in self.callbacks_data:
+            uid = UUID(self.source_data[identifier][val][0])  # get the source_data present at the `val` index
+
+            # subdataframe where the identifier UUID matches
+            out = self.dataframe[self.dataframe[identifier].apply(lambda u: UUID) == uid]
+            func(out)
+
+
+class WebPlot:
+    def __init_subclass__(cls, **kwargs):
+        cls.signals: List[BokehCallbackSignal] = \
+            [attr for attr in cls.__dict__ if isinstance(attr, BokehCallbackSignal)]
+
+    @classmethod
+    def signal_blocker(cls, func):
+        """Block callbacks, used when the plot x and y limits change due to user interaction"""
+        def fn(self, *args, **kwargs):
+            for signal in self.signals:
+                signal.pause()
+            try:
+                ret = func(self, *args, **kwargs)
+            finally:
+                for signal in self.signals:
+                    signal.unpause()
+            return ret
+        return fn
