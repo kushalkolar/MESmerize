@@ -1,9 +1,4 @@
-from bokeh.plotting import figure, gridplot, curdoc
-# from bokeh.io import output_notebook, show
-from bokeh.models import HoverTool, ColumnDataSource, TapTool, Slider, TextInput
-from bokeh.models.mappers import LogColorMapper
-from bokeh.transform import jitter
-from bokeh.layouts import gridplot, column, row
+from bokeh.models import ColumnDataSource
 from typing import *
 import pandas
 from uuid import UUID
@@ -92,8 +87,9 @@ class BokehCallbackSignal:
 
         # if there are multiple values
         # such as if multiple datapoints were selected in a glyph
-        if len(val) != 1:
-            return
+        if isinstance(val, list):
+            if len(val) != 1:
+                return
 
         if self.source_data is not None:
             self._trigger_callbacks_data(val)
@@ -108,6 +104,7 @@ class BokehCallbackSignal:
         :return:
         """
         for func in self.callbacks:
+            print(f"VAL IN SIGNAL: {val}")
             if bool(inspect.signature(func).parameters):  # make sure the function takes arguments
                 func(val)  # send out val directly
             else:
@@ -120,30 +117,39 @@ class BokehCallbackSignal:
         :param val: list containing a single integer, which is an index for source_data
         :return:
         """
-
+        print(f"VAL IN SIGNAL: {val}")
         for func, identifier in self.callbacks_data:
-            uid = UUID(self.source_data[identifier][val][0])  # get the source_data present at the `val` index
-
+            uid = self.source_data.data[identifier][val][0]  # get the source_data present at the `val` index
+            print(uid)
             # subdataframe where the identifier UUID matches
-            out = self.dataframe[self.dataframe[identifier].apply(lambda u: UUID) == uid]
+            out = self.dataframe[self.dataframe[identifier] == uid]
+            print(out.copy(deep=True))
             func(out)
 
 
 class WebPlot:
-    def __init_subclass__(cls, **kwargs):
-        cls.signals: List[BokehCallbackSignal] = \
-            [attr for attr in cls.__dict__ if isinstance(attr, BokehCallbackSignal)]
+    def __init__(self, *args, **kwargs):
+        attrs = dir(self)
+        self.signals: List[BokehCallbackSignal] = \
+            [getattr(self, a) for a in attrs if isinstance(getattr(self, a), BokehCallbackSignal)]
+        print("WEBPLOT INIT")
+        print(self.signals)
 
     @classmethod
     def signal_blocker(cls, func):
         """Block callbacks, used when the plot x and y limits change due to user interaction"""
+        print("***** SIGNAL BLOCKER CALLED ******")
         def fn(self, *args, **kwargs):
+            print("self.signals is")
+            print(self.signals)
             for signal in self.signals:
+                print(f"Blocking signal {signal}")
                 signal.pause()
-            try:
-                ret = func(self, *args, **kwargs)
-            finally:
-                for signal in self.signals:
-                    signal.unpause()
+
+            ret = func(self, *args, **kwargs)
+
+            for signal in self.signals:
+                signal.unpause()
+
             return ret
         return fn
