@@ -22,8 +22,8 @@ _default_image_figure_params = dict(
 )
 
 _default_curve_figure_params = dict(
-    plot_height=300,
-    plot_width=1200,
+    plot_height=250,
+    plot_width=1000,
     tools='tap,hover,pan,wheel_zoom,box_zoom,reset',
 )
 
