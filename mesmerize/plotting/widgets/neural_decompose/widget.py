@@ -8,12 +8,15 @@ from ..base import BasePlotWidget
 from .controls import *
 from ....common.qdialogs import present_exceptions
 from ....common import get_window_manager
+from ....common.configuration import console_history_path
 from ....analysis import Transmission
 from typing import *
 from collections import OrderedDict
 from traceback import format_exc
 from ..scatter.scatter_plot import CentralWidget
 from ....pyqtgraphCore import mkBrush
+from ....pyqtgraphCore.console.Console import ConsoleWidget
+import os
 
 
 class LowDimData:
@@ -90,14 +93,14 @@ class LowDimData:
         stim_dataframe = sample_df.iloc[0]['stim_maps'][0][0][stimulus_type]
 
         # create an array where each frame is labelled with the stimulus name
-        stim_labels = np.empty(
+        self.labels = np.empty(
             shape=(sample_df[data_column].iloc[0].shape),  # shape is (n_frames,)
-            dtype=f'<U{sample_df.name.apply(len).max()}'  # just unicode with length of longest stimulus name str
+            dtype=f'<U{stim_dataframe.name.apply(len).max()}'  # just unicode with length of longest stimulus name str
         )
 
         # fill the array so each frame is labelled with the stimulus name for that frame
         for i, s in stim_dataframe.sort_values(by=['start'], ascending=True).iterrows():
-            stim_labels[int(s['start']):int(s['end'])] = s['name']
+            self.labels[int(s['start']):int(s['end'])] = s['name']
 
         self.input_data = np.vstack(sample_df[data_column].values).T
 
@@ -107,21 +110,26 @@ class LowDimData:
             scaler = getattr(preprocessing, scaler_method)
             X = scaler.fit_transform(self.input_data)
 
-        if method == 'pca':
+        if method == 'PCA':
             self.pca = PCA(**method_kwargs)
             self.low_dim_data = self.pca.fit_transform(X)
 
-        elif method == 'lda':
+        elif method == 'LDA':
             if 'store_covariance' in self.params['method_kwargs'].keys():
                 store_covariance = self.params['method_kwargs'].pop('method_kwargs')
-            else:
+
+            elif 'solver' in self.params['method_kwargs'].keys():
                 store_covariance = True if self.params['method_kwargs']['solver'] not in ['lsqr', 'eigen'] else False
+
+            else:
+                store_covariance=False
 
             lda = LinearDiscriminantAnalysis(**method_kwargs, store_covariance=store_covariance)
             self.low_dim_data = lda.fit_transform(X, self.labels)
 
             self.lda_means = lda.means_
-            self.lda_covariance = lda.covariance_
+            if hasattr(lda, 'covariance_'):
+                self.lda_covariance = lda.covariance_
             self.lda_decision_function = lda.decision_function(X)
 
         return self
@@ -139,8 +147,13 @@ class LowDimData:
             }
 
     def from_json_dict(self, d: dict):
-        for attr in d.keys():
-            setattr(self, attr, d[attr])
+        attrs = list(d.keys())
+        for attr in attrs:
+            val = d[attr]
+            if isinstance(val, list):
+                val = np.array(val)
+
+            setattr(self, attr, val)
 
 
 class ControlDock(QtWidgets.QDockWidget):
@@ -150,6 +163,20 @@ class ControlDock(QtWidgets.QDockWidget):
         self.ui.setupUi(self)
 
         self.ui.listWidgetStimulusColormap.set_cmap('tab10')
+
+        self.ui.comboBoxMethod.addItems(['PCA', 'LDA'])
+
+        self.ui.comboBoxPreprocessScaler.addItems(
+            [
+                'StandardScaler',
+                'MinMaxScaler',
+                'MaxAbsScaler',
+                'PowerTransformer',
+                'RobustScaler'
+            ]
+        )
+
+        self.ui.toolBox.setCurrentIndex(0)
 
     @present_exceptions(
         'Cannot set params',
@@ -167,7 +194,6 @@ class ControlDock(QtWidgets.QDockWidget):
                 'method_kwargs': method_kwargs,
                 'use_scaler': self.ui.checkBoxUsePreprocessScaler.isChecked(),
                 'scaler_method': self.ui.comboBoxPreprocessScaler.currentText(),
-                'stimulus_cmap': self.ui.listWidgetStimulusColormap.get_cmap()
             }
 
 
@@ -180,15 +206,17 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.setWindowTitle('Neural Activity Decomposition')
 
-        self.control_widget = ControlDock()
+        self.control_widget = ControlDock(self)
         self.addDockWidget(
             QtCore.Qt.LeftDockWidgetArea, self.control_widget
         )
 
-        self.data: OrderedDict[str, LowDimData] = None
+        self.data: Dict[str, LowDimData] = None
 
         self.control_widget.ui.pushButtonComputeAllSamples.clicked.connect(lambda: self.compute())
         self.control_widget.ui.listWidgetComputedSamples.currentRowChanged.connect(self.update_plot)
+
+        self.block_signals_list = [self.control_widget.ui.listWidgetComputedSamples]
 
         self.central_widget = CentralWidget(self)
         self.setCentralWidget(self.central_widget)
@@ -201,6 +229,25 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
         self.previous_point_pen = None
 
         self.viewer_window = None
+
+        cmd_history_file = os.path.join(console_history_path, 'neural_decompose.pik')
+
+        ns = {'this': self}
+
+        txt = ["Namespaces",
+               "self as 'this'",
+               ]
+
+        txt = "\n".join(txt)
+
+        self.console = ConsoleWidget(parent=self, namespace=ns, text=txt, historyFile=cmd_history_file)
+
+        self.dockConsole = QtWidgets.QDockWidget(self)
+        self.dockConsole.setWindowTitle('Console')
+        self.dockConsole.setFeatures(
+            QtWidgets.QDockWidget.DockWidgetFloatable | QtWidgets.QDockWidget.DockWidgetMovable)
+        self.dockConsole.setWidget(self.console)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.dockConsole)
 
     def set_input(self, transmission: Transmission):
         if self._transmission is not None:
@@ -235,7 +282,9 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget.ui.listWidgetComputedSamples.clear()
 
-        self.data = OrderedDict()
+        self.data = dict()
+
+        self.control_widget.ui.progressBar.setValue(0)
 
         params = self.control_widget.get_params()
         samples = self.transmission.df['SampleID'].unique()
@@ -253,7 +302,9 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
                     f'{format_exc()}'
                 )
 
-            self.control_widget.ui.progressBar.setValue(int(i / n_samples))
+            self.control_widget.ui.progressBar.setValue(int((i / n_samples) * 100))
+
+        self.control_widget.ui.progressBar.setValue(100)
 
         self.control_widget.ui.listWidgetComputedSamples.addItems(
             samples.tolist()
@@ -261,8 +312,11 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.control_widget.ui.toolBox.setCurrentIndex(1)
 
+    @BasePlotWidget.signal_blocker
     def clear_data(self):
-        for k in self.data.keys():
+        ks = list(self.data.keys())
+        for k in ks:
+            print('Clearing data, please wait...')
             del self.data[k]
 
         self.data = None
@@ -300,6 +354,8 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
 
     @present_exceptions('Plot error')
     def update_plot(self, *args, **kwargs):
+        self.plot_variant.clear()
+
         sid = self.control_widget.ui.listWidgetComputedSamples.currentItem().text()
 
         low_dim_data = self.data[sid]
@@ -316,8 +372,36 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
 
         self.plot_variant.add_data(
             xs, ys,
-            uuids=np.arange(0, low_dim_data.low_dim_data.shape[0]),  # use the indices to identify the points
+            uuid_series=np.arange(0, low_dim_data.low_dim_data.shape[0]),  # use the indices to identify the points
             color=brushes_list,
             size=self.spot_size
         )
 
+        self.plot_variant.set_legend(colors_map)
+
+    def get_plot_opts(self, drop: bool) -> dict:
+        return {
+            'data': {k: v.to_json_dict() for k, v in self.data.items()},
+        }
+
+    def set_plot_opts(self, opts: dict):
+        if self.data is not None:
+            self.clear_data()
+
+        self.control_widget.ui.listWidgetComputedSamples.clear()
+        self.control_widget.ui.listWidgetComputedSamples.addItems(opts['data'].keys())
+
+        ks = list(self.data.keys())
+
+        self.data = {sid: LowDimData().from_json_dict(opts['data'][sid]) for sid in ks}
+
+    def save_plot(self, path):
+        t = self.transmission.copy()
+
+        sid = self.transmission.df['SampleID'].unique()[0]
+        params = self.data[sid].params
+
+        self.transmission.history_trace.add_operation('all', operation='neural_decompose', parameters=params)
+        super(NeuralDecomposePlot, self).save_plot(path)
+
+        self.transmission = t
