@@ -89,8 +89,11 @@ class PgScatterPlot(QtCore.QObject):
                 u = UUID(p.uuid)
             elif isinstance(p.uuid, UUID):
                 u = p.uuid
+            elif isinstance(p.uuid, int):
+                u = p.uuid
             else:
-                raise TypeError('spot uuid attribute must be either uuid.UUID or str')
+                raise TypeError('spot uuid attribute must be either <uuid.UUID>, <str>, or <int>')
+
             self.signal_spot_clicked.emit(u)
 
         for p in points:

@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from ...utils import ColormapListWidget
+from ...utils import get_colormap
 from ..base import BasePlotWidget
 from .controls import *
 from ....common.qdialogs import present_exceptions
@@ -12,6 +12,8 @@ from ....analysis import Transmission
 from typing import *
 from collections import OrderedDict
 from traceback import format_exc
+from ..scatter.scatter_plot import CentralWidget
+from ....pyqtgraphCore import mkBrush
 
 
 class LowDimData:
@@ -71,7 +73,6 @@ class LowDimData:
             method_kwargs: dict = None,
             use_scaler: bool = False,
             scaler_method: str = None,
-            stimulus_cmap: str = None,
 
     ):
         self.params = {
@@ -81,7 +82,6 @@ class LowDimData:
             'method_kwargs': method_kwargs,
             'use_scaler': use_scaler,
             'scaler_method': scaler_method,
-            'stimulus_cmap': stimulus_cmap
         }
 
         sample_df = sample_df.reset_index(drop=True)
@@ -185,11 +185,20 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
             QtCore.Qt.LeftDockWidgetArea, self.control_widget
         )
 
-        self.data: OrderedDict[LowDimData] = None
+        self.data: OrderedDict[str, LowDimData] = None
 
         self.control_widget.ui.pushButtonComputeAllSamples.clicked.connect(lambda: self.compute())
-
         self.control_widget.ui.listWidgetComputedSamples.currentRowChanged.connect(self.update_plot)
+
+        self.central_widget = CentralWidget(self)
+        self.setCentralWidget(self.central_widget)
+
+        self.plot_variant = self.central_widget.plot_variant
+        self.alpha = 0.65
+        self.spot_size = 10
+
+        self.previous_point_ix: int = None
+        self.previous_point_pen = None
 
         self.viewer_window = None
 
@@ -250,6 +259,8 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
             samples.tolist()
         )
 
+        self.control_widget.ui.toolBox.setCurrentIndex(1)
+
     def clear_data(self):
         for k in self.data.keys():
             del self.data[k]
@@ -263,15 +274,50 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
         Open a sample in the viewer
         """
         if self.viewer_window is not None:
-            self.viewer_window.vi.viewer
+            self.viewer_window.vi.viewer.sigTimeChanged.diconnect()
             self.viewer_window.close()
 
         w = get_window_manager().get_new_viewer_window()
         w.open_from_dataframe(proj_path=self.proj_path, row=self.row)
 
         self.viewer_window = w
+        self.viewer_window.vi.viewer.sigTimeChanged.connect(self.highlight_point)
 
+    def highlight_point(self, ind: tuple):
+        i = ind[0]
+
+        if self.previous_point_ix is not None:
+            # self.plot_variant.plot.points()[self.previous_point_ix].resetPen()
+            self.plot_variant.plot.points()[self.previous_point_ix].setPen(self.previous_point_pen)
+            self.plot_variant.plot.points()[self.previous_point_ix].setSize(self.spot_size)
+
+        self.previous_point_ix = i
+        self.previous_point_pen = self.plot_variant.plot.points()[i].pen()
+
+        # sid = self.control_widget.ui.listWidgetComputedSamples.currentItem().text()
+        self.plot_variant.plot.points()[i].setPen('w')
+        self.plot_variant.plot.points()[i].setSize(25)
 
     @present_exceptions('Plot error')
     def update_plot(self, *args, **kwargs):
-        pass
+        sid = self.control_widget.ui.listWidgetComputedSamples.currentItem().text()
+
+        low_dim_data = self.data[sid]
+
+        xs = low_dim_data.low_dim_data[:, 0]
+        ys = low_dim_data.low_dim_data[:, 1]
+
+        colors_map = get_colormap(low_dim_data.labels,
+                                  self.control_widget.ui.listWidgetStimulusColormap.get_cmap(),
+                                  output='pyqt', alpha=0.7)
+
+        colors = list(map(colors_map.get, low_dim_data.labels))
+        brushes_list = list(map(mkBrush, colors))
+
+        self.plot_variant.add_data(
+            xs, ys,
+            uuids=np.arange(0, low_dim_data.low_dim_data.shape[0]),  # use the indices to identify the points
+            color=brushes_list,
+            size=self.spot_size
+        )
+
