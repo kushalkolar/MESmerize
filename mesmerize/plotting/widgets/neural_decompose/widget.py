@@ -7,6 +7,12 @@ from ...utils import ColormapListWidget
 from ..base import BasePlotWidget
 from .controls import *
 from ....common.qdialogs import present_exceptions
+from ....common import get_window_manager
+from ....analysis import Transmission
+from typing import *
+from collections import OrderedDict
+from traceback import format_exc
+
 
 class LowDimData:
     def __init__(self):
@@ -17,12 +23,44 @@ class LowDimData:
 
         self.params: dict = None
 
+        self.pca: PCA = None
+        self.lda: LinearDiscriminantAnalysis = None
+        
         self.lda_means: np.ndarray = np.empty(0)
         self.lda_covariance: np.ndarray = np.empty(0)
         self.lda_decision_function: np.ndarray = np.empty(0)
 
+    def __del__(self):
+        self.clear()
+
+    def clear(self):  # in case the user does weird stuff in the console, should implement some forced garbage collection
+        del self.input_data
+        del self.low_dim_data
+
+        del self.labels
+
+        del self.params
+
+        del self.pca
+        del self.lda
+
+        del self.lda_means
+        del self.lda_covariance
+        del self.lda_decision_function
+
+        self.input_data: np.ndarray = np.empty(0)
+        self.low_dim_data: np.ndarray = np.empty(0)
+
+        self.labels: np.ndarray = np.empty(0, dtype='<U16')
+
+        self.params: dict = None
+
         self.pca: PCA = None
         self.lda: LinearDiscriminantAnalysis = None
+
+        self.lda_means: np.ndarray = np.empty(0)
+        self.lda_covariance: np.ndarray = np.empty(0)
+        self.lda_decision_function: np.ndarray = np.empty(0)
 
     def compute(
             self,
@@ -146,4 +184,94 @@ class NeuralDecomposePlot(QtWidgets.QMainWindow, BasePlotWidget):
         self.addDockWidget(
             QtCore.Qt.LeftDockWidgetArea, self.control_widget
         )
-        
+
+        self.data: OrderedDict[LowDimData] = None
+
+        self.control_widget.ui.pushButtonComputeAllSamples.clicked.connect(lambda: self.compute())
+
+        self.control_widget.ui.listWidgetComputedSamples.currentRowChanged.connect(self.update_plot)
+
+        self.viewer_window = None
+
+    def set_input(self, transmission: Transmission):
+        if self._transmission is not None:
+            if QtWidgets.QMessageBox.warning(
+                self,
+                'Overwrite input?',
+                'The input data to this plot node has changed.\n'
+                'Do you want to load the new input data, this will clear all current data!'
+            ) == QtWidgets.QMessageBox.No:
+                return
+            else:
+                self.clear_data()
+
+        super(NeuralDecomposePlot, self).set_input(transmission)
+        self.control_widget.ui.comboBoxStimulusMapping.clear()
+        self.control_widget.ui.comboBoxStimulusMapping.addItems(
+            self.transmission.STIM_DEFS
+        )
+
+    def fill_control_widget(self, data_columns: list, categorical_columns: list, uuid_columns: list):
+        self.control_widget.ui.comboBoxDataColumn.clear()
+        self.control_widget.ui.comboBoxDataColumn.addItems(data_columns)
+
+    @present_exceptions(
+        'Error computing decomposition',
+        'There is probably an issue with a sample(s) or your parameters'
+    )
+    @BasePlotWidget.signal_blocker
+    def compute(self):
+        if self.data is not None:
+            self.clear_data()
+
+        self.control_widget.ui.listWidgetComputedSamples.clear()
+
+        self.data = OrderedDict()
+
+        params = self.control_widget.get_params()
+        samples = self.transmission.df['SampleID'].unique()
+        n_samples = samples.size
+
+        for i, sid in enumerate(samples):
+            sample_df = self.transmission.df[self.transmission.df['SampleID'] == sid]
+
+            try:
+                self.data[sid] = LowDimData().compute(sample_df, **params)
+            except:
+                raise ValueError(
+                    f'Exception encountered for the following sample:'
+                    f'\n\t{sid}\n'
+                    f'{format_exc()}'
+                )
+
+            self.control_widget.ui.progressBar.setValue(int(i / n_samples))
+
+        self.control_widget.ui.listWidgetComputedSamples.addItems(
+            samples.tolist()
+        )
+
+    def clear_data(self):
+        for k in self.data.keys():
+            del self.data[k]
+
+        self.data = None
+
+        self.control_widget.ui.listWidgetComputedSamples.clear()
+
+    def open_viewer(self):
+        """
+        Open a sample in the viewer
+        """
+        if self.viewer_window is not None:
+            self.viewer_window.vi.viewer
+            self.viewer_window.close()
+
+        w = get_window_manager().get_new_viewer_window()
+        w.open_from_dataframe(proj_path=self.proj_path, row=self.row)
+
+        self.viewer_window = w
+
+
+    @present_exceptions('Plot error')
+    def update_plot(self, *args, **kwargs):
+        pass
