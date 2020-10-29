@@ -44,8 +44,7 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
         @wraps(func)
         def fn(self, *args, **kwargs):
             if not is_app():
-                func(self, *args, **kwargs)
-                return fn
+                return func(self, *args, **kwargs)
 
             try:
                 return func(self, *args, **kwargs)
