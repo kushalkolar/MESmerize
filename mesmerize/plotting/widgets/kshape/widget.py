@@ -839,11 +839,11 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.update_output()
 
     def load_output_grid(self):
-        ksg_path = os.path.join(self.params['workdir'], 'kga.json')
-        self._ksgrid_json = json.load(open(ksg_path, 'r'))
-
         n_clusters_out_path = os.path.join(self.params['workdir'], 'n_clusters_out.npy')
         self.n_clusters_out = np.load(n_clusters_out_path)
+
+        ksg_path = os.path.join(self.params['workdir'], 'kga.json')
+        self._ksgrid_json = json.load(open(ksg_path, 'r'))
 
     def update_ksgrid_selection(self, ix: Tuple[int, int]):
         self.ks = self.ksgrid.T[ix]
