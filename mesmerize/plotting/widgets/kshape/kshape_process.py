@@ -84,7 +84,7 @@ def sort_amplitidue(a: np.ndarray):
     return a[sort_ixs]
 
 
-def kshape_grid_iter(X_partitioned: List[np.array], kshape_kwargs: dict) -> Tuple[KShape, np.ndarray]:
+def kshape_grid_iter(X_partitioned: List[np.array], kshape_kwargs: dict) -> Tuple[KShape, int]:
     seed_ixs = [np.random.randint(0, X.shape[0] - 1) for X in X_partitioned]
     centroid_seeds = np.array([X_partitioned[i][seed] for i, seed in enumerate(seed_ixs)])
     init = np.swapaxes(np.array([centroid_seeds]).T, 0, 1)
@@ -103,12 +103,12 @@ def kshape_grid_iter(X_partitioned: List[np.array], kshape_kwargs: dict) -> Tupl
     kshape.fit(X)
 
     print('** Predicting **')
-    y_pred = kshape.predict(X)
+    n_clusters_out = np.unique(kshape.predict(X)).size
 
     # until the tslearn hyper-param json issue is released in the latest pypi version
     kshape.init = kshape.init.tolist()
 
-    return kshape, y_pred
+    return kshape, n_clusters_out
 
 
 def run_grid(X, train, params, workdir, out):
@@ -133,13 +133,13 @@ def run_grid(X, train, params, workdir, out):
 
     kga = [k[0]._to_dict(output='json') for k in kg]
 
-    y_pred_grid = np.array([k[1] for k in kg]).reshape(
+    n_clusters_out = np.array([k[1] for k in kg]).reshape(
         len(range(*p_range)),
         ncombinations
     )
 
     json.dump(kga, open(os.path.join(workdir, 'kga.json'), 'w'))
-    np.save(os.path.join(workdir, 'y_pred_grid.npy'), y_pred_grid)
+    np.save(os.path.join(workdir, 'n_clusters_out.npy'), n_clusters_out)
 
     with open(out, 'w') as f:
         f.write('1')

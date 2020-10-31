@@ -314,7 +314,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.kga_inertia_heatmap_cmap = 'bwr_r'
         self.inertia_sorted: pd.DataFrame = None
 
-        self.y_pred_grid: np.ndarray = np.empty(0)
+        self.n_clusters_out: np.ndarray = np.empty(0)
 
         self.resize(1500, 900)
 
@@ -389,7 +389,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         kga_inertia = np.zeros(self.ksgrid.shape, dtype=np.float64)
         for ij in iter_product(range(self.ksgrid.shape[0]), range(self.ksgrid.shape[1])):
-            if np.unique(self.y_pred_grid[ij]).size < self.ksgrid[ij].n_clusters:
+            if self.n_clusters_out[ij] < self.ksgrid[ij].n_clusters:
                 kga_inertia[ij] = np.nan
             else:
                 kga_inertia[ij] = self.ksgrid[ij].inertia_
@@ -842,8 +842,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         ksg_path = os.path.join(self.params['workdir'], 'kga.json')
         self._ksgrid_json = json.load(open(ksg_path, 'r'))
 
-        y_pred_grid_path = os.path.join(self.params['workdir'], 'y_pred_grid.npy')
-        self.y_pred_grid = np.load(y_pred_grid_path)
+        n_clusters_out_path = os.path.join(self.params['workdir'], 'n_clusters_out.npy')
+        self.n_clusters_out = np.load(n_clusters_out_path)
 
     def update_ksgrid_selection(self, ix: Tuple[int, int]):
         self.ks = self.ksgrid.T[ix]
