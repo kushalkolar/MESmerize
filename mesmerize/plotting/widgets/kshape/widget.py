@@ -31,6 +31,7 @@ from ...utils import auto_colormap
 from typing import Union
 from ...variants import Heatmap
 import json
+import pandas as pd
 
 from ....common.configuration import HAS_TSLEARN, IS_WINDOWS
 
@@ -310,6 +311,10 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.kga_inertia_heatmap: Heatmap = Heatmap(highlight_mode='item')
         self.kga_inertia_heatmap.hide()
         self.kga_inertia_heatmap.sig_selection_changed.connect(self.update_ksgrid_selection)
+        self.kga_inertia_heatmap_cmap = 'bwr_r'
+        self.inertia_sorted: pd.DataFrame = None
+
+        self.y_pred_grid: np.ndarray = np.empty(0)
 
         self.resize(1500, 900)
 
@@ -384,13 +389,26 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         kga_inertia = np.zeros(self.ksgrid.shape, dtype=np.float64)
         for ij in iter_product(range(self.ksgrid.shape[0]), range(self.ksgrid.shape[1])):
-            kga_inertia[ij] = self.ksgrid[ij].inertia_
+            if np.unique(self.y_pred_grid[ij]).size < self.ksgrid[ij].n_clusters:
+                kga_inertia[ij] = np.nan
+            else:
+                kga_inertia[ij] = self.ksgrid[ij].inertia_
 
         self.kga_inertia_heatmap.set(
             kga_inertia,
             ylabels=list(range(*p_range)),
-            cmap='viridis',
+            cmap=self.kga_inertia_heatmap_cmap,
             annot=False
+        )
+
+        ixs_lowest = np.dstack(np.unravel_index(np.argsort(kga_inertia.ravel()), kga_inertia.shape))[0]
+        ixs_lowest[:, 0] += self.params['kwargs']['npartitions_range'][0]
+
+        self.inertia_sorted = pd.DataFrame.from_dict(
+            {
+                'n_clusters':   ixs_lowest[:, 0],
+                'trial':        ixs_lowest[:, 1]
+            }
         )
 
         self.kga_inertia_heatmap.show()
@@ -823,6 +841,9 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def load_output_grid(self):
         ksg_path = os.path.join(self.params['workdir'], 'kga.json')
         self._ksgrid_json = json.load(open(ksg_path, 'r'))
+
+        y_pred_grid_path = os.path.join(self.params['workdir'], 'y_pred_grid.npy')
+        self.y_pred_grid = np.load(y_pred_grid_path)
 
     def update_ksgrid_selection(self, ix: Tuple[int, int]):
         self.ks = self.ksgrid.T[ix]
