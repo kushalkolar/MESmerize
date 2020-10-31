@@ -91,6 +91,8 @@ class PgScatterPlot(QtCore.QObject):
                 u = p.uuid
             elif isinstance(p.uuid, int):
                 u = p.uuid
+            elif np.issubdtype(p.uuid, np.integer):
+                u = p.uuid
             else:
                 raise TypeError('spot uuid attribute must be either <uuid.UUID>, <str>, or <int>')
 
