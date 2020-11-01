@@ -121,16 +121,13 @@ class Ui_DockWidget(object):
         self.pushButton = QtWidgets.QPushButton(self.page_2)
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout_3.addWidget(self.pushButton)
-        self.pushButton_2 = QtWidgets.QPushButton(self.page_2)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.horizontalLayout_3.addWidget(self.pushButton_2)
         self.verticalLayout_5.addLayout(self.horizontalLayout_3)
         self.toolBox.addItem(self.page_2, "")
         self.verticalLayout_2.addWidget(self.toolBox)
         DockWidget.setWidget(self.dockWidgetContents)
 
         self.retranslateUi(DockWidget)
-        self.toolBox.setCurrentIndex(0)
+        self.toolBox.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
         DockWidget.setTabOrder(self.comboBoxDataColumn, self.comboBoxStimulusMapping)
         DockWidget.setTabOrder(self.comboBoxStimulusMapping, self.comboBoxMethod)
@@ -142,7 +139,6 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.pushButtonComputeAllSamples, self.pushButton_3)
         DockWidget.setTabOrder(self.pushButton_3, self.listWidgetComputedSamples)
         DockWidget.setTabOrder(self.listWidgetComputedSamples, self.pushButton)
-        DockWidget.setTabOrder(self.pushButton, self.pushButton_2)
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate
@@ -158,7 +154,6 @@ class Ui_DockWidget(object):
         self.toolBox.setItemText(self.toolBox.indexOf(self.page), _translate("DockWidget", "Parameters"))
         self.pushButton_3.setText(_translate("DockWidget", "Open Selected Sample In Viewer"))
         self.pushButton.setText(_translate("DockWidget", "Save"))
-        self.pushButton_2.setText(_translate("DockWidget", "Load"))
         self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), _translate("DockWidget", "Computed Samples"))
 
 from ...utils import ColormapListWidget

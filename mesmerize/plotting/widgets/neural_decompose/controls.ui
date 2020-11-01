@@ -36,7 +36,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="geometry">
@@ -228,13 +228,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_2">
-            <property name="text">
-             <string>Load</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
        </layout>
@@ -263,7 +256,6 @@
   <tabstop>pushButton_3</tabstop>
   <tabstop>listWidgetComputedSamples</tabstop>
   <tabstop>pushButton</tabstop>
-  <tabstop>pushButton_2</tabstop>
  </tabstops>
  <resources/>
  <connections/>
