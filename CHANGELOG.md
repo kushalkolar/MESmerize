@@ -7,11 +7,14 @@
 # 0.4.0 (in progress)
 
 ### New
+- Bokeh based plots that use a bokeh-based datapoint tracer
 - k-Shape "gridsearch", select a n-partitions range and number of combinations, returns heatmap of all k-Shape runs with inertia values
+- Plot neural dynamics in PCA or LDA space
 
 ### Modified
 - Improved performance when importing a project dataframe in the flowchart
 - Project browser supports filtering of list-type columns, such as stimulus/behavioral names
+- Use tslearn v0.4
 
 # 0.3.1
 
