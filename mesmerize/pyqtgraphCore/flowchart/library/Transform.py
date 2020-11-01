@@ -288,21 +288,10 @@ class NeuralDynamics(CtrlNode):
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in', 'multi': True}})
         self.widget = NeuralDecomposePlot()
-        self.widget.sig_output_changed.connect(self._send_output)
         self.ctrls['ShowGUI'].clicked.connect(self.widget.show)
-        self.output_transmission = None
-
-    def _send_output(self, t: Transmission):
-        self.output_transmission = t
-        self.changed()
 
     def process(self, output_transmission=False, **kwargs):
-        if self.output_transmission:
-            out = self.output_transmission
-        else:
-            out = self.processData(**kwargs)
-
-        return {'Out': out}
+        self.processData(**kwargs)
 
     def processData(self, **kwargs):
         self.transmissions = kwargs['In']
