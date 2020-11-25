@@ -121,7 +121,7 @@ def run_single(batch_dir, UUID, output):
 
     img_out_path = os.path.join(batch_dir, f'{UUID}_mc.tiff')
     tifffile.imsave(img_out_path, m_els, bigtiff=True, imagej=True, compress=1)
-    output['output_files'] = UUID + '_mc.tiff'
+    output['output_files'] = [UUID + '_mc.tiff']
 
     output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
