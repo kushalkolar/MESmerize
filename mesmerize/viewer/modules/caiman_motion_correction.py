@@ -16,6 +16,7 @@ from .pytemplates.caiman_motion_correction_pytemplate import *
 from ...common import get_window_manager
 from ...pyqtgraphCore import LinearRegionItem
 from uuid import UUID
+from copy import deepcopy
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -152,7 +153,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            input_params = params
+            input_params = deepcopy(params)
             item_name = input_params['item_name']
 
         input_workEnv = self.vi.viewer.workEnv
