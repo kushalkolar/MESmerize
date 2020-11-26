@@ -19,6 +19,7 @@ from ...common.utils import HdfTools
 from uuid import UUID
 from shutil import copy
 import os
+from copy import deepcopy
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -160,7 +161,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            d = params
+            d = deepcopy(params)
 
         name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMF: ' + name + ' to batch...')

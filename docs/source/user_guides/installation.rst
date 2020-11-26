@@ -23,10 +23,13 @@ pip (PyPI)
     # Fedora/CentOS
     sudo dnf install python36
     
-.. note:: If you're using Ubuntu 20.04 you'll need to add a PPA to get python3.6::
-    sudo add-apt-repository ppa:deadsnakes/ppa
-    sudo apt update
-    sudo apt install python3.6
+.. note:: If you're using Ubuntu 20.04 you'll need to add a PPA to get python3.6
+
+    .. code-block::
+
+        sudo add-apt-repository ppa:deadsnakes/ppa
+        sudo apt update
+        sudo apt install python3.6 python3.6-dbg python3.6-dev python3.6-doc python3.6-gdbm python3.6-gdbm-dbg python3.6-tk python3.6-tk-dbg python3.6-venv
 
 
 #. Install build tools and other dependencies::

@@ -125,6 +125,16 @@ class ModuleGUI(QtWidgets.QWidget):
         
         self.init_batch(run_batch)
 
+    def get_selected_items(self) -> Tuple[List[int], List[uuid.UUID]]:
+        """
+        Returns a list of numeric indices and uuids for the currently selected items
+        """
+        items = self.ui.listwBatch.selectedIndexes()
+        indices = [i.row() for i in items]
+        uuids = [i.data(3) for i in items]
+
+        return indices, uuids
+
     def higlight_items(self):
         self.reset_list_widget_colors()
         txt = self.ui.lineEditFindItem.text()

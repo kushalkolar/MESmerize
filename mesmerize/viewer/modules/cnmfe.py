@@ -17,6 +17,7 @@ import json
 from ...common import get_window_manager
 from ...common.qdialogs import *
 from uuid import UUID
+from copy import deepcopy
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -185,7 +186,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            d = params
+            d = deepcopy(params)
 
         batch_manager = get_window_manager().get_batch_manager()
         name = d['item_name']
@@ -223,7 +224,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            d = params
+            d = deepcopy(params)
 
         name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMFE: ' + name + ' to batch...')
