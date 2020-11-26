@@ -60,13 +60,13 @@ This example shows how to add all tiff files (of image sequences) from a directo
     
     mc_kwargs = \
     {
-        "max_shifts":           (6, 6)
+        "max_shifts":           (6, 6),
         "niter_rig":            2,
         "max_dev":              3,
         "strides":              196,
         "overlaps":             98,
         "upsample_factor_grid": 4,
-        "gSig_filt"             (10, 10)  # Set to `None` for 2p data
+        "gSig_filt":             (10, 10)  # Set to `None` for 2p data
     }
     
     params = \
@@ -172,13 +172,13 @@ This example shows how to crop videos prior to adding them as batch items. This 
     # Motion correction params.
     mc_kwargs = \
     {
-        "max_shifts":           (6, 6)
+        "max_shifts":           (6, 6),
         "niter_rig":            2,
         "max_dev":              3,
         "strides":              196,
         "overlaps":             98,
         "upsample_factor_grid": 4,
-        "gSig_filt"             (10, 10)  # Set to `None` for 2p data
+        "gSig_filt":             (10, 10)  # Set to `None` for 2p data
     }
     
     params = \
