@@ -90,7 +90,7 @@ You will always need to activate the environment for Mesmerize before launching 
     git clone https://github.com/flatironinstitute/CaImAn
     cd CaImAn/
     source <new_venv_path/bin/activate>
-    pip install .
+    pip install -e .
 
 #. You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
 
