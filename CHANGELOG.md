@@ -4,17 +4,25 @@
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
-# 0.4.0 (in progress)
+# 0.4.0
 
 ### New
-- Bokeh based plots that use a bokeh-based datapoint tracer
+- Bokeh based plots that use a bokeh-based datapoint tracer, still in very early stages
 - k-Shape "gridsearch", select a n-partitions range and number of combinations, returns heatmap of all k-Shape runs with inertia values
+    NOTE: The gridsearch is not saved when the plot is saved. Only the chosen kshape iteration will be saved. This will be fixed in a future release
 - Plot neural dynamics in PCA or LDA space
+- PadArrays flowchart node to pad dataframe arrays when sizes don't match, useful when splicing is undesired
+- View mean, max, or std projection of caiman motion correction outputs by selecting them from the batch manager
 
 ### Modified
+- CNME Viewer module uses ``CNMFParams`` when running batch items instead of passing the params are args directly to ``CNMF.__init__()``
 - Improved performance when importing a project dataframe in the flowchart
+- The project ``curves`` dir is deprecated. Backwards compatibility is maintained
 - Project browser supports filtering of list-type columns, such as stimulus/behavioral names
 - Use tslearn v0.4
+- Lots of bug fixes everywhere
+- Fix finding (newer?) CUDA GPUs
+- Fix bug with stimtuning plot if only one stim type is present
 
 # 0.3.1
 
