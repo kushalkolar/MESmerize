@@ -1,9 +1,9 @@
-## Operating System
+## Operating System & specs (CPU, RAM etc.)
 
 ## Details about your Mesmerize install
   - **Are you using the pip install? If so which version?**
   - **Are you using a clone of the master branch from the GitHub repo?**
-  - **are you using anaconda or venv (the python built-in virtual environment management)** 
+  - **Are you using anaconda or venv (the python built-in virtual environment management)** 
 
 ## Describe the issue, please be as explicit and detailed as possible.
 
