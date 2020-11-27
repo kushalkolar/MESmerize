@@ -2,17 +2,18 @@
 
 # Form implementation generated from reading ui file './cnmfe_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.setWindowModality(QtCore.Qt.NonModal)
-        DockWidget.resize(902, 785)
+        DockWidget.resize(997, 828)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -175,7 +176,7 @@ class Ui_DockWidget(object):
         self.horizontalLayout_19.addWidget(self.label_27)
         self.spinBoxGnb = QtWidgets.QSpinBox(self.dockWidgetContents)
         self.spinBoxGnb.setMaximum(99)
-        self.spinBoxGnb.setProperty("value", 10)
+        self.spinBoxGnb.setProperty("value", 0)
         self.spinBoxGnb.setObjectName("spinBoxGnb")
         self.horizontalLayout_19.addWidget(self.spinBoxGnb)
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -190,8 +191,8 @@ class Ui_DockWidget(object):
         self.label_29.setObjectName("label_29")
         self.horizontalLayout_20.addWidget(self.label_29)
         self.spinBoxNb_patch = QtWidgets.QSpinBox(self.dockWidgetContents)
-        self.spinBoxNb_patch.setMinimum(1)
-        self.spinBoxNb_patch.setProperty("value", 10)
+        self.spinBoxNb_patch.setMinimum(0)
+        self.spinBoxNb_patch.setProperty("value", 0)
         self.spinBoxNb_patch.setObjectName("spinBoxNb_patch")
         self.horizontalLayout_20.addWidget(self.spinBoxNb_patch)
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -206,7 +207,7 @@ class Ui_DockWidget(object):
         self.label_31.setObjectName("label_31")
         self.horizontalLayout_21.addWidget(self.label_31)
         self.spinBoxK = QtWidgets.QSpinBox(self.dockWidgetContents)
-        self.spinBoxK.setMinimum(1)
+        self.spinBoxK.setMinimum(0)
         self.spinBoxK.setProperty("value", 10)
         self.spinBoxK.setObjectName("spinBoxK")
         self.horizontalLayout_21.addWidget(self.spinBoxK)
@@ -469,4 +470,5 @@ class Ui_DockWidget(object):
         self.label_18.setText(_translate("DockWidget", "Perform CNMF-E:"))
         self.lineEdName.setPlaceholderText(_translate("DockWidget", "Enter name"))
         self.btnAddToBatchCNMFE.setText(_translate("DockWidget", "Add to batch"))
+
 

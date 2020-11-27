@@ -9,7 +9,7 @@ install_requires = \
         "cycler==0.10.0",
         "dask>=1.1.1",
         "future>=0.18.2",
-        "h5py>=2.10.0",
+        "h5py~=2.10.0",
         "ipykernel>=4.10",
         "ipython>=7.15.0",
         "ipyparallel>=6.3",
@@ -45,7 +45,7 @@ install_requires = \
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
         "tcl",
-        "bokeh~=2.1.0",
+        "bokeh>=2.2.0",
         "nuset-lib",
         "sk-video"
     ]

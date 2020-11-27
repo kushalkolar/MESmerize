@@ -105,7 +105,12 @@ def run_single(batch_dir, UUID, output):
         **mc_kwargs
     )
 
-    mc.motion_correct_pwrigid(save_movie=True)
+    if 'template' in input_params.keys():
+        template = input_params['template']
+    else:
+        template = None
+
+    mc.motion_correct_pwrigid(save_movie=True, template=template)
     m_els = cm.load(mc.fname_tot_els)
     bord_px_els = np.ceil(np.maximum(np.max(np.abs(mc.x_shifts_els)),
                                      np.max(np.abs(mc.y_shifts_els)))).astype(np.int)
@@ -121,7 +126,7 @@ def run_single(batch_dir, UUID, output):
 
     img_out_path = os.path.join(batch_dir, f'{UUID}_mc.tiff')
     tifffile.imsave(img_out_path, m_els, bigtiff=True, imagej=True, compress=1)
-    output['output_files'] = UUID + '_mc.tiff'
+    output['output_files'] = [UUID + '_mc.tiff']
 
     output.update({'status': 1, 'bord_px': int(bord_px_els)})
 

@@ -17,6 +17,7 @@ import json
 from ...common import get_window_manager
 from ...common.qdialogs import *
 from uuid import UUID
+from copy import deepcopy
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -68,17 +69,21 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'gSig': gSig
             }
 
+        kval = self.ui.spinBoxK.value()
+        if kval == 0:
+            kval = None
+
         # CNMFE kwargs
         cnmfe_kwargs = \
             {
                 'gSig': (gSig, gSig),
-                'gSiz': (3 * gSig + 1, 3 * gSig + 1),
+                'gSiz': (4 * gSig + 1, 4 * gSig + 1),
                 'border_pix': bord_px,
                 'rf': self.ui.spinBoxRf.value(),
                 'stride': self.ui.spinBoxOverlap.value(),
                 'gnb': self.ui.spinBoxGnb.value(),
                 'nb_patch': self.ui.spinBoxNb_patch.value(),
-                'k': self.ui.spinBoxK.value(),
+                'K': kval,
                 'min_corr': self.ui.doubleSpinBoxMinCorr.value(),
                 'min_pnr': self.ui.spinBoxMinPNR.value(),
                 'deconv_flag': deconv_flag,
@@ -116,7 +121,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if self.ui.groupBox_eval_kwargs.isChecked():
             try:
                 _kwargs = self.ui.plainTextEdit_eval_kwargs.toPlainText()
-                eval_kwargs_add = eval(f"dict{_kwargs}")
+                eval_kwargs_add = eval(f"dict({_kwargs})")
                 eval_kwargs.update(eval_kwargs_add)
             except:
                 raise ValueError("Evaluation kwargs not formatted properly.")
@@ -185,7 +190,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            d = params
+            d = deepcopy(params)
 
         batch_manager = get_window_manager().get_batch_manager()
         name = d['item_name']
@@ -223,7 +228,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            d = params
+            d = deepcopy(params)
 
         name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMFE: ' + name + ' to batch...')

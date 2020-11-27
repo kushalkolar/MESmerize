@@ -223,20 +223,38 @@ class PlotArea(MatplotlibWidget):
         :param error_band: Type of error band to show, one of either 'ci' or 'std'
         """
         self.clear()
+
+        stim_types = list(tuning_curves.keys())
+
+        if len(stim_types) == 1:
+            self.ncols = 1
+        elif len(stim_types) < 5:
+            self.ncols = 2
+        else:
+            self.ncols = 3
+
         self.nrows = ceil(len(tuning_curves.keys()) / self.ncols)
 
         self.axs = self.fig.subplots(self.nrows, self.ncols)
         self.fig.tight_layout()
 
-        for stim_type, plot_ix in zip(
-                tuning_curves.keys(),
+        for i, plot_ix in enumerate(
                 iter_product(range(self.nrows), range(self.ncols))
         ):
-            data = tuning_curves[stim_type]
-            self.axs[plot_ix].plot(data[0], data[1], c='k')
+            if not i < len(stim_types):
+                break
 
-            self.axs[plot_ix].set_xlabel(stim_type)
-            self.axs[plot_ix].set_ylabel(f"{y_units} response")
+            stim_type = stim_types[i]
+            data = tuning_curves[stim_type]
+
+            if len(stim_types) == 1:
+                plot = self.axs
+            else:
+                plot = self.axs[plot_ix]
+
+            plot.plot(data[0], data[1], c='k')
+            plot.set_xlabel(stim_type)
+            plot.set_ylabel(f"{y_units} response")
 
         self.draw()
 

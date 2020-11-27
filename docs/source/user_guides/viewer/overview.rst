@@ -257,7 +257,7 @@ View history trace
 Open image
 ^^^^^^^^^^
     
-**Use the :ref:`Viewer Core API <API_ViewerCore> to open any arbitrary image**
+Use the :ref:`Viewer Core API <API_ViewerCore>` to open any arbitrary image
 
 This example loads an image stored using numpy.save(), but this is applicable to images stored in any format that can eventually be represented as a numpy array in python. For example, you could also load image files stored in HDF5 format and load the numpy array that represents your image sequence.
 

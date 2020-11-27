@@ -31,6 +31,7 @@ import logging
 import caiman as cm
 from caiman.source_extraction import cnmf
 from caiman.utils.utils import load_dict_from_hdf5
+from caiman.source_extraction.cnmf.params import CNMFParams
 
 import cv2
 try:
@@ -90,32 +91,23 @@ def run(batch_dir: str, UUID: str):
     c, dview, n_processes = cm.cluster.setup_cluster(
         backend='local',
         n_processes=n_processes,
-        single_thread=False
-        #ignore_preexisting=True
+        single_thread=False,
+        ignore_preexisting=True
     )
 
     try:
         print('Creating memmap')
 
-        # memmap_path = cm.save_memmap_each(
-        #     filename,
-        #     base_name='memmap-' + UUID,
-        #     order='C',
-        #     border_to_0=input_params['border_pix'],
-        #     dview=dview)
-        # memmap_path = cm.save_memmap_join(memmap_path, base_name='memmap-' + UUID, dview=dview)
-        # # load memory mappable file
-        # Yr, dims, T = cm.load_memmap(memmap_path)
-        # Y = Yr.T.reshape((T,) + dims, order='F')
-
-
         memmap_path = cm.save_memmap(
-            filename, base_name=f'memmap-{UUID}', order='C', dview=dview, border_to_0=input_params['border_pix'],
-
+            filename,
+            base_name=f'memmap-{UUID}',
+            order='C',
+            dview=dview,
+            border_to_0=input_params['border_pix'],
         )
 
         Yr, dims, T = cm.load_memmap(memmap_path)
-        Y = np.reshape(Yr.T, [T] + list(dims), order='F')
+        Y = Yr.T.reshape((T,) + dims, order='F')
 
         if input_params['do_cnmfe']:
             gSig = input_params['cnmfe_kwargs']['gSig'][0]
@@ -158,15 +150,21 @@ def run(batch_dir: str, UUID: str):
 
             return
 
+        cnmf_params_dict = \
+            {
+                "method_init": 'corr_pnr',
+                "n_processes": n_processes,
+                "only_init_patch": True,  # for 1p
+                "center_psf": True,  # for 1p
+                "normalize_init": False,  # for 1p
+            }
+        cnmf_params_dict.update(**input_params['cnmfe_kwargs'])
+
         cnm = cnmf.CNMF(
             n_processes=n_processes,
-            method_init='corr_pnr',
             dview=dview,
             Ain=Ain,
-            only_init_patch=True,  # just leave it as is
-            normalize_init=False,
-            center_psf=True,
-            **input_params['cnmfe_kwargs'],
+            params=CNMFParams(params_dict=cnmf_params_dict),
         )
 
         cnm.fit(Y)

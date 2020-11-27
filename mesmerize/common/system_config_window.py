@@ -97,6 +97,7 @@ class SystemConfigGUI(QtWidgets.QWidget):
             import pycuda
             import skcuda
             from pycuda import driver
+            import pycuda.autoinit
             driver.Device.count()
             return True
 

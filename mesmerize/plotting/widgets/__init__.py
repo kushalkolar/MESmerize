@@ -13,10 +13,11 @@ from .proportions import ProportionsWidget
 from .space_map import SpaceMapWidget
 
 from .stimulus_tuning import TuningCurvesWidget
+from .neural_decompose import NeuralDecomposePlot
 
 __all__ = ['DatapointTracerWidget', 'HeatmapWidget', 'HeatmapSplitterWidget',
            'HeatmapTracerWidget', 'CrossCorrelationWidget', 'ScatterPlotWidget', 'BeeswarmPlotWindow',
-           'CurvePlotWindow', 'ProportionsWidget', 'SpaceMapWidget', 'TuningCurvesWidget']
+           'CurvePlotWindow', 'ProportionsWidget', 'SpaceMapWidget', 'TuningCurvesWidget', 'NeuralDecomposePlot']
 
 if HAS_TSLEARN:
     from .kshape import KShapeWidget

@@ -871,6 +871,14 @@ class ManagerCNMFROI(AbstractBaseManager):
         self.cnm_f = self.cnmf_data_dict['estimates']['f']
         self.cnmC = self.cnmf_data_dict['estimates']['C']
         self.cnmS = self.cnmf_data_dict['estimates']['S']
+
+        # # h5py is doing a weird thing where ``None`` gets stored as a byte string
+        # if isinstance(self.cnmf_data_dict['estimates']['F_dff'][()], np.ndarray):
+        #     self.cnm_dfof = self.cnmf_data_dict['estimates']['F_dff']
+        # else:
+        #     self.cnm_dfof = None
+
+
         self.cnm_dfof = self.cnmf_data_dict['estimates']['F_dff']
         self.cnmYrA = self.cnmf_data_dict['estimates']['YrA']
         self.dims = self.cnmf_data_dict['dims']
@@ -889,7 +897,7 @@ class ManagerCNMFROI(AbstractBaseManager):
         # else:
         #     temporal_components = cnmC[idx_components]
         self.input_params_dict = self.input_params_dict
-        num_components = len(self.cnmC)
+        num_components = len(self.idx_components)
 
         if calc_raw_min_max:
             img = self.vi.viewer.workEnv.imgdata.seq.T

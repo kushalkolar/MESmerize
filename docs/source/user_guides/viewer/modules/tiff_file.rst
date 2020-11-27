@@ -93,9 +93,9 @@ Example of a minimal meta data dict.
 .. code-block:: python
 
     {
-        'origin': "microscope or software origin",  # must be a str
-        'fps':     10.0,                            # must be a int or float
-        'date':    "20201123_172345"                # must be a str formatted as "YYYYMMDD_HHMMSS"
+        "origin": "microscope or software origin",  # must be a str
+        "fps":     10.0,                            # must be a int or float
+        "date":    "20201123_172345"                # must be a str formatted as "YYYYMMDD_HHMMSS"
     }
     
 Function outline
