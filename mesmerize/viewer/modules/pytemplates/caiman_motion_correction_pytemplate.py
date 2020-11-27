@@ -2,16 +2,17 @@
 
 # Form implementation generated from reading ui file './caiman_motion_correction.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(263, 736)
+        DockWidget.resize(287, 842)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -231,6 +232,26 @@ class Ui_DockWidget(object):
         self.btnAddToBatchElastic.setObjectName("btnAddToBatchElastic")
         self.horizontalLayout_20.addWidget(self.btnAddToBatchElastic)
         self.verticalLayout.addLayout(self.horizontalLayout_20)
+        self.line = QtWidgets.QFrame(self.dockWidgetContents)
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.verticalLayout.addWidget(self.line)
+        self.label_2 = QtWidgets.QLabel(self.dockWidgetContents)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout.addWidget(self.label_2)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.comboBoxProjectionsOption = QtWidgets.QComboBox(self.dockWidgetContents)
+        self.comboBoxProjectionsOption.setObjectName("comboBoxProjectionsOption")
+        self.comboBoxProjectionsOption.addItem("")
+        self.comboBoxProjectionsOption.addItem("")
+        self.comboBoxProjectionsOption.addItem("")
+        self.horizontalLayout_2.addWidget(self.comboBoxProjectionsOption)
+        self.pushButtonViewProjections = QtWidgets.QPushButton(self.dockWidgetContents)
+        self.pushButtonViewProjections.setObjectName("pushButtonViewProjections")
+        self.horizontalLayout_2.addWidget(self.pushButtonViewProjections)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
         spacerItem9 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem9)
         DockWidget.setWidget(self.dockWidgetContents)
@@ -286,4 +307,13 @@ class Ui_DockWidget(object):
         self.label_10.setText(_translate("DockWidget", " upsample grid:"))
         self.lineEditNameElastic.setPlaceholderText(_translate("DockWidget", "Enter name"))
         self.btnAddToBatchElastic.setText(_translate("DockWidget", "Add to batch"))
+        self.label_2.setToolTip(_translate("DockWidget", "View Mean, Max or Std projections of the outputs from selected batch items"))
+        self.label_2.setText(_translate("DockWidget", "View projections of selected outputs"))
+        self.comboBoxProjectionsOption.setToolTip(_translate("DockWidget", "View Mean, Max or Std projections of the outputs from selected batch items"))
+        self.comboBoxProjectionsOption.setItemText(0, _translate("DockWidget", "mean"))
+        self.comboBoxProjectionsOption.setItemText(1, _translate("DockWidget", "max"))
+        self.comboBoxProjectionsOption.setItemText(2, _translate("DockWidget", "std"))
+        self.pushButtonViewProjections.setToolTip(_translate("DockWidget", "View Mean, Max or Std projections of the outputs from selected batch items"))
+        self.pushButtonViewProjections.setText(_translate("DockWidget", "View"))
+
 
