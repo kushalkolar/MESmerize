@@ -32,6 +32,7 @@ from typing import Union
 from ...variants import Heatmap
 import json
 import pandas as pd
+from copy import deepcopy
 
 from ....common.configuration import HAS_TSLEARN, IS_WINDOWS
 
@@ -298,7 +299,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
 
         txt = ["Namespaces",
                "self as 'this'",
-               "Useful callables: get_plot_means(), get_plot_raw(), get_plot_proportions()"
+               "Useful callables: get_plot_means(), get_plot_raw(), get_plot_proportions()",
+               "Get the clusters with lowest inertia: this.inertia_sorted.head()"
                ]
 
         txt = "\n".join(txt)
@@ -311,7 +313,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         self.kga_inertia_heatmap: Heatmap = Heatmap(highlight_mode='item')
         self.kga_inertia_heatmap.hide()
         self.kga_inertia_heatmap.sig_selection_changed.connect(self.update_ksgrid_selection)
-        self.kga_inertia_heatmap_cmap = 'bwr_r'
+        self.kga_inertia_heatmap_cmap = 'jet_r'
         self.inertia_sorted: pd.DataFrame = None
 
         self.n_clusters_out: np.ndarray = np.empty(0)
@@ -466,8 +468,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         return self.__ksgrid_json
 
     @_ksgrid_json.setter
-    def _ksgrid_json(self, ksgrid_json: str):
-        self.__ksgrid_json = ksgrid_json
+    def _ksgrid_json(self, ksgrid_json: dict):
+        self.__ksgrid_json = deepcopy(ksgrid_json)
         # create the models from the json strings
         kgl = [self._create_model(model) for model in ksgrid_json]
 
@@ -845,6 +847,8 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
         ksg_path = os.path.join(self.params['workdir'], 'kga.json')
         self._ksgrid_json = json.load(open(ksg_path, 'r'))
 
+        self.train_data = np.empty(0)
+
     def update_ksgrid_selection(self, ix: Tuple[int, int]):
         self.ks = self.ksgrid.T[ix]
 
@@ -852,6 +856,7 @@ class KShapeWidget(QtWidgets.QMainWindow, BasePlotWidget):
             self.pad_input_data(self.input_arrays, method='fill-size')
         )
         self.n_clusters = self.ks.n_clusters
+        self.cluster_centers = self.ks.cluster_centers_
 
         self.update_output()
 
