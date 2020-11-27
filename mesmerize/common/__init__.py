@@ -127,9 +127,6 @@ def is_mesmerize_project(proj_dir: str) -> bool:
     if not os.path.isdir(proj_dir + '/images'):
         raise NotAMesmerizeProject('images directory not found')
 
-    if not os.path.isdir(proj_dir + '/curves'):
-        raise NotAMesmerizeProject('curves directory not found')
-
     return True
 
 
