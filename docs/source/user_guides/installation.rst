@@ -264,7 +264,7 @@ First, make sure you have compilers & python3.6 (see the details above for vario
     git clone https://github.com/flatironinstitute/CaImAn
     cd CaImAn/
     source <new_venv_path/bin/activate>
-    pip install .
+    pip install -e .
 
 #. You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
     
