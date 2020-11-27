@@ -254,6 +254,11 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 
     pip install tensorflow~=1.15
 
+#. Install tslearn & bottleneck (optional)::
+
+    pip install tslearn bottleneck==1.2.1
+
+    
 #. If you want Caiman features you'll need to install caiman into the same environment as mesmerize::
 
     git clone https://github.com/flatironinstitute/CaImAn

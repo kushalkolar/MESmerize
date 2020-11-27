@@ -70,6 +70,16 @@ Feel free to ask questions or discuss things on gitter. For larger bugs/issues p
 
 See the [changelog](https://github.com/kushalkolar/MESmerize/blob/master/CHANGELOG.md) for more details
 
+**November 2020**
+
+Changes:
+
+- Bokeh based plots that use a bokeh-based datapoint tracer, still in very early stages
+- k-Shape "gridsearch", select a n-partitions range and number of combinations, returns heatmap of all k-Shape runs with inertia values NOTE: The gridsearch is not saved when the plot is saved. Only the chosen kshape iteration will be saved. This will be fixed in a future release
+- Plot neural dynamics in PCA or LDA space
+- PadArrays flowchart node to pad dataframe arrays when sizes don't match, useful when splicing is undesired
+- View mean, max, or std projection of caiman motion correction outputs by selecting them from the batch manager
+
 **September 2020**
 
 Version 0.3 released
