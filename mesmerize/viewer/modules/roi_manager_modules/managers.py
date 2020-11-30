@@ -130,7 +130,7 @@ class ManagerManual(AbstractBaseManager):
         self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
-        self.vi.viewer.workEnv_changed("ROIs imported")
+        self.vi.workEnv_changed("ROIs imported")
 
         return roi
 
@@ -240,7 +240,7 @@ class ManagerScatterROI(AbstractBaseManager):
         self.roi_list.append(roi)
         self.roi_list.reindex_colormap()
 
-        self.vi.viewer.workEnv_changed("ROI Added")
+        self.vi.workEnv_changed("ROI Added")
 
         return roi
 
@@ -368,7 +368,7 @@ class ManagerVolCNMF(ManagerVolROI):
 
             self.roi_list.append(roi)
 
-        self.vi.viewer.workEnv_changed("ROIs imported")
+        self.vi.workEnv_changed("ROIs imported")
         self.roi_list.reindex_colormap(random_shuffle=True)
         self.vi.viewer.status_bar_label.showMessage('Finished adding all components!')
 

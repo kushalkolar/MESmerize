@@ -105,10 +105,10 @@ class LowDimData:
         self.input_data = np.vstack(sample_df[data_column].values).T
 
         if use_scaler:
-            X = self.input_data
-        else:
-            scaler = getattr(preprocessing, scaler_method)
+            scaler = getattr(preprocessing, scaler_method)()
             X = scaler.fit_transform(self.input_data)
+        else:
+            X = self.input_data
 
         if method == 'PCA':
             self.pca = PCA(**method_kwargs)
