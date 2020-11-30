@@ -284,7 +284,7 @@ This example loads an image stored using numpy.save(), but this is applicable to
         {
             "origin":      "Tutorial example",
             "fps":         10.0,
-            "data":        "20200629_171823",
+            "date":        "20200629_171823",
             "scanner_pos": [0, 1, 2, 3, 4, 5, 6]
         }
     
