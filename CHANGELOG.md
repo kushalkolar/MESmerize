@@ -4,6 +4,12 @@
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
+# 0.4.1
+
+### Fixed
+- Use of scalers in Neural Decompose plot
+- ``add_roi()`` method addressing a nonexistent ``viewer`` function for various backend managers.
+
 # 0.4.0
 
 ### New
