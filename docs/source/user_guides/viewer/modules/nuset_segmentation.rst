@@ -5,6 +5,8 @@ Nuset Segmentation
 
 Deep learning based segmentation, useful for nuclear localized indicators. ROIs segmented through this module can be imported into the Viewer Work Environment.
 
+.. note:: If you use this tool, please cite the Nuset paper in addition to citing Mesmerize: Yang L, Ghosh RP, Franklin JM, Chen S, You C, Narayan RR, et al. (2020) NuSeT: A deep learning tool for reliably separating and analyzing crowded cells. PLoS Comput Biol 16(9): e1008193. https://doi.org/10.1371
+
 Parameters
 ==========
 
