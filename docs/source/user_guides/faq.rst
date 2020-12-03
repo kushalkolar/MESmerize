@@ -66,3 +66,9 @@ Project Organization
 		- Yes, just modify your :ref:`Project Configuration <project-configuration>`. In the Welcome Window go to Configure -> Project Configuration. Add anything that you want, and then click “Save and Apply”. **It's best to immediately restart Mesmerize whenever you change your project configuration.**
 		- If you are adding a new Custom Column you can enter a “Dataframe replace value”. This will allow you to set a value for all existing Samples in your project for this new column.
 		- If you do not set a Dataframe replace value it will label all existing as “untagged”
+
+
+Script Editor
+=============
+    #. My Script Editor does not open on Windows. It raises *KeyError:'HOME'*
+        - On some systems the 'HOME' environment variable is not set. You can fix this in the console in the welcome window by running ``import os`` and then  ``os.environ["HOME"] = "C:/users/<my_username>"``
