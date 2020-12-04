@@ -34,8 +34,7 @@ _Make sure the entire stack trace is visible, and all messages relevant to the i
 If applicable, add screenshots to help explain your problem.
 
 **Operating System & specs (CPU, RAM etc.). Please complete the following information:**
- - OS: [e.g. Windows 10, Mac OSX Mojave 10.14, Ubuntu 20.04 LTS)]
- - Version [e.g. 22]
+ - OS: [e.g. Windows 10, Mac OSX Mojave 10.14, Ubuntu 20.04 LTS]
 
 **Details about your Mesmerize install**
   - Are you using anaconda or venv (the python built-in virtual environment management)
