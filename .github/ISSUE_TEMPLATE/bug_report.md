@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: "[BUG]"
+title: "[BUG] <TITLE HERE>"
 labels: bug
 assignees: kushalkolar
 
@@ -23,6 +23,9 @@ A clear and concise description of what you expected to happen.
 **Copy paste message from the error window (if any)**
 
 **Copy-paste or take a screenshot of the terminal that Mesmerize is running in**
+```
+PASTE HERE
+```
 _Make sure the entire stack trace is visible, and all messages relevant to the issue are visible._
 
 **If relevant, messages from the batch manager terminal**
