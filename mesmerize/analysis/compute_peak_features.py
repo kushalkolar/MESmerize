@@ -102,10 +102,14 @@ class ComputePeakFeatures:
         p_ix = row.event  #: Peak index relative to the whole curve
         ix = row.name
 
-        if pb_df.iloc[ix - 1].label != 'base' and pb_df.iloc[ix + 1].label != 'base':
-            raise ValueError(f'All peaks must be flanked by bases\n'
-                             f'The curve with the following UUID does not have a flanking base:\n'
-                             f'{row["uuid_curve"]}')
+        try:
+            if pb_df.iloc[ix - 1].label != 'base' and pb_df.iloc[ix + 1].label != 'base':
+                warn(f'All peaks must be flanked by bases\n'
+                     f'The curve with the following UUID does not have a flanking base:\n'
+                     f'{row["uuid_curve"]}')
+
+        except IndexError as e:
+            warn(f"Index error with a peak, probably missing a flanking base:\n{e}")
 
         b_ix_l = pb_df.iloc[ix - 1].event  #: Left base index relative to the whole curve
         b_ix_r = pb_df.iloc[ix + 1].event  #: Right base index relative to the whole curve
