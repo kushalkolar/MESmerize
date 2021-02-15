@@ -103,16 +103,16 @@ class ComputePeakFeatures:
         ix = row.name
 
         if ix == (pb_df.index.size - 1) or ix == 0:
-            warn(f"Peak at curve index: <{p_ix}> is not flanked by bases on both sides")
+            warn(f"Peak at curve index: <{p_ix}> is not flanked by bases on both sides, ignoring")
             return pd.Series(nan_dict)
 
         try:
             if pb_df.iloc[ix - 1].label != 'base' and pb_df.iloc[ix + 1].label != 'base':
-                warn(f"Peak at curve index: <{p_ix}> is not flanked by bases on both sides")
+                warn(f"Peak at curve index: <{p_ix}> is not flanked by bases on both sides, ignoring")
                 return pd.Series(nan_dict)
 
         except IndexError as e:
-            warn(f"Index error with a peak, probably missing a flanking base:\n{e}")
+            warn(f"Index error with a peak, probably missing a flanking base:\n{e}\nignoring")
             return pd.Series(nan_dict)
 
         b_ix_l = pb_df.iloc[ix - 1].event  #: Left base index relative to the whole curve
@@ -121,7 +121,7 @@ class ComputePeakFeatures:
         max_ix = len(curve) - 1
 
         if (b_ix_l > max_ix) or (b_ix_r > max_ix) or (p_ix > max_ix):
-            warn('Base or peak index out of bounds, ignoring')
+            warn(f'Base or peak index out of bounds for peak at curve index: <{p_ix}>, ignoring')
             return pd.Series(nan_dict)
 
         peak_curve = curve[b_ix_l:b_ix_r]
