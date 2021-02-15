@@ -19,11 +19,33 @@ from ..common import get_sys_config
 from tqdm import tqdm
 import pandas as pd
 import uuid
+from warnings import warn
 
 if not IS_WINDOWS:
     from multiprocessing import Pool
 else:
     from multiprocessing.pool import ThreadPool as Pool
+
+
+feature_list = \
+[
+    '_pf_ampl_rel_b_ix_l',
+    '_pf_ampl_rel_b_ix_r',
+    '_pf_ampl_rel_b_mean',
+    '_pf_ampl_rel_zero',
+    '_pf_area_rel_zero',
+    '_pf_area_rel_min',
+    '_pf_rising_slope_avg',
+    '_pf_falling_slope_avg',
+    '_pf_duration_base',
+    '_pf_peak_curve',
+    '_pf_uuid',
+    '_pf_p_ix',
+    '_pf_b_ix_l',
+    '_pf_b_ix_r'
+]
+
+nan_dict = {k: np.nan for k in feature_list}
 
 
 class ComputePeakFeatures:
@@ -87,6 +109,12 @@ class ComputePeakFeatures:
 
         b_ix_l = pb_df.iloc[ix - 1].event  #: Left base index relative to the whole curve
         b_ix_r = pb_df.iloc[ix + 1].event  #: Right base index relative to the whole curve
+
+        max_ix = len(curve) - 1
+
+        if (b_ix_l > max_ix) or (b_ix_r > max_ix) or (p_ix > max_ix):
+            warn('Base or peak index out of bounds, ignoring')
+            return pd.Series(nan_dict)
 
         peak_curve = curve[b_ix_l:b_ix_r]
 
