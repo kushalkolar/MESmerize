@@ -170,6 +170,8 @@ Tested on Windows 10, not sure if it'll work on earlier Windows versions.
 
 Download & install Anaconda for Python 3: https://www.anaconda.com/distribution/
 
+**Make sure you select the option to add anaconda to the PATH environment variable during installation.**
+
 You will also need git: https://gitforwindows.org/
 
 .. warning:: It is **highly** recommended that you use Mesmerize in a new dedicated environment, even if you already have major dependencies (like caiman) installed in another environment.
