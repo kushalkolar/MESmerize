@@ -30,7 +30,10 @@ import traceback
 from glob import glob
 import json
 import shutil
-from mesmerize.common.utils import HdfTools
+
+# must be within this block, else windows gives issues
+if __name__ == '__main__':
+    from mesmerize.common.utils import HdfTools
 
 
 if not sys.argv[0] == __file__:
