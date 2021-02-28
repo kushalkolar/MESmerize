@@ -71,9 +71,9 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
     # GPU
     pip install tensorflow-gpu~=1.15
     
-#. Install tslearn & bottleneck (optional)::
+#. Install tslearn (required) & bottleneck (optional)::
 
-    pip install tslearn bottleneck==1.2.1
+    pip install tslearn~=0.4.1 bottleneck==1.2.1
 
 #. Install mesmerize::
 
@@ -132,9 +132,9 @@ This might take a while.
 
     conda install Cython pandas~=0.25.3
 
-#. Install tslearn (optional)::
+#. Install tslearn::
 
-    conda install -c conda-forge tslearn
+    conda install -c conda-forge tslearn~=0.4.1
     
 #. Install bottleneck (optional)::
 
@@ -202,7 +202,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
     
 #. Install tslearn (optional)::
 
-    conda install -c conda-forge tslearn
+    conda install -c conda-forge tslearn~=0.4.1
     
 #. Install bottleneck (optional)::
 
@@ -250,15 +250,15 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 #. Upgrade pip & setuptools & install some build dependencies::
 
     pip install --upgrade pip setuptools
-    pip install Cython numpy tslearn
+    pip install Cython numpy tslearn~=0.4.1
     
 #. Install ``tensorflow`` or ``tensorflow-gpu``, you must use version ``~=1.15``::
 
     pip install tensorflow~=1.15
 
-#. Install tslearn & bottleneck (optional)::
+#. Install tslearn (required) & bottleneck (optional)::
 
-    pip install tslearn bottleneck==1.2.1
+    pip install tslearn~=0.4.1 bottleneck==1.2.1
 
     
 #. If you want Caiman features you'll need to install caiman into the same environment as mesmerize::
