@@ -2,16 +2,17 @@
 
 # Form implementation generated from reading ui file './ui_files/cnmf_3d_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_CNMF3D_template(object):
     def setupUi(self, CNMF3D_template):
         CNMF3D_template.setObjectName("CNMF3D_template")
-        CNMF3D_template.resize(590, 704)
+        CNMF3D_template.resize(599, 735)
         CNMF3D_template.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -208,7 +209,6 @@ class Ui_CNMF3D_template(object):
         CNMF3D_template.setTabOrder(self.groupBox_use_previous_memmap, self.lineEdit_memmap_uuid)
         CNMF3D_template.setTabOrder(self.lineEdit_memmap_uuid, self.lineEdit_name)
         CNMF3D_template.setTabOrder(self.lineEdit_name, self.pushButton_add_to_batch)
-        CNMF3D_template.setTabOrder(self.pushButton_add_to_batch, CNMF3D_template.lineEdit_memmap_uuid_2)
 
     def retranslateUi(self, CNMF3D_template):
         _translate = QtCore.QCoreApplication.translate
@@ -248,4 +248,5 @@ class Ui_CNMF3D_template(object):
         self.lineEdit_name.setToolTip(_translate("CNMF3D_template", "Enter a name for this batch item"))
         self.lineEdit_name.setPlaceholderText(_translate("CNMF3D_template", "Enter name"))
         self.pushButton_add_to_batch.setText(_translate("CNMF3D_template", "Add to batch"))
+
 

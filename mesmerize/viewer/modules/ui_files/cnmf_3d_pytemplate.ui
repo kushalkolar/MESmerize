@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>704</height>
+    <width>599</width>
+    <height>735</height>
    </rect>
   </property>
   <property name="floating">
@@ -423,7 +423,6 @@ is required for a later batch item.</string>
   <tabstop>lineEdit_memmap_uuid</tabstop>
   <tabstop>lineEdit_name</tabstop>
   <tabstop>pushButton_add_to_batch</tabstop>
-  <tabstop>lineEdit_memmap_uuid_2</tabstop>
  </tabstops>
  <resources/>
  <connections>
