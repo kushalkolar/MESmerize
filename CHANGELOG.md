@@ -1,8 +1,19 @@
-# 0.5.0 (planned)
+# 0.x.0 (planned)
 
 ### New
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
+
+# 0.5.0
+
+### Modified
+- `PeakFeatures` node will provide warnings instead of exceptions when there are issues w.r.t. a specific peak, such as missing bases or index errors. The offending peaks are ignored, and the the user is provided with information that they can use to check the offending peaks.
+
+### Fixed
+- Windows multiprocess fork issues with CNMF runner modules.
+- Use `sklearn~=0.23.1` due to tslearn compatibility
+- Use `psutil` v5.8 instead of v5.7 due to issues on the latest version of mac os
+- Davies-Bouldin function fixed
 
 # 0.4.1
 
