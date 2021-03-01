@@ -43,7 +43,7 @@ In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features y
 Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
 
 #### tslearn
-In order to use tslearn features you will need ``tslearn~=0.2.2``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+In order to use tslearn features you will need ``tslearn``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
 
 tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes.
 
