@@ -355,7 +355,7 @@ class ManagerVolCNMF(ManagerVolROI):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
                                                         + str(ix) + ' / ' + str(num_components))
 
-            curve_data = temporal_components[ix]
+            curve_data = temporal_components[self.idx_components[ix]]
             contour = contours[ix]
 
             roi = VolCNMF(curve_plot_item=self.get_plot_item(),
@@ -572,7 +572,7 @@ class ManagerVolMultiCNMFROI(ManagerVolROI):
                     f"on zlevel {zcenter} / {self.num_zlevels - 1}"
                 )
 
-                curve_data = self.cnmC[-1][ix]
+                curve_data = self.cnmC[-1][self.idx_components[-1][ix]]
                 contour = contours[ix]
 
                 if self.cnm_dfof[-1] is not None:
@@ -908,7 +908,7 @@ class ManagerCNMFROI(AbstractBaseManager):
             self.vi.viewer.status_bar_label.showMessage('Please wait, adding component #: '
                                                         + str(ix) + ' / ' + str(num_components))
 
-            curve_data = self.cnmC[ix]
+            curve_data = self.cnmC[self.idx_components[ix]]
             contour = contours[ix]
 
             if calc_raw_min_max:
