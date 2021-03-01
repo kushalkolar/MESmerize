@@ -4,6 +4,12 @@
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
+# 0.5.1
+
+### Fixed
+- Project Browswer will display the offending project column if there is an issue in loading it.
+- Index error with importing CNMF files (see #50)
+
 # 0.5.0
 
 ### Modified
