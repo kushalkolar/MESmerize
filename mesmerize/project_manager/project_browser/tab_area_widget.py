@@ -19,6 +19,7 @@ import pandas as pd
 from numpy import int64, float64
 from copy import deepcopy
 # from functools import partial
+import traceback
 from ...common import configuration, get_project_manager
 
 
@@ -276,7 +277,10 @@ class TabAreaWidget(QtWidgets.QWidget):
             return
 
         for column in self.columns:
-            self._populate_column(column, self.dataframe[column.column_name])
+            try:
+                self._populate_column(column, self.dataframe[column.column_name])
+            except Exception:
+                raise ValueError(f"Cannot open project due to an issue with the following column: `{column.column_name}`")
 
     def _populate_column(self, column: ColumnWidget, series: pd.Series):
         column.series = series
