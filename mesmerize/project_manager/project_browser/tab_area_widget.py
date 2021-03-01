@@ -280,9 +280,9 @@ class TabAreaWidget(QtWidgets.QWidget):
             try:
                 self._populate_column(column, self.dataframe[column.column_name])
             except Exception:
+                print(traceback.format_exc())
                 raise ValueError(f"Cannot open project due to an issue with the following column: `{column.column_name}`\n"
                                  f"See the terminal for a full traceback")
-                print(traceback.format_exc())
 
     def _populate_column(self, column: ColumnWidget, series: pd.Series):
         column.series = series
