@@ -18,42 +18,8 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="label">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Show on timeline: </string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="2" colspan="2">
      <widget class="QComboBox" name="comboBoxShowTimelineChoice"/>
-    </item>
-    <item row="1" column="0" colspan="6">
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>-1</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="btnImport">
-      <property name="text">
-       <string>Import</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1" colspan="2">
-     <widget class="QPushButton" name="btnExport">
-      <property name="text">
-       <string>Export</string>
-      </property>
-     </widget>
     </item>
     <item row="2" column="3">
      <spacer name="horizontalSpacer">
@@ -68,14 +34,27 @@
       </property>
      </spacer>
     </item>
-    <item row="2" column="4">
-     <widget class="QPushButton" name="btnCancel">
+    <item row="0" column="0" colspan="2">
+     <widget class="QLabel" name="label">
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
-       <string>Cancel</string>
+       <string>Show on timeline: </string>
       </property>
      </widget>
     </item>
-    <item row="2" column="5">
+    <item row="1" column="0" colspan="5">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>-1</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="4">
      <widget class="QPushButton" name="btnSetAllMaps">
       <property name="text">
        <string>Set all maps</string>
