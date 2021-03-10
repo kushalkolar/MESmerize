@@ -67,9 +67,9 @@ sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]
 
-sys_cfg_dir = os.path.join(os.environ[HOME], '.mesmerize')
+sys_cfg_dir: str = os.path.join(os.environ[HOME], '.mesmerize')
 
-sys_cfg_file = os.path.join(sys_cfg_dir, 'config.json')
+sys_cfg_file: str = os.path.join(sys_cfg_dir, 'config.json')
 
 console_history_path = os.path.join(sys_cfg_dir, 'console_history')
 if not os.path.isdir(console_history_path):
