@@ -20,6 +20,10 @@ from scipy.spatial import cKDTree
 from .roi_manager_modules.managers import ManagerScatterROI
 from tqdm import tqdm
 from typing import *
+import logging
+
+
+logger = logging.getLogger()
 
 
 class Suite2pData:
@@ -43,7 +47,7 @@ class Suite2pData:
         for f in ['F', 'Fneu', 'stat', 'ops', 'iscell']:
             f_path = self.path.joinpath(f"{f}.npy")
 
-            print(f'checking: {f_path}')
+            logger.info(f'checking: {f_path}')
 
             if not f_path.is_file():
                 raise FileNotFoundError(f"The selected directory does not have the '{f}.npy' file.")

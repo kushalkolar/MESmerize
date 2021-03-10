@@ -20,11 +20,14 @@ from .read_imagej import read_roi_zip as read_imagej
 from ....common.configuration import HAS_CAIMAN
 from matplotlib import cm as matplotlib_color_map
 from tqdm import tqdm
+import logging
 
 
 if HAS_CAIMAN:
     from caiman.utils.visualization import get_contours as caiman_get_contours
     from caiman.source_extraction.cnmf.cnmf import load_CNMF
+
+logger = logging.getLogger()
 
 
 class AbstractBaseManager(metaclass=abc.ABCMeta):
@@ -655,7 +658,7 @@ class ManagerVolMultiCNMFROI(ManagerVolROI):
             self.create_roi_list()
 
         for zcenter in range(self.num_zlevels):
-            print(f"Loading z-level {zcenter}")
+            logger(f"Loading z-level {zcenter}")
             contours = caiman_get_contours(
                 self.cnmA[zcenter][:, self.idx_components[zcenter]],
                 self.dims[zcenter],

@@ -23,6 +23,10 @@ from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
 from typing import Optional, Tuple
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ViewerWorkEnv:
@@ -136,7 +140,7 @@ class ViewerWorkEnv:
         self.origin_file = ''
         self._saved = True
         self.changed_items = []
-        print('Work environment dumped!')
+        logger.info('Work environment dumped!')
 
     def restore_rois_from_states(self):
         if (self.roi_manager is not None) and (self.roi_states is not None):

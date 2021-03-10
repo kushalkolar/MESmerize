@@ -37,6 +37,10 @@ import sys
 import pandas as pd
 from typing import Optional, Union
 from uuid import UUID as UUID_type
+import logging
+
+
+logger = logging.getLogger()
 
 _custom_modules_dir = configuration.get_sys_config()['_MESMERIZE_CUSTOM_MODULES_DIR']
 _custom_modules_package_name = os.path.basename(os.path.dirname(_custom_modules_dir))
@@ -344,7 +348,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             changes = objecteditor.oedit(self.vi.viewer.workEnv)
         except:
-            print(traceback.format_exc())
+            logger.info((traceback.format_exc()))
             # QtWidgets.QMessageBox.de(self, 'Unable to open work environment editor',
             #                               'The following error occured while trying to open the work environment editor:'
             #                               '\n', traceback.format_exc())

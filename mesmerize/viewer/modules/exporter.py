@@ -7,6 +7,10 @@ from ...common.qdialogs import *
 import os
 import skvideo.io
 from .pytemplates.exporter_pytemplate import *
+import logging
+
+
+logger = logging.getLogger()
 
 
 # adapted from https://github.com/ver228/tierpsy-tracker/blob/master/tierpsy/analysis/compress/compressVideo.py
@@ -81,7 +85,7 @@ class ModuleGUI(QtWidgets.QWidget):
 
         seq = self.viewer.workEnv.imgdata.seq
 
-        print('Normalizing image for 8bit video output')
+        logger.info('Normalizing image for 8bit video output')
         norm = normalize_image(seq, vmin, vmax)
 
         # RGB LUT
@@ -103,10 +107,10 @@ class ModuleGUI(QtWidgets.QWidget):
                 '-filter:v': f"setpts={pts}*PTS",
                 '-vcodec': codec
             }
-        print("Creating ffmpeg writer")
+        logger.info("Creating ffmpeg writer")
         writer = skvideo.io.FFmpegWriter(f'{path}.{extn}', outputdict=output_params)
 
-        print("Writing video")
+        logger.info("Writing video")
         for i in tqdm(range(norm.shape[2])):
             frame = norm[:, :, i]
             # use the LUT to create RGB pseudocolored image

@@ -50,7 +50,17 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
                 return func(self, *args, **kwargs)
             except Exception as e:
                 tb = traceback.format_exc()
-                args = (self, title, msg + f'\n\n{e.__class__.__name__}: {e}\n\n{tb}', QMessageBox.Ok)
+                args = \
+                    (
+                        self,
+                        title,
+                        msg +\
+                        f'\n\n'
+                        f'{e.__class__.__name__}: {e}'
+                        f'\n\n{tb}',
+                        QMessageBox.Ok,
+                        QMessageBox.Information
+                    )
                 if help_func is not None and QMessageBox.warning(*args, QMessageBox.Help) == QMessageBox.Help:
                     help_func(e, tb)
                 else:

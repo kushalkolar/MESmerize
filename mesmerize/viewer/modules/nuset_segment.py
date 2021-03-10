@@ -41,6 +41,10 @@ from ...pyqtgraphCore.console.Console import ConsoleWidget
 from ...common.qdialogs import *
 from ...common.configuration import console_history_path
 from ...common.utils import HdfTools
+import logging
+
+
+logger = logging.getLogger()
 
 cmap_magenta = LinearSegmentedColormap.from_list('magentas', [(0, 0, 0), (0,)*3, (1, 0, 1)])
 cmap_cyan = LinearSegmentedColormap.from_list('cyans', [(0, 0, 0), (0,)*3, (0, 1, 1)])
@@ -242,14 +246,14 @@ def get_sparse_masks(
     selem: np.array = np.ones((selem,)*len(segmented_img.shape))
 
     if areas[1] < 50:
-        print("Less than 50 regions, not parallelizing")
+        logger.info("Less than 50 regions, not parallelizing")
         sparses = []
         for i in tqdm(range(areas[1])):
             sparses.append(
                 _get_sparse_mask(areas, i, edge_method, selem)
             )
     else:
-        print("Greater than 50 regions, parallelizing with joblib")
+        logger.info("Greater than 50 regions, parallelizing with joblib")
         sparses = Parallel(n_jobs=cpu_count(), verbose=5)(
             delayed(_get_sparse_mask)(areas, i, edge_method, selem) for i in range(areas[1])
         )
@@ -624,7 +628,7 @@ class ExportWidget(QtWidgets.QWidget):
             binary[:binary_.shape[0], :binary_.shape[1]] = binary_
 
         if params['minsize'] > 0:
-            print("Removing small objs")
+            logger.info("Removing small objs")
             binary = skimage.morphology.remove_small_objects(
                 binary, min_size=params['minsize'], connectivity=params['connectivity']
             )
@@ -639,11 +643,11 @@ class ExportWidget(QtWidgets.QWidget):
         shape = self.nuset_widget.imgs_projected[0].T.shape
         seg_img = self.nuset_widget.imgs_postprocessed[0].T
 
-        print("Thresholding")
+        logger.info("Thresholding")
         binary = self._make_binary(seg_img, params, shape)#.T
         self.binary_shape = binary.shape
 
-        print("Creating sparse masks")
+        logger.info("Creating sparse masks")
         self.masks = get_sparse_masks(
             segmented_img=binary,
             raw_img_shape=shape,
@@ -660,12 +664,12 @@ class ExportWidget(QtWidgets.QWidget):
         seg_img = np.stack(self.nuset_widget.imgs_postprocessed)
         shape = np.stack(self.nuset_widget.imgs_projected).shape
 
-        print("Thresholding")
+        logger.info("Thresholding")
         # binary array
         binary = self._make_binary(seg_img, params, shape)
         self.binary_shape = binary.shape
 
-        print("Creating sparse masks")
+        logger.info("Creating sparse masks")
         self.masks = get_sparse_masks(
             segmented_img=binary,
             raw_img_shape=shape,
@@ -684,7 +688,7 @@ class ExportWidget(QtWidgets.QWidget):
         shape = self.nuset_widget.imgs_projected[0].T.shape
 
         masks = []
-        print("Thresholding & Creating sparse masks")
+        logger.info("Thresholding & Creating sparse masks")
         for ix in tqdm(range(len(self.nuset_widget.imgs_postprocessed))):
             seg_img = self.nuset_widget.imgs_postprocessed[ix].T
 
@@ -702,7 +706,7 @@ class ExportWidget(QtWidgets.QWidget):
 
         self.masks = masks
 
-        print("Coloring masks")
+        logger.info("Coloring masks")
         colored_masks = []
         for ix in tqdm(range(len(self.masks))):
             colored_masks.append(
@@ -754,7 +758,7 @@ class ExportWidget(QtWidgets.QWidget):
     @use_save_file_dialog('Save masks', None, '.h5')
     @present_exceptions()
     def save_masks_cnmf(self, path):
-        print("Please wait, saving masks...")
+        logger.info("Please wait, saving masks...")
         if self.get_params()['multi-2d']:
             sm = {}
             for z in range(len(self.masks)):
@@ -768,7 +772,7 @@ class ExportWidget(QtWidgets.QWidget):
                 'segment_params': self.get_all_params()
             }
         HdfTools.save_dict(d, path, 'data')
-        print("Finishing saving masks!")
+        logger.info("Finishing saving masks!")
 
     @present_exceptions()
     def export_to_viewer(self):
@@ -824,7 +828,7 @@ class ExportWidget(QtWidgets.QWidget):
                     self.masks[:, i].reshape(shape)
                 )
             except QhullError:
-                print(f"Skipping {i}, not enough points for convex hull")
+                logger.info(f"Skipping {i}, not enough points for convex hull")
             else:
                 self.nuset_widget.vi.viewer.workEnv.roi_manager.add_roi_from_points(
                     xs=vs[:, 0], ys=vs[:, 1]
@@ -1166,7 +1170,7 @@ class NusetWidget(QtWidgets.QWidget):
         self.params_final = None
 
         if viewer_ref is None:
-            print("Assuming testing mode")
+            logger.info("Assuming testing mode")
         else:
             self.vi = ViewerUtils(viewer_ref)
             self.vi.viewer.sig_workEnv_changed.connect(self.set_input)
@@ -1244,7 +1248,7 @@ class NusetWidget(QtWidgets.QWidget):
 
         func = getattr(np, f'nan{opt}')
 
-        print("Updating Projection(s)")
+        logger.info("Updating Projection(s)")
         if self.input_img.ndim == 4:
             self.imgs_projected = [
                 func(self.input_img[:, :, :, z], axis=2) for z in tqdm(range(self.z_max + 1))
@@ -1260,7 +1264,7 @@ class NusetWidget(QtWidgets.QWidget):
             self.error_label.setText("Projection Image is Empty")
             return
 
-        print("Preprocessing Image(s)")
+        logger.info("Preprocessing Image(s)")
 
         # self.image_preprocesses = [
         #     get_preprocess(p, **params) for p in tqdm(self.image_projections)
@@ -1279,7 +1283,7 @@ class NusetWidget(QtWidgets.QWidget):
             self.error_label.setText("Preprocess Image is Empty")
             return
 
-        print("Segmenting Image(s)")
+        logger.info("Segmenting Image(s)")
         if not self.checkbox_segment_current_plane.isChecked():
             self.imgs_segmented = [
                 self.nuset_model.predict(img, **params) for img in tqdm(self.imgs_preprocessed)
@@ -1312,7 +1316,7 @@ class NusetWidget(QtWidgets.QWidget):
             self.error_label.setText("Segmented Image is Empty")
             return
 
-        print("Postprocessing Image(s)")
+        logger.info("Postprocessing Image(s)")
         self.imgs_postprocessed = [
             get_postprocess(img, **params) for img in tqdm(self.imgs_segmented)
         ]

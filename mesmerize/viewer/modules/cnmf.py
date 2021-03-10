@@ -20,6 +20,10 @@ from uuid import UUID
 from shutil import copy
 import os
 from copy import deepcopy
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -197,7 +201,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
 
         if d['use_seeds']:
-            print("Copying component seed file")
+            logger.info("Copying component seed file")
             copy(seed_path, os.path.join(batch_manager.batch_path, f'{u}.ain'))
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')

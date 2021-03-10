@@ -49,13 +49,18 @@ if not IS_WINDOWS:
 elif IS_WINDOWS:
     from win32api import TerminateProcess, CloseHandle
 
+import logging
+
+
+logger = logging.getLogger()
+
 
 class ModuleGUI(QtWidgets.QWidget):
     """GUI for the Batch Manager"""
     listwchanged = QtCore.pyqtSignal()
 
     def __init__(self, parent, run_batch: list = None, testing: bool = False):
-        print('starting batch mananger')
+        logger.info('starting batch mananger')
         QtWidgets.QWidget.__init__(self, parent)
         self._testing = testing
         self.ui = Ui_Form()
@@ -157,7 +162,7 @@ class ModuleGUI(QtWidgets.QWidget):
                     return
             else:
                 path = run_batch[0]
-                print('Opening batch: ' + path)
+                logger.info('Opening batch: ' + path)
 
             dfpath = os.path.join(path, 'dataframe.batch')
             if os.path.isfile(dfpath):
@@ -171,7 +176,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.set_workdir(True)  # does a check to see if the workdir is writable upon batch manager initiation
 
         if run_batch is not None:
-            print('Running from item ' + run_batch[1])
+            logger.info('Running from item ' + run_batch[1])
             # ix = self.df.index[self.df['uuid'] == uuid.UUID(run_batch[1])]
             # i = int(ix.to_native_types()[0])
             i = self.get_item_index(run_batch[1])

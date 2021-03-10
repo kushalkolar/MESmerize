@@ -17,6 +17,10 @@ from .roi_manager_modules import managers
 from .roi_manager_modules.roi_types import *
 from functools import partial
 import traceback
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -158,13 +162,13 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.ui.btnSwitchToManualMode.setEnabled(True)
         self.ui.radioButton_curve_data.setChecked(True)
 
-        print(f'ROI Manager backend set to: {backend}')
+        logger.info(f'ROI Manager backend set to: {backend}')
 
         return self.manager
 
     def start_manual_mode(self):
         """Start in manual mode. Creates a new back-end manager instance (Uses ManagerManual)"""
-        print('ROI back-end set to: ManagerManual')
+        logger.info('ROI back-end set to: ManagerManual')
 
         if hasattr(self, 'manager'):
             del self.manager
