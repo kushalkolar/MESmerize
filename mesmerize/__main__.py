@@ -29,11 +29,16 @@ from datetime import datetime
 from glob import glob
 import click
 import traceback
+from zipfile import ZipFile, ZIP_LZMA
+
+
+session_id = datetime.now().strftime("%Y-%m-%d_%H.%M.%S-%f")
 
 
 class App(QApplication):
     window_manager = WindowManager()
     project_manager = ProjectManager()
+    session_id = session_id
 
 
 def start_welcome_window():
@@ -52,9 +57,27 @@ def start_batch_manager(batch_path: str, item_uuid: str):
     return (app, bm)
 
 
+def move_old_logfiles(logger):
+    zlogfile = ZipFile(
+        os.path.join(sys_cfg_dir, 'logs.zip'),
+        mode='a',
+        compression=ZIP_LZMA,
+        allowZip64=True,
+
+    )
+
+    logfiles = glob(os.path.join(sys_cfg_dir, '*.log'))
+    logfiles.sort()
+    while len(logfiles) > 5:
+        logger.info("Moving old logfiles...")
+        old_logfile = logfiles.pop(-1)
+        zlogfile.write(old_logfile, os.path.basename(old_logfile))
+        os.remove(logfiles[-1])
+    zlogfile.close()
+
+
 @click.command()
 @click.option('--log-level', type=str, default='INFO')
-@click.option('--log-max-num-log-files', type=int, default=25)
 @click.option('--log-file', type=click.Path(exists=False, writable=True))
 @click.option('--log-file-dir', type=click.Path(writable=True))
 @click.option('--log-format', type=str)
@@ -62,20 +85,12 @@ def start_batch_manager(batch_path: str, item_uuid: str):
 @click.option('--open-plot', type=click.Path(exists=True, readable=True))
 def main(
         log_level,
-        log_max_num_log_files,
         log_file,
         log_file_dir,
         log_format,
         run_batch,
         open_plot
 ):
-    logfiles = glob(os.path.join(sys_cfg_dir, '*.log'))
-
-    while len(logfiles) > log_max_num_log_files:
-        logfiles = glob(os.path.join(sys_cfg_dir, '*.log'))
-        logfiles.sort()
-        os.remove(logfiles[-1])
-
     if log_file_dir is None:
         log_file_dir = sys_cfg_dir
 
@@ -83,7 +98,7 @@ def main(
         os.makedirs(log_file_dir, exist_ok=True)
 
     if log_file is None:
-        log_file = os.path.join(log_file_dir, datetime.now().strftime("%Y_%m_%d-%H:%M:%S-%f.log"))
+        log_file = os.path.join(log_file_dir, f"{session_id}.log")
 
     if log_format is None:
         log_format = "%(asctime)s %(levelname)s %(pathname)s %(lineno)s \n %(message)s "
@@ -113,6 +128,8 @@ def main(
     root_logger.addHandler(
         logging.StreamHandler(sys.stderr)
     )
+
+    move_old_logfiles(root_logger)
 
     if not len(sys.argv) > 1:
         app = start_welcome_window()
