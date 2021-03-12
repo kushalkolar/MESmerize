@@ -18,6 +18,10 @@ from uuid import UUID
 from shutil import copy
 import os
 from copy import deepcopy
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -196,7 +200,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             return
 
         if d['use_seeds']:
-            print("Copying component seeds files")
+            logger.info("Copying component seeds files")
             copy(seed_path, os.path.join(bm.batch_path, f'{u}.ain'))
 
         if d['keep_memmap']:

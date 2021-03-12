@@ -26,6 +26,10 @@ import os
 from math import ceil
 from itertools import product
 from typing import *
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -219,7 +223,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         proj = self.ui.comboBoxProjectionsOption.currentText()
 
-        print("Calculating projections, please wait...")
+        logger.info("Calculating projections, please wait...")
 
         self.currrent_projections = Parallel(n_jobs=cpu_count(), verbose=5)(
             delayed(ModuleGUI._get_projection)(proj, batch_path, item_uuid) for item_uuid in item_uuids
@@ -233,7 +237,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if self.currrent_projections is None:
             raise AttributeError("Projections not calculated")
 
-        print("Plotting projections")
+        logger.info("Plotting projections")
         if self.projections_plot_widget is None:
             self.projections_plot_widget = MatplotlibWidget()
         else:

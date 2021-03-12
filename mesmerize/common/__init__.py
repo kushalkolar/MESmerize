@@ -120,6 +120,12 @@ def get_window_manager():
     # return wm
 
 
+def get_session_id():
+    if not is_app():
+        raise NotInApplicationError
+    return getattr(QApplication.instance(), 'session_id')
+
+
 def is_mesmerize_project(proj_dir: str) -> bool:
     if not os.path.isdir(proj_dir + '/dataframes'):
         raise NotAMesmerizeProject('dataframes directory not found')

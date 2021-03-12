@@ -86,6 +86,6 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=classifiers,
-    python_requires='~=3.6,<3.7',
+    python_requires='>=3.6',
     install_requires=install_requires
 )

@@ -18,6 +18,10 @@ from caiman.source_extraction.cnmf.cnmf import CNMF, Estimates, CNMFParams
 from .roi_manager_modules.managers import ManagerCNMFROI, ManagerVolCNMF, ManagerVolMultiCNMFROI
 import numpy as np
 from tqdm import tqdm
+import logging
+
+
+logger = logging.getLogger()
 
 
 # just need the function signature
@@ -162,7 +166,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         dfofs = np.vstack(roi_manager.cnm_dfof)
 
-        print(
+        logger.info(
             f"dfof shape:\t{dfofs.shape}\n"
             f"roi_list len:\t{len(roi_manager.roi_list)}"
         )

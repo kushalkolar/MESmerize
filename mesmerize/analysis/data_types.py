@@ -27,6 +27,10 @@ from ..common import get_proj_config
 from ..common.configuration import get_environment
 from tqdm import tqdm
 from functools import lru_cache
+import logging
+
+
+logger = logging.getLogger()
 
 
 class _HistoryTraceExceptions(Exception):
@@ -591,14 +595,14 @@ class Transmission(BaseTransmission):
 
         """
         df = dataframe.copy()
-        print('Collecting image metadata')
+        logger.info('Collecting image metadata')
         tqdm().pandas()
         df[['meta', 'stim_maps']] = df.progress_apply(lambda r: Transmission._load_files(proj_path, r), axis=1)
 
         Transmission._load_imginfo.cache_clear()
 
         try:
-            print('Collecting curve data')
+            logger.info('Collecting curve data')
             df['_RAW_CURVE'] = df['ROI_State'].progress_apply(
                     lambda r: r['curve_data'][1]
                 )
@@ -608,7 +612,7 @@ class Transmission(BaseTransmission):
                              "the project dataframe where the curve data are missing")
 
         try:
-            print('Collecting curve data')
+            logger.info('Collecting curve data')
             df['_SPIKES'] = df['ROI_State'].progress_apply(
                 lambda r: r['spike_data'][1] if (r['spike_data'] is not None) else None
             )
@@ -617,7 +621,7 @@ class Transmission(BaseTransmission):
             warn('spikes or data not found, probably is probably from Mesmerize version < 0.2')
 
         try:
-            print('Collecting dfof data')
+            logger.info('Collecting dfof data')
             df['_DFOF'] = df['ROI_State'].progress_apply(
                 lambda r: r['dfof_data'][1] if (r['dfof_data'] is not None) else None
             )
