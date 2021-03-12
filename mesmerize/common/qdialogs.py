@@ -12,6 +12,7 @@ import traceback
 from functools import wraps
 from . import get_project_manager, is_app
 from typing import *
+from logging import getLogger
 
 
 """
@@ -61,10 +62,13 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
                     QMessageBox.Ok | QMessageBox.Help
                 )
 
-                if mb == QMessageBox.Help:
+                mb.exec_()
 
-
-                    mb.exec_()
+                getLogger().info(
+                    f"{e.__class__.__name__}: {e}\n"
+                    f"{traceback.format_exc()}"
+                )
+                
         return fn
     return catcher
 
