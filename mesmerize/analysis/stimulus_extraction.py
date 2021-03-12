@@ -17,6 +17,8 @@ from .data_types import Transmission
 from ..common import get_sys_config
 from uuid import uuid4
 from typing import *
+from PyQt5.QtWidgets import QMessageBox
+import traceback
 
 
 class StimulusExtraction:
@@ -59,23 +61,48 @@ class StimulusExtraction:
                 )
             )
 
+        bad_samples = [s for s in dfs if type(s) is tuple]
+
+        bad_samples_ids = [s[0] for s in bad_samples]
+        bad_sample_tbs = [s[1] for s in bad_samples]
+
+        if len(bad_samples) > 0:
+            mb = QMessageBox()
+            mb.setIcon(QMessageBox.Warning)
+            mb.setWindowTitle("Problematic Samples")
+            mb.setText("There was an issue with the stimmaps in the following samples")
+            mb.setInformativeText(f"Number of problematic samples: {len(bad_samples)}")
+            mb.setDetailedText(  # prints the sample IDs and then traceback details for each
+                '\n'.join(bad_samples_ids) + '\n\nDetailed Tracebacks:\n' +
+                '\n'.join(
+                    f"{bad_samples_ids[i]}\n\t{bad_sample_tbs[i]}" for i in range(len(bad_samples))
+                )
+            )
+            mb.setStandardButtons(QMessageBox.Ok)
+            mb.exec_()
+
+        dfs = [d for d in dfs if type(d) is not tuple]
+
         self.t.df = pd.concat([df for df in dfs if df is not None]).reset_index(drop=True)
 
         # self.t.df = self.t.df.explode('_st_stim_curve')
 
         return self.t
 
-    def _per_sample(self, sample_id: str) -> pd.DataFrame:
+    def _per_sample(self, sample_id: str) -> Union[pd.DataFrame, Tuple[str, str]]:
+        try:
+            sub_df = self.t.df[self.t.df.SampleID == sample_id].copy()
+            sub_df.reset_index(drop=True, inplace=True)
 
-        sub_df = self.t.df[self.t.df.SampleID == sample_id].copy()
-        sub_df.reset_index(drop=True, inplace=True)
+            stim_df = sub_df.stim_maps.iloc[0][0][0][self.stimulus_type]
 
-        stim_df = sub_df.stim_maps.iloc[0][0][0][self.stimulus_type]
+            stim_df['start'] = stim_df['start'].astype(np.int64)
+            stim_df['end'] = stim_df['end'].astype(np.int64)
 
-        stim_df['start'] = stim_df['start'].astype(np.int64)
-        stim_df['end'] = stim_df['end'].astype(np.int64)
+            stim_df = stim_df.sort_values(by='start').reset_index(drop=True)
 
-        stim_df = stim_df.sort_values(by='start').reset_index(drop=True)
+        except Exception:
+            return (sample_id, traceback.format_exc())
 
         out_dfs = []
 
