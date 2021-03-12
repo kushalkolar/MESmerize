@@ -57,16 +57,16 @@ def start_batch_manager(batch_path: str, item_uuid: str):
     return (app, bm)
 
 
-def move_old_logfiles(logger):
+def move_old_logfiles(logger, log_file_dir):
     zlogfile = ZipFile(
-        os.path.join(sys_cfg_dir, 'logs.zip'),
+        os.path.join(log_file_dir, 'logs.zip'),
         mode='a',
         compression=ZIP_LZMA,
         allowZip64=True,
 
     )
 
-    logfiles = glob(os.path.join(sys_cfg_dir, '*.log'))
+    logfiles = glob(os.path.join(log_file_dir, '*.log'))
     logfiles.sort()
     while len(logfiles) > 5:
         logger.info("Moving old logfiles...")
@@ -129,7 +129,7 @@ def main(
         logging.StreamHandler(sys.stderr)
     )
 
-    move_old_logfiles(root_logger)
+    move_old_logfiles(root_logger, log_file_dir)
 
     if not len(sys.argv) > 1:
         app = start_welcome_window()
