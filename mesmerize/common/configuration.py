@@ -46,7 +46,7 @@ try:
     import tensorflow
 except ImportError:
     warn(
-        "tensorflow not found. Nuset segementaiton will be disabled"
+        "tensorflow not found. Nuset segmentation will be disabled"
     )
     HAS_TENSORFLOW = False
 else:
