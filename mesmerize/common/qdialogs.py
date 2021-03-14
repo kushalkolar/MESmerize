@@ -13,6 +13,7 @@ from functools import wraps
 from . import get_project_manager, is_app
 from typing import *
 from logging import getLogger
+from webbrowser import open_new_tab
 
 
 """
@@ -62,7 +63,10 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
                     QMessageBox.Ok | QMessageBox.Help
                 )
 
-                mb.exec_()
+                if mb.exec_() == QMessageBox.Help:
+                    open_new_tab('http://docs.mesmerizelab.org/en/master/getting_help.html')
+
+
 
                 getLogger().info(
                     f"{e.__class__.__name__}: {e}\n"
