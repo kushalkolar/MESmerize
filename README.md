@@ -22,8 +22,6 @@ https://www.youtube.com/playlist?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg
 Additional videos on specific aspects of Mesmerize will be posted here:\
 [https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_](https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_)
 
-More tutorial videos will be available soon.
-
 ## Installation
 
 If you're familiar with anaconda or virtual environments, installation is as simple as:
