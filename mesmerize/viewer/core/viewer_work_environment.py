@@ -160,7 +160,13 @@ class ViewerWorkEnv:
         if tiff_path is not None:
             # seq = tifffile.imread(tiff_path)
             tif = tifffile.TiffFile(tiff_path, is_nih=True)
-            seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
+            if len(tif.series) > 1:
+                seq = tif.asarray(
+                    key=range(0, len(tif.series)),
+                    maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS'])
+                )
+            else:
+                seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
             if seq.ndim == 4:
                 # tzxy to xytz
                 seq = np.moveaxis(seq, (0, 1, 2, 3), (2, 3, 0, 1))
