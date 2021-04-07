@@ -126,7 +126,6 @@ class LoadFile(CtrlNode):
     def _set_proj_path(self, path: str):
         self.ctrls['proj_path_label'].setText(os.path.basename(path))
         self.t.set_proj_path(path)
-        self.t.set_proj_config()
 
     def dir_dialog_proj_path(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Project Folder')

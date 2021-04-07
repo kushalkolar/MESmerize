@@ -563,6 +563,8 @@ class BaseTransmission:
 
         self._proj_path = path
 
+        self.set_proj_config()
+
     def set_proj_config(self):
         """
         Sets some project config related attributes from the project's config file.
