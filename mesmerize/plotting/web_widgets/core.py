@@ -3,6 +3,10 @@ from typing import *
 import pandas
 from uuid import UUID
 import inspect
+import logging
+
+
+logger = logging.getLogger()
 
 
 class BokehCallbackSignal:
@@ -104,7 +108,7 @@ class BokehCallbackSignal:
         :return:
         """
         for func in self.callbacks:
-            print(f"VAL IN SIGNAL: {val}")
+            logger.debug(f"VAL IN SIGNAL: {val}")
             if bool(inspect.signature(func).parameters):  # make sure the function takes arguments
                 func(val)  # send out val directly
             else:
@@ -117,13 +121,13 @@ class BokehCallbackSignal:
         :param val: list containing a single integer, which is an index for source_data
         :return:
         """
-        print(f"VAL IN SIGNAL: {val}")
+        logger.debug(f"VAL IN SIGNAL: {val}")
         for func, identifier in self.callbacks_data:
             uid = self.source_data.data[identifier][val][0]  # get the source_data present at the `val` index
-            print(uid)
+            logger.debug(uid)
             # subdataframe where the identifier UUID matches
             out = self.dataframe[self.dataframe[identifier] == uid]
-            print(out.copy(deep=True))
+            logger.debug(out.copy(deep=True))
             func(out)
 
 
@@ -132,18 +136,20 @@ class WebPlot:
         attrs = dir(self)
         self.signals: List[BokehCallbackSignal] = \
             [getattr(self, a) for a in attrs if isinstance(getattr(self, a), BokehCallbackSignal)]
-        print("WEBPLOT INIT")
-        print(self.signals)
+        logger.debug("WEBPLOT INIT")
+        logger.debug(self.signals)
 
     @classmethod
     def signal_blocker(cls, func):
         """Block callbacks, used when the plot x and y limits change due to user interaction"""
-        print("***** SIGNAL BLOCKER CALLED ******")
+
+        logger.debug("***** SIGNAL BLOCKER CALLED ******")
+
         def fn(self, *args, **kwargs):
-            print("self.signals is")
-            print(self.signals)
+            logger.debug("self.signals is")
+            logger.debug(self.signals)
             for signal in self.signals:
-                print(f"Blocking signal {signal}")
+                logger.debug(f"Blocking signal {signal}")
                 signal.pause()
 
             ret = func(self, *args, **kwargs)

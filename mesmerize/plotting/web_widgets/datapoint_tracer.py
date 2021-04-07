@@ -12,6 +12,10 @@ from typing import *
 import tifffile
 from mesmerize.plotting.utils import auto_colormap, map_labels_to_colors
 from mesmerize.plotting.web_widgets.core import BokehCallbackSignal, WebPlot
+import logging
+
+
+logger = logging.getLogger()
 
 
 _default_image_figure_params = dict(
@@ -169,7 +173,7 @@ class DatapointTracer(WebPlot):
     # @WebPlot.signal_blocker
     def _update_plot_options(self):
         # categorical_columns = get_categorical_columns(self.dataframe)
-        print("Updating plot opts")
+        logger.debug("Updating plot opts")
         categorical_columns = self.tooltip_columns
 
         numerical_columns = get_numerical_columns(self.dataframe)
@@ -197,8 +201,8 @@ class DatapointTracer(WebPlot):
         self.image_glyph.data_source.data['image'] = [frame]
 
     def set_curve(self):
-        print('updating curve')
-        print(self.dataframe)
+        logger.debug('updating curve')
+        logger.debug(self.dataframe)
         data_column = self.curve_data_selector.value
         ys = self.dataframe[data_column].values
         xs = [np.arange(0, v.size) for v in ys]
@@ -250,11 +254,11 @@ class DatapointTracer(WebPlot):
         # add the new curve plot to the doc root
         self.doc.add_root(self.curve_figure)
 
-        print(">>>> DATAFRAME IS <<<<<<")
-        print(self.dataframe)
+        logger.debug(">>>> DATAFRAME IS <<<<<<")
+        logger.debug(self.dataframe)
 
     def set_dashboard(self, figures: List[Figure]):
-        print('setting dashboard')
+        logger.info('setting dashboard, this might take a few minutes')
         self.doc.add_root(
             column(
                 row(*(f for f in figures), self.image_figure),
