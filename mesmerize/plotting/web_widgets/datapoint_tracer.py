@@ -1,6 +1,6 @@
 from bokeh.plotting import figure, Figure
 from bokeh.models.glyphs import Image, MultiLine
-from bokeh.models import HoverTool, ColumnDataSource, TapTool, Slider, TextInput, Select
+from bokeh.models import HoverTool, ColumnDataSource, TapTool, Slider, TextInput, Select, BoxAnnotation
 from bokeh.models.mappers import LogColorMapper
 from bokeh.layouts import gridplot, column, row
 import os
@@ -46,6 +46,7 @@ class DatapointTracer(WebPlot):
 
     def __init__(
             self,
+            parent: WebPlot,
             doc,
             project_path: Union[Path, str],
             tooltip_columns: List[str] = None,
@@ -56,6 +57,8 @@ class DatapointTracer(WebPlot):
         self.sig_frame_changed = BokehCallbackSignal()
 
         WebPlot.__init__(self)
+
+        self.parent = parent
 
         self.doc = doc
         # self.parent_document: Document = parent_document
@@ -96,6 +99,8 @@ class DatapointTracer(WebPlot):
 
         self.curve_glyph: MultiLine = None
 
+        self.curve_plot_bands: List[BoxAnnotation] = []
+
         self.tooltip_columns = tooltip_columns
         self.tooltips = None
 
@@ -114,6 +119,9 @@ class DatapointTracer(WebPlot):
 
         self.curve_data_selector = Select(title="Curve data:", value='', options=[''])
         self.curve_data_selector.on_change('value', self.sig_plot_options_changed.trigger)
+
+        self.curve_plot_bands_selector = Select(title="Bands based on:", value='', options=[''])
+        self.curve_plot_bands_selector.on_change('value', self.sig_plot_options_changed.trigger)
 
         self.sig_plot_options_changed.connect(self.set_curve)
 
@@ -194,6 +202,17 @@ class DatapointTracer(WebPlot):
             options=numerical_columns
         )
 
+        if len(self.parent.transmission.STIM_DEFS) > 0:
+            self.curve_plot_bands_selector.update(
+                value= \
+                    self.curve_plot_bands_selector.value \
+                        if self.curve_plot_bands_selector.value in self.parent.transmission.STIM_DEFS \
+                        else self.parent.transmission.STIM_DEFS[0],
+                options=self.parent.transmission.STIM_DEFS
+            )
+        else:
+            self.curve_plot_bands_selector.update(value='', options=[''])
+
     def _set_current_frame(self, i: int):
         self.current_frame = i
         frame = self.tif.asarray(key=self.current_frame)
@@ -243,6 +262,19 @@ class DatapointTracer(WebPlot):
 
         )
 
+        stim_option = self.curve_plot_bands_selector.value
+        stim_df = self.dataframe['stim_maps'].iloc[0][0][0].get(stim_option, None)
+        if stim_df is not None:
+            for ix, stim_period in stim_df.iterrows():
+                self.curve_figure.add_layout(
+                    BoxAnnotation(
+                        left=stim_period['start'],
+                        right=stim_period['end'],
+                        fill_color=list(stim_period['color'][:-1]),
+                        fill_alpha=0.1
+                    )
+                )
+
         self.curve_glyph = self.curve_figure.multi_line(
             xs='xs', ys='ys',
             legend=colors_column,
@@ -262,7 +294,11 @@ class DatapointTracer(WebPlot):
         self.doc.add_root(
             column(
                 row(*(f for f in figures), self.image_figure),
-                row(self.curve_data_selector, self.curve_color_selector),
+                row(
+                    self.curve_data_selector,
+                    self.curve_color_selector,
+                    self.curve_plot_bands_selector
+                ),
                 self.label_filesize,
                 self.frame_slider
             )

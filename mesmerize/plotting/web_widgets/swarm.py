@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import *
 from mesmerize.plotting.web_widgets.core import WebPlot, BokehCallbackSignal
 from mesmerize.plotting.web_widgets.datapoint_tracer import DatapointTracer
+from mesmerize import Transmission
 import pickle
 
 
@@ -32,7 +33,8 @@ class Swarm(WebPlot):
     def __init__(
             self,
             project_path: Union[Path, str],
-            dataframe: pd.DataFrame,
+            transmission: Transmission,
+            # dataframe: pd.DataFrame,
             data_column: str,
             groupby_column: str,
             figure_opts: dict = None,
@@ -44,8 +46,11 @@ class Swarm(WebPlot):
         self.sig_point_selected = BokehCallbackSignal()
         WebPlot.__init__(self)
 
+        self.datapoint_tracer: DatapointTracer = None
+
         # just setting some attributes
-        self.dataframe: pd.DataFrame = dataframe
+        self.transmission = transmission
+        self.dataframe: pd.DataFrame = self.transmission.df
         self.data_column = data_column
         self.groupby_column = groupby_column
 
@@ -120,7 +125,10 @@ class Swarm(WebPlot):
 
         # Also create datapoint tracer plots
         self.datapoint_tracer = DatapointTracer(
-            doc, self.project_path, tooltip_columns=self.tooltip_columns
+            parent=self,
+            doc=doc,
+            project_path=self.project_path,
+            tooltip_columns=self.tooltip_columns
         )
 
         self.datapoint_tracer.tooltips = self.tooltips
