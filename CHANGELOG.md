@@ -4,6 +4,14 @@
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
+# 0.6.0
+### New
+- Allow installation on python >3.6
+- Logger outputs all stdout and tracebacks for exceptions to logfiles
+
+### Modified
+- `@present_exception()` windows print traceback in a scrollable box
+
 # 0.5.1
 
 ### Fixed
