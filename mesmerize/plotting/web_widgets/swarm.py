@@ -55,14 +55,16 @@ class Swarm(WebPlot):
         self.groupby_column = groupby_column
 
         if source_columns is None:
-            source_columns = []
+            self.source_columns = []
+        else:
+            self.source_columns = source_columns
 
         # ColumnDataSource is what bokeh uses for plotting
         # it's similar to dataframes but doesn't accept
         # some datatypes like dicts and arrays within dataframe "cells"
         self.source: ColumnDataSource = ColumnDataSource(
             self.dataframe.drop(
-                columns=[c for c in self.dataframe.columns if c not in source_columns]
+                columns=[c for c in self.dataframe.columns if c not in self.source_columns]
             )
         )
 
@@ -93,7 +95,9 @@ class Swarm(WebPlot):
         )
 
         if glyph_opts is None:
-            glyph_opts = dict()
+            self.glyph_opts = dict()
+        else:
+            self.glyph_opts = glyph_opts
 
         # jitter along the x axis for the swarm scatter
         x_vals = jitter(self.groupby_column, width=0.6, range=self.figure.x_range)
@@ -105,12 +109,38 @@ class Swarm(WebPlot):
             source=self.source,  # this is the ColumnDataSource created from the dataframe
             **{
                 **_default_glyph_opts,
-                **glyph_opts
+                **self.glyph_opts
             }
         )
 
         self.project_path = project_path
         self.source_columns = source_columns
+
+    # def update_glyph(self):
+    #     self.source: ColumnDataSource = ColumnDataSource(
+    #         self.dataframe.drop(
+    #             columns=[c for c in self.dataframe.columns if c not in self.source_columns]
+    #         )
+    #     )
+    #
+    #     self.glyph.data_source = self.source
+
+        # self.glyph = self.figure.circle(
+        #     x=jitter(self.groupby_column, width=0.6, range=self.figure.x_range),
+        #     y=self.data_column,  # the user specified data column
+        #     source=self.source,  # this is the ColumnDataSource created from the dataframe
+        #     **{
+        #         **_default_glyph_opts,
+        #         **self.glyph_opts
+        #     }
+        # )
+        #
+        # self.glyph.data_source.selected.on_change('indices', self.sig_point_selected.trigger)
+
+        # self.glyph.data_source = self.source
+        #
+        # self.glyph.data_source.data['x'] = jitter(self.groupby_column, width=0.6, range=self.figure.x_range)
+        # self.glyph.data_source.data['y'] = self.data_column,
 
     def start_app(self, doc):
         """
