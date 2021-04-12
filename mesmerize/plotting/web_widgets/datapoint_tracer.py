@@ -74,7 +74,8 @@ class DatapointTracer(WebPlot):
         self.image_figure: Figure = figure(
             **{
                 **_default_image_figure_params,
-                **image_figure_params
+                **image_figure_params,
+                'output_backend': "webgl"
             }
         )
 
