@@ -1,7 +1,7 @@
 from bokeh.plotting import figure, Figure
 from bokeh.models.glyphs import Image, MultiLine
 from bokeh.models import HoverTool, ColumnDataSource, TapTool, Slider, TextInput, Select, \
-    BoxAnnotation, Patches
+    BoxAnnotation, Patches, Div
 from bokeh.models.mappers import LogColorMapper
 from bokeh.layouts import gridplot, column, row
 import os
@@ -15,7 +15,8 @@ from mesmerize.plotting.utils import auto_colormap, map_labels_to_colors
 from mesmerize.plotting.web_widgets.core import BokehCallbackSignal, WebPlot
 import logging
 import pickle
-
+from pathlib import Path
+import skimage.io
 
 logger = logging.getLogger()
 
@@ -32,6 +33,13 @@ _default_curve_figure_params = dict(
     plot_width=1000,
     tools='tap,hover,pan,wheel_zoom,box_zoom,reset',
 )
+
+div = Div(text="""<div class="videoWrapper">
+      <iframe width="420" height="315" src="http://8d30867d13b5.ngrok.io/odor_by_11122019_a3-_-1.mp4" frameborder="0" allowfullscreen></iframe>
+    </div>""",
+width=420, height=315)
+
+seq_path = Path('/work/kushal/jpeg_seq_mono_jp2')
 
 
 def get_numerical_columns(dataframe: pd.DataFrame):
@@ -75,7 +83,6 @@ class DatapointTracer(WebPlot):
             **{
                 **_default_image_figure_params,
                 **image_figure_params,
-                'output_backend': "webgl"
             }
         )
 
@@ -86,6 +93,7 @@ class DatapointTracer(WebPlot):
             image=[empty_img],
             x=0, y=0,
             dw=10, dh=10,
+            palette="Inferno256",
             level="image"
         )
 
@@ -208,23 +216,24 @@ class DatapointTracer(WebPlot):
         self.label_sample_id.update(value=self.sample_id)
 
     def _set_video(self, vid_path: Union[Path, str]):
-        self.tif = tifffile.TiffFile(vid_path)
+        #self.tif = tifffile.TiffFile(vid_path)
 
         self.current_frame = 0
-        self.frame = self.tif.asarray(key=self.current_frame)
+        #self.frame = self.tif.asarray(key=self.current_frame)
+        self.frame = skimage.io.imread(seq_path.joinpath('0'.zfill(6) + '.jp2'))
 
         # this is basically used for vmin mvax
         self.color_mapper = LogColorMapper(
-            palette=auto_colormap(256, 'gnuplot2', output='bokeh'),
-            low=np.nanmin(self.frame),
-            high=np.nanmax(self.frame)
+            palette=auto_colormap(256, 'jet', output='bokeh'),
+            low=0,#np.nanmin(self.frame),
+            high=200#np.nanmax(self.frame)
         )
 
         self.image_glyph.data_source.data['image'] = [self.frame]
-        self.image_glyph.glyph.color_mapper = self.color_mapper
+        #self.image_glyph.glyph.color_mapper = self.color_mapper
 
         # shows the file size in gigabytes
-        self.label_filesize.update(value=str(os.path.getsize(vid_path) / 1024 / 1024 / 1024))
+        #self.label_filesize.update(value=str(os.path.getsize(vid_path) / 1024 / 1024 / 1024))
 
     def _get_roi_coors(self, r: pd.Series):
         roi_type = r['roi_type']
@@ -272,9 +281,9 @@ class DatapointTracer(WebPlot):
 
     def _set_current_frame(self, i: int):
         self.current_frame = i
-        frame = self.tif.asarray(key=self.current_frame, maxworkers=20)
-
-        self.image_glyph.data_source.data['image'] = [frame]
+        #frame = self.tif.asarray(key=self.current_frame, maxworkers=20)
+        self.frame = skimage.io.imread(seq_path.joinpath(str(i).zfill(6) + '.jp2'))
+        self.image_glyph.data_source.data['image'] = [self.frame]
 
     def _get_trimmed_dataframe(self) -> pd.DataFrame:
         """
