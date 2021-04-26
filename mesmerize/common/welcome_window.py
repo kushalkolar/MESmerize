@@ -11,10 +11,10 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
+from ..common import configuration, system_config_window, doc_pages, get_project_manager, set_project_manager
 from ..pyqtgraphCore.console import ConsoleWidget
 from .pytemplates.welcome_window_pytemplate import *
 # from ..project_manager import ProjectManager
-from ..common import configuration, system_config_window, doc_pages, get_project_manager, set_project_manager
 from ..common import get_window_manager, is_mesmerize_project, get_session_id
 # from viewer.modules import batch_manager
 import os

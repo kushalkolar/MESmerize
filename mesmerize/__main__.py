@@ -15,11 +15,11 @@ import sys
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 print('Loading, please wait... ')
+from mesmerize import configuration
 from PyQt5.QtWidgets import QApplication
 from mesmerize.common.window_manager import WindowManager
 from mesmerize.project_manager import ProjectManager
 from mesmerize.common.welcome_window import MainWindow
-from mesmerize.common.configuration import sys_cfg_dir
 from mesmerize.scripts import *
 from mesmerize import Transmission
 from mesmerize.plotting import open_plot_file
@@ -92,7 +92,7 @@ def main(
         open_plot
 ):
     if log_file_dir is None:
-        log_file_dir = sys_cfg_dir
+        log_file_dir = configuration.sys_cfg_dir
 
     if not os.path.exists(log_file_dir):
         os.makedirs(log_file_dir, exist_ok=True)
