@@ -226,8 +226,6 @@ class Output(QtWidgets.QWidget):
         self.viewer_ref = viewer_ref
         self.cnmfe_results = {}
 
-        visualization.mpl.use('TkAgg')
-
         filename = os.path.join(batch_dir, str(UUID))
 
         if pickle.load(open(filename + '.params', 'rb'))['do_corr_pnr']:
