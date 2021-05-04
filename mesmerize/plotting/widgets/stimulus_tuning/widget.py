@@ -414,6 +414,9 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         'Plot error. Make sure you have selected appropriate data columns and parameters'
     )
     def update_plot(self, *args, **kwargs):
+        if self.control_widget.ui.listWidget_rois.currentItem() is None:
+            return
+        
         roi_ix = self.control_widget.ui.listWidget_rois.currentItem().text()
         uuid_curve = self.roi_uuid_map[roi_ix]
 
