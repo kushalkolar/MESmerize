@@ -24,7 +24,7 @@ Additional videos on specific aspects of Mesmerize will be posted here:\
 
 ## Installation
 
-If you're familiar with anaconda or virtual environments, installation is as simple as:
+If you're familiar with anaconda or virtual environments, install with pip:
 
 ```
 pip install mesmerize
@@ -32,8 +32,13 @@ pip install mesmerize
 
 After installation just call ``mesmerize`` from inside the virtual environment to launch it.
 
-If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
+See the docs for more detailed instructions on all operating systems:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+
+#### VM
+
+If you do not want to setup conda or virtual environments, you can import a VM with Mesmerize pre-installed and ready to go with all features:
+http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
 
 #### Caiman
 In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
