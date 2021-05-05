@@ -19,7 +19,7 @@ install_requires = \
         "opencv-python>=4.2",
         "pandas~=0.25.3",  # do not change
         "Pillow>=5.4.1",
-        "psutil~=5.8.0",
+        "psutil",
         "PyQt5>=5.9.2,<=5.12",
         "python-dateutil>=2.8.0",
         "QtPy>=1.6.0",
