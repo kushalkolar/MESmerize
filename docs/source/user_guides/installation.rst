@@ -8,16 +8,27 @@ Mesmerize can be installed on Linux, Mac OSX and Windows. On Windows, Mesmerize 
 All platforms
 =============
 
-We provide a ready to use VM with Mesmerize and all features pre-installed. This is the easiest way to get started with Mesmerize if you don't want to setup anaconda or virtual environments by yourself. Just install VirtualBox and import the `mesmerize-vm.ova` file.
+We provide a ready to use VM with Mesmerize and all features pre-installed. You can run this VM on Windows, Mac OSX, or Linux. This is the easiest way to get started with Mesmerize if you don't want to setup anaconda or virtual environments by yourself. Just install VirtualBox and import the ``mesmerize-v060-vm.ova`` file.
 
 - VirtualBox: https://www.virtualbox.org/wiki/Downloads
-- Mesmerize VM file:
+- Download the VM file ``mesmerize-v060-vm.ova`` from zenodo: https://zenodo.org/record/4738399
 
-When you start the VM, just open a terminal and enter `mesmerize` to launch it. You can setup *Shared Folders* in the settings for the VM to share data between the VM and your host computer. You can also mount network drives etc. from within the VM.
+When you start the VM, just double click the mesmerize launcher on the desktop. You can setup *Shared Folders* in the settings for the VM to share data between the VM and your host computer. You can also mount network drives etc. from within the VM. An example batch with a few examples from the caiman sample data is provided at ``/home/user/example_batch``. Do not delete the ``venvs`` directory, this will remove the virtual environment for Mesmerize.
 
-The password for the `user` account in the VM is `password`.
+The details for the user account on the VM are:
+username: ``user``
+password: ``password``
+
+You can use the same password for ``sudo``.
 
 By default the VM is set to use 8 threads and 12GB of RAM. You may modify this according to the resources available on your host computer. You generally want to leave 2-4 threads free on your host computer.
+
+Video instructions:
+
+.. raw:: html
+
+    <iframe width="560" height="315" src="https://www.youtube.com/watch?v=IQIHo4r-WIw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 
 To update Mesmerize in the VM::
 
@@ -85,7 +96,7 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
 
     pip install numpy cython
 
-#. Install `tensorflow` v1.15 (v2 is not supported for nuset) if you want to use Caiman or Nuset::
+#. Install ``tensorflow`` v1.15 (v2 is not supported for nuset) if you want to use Caiman or Nuset::
     
     # CPU bound
     pip install tensorflow~=1.15
@@ -114,7 +125,7 @@ You will always need to activate the environment for Mesmerize before launching 
     source <new_venv_path/bin/activate>
     pip install -e .
 
-#. You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+#. You might need to setup Caiman using ``caimanmanager.py``. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
 
 #. In order to use some features that launch subprocesses, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the environment that mesmerize is installed in. By default the pre-run commands contain ``# source /<path_to_env>/activate'``, you will need to uncomment the line (remove the ``#``) and set the path to your environment.
 
@@ -183,7 +194,7 @@ You will always need to activate the environment for Mesmerize before launching 
 
     echo "backend: qt5" >> ~/.matplotlib/matplotlibrc
     
-You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+You might need to setup Caiman using ``caimanmanager.py``. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
 
 In order to use some features that launch subprocesses, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the environment that mesmerize is installed in.
 
@@ -253,7 +264,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
 
     mesmerize
 
-You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+You might need to setup Caiman using ``caimanmanager.py``. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
     
 .. note:: In order to use some features, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the conda environment that mesmerize is installed in. By default the pre-run commands contain ``# conda activate mesmerize`` but you will need to uncomment the line (remove the ``#``) or change it if you are using an environment with a different name.
 
@@ -292,7 +303,7 @@ First, make sure you have compilers & python3.6 (see the details above for vario
     source <new_venv_path/bin/activate>
     pip install -e .
 
-#. You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
+#. You might need to setup Caiman using ``caimanmanager.py``. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
     
 #. Fork the main repo on github and clone it, or install from our repo::
     
