@@ -11,6 +11,15 @@
 
 ### Modified
 - `@present_exception()` windows print traceback in a scrollable box
+- args to `mesmerize.__main__` are now handled using `click` instead of `sys.argv`
+- use `webgl` backend for bokeh datapoint tracer's image viewer
+- continued work on bokeh-based plots, continued work on displaying ROIs in bokeh datapoint tracer
+- StimulusExtraction flowchart node gives informative messages if there are issues with samples
+
+### Fixed
+- matplotlib-related bugfix when opening CNMFE batch items
+- mcorr projections bugfix when comparing <3 batch items
+- bugfix when opening saved stim tuning plots
 
 # 0.5.1
 
