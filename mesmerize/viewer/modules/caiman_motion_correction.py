@@ -230,6 +230,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         )
 
         self.nrows_projection_plots = ceil(len(self._projection_item_indices) / self.ncols_projection_plots)
+        self.ncols_projection_plots = min(len(self._projection_item_indices), 3)
 
         self.plot_output_projections()
 
@@ -251,6 +252,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
             if not i < len(self._projection_item_indices):
                 break
 
+            if self.nrows_projection_plots == 1:
+                axes_ix = axes_ix[1]
+
             index = self._projection_item_indices[i]
             projection = self.currrent_projections[i]
 
@@ -271,6 +275,6 @@ class ModuleGUI(QtWidgets.QDockWidget):
             self.projections_plot_widget.axs[axes_ix].set_title(index)
             self.projections_plot_widget.axs[axes_ix].set_title(index)
 
-        self.projections_plot_widget.fig.tight_layout()
         self.projections_plot_widget.draw()
+        self.projections_plot_widget.fig.tight_layout()
         self.projections_plot_widget.show()
