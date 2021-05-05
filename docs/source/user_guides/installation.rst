@@ -5,15 +5,36 @@ Installation
 
 Mesmerize can be installed on Linux, Mac OSX and Windows. On Windows, Mesmerize can be installed in an anaconda environment. For Mac OSX and Linux you may use either virtual environments or conda environments, but we have had much better experience with virtual environments.
 
+All platforms
+=============
+
+We provide a ready to use VM with Mesmerize and all features pre-installed. This is the easiest way to get started with Mesmerize if you don't want to setup anaconda or virtual environments by yourself. Just install VirtualBox and import the `mesmerize-vm.ova` file.
+
+- VirtualBox: https://www.virtualbox.org/wiki/Downloads
+- Mesmerize VM file:
+
+When you start the VM, just open a terminal and enter `mesmerize` to launch it. You can setup *Shared Folders* in the settings for the VM to share data between the VM and your host computer. You can also mount network drives etc. from within the VM.
+
+The password for the `user` account in the VM is `password`.
+
+By default the VM is set to use 8 threads and 12GB of RAM. You may modify this according to the resources available on your host computer. You generally want to leave 2-4 threads free on your host computer.
+
+To update Mesmerize in the VM::
+
+    # activate the environment
+    source ~/venvs/mesmerize/bin/activate
+    # get the latest version of mesmerize
+    pip install --upgrade mesmerize
+
+.. note:: Virtualization features of your CPU must be enabled in your BIOS. VirtualBox will throw errors if it is not.
+
 Linux
 =====
-
-The snap is currently discontinued in favor of a pypi package.
 
 pip (PyPI)
 ----------
 
-**You will need python==3.6, there is a bug with Qt & python3.7**
+**You will need python==3.6 for tensorflow v1**
 
 #. Install python 3.6::
 
@@ -64,14 +85,14 @@ If you're on Fedora/CentOS you'll also need ``redhat-rpm-config``, install using
 
     pip install numpy cython
 
-#. Install `tensorflow` v1.15 (v2 is not supported) if you want to use Caiman or Nuset::
+#. Install `tensorflow` v1.15 (v2 is not supported for nuset) if you want to use Caiman or Nuset::
     
     # CPU bound
     pip install tensorflow~=1.15
     # GPU
     pip install tensorflow-gpu~=1.15
     
-#. Install tslearn (required) & bottleneck (optional)::
+#. Install tslearn & bottleneck (optional)::
 
     pip install tslearn~=0.4.1 bottleneck==1.2.1
 
@@ -89,12 +110,15 @@ You will always need to activate the environment for Mesmerize before launching 
 
     git clone https://github.com/flatironinstitute/CaImAn
     cd CaImAn/
+    git checkout v1.8.8
     source <new_venv_path/bin/activate>
     pip install -e .
 
 #. You might need to setup Caiman using `caimanmanager`. Please see their docs for details: https://caiman.readthedocs.io/en/master/Installation.html#installation-on-macos-and-linux
 
 #. In order to use some features that launch subprocesses, such as the batch manager, you will need to check your :ref:`System Configuration settings in Mesmerize <SystemConfiguration>` to make sure that it activates the environment that mesmerize is installed in. By default the pre-run commands contain ``# source /<path_to_env>/activate'``, you will need to uncomment the line (remove the ``#``) and set the path to your environment.
+
+.. note:: Caiman=>1.8.9 requires tensorflow v2, which is currently not supported by nuset. If you want to use the latest version of caiman, you will need to install tensorflow v2 and use python3.8
 
     
 Mac OSX
@@ -132,9 +156,9 @@ This might take a while.
 
     conda install Cython pandas~=0.25.3
 
-#. Install tslearn::
+#. Install tslearn~=0.4.1::
 
-    conda install -c conda-forge tslearn~=0.4.1
+    conda install -c conda-forge tslearn=0.4.1
     
 #. Install bottleneck (optional)::
 
@@ -202,7 +226,7 @@ You will need a relatively recent version of Anaconda in order to run conda comm
     
 #. Install tslearn (optional)::
 
-    conda install -c conda-forge tslearn~=0.4.1
+    conda install -c conda-forge tslearn=0.4.1
     
 #. Install bottleneck (optional)::
 
@@ -250,7 +274,7 @@ First, make sure you have compilers & python3.6 (see the details above for vario
 #. Upgrade pip & setuptools & install some build dependencies::
 
     pip install --upgrade pip setuptools
-    pip install Cython numpy tslearn~=0.4.1
+    pip install Cython numpy
     
 #. Install ``tensorflow`` or ``tensorflow-gpu``, you must use version ``~=1.15``::
 
