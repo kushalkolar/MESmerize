@@ -8,7 +8,7 @@ Mesmerize can be installed on Linux, Mac OSX and Windows. On Windows, Mesmerize 
 All platforms
 =============
 
-We provide a ready to use VM with Mesmerize and all features pre-installed. You can run this VM on Windows, Mac OSX, or Linux. This is the easiest way to get started with Mesmerize if you don't want to setup anaconda or virtual environments by yourself. Just install VirtualBox and import the ``mesmerize-v060-vm.ova`` file.
+We provide a ready to use VM with Mesmerize and all features pre-installed. You can run this VM on Windows, Mac OSX, or Linux. This is the easiest way to get started with Mesmerize if you don't want to setup anaconda or virtual environments by yourself. Just install VirtualBox and import the ``mesmerize-v060-2-vm.ova`` file.
 
 - VirtualBox: https://www.virtualbox.org/wiki/Downloads
 - Download the VM file ``mesmerize-v060-2-vm.ova`` from zenodo: https://zenodo.org/record/4738514
