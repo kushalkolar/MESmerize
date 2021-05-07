@@ -11,17 +11,27 @@ All platforms
 We provide a ready to use VM with Mesmerize and all features pre-installed. You can run this VM on Windows, Mac OSX, or Linux. This is the easiest way to get started with Mesmerize if you don't want to setup anaconda or virtual environments by yourself. Just install VirtualBox and import the ``mesmerize-v060-vm.ova`` file.
 
 - VirtualBox: https://www.virtualbox.org/wiki/Downloads
-- Download the VM file ``mesmerize-v060-vm.ova`` from zenodo: https://zenodo.org/record/4738399
+- Download the VM file ``mesmerize-v060-2-vm.ova`` from zenodo: https://zenodo.org/record/4738514
 
-When you start the VM, just double click the mesmerize launcher on the desktop. You can setup *Shared Folders* in the settings for the VM to share data between the VM and your host computer. You can also mount network drives etc. from within the VM. An example batch with a few examples from the caiman sample data is provided at ``/home/user/example_batch``. Do not delete the ``venvs`` directory, this will remove the virtual environment for Mesmerize.
+When you start the VM, just double click the mesmerize launcher on the desktop.
+
+- You can setup *Shared Folders* in the settings for the VM to share data between the VM and your host computer.
+- You can mount network drives etc. from within the VM.
+- Do not delete the ``venvs`` directory, this will remove the virtual environment for Mesmerize.
+- An example batch with a few examples from the caiman sample data is provided at ``/home/user/example_batch``.
 
 The details for the user account on the VM are:
-username: ``user``
-password: ``password``
+
+username: ``user`` |
+password: ``password`` |
 
 You can use the same password for ``sudo``.
 
-By default the VM is set to use 8 threads and 12GB of RAM. You may modify this according to the resources available on your host computer. You generally want to leave 2-4 threads free on your host computer.
+By default the VM is set to use 7 threads and 12GB of RAM. You may modify this according to the resources available on your host computer. You generally want to leave 2-4 threads free on your host computer.
+
+If you get the following error when importing the VM you probably don't have enough space on your computer, I recommend importing the VM on a computer that has a few hundred gigabytes of free space::
+
+    E_INVALIDARG (0x80070057)
 
 Video instructions:
 
