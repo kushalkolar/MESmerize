@@ -70,7 +70,7 @@ def move_old_logfiles(logger, log_file_dir):
     logfiles.sort()
     while len(logfiles) > 5:
         logger.info("Moving old logfiles...")
-        old_logfile = logfiles.pop(-1)
+        old_logfile = logfiles.pop(0)
         zlogfile.write(old_logfile, os.path.basename(old_logfile))
         os.remove(old_logfile)
     zlogfile.close()
