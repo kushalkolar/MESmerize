@@ -37,6 +37,8 @@ This module adds a "CNMF" *item* to the batch. Set the desired parameters (see C
 
 .. warning:: Importing several *thousands* of ROIs into the Viewer can take 15-30 minutes. You will be able to track the progress of the import in the Viewer Window's status bar.
 
+.. warning:: If you're using Windows, large `memmap` files will linger in your batch dir or work dir, you can clean them out periodically.
+
 Script usage
 ============
 

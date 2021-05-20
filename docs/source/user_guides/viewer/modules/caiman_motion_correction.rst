@@ -32,6 +32,8 @@ This module adds a "caiman motion correction" *item* to the batch. Set the desir
 
 .. note:: The parameters used for motion correction are stored in the work environment of the viewer and this log is carried over and saved in the *Project Sample* as well. To see the parameters that were used for motion correction in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the ``caiman_motion_correction`` entry.
 
+.. warning:: If you're using Windows, large `memmap` files will linger in your batch dir or work dir, you can clean them out periodically.
+
 .. _MotCorScripts:
 
 Script Usage

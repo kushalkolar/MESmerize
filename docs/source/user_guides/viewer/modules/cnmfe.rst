@@ -52,6 +52,8 @@ This module creates two types of batch items, one where you can inspect the Corr
 
 .. note:: The parameters used for CNMFE are stored in the work environment of the viewer and this log is carried over and saved in *Project Samples* as well. To see the parameters that were used for CNMFE in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the 'cnmfe' entry.
 
+.. warning:: If you're using Windows, large `memmap` files will linger in your batch dir or work dir, you can clean them out periodically.
+
 Script Usage
 ============
 
