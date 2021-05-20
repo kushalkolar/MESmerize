@@ -24,6 +24,8 @@ Additional videos on specific aspects of Mesmerize will be posted here:\
 
 ## Installation
 
+You can install `mesmerize` natively using conda or virtual environments. If you want a quick and easy installation you can import a VM that comes with `mesmerize` pre-installed and ready-to-go with all features.
+
 ### Virtual/Conda Environments
 If you're familiar with anaconda or virtual environments, install with pip:
 
