@@ -140,7 +140,10 @@ def run(batch_dir: str, UUID: str):
             dview.terminate()
 
             for mf in glob(batch_dir + '/memmap-*'):
-                os.remove(mf)
+                try:
+                    os.remove(mf)
+                except:  # Windows doesn't like removing the memmaps
+                    pass
 
             end_time = time()
             processing_time = (end_time - start_time) / 60
