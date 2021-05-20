@@ -4,6 +4,11 @@
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
+# 0.6.1
+### Fixed
+- bug in `mesmerize.__main__` where old logfiles weren't being moved into zipfile
+- memmaps can't be removed on Windows (see #54), temporary fix added for CNMFE (already exists for other caiman modules)
+
 # 0.6.0
 ### New
 - Allow installation on python >3.6
