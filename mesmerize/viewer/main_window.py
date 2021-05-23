@@ -43,7 +43,7 @@ import logging
 logger = logging.getLogger()
 
 _custom_modules_dir = configuration.get_sys_config()['_MESMERIZE_CUSTOM_MODULES_DIR']
-_custom_modules_package_name = os.path.basename(os.path.dirname(_custom_modules_dir))
+_custom_modules_package_name = os.path.basename(_custom_modules_dir)
 _cmi = os.path.join(_custom_modules_dir, '__init__.py')
 
 if os.path.isfile(_cmi):
@@ -196,10 +196,26 @@ class MainWindow(QtWidgets.QMainWindow):
                 self._cms_actions.append(action)
                 self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
             except ImportError:
-                failed_imports.append(mstr)
+                failed_imports.append(
+                    (mstr[1:], traceback.format_exc())
+                )
+
         if len(failed_imports) > 0:
-            names = '\n'.join(failed_imports)
-            QtWidgets.QMessageBox.warning(self, 'Failed to load plugings', f'The following plugins failed to load:\n{names}')
+            names = '\n'.join(fi[0] for fi in failed_imports)
+            QtWidgets.QMessageBox.warning(
+                self,
+                'Failed to load plugings',
+                f'The following plugins failed to load:\n{names}'
+                f'\n\n'
+                f'See the terminal for detailed tracebacks'
+            )
+
+            for fi in failed_imports:
+                print(
+                    f'{fi[0]}'
+                    f'\n{fi[1]}'
+                    f'\n\n'
+                )
 
         self.available_modules += list(self.custom_modules.keys())
 
