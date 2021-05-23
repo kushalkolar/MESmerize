@@ -12,7 +12,11 @@ Instructions
 
 #. Download the `__init__.py <https://github.com/kushalkolar/MESmerize/raw/master/mesmerize/viewer/modules/custom_modules/__init__.py>`_ and place it within the plugins directory.
 
-#. Create the main module file for your custom module. This file can be named as you wish and must use the struture outlined below. In addition to this main module file you can create a directory to house any other modules, files etc. You can create Qt templates using Qt Creator and convert them to .py template files using pyuic5 and use them for your custom module.
+#. Your directory structure & :ref:`SystemConfiguration` should look something like this. A ``__pycache__`` will automatically be created when you launch ``mesmerize``, this is normal.
+
+.. image:: ./plugin_dir_structure.png
+
+#. Create the main module file for your custom module, in this example we'll create ``example_plugin.py`` and place it in the plugins directory that we specific in the :ref:`SystemConfiguration` alongside the provided  ``__init__.py``. You can create as many plugin modules as you want, they can be named as you wish but must use the struture outlined below. In addition to this main module file you can create a separate subdirectory to house any modules or files associated to this module. You can create Qt templates using Qt Creator and convert them to .py template files using pyuic5 and use them for your custom module.
     
     **Basic Structure**
     
