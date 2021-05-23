@@ -95,4 +95,4 @@ Call ``get_nodes()`` to view a dict of all nodes in the flowchart. You can acces
 Transmission Files
 ==================
 
-.. include:: ../../api_reference/transmisssion_examples.rst
+.. include:: ../../api_reference/transmission_examples.rst

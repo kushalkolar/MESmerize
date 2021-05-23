@@ -1,6 +1,6 @@
 You can save a Transmission files using the :ref:`Save node <node_Save>` and work with the data directly in scripts, jupyter notebooks etc. You can also save them through the flowchart console (and plot consoles) through  :func:`Transmission.to_hdf5 <mesmerize.Transmission.to_hdf5>`.
 
-Workign with Transmission files
+Working with Transmission files
 -------------------------------
 
 Load a saved Transmission instance using :func:`Transmission.from_hdf5 <mesmerize.Transmission.from_hdf5>`
