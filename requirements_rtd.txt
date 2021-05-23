@@ -25,3 +25,4 @@ sphinx>=2.0
 sphinxcontrib-images
 tensorflow~=1.15
 Pygments>=2.4.1
+tslearn~=0.4.1
