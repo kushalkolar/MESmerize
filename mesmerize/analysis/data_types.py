@@ -357,7 +357,7 @@ class HistoryTrace:
 
     def draw_graph(self, data_block_id: Union[str, UUID], **kwargs) -> str:
         """
-        Draw graph of a data block. kwargs are passed to `mesmerize.plotting.utils.draw_graph`
+        Draw graph of a data block. kwargs are passed to `mesmerize.common.utils.draw_graph`
 
         :param data_block_id: data block ID from which to get history to draw in a graph
         :type data_block_id: Union[str, UUID]
