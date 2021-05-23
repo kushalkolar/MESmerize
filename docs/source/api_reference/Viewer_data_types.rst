@@ -51,3 +51,8 @@ Mesfile
     :special-members:
     :members:
     :private-members:
+
+Examples
+========
+
+.. include:: ./viewer_core_api_examples.rst
