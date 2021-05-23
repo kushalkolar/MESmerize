@@ -1,4 +1,4 @@
-.. NusetSegmentation::
+.. _NusetSegmentation::
 
 Nuset Segmentation
 ******************
