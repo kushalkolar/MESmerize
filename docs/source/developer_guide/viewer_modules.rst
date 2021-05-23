@@ -44,6 +44,8 @@ Instructions
                 self.setWindowTitle('Example Viewer Module')
                 self.setFloating(True)  # Must be floating
 
+                self.viewer_instance = viewer_instance
+
                 # container widget
                 self.dockwidget_area = QtWidgets.QWidget()
 
