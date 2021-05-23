@@ -293,7 +293,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         """
         Create an h5py file handle from the `.mesc` file at the given ``path``.
 
-        *args are not used, its just there for compatibility with the decorator.
+        ``*args`` are not used, its just there for compatibility with the decorator.
 
         :param path: path to the `.mes` file
         :type path: str
@@ -314,7 +314,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         """
         Close the file handle
 
-        :param args: *args not used, just there for compatibility with the decorator
+        :param args: ``*args`` not used, just there for compatibility with the decorator
         """
         self.mesc_navigator.close_file()
         self.ui.label_current_file_name.clear()
@@ -368,7 +368,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         Imports the chosen recording into the Viewer Work Environment based
         on the user selected hpath from the list widgets
 
-        *args not used, just there for compatibility with the decorator
+        ``*args`` not used, just there for compatibility with the decorator
         """
         if not self.vi.discard_workEnv():
             return
