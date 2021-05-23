@@ -59,3 +59,9 @@ DataFrame Format
     stim_A      328.0       1156.0          (0, 0, 125, 255)
     stim_C      1156.0      2987.0          (125, 0, 0, 255)
     ========    =========== =============   =================== 
+
+
+Example
+=======
+
+.. include:: ./stimulus_mapping_api_example.rst
