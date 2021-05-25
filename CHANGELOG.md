@@ -11,6 +11,7 @@
 ### Fixed
 - fix #55, don't move logfiles to zipfile in windows
 - bugfix 88edbd342ce8e2698ca0087553082e568e7132c2 so custom modules are imported properly
+- `pynwb` v1.5.1 wants newer `pandas`, stay on pandas 0.25.3 for now
 
 # 0.6.1
 ### Fixed
