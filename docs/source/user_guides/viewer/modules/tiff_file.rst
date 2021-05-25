@@ -63,6 +63,18 @@ If you have questions on meta data formats feel free to drop a message in the `G
                                         | See :ref:`Minimal dict <module_TiffFile_MinimalDict>` below for more info.
 
     AwesomeImager           .json       Used for 1p imaging in the `Chatzigeorgiou group <https://www.chatzigeorgioulab.com>`_ at the `Sars Center <https://www.uib.no/en/sarssenteret>`_
+
+    ome_tiff                .tiff       Imports OME XML meta data stored within the tiff file. Specification is described here: https://docs.openmicroscopy.org/ome-model/6.2.2/ome-tiff/specification.html
+
+                                        The following values are computed and added to the meta data for the :ref:`Viewer Work Environment <ViewerWorkEnv>`, and can be accessed through ``get_meta()`` in the :ref:` Viewer Console <ViewerConsole>`
+
+                                        | ``fps`` - mean sampling rate in Hz, volumetric sampling rate if 3D, frame-to-frame sampling rate if 2D
+
+                                        | ``fps_std`` - standard deviation of the sampling rate
+
+                                        | ``fps_max_dev`` - maximum deviation from the mean sampling rate
+
+                                        | A warning box is shown if ``fps_std`` > 0.01 or ``fps_max_dev`` > 0.1
     ====================    =========   ====================================================
 
     
