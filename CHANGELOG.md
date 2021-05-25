@@ -4,6 +4,14 @@
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
+# 0.7.0
+### New
+- Import OME XML meta data stored in tiff files
+
+### Fixed
+- fix #55, don't move logfiles to zipfile in windows
+- bugfix 88edbd342ce8e2698ca0087553082e568e7132c2 so custom modules are imported properly
+
 # 0.6.1
 ### Fixed
 - bug in `mesmerize.__main__` where old logfiles weren't being moved into zipfile
