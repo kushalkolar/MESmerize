@@ -17,7 +17,7 @@ install_requires = \
         "matplotlib<=3.2.1",
         "opencv-contrib-python>=4.2",
         "opencv-python>=4.2",
-        "pandas~=0.25.3",  # do not change
+        "pandas",  # do not change
         "Pillow>=5.4.1",
         "psutil",
         "PyQt5>=5.9.2,<=5.12",
@@ -40,7 +40,7 @@ install_requires = \
         #"bottleneck==1.2.1",  # do not change
         "holoviews",
         "jupyter",
-        "pynwb<=1.5.0",  # caiman requirement
+        "pynwb",  # caiman requirement
         "pyqtgraph",
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
