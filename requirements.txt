@@ -32,7 +32,7 @@ numba>=0.50.0
 bottleneck==1.2.1
 holoviews
 jupyter
-pynwb
+pynwb<=1.5.0
 pyqtgraph
 tk
 tcl
