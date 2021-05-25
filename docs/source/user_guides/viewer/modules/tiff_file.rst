@@ -66,7 +66,7 @@ If you have questions on meta data formats feel free to drop a message in the `G
 
     ome_tiff                .tiff       Imports OME XML meta data stored within the tiff file. Specification is described here: https://docs.openmicroscopy.org/ome-model/6.2.2/ome-tiff/specification.html
 
-                                        The following values are computed and added to the meta data for the :ref:`Viewer Work Environment <ViewerWorkEnv>`, and can be accessed through ``get_meta()`` in the :ref:` Viewer Console <ViewerConsole>`
+                                        The following values are computed and added to the meta data for the :ref:`Viewer Work Environment <ViewerWorkEnv>`, and can be accessed through ``get_meta()`` in the :ref:`Viewer Console <ViewerConsole>`
 
                                         | ``fps`` - mean sampling rate in Hz, volumetric sampling rate if 3D, frame-to-frame sampling rate if 2D
 
