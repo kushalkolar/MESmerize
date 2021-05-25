@@ -129,7 +129,8 @@ def main(
         logging.StreamHandler(sys.stderr)
     )
 
-    move_old_logfiles(root_logger, log_file_dir)
+    if not configuration.IS_WINDOWS:
+        move_old_logfiles(root_logger, log_file_dir)
 
     if not len(sys.argv) > 1:
         app = start_welcome_window()
