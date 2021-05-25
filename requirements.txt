@@ -29,7 +29,7 @@ joblib>=0.15.1
 tslearn~=0.4.1
 graphviz>=0.13
 numba>=0.50.0
-"bottleneck==1.2.1
+bottleneck==1.2.1
 holoviews
 jupyter
 pynwb
