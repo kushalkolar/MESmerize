@@ -145,7 +145,7 @@ def ome_tiff(path: str) -> dict:
     std_sampling_rate = np.diff(a).std() / 60  # standard deviation
     max_dev_sampling_rate = np.diff(a).ptp() / 60  # max deviation from mean sampling rate
 
-    if (max_dev_sampling_rate > 0.1) or (std_sampling_rate > 0.1):
+    if (max_dev_sampling_rate > 0.1) or (std_sampling_rate > 0.01):
         warning_msg = \
             f'This is a warning that the standard deviation or max deviation from the mean sampling rate might be ' \
             f'unusually high' \
