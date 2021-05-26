@@ -155,7 +155,7 @@ def ome_tiff(path: str) -> dict:
             f'mean sampling rate: {mean_sampling_rate:.5f} Hz\n' \
             f'standard deviation of sampling rate: {std_sampling_rate:.5f} Hz\n' \
             f'maximum deviation from mean sampling rate: {max_dev_sampling_rate:.5f} Hz\n\n' \
-            f'This message is shown when the max deviation is > 0.1 Hz or the standard deviation is > 0.1 Hz' \
+            f'This message is shown when the max deviation is > 0.1 Hz or the standard deviation is > 0.01 Hz' \
 
         if QtWidgets.QApplication.instance() is not None:
             QtWidgets.QMessageBox.warning(
