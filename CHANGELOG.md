@@ -4,6 +4,10 @@
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 
+# 0.7.1
+### Fixed
+- Fix sampling rate calculation for OME meta data import
+
 # 0.7.0
 ### New
 - Import OME XML meta data stored in tiff files
