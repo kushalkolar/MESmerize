@@ -141,9 +141,11 @@ def ome_tiff(path: str) -> dict:
     for n_zplane in range(n_zplanes):
         a[n_zplane, :] = [float(f['@DeltaT']) for f in ome_img_meta if int(f['@TheZ']) == n_zplane]
 
-    mean_sampling_rate = np.diff(a).mean() / 60  # mean sampling rate
-    std_sampling_rate = np.diff(a).std() / 60  # standard deviation
-    max_dev_sampling_rate = np.diff(a).ptp() / 60  # max deviation from mean sampling rate
+    sampling_rates = (1 / np.diff(a))
+
+    mean_sampling_rate = sampling_rates.mean()  # mean sampling rate
+    std_sampling_rate = sampling_rates.std()  # standard deviation
+    max_dev_sampling_rate = sampling_rates.ptp()  # max deviation from mean sampling rate
 
     if (max_dev_sampling_rate > 0.1) or (std_sampling_rate > 0.01):
         warning_msg = \
