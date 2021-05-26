@@ -3,7 +3,7 @@ h5py>=2.10.0
 matplotlib>=3.2.2
 opencv-contrib-python>=4.2
 opencv-python>=4.2
-pandas~=0.25.3
+pandas
 Pillow>=5.4.1
 psutil~=5.7.0
 PyQt5>=5.9.2,<=5.12
