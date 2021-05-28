@@ -48,7 +48,8 @@ install_requires = \
         "bokeh>=2.2.0",
         "nuset-lib",
         "sk-video",
-        "click"
+        "click",
+        "xmltodict"  # for OME xml
     ]
 
 classifiers = \
