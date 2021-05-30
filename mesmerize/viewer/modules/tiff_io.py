@@ -56,14 +56,22 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.meta_loader = None
 
+        self.ui.lineEditTiffFile.textChanged.connect(self.set_tiff_file_path)
+
     @property
     def tiff_file_path(self) -> str:
         return self._tiff_file_path
 
-    @tiff_file_path.setter
-    def tiff_file_path(self, path: str):
-        self._tiff_file_path = path
-        self.ui.labelFileTiff.setText(self.tiff_file_path)
+    # @tiff_file_path.setter
+    def set_tiff_file_path(self, path: str):
+        if os.path.isfile(path):
+            self._tiff_file_path = path
+            self.ui.lineEditTiffFile.setStyleSheet("QLineEdit { background-color: #77dd77; }")  # green
+            self.ui.labelTiffFile.setText(os.path.basename(path))
+        else:
+            self._tiff_file_path = None
+            self.ui.lineEditTiffFile.setStyleSheet("QLineEdit { background-color: #fe0d00; }")  # red
+            self.ui.labelTiffFile.clear()
 
     @property
     def meta_file_path(self) -> str:
@@ -72,7 +80,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
     @meta_file_path.setter
     def meta_file_path(self, path: str):
         self._meta_file_path = path
-        self.ui.labelFileMeta.setText(self.meta_file_path)
+        self.ui.lineEditMetaDataFile.setText(self.meta_file_path)
 
     def get_load_method(self) -> str:
         if self._load_method is None:
@@ -87,7 +95,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
     @use_open_file_dialog('Choose tiff file', '', ['*.tiff', '*.tif'])
     def select_tiff_file(self, path, *args, **kwargs):
-        self.tiff_file_path = path
+        self.ui.lineEditTiffFile.setText(self.tiff_file_path)
         self.check_meta_path()
 
     def check_meta_path(self) -> bool:

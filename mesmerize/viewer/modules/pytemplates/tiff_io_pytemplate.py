@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'tiff_io_pytemplate.ui'
+# Form implementation generated from reading ui file './ui_files/tiff_io_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(600, 411)
+        DockWidget.resize(855, 435)
+        DockWidget.setMaximumSize(QtCore.QSize(524287, 524287))
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
+        self.dockWidgetContents.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.dockWidgetContents.setObjectName("dockWidgetContents")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.dockWidgetContents)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
@@ -35,12 +38,23 @@ class Ui_DockWidget(object):
         self.btnSelectTiff.setMaximumSize(QtCore.QSize(90, 32))
         self.btnSelectTiff.setObjectName("btnSelectTiff")
         self.horizontalLayout.addWidget(self.btnSelectTiff)
-        self.labelFileTiff = QtWidgets.QLabel(self.dockWidgetContents)
-        self.labelFileTiff.setText("")
-        self.labelFileTiff.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
-        self.labelFileTiff.setObjectName("labelFileTiff")
-        self.horizontalLayout.addWidget(self.labelFileTiff)
+        self.lineEditTiffFile = QtWidgets.QLineEdit(self.dockWidgetContents)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEditTiffFile.sizePolicy().hasHeightForWidth())
+        self.lineEditTiffFile.setSizePolicy(sizePolicy)
+        self.lineEditTiffFile.setMinimumSize(QtCore.QSize(300, 0))
+        self.lineEditTiffFile.setMaximumSize(QtCore.QSize(400, 16777215))
+        self.lineEditTiffFile.setObjectName("lineEditTiffFile")
+        self.horizontalLayout.addWidget(self.lineEditTiffFile)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
         self.verticalLayout_4.addLayout(self.horizontalLayout)
+        self.labelTiffFile = QtWidgets.QLabel(self.dockWidgetContents)
+        self.labelTiffFile.setText("")
+        self.labelTiffFile.setObjectName("labelTiffFile")
+        self.verticalLayout_4.addWidget(self.labelTiffFile)
         self.groupBox = QtWidgets.QGroupBox(self.dockWidgetContents)
         self.groupBox.setObjectName("groupBox")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBox)
@@ -103,12 +117,18 @@ class Ui_DockWidget(object):
         self.btnSelectMetaFile.setMaximumSize(QtCore.QSize(130, 32))
         self.btnSelectMetaFile.setObjectName("btnSelectMetaFile")
         self.horizontalLayout_3.addWidget(self.btnSelectMetaFile)
-        self.labelFileMeta = QtWidgets.QLabel(self.groupBox_meta_loader)
-        self.labelFileMeta.setText("")
-        self.labelFileMeta.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse|QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
-        self.labelFileMeta.setObjectName("labelFileMeta")
-        self.horizontalLayout_3.addWidget(self.labelFileMeta)
+        self.lineEditMetaDataFile = QtWidgets.QLineEdit(self.groupBox_meta_loader)
+        self.lineEditMetaDataFile.setMinimumSize(QtCore.QSize(300, 0))
+        self.lineEditMetaDataFile.setMaximumSize(QtCore.QSize(400, 16777215))
+        self.lineEditMetaDataFile.setObjectName("lineEditMetaDataFile")
+        self.horizontalLayout_3.addWidget(self.lineEditMetaDataFile)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem1)
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        self.labelMetaDataFile = QtWidgets.QLabel(self.groupBox_meta_loader)
+        self.labelMetaDataFile.setText("")
+        self.labelMetaDataFile.setObjectName("labelMetaDataFile")
+        self.verticalLayout_3.addWidget(self.labelMetaDataFile)
         self.label_3 = QtWidgets.QLabel(self.groupBox_meta_loader)
         self.label_3.setObjectName("label_3")
         self.verticalLayout_3.addWidget(self.label_3)
@@ -130,16 +150,18 @@ class Ui_DockWidget(object):
 
         self.retranslateUi(DockWidget)
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
-        DockWidget.setTabOrder(self.btnSelectTiff, self.radioButtonAsArray)
+        DockWidget.setTabOrder(self.btnSelectTiff, self.lineEditTiffFile)
+        DockWidget.setTabOrder(self.lineEditTiffFile, self.radioButtonAsArray)
         DockWidget.setTabOrder(self.radioButtonAsArray, self.radioButtonAsArrayMulti)
         DockWidget.setTabOrder(self.radioButtonAsArrayMulti, self.radioButtonImread)
         DockWidget.setTabOrder(self.radioButtonImread, self.radioButton_axes_default)
         DockWidget.setTabOrder(self.radioButton_axes_default, self.radioButton_axes_custom)
         DockWidget.setTabOrder(self.radioButton_axes_custom, self.lineEdit_axes_custom)
-        DockWidget.setTabOrder(self.lineEdit_axes_custom, self.groupBox_meta_loader)
+        DockWidget.setTabOrder(self.lineEdit_axes_custom, self.btnLoadIntoWorkEnv)
+        DockWidget.setTabOrder(self.btnLoadIntoWorkEnv, self.groupBox_meta_loader)
         DockWidget.setTabOrder(self.groupBox_meta_loader, self.btnSelectMetaFile)
-        DockWidget.setTabOrder(self.btnSelectMetaFile, self.listWidget_meta_data_loader)
-        DockWidget.setTabOrder(self.listWidget_meta_data_loader, self.btnLoadIntoWorkEnv)
+        DockWidget.setTabOrder(self.btnSelectMetaFile, self.lineEditMetaDataFile)
+        DockWidget.setTabOrder(self.lineEditMetaDataFile, self.listWidget_meta_data_loader)
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate
@@ -166,4 +188,5 @@ class Ui_DockWidget(object):
         self.btnSelectMetaFile.setText(_translate("DockWidget", "Select file"))
         self.label_3.setText(_translate("DockWidget", "Meta data format:"))
         self.btnLoadIntoWorkEnv.setText(_translate("DockWidget", "Load into Work Environment"))
+
 

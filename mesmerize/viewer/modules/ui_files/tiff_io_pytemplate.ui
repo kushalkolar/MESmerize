@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>411</height>
+    <width>855</width>
+    <height>435</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>524287</width>
+    <height>524287</height>
+   </size>
   </property>
   <property name="floating">
    <bool>true</bool>
@@ -17,6 +23,12 @@
    <string>Tiff file &amp;I/O</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_6">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -52,16 +64,48 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="labelFileTiff">
-            <property name="text">
-             <string/>
+           <widget class="QLineEdit" name="lineEditTiffFile">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="textInteractionFlags">
-             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>400</width>
+              <height>16777215</height>
+             </size>
             </property>
            </widget>
           </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelTiffFile">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox">
@@ -206,16 +250,42 @@ See the docs for instructions on how to create your own loader.</string>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="labelFileMeta">
-               <property name="text">
-                <string/>
+              <widget class="QLineEdit" name="lineEditMetaDataFile">
+               <property name="minimumSize">
+                <size>
+                 <width>300</width>
+                 <height>0</height>
+                </size>
                </property>
-               <property name="textInteractionFlags">
-                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
+                </size>
                </property>
               </widget>
              </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelMetaDataFile">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QLabel" name="label_3">
@@ -252,16 +322,18 @@ See the docs for instructions on how to create your own loader.</string>
  </widget>
  <tabstops>
   <tabstop>btnSelectTiff</tabstop>
+  <tabstop>lineEditTiffFile</tabstop>
   <tabstop>radioButtonAsArray</tabstop>
   <tabstop>radioButtonAsArrayMulti</tabstop>
   <tabstop>radioButtonImread</tabstop>
   <tabstop>radioButton_axes_default</tabstop>
   <tabstop>radioButton_axes_custom</tabstop>
   <tabstop>lineEdit_axes_custom</tabstop>
+  <tabstop>btnLoadIntoWorkEnv</tabstop>
   <tabstop>groupBox_meta_loader</tabstop>
   <tabstop>btnSelectMetaFile</tabstop>
+  <tabstop>lineEditMetaDataFile</tabstop>
   <tabstop>listWidget_meta_data_loader</tabstop>
-  <tabstop>btnLoadIntoWorkEnv</tabstop>
  </tabstops>
  <resources/>
  <connections/>
