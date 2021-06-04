@@ -22,8 +22,8 @@ When you start the VM, just double click the mesmerize launcher on the desktop.
 
 The details for the user account on the VM are:
 
-username: ``user`` |
-password: ``password`` |
+| username: ``user``
+| password: ``password``
 
 You can use the same password for ``sudo``.
 
@@ -236,6 +236,10 @@ You will need a relatively recent version of Anaconda in order to run conda comm
 #. Activate the environment::
 
     conda activate mesmerize
+    
+#. Install tensorflow v1.15::
+
+    conda install tensorflow=1.15
     
 #. Install caiman::
 
