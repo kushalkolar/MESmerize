@@ -42,6 +42,7 @@ https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
 	./getting_help
 	./user_guides/faq
 	./citation_guide
+        ./users
 
 .. toctree::
 	:maxdepth: 1

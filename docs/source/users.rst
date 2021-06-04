@@ -1,5 +1,5 @@
-Who uses it?
-************
+Who uses Mesmerize?
+*******************
 
 Sars Centre - Marios Chatzigeorgiou lab
 University of Oslo - Joel Glover lab
