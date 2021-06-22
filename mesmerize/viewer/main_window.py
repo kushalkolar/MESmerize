@@ -95,6 +95,14 @@ if configuration.HAS_CAIMAN:
     )
 
 
+file_associations =\
+    {
+        '.tif':     tiff_io.ModuleGUI,
+        '.tiff':    tiff_io.ModuleGUI,
+        '.btf':     tiff_io.ModuleGUI,
+    }
+
+
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
                         'mesfile': mesfile_io.ModuleGUI,
@@ -533,8 +541,6 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             return
 
-        if file.endswith('.tiff') or file.endswith('.tif'):
-            tio = self.get_module('tiff_io')
-            assert isinstance(tio, tiff_io.ModuleGUI)
-            tio.tiff_file_path = file
-            tio.check_meta_path()
+        ext = os.path.splitext(file)[1]
+
+        self.get_module(file_associations[ext]).file_sink(file)

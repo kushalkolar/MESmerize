@@ -184,3 +184,8 @@ def ome_tiff(path: str) -> dict:
 def ome_tif(path: str) -> dict:
     """.tif"""
     return ome_tiff(path)
+
+
+def ome_btf(path: str) -> dict:
+    """.btf"""
+    return ome_tiff(path)
