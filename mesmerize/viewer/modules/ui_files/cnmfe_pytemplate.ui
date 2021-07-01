@@ -866,6 +866,13 @@ Use single quotes for strings, do not use double quotes</string>
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkBoxKeepMemmap">
+        <property name="text">
+         <string>Keep memmap</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <widget class="QLabel" name="label_18">
@@ -927,6 +934,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>doubleSpinBoxDecayTime</tabstop>
   <tabstop>groupBox_eval_kwargs</tabstop>
   <tabstop>plainTextEdit_eval_kwargs</tabstop>
+  <tabstop>checkBoxKeepMemmap</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMFE</tabstop>
  </tabstops>

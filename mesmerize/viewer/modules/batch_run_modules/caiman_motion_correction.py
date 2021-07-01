@@ -80,7 +80,7 @@ def run_single(batch_dir, UUID, output):
 
     fname = [file_path + '_input.tiff']
     # TODO: Should just unpack the input params as kwargs
-    input_params = pickle.load(open(file_path + '.params', 'rb'))
+    input_params: dict = pickle.load(open(file_path + '.params', 'rb'))
     mc_kwargs = input_params['mc_kwargs']
 
     splits_rig = n_processes
@@ -130,11 +130,12 @@ def run_single(batch_dir, UUID, output):
 
     output.update({'status': 1, 'bord_px': int(bord_px_els)})
 
-    for mf in glob(os.path.join(batch_dir, UUID + '*.mmap')):
-        try:
-            os.remove(mf)
-        except:
-            pass
+    if not input_params.get('keep_memmap', False):
+        for mf in glob(os.path.join(batch_dir, UUID + '*.mmap')):
+            try:
+                os.remove(mf)
+            except:
+                pass
 
     dview.terminate()
 

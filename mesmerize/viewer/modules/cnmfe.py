@@ -168,6 +168,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         else:
             raise ValueError("Must specify argument `item_type` as either 'corr_pnr' or 'cnmfe'")
 
+        d['keep_memmap'] = self.ui.checkBoxKeepMemmap.isChecked()
+
         return d
 
     def add_to_batch_corr_pnr(self, params: dict = None) -> UUID:

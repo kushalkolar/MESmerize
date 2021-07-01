@@ -121,7 +121,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'item_name': self.ui.lineEdName.text(),
                 'refit': self.ui.checkBoxRefit.isChecked(),
                 'border_pix': bord_px,
-                'is_3d': is_3d
+                'is_3d': is_3d,
+                'keep_memmap': self.ui.checkBoxKeepMemmap.isChecked()
             }
 
         # Group the kwargs of the two parts seperately

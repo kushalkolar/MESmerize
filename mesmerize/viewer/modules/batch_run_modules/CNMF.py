@@ -64,11 +64,12 @@ def run(batch_dir: str, UUID: str):
     except Exception as e:
         output.update({'status': 0, 'output_info': traceback.format_exc()})
 
-    for mf in glob(os.path.join(batch_dir, f'memmap-{UUID}*')):
-        try:
-            os.remove(mf)
-        except:
-            pass
+    if not input_params.get('keep_memmap', False):
+        for mf in glob(os.path.join(batch_dir, f'memmap-{UUID}*')):
+            try:
+                os.remove(mf)
+            except:
+                pass
 
     end_time = time()
     proc_time = (end_time - start_time) / 60
