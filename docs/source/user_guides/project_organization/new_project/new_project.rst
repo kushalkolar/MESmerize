@@ -85,7 +85,7 @@ Stimulus Type Columns
 
 If you're interested in mapping temporal information to your traces, such as stimuli or behavioral periods, add a “Stimulus Type column” for each type. This is only for temporary stimulation or behavioral periods that do not span the entire length of the video.
 
-.. seealso:: **<link here> Stimulus Mapping guide, to understand how stimuli can be labelled.**
+.. seealso:: :ref:`Stimulus Mapping guide <StimulusMapping>` to understand how stimuli can be labelled.**
 
 .. _CustomColumns:
 
