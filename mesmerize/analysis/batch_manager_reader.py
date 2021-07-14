@@ -29,7 +29,7 @@ def _get_item_uuid(item: Union[int, str, UUID]) -> UUID:
 
 
 @pd.api.extensions.register_series_accessor("caiman")
-class Caiman:
+class CaimanExtensions:
     """
     Extensions for caiman related functions
     """
