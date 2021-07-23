@@ -6,3 +6,4 @@ Who uses Mesmerize?
 * NIH - Integrative Bioinformatics Support Group
 * KOKI Institute of Experimental Medicine
 * University of Alberta - Ian Winship lab
+* Feinstein Institute of Bioelectronic Medicine
