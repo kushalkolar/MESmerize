@@ -189,3 +189,18 @@ def ome_tif(path: str) -> dict:
 def ome_btf(path: str) -> dict:
     """.btf"""
     return ome_tiff(path)
+
+
+def inscopix(path: str) -> dict:
+    """.json"""
+    meta = json.load(open(path, 'r'))
+
+    d = \
+        {
+            'fps': 1000 / meta['Exposure Time (ms)'],
+            'origin': meta['Microscope Type'],
+            'date': "00000000_000000",
+            'orig_meta': meta,
+        }
+
+    return d
