@@ -57,18 +57,30 @@ else:
     _import_custom_modules = False
 
 
-dock_widget_area = {'roi_manager': QtCore.Qt.LeftDockWidgetArea,
-                    roi_manager.ModuleGUI: QtCore.Qt.LeftDockWidgetArea,
+dock_widget_area = \
+    {
+        'roi_manager': QtCore.Qt.LeftDockWidgetArea,
+        roi_manager.ModuleGUI: QtCore.Qt.LeftDockWidgetArea,
 
-                    'tiff_io': QtCore.Qt.TopDockWidgetArea,
-                    tiff_io.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
+        'tiff_io': QtCore.Qt.TopDockWidgetArea,
+        tiff_io.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
 
-                    'suite2p_importer': QtCore.Qt.TopDockWidgetArea,
-                    suite2p.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
+        'suite2p_importer': QtCore.Qt.TopDockWidgetArea,
+        suite2p.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
 
-                    'stimulus_mapping': QtCore.Qt.BottomDockWidgetArea,
-                    stimulus_mapping.ModuleGUI: QtCore.Qt.BottomDockWidgetArea
-                    }
+        'stimulus_mapping': QtCore.Qt.BottomDockWidgetArea,
+        stimulus_mapping.ModuleGUI: QtCore.Qt.BottomDockWidgetArea,
+    }
+
+# inscopix importer
+if configuration.HAS_ISX:
+    dock_widget_area.update(
+        {
+            'inscopix_importer': QtCore.Qt.TopDockWidgetArea,
+            inscopix_importer.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
+        }
+    )
+
 
 # caiman modules
 if configuration.HAS_CAIMAN:
@@ -148,9 +160,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
         self.ui.actionScript_Editor.triggered.connect(lambda: self.run_module(script_editor.ModuleGUI))
 
+        if configuration.HAS_ISX:
+            self.ui.actionInscopix_isxd.triggered.connect(lambda: self.run_module(inscopix_importer.ModuleGUI))
+
         if configuration.HAS_TENSORFLOW:
             self.ui.actionNuSeT_Segmentation.triggered.connect(lambda: self.run_module(nuset_segment.ModuleGUI))
-
 
         # TODO: refactor the actions trigger connections so they're automated based on module name
         if configuration.HAS_CAIMAN:

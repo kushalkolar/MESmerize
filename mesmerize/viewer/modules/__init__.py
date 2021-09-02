@@ -1,4 +1,4 @@
-from ...common.configuration import HAS_CAIMAN, HAS_TENSORFLOW
+from ...common.configuration import HAS_CAIMAN, HAS_TENSORFLOW, HAS_ISX
 
 __all__ = [
     'mesfile_io',
@@ -27,3 +27,9 @@ if HAS_TENSORFLOW:
         [
             'nuset_segment',
         ]
+
+if HAS_ISX:
+    __all__ += \
+    [
+        'inscopix_importer'
+    ]

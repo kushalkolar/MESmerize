@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'main_window_pytemplate.ui'
+# Form implementation generated from reading ui file './main_window_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -16,7 +17,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 32))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 30))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -126,6 +127,8 @@ class Ui_MainWindow(object):
         self.action_mes_importer.setObjectName("action_mes_importer")
         self.actionNuSeT_Segmentation = QtWidgets.QAction(MainWindow)
         self.actionNuSeT_Segmentation.setObjectName("actionNuSeT_Segmentation")
+        self.actionInscopix_isxd = QtWidgets.QAction(MainWindow)
+        self.actionInscopix_isxd.setObjectName("actionInscopix_isxd")
         self.menuFile.addAction(self.actionAdd_to_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_work_environment)
@@ -136,6 +139,7 @@ class Ui_MainWindow(object):
         self.menuFemtonics.addAction(self.action_mes_importer)
         self.menuLoad_images.addAction(self.actionTiff_file)
         self.menuLoad_images.addAction(self.menuFemtonics.menuAction())
+        self.menuLoad_images.addAction(self.actionInscopix_isxd)
         self.menuCaImAn_toolbox.addAction(self.actionMotion_Correction)
         self.menuCaImAn_toolbox.addAction(self.actionCNMF)
         self.menuCaImAn_toolbox.addAction(self.actionCNMF_E)
@@ -231,4 +235,6 @@ class Ui_MainWindow(object):
         self.action_mesc_importer.setText(_translate("MainWindow", ".&mesc importer"))
         self.action_mes_importer.setText(_translate("MainWindow", ".mes &importer"))
         self.actionNuSeT_Segmentation.setText(_translate("MainWindow", "&NuSeT Segmentation"))
+        self.actionInscopix_isxd.setText(_translate("MainWindow", "Inscopix isxd"))
+
 
