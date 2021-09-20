@@ -21,7 +21,8 @@ from ....common.configuration import HAS_CAIMAN
 from matplotlib import cm as matplotlib_color_map
 from tqdm import tqdm
 import logging
-
+from matplotlib.patches import Ellipse
+import itertools
 
 if HAS_CAIMAN:
     from caiman.utils.visualization import get_contours as caiman_get_contours
@@ -178,9 +179,25 @@ class ManagerManual(AbstractBaseManager):
         """
         ij_roi = read_imagej(path)
         for k in ij_roi.keys():
-            xs = ij_roi[k]['x']
-            ys = ij_roi[k]['y']
-            ps = list(zip(xs, ys))
+            if ij_roi[k]['type'] in ('oval', 'rectangle'):
+                width=ij_roi[k]['width']
+                height=ij_roi[k]['height']
+                left=ij_roi[k]['left']
+                top=ij_roi[k]['top']
+                x_center=left+width/2
+                y_center=top+height/2
+                if ij_roi[k]['type'] == 'oval':
+                    shape=Ellipse((x_center,y_center),width,height)
+                    vertices_orig=shape.get_path().vertices #get all vertices  
+                    vertices = shape.get_patch_transform().transform(vertices_orig)
+                    ps=[tuple(x) for x in vertices]
+                else:
+                    ps=list(itertools.product((left,left+width),(top,top+height)))
+                    ps[2],ps[3]=ps[3],ps[2] #swap coordinates so it draws coordinates in sequence
+            else:
+                xs = ij_roi[k]['x']
+                ys = ij_roi[k]['y']
+                ps = list(zip(xs, ys))
 
             roi = ManualROI.from_positions(positions=ps,
                                            curve_plot_item=self.get_plot_item(),
