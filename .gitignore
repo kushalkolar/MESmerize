@@ -127,3 +127,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+mesmerize/viewer/modules/roi_manager_modules/roi_types.py
