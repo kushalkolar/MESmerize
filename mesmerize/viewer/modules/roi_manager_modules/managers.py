@@ -300,9 +300,9 @@ class ManagerVolROI(ManagerScatterROI):
 
     def set_zlevel(self, z: int):
         """Set the current z-level to be visible in the viewer"""
-        if not hasattr(self, 'roi_list'):
-            warn('roi list does not exist, probably empty work environment')
-            return
+        #if not hasattr(self, 'roi_list'):
+        #    warn('roi list does not exist, probably empty work environment')
+        #    return
 
         for roi in self.roi_list:
             roi.set_zlevel(z)
@@ -679,7 +679,7 @@ class ManagerVolMultiCNMFROI(ManagerVolROI):
             self.create_roi_list()
 
         for zcenter in range(self.num_zlevels):
-            logger(f"Loading z-level {zcenter}")
+            logger.info(f"Loading z-level {zcenter}")
             contours = caiman_get_contours(
                 self.cnmA[zcenter][:, self.idx_components[zcenter]],
                 self.dims[zcenter],
