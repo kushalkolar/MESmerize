@@ -306,7 +306,7 @@ class ManagerVolROI(ManagerScatterROI):
 
         for roi in self.roi_list:
             roi.set_zlevel(z)
-
+        
     def create_roi_list(self):
         """Create new empty ROI list"""
         self.roi_list = ROIList(self.ui, VolCNMF, self.vi)
