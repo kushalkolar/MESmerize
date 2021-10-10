@@ -44,7 +44,7 @@ Add ROI button              Add Polygon ROI (Manual mode)
 Show all                    Show all ROIs in the viewer
 Live plot                   Live update of the curve plot with changes (Manual mode)
 Plot                        Plot the curves (Manual mode)
-Import from ImageJ          Import ROIs from an ImageJ ROIs zip file (Manual mode)
+Import from ImageJ          Import ROIs from an ImageJ ROIs zip file (Manual mode). Freehand ROIs are downsampled by 5.
 Switch to manual ...        Switch to Manual mode. Clears CNMF(E) ROIs.
 
 ROIs list                   Color-coded list of ROIs.

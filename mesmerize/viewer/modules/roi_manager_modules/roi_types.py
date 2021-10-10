@@ -386,6 +386,16 @@ class ManualROI(BaseROI):
         roi_graphics_object = pg.PolyLineROI(positions=positions, closed=True, removable=True)
         return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box)
 
+    @classmethod
+    def from_ellipse(cls, curve_plot_item: pg.PlotDataItem, view_box: pg.ViewBox, positions: list):
+        """
+        Create an ellipse from a list of positions when importing ImageJ ROIs.
+
+        :param positions:  [origin_bottom_x, origin_bottom_y, width, height]
+        """
+        
+        roi_graphics_object = pg.EllipseROI(pos=[positions[0], positions[1]], size=[int(positions[2]), int(positions[3])], removable=True)
+        return cls(curve_plot_item=curve_plot_item, roi_graphics_object=roi_graphics_object, view_box=view_box)
 
 class ScatterROI(BaseROI):
     """A class for unmoveable ROIs drawn using scatter points"""
