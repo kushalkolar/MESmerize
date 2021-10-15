@@ -3,14 +3,14 @@ h5py>=2.10.0
 matplotlib>=3.2.2
 opencv-contrib-python>=4.2
 opencv-python>=4.2
-pandas~=0.25.3
+pandas
 Pillow>=5.4.1
 psutil~=5.7.0
 PyQt5>=5.9.2,<=5.12
 QtPy>=1.6.0
 qtap
 scikit-image==0.17.2  # do not change
-scikit-learn>=0.20.2  # do not change
+scikit-learn~=0.23.1
 scipy>=1.2.1  # do not change
 seaborn==0.9.0  # do not change
 spyder==3.3.3  # do not change
@@ -23,3 +23,6 @@ tk
 tcl
 sphinx>=2.0
 sphinxcontrib-images
+tensorflow~=1.15
+Pygments>=2.4.1
+tslearn~=0.4.1

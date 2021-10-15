@@ -135,7 +135,9 @@ def _compute_from_ccs(ccs: np.ndarray, func: callable) -> np.ndarray:
 
 
 class CC_Data:
-    def __init__(self, ccs: np.ndarray = None,
+    def __init__(self,
+                 input_data: np.ndarray = None,
+                 ccs: np.ndarray = None,
                  lag_matrix: np.ndarray = None,
                  epsilon_matrix: np.ndarray = None,
                  curve_uuids: np.ndarray = None,
@@ -156,7 +158,7 @@ class CC_Data:
         :param labels:          labels for each curve, length: n_curves
         :type labels:           np.ndarray
         """
-
+        self.input_data: np.ndarray = input_data
         self.ccs = ccs  #: array of cross-correlation functions
         self.lag_matrix = lag_matrix  #: lag matrix
         self.epsilon_matrix = epsilon_matrix  #: maxima matrix
@@ -240,7 +242,7 @@ def compute_cc_data(curves: np.ndarray) -> CC_Data:
     l = get_lag_matrix(ccs=ccs)
     e = get_epsilon_matrix(ccs=ccs)
 
-    return CC_Data(ccs, l, e)
+    return CC_Data(curves, ccs, l, e)
 
 
 def compute_ccs(a: np.ndarray) -> np.ndarray:

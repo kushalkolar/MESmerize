@@ -19,7 +19,7 @@ import pandas as pd
 import tifffile
 import numpy as np
 import pickle
-from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI, ScatterROI, VolCNMF
+from ...viewer.modules.roi_manager_modules.roi_types import CNMFROI, ManualROI, ScatterROI, VolCNMF, VolMultiCNMFROI
 # from ...viewer.core import ViewerWorkEnv, ViewerUtils
 from ...common import get_window_manager, get_project_manager
 # from common import configuration
@@ -181,6 +181,15 @@ class DatapointTracerWidget(QtWidgets.QWidget):
 
             self.roi = VolCNMF.from_state(curve_plot_item=None, view_box=self.view, state=roi_state, zlevel=self.zcenter)
             self.roi.get_roi_graphics_object().setBrush(mkColor(roi_color))
+
+        elif roi_state['roi_type'] in ['VolMultiCNMFROI']:
+            self.is_3d = True
+            self.zcenter = roi_state['zcenter']
+            self.set_image(self.img_proj)
+
+            self.roi = VolMultiCNMFROI.from_state(
+                curve_plot_item=None, view_box=self.view, state=roi_state, zlevel=self.zcenter
+            )
 
         self.roi.get_roi_graphics_object().setPen(mkColor(roi_color))
         self.roi.add_to_viewer()

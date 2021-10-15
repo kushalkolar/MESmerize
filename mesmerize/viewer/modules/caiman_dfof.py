@@ -15,8 +15,14 @@ from ...common.qdialogs import *
 from ...common.configuration import get_sys_config
 from qtap import Function
 from caiman.source_extraction.cnmf.cnmf import CNMF, Estimates, CNMFParams
-from .roi_manager_modules.managers import ManagerCNMFROI, ManagerVolCNMF
+from .roi_manager_modules.managers import ManagerCNMFROI, ManagerVolCNMF, ManagerVolMultiCNMFROI
 import numpy as np
+from tqdm import tqdm
+import logging
+
+
+logger = logging.getLogger()
+
 
 # just need the function signature
 def detrend_df_f(quantileMin: float = 8,
@@ -82,35 +88,38 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.setWidget(self.function.widget)
 
-    @present_exceptions()
+    @present_exceptions(
+        'Error getting dF/Fo data.',
+        'The following error occurred when calculating dF/Fo values.'
+    )
     def set_data(self, kwargs: dict):
         if not isinstance(
                 self.vi.viewer.workEnv.roi_manager,
-                (ManagerCNMFROI, ManagerVolCNMF)
+                (ManagerCNMFROI, ManagerVolCNMF, ManagerVolMultiCNMFROI)
         ):
             raise TypeError("This module is only for CNMF ROIs")
 
-        roi_manager: (ManagerCNMFROI, ManagerCNMFROI) = \
+        roi_manager: (ManagerCNMFROI, ManagerCNMFROI, ManagerVolMultiCNMFROI) = \
             self.vi.viewer.workEnv.roi_manager
-
-        if not (roi_manager.idx_components == roi_manager.orig_idx_components).all():
-            raise ValueError("You cannot use this module if you have deleted ROIs."
-                             "If you want to delete some ROIs, first use this "
-                             "module and then delete the ROIs.")
 
         self.vi.set_statusbar('Doing caiman detrend_df_f, please wait...')
 
-        self.cnmf = get_CNMF_obj(roi_manager.cnmf_data_dict)
-        self.cnmf.estimates.detrend_df_f(**kwargs)
+        if isinstance(self.vi.viewer.workEnv.roi_manager, (ManagerCNMFROI, ManagerVolCNMF)):
+            if not (roi_manager.idx_components == roi_manager.orig_idx_components).all():
+                raise ValueError("You cannot use this module if you have deleted ROIs."
+                                 "If you want to delete some ROIs, first use this "
+                                 "module and then delete the ROIs.")
 
-        roi_manager.cnm_dfof = self.cnmf.estimates.F_dff
+            self._set_data(roi_manager, kwargs)
 
-        for roi, dfof in zip(
-                roi_manager.roi_list,
-                roi_manager.cnm_dfof
-        ):
-            xs = np.arange(len(dfof))
-            roi.dfof_data = [xs, dfof]
+        elif isinstance(self.vi.viewer.workEnv.roi_manager, ManagerVolMultiCNMFROI):
+            for zlevel in range(len(roi_manager.idx_components)):
+                if not (roi_manager.idx_components[zlevel] == roi_manager.orig_idx_components[zlevel]).all():
+                    raise ValueError("You cannot use this module if you have deleted ROIs."
+                                     "If you want to delete some ROIs, first use this "
+                                     "module and then delete the ROIs.")
+
+            self._set_data_multi2d(roi_manager, kwargs)
 
         history = self.vi.work_env.history_trace
 
@@ -124,3 +133,47 @@ class ModuleGUI(QtWidgets.QDockWidget):
         self.vi.set_statusbar('Finished caiman detrend_df_f!')
 
         self.vi.viewer.parent().get_module('roi_manager').ui.radioButton_dfof.click()
+
+    def _set_data(
+            self,
+            roi_manager: Union[ManagerCNMFROI, ManagerVolCNMF],
+            kwargs: dict
+    ):
+        cnmf = get_CNMF_obj(roi_manager.cnmf_data_dict)
+        cnmf.estimates.detrend_df_f(**kwargs)
+
+        roi_manager.cnm_dfof = cnmf.estimates.F_dff
+
+        for roi, dfof in zip(
+                roi_manager.roi_list,
+                roi_manager.cnm_dfof
+        ):
+            xs = np.arange(len(dfof))
+            roi.dfof_data = [xs, dfof]
+
+    def _set_data_multi2d(
+            self,
+            roi_manager: ManagerVolMultiCNMFROI,
+            kwargs: dict
+    ):
+        roi_manager.cnm_dfof.clear()
+
+        for cnmf_data_dict in tqdm(roi_manager.cnmf_data_dicts, total=len(roi_manager.cnmf_data_dicts)):
+            cnmf = get_CNMF_obj(cnmf_data_dict)
+            cnmf.estimates.detrend_df_f(**kwargs)
+
+            roi_manager.cnm_dfof.append(cnmf.estimates.F_dff)
+
+        dfofs = np.vstack(roi_manager.cnm_dfof)
+
+        logger.info(
+            f"dfof shape:\t{dfofs.shape}\n"
+            f"roi_list len:\t{len(roi_manager.roi_list)}"
+        )
+
+        for roi, f in zip(
+                roi_manager.roi_list,
+                dfofs
+        ):
+            xs = np.arange(len(f))
+            roi.dfof_data = [xs, f]

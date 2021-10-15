@@ -42,6 +42,15 @@ except ImportError:
 else:
     HAS_CAIMAN = True
 
+try:
+    import tensorflow
+except ImportError:
+    warn(
+        "tensorflow not found. Nuset segmentation will be disabled"
+    )
+    HAS_TENSORFLOW = False
+else:
+    HAS_TENSORFLOW = True
 
 try:
     import tslearn
@@ -54,14 +63,13 @@ except ImportError:
 else:
     HAS_TSLEARN = True
 
-
 sys_cfg = {}
 
 num_types = [int, float, np.int64, np.float64]
 
-sys_cfg_dir = os.path.join(os.environ[HOME], '.mesmerize')
+sys_cfg_dir: str = os.path.join(os.environ[HOME], '.mesmerize')
 
-sys_cfg_file = os.path.join(sys_cfg_dir, 'config.json')
+sys_cfg_file: str = os.path.join(sys_cfg_dir, 'config.json')
 
 console_history_path = os.path.join(sys_cfg_dir, 'console_history')
 if not os.path.isdir(console_history_path):
@@ -73,21 +81,22 @@ _prefix_comments = \
         '# export PATH="/home/<user>/anaconda3:$PATH"',
         '# source activate my_environment',
         '# Or if you are using a python virtual environment',
-        '# source /home/<>/python_envs/my_venv/bin/activate',
+        '# source /<path_to_env>/activate',
         '# Adjust these according to your hardware'
     ]
 
-_prefix_commands = _prefix_comments + ["export MKL_NUM_THREADS=1",
-                                       "export OPENBLAS_NUM_THREADS=1", '\n']
-
 if IS_WINDOWS:
-    _prefix_commands += \
+    _prefix_commands = \
         [
             "# If using anaconda, you may need a command to activate the conda environment.",
             "# If this is the case, uncomment the following line.",
             "# conda activate mesmerize",
             "\n"
         ]
+
+else:
+    _prefix_commands = _prefix_comments + ["export MKL_NUM_THREADS=1",
+                                           "export OPENBLAS_NUM_THREADS=1", '\n']
 
 default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
                       '_MESMERIZE_USE_CUDA': False,
@@ -100,6 +109,23 @@ default_sys_config = {'_MESMERIZE_N_THREADS': cpu_count() - 1,
 
 if IS_WINDOWS:
     default_sys_config.update({'_MESMERIZE_PYTHON_CALL': 'python'})
+
+
+# patching in something that will probably be used in mesmerize v1.0 to simplify sys config things
+class ENVIRONMENT:
+    def __init__(self):
+        self.LRU_CACHE_MAXSIZE: int = 64  # `maxsize` argument for @lru_cache
+
+
+# update the default env vars with any that are specified in the env
+def get_environment() -> ENVIRONMENT:
+    e = ENVIRONMENT()
+    for opt, val in e.__dict__.items():
+        # user can prefix the env vars with "MESMERIZE" if they want, but not necessary
+        if (opt in os.environ.keys()) or (f'MESMERIZE_{opt}' in os.environ.keys()):
+            setattr(e, opt, type(val)(os.environ[opt]))  # to convert str to other types, like str -> int/float
+
+    return e
 
 
 class SysConfig:
@@ -177,7 +203,7 @@ def create_new_proj_config():
     defaultInclude = ['SampleID', 'date', 'comments']
     proj_cfg['INCLUDE'] = dict.fromkeys(defaultInclude)
 
-    defaultExclude = ['CurvePath', 'ImgInfoPath', 'ImgPath', 'ImgUUID', 'ROI_State', 'uuid_curve', 'misc', 'AnimalID']
+    defaultExclude = ['ImgInfoPath', 'ImgPath', 'ImgUUID', 'ROI_State', 'uuid_curve', 'misc', 'AnimalID']
     proj_cfg['EXCLUDE'] = dict.fromkeys(defaultExclude)
 
     proj_cfg['ROI_DEFS'] = {}

@@ -126,7 +126,6 @@ class LoadFile(CtrlNode):
     def _set_proj_path(self, path: str):
         self.ctrls['proj_path_label'].setText(os.path.basename(path))
         self.t.set_proj_path(path)
-        self.t.set_proj_config()
 
     def dir_dialog_proj_path(self):
         path = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select Project Folder')
@@ -350,12 +349,14 @@ class PadArrays(CtrlNode):
     """Pad 1-D numpy arrays in a particular column"""
     nodeName = 'PadArrays'
     uiTemplate = [('data_column', 'combo', {}),
-                  ('output_size', 'intSpin', {'min': -1, 'max': 9999999, 'step': 100, 'value': -1}),
+                  # ('output_size', 'intSpin', {'min': -1, 'max': 9999999, 'step': 100, 'value': -1}),
                   ('method', 'combo', {'items': ['fill-size', 'random']}),
                   ('mode', 'combo', {'items': ['minimum', 'constant', 'edge', 'maximum',
                                                'mean', 'median', 'reflect', 'symmetric', 'wrap'], 'toolTip': 'Passed to numpy.pad "mode" parameter'}),
                   ('constant', 'doubleSpin', {'min': -9999999.9, 'max': 9999999.9, 'value': 1.0, 'step': 10.0,
                                               'tooltip': 'Value to use if "mode" is set to "constant"'}),
+                  ('pad_with_nans', 'check', {'checked': False,
+                                              'toolTip': 'Pad with nans, only if `mode` is set to `constant`'}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})
                   ]
 
@@ -363,13 +364,81 @@ class PadArrays(CtrlNode):
         self.t = transmission
         self.set_data_column_combo_box()
 
-        if self.ctrls['Apply'].isChecked():
+        if not self.ctrls['Apply'].isChecked():
             return
 
         self.t = transmission.copy()
 
-    def _pad(self):
-        pass
+        a = self.t.df[self.data_column].values
+
+        method = self.ctrls['method'].currentText()
+        mode = self.ctrls['mode'].currentText()
+        constant = self.ctrls['constant'].value()
+        pad_with_nans = self.ctrls['pad_with_nans'].isChecked()
+
+        if mode == 'constant' and pad_with_nans:
+            constant = np.nan
+
+        params = \
+            {
+                'method': method,
+                'mode': mode,
+                'constant': constant,
+                'pad_with_nans': pad_with_nans
+            }
+
+        self.padded_output = self._pad(a, method, mode, constant, pad_with_nans)
+
+        self.t.df['_PADDED'] = self.padded_output.tolist()
+        self.t.df['_PADDED'] = self.t.df['_PADDED'].apply(np.array)
+
+        self.t.history_trace.add_operation(data_block_id='all', operation='pad_arrays', parameters=params)
+        self.t.last_output = '_PADDED'
+
+        return self.t
+
+    def _pad(self, a, method, mode, constant, pad_with_nans) -> np.ndarray:
+        l = 0  # size of largest time series
+
+        # Get size of largest time series
+        for c in a:
+            s = c.size
+            if s > l:
+                l = s
+
+        # pre-allocate output array
+        p = np.zeros(shape=(a.size, l))
+
+        if mode == 'constant':
+            kwargs = \
+                {
+                    'mode': 'constant',
+                    'constant_values': constant
+                }
+        else:
+            kwargs = {'mode': mode}
+
+        # pad each 1D time series
+        for i in tqdm(range(p.shape[0])):
+            s = a[i].size
+
+            if s == l:
+                p[i, :] = a[i]
+                continue
+
+            max_pad_en_ix = l - s
+
+            if method == 'random':
+                pre = np.random.randint(0, max_pad_en_ix)
+            elif method == 'fill-size':
+                pre = 0
+            else:
+                raise ValueError('Must specific method as either "random" or "fill-size"')
+
+            post = l - (pre + s)
+            p[i, :] = np.pad(a[i], (pre, post), **kwargs)
+
+        return p
 
 
 class SelectRows(CtrlNode):

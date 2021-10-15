@@ -39,8 +39,10 @@ https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
 
 	./Overview
 	./user_guides/installation
+	./getting_help
 	./user_guides/faq
 	./citation_guide
+        ./users
 
 .. toctree::
 	:maxdepth: 1
@@ -70,7 +72,9 @@ https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
     ./user_guides/viewer/modules/cnmfe
     ./user_guides/viewer/modules/caiman_hdf5_importer
     ./user_guides/viewer/modules/suite2p_importer
+    ./user_guides/viewer/modules/nuset_segmentation
     ./user_guides/viewer/modules/script_editor
+    ./user_guides/viewer/modules/femtonics_importers
     
 .. toctree::
 	:maxdepth: 1

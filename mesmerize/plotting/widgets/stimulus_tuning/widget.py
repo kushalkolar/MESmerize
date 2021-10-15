@@ -19,12 +19,23 @@ from uuid import UUID
 from collections import OrderedDict
 
 
+def tonumeric(s: str):
+    try:
+        if float(s).is_integer():
+            return int(s)
+        else:
+            return float(s)
+    except:
+        return False
+
+
 def get_tuning_curves(
         curve: np.ndarray,
         stim_maps: dict,
         method: str = 'mean',
         start_offset: int = 0,
-        end_offset: int = 0
+        end_offset: int = 0,
+        include_unlabelled: bool = False,
 ) -> pd.Series:
     """
     Returns a pandas series with tuning curves for all stimuli for a single curve
@@ -71,6 +82,15 @@ def get_tuning_curves(
 
         # instantiate lists for the tuning curves
         all_stimuli = np.unique(stim_array)  # [stim_array != ''])
+        if not include_unlabelled:
+            all_stimuli = all_stimuli[all_stimuli != "None"]
+
+        ln = [tonumeric(v) for v in all_stimuli if tonumeric(v) is not False]
+        ls = [v for v in all_stimuli if tonumeric(v) is False]
+        ln.sort()
+        ls.sort()
+        all_stimuli = np.array(ls + ln, dtype=np.dtype('<U32'))
+
         xs = np.empty(all_stimuli.size, dtype=np.dtype('<U32'))
         #         xs = []
         ys = np.empty(all_stimuli.size)
@@ -151,6 +171,13 @@ class ControlDock(QtWidgets.QDockWidget):
             name='dpt_column'
         )
 
+        self.widget_registry.register(
+            self.ui.checkBoxIncludeUnlabelled,
+            setter=self.ui.checkBoxIncludeUnlabelled.setChecked,
+            getter=self.ui.checkBoxIncludeUnlabelled.isChecked,
+            name='include_unlabelled'
+        )
+
         self.ui.pushButton_set.clicked.connect(self._emit_data)
 
         self.ui.listWidget_samples.currentTextChanged.connect(self.sig_sample_changed.emit)
@@ -196,20 +223,38 @@ class PlotArea(MatplotlibWidget):
         :param error_band: Type of error band to show, one of either 'ci' or 'std'
         """
         self.clear()
+
+        stim_types = list(tuning_curves.keys())
+
+        if len(stim_types) == 1:
+            self.ncols = 1
+        elif len(stim_types) < 5:
+            self.ncols = 2
+        else:
+            self.ncols = 3
+
         self.nrows = ceil(len(tuning_curves.keys()) / self.ncols)
 
         self.axs = self.fig.subplots(self.nrows, self.ncols)
         self.fig.tight_layout()
 
-        for stim_type, plot_ix in zip(
-                tuning_curves.keys(),
+        for i, plot_ix in enumerate(
                 iter_product(range(self.nrows), range(self.ncols))
         ):
-            data = tuning_curves[stim_type]
-            self.axs[plot_ix].plot(data[0], data[1], c='k')
+            if not i < len(stim_types):
+                break
 
-            self.axs[plot_ix].set_xlabel(stim_type)
-            self.axs[plot_ix].set_ylabel(f"{y_units} response")
+            stim_type = stim_types[i]
+            data = tuning_curves[stim_type]
+
+            if len(stim_types) == 1:
+                plot = self.axs
+            else:
+                plot = self.axs[plot_ix]
+
+            plot.plot(data[0], data[1], c='k')
+            plot.set_xlabel(stim_type)
+            plot.set_ylabel(f"{y_units} response")
 
         self.draw()
 
@@ -369,6 +414,9 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
         'Plot error. Make sure you have selected appropriate data columns and parameters'
     )
     def update_plot(self, *args, **kwargs):
+        if self.control_widget.ui.listWidget_rois.currentItem() is None:
+            return
+        
         roi_ix = self.control_widget.ui.listWidget_rois.currentItem().text()
         uuid_curve = self.roi_uuid_map[roi_ix]
 
@@ -490,8 +538,7 @@ class TuningCurvesWidget(QtWidgets.QMainWindow, BasePlotWidget):
     def save_plot(self, path):
         t = self.transmission.copy()
 
-        params = self.params['kwargs']
-        params.update({'data_column': self.data_column})
+        params = self.get_plot_opts()
 
         self.transmission.history_trace.add_operation('all', operation='tuning_curves', parameters=params)
         super(TuningCurvesWidget, self).save_plot(path)

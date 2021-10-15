@@ -15,7 +15,15 @@ from ..core.common import ViewerUtils
 from .pytemplates.cnmf_pytemplate import *
 from ...common import get_window_manager
 from ...common.qdialogs import *
+from ...common.utils import HdfTools
 from uuid import UUID
+from shutil import copy
+import os
+from copy import deepcopy
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -51,15 +59,17 @@ class ModuleGUI(QtWidgets.QDockWidget):
         except StopIteration:
             bord_px = 0
 
+        rf = self.ui.spinBoxRf.value()
+
         # CNMF kwargs
         cnmf_kwargs = \
             {
                 'p': self.ui.spinBoxP.value(),
-                'gnb': self.ui.spinBoxGnb.value(),
+                'nb': self.ui.spinBoxnb.value(),
                 'merge_thresh': self.ui.doubleSpinBoxMergeThresh.value(),
-                'rf': self.ui.spinBoxRf.value(),
+                'rf': rf if not self.ui.checkBoxRfNone.isChecked() else None,
                 'stride': self.ui.spinBoxStrideCNMF.value(),
-                'k': self.ui.spinBoxK.value(),
+                'K': self.ui.spinBoxK.value(),
                 'gSig': [
                             self.ui.spinBox_gSig_x.value(),
                             self.ui.spinBox_gSig_y.value()
@@ -84,6 +94,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             {
                 'min_SNR': self.ui.doubleSpinBoxMinSNR.value(),
                 'rval_thr': self.ui.doubleSpinBoxRvalThr.value(),
+                'use_cnn': self.ui.checkBoxUseCNN.isChecked(),
                 'min_cnn_thr': self.ui.doubleSpinBoxCNNThr.value(),
                 'cnn_lowest': self.ui.doubleSpinBox_cnn_lowest.value(),
                 'decay_time': self.ui.spinBoxDecayTime.value(),
@@ -99,12 +110,19 @@ class ModuleGUI(QtWidgets.QDockWidget):
             except:
                 raise ValueError("Evaluation kwargs not formatted properly.")
 
+        if self.vi.viewer.workEnv.imgdata.ndim == 4:
+            is_3d = True
+        else:
+            is_3d = False
+
         # Make the output dict
         d = \
             {
                 'item_name': self.ui.lineEdName.text(),
                 'refit': self.ui.checkBoxRefit.isChecked(),
-                'border_pix': bord_px
+                'border_pix': bord_px,
+                'is_3d': is_3d,
+                'keep_memmap': self.ui.checkBoxKeepMemmap.isChecked()
             }
 
         # Group the kwargs of the two parts seperately
@@ -127,6 +145,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         return d
 
+    @present_exceptions()
     def add_to_batch(self, params: dict = None) -> UUID:
         """
         Add a CNMF batch item with the currently set parameters and the current work environment.
@@ -147,10 +166,27 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            d = params
+            d = deepcopy(params)
 
         name = d['item_name']
         self.vi.viewer.status_bar_label.showMessage('Please wait, adding CNMF: ' + name + ' to batch...')
+
+        if self.ui.groupBox_seed_components.isChecked():
+            seed_path = self.ui.lineEdit_seed_components_path.text()
+            if not os.path.isfile(seed_path):
+                raise FileNotFoundError(
+                    "Seed file does not exist, check the path"
+                )
+
+            try:
+                seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+            except:
+                seed_params = 'unknown'
+
+            d['use_seeds'] = True
+            d['seed_params'] = seed_params
+        else:
+            d['use_seeds'] = False
 
         batch_manager = get_window_manager().get_batch_manager()
         u = batch_manager.add_item(
@@ -164,6 +200,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if u is None:
             self.vi.viewer.status_bar_label.clearMessage()
             return
+
+        if d['use_seeds']:
+            logger.info("Copying component seed file")
+            copy(seed_path, os.path.join(batch_manager.batch_path, f'{u}.ain'))
 
         self.vi.viewer.status_bar_label.showMessage('Done adding CNMF: ' + name + ' to batch!')
         self.ui.lineEdName.clear()

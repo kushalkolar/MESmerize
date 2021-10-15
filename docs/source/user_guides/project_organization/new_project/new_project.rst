@@ -14,23 +14,23 @@ This tutorial shows how to create a New Project, open images in the Viewer, use 
 
 Biological Questions
 ====================
-**Before you create a new Mesmerize Project you must thoroughly think about the biological questions that you are interested in. Here are some thoughts to help you:**
+**Before you create a new Mesmerize Project you must think about the biological questions that you are interested in. Here are some thoughts to help you:**
 
-	- The effects of different types of temporary stimulation? Such as poking or odors?
+	- The effects of different types of temporary stimulation or behavior? Such as odors, visual stimuli etc.
 
 	- Are you interested in neuronal activity during specific behavioral periods?
 
-	- Differences in calcium dynamics between different anatomical regions?
+	- Differences in calcium dynamics between different anatomical regions or cell types?
 
-	- Chemogenetic experiments using transgenes to express DDREADs.
+	- Experiments using transgenes to stimulate or suppress specific cells, such as with optogenetics or chemogenetics.
 
-	- Non-temporary effects of drugs (for example, if the animal is bathed in drug for longer recordings).
+	- Long-duration/chronic exposure to pharmacological agents. For example, if you are inducing seizures with drugs like PTZ
 
-		- For example, if you are inducing seizures with PTZ, where you are interested in the differences between a control recording of 5 minutes and  subsequent 5 minute recordings where the animal is bathed in PTZ (or whatever duration you determine is biologically meaningful). You could also be interested in a recovery stage to see what happens to the calcium dynamics when you “perfuse-back” the liquid medium (such as seawater, steinberg's solution etc.) without the drug.
-
-	- Differences in calcium dynamics between different stages during development
+	- Differences in calcium dynamics between different stages during development.
 
 	- Differences in calcium dynamics between different cell types using GCaMP driven by specific promoters.
+
+All of the above information can be encoded by different types of *categorical variables* within the Mesmerize *Project Configuration*.
 
 ----
 
@@ -85,7 +85,7 @@ Stimulus Type Columns
 
 If you're interested in mapping temporal information to your traces, such as stimuli or behavioral periods, add a “Stimulus Type column” for each type. This is only for temporary stimulation or behavioral periods that do not span the entire length of the video.
 
-.. seealso:: **<link here> Stimulus Mapping guide, to understand how stimuli can be labelled.**
+.. seealso:: :ref:`Stimulus Mapping guide <StimulusMapping>` to understand how stimuli can be labelled.**
 
 .. _CustomColumns:
 

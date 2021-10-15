@@ -40,6 +40,7 @@ from glob import glob
 from collections import UserList
 from typing import *
 from pprint import pformat
+import re
 from ...common.configuration import IS_WINDOWS
 
 if not IS_WINDOWS:
@@ -48,13 +49,18 @@ if not IS_WINDOWS:
 elif IS_WINDOWS:
     from win32api import TerminateProcess, CloseHandle
 
+import logging
+
+
+logger = logging.getLogger()
+
 
 class ModuleGUI(QtWidgets.QWidget):
     """GUI for the Batch Manager"""
     listwchanged = QtCore.pyqtSignal()
 
     def __init__(self, parent, run_batch: list = None, testing: bool = False):
-        print('starting batch mananger')
+        logger.info('starting batch mananger')
         QtWidgets.QWidget.__init__(self, parent)
         self._testing = testing
         self.ui = Ui_Form()
@@ -124,6 +130,16 @@ class ModuleGUI(QtWidgets.QWidget):
         
         self.init_batch(run_batch)
 
+    def get_selected_items(self) -> Tuple[List[int], List[uuid.UUID]]:
+        """
+        Returns a list of numeric indices and uuids for the currently selected items
+        """
+        items = self.ui.listwBatch.selectedIndexes()
+        indices = [i.row() for i in items]
+        uuids = [i.data(3) for i in items]
+
+        return indices, uuids
+
     def higlight_items(self):
         self.reset_list_widget_colors()
         txt = self.ui.lineEditFindItem.text()
@@ -146,7 +162,7 @@ class ModuleGUI(QtWidgets.QWidget):
                     return
             else:
                 path = run_batch[0]
-                print('Opening batch: ' + path)
+                logger.info('Opening batch: ' + path)
 
             dfpath = os.path.join(path, 'dataframe.batch')
             if os.path.isfile(dfpath):
@@ -160,7 +176,7 @@ class ModuleGUI(QtWidgets.QWidget):
         self.set_workdir(True)  # does a check to see if the workdir is writable upon batch manager initiation
 
         if run_batch is not None:
-            print('Running from item ' + run_batch[1])
+            logger.info('Running from item ' + run_batch[1])
             # ix = self.df.index[self.df['uuid'] == uuid.UUID(run_batch[1])]
             # i = int(ix.to_native_types()[0])
             i = self.get_item_index(run_batch[1])
@@ -197,7 +213,7 @@ class ModuleGUI(QtWidgets.QWidget):
     def create_new_batch_dialog(self, path: str):
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Batch Name:', QtWidgets.QLineEdit.Normal, '')
 
-        if any(s in name for s in [' ', '(', ')', '?']):
+        if not re.match("^[A-Za-z0-9_-]*$", name):
             QtWidgets.QMessageBox.warning(self, 'Invalid name',
                                           'Batch name can only contain alphanumeric characters')
             return
@@ -297,6 +313,7 @@ class ModuleGUI(QtWidgets.QWidget):
             self.lwd.close()
             self.lwd = None
 
+    @present_exceptions('Cannot load output', 'The following error occurred when trying to load the output')
     def on_list_widget_batch_doubleclicked(self, s: QtWidgets.QListWidgetItem):
         self.ui.scrollAreaOutputInfo.show()
         UUID = s.data(3)
@@ -313,6 +330,10 @@ class ModuleGUI(QtWidgets.QWidget):
 
         if output['status'] == 1:
             viewers = get_window_manager().viewers
+
+            if len(viewers) == 0:
+                raise IndexError("No Viewers are currently open, you must open a Viewer to view outputs.")
+
             if len(get_window_manager().viewers) > 1:
                 self.lwd = ListWidgetDialog()
                 self.lwd.listWidget.addItems([str(i + 1) for i in range(len(viewers))])

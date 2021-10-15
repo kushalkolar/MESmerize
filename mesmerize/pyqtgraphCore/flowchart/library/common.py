@@ -22,6 +22,10 @@ from ...widgets.LineEdit import LineEdit
 from ...widgets.KwargPlainTextEdit import KwargPlainTextEdit
 from ....analysis import organize_dataframe_columns
 # from PyQt5.QtWidgets import QLineEdit as LineEdit
+import logging
+
+
+logger = logging.getLogger()
 
 
 def generateUi(opts):
@@ -181,7 +185,7 @@ class CtrlNode(Node):
         self.sigStateChanged.emit(self)
         out = f"Processing node: {self.name()}\n"
 
-        sys.stdout.write(out)
+        logger.info(out)
 
     def process(self, **kwargs):#In, display=True):
         In = kwargs['In']

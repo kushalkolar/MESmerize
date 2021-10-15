@@ -68,7 +68,6 @@ class ProjectManager(QtCore.QObject):
         subdirs = ['dataframes',
                    'batches',
                    'images',
-                   'curves',
                    'flowcharts',
                    'trns',
                    'plots']

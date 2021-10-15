@@ -19,7 +19,18 @@ import pandas as pd
 from numpy import int64, float64
 from copy import deepcopy
 # from functools import partial
+import traceback
 from ...common import configuration, get_project_manager
+
+
+MOD_NOT = '$NOT:'
+MOD_STR = '$STR:'
+MOD_STR_EQ = '$STR=:'
+MOD_STR_NOT_EQ = '$STR!=:'
+MOD_GT = '$>:'
+MOD_LT = '$<:'
+MOD_GE = '$>=:'
+MOD_LE = '$<=:'
 
 
 class TabAreaWidget(QtWidgets.QWidget):
@@ -128,7 +139,53 @@ class TabAreaWidget(QtWidgets.QWidget):
 
             raise ValueError('Unrecognized modifer in column ' + str(column_widget.column_name))
 
-        if column_widget.column_type in [str, list] or \
+        if column_widget.column_type is list:
+            if filt.startswith(MOD_NOT):  # NOT
+                filt = filt[len(MOD_NOT):].split('|')
+                selection = ~dataframe[column_widget.column_name].apply(
+                    lambda l: any([v in u for u in l for v in filt])  # True if any str in the `filt` list is a
+                )                                                     # substring in the `l` list
+                selection_str = \
+                    f'~df["{column_widget.column_name}"].apply(' \
+                            f'lambda l: any([v in u for u in l for v in {str(filt)}])'
+
+            elif filt.startswith(MOD_STR):  # treat as str, same as not using this modifier for this case
+                filt = filt[len(MOD_STR):].split('|')
+                selection = dataframe[column_widget.column_name].apply(
+                    lambda l: any([v in u for u in l for v in filt])
+                )
+                selection_str = \
+                    f'df["{column_widget.column_name}"].apply(' \
+                        f'lambda l: any([v in u for u in l for v in {str(filt)}])'
+
+            elif filt.startswith(MOD_STR_EQ):  # exact match of str
+                filt = filt[len(MOD_STR_EQ):].split('|')
+                selection = dataframe[column_widget.column_name].apply(
+                    lambda l: any([v == u for u in l for v in filt])  # True if any str in the `filt` list is
+                )                                                     # an exact match of any strings in `l`
+                selection_str = \
+                    f'df["{column_widget.column_name}"].apply(' \
+                        f'lambda l: any([v == u for u in l for v in {str(filt)}])'
+
+            elif filt.startswith(MOD_STR_NOT_EQ):  # negation of exact match of str
+                filt = filt[len(MOD_STR_NOT_EQ):].split('|')
+                selection = ~dataframe[column_widget.column_name].apply(
+                    lambda l: any([v == u for u in l for v in filt])
+                )
+                selection_str = \
+                    f'~df["{column_widget.column_name}"].apply(' \
+                        f'lambda l: any([v == u for u in l for v in {str(filt)}])'
+
+            else:
+                filt = filt.split('|')  # check if any of the input strings are a substring in the list
+                selection = dataframe[column_widget.column_name].apply(
+                    lambda l: any([v in u for u in l for v in filt])
+                )
+                selection_str = \
+                    f'df["{column_widget.column_name}"].apply(' \
+                        f'lambda l: any([v in u for u in l for v in {str(filt)}])'
+
+        elif column_widget.column_type is str or \
                 filt.startswith('$STR:') or \
                 filt.startswith('$STR=:') or \
                 filt.startswith('$STR!=:'):
@@ -220,7 +277,10 @@ class TabAreaWidget(QtWidgets.QWidget):
             return
 
         for column in self.columns:
-            self._populate_column(column, self.dataframe[column.column_name])
+            try:
+                self._populate_column(column, self.dataframe[column.column_name])
+            except Exception:
+                raise ValueError(f"Cannot open project due to an issue with the following column: `{column.column_name}`\n")
 
     def _populate_column(self, column: ColumnWidget, series: pd.Series):
         column.series = series

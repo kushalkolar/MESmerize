@@ -32,6 +32,8 @@ This module adds a "caiman motion correction" *item* to the batch. Set the desir
 
 .. note:: The parameters used for motion correction are stored in the work environment of the viewer and this log is carried over and saved in the *Project Sample* as well. To see the parameters that were used for motion correction in the viewer, execute ``get_workEnv().history_trace`` in the viewer console and look for the ``caiman_motion_correction`` entry.
 
+.. warning:: If you're using Windows, large `memmap` files will linger in your batch dir or work dir, you can clean them out periodically.
+
 .. _MotCorScripts:
 
 Script Usage
@@ -60,13 +62,13 @@ This example shows how to add all tiff files (of image sequences) from a directo
     
     mc_kwargs = \
     {
-        "max_shifts":           (6, 6)
+        "max_shifts":           (6, 6),
         "niter_rig":            2,
-        "max_dev":              3,
-        "strides":              196,
-        "overlaps":             98,
+        "max_deviation_rigid":  3,
+        "strides":              (196, 196),
+        "overlaps":             (98, 98),
         "upsample_factor_grid": 4,
-        "gSig_filt"             (10, 10)  # Set to `None` for 2p data
+        "gSig_filt":            (10, 10)  # Set to `None` for 2p data
     }
     
     params = \
@@ -103,22 +105,22 @@ This example shows how to add all tiff files (of image sequences) from a directo
         params["item_name"] = name
         
         # First variant of params
-        params["mc_kwargs"]["strides"] = 196
-        params["mc_kwargs"]["overlaps"] = 98
+        params["mc_kwargs"]["strides"] = (196, 196)
+        params["mc_kwargs"]["overlaps"] = (98, 98)
         
         # Add one variant of params for this video to the batch
         mc_module.add_to_batch(params)
         
         # Try another variant of params
-        params["mc_kwargs"]["strides"] = 256
-        params["mc_kwargs"]["overlaps"] = 128
+        params["mc_kwargs"]["strides"] = (256, 256)
+        params["mc_kwargs"]["overlaps"] = (128, 128)
         
         # Set these params and add to batch
         mc_module.add_to_batch(params)
         
         # Try one more variant of params	
-        params["mc_kwargs"]["strides"] = 296
-        params["mc_kwargs"]["overlaps"] = 148
+        params["mc_kwargs"]["strides"] = (296, 296)
+        params["mc_kwargs"]["overlaps"] = (148, 148)
         
         # Set these params and add to batch
         mc_module.add_to_batch(params)
@@ -172,13 +174,13 @@ This example shows how to crop videos prior to adding them as batch items. This 
     # Motion correction params.
     mc_kwargs = \
     {
-        "max_shifts":           (6, 6)
+        "max_shifts":           (6, 6),
         "niter_rig":            2,
-        "max_dev":              3,
-        "strides":              196,
-        "overlaps":             98,
+        "max_deviation_rigid":  3,
+        "strides":              (196, 196),
+        "overlaps":             (98, 98),
         "upsample_factor_grid": 4,
-        "gSig_filt"             (10, 10)  # Set to `None` for 2p data
+        "gSig_filt":            (10, 10)  # Set to `None` for 2p data
     }
     
     params = \
@@ -224,22 +226,22 @@ This example shows how to crop videos prior to adding them as batch items. This 
         params["item_name"] = name
         
         # First variant of params
-        params["mc_kwargs"]["strides"] = 196
-        params["mc_kwargs"]["overlaps"] = 98
+        params["mc_kwargs"]["strides"] = (196, 196)
+        params["mc_kwargs"]["overlaps"] = (98, 98)
         
         # Add one variant of params for this video to the batch
         mc_module.add_to_batch(params)
         
         # Try another variant of params
-        params["mc_kwargs"]["strides"] = 256
-        params["mc_kwargs"]["overlaps"] = 128
+        params["mc_kwargs"]["strides"] = (256, 256)
+        params["mc_kwargs"]["overlaps"] = (128, 128)
         
         # Set these params and add to batch
         mc_module.add_to_batch(params)
         
         # Try one more variant of params	
-        params["mc_kwargs"]["strides"] = 296
-        params["mc_kwargs"]["overlaps"] = 148
+        params["mc_kwargs"]["strides"] = (296, 296)
+        params["mc_kwargs"]["overlaps"] = (148, 148)
         
         # Set these params and add to batch
         mc_module.add_to_batch(params)

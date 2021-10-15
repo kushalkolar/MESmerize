@@ -156,4 +156,8 @@ CNMFROI
     :show-inheritance:
     :members: __init__, get_roi_graphics_object, set_roi_graphics_object, reset_color, set_original_color, get_color, set_color, set_text, set_tag, get_tag, get_all_tags, add_to_viewer, remove_from_viewer, to_state, from_state, set_curve_data
     :member-order: bysource
-    
+
+Basic Examples
+==============
+
+.. include:: roi_manager_api_examples.rst

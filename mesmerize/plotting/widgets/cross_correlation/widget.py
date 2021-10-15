@@ -21,6 +21,7 @@ from ..datapoint_tracer import DatapointTracerWidget, CNMFROI, ManualROI, mkColo
 import pandas as pd
 from ....common.qdialogs import *
 from ....common.utils import HdfTools
+from .stims import get_binary_stims
 
 
 class ControlWidget(QtWidgets.QWidget):
@@ -68,6 +69,8 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.doubleSpinBoxLagThreshold.valueChanged.connect(self.set_heatmap)
         self.datapoint_tracer = DatapointTracerWidget()
 
+        self.stimulus_labels: List[str] = []
+
         self.roi_2 = None
 
     def set_heatmap(self):
@@ -96,12 +99,12 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         sub_df = self.transmission.df[self.transmission.df['SampleID'] == sample_id]
 
         labels_col = self.control_widget.ui.comboBoxLabelsColumn.currentText()
-        ylabels = sub_df[labels_col]
+        ylabels = sub_df[labels_col].tolist() + self.stimulus_labels
 
         # Since it's just same curve vs. same curves in the cc_matrix
         xlabels = ylabels
-
-        self.plot_variant.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels, linewidths=.5, linecolor='k')
+                                                                                     #  lines make large matrices hard to see
+        self.plot_variant.set(plot_data, cmap=cmap, ylabels=ylabels, xlabels=xlabels)#, linewidths=.5, linecolor='k')
         # self.plot_widget.ax_ylabel_bar.set_axis_off()
 
         self.plot_variant.plot.ax_heatmap.set_xlabel('Curve 1, magenta')
@@ -133,30 +136,47 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         else:
             i = indices[0]
             j = indices[1]
-            x = self.curve_data[i]
-            y = self.curve_data[j]
+            x = self.cc_data[self.current_sample_id].input_data[i]
+            y = self.cc_data[self.current_sample_id].input_data[j]
+            # x = self.curve_data[i]
+            # y = self.curve_data[j]
 
             self.curve_plot_1.clear()
             self.curve_plot_2.clear()
 
             sub_df = self.transmission.df[self.transmission.df.SampleID == self.current_sample_id].reset_index(drop=True)
-            ux = sub_df.uuid_curve.iloc[i]
-            uy = sub_df.uuid_curve.iloc[j]
 
-            r = sub_df[sub_df.uuid_curve == ux]
-            db_id = r._BLOCK_.item()
-            r2 = sub_df[sub_df.uuid_curve == uy]
+            if i < sub_df.uuid_curve.size:
+                ux = sub_df.uuid_curve.iloc[i]
+            else:
+                ux = False
 
-            self.datapoint_tracer.set_widget(datapoint_uuid=ux, data_column_curve=self.data_column,
-                                             row=r, proj_path=self.transmission.get_proj_path(),
-                                             history_trace=self.transmission.history_trace.get_data_block_history(db_id),
-                                             roi_color='m')
+            if j < sub_df.uuid_curve.size:
+                uy = sub_df.uuid_curve.iloc[j]
+            else:
+                uy = False
+
+            if ux:
+                r = sub_df[sub_df.uuid_curve == ux]
+                db_id = r._BLOCK_.item()
+
+                self.datapoint_tracer.set_widget(
+                    datapoint_uuid=ux, data_column_curve=self.data_column,
+                    row=r, proj_path=self.transmission.get_proj_path(),
+                    history_trace=self.transmission.history_trace.get_data_block_history(db_id),
+                    roi_color='m'
+                )
             self.datapoint_tracer.ui.graphicsViewPlot.clear()
-            self.add_second_roi_to_datapoint_tracer(r2)
-            self.datapoint_tracer.show()
 
-            self.control_widget.ui.lineEditCurve1UUID.setText(ux)
-            self.control_widget.ui.lineEditCurve2UUID.setText(uy)
+            if uy:
+                r2 = sub_df[sub_df.uuid_curve == uy]
+                self.add_second_roi_to_datapoint_tracer(r2)
+
+            if (ux or uy):
+                self.datapoint_tracer.show()
+
+            self.control_widget.ui.lineEditCurve1UUID.setText(ux if ux else '')
+            self.control_widget.ui.lineEditCurve2UUID.setText(uy if uy else '')
 
             self.curve_plot_1.setData(x=np.linspace(0, (len(x) / self.sampling_rate), len(x)), y=x, pen=mkPen(color='m', width=2))
             self.curve_plot_2.setData(x=np.linspace(0, (len(y) / self.sampling_rate), len(y)), y=y, pen=mkPen(color='c', width=2))
@@ -184,8 +204,9 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         elif roi_state['roi_type'] == 'ManualROI':
             self.roi_2 = ManualROI.from_state(curve_plot_item=None, view_box=self.datapoint_tracer.view, state=roi_state)
 
-        self.roi_2.get_roi_graphics_object().setPen(mkColor('c'))
-        self.roi_2.add_to_viewer()
+        if self.roi_2 is not None:
+            self.roi_2.get_roi_graphics_object().setPen(mkColor('c'))
+            self.roi_2.add_to_viewer()
 
     def _get_xticks_linspace(self, ncc) -> np.ndarray:
             m = ncc.size
@@ -203,7 +224,13 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         self.control_widget.ui.comboBoxDataColumn.clear()
         self.control_widget.ui.comboBoxDataColumn.addItems(dcols)
 
+        self.control_widget.ui.comboBoxLabelsColumn.clear()
         self.control_widget.ui.comboBoxLabelsColumn.addItems(ccols)
+
+        self.control_widget.ui.comboBoxStimulusType.clear()
+        self.control_widget.ui.comboBoxStimulusType.addItems(
+            self.transmission.STIM_DEFS
+        )
 
         self.reset_sample_id_list_widget()
         self.control_widget.ui.listWidgetSampleID.setCurrentRow(0)
@@ -230,14 +257,40 @@ class CrossCorrelationWidget(HeatmapSplitterWidget):
         for sample_id in self.sample_list:
             sub_df = self.transmission.df[self.transmission.df.SampleID == sample_id]
 
+            if self.transmission.STIM_DEFS:
+                stim_type = self.control_widget.ui.comboBoxStimulusType.currentText()
+
+                stim_df = sub_df.iloc[0].stim_maps[0][0][stim_type]
+                index_size = sub_df[self.data_column].values[0].size
+
+                binary_stims_array, stim_names = get_binary_stims(
+                    stim_df=stim_df,
+                    index_size=index_size,
+                    start_offset=0,
+                    end_offset=0
+                )
+
             data = np.vstack(sub_df[self.data_column].values)
+
+            # append the stimulus array too
+            if self.transmission.STIM_DEFS:
+                data = np.vstack([data, binary_stims_array])
+
             r = get_sampling_rate(self.transmission)
             self.sampling_rate = r
 
             self.cc_data[sample_id] = compute_cc_data(data)
             self.cc_data[sample_id].lag_matrix = np.true_divide(self.cc_data[sample_id].lag_matrix, r)
             self.cc_data[sample_id].curve_uuids = np.array(list(map(str, sub_df['uuid_curve'].values))) # convert all UUIDs to str representation
-            self.cc_data[sample_id].labels = sub_df[labels_col].values.astype(np.unicode)
+
+            labels = sub_df[labels_col].values.astype(np.unicode)
+
+            if self.transmission.STIM_DEFS:
+                self.cc_data[sample_id].labels = np.concatenate([labels, stim_names]).astype(np.unicode)
+                self.stimulus_labels = stim_names
+            else:
+                self.cc_data[sample_id].labels = labels
+                self.stimulus_labels = []
 
         self.set_current_sample()
 

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>702</height>
+    <width>756</width>
+    <height>812</height>
    </rect>
   </property>
   <property name="floating">
@@ -82,12 +82,12 @@
         <item>
          <widget class="QLabel" name="label_27">
           <property name="text">
-           <string>gnb:</string>
+           <string>nb:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBoxGnb">
+         <widget class="QSpinBox" name="spinBoxnb">
           <property name="maximum">
            <number>99</number>
           </property>
@@ -182,6 +182,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="checkBoxRfNone">
+          <property name="toolTip">
+           <string>Set `rf` as `None`</string>
+          </property>
+          <property name="text">
+           <string>None</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_10">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -249,7 +259,7 @@
         <item>
          <widget class="QLabel" name="label_31">
           <property name="text">
-           <string>k:</string>
+           <string>K:</string>
           </property>
          </widget>
         </item>
@@ -444,14 +454,41 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Ain:</string>
+         <widget class="QGroupBox" name="groupBox_seed_components">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Seed components from &amp;masks</string>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QLineEdit" name="lineEdit_seed_components_path">
+             <property name="placeholderText">
+              <string>Enter path to masks file</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEditAin"/>
         </item>
        </layout>
       </item>
@@ -469,7 +506,7 @@ Use single quotes for strings, do not use double quotes.</string>
          <string/>
         </property>
         <property name="title">
-         <string>Use CNMF &amp;kwargs</string>
+         <string>&amp;Use additional CNMF params</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -587,6 +624,23 @@ Use single quotes for strings, do not use double quotes.</string>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_15">
         <item>
+         <widget class="QCheckBox" name="checkBoxUseCNN">
+          <property name="text">
+           <string>use_cnn</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="label_26">
           <property name="text">
            <string>cnn_thr:</string>
@@ -606,23 +660,6 @@ Use single quotes for strings, do not use double quotes.</string>
           </property>
          </widget>
         </item>
-        <item>
-         <spacer name="horizontalSpacer_16">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
@@ -644,7 +681,7 @@ Use single quotes for strings, do not use double quotes.</string>
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_3">
+         <spacer name="horizontalSpacer_16">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -706,7 +743,7 @@ Use single quotes for strings, do not use double quotes.</string>
 Use single quotes for strings, do not use double quotes</string>
         </property>
         <property name="title">
-         <string>Use e&amp;valuation params</string>
+         <string>Use additional &amp;quality (evaluation) params</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -764,6 +801,13 @@ Use single quotes for strings, do not use double quotes</string>
        </layout>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkBoxKeepMemmap">
+        <property name="text">
+         <string>Keep memmap</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <widget class="QLineEdit" name="lineEdName">
@@ -788,9 +832,10 @@ Use single quotes for strings, do not use double quotes</string>
  </widget>
  <tabstops>
   <tabstop>spinBoxP</tabstop>
-  <tabstop>spinBoxGnb</tabstop>
+  <tabstop>spinBoxnb</tabstop>
   <tabstop>doubleSpinBoxMergeThresh</tabstop>
   <tabstop>spinBoxRf</tabstop>
+  <tabstop>checkBoxRfNone</tabstop>
   <tabstop>spinBoxStrideCNMF</tabstop>
   <tabstop>spinBoxK</tabstop>
   <tabstop>spinBox_gSig_x</tabstop>
@@ -798,17 +843,20 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>spinBox_ssub</tabstop>
   <tabstop>spinBox_tsub</tabstop>
   <tabstop>comboBox_method_init</tabstop>
-  <tabstop>lineEditAin</tabstop>
+  <tabstop>groupBox_seed_components</tabstop>
+  <tabstop>lineEdit_seed_components_path</tabstop>
   <tabstop>groupBox_cnmf_kwargs</tabstop>
   <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
   <tabstop>doubleSpinBoxMinSNR</tabstop>
   <tabstop>doubleSpinBoxRvalThr</tabstop>
+  <tabstop>checkBoxUseCNN</tabstop>
   <tabstop>doubleSpinBoxCNNThr</tabstop>
   <tabstop>doubleSpinBox_cnn_lowest</tabstop>
   <tabstop>spinBoxDecayTime</tabstop>
   <tabstop>groupBox_eval_kwargs</tabstop>
   <tabstop>plainTextEdit_eval_kwargs</tabstop>
   <tabstop>checkBoxRefit</tabstop>
+  <tabstop>checkBoxKeepMemmap</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMF</tabstop>
  </tabstops>

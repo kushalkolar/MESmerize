@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+from pathlib import Path
 
 
 entry_points = {'console_scripts': ['mesmerize=mesmerize.__main__:main']}
@@ -8,7 +9,7 @@ install_requires = \
         "cycler==0.10.0",
         "dask>=1.1.1",
         "future>=0.18.2",
-        "h5py>=2.10.0",
+        "h5py~=2.10.0",
         "ipykernel>=4.10",
         "ipython>=7.15.0",
         "ipyparallel>=6.3",
@@ -16,15 +17,15 @@ install_requires = \
         "matplotlib<=3.2.1",
         "opencv-contrib-python>=4.2",
         "opencv-python>=4.2",
-        "pandas~=0.25.3",  # do not change
+        "pandas",  # do not change
         "Pillow>=5.4.1",
-        "psutil~=5.7.0",
+        "psutil",
         "PyQt5>=5.9.2,<=5.12",
         "python-dateutil>=2.8.0",
         "QtPy>=1.6.0",
         "qtap",
-        "scikit-image==0.17.2",  # do not change
-        "scikit-learn>=0.20.2",  # do not change
+        "scikit-image~=0.15.0",  # do not change
+        "scikit-learn~=0.23.1",  # tslearn 0.4 has issues with newer sklearn
         "scipy>=1.2.1",  # do not change
         "seaborn==0.9.0",  # do not change
         "spyder==3.3.3",  # do not change
@@ -44,6 +45,11 @@ install_requires = \
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
         "tcl",
+        "bokeh~=2.3.0",
+        "nuset-lib",
+        "sk-video",
+        "click",
+        "xmltodict"  # for OME xml
     ]
 
 classifiers = \
@@ -63,9 +69,14 @@ classifiers = \
 with open("readme-pypi.md", 'r') as fh:
     long_description = fh.read()
 
+
+with open(Path(__file__).parent.joinpath('mesmerize').joinpath('VERSION'), 'r') as vf:
+    vesion_str = vf.read().split('\n')[0]
+
+
 setup(
     name='mesmerize',
-    version='0.2.3',
+    version=vesion_str,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     entry_points=entry_points,
@@ -77,6 +88,6 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=classifiers,
-    python_requires='~=3.6,<3.7',
+    python_requires='>=3.6',
     install_requires=install_requires
 )

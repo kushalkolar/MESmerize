@@ -8,7 +8,7 @@ To start off, I'm going to create a simple Mesmerize project. You don't need to 
 
 So let's click this to start a new project. Let's create it here, and I will name it "tutorial_example". The "finished" version of this project will be available for you to download, it's linked in the video description and on the docs website.
 
-The stimuli in this dataset are sinusoidal grating that have 3 different features, the orientation of the gratings, a spatial frequency and temporal frequency. So I will create 3 Stimulus Type columns called "ori", "sf", and "tf". You can create as many `Stimulus Type` columns as you want.
+The stimuli in this dataset are sinusoidal grating that have 3 different features, the orientation of the gratings, a spatial frequency and temporal frequency. So I will create 3 Stimulus Type columns called "ori", "sf", and "tf". You can create as many `Stimulus or Behavior Type` columns as you want.
 
 To later illustrate how ROIs can be annotated, I will add two ROI Type columns.
 Let's add one column named "cell_type" and another named "anatomical_position". You can have as many of these "ROI Type columns" as you want, and they would usually carry categorical data.
@@ -50,9 +50,9 @@ There are a few simple tools that you can use with the image.
 
 So from scrolling this video you can notice that our cells are on the left, we can crop this out.
 
-As I mentioned earlier this dataset contains stimulus information. We can use the `Stimulus Mapping` Module to add the stimulus data to the Viewer Work Environment. Data entered through the Stimulus Mapping Module carries over in downstream analysis.
+As I mentioned earlier this dataset contains stimulus information. We can use the `Stimulus Mapping` Module to add the stimulus data to the Viewer Work Environment. Data entered through the Stimulus Mapping Module carries over in downstream analysis. The `Stimulus Mapping` module can also be used for mapping behavioral periods. You can of course just skip this if you're recording doesn't contain any stimulus or behavior information.
 
-When you open the stimulus mapping module you get 3 tabs. These tabs correspond to the "Stimulus Type" columns you set in you `Project Configuration`.
+When you open the stimulus mapping module you get 3 tabs. These tabs correspond to the "Stimulus or Behavior Type" columns you set in you `Project Configuration`.
 You can add stimulus periods manually by clicking the "Add Row" button. For example let's add one called "90" for "90 degrees" in the "orientation" page. You can choose a color for visualization in the Viewer plot.
 Let's add two stimuli for "sf"...
 And two for "tf".
@@ -111,6 +111,8 @@ We can also load the input for this motion correction item by clickign the "View
 So if you look closely at the motion corrected imaged mean & the input image mean you can see that the motion corrected mean is definitely sharper.
 
 Let's check out our other batch items...
+
+You may need to play around a bit with parameter combinations to determine what works best for your recordings. But as I mentioned previously, I highly recommend looking at the official Caiman documentation as well as their papers to really understand it.
 
 So I'm going to pick this one and use it for CNMF.
 Let's open the CNMF GUI, and again I highly recommend looking at the official Caiman demos and their documentation for details on the parameters.

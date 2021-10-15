@@ -5,9 +5,6 @@
 
 # GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
-__version__ = '0.2.3'
-
-
 import os
 from webbrowser import open_new_tab as open_new_web_browser_tab
 import configparser
@@ -17,6 +14,11 @@ from .configuration import get_sys_config, console_history_path
 from functools import partial
 from PyQt5.QtWidgets import QApplication
 from abc import ABCMeta
+from pathlib import Path
+
+
+with open(Path(__file__).parent.parent.joinpath('VERSION'), 'r') as vf:
+    __version__ = vf.read().split('\n')[0]
 
 
 def get_proj_config(proj_path: str = None) -> configparser.RawConfigParser:
@@ -118,15 +120,18 @@ def get_window_manager():
     # return wm
 
 
+def get_session_id():
+    if not is_app():
+        raise NotInApplicationError
+    return getattr(QApplication.instance(), 'session_id')
+
+
 def is_mesmerize_project(proj_dir: str) -> bool:
     if not os.path.isdir(proj_dir + '/dataframes'):
         raise NotAMesmerizeProject('dataframes directory not found')
 
     if not os.path.isdir(proj_dir + '/images'):
         raise NotAMesmerizeProject('images directory not found')
-
-    if not os.path.isdir(proj_dir + '/curves'):
-        raise NotAMesmerizeProject('curves directory not found')
 
     return True
 

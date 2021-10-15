@@ -19,15 +19,18 @@ import numpy as np
 import pickle
 import tifffile
 import os
-from shutil import rmtree
 from ...common import get_sys_config, get_proj_config
 from uuid import uuid4
 from uuid import UUID as UUID_type
 from typing import Optional, Tuple
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ViewerWorkEnv:
-    def __init__(self, imgdata=None, sample_id='', UUID=None, meta=None, stim_maps=None,
+    def __init__(self, imgdata: ImgData = None, sample_id='', UUID=None, meta=None, stim_maps=None,
                  roi_manager=None, roi_states=None, comments='', origin_file='',
                  custom_cols = None, history_trace: list = None,
                  additional_data: dict = None,
@@ -56,12 +59,12 @@ class ViewerWorkEnv:
 
         if imgdata is not None:
             self.isEmpty = False  #: Return True if the work environment is empty
-            self.imgdata = imgdata
+            self.imgdata: ImgData = imgdata
             if isinstance(self.imgdata, ImgData):
                 if meta is not None:
                     self.imgdata.meta = meta
         else:
-            self.imgdata = ImgData()  #: ImgData instance
+            self.imgdata: ImgData = ImgData()  #: ImgData instance
             self.isEmpty = True
         self.meta = meta
 
@@ -137,7 +140,7 @@ class ViewerWorkEnv:
         self.origin_file = ''
         self._saved = True
         self.changed_items = []
-        print('Work environment dumped!')
+        logger.info('Work environment dumped!')
 
     def restore_rois_from_states(self):
         if (self.roi_manager is not None) and (self.roi_states is not None):
@@ -157,7 +160,13 @@ class ViewerWorkEnv:
         if tiff_path is not None:
             # seq = tifffile.imread(tiff_path)
             tif = tifffile.TiffFile(tiff_path, is_nih=True)
-            seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
+            if len(tif.series) > 1:
+                seq = tif.asarray(
+                    key=range(0, len(tif.series)),
+                    maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS'])
+                )
+            else:
+                seq = tif.asarray(maxworkers=int(get_sys_config()['_MESMERIZE_N_THREADS']))
             if seq.ndim == 4:
                 # tzxy to xytz
                 seq = np.moveaxis(seq, (0, 1, 2, 3), (2, 3, 0, 1))
@@ -411,16 +420,32 @@ class ViewerWorkEnv:
 
         if self.roi_manager is not None:
             if not self.roi_manager.is_empty():
-                rois = self.roi_manager.get_all_states()
-
-                for ix in range(len(rois['states'])):
-                    for roi_def in rois['states'][ix]['tags'].keys():
-                        if rois['states'][ix]['tags'][roi_def] == '':
-                            rois['states'][ix]['tags'][roi_def] = 'untagged'
+                rois = self._curate_roi_tags(
+                    self.roi_manager.get_all_states()
+                )
 
                 d['roi_states'] = rois
 
         return d
+
+    def _curate_roi_tags(self, rois):
+        # I'm sorry
+        if rois['roi_type'] == 'VolMultiCNMFROI':
+            for z in range(len(rois['states'])):
+                for ix in range(len(rois['states'][z])):
+                    for roi_def in rois['states'][z][ix]['tags'].keys():
+                        if rois['states'][z][ix]['tags'][roi_def] == '':
+                            rois['states'][z][ix]['tags'][roi_def] = 'untagged'
+
+            return rois
+
+        else:
+            for ix in range(len(rois['states'])):
+                for roi_def in rois['states'][ix]['tags'].keys():
+                    if rois['states'][ix]['tags'][roi_def] == '':
+                        rois['states'][ix]['tags'][roi_def] = 'untagged'
+
+            return rois
 
     def _prepare_export(
             self,
@@ -505,10 +530,8 @@ class ViewerWorkEnv:
             UUID = uuid4()
         else:
             UUID = self.UUID
-        curves_dir = os.path.join(proj_path, 'curves', f'{self.sample_id}-_-{str(UUID)}')
 
         if modify_options is not None:
-            rmtree(curves_dir)
             if modify_options['overwrite_img_seq']:
                 save_img_seq = True
             else:
@@ -582,84 +605,62 @@ class ViewerWorkEnv:
         else:
             comments = self.comments
 
-        if os.path.isdir(curves_dir) is False:
-            os.mkdir(curves_dir)
-
         dicts = []
 
         rois = self.roi_manager.get_all_states()
 
-        for ix in range(len(rois['states'])):
-            curve_data = rois['states'][ix]['curve_data']
+        if rois['roi_type'] != 'VolMultiCNMFROI':
+            for ix in range(len(rois['states'])):
 
-            for roi_def in rois['states'][ix]['tags'].keys():
-                if rois['states'][ix]['tags'][roi_def] == '':
-                    rois['states'][ix]['tags'][roi_def] = 'untagged'
+                for roi_def in rois['states'][ix]['tags'].keys():
+                    if rois['states'][ix]['tags'][roi_def] == '':
+                        rois['states'][ix]['tags'][roi_def] = 'untagged'
 
-            roi_tags = rois['states'][ix]['tags']
-            curve_path = os.path.join(curves_dir, str(ix).zfill(5) + '.npz')
+                roi_tags = rois['states'][ix]['tags']
 
-            np.savez(curve_path, curve=curve_data)#, stimMaps=self.imgdata.stimMaps)
+                d = {'SampleID': self.sample_id,
+                     'AnimalID': self.sample_id.split('-_-')[0],
+                     'ImgUUID': str(UUID),
+                     'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
+                     'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
+                     'ROI_State': rois['states'][ix],
+                     'date': date,
+                     'uuid_curve': str(uuid4()),
+                     'comments': comments,
+                     'misc': self.misc
+                     }
 
-            # if rois['states'][ix]['roi_type'] == 'ManualROI':
-            #     roi_state = {'type': 'ManualROI',
-            #                  'graphics_object': rois['states'][ix]['roi_graphics_object_state'],
-            #                  'shape': rois['states'][ix]['shape']
-            #                  }
-            # elif rois['states'][ix]['roi_type'] == 'CNMFROI':
-            #     roi_state = {'type': 'CNMFROI',
-            #                  'roi_xs': rois['states'][ix]['roi_xs'],
-            #                  'roi_ys': rois['states'][ix]['roi_ys']
-            #                  }
+                dicts.append({**d,
+                              **self.custom_cols,
+                              **stimuli_unique_sets,
+                              **roi_tags})
+        else:
+            for z in range(len(rois['states'])):
+                for ix in range(len(rois['states'][z])):
 
-            d = {'SampleID': self.sample_id,
-                 'AnimalID': self.sample_id.split('-_-')[0],
-                 'CurvePath': os.path.relpath(curve_path, proj_path),
-                 'ImgUUID': str(UUID),
-                 'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
-                 'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
-                 'ROI_State': rois['states'][ix],
-                 'date': date,
-                 'uuid_curve': str(uuid4()),
-                 'comments': comments,
-                 'misc': self.misc
-                 }
+                    for roi_def in rois['states'][z][ix]['tags'].keys():
+                        if rois['states'][z][ix]['tags'][roi_def] == '':
+                            rois['states'][z][ix]['tags'][roi_def] = 'untagged'
 
-            dicts.append({**d,
-                          **self.custom_cols,
-                          **stimuli_unique_sets,
-                          **roi_tags})
+                    roi_tags = rois['states'][z][ix]['tags']
 
-        # for ix in range(0, len(self.CurvesList)):
-        #     curvePath = curvesDir + '/CURVE_' + str(ix).zfill(3) + '.npz'
-        #
-        #     if self.rois['origin'] == 'manual':
-        #         if isinstance(self.CurvesList[ix], np.ndarray):
-        #             curve = self.CurvesList[ix]
-        #         else:
-        #             curve = self.CurvesList[ix].getData()
-        #
-        #         np.savez(curvePath, curve=curve,
-        #                  roi_state=self.ROIList[ix].saveState(), stimMaps=self.imgdata.stimMaps)
-        #
-        #     elif self.rois['origin'] == 'CNMFE':
-        #         pass
-        #
-        #     d = {'SampleID':    self.sample_id,
-        #          'CurvePath':   curvePath.split(proj_path)[1],
-        #          'ImgPath':     img_path.split(proj_path)[1] + '.tiff',
-        #          'ImgInfoPath': img_path.split(proj_path)[1] + '.pik',
-        #          }
-        #
-        #     # Final list of dicts that are each appended as rows to the project DataFrame
-        #     dicts.append({**d,
-        #                   **self.custom_columns_dict,
-        #                   **stimMapsSet,
-        #                   **self.ROIList[ix].tags,
-        #                   'Date':       date,
-        #                   'uuid_curve': UUID,
-        #                   'comments':   comments
-        #                   })
+
+                    d = {'SampleID': self.sample_id,
+                         'AnimalID': self.sample_id.split('-_-')[0],
+                         'ImgUUID': str(UUID),
+                         'ImgPath': os.path.relpath(f'{img_path}.tiff', proj_path),
+                         'ImgInfoPath': os.path.relpath(f'{img_path}.pik', proj_path),
+                         'ROI_State': rois['states'][z][ix],
+                         'date': date,
+                         'uuid_curve': str(uuid4()),
+                         'comments': comments,
+                         'misc': self.misc
+                         }
+
+                    dicts.append({**d,
+                                  **self.custom_cols,
+                                  **stimuli_unique_sets,
+                                  **roi_tags})
 
         self.saved = True
         return dicts

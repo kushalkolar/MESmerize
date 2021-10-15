@@ -221,7 +221,6 @@ class BasePlotWidget(_AbstractBasePlotWidget, metaclass=_MetaQtABC):
                             f'This file is for the following plot type: {plot_type}')
 
         ptrn.set_proj_path(proj_path)
-        ptrn.set_proj_config()
 
         update_state = self.update_live
 

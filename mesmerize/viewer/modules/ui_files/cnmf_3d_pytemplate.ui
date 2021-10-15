@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>662</height>
+    <width>599</width>
+    <height>735</height>
    </rect>
   </property>
   <property name="floating">
@@ -22,6 +22,31 @@
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QGroupBox" name="groupBox_seed_components">
+          <property name="toolTip">
+           <string>Useful if trying out different paramters for the same input image stack.</string>
+          </property>
+          <property name="title">
+           <string>Seed components from masks</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QLineEdit" name="lineEdit_seed_components_path">
+             <property name="placeholderText">
+              <string>Enter path to .npy file</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
         <item>
          <widget class="QLabel" name="label_6">
           <property name="text">
@@ -374,6 +399,8 @@ is required for a later batch item.</string>
   </widget>
  </widget>
  <tabstops>
+  <tabstop>groupBox_seed_components</tabstop>
+  <tabstop>lineEdit_seed_components_path</tabstop>
   <tabstop>spinBox_p</tabstop>
   <tabstop>groupBox_use_patches</tabstop>
   <tabstop>spinBox_rf</tabstop>

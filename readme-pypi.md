@@ -32,7 +32,7 @@ If you're familiar with anaconda or virtual environments, installation is as sim
 pip install mesmerize
 ```
 
-After installation simply call ``mesmerize`` from inside the virtual environment to launch it.
+After installation just call ``mesmerize`` from inside the virtual environment to launch it.
 
 If you're unfamiliar with virtual environments, see the docs for more detailed instructions on all operating systems:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html
@@ -43,9 +43,17 @@ In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features y
 Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
 
 #### tslearn
-In order to use tslearn features you will need ``tslearn~=0.2.2``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+In order to use tslearn features you will need ``tslearn``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
 
-tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes
+tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes.
+
+#### tensorflow
+In order to use nuset segmentation you will need ``tensorflow v1.15``. You can use either ``tensorflow`` (CPU bound) or ``tensorflow-gpu``
+
+```
+pip install --upgrade pip setuptools
+pip install tensorflow~=1.15
+```
 
 ## Documentation
 Documentation is available here: [http://docs.mesmerizelab.org/](http://docs.mesmerizelab.org/)
@@ -61,6 +69,26 @@ Feel free to ask questions or discuss things on gitter. For larger bugs/issues p
 ## News
 
 See the [changelog](https://github.com/kushalkolar/MESmerize/blob/master/CHANGELOG.md) for more details
+
+**November 2020**
+
+Changes:
+
+- Bokeh based plots that use a bokeh-based datapoint tracer, still in very early stages
+- k-Shape "gridsearch", select a n-partitions range and number of combinations, returns heatmap of all k-Shape runs with inertia values NOTE: The gridsearch is not saved when the plot is saved. Only the chosen kshape iteration will be saved. This will be fixed in a future release
+- Plot neural dynamics in PCA or LDA space
+- PadArrays flowchart node to pad dataframe arrays when sizes don't match, useful when splicing is undesired
+- View mean, max, or std projection of caiman motion correction outputs by selecting them from the batch manager
+
+**September 2020**
+
+Version 0.3 released
+
+Changes:
+
+- Cross correlation plots with stimulus maps.
+- Support for Femtonics .mes and .mesc recordings.
+- Segmentation using deep learning via NuSeT.
 
 **July 2020**
 
@@ -101,10 +129,9 @@ https://doi.org/10.1101/840488
 
 ## Upcoming
 
-**Towards v0.3**
-- Full support for recordings from Femtonics microscopes.
+- Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
-- Cross correlation analysis with stimulus maps.
+- Browsers based visualizations for sharing analysis results.
 
 ## Acknowledgements
 

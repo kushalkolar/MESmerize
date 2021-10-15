@@ -19,11 +19,33 @@ from ..common import get_sys_config
 from tqdm import tqdm
 import pandas as pd
 import uuid
+from warnings import warn
 
 if not IS_WINDOWS:
     from multiprocessing import Pool
 else:
     from multiprocessing.pool import ThreadPool as Pool
+
+
+feature_list = \
+[
+    '_pf_ampl_rel_b_ix_l',
+    '_pf_ampl_rel_b_ix_r',
+    '_pf_ampl_rel_b_mean',
+    '_pf_ampl_rel_zero',
+    '_pf_area_rel_zero',
+    '_pf_area_rel_min',
+    '_pf_rising_slope_avg',
+    '_pf_falling_slope_avg',
+    '_pf_duration_base',
+    '_pf_peak_curve',
+    '_pf_uuid',
+    '_pf_p_ix',
+    '_pf_b_ix_l',
+    '_pf_b_ix_r'
+]
+
+nan_dict = {k: np.nan for k in feature_list}
 
 
 class ComputePeakFeatures:
@@ -80,13 +102,27 @@ class ComputePeakFeatures:
         p_ix = row.event  #: Peak index relative to the whole curve
         ix = row.name
 
-        if pb_df.iloc[ix - 1].label != 'base' and pb_df.iloc[ix + 1].label != 'base':
-            raise ValueError(f'All peaks must be flanked by bases\n'
-                             f'The curve with the following UUID does not have a flanking base:\n'
-                             f'{row["uuid_curve"]}')
+        if ix == (pb_df.index.size - 1) or ix == 0:
+            warn(f"Peak at curve index: <{p_ix}> is not flanked by bases on both sides, ignoring")
+            return pd.Series(nan_dict)
+
+        try:
+            if pb_df.iloc[ix - 1].label != 'base' and pb_df.iloc[ix + 1].label != 'base':
+                warn(f"Peak at curve index: <{p_ix}> is not flanked by bases on both sides, ignoring")
+                return pd.Series(nan_dict)
+
+        except IndexError as e:
+            warn(f"Index error with a peak, probably missing a flanking base:\n{e}\nignoring")
+            return pd.Series(nan_dict)
 
         b_ix_l = pb_df.iloc[ix - 1].event  #: Left base index relative to the whole curve
         b_ix_r = pb_df.iloc[ix + 1].event  #: Right base index relative to the whole curve
+
+        max_ix = len(curve) - 1
+
+        if (b_ix_l > max_ix) or (b_ix_r > max_ix) or (p_ix > max_ix):
+            warn(f'Base or peak index out of bounds for peak at curve index: <{p_ix}>, ignoring')
+            return pd.Series(nan_dict)
 
         peak_curve = curve[b_ix_l:b_ix_r]
 

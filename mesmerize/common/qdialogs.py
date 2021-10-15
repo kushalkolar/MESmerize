@@ -12,6 +12,8 @@ import traceback
 from functools import wraps
 from . import get_project_manager, is_app
 from typing import *
+from logging import getLogger
+from webbrowser import open_new_tab
 
 
 """
@@ -19,10 +21,22 @@ Decorators for frequent Qt Dialog GUIs
 """
 
 
-def present_exceptions(title: str = 'error', msg: str = 'The following error occurred.', help_func: callable = None):
+def present_exceptions(title: str = 'error', msg: str = 'The following error occurred.'):
     """
     Use to catch exceptions and present them to the user in a QMessageBox warning dialog.
     The traceback from the exception is also shown.
+
+    This decorator can be stacked on top of other decorators.
+
+    Example:
+
+    .. code-block: python
+
+            @present_exceptions('Error loading file')
+            @use_open_file_dialog('Choose file')
+                def select_file(self, path: str, *args):
+                    pass
+
 
     :param title:       Title of the dialog box
     :param msg:         Message to display above the traceback in the dialog box
@@ -32,18 +46,33 @@ def present_exceptions(title: str = 'error', msg: str = 'The following error occ
         @wraps(func)
         def fn(self, *args, **kwargs):
             if not is_app():
-                func(self, *args, **kwargs)
-                return fn
+                return func(self, *args, **kwargs)
 
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:
                 tb = traceback.format_exc()
-                args = (self, title, msg + f'\n\n{e.__class__.__name__}: {e}\n\n{tb}', QMessageBox.Ok)
-                if help_func is not None and QMessageBox.warning(*args, QMessageBox.Help) == QMessageBox.Help:
-                    help_func(e, tb)
-                else:
-                    QMessageBox.warning(*args)
+
+                mb = QMessageBox()
+                mb.setIcon(QMessageBox.Warning)
+                mb.setWindowTitle(title)
+                mb.setText(msg)
+                mb.setInformativeText(f"{e.__class__.__name__}: {e}")
+                mb.setDetailedText(tb)
+                mb.setStandardButtons(
+                    QMessageBox.Ok | QMessageBox.Help
+                )
+
+                if mb.exec_() == QMessageBox.Help:
+                    open_new_tab('http://docs.mesmerizelab.org/en/master/getting_help.html')
+
+
+
+                getLogger().info(
+                    f"{e.__class__.__name__}: {e}\n"
+                    f"{traceback.format_exc()}"
+                )
+                
         return fn
     return catcher
 

@@ -6,7 +6,7 @@ from matplotlib import cm as matplotlib_color_map
 
 from .... import pyqtgraphCore as pg
 from ....viewer.core.common import ViewerUtils
-from ....viewer.modules.roi_manager_modules.roi_types import ManualROI, ScatterROI
+from ....viewer.modules.roi_manager_modules.roi_types import ManualROI, ScatterROI, VolMultiCNMFROI
 from ....common import configuration, get_project_manager
 from typing import Union
 
@@ -78,7 +78,11 @@ class ROIList(list):
 
         # configuration.proj_cfg_changed.register(self.update_roi_defs_from_configuration)
 
-    def append(self, roi: Union[ScatterROI, ManualROI]):
+    def append(
+            self,
+            roi: Union[ScatterROI, ManualROI, VolMultiCNMFROI],
+            add_to_list_widget: bool = True,
+    ):
         """Add an ROI instance to the list"""
         roi.add_to_viewer()
 
@@ -91,10 +95,9 @@ class ROIList(list):
             roi_graphics_object.sigRemoveRequested.connect(partial(self.__delitem__, roi))
             roi_graphics_object.sigRegionChanged.connect(partial(self._live_update_requested, roi))
 
-        self.vi.workEnv_changed('ROI Added')
-        # item = QtWidgets.QListWidgetItem(self.list_widget)
-        # item.setData(QtCore.Qt.UserRole, "<b>{0}</b>".format((self.__len__())))
-        self.list_widget.addItem(str(self.__len__()))
+        if add_to_list_widget:
+            self.list_widget.addItem(str(self.__len__()))
+            
         super(ROIList, self).append(roi)
 
     # def clear_all(self):
@@ -117,9 +120,24 @@ class ROIList(list):
         self.list_widget.clear()
         self.list_widget_tags.clear()
         self.disconnect_all()
-        for i in range(self.__len__()):
-            self.vi.viewer.status_bar_label.showMessage('Removing ROIs #:' + str(i))
-            self.__delitem__(0)
+        self._clear()
+        # for i in range(self.__len__()):
+        #     self.vi.viewer.status_bar_label.showMessage('Removing ROIs #:' + str(i))
+        #     self.__delitem__(0)
+
+    def _clear(self):
+        for key in range(self.__len__()):
+            self.vi.viewer.status_bar_label.showMessage('Removing ROIs #:' + str(key))
+            self.vi.workEnv_changed('ROI Removed')
+            roi = self.__getitem__(0)
+            # bad workaround for now
+            if not isinstance(roi, VolMultiCNMFROI):
+                roi.remove_from_viewer()
+            super(ROIList, self).__delitem__(0)
+            if self.__len__() == 0:
+                self.list_widget.clear()
+                self.list_widget_tags.clear()
+                return
 
     def __delitem__(self, key):
         """Delete an ROI from the list and cleanup from the viewer, reindex the colors etc."""
@@ -139,8 +157,10 @@ class ROIList(list):
             return
 
         self.list_widget.takeItem(key)
-        self._reindex_list_widget()
-        self.reindex_colormap()
+
+        if not isinstance(roi, VolMultiCNMFROI):
+            self._reindex_list_widget()
+            self.reindex_colormap()
 
         if self.list_widget.count() > 0:
             self.list_widget.setCurrentRow(0)
@@ -170,7 +190,7 @@ class ROIList(list):
         for i in range(self.list_widget.count()):
             self.list_widget.item(i).setText(str(i))
 
-    def reindex_colormap(self):
+    def reindex_colormap(self, random_shuffle=False):
         """Reindex the colors so they sequentially follow the HSV colormap"""
         cm = matplotlib_color_map.get_cmap('hsv')
         cm._init()
@@ -178,8 +198,14 @@ class ROIList(list):
 
         cm_ixs = np.linspace(0, 210, self.__len__(), dtype=int)
 
-        for ix in range(self.__len__()):
-            c = lut[cm_ixs[ix]]
+        ixs = np.arange(self.__len__())
+        color_ixs = np.copy(ixs)
+
+        if random_shuffle:
+            np.random.shuffle(color_ixs)
+
+        for ix, color_ix in zip(ixs, color_ixs):
+            c = lut[cm_ixs[color_ix]]
             try:
                 roi = self.__getitem__(ix)
             except IndexError:
@@ -189,7 +215,7 @@ class ROIList(list):
                 item.setBackground(QtGui.QBrush(pg.mkBrush(c)))
 
             roi.set_original_color(c)
-            roi.set_color(c)
+            # roi.set_color(c)
 
     def __getitem__(self, item) -> Union[ManualROI, ScatterROI]:
         """Get an item (ROI) from the list"""
@@ -252,16 +278,25 @@ class ROIList(list):
             roi = self.__getitem__(ix)
         except IndexError:
             return
-        roi_graphics_object = roi.get_roi_graphics_object()
-        roi_graphics_object.show()
+
         roi.curve_plot_item.show()
+        roi_graphics_object = roi.get_roi_graphics_object()
+
+        if roi_graphics_object is None:
+            return
+
+        roi_graphics_object.show()
 
     def _hide_graphics_object(self, ix: int):
         """Hide the ROI at the passed index in the viewer overlay visualization"""
         roi = self.__getitem__(ix)
         roi_graphics_object = roi.get_roi_graphics_object()
-        roi_graphics_object.hide()
         roi.curve_plot_item.hide()
+
+        if roi_graphics_object is None:
+            return
+
+        roi_graphics_object.hide()
 
     def _show_all_graphics_objects(self):
         """Show all ROIs in the viewer overlay visualization"""

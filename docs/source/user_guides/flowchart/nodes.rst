@@ -695,6 +695,9 @@ PeakFeatures
     data_column     Data column containing numerical arrays from which to compute peak features.
     Apply           Process data through this node
     ============    =================
+    
+    
+    .. warning:: If there are issues with a particular peak a user warning will be displayed in the terminal that Mesmerize is running and the peak will be ignored. This happens when a peak is 1) not flanked by bases on both sides, 2) a peak or base is out of bounds for the parent curve from teh chosen `data_column` or 3) other index issues w.r.t. the peak. In the terminal, the number after the progress bar will show the index of the parent curve, for example here the parent curve is 319: 41%|████▏     | 319/771. The index of the offending peak within the parent curve will be printed below the progress bar along with a statement that may specific the issue with the peak.
 
 --------
 
@@ -1050,6 +1053,16 @@ StaticDFoFo
     ============    =========================================
 
     
+.. _node_StimTuning:
+
+StimTuning
+^^^^^^^^^^
+
+    :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Biology.StimTuning>`
+    
+    Stimulus Tuning analysis. For more information see :ref:`Stimulus Tuning Plot <plot_StimulusTuning>`
+    
+
 ----------------------
 
 .. _nodes_Clustering:
@@ -1074,7 +1087,7 @@ KMeans
 
     :class:`Source <mesmerize.pyqtgraphCore.flowchart.library.Clustering.KMeans>`
 
-	Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
+    Basically `sklearn.cluster.KMeans <https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html>`_.
 
 
 ----------------------

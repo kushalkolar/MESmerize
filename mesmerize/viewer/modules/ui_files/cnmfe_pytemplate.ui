@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>902</width>
-    <height>785</height>
+    <width>997</width>
+    <height>828</height>
    </rect>
   </property>
   <property name="floating">
@@ -380,11 +380,14 @@
         </item>
         <item>
          <widget class="QSpinBox" name="spinBoxGnb">
+          <property name="minimum">
+           <number>-1</number>
+          </property>
           <property name="maximum">
            <number>99</number>
           </property>
           <property name="value">
-           <number>10</number>
+           <number>0</number>
           </property>
          </widget>
         </item>
@@ -422,10 +425,10 @@
         <item>
          <widget class="QSpinBox" name="spinBoxNb_patch">
           <property name="minimum">
-           <number>1</number>
+           <number>-1</number>
           </property>
           <property name="value">
-           <number>10</number>
+           <number>0</number>
           </property>
          </widget>
         </item>
@@ -463,7 +466,7 @@
         <item>
          <widget class="QSpinBox" name="spinBoxK">
           <property name="minimum">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="value">
            <number>10</number>
@@ -863,6 +866,13 @@ Use single quotes for strings, do not use double quotes</string>
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkBoxKeepMemmap">
+        <property name="text">
+         <string>Keep memmap</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <widget class="QLabel" name="label_18">
@@ -924,6 +934,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>doubleSpinBoxDecayTime</tabstop>
   <tabstop>groupBox_eval_kwargs</tabstop>
   <tabstop>plainTextEdit_eval_kwargs</tabstop>
+  <tabstop>checkBoxKeepMemmap</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMFE</tabstop>
  </tabstops>

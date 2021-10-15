@@ -136,14 +136,14 @@ class ImageMenu:
         )
 
     def mean_projection(self):
-        self.vi.viewer.status_bar_label.showMessage('Creating Mean Projection of image sequencee, please wait...')
+        self.vi.viewer.status_bar_label.showMessage('Creating Mean Projection of image sequence, please wait...')
         w = display_projection('mean', self.vi.viewer.workEnv.imgdata.seq,
                                self.vi.viewer.ui.label_curr_img_seq_name.text())
         self.projection_windows.append(w)
         self.vi.viewer.status_bar_label.showMessage('Projection displayed.')
 
     def max_projection(self):
-        self.vi.viewer.status_bar_label.showMessage('Creating Max Projection of image sequencee, please wait...')
+        self.vi.viewer.status_bar_label.showMessage('Creating Max Projection of image sequence, please wait...')
         w = display_projection('max', self.vi.viewer.workEnv.imgdata.seq,
                                self.vi.viewer.ui.label_curr_img_seq_name.text())
         self.projection_windows.append(w)
@@ -151,7 +151,7 @@ class ImageMenu:
 
     def std_projection(self):
         self.vi.viewer.status_bar_label.showMessage(
-            'Creating Standard Deviation Projection of image sequencee, please wait...')
+            'Creating Standard Deviation Projection of image sequence, please wait...')
         w = display_projection('std', self.vi.viewer.workEnv.imgdata.seq,
                                self.vi.viewer.ui.label_curr_img_seq_name.text())
         self.projection_windows.append(w)

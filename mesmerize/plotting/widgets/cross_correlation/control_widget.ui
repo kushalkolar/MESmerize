@@ -199,6 +199,22 @@
              </item>
             </layout>
            </item>
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Stimulus Type:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBoxStimulusType"/>
+           </item>
           </layout>
          </item>
         </layout>
@@ -349,6 +365,23 @@
    <header>....pyqtgraphCore</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>comboBoxLabelsColumn</tabstop>
+  <tabstop>radioButtonLag</tabstop>
+  <tabstop>radioButtonMaxima</tabstop>
+  <tabstop>checkBoxAbsoluteValue</tabstop>
+  <tabstop>doubleSpinBoxLagThreshold</tabstop>
+  <tabstop>doubleSpinBoxMaximaThreshold</tabstop>
+  <tabstop>comboBoxStimulusType</tabstop>
+  <tabstop>pushButtonComputeAllData</tabstop>
+  <tabstop>pushButtonExportAllData</tabstop>
+  <tabstop>lineEditCurve1UUID</tabstop>
+  <tabstop>graphicsViewCurve1</tabstop>
+  <tabstop>lineEditCurve2UUID</tabstop>
+  <tabstop>graphicsViewCurve2</tabstop>
+  <tabstop>listWidgetSampleID</tabstop>
+  <tabstop>comboBoxDataColumn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

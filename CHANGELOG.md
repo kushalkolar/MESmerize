@@ -1,3 +1,108 @@
+# 0.x.0 (planned)
+
+### New
+- Experimental use of the bioformats importer for the Viewer.
+- Export lite versions of projects for easier sharing.
+
+# 0.7.1
+### Fixed
+- Fix sampling rate calculation for OME meta data import
+
+# 0.7.0
+### New
+- Import OME XML meta data stored in tiff files
+
+### Fixed
+- fix #55, don't move logfiles to zipfile in windows
+- bugfix 88edbd342ce8e2698ca0087553082e568e7132c2 so custom modules are imported properly
+- use latest `pandas` required by latest `pynwb` and latest `hdmf` due to `numpy` 1.20,
+
+# 0.6.1
+### Fixed
+- bug in `mesmerize.__main__` where old logfiles weren't being moved into zipfile
+- memmaps can't be removed on Windows (see #54), temporary fix added for CNMFE (already exists for other caiman modules)
+
+# 0.6.0
+### New
+- Allow installation on python >3.6
+- Logger outputs all stdout and tracebacks for exceptions to logfiles
+
+### Modified
+- `@present_exception()` windows print traceback in a scrollable box
+- args to `mesmerize.__main__` are now handled using `click` instead of `sys.argv`
+- use `webgl` backend for bokeh datapoint tracer's image viewer
+- continued work on bokeh-based plots, continued work on displaying ROIs in bokeh datapoint tracer
+- StimulusExtraction flowchart node gives informative messages if there are issues with samples
+
+### Fixed
+- matplotlib-related bugfix when opening CNMFE batch items
+- mcorr projections bugfix when comparing <3 batch items
+- bugfix when opening saved stim tuning plots
+
+# 0.5.1
+
+### Fixed
+- Project Browswer will display the offending project column if there is an issue in loading it.
+- Index error with importing CNMF files (see #50)
+
+# 0.5.0
+
+### Modified
+- `PeakFeatures` node will provide warnings instead of exceptions when there are issues w.r.t. a specific peak, such as missing bases or index errors. The offending peaks are ignored, and the the user is provided with information that they can use to check the offending peaks.
+
+### Fixed
+- Windows multiprocess fork issues with CNMF runner modules.
+- Use `sklearn~=0.23.1` due to tslearn compatibility
+- Use `psutil` v5.8 instead of v5.7 due to issues on the latest version of mac os
+- Davies-Bouldin function fixed
+
+# 0.4.1
+
+### Fixed
+- Use of scalers in Neural Decompose plot
+- ``add_roi()`` method addressing a nonexistent ``viewer`` function for various backend managers.
+
+# 0.4.0
+
+### New
+- Bokeh based plots that use a bokeh-based datapoint tracer, still in very early stages
+- k-Shape "gridsearch", select a n-partitions range and number of combinations, returns heatmap of all k-Shape runs with inertia values
+    NOTE: The gridsearch is not saved when the plot is saved. Only the chosen kshape iteration will be saved. This will be fixed in a future release
+- Plot neural dynamics in PCA or LDA space
+- PadArrays flowchart node to pad dataframe arrays when sizes don't match, useful when splicing is undesired
+- View mean, max, or std projection of caiman motion correction outputs by selecting them from the batch manager
+
+### Modified
+- CNME Viewer module uses ``CNMFParams`` when running batch items instead of passing the params are args directly to ``CNMF.__init__()``
+- Improved performance when importing a project dataframe in the flowchart
+- The project ``curves`` dir is deprecated. Backwards compatibility is maintained
+- Project browser supports filtering of list-type columns, such as stimulus/behavioral names
+- Use tslearn v0.4
+- Lots of bug fixes everywhere
+- Fix finding (newer?) CUDA GPUs
+- Fix bug with stimtuning plot if only one stim type is present
+
+# 0.3.1
+
+### Modified
+
+- Spacemap plot supports 3D data
+- Unlabelled stimulus periods can be excluded for Stimulus Tuning plots
+
+# 0.3.0
+
+### New
+- Cross correlation plots with stimulus maps.
+- Support for Femtonics .mes and .mesc recordings.
+- Segmentation using deep learning via NuSeT.
+- Caiman NoRMCorr motion correction can be used for 3D data, just treats each plane as an individual 2D recording
+- Caiman 2D CNMF can be used on 3D data, useful if you can assume each cell appears in only 1 plane
+
+### Fixed
+- ROI removal is much faster when clearing the work environment
+- Bug fix with saving Stimulus Tuning plots
+- Unnoticable bug with viewer modules that don't have defined dock areas
+
 # 0.2.3
 
 ### Fixed

@@ -13,7 +13,15 @@ from ..core.common import ViewerUtils
 from .pytemplates.cnmf_3d_pytemplate import *
 from ...common import get_window_manager
 from ...common.qdialogs import *
+from ...common.utils import HdfTools
 from uuid import UUID
+from shutil import copy
+import os
+from copy import deepcopy
+import logging
+
+
+logger = logging.getLogger()
 
 
 class ModuleGUI(QtWidgets.QDockWidget):
@@ -150,7 +158,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 raise ValueError(f'Must pass a params dict with the following keys:\n'
                                  f'{required_keys}\n'
                                  f'Please see the docs for more information.')
-            d = params
+            d = deepcopy(params)
 
         name = d['item_name']
 
@@ -166,6 +174,21 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
             bm.df.loc[bm.df['uuid'] == memmap_uuid, 'save_temp_files'] = 1
 
+        if self.ui.groupBox_seed_components.isChecked():
+            seed_path = self.ui.lineEdit_seed_components_path.text()
+            if not os.path.isfile(seed_path):
+                raise FileNotFoundError(
+                    "Seed file does not exist, check the path"
+                )
+
+            seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+
+            d['use_seeds'] = True
+            d['seed_params'] = seed_params
+
+        else:
+            d['use_seeds'] = False
+
         u = bm.add_item(
             module='CNMF_3D',
             name=name,
@@ -177,6 +200,10 @@ class ModuleGUI(QtWidgets.QDockWidget):
         if u is None:
             self.vi.viewer.status_bar_label.clearMessage()
             return
+
+        if d['use_seeds']:
+            logger.info("Copying component seeds files")
+            copy(seed_path, os.path.join(bm.batch_path, f'{u}.ain'))
 
         if d['keep_memmap']:
             bm.df.loc[bm.df['uuid'] == u, 'save_temp_files'] = 1

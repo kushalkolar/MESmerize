@@ -32,7 +32,7 @@
          <item row="1" column="5">
           <widget class="QPushButton" name="btnExportWorkEnv">
            <property name="text">
-            <string>Export workEnv</string>
+            <string>Export Video</string>
            </property>
           </widget>
          </item>

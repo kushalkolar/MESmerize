@@ -37,9 +37,13 @@ import sys
 import pandas as pd
 from typing import Optional, Union
 from uuid import UUID as UUID_type
+import logging
+
+
+logger = logging.getLogger()
 
 _custom_modules_dir = configuration.get_sys_config()['_MESMERIZE_CUSTOM_MODULES_DIR']
-_custom_modules_package_name = os.path.basename(os.path.dirname(_custom_modules_dir))
+_custom_modules_package_name = os.path.basename(_custom_modules_dir)
 _cmi = os.path.join(_custom_modules_dir, '__init__.py')
 
 if os.path.isfile(_cmi):
@@ -91,6 +95,14 @@ if configuration.HAS_CAIMAN:
     )
 
 
+file_associations =\
+    {
+        '.tif':     tiff_io.ModuleGUI,
+        '.tiff':    tiff_io.ModuleGUI,
+        '.btf':     tiff_io.ModuleGUI,
+    }
+
+
 class MainWindow(QtWidgets.QMainWindow):
     standard_modules = {'tiff_io': tiff_io.ModuleGUI,
                         'mesfile': mesfile_io.ModuleGUI,
@@ -98,7 +110,14 @@ class MainWindow(QtWidgets.QMainWindow):
                         'suite2p_importer': suite2p.ModuleGUI,
                         'stimulus_mapping': stimulus_mapping.ModuleGUI,
                         'script_editor': script_editor.ModuleGUI,
+                        'mesc_importer': femtonics_mesc.ModuleGUI,
+                        'exporter': exporter.ModuleGUI,
                         }
+
+    if configuration.HAS_TENSORFLOW:
+        standard_modules.update(
+            {'nuset_segment': nuset_segment.ModuleGUI}
+        )
 
     # caiman modules
     if configuration.HAS_CAIMAN:
@@ -121,12 +140,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.running_modules = []
         # TODO: Integrate viewer initiation here instead of outside
-        self.ui.actionMesfile.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
+        self.ui.action_mes_importer.triggered.connect(lambda: self.run_module(mesfile_io.ModuleGUI))
+        self.ui.action_mesc_importer.triggered.connect(lambda: self.run_module(femtonics_mesc.ModuleGUI))
         self.ui.actionTiff_file.triggered.connect(lambda: self.run_module(tiff_io.ModuleGUI))
         self.ui.actionROI_Manager.triggered.connect(lambda: self.run_module(roi_manager.ModuleGUI))
         self.ui.actionSuite2p_Importer.triggered.connect(lambda: self.run_module(suite2p.ModuleGUI))
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
         self.ui.actionScript_Editor.triggered.connect(lambda: self.run_module(script_editor.ModuleGUI))
+
+        if configuration.HAS_TENSORFLOW:
+            self.ui.actionNuSeT_Segmentation.triggered.connect(lambda: self.run_module(nuset_segment.ModuleGUI))
+
 
         # TODO: refactor the actions trigger connections so they're automated based on module name
         if configuration.HAS_CAIMAN:
@@ -180,10 +204,26 @@ class MainWindow(QtWidgets.QMainWindow):
                 self._cms_actions.append(action)
                 self.ui.menuCustom_Modules.addAction(self._cms_actions[-1])
             except ImportError:
-                failed_imports.append(mstr)
+                failed_imports.append(
+                    (mstr[1:], traceback.format_exc())
+                )
+
         if len(failed_imports) > 0:
-            names = '\n'.join(failed_imports)
-            QtWidgets.QMessageBox.warning(self, 'Failed to load plugings', f'The following plugins failed to load:\n{names}')
+            names = '\n'.join(fi[0] for fi in failed_imports)
+            QtWidgets.QMessageBox.warning(
+                self,
+                'Failed to load plugings',
+                f'The following plugins failed to load:\n{names}'
+                f'\n\n'
+                f'See the terminal for detailed tracebacks'
+            )
+
+            for fi in failed_imports:
+                print(
+                    f'{fi[0]}'
+                    f'\n{fi[1]}'
+                    f'\n\n'
+                )
 
         self.available_modules += list(self.custom_modules.keys())
 
@@ -198,6 +238,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.run_module(roi_manager.ModuleGUI, hide=True)
         self.roi_manager = self.running_modules[-1]
+
+        self._viewer.ui.btnExportWorkEnv.clicked.connect(
+            partial(self.run_module, 'exporter')
+        )
 
         status_label = self.statusBar()
 
@@ -268,7 +312,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.running_modules[-1].hide()
 
-        if (module_class in self.standard_modules.values()) and dock_widget_area.keys():
+        if (module_class in self.standard_modules.values()) and (module_class in dock_widget_area.keys()):
             self.addDockWidget(dock_widget_area[module_class], m)
 
         return self.running_modules[-1]
@@ -328,7 +372,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             changes = objecteditor.oedit(self.vi.viewer.workEnv)
         except:
-            print(traceback.format_exc())
+            logger.info((traceback.format_exc()))
             # QtWidgets.QMessageBox.de(self, 'Unable to open work environment editor',
             #                               'The following error occured while trying to open the work environment editor:'
             #                               '\n', traceback.format_exc())
@@ -497,8 +541,6 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             return
 
-        if file.endswith('.tiff') or file.endswith('.tif'):
-            tio = self.get_module('tiff_io')
-            assert isinstance(tio, tiff_io.ModuleGUI)
-            tio.tiff_file_path = file
-            tio.check_meta_path()
+        ext = os.path.splitext(file)[1]
+
+        self.get_module(file_associations[ext]).file_sink(file)

@@ -40,7 +40,7 @@ import numpy as np
 from ...viewer.core.viewer_work_environment import ViewerWorkEnv
 # from common import configuration
 # from viewer.modules.batch_manager import ModuleGUI as BatchModuleGUI
-from ...viewer import export
+# from ...viewer import export
 try:
     from bottleneck import nanmin, nanmax
 except ImportError:
@@ -81,6 +81,7 @@ class ImageView(QtWidgets.QWidget):
     sigTimeChanged = QtCore.Signal(object, object)
     sigProcessingChanged = QtCore.Signal(object)
     sigZLevelChanged = QtCore.Signal(object)
+    sig_workEnv_changed = QtCore.Signal(object)
 
     def __init__(self, parent=None, name="ImageView", view=None, imageItem=None, *args):
         """
@@ -121,7 +122,7 @@ class ImageView(QtWidgets.QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.scene = self.ui.graphicsView.scene()
-        self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
+        # self.ui.btnExportWorkEnv.clicked.connect(self.init_export_gui)
         # self.ui.btnResetScale.clicked.connect(self.resetImgScale)
 
         # Set the main viewer objects to None so that proceeding methods know that these objects
@@ -192,6 +193,8 @@ class ImageView(QtWidgets.QWidget):
         self.ui.verticalSliderZLevel.valueChanged.connect(self.set_zlevel)
         self.set_zlevel_ui_visible(False)
 
+        self.current_zlevel = self.ui.verticalSliderZLevel.value()
+
     def set_zlevel_ui_visible(self, b: bool):
         self.ui.groupBoxZLevel.setVisible(b)
 
@@ -219,6 +222,7 @@ class ImageView(QtWidgets.QWidget):
             if hasattr(self.workEnv.roi_manager, 'set_zlevel'):
                 self.workEnv.roi_manager.set_zlevel(z)
 
+        self.current_zlevel = z
         self.sigZLevelChanged.emit(z)
 
     def get_workEnv(self):
@@ -232,55 +236,55 @@ class ImageView(QtWidgets.QWidget):
     def status_bar_label(self, status_bar_label: QtWidgets.QStatusBar):
         self._status_bar_label = status_bar_label
 
-    def init_export_gui(self):
-        if hasattr(self, 'export_gui'):
-            self.export_gui.close()
-            self.export_gui = None
-        self.export_gui = export.ExporterGUI()
-        self.export_gui.btnExport.clicked.connect(self.export_workEnv)
-
-    def export_workEnv(self):
-        path = self.export_gui.lineEdPath.text()
-
-        if self.export_gui.comboBoxFormat.currentText() != 'tiff':
-            if self.export_gui.radioAuto.isChecked():
-                mi = self.workEnv.imgdata.meta['vmin']
-                mx = self.workEnv.imgdata.meta['vmax']
-                histLevels = (mi, mx)
-            elif self.export_gui.radioFromViewer.isChecked():
-                histLevels = self.ui.histogram.item.getLevels()
-
-        if self.export_gui.comboBoxFormat.currentText() == 'tiff':
-            try:
-                export.Exporter(self.workEnv.imgdata, path + '.tiff')
-            except Exception as e:
-                QtWidgets.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
-                                                                'environment: \n' + str(e))
-            return
-
-        if self.export_gui.labelSlider != '1.0':
-            fscale = float(self.export_gui.labelSlider.text())
-            f = self.workEnv.imgdata.meta['fps'] * fscale
-        else:
-            f = self.workEnv.imgdata.meta['fps']
-
-        if self.export_gui.comboBoxFormat.currentText() == 'MJPG':
-            ex = '.avi'
-        elif self.export_gui.comboBoxFormat.currentText() == 'X264':
-            ex = '.mp4'
-        elif self.export_gui.comboBoxFormat.currentText() == 'gif':
-            ex = '.gif'
-
-        if self.export_gui.checkBoxPseudocolor.isChecked():
-            imgdata_to_export = self.getProcessedImage().T
-        else:
-            imgdata_to_export = self.workEnv.imgdata.seq
-
-        try:
-            export.Exporter(imgdata_to_export, path + ex, levels=histLevels, fps=f)
-        except Exception as e:
-            QtWidgets.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
-                                                            'environment: \n' + str(e))
+    # def init_export_gui(self):
+    #     if hasattr(self, 'export_gui'):
+    #         self.export_gui.close()
+    #         self.export_gui = None
+    #     self.export_gui = export.ExporterGUI()
+    #     self.export_gui.btnExport.clicked.connect(self.export_workEnv)
+    #
+    # def export_workEnv(self):
+    #     path = self.export_gui.lineEdPath.text()
+    #
+    #     if self.export_gui.comboBoxFormat.currentText() != 'tiff':
+    #         if self.export_gui.radioAuto.isChecked():
+    #             mi = self.workEnv.imgdata.meta['vmin']
+    #             mx = self.workEnv.imgdata.meta['vmax']
+    #             histLevels = (mi, mx)
+    #         elif self.export_gui.radioFromViewer.isChecked():
+    #             histLevels = self.ui.histogram.item.getLevels()
+    #
+    #     if self.export_gui.comboBoxFormat.currentText() == 'tiff':
+    #         try:
+    #             export.Exporter(self.workEnv.imgdata, path + '.tiff')
+    #         except Exception as e:
+    #             QtWidgets.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
+    #                                                             'environment: \n' + str(e))
+    #         return
+    #
+    #     if self.export_gui.labelSlider != '1.0':
+    #         fscale = float(self.export_gui.labelSlider.text())
+    #         f = self.workEnv.imgdata.meta['fps'] * fscale
+    #     else:
+    #         f = self.workEnv.imgdata.meta['fps']
+    #
+    #     if self.export_gui.comboBoxFormat.currentText() == 'MJPG':
+    #         ex = '.avi'
+    #     elif self.export_gui.comboBoxFormat.currentText() == 'X264':
+    #         ex = '.mp4'
+    #     elif self.export_gui.comboBoxFormat.currentText() == 'gif':
+    #         ex = '.gif'
+    #
+    #     if self.export_gui.checkBoxPseudocolor.isChecked():
+    #         imgdata_to_export = self.getProcessedImage().T
+    #     else:
+    #         imgdata_to_export = self.workEnv.imgdata.seq
+    #
+    #     try:
+    #         export.Exporter(imgdata_to_export, path + ex, levels=histLevels, fps=f)
+    #     except Exception as e:
+    #         QtWidgets.QMessageBox.warning(self, 'Export Error', 'The following error occured while exporting the work '
+    #                                                         'environment: \n' + str(e))
 
     def setImage(self, img, autoRange=True, autoLevels=True, levels=None, axes=None, xvals=None, pos=None, scale=None, transform=None, autoHistogramRange=True):
         """

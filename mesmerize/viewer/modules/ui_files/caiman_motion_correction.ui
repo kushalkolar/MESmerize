@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>263</width>
-    <height>736</height>
+    <width>279</width>
+    <height>869</height>
    </rect>
   </property>
   <property name="floating">
@@ -508,6 +508,13 @@ Use single quotes for strings, do not use double quotes.</string>
      </layout>
     </item>
     <item>
+     <widget class="QCheckBox" name="checkBoxKeepMemmap">
+      <property name="text">
+       <string>Keep memmap</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_20">
       <item>
        <widget class="QLineEdit" name="lineEditNameElastic">
@@ -520,6 +527,59 @@ Use single quotes for strings, do not use double quotes.</string>
        <widget class="QPushButton" name="btnAddToBatchElastic">
         <property name="text">
          <string>Add to batch</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="toolTip">
+       <string>View Mean, Max or Std projections of the outputs from selected batch items</string>
+      </property>
+      <property name="text">
+       <string>View projections of selected outputs</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QComboBox" name="comboBoxProjectionsOption">
+        <property name="toolTip">
+         <string>View Mean, Max or Std projections of the outputs from selected batch items</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>mean</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>max</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>std</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonViewProjections">
+        <property name="toolTip">
+         <string>View Mean, Max or Std projections of the outputs from selected batch items</string>
+        </property>
+        <property name="text">
+         <string>View</string>
         </property>
        </widget>
       </item>
@@ -556,8 +616,11 @@ Use single quotes for strings, do not use double quotes.</string>
   <tabstop>sliderOverlaps</tabstop>
   <tabstop>btnShowQuilt</tabstop>
   <tabstop>spinboxUpsample</tabstop>
+  <tabstop>checkBoxKeepMemmap</tabstop>
   <tabstop>lineEditNameElastic</tabstop>
   <tabstop>btnAddToBatchElastic</tabstop>
+  <tabstop>comboBoxProjectionsOption</tabstop>
+  <tabstop>pushButtonViewProjections</tabstop>
  </tabstops>
  <resources/>
  <connections>

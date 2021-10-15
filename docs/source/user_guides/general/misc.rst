@@ -41,8 +41,6 @@ dataframes      Contains an file storing the project dataframe, root.dfr, and ba
 
 images          Contains the image sequences and work environment data for all samples in the project
 
-curves          Contains the curves for every sample in the project
-
 batches         Used for storing batches used by the :ref:`Batch Manager <module_BatchManager>` if you wish.
 
 flowcharts      Used for storing *.fc* flowchart files that save the layout of nodes in a flowchart.

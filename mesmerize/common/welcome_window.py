@@ -11,11 +11,11 @@ Sars International Centre for Marine Molecular Biology
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
+from ..common import configuration, system_config_window, doc_pages, get_project_manager, set_project_manager
 from ..pyqtgraphCore.console import ConsoleWidget
 from .pytemplates.welcome_window_pytemplate import *
 # from ..project_manager import ProjectManager
-from ..common import configuration, system_config_window, doc_pages, get_project_manager, set_project_manager
-from ..common import get_window_manager, is_mesmerize_project
+from ..common import get_window_manager, is_mesmerize_project, get_session_id
 # from viewer.modules import batch_manager
 import os
 from ..common import start
@@ -24,6 +24,7 @@ from glob import glob
 from ..plotting import open_plot_file
 from functools import partial
 from .qdialogs import *
+import re
 from .. import __version__
 
 
@@ -109,13 +110,15 @@ class MainWindow(QtWidgets.QMainWindow):
     def initialize_console_widget(self):
         ns = {'configuration': configuration,
               'get_window_manager': get_window_manager,
-              'this': self
+              'this': self,
+              'get_session_id': get_session_id
               }
 
         txt = '\n'.join(["Namespaces:",
                          "self as this",
                          "callables:",
-                         "get_window_manager()"])
+                         "get_window_manager()",
+                         "get_session_id()"])
 
         cmd_history_file = os.path.join(configuration.console_history_path, 'welcome_window.pik')
         console = ConsoleWidget(namespace=ns, text=txt, historyFile=cmd_history_file)
@@ -150,7 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         name, start = QtWidgets.QInputDialog.getText(self, '', 'Project Name:', QtWidgets.QLineEdit.Normal, '')
 
-        if any(s in name for s in [' ', '(', ')', '?']):
+        if not re.match("^[A-Za-z0-9_-]*$", name):
             QtWidgets.QMessageBox.warning(self, 'Invalid Name', 'Project Name can only contain alphanumeric characters')
             return
 

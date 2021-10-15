@@ -18,6 +18,55 @@ from ...variants import ViolinsPlot
 import numpy as np
 from uuid import UUID
 import pandas as pd
+from ....common.qdialogs import use_save_file_dialog, present_exceptions
+import os
+
+
+class SummaryStatsWidget(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        QtWidgets.QWidget.__init__(self)
+
+        self.vlayout = QtWidgets.QVBoxLayout(self)
+
+        self.text_widget = QtWidgets.QPlainTextEdit(self)
+        self.text_widget.setReadOnly(True)
+        font = QtGui.QFont()
+        font.setFamily("Monospace")
+        self.text_widget.setFont(font)
+        self.vlayout.addWidget(self.text_widget)
+
+        self.button_save = QtWidgets.QPushButton(self)
+        self.button_save.setText("Save to file")
+        self.button_save.clicked.connect(lambda: self.save_to_file())
+        self.vlayout.addWidget(self.button_save)
+
+        self.setLayout(self.vlayout)
+
+        self.data: str = ''
+
+    def clear(self):
+        self.data = ''
+        self.text_widget.clear()
+
+    def set_data(self, s: str):
+        self.clear()
+        self.data = s
+        self.text_widget.setPlainText(self.data)
+
+    @use_save_file_dialog("Save summary stats file", ext='.stats')
+    @present_exceptions()
+    def save_to_file(self, path, *args):
+        if not self.data:
+            raise ValueError(
+                "Summary stats are empty, nothing to save."
+            )
+        if os.path.isfile(path):
+            raise FileExistsError(
+                "A file with that name already exists, specify a different path"
+            )
+
+        with open(path, 'w') as f:
+            f.write(self.data)
 
 
 class ControlWidget(QtWidgets.QWidget, Ui_BeeswarmControls):
@@ -74,6 +123,11 @@ class BeeswarmPlotWindow(PlotWindow):
         self.live_datapoint_tracer = DatapointTracerWidget()
         self.ui.actionLive_datapoint_tracer.triggered.connect(self.live_datapoint_tracer.show)
 
+        self.summary_stats_widget = SummaryStatsWidget(parent=None)
+        self.control_widget.pushButtonSummaryStats.clicked.connect(
+            self.summary_stats_widget.show
+        )
+
     def get_current_datapoint(self) -> UUID:
         return self.current_datapoint
 
@@ -115,6 +169,9 @@ class BeeswarmPlotWindow(PlotWindow):
         spot_size = self.control_widget.horizontalSliderSpotSize.value()
         self.update_beeswarm()
         self.update_violins()
+
+        summary_stats = self.dataframe.groupby(self.grouping_column).describe().unstack(1).to_string()
+        self.summary_stats_widget.set_data(summary_stats)
 
     def update_beeswarm(self):
         self.beeswarm_plot.clear_plots()

@@ -31,6 +31,10 @@ from glob import glob
 import json
 import shutil
 
+# must be within this block, else windows gives issues
+if __name__ == '__main__':
+    from mesmerize.common.utils import HdfTools
+
 
 if not sys.argv[0] == __file__:
     from ...core import ViewerUtils, ViewerWorkEnv
@@ -96,11 +100,31 @@ def run(work_dir: str, UUID: str, save_temp_files: str):
 
         images = np.reshape(Yr.T, [T] + list(dims), order='F')
 
+        Ain = None
+
+        # seed components
+        if 'use_seeds' in input_params.keys():
+            if input_params['use_seeds']:
+                try:
+                    # see if it's an h5 file produced by the nuset_segment GUI
+                    hdict = HdfTools.load_dict(
+                        os.path.join(f'{filepath}.ain'),
+                        'data'
+                    )
+                    Ain = hdict['sparse_mask']
+                except:
+                    try:
+                        Ain = np.load(f'{UUID}.ain')
+                    except Exception as e:
+                        output['warnings'] = f'Could not seed components, make sure that ' \
+                            f'the .ain file exists in the batch dir: {e}'
+
         if input_params['use_patches']:
             cnm = cnmf.CNMF(
                 n_processes=n_processes,
                 dview=dview,
                 only_init_patch=True,
+                Ain=Ain,
                 **input_params['cnmf_kwargs']
             )
 
@@ -108,6 +132,7 @@ def run(work_dir: str, UUID: str, save_temp_files: str):
             cnm = cnmf.CNMF(
                 n_processes,
                 dview=dview,
+                Ain=Ain,
                 **input_params['cnmf_kwargs']
             )
 

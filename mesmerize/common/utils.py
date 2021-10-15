@@ -45,7 +45,7 @@ def make_workdir(prefix: str = '') -> str:
         raise PermissionError(f'You do not have write permissions for the chosen work folder:\n{main_workdir}')
 
     date = datetime.fromtimestamp(time())
-    dirname = f'{prefix}_{date.strftime("%Y%m%d")}_{date.strftime("%H%M%S")}'
+    dirname = f'{prefix}_{date.strftime("%Y%m%d")}_{date.strftime("%H%M%S")}_r{np.random.randint(0, 1000)}'
     workdir = os.path.join(main_workdir, 'mesmerize_tmp', dirname)
     os.makedirs(workdir)
 
