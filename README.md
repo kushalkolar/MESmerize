@@ -1,12 +1,9 @@
-<style>
-.aligncenter {
-    text-align: center;
+img[src*='#center'] { 
+    display: block;
+    margin: auto;
 }
-</style>
 
-<p class="aligncenter">
-  <img src="./newbanner.png">
-</p>
+![]("./newbanner.png#center")
 
 | <span> | <span> | <span> | <span> |
 |--------|--------|--------|--------|
