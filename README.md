@@ -2,20 +2,37 @@
 <img src="./newbanner.png" alt="Mesmerize Banner">
 </p>
 
-| <span> | <span> | <span> | <span> |
-|--------|--------|--------|--------|
-| PyPI | [![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) | Downloads | [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) |
-| License | [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) | Maintenance | [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/kushalkolar/MESmerize)](https://github.com/kushalkolar/MESmerize/commits/master) |
-| Documentation | [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](http://docs.mesmerizelab.org/en/master/?badge=master) | Code analysis | [![Maintainability](https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability)](https://codeclimate.com/github/kushalkolar/MESmerize/maintainability) |
-| Chat & Help | [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) | Issue tracker | [![GitHub issues](https://img.shields.io/github/issues/kushalkolar/MESmerize)](https://github.com/kushalkolar/MESmerize/issues) |
+<p align="center">
+    <em>Modular, Extendable, State Of The Art Software for Calcium Imaging Analysis</em>
+</p>
+
+<p align="center">
+  
+<a href="https://pypi.org/project/mesmerize" target="_blank">
+    <img src="https://badge.fury.io/py/mesmerize.svg" alt="Package version">
+</a>
+
+<a href="https://codeclimate.com/github/kushalkolar/MESmerize/maintainability" target="_blank">
+    <img src="https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability" alt="Coverage">
+</a>
+
+<a href="https://www.gnu.org/licenses/gpl-3.0" target="_blank">
+    <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License">
+</a>
+
+<a href="https://gitter.im/mesmerize_discussion" target="_blank">
+    <img src="https://badges.gitter.im/mesmerize_discussion/community.svg" alt="Chat and Help">
+</a>
+  
+</p>
 
 Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
 
-Associated bioRxiv paper: https://doi.org/10.1101/840488
+---
 
-<a href="https://doi.org/10.1101/840488">
-<img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
-</a>
+**BioRxiv paper:** <a href="https://doi.org/10.1101/840488">https://doi.org/10.1101/840488</a>
+
+**Documentation:** <a href="http://docs.mesmerizelab.org">http://docs.mesmerizelab.org</a>
 
 ## Video Tutorials!
 We have recently created detailed video tutorials! The main tutorial series provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations:\
