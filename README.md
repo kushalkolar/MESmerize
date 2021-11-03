@@ -1,9 +1,4 @@
-img[src*='#center'] { 
-    display: block;
-    margin: auto;
-}
-
-![]("./newbanner.png#center")
+![]("./newbanner.png")
 
 | <span> | <span> | <span> | <span> |
 |--------|--------|--------|--------|
