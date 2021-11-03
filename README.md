@@ -40,11 +40,11 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 ---
 
-## Installation
+# Installation
 
 You can install **mesmerize** natively using conda or virtual environments. If you want a quick and easy installation you can import a VM that comes with **mesmerize** pre-installed and ready-to-go with all features.
 
-### Virtual/Conda Environments
+## Virtual/Conda Environments
 If you're familiar with anaconda or virtual environments, install with pip:
 
 ```
@@ -56,17 +56,17 @@ After installation just call ``mesmerize`` from inside the virtual environment t
 See the docs for more detailed instructions on all operating systems:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html
 
-#### Caiman
+### Caiman
 In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
 
 Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
 
-#### tslearn
+### tslearn
 In order to use tslearn features you will need ``tslearn``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
 
 tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes.
 
-#### tensorflow
+### tensorflow
 In order to use nuset segmentation you will need ``tensorflow v1.15``. You can use either ``tensorflow`` (CPU bound) or ``tensorflow-gpu``
 
 ```
@@ -79,10 +79,7 @@ pip install tensorflow~=1.15
 If you do not want to setup conda or virtual environments, you can import a VM with Mesmerize pre-installed and ready to go with all features:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
 
-## Documentation
-Documentation is available here: [http://docs.mesmerizelab.org/](http://docs.mesmerizelab.org/)
-
-## Questions/Discussions
+# Questions/Discussions
 
 Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
 
@@ -90,7 +87,9 @@ Feel free to ask questions or discuss things on gitter. For larger bugs/issues p
 
 **Issue tracker:** https://github.com/kushalkolar/MESmerize/issues
 
-## News
+---
+
+# News
 
 See the [changelog](https://github.com/kushalkolar/MESmerize/blob/master/CHANGELOG.md) for more details
 
