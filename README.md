@@ -1,4 +1,6 @@
-![]("./newbanner.png")
+<p align="center">
+<img src="./newbanner.png" alt="Mesmerize Banner">
+</p>
 
 | <span> | <span> | <span> | <span> |
 |--------|--------|--------|--------|
