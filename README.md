@@ -1,4 +1,6 @@
-<center>![banner](./newbanner.png)</center>
+<center>
+  ![banner](./newbanner.png)
+</center>
 
 | <span> | <span> | <span> | <span> |
 |--------|--------|--------|--------|
