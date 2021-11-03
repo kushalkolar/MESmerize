@@ -1,6 +1,12 @@
-<center>
-  <img src="./newbanner.png">banner</img>
-</center>
+<style>
+.aligncenter {
+    text-align: center;
+}
+</style>
+
+<p class="aligncenter">
+  <img src="./newbanner.png">
+</p>
 
 | <span> | <span> | <span> | <span> |
 |--------|--------|--------|--------|
