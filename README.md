@@ -1,5 +1,5 @@
 <center>
-  ![banner](./newbanner.png)
+  <img src="./newbanner.png">banner</img>
 </center>
 
 | <span> | <span> | <span> | <span> |
