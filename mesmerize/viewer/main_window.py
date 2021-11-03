@@ -73,13 +73,13 @@ dock_widget_area = \
     }
 
 # inscopix importer
-if configuration.HAS_ISX:
+if sys.version_info[1] >= 8:
     dock_widget_area.update(
         {
             'inscopix_importer': QtCore.Qt.TopDockWidgetArea,
             inscopix_importer.ModuleGUI: QtCore.Qt.TopDockWidgetArea,
         }
-    )
+)
 
 
 # caiman modules
@@ -160,7 +160,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionStimulus_Mapping.triggered.connect(lambda: self.run_module(stimulus_mapping.ModuleGUI))
         self.ui.actionScript_Editor.triggered.connect(lambda: self.run_module(script_editor.ModuleGUI))
 
-        if configuration.HAS_ISX:
+        if sys.version_info[1] >= 8:
             self.ui.actionInscopix_isxd.triggered.connect(lambda: self.run_module(inscopix_importer.ModuleGUI))
 
         if configuration.HAS_TENSORFLOW:

@@ -42,15 +42,15 @@ except ImportError:
 else:
     HAS_CAIMAN = True
 
-try:
-    print("Importing ISX")
-    import isx
-    print("Imported ISX")
-except ImportError:
-    warn("Inscopix API not found, Inscopix importer will be disabled")
-    HAS_ISX = False
-else:
-    HAS_ISX = True
+# try:
+#     print("Importing ISX")
+#     import isx
+#     print("Imported ISX")
+# except ImportError:
+#     warn("Inscopix API not found, Inscopix importer will be disabled")
+#     HAS_ISX = False
+# else:
+#     HAS_ISX = True
 
 try:
     import tensorflow

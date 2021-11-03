@@ -1,4 +1,5 @@
-from ...common.configuration import HAS_CAIMAN, HAS_TENSORFLOW, HAS_ISX
+import sys
+from ...common.configuration import HAS_CAIMAN, HAS_TENSORFLOW#, HAS_ISX
 
 __all__ = [
     'mesfile_io',
@@ -8,7 +9,7 @@ __all__ = [
     'script_editor',
     'suite2p',
     'femtonics_mesc',
-    'exporter'
+    'exporter',
 ]
 
 if HAS_CAIMAN:
@@ -28,8 +29,11 @@ if HAS_TENSORFLOW:
             'nuset_segment',
         ]
 
-if HAS_ISX:
-    __all__ += \
-    [
-        'inscopix_importer'
-    ]
+if sys.version_info[1] >= 8:
+    __all__ += ['inscopix_importer']
+
+#if HAS_ISX:
+#    __all__ += \
+#    [
+#        'inscopix_importer'
+#    ]
