@@ -79,6 +79,8 @@ pip install tensorflow~=1.15
 If you do not want to setup conda or virtual environments, you can import a VM with Mesmerize pre-installed and ready to go with all features:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
 
+---
+
 # Questions/Discussions
 
 Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
@@ -150,13 +152,17 @@ https://doi.org/10.1101/840488
 <img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
 </a>
 
-## Upcoming
+---
+
+# Upcoming
 
 - Experimental use of the bioformats importer for the Viewer.
 - Export lite versions of projects for easier sharing.
 - Browsers based visualizations for sharing analysis results.
 
-## Acknowledgements
+---
+
+# Acknowledgements
 
 - [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. 
 - [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with.
