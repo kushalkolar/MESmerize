@@ -34,9 +34,9 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 **Documentation:** <a href="http://docs.mesmerizelab.org">http://docs.mesmerizelab.org</a>
 
-**Video Tutorials:** <a href="https://www.youtube.com/watch?v=D9zKhFkcKTk&list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg">On YouTube</a>
+**Video Tutorials:** <a href="https://www.youtube.com/watch?v=D9zKhFkcKTk&list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg" target="_blank">Open YouTube</a>
 
-**Additional Videos:** <a href="https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_">On YouTube</a>
+**Additional Videos:** <a href="https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_" target="_blank">Open YouTube</a>
 
 ---
 
