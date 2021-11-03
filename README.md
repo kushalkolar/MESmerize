@@ -34,16 +34,15 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 **Documentation:** <a href="http://docs.mesmerizelab.org">http://docs.mesmerizelab.org</a>
 
-## Video Tutorials!
-We have recently created detailed video tutorials! The main tutorial series provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations:\
-https://www.youtube.com/playlist?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg
+**Video Tutorials:** <a href="https://www.youtube.com/watch?v=D9zKhFkcKTk&list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg">YouTube</a>
 
-Additional videos on specific aspects of Mesmerize will be posted here:\
-[https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_](https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_)
+**Additional Videos:** <a href="https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_"></a>
+
+---
 
 ## Installation
 
-You can install `mesmerize` natively using conda or virtual environments. If you want a quick and easy installation you can import a VM that comes with `mesmerize` pre-installed and ready-to-go with all features.
+You can install **mesmerize** natively using conda or virtual environments. If you want a quick and easy installation you can import a VM that comes with **mesmerize** pre-installed and ready-to-go with all features.
 
 ### Virtual/Conda Environments
 If you're familiar with anaconda or virtual environments, install with pip:
