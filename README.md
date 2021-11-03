@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <em>Modular, Extendable, State Of The Art Software for Calcium Imaging Analysis</em>
+    <em>State Of The Art Software for Calcium Imaging Analysis</em>
 </p>
 
 <p align="center">
