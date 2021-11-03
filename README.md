@@ -83,9 +83,7 @@ http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platfor
 
 # Questions/Discussions
 
-Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
-
-[![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+Feel free to ask questions or discuss things on <a href="https://gitter.im/mesmerize_discussion">gitter</a>. For larger bugs/issues please use the issue tracker.
 
 **Issue tracker:** https://github.com/kushalkolar/MESmerize/issues
 
