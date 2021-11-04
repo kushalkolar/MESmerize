@@ -4,10 +4,12 @@ Pandas extensions for working with Batch Manager data
 
 import pandas as pd
 import pathlib
-import caiman as cm
+from ..common import configuration
 from typing import *
 from uuid import UUID
 import pickle
+if configuration.HAS_CAIMAN:
+    import caiman as cm
 
 CURRENT_BATCH: pathlib.Path = None  # only one batch at a time for now
 
@@ -34,6 +36,9 @@ class CaimanExtensions:
     Extensions for caiman related functions
     """
     def __init__(self, series: pd.Series):
+        if not configuration.HAS_CAIMAN:
+            raise ImportError("Caiman not found in the environment")
+
         self._series = series
 
     def get_params(self) -> dict:
