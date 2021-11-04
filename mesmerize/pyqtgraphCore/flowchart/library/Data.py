@@ -33,15 +33,10 @@ class LoadProjDF(CtrlNode):
         child_df_names = ['root'] + list(get_project_manager().child_dataframes.keys())
         self.ctrls['DF_Name'].addItems(child_df_names)
         self.ctrls['Update'].clicked.connect(self.changed)
-        # print('Node Refs:')
-        # print(configuration.df_refs)
 
     def process(self):
         if self.ctrls['Apply'].isChecked() is False:
             return self.t
-
-        # print('#######Weak Refs Dict########')
-        # print(configuration.df_refs)
 
         if self.ctrls['PinDF'].isEnabled():
             if self.ctrls['PinDF'].isChecked():
@@ -60,13 +55,9 @@ class LoadProjDF(CtrlNode):
                 df = get_project_manager().child_dataframes[child_df_name]['dataframe']
                 filter_history = get_project_manager().child_dataframes[child_df_name]['filter_history']
             proj_path = get_project_manager().root_dir
-            # print('*****************config df ref hex ID:*****************')
-            # print(hex(id(df)))
+
             self.t = Transmission.from_proj(proj_path, df, sub_dataframe_name=child_df_name,
                                             dataframe_filter_history={'dataframe_filter_history': filter_history})
-
-            # print('Tranmission dataframe hexID:')
-            # print(hex(id(self.t.df)))
 
         return {'Out': self.t}
 
@@ -97,12 +88,6 @@ class LoadFile(CtrlNode):
             self.ctrls['proj_trns'].setItems(trns_names)
             self.ctrls['proj_trns'].currentTextChanged.connect(lambda fname: self.load_file(os.path.join(get_project_manager().root_dir, 'trns', fname) if fname else False, qdialog=False))
 
-    # def file_dialog_trn_file(self):
-    #     path = QtWidgets.QFileDialog.getOpenFileName(None, 'Import Transmission object', '', '(*.trn *.ptrn)')
-    #     if path == '':
-    #         return
-    #     self.load_file(path[0])
-
     @use_open_file_dialog('Load Transmission file', None, ['*.trn', '*.ptrn'])
     def load_file(self, path: str, qdialog=True):
         if not path:
@@ -119,8 +104,6 @@ class LoadFile(CtrlNode):
         if proj_path is not None:
             self._set_proj_path(proj_path)
 
-        # print(self.transmission)
-        # self.update()
         self.changed()
 
     def _set_proj_path(self, path: str):
@@ -153,7 +136,6 @@ class Save(CtrlNode):
                   ]
 
     def __init__(self, name):
-        # super(Save, self).__init__(name, terminals={'data': {'io': 'in'}})
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}})
         self._bypass = False
         self.bypassButton = None
@@ -179,7 +161,6 @@ class Save(CtrlNode):
         self.ctrls['path'].setText(path)
 
     def _save(self, transmission):
-        # self.ctrls['saveBtn'].clicked.connect(self._fileDialog)
         if self.ctrls['Apply'].isChecked is False:
             return
 
@@ -214,16 +195,10 @@ class ViewTransmission(CtrlNode):
 
     def __init__(self, name):
         CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}})
-        # self.edited_transmission = None
 
     def processData(self, transmission: Transmission):
         self.t = transmission.copy()
         oedit({'dataframe': self.t.df, 'history_trace': self.t.history_trace.history})
-        # if self.edited is not None:
-        #     self.edited.add_operation('all', 'object_editor', {})
-        #     return self.edited
-
-        # return self.t
 
 
 class DropNa(CtrlNode):
@@ -284,19 +259,15 @@ class iloc(CtrlNode):
     """Pass only one or multiple DataFrame Indices"""
     nodeName = 'iloc'
     uiTemplate = [('Index', 'intSpin', {'min': 0, 'step': 1, 'value': 0})
-                  # ('Indices', 'lineEdit', {'text': '0', 'toolTip': 'Index numbers separated by commas'})
                   ]
 
     def processData(self, transmission):
         self.ctrls['Index'].setMaximum(transmission.df.index.size - 1)
-        # self.ctrls['Index'].valueChanged.connect(
-        #     partial(self.ctrls['Indices'].setText, str(self.ctrls['Index'].value())))
 
-        # indices = [int(ix.strip()) for ix in self.ctrls['Indices'].text().split(',')]
         i = self.ctrls['Index'].value()
         self.t = transmission.copy()
         self.t.df = self.t.df.iloc[i]
-        # self.t.src.append({'iloc': {'index': i}})
+
         return self.t
 
 
@@ -349,7 +320,6 @@ class PadArrays(CtrlNode):
     """Pad 1-D numpy arrays in a particular column"""
     nodeName = 'PadArrays'
     uiTemplate = [('data_column', 'combo', {}),
-                  # ('output_size', 'intSpin', {'min': -1, 'max': 9999999, 'step': 100, 'value': -1}),
                   ('method', 'combo', {'items': ['fill-size', 'random']}),
                   ('mode', 'combo', {'items': ['minimum', 'constant', 'edge', 'maximum',
                                                'mean', 'median', 'reflect', 'symmetric', 'wrap'], 'toolTip': 'Passed to numpy.pad "mode" parameter'}),
@@ -457,10 +427,6 @@ class TextFilter(CtrlNode):
                   ('Include', 'radioBtn', {'checked': True}),
                   ('Exclude', 'radioBtn', {'checked': False}),
                   ('Apply', 'check', {'checked': False, 'applyBox': True})]
-
-    # def __init__(self, name):
-    #     CtrlNode.__init__(self, name, terminals={'In': {'io': 'in'}, 'Out': {'io': 'out', 'bypass': 'In'}})
-    #     self.ctrls['ROI_Type'].returnPressed.connect(self._setAvailTags)
 
     def processData(self, transmission: Transmission):
         ccols = organize_dataframe_columns(transmission.df.columns.to_list())[1]

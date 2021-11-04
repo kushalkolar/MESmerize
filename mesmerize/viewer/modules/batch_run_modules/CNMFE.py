@@ -12,7 +12,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 Adapted from @agiovann and @epnev
 """
 
-from __future__ import division
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 import json

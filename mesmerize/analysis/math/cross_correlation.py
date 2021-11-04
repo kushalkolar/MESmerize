@@ -14,7 +14,7 @@ from itertools import product
 from ...common.utils import HdfTools
 from ...common.configuration import HAS_TSLEARN
 if HAS_TSLEARN:
-    from tslearn.cycc import normalized_cc
+    from tslearn.metrics.cycc import normalized_cc
 
 
 def ncc_c(x: np.ndarray, y: np.ndarray) -> np.ndarray:

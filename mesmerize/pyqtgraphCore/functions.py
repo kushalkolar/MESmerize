@@ -5,7 +5,6 @@ Copyright 2010  Luke Campagnola
 Distributed under MIT/X11 license. See license.txt for more infomation.
 """
 
-from __future__ import division
 import warnings
 import numpy as np
 import decimal, re

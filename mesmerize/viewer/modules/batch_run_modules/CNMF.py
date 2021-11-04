@@ -12,7 +12,6 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 Adapted from @agiovann and @epnev
 """
 
-from __future__ import division
 import sys
 import cv2
 from glob import glob

@@ -1,5 +1,3 @@
-from __future__ import division
-
 from ..Qt import QtGui, QtCore
 import numpy as np
 import collections
