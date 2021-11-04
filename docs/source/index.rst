@@ -63,6 +63,7 @@ https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
     :caption: Viewer Modules
     
     ./user_guides/viewer/modules/tiff_file
+    ./user_guides/viewer/modules/inscopix_importer
     ./user_guides/viewer/modules/batch_manager
     ./user_guides/viewer/modules/stimulus_mapping
     ./user_guides/viewer/modules/roi_manager
