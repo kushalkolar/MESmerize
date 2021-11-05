@@ -42,42 +42,52 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 # Installation
 
-You can install **mesmerize** natively using conda or virtual environments. If you want a quick and easy installation you can import a VM that comes with **mesmerize** pre-installed and ready-to-go with all features.
+You can install **mesmerize** in any virtual environment using **pip**. 
 
-## Virtual/Conda Environments
-If you're familiar with anaconda or virtual environments, install with pip:
-
-```
+```bash
 pip install mesmerize
 ```
 
-After installation just call ``mesmerize`` from inside the virtual environment to launch it.
+If you would like to have a **mesmerize** with all of its features installed, the easiest solution is to use the following **conda** environment.yml.
 
-See the docs for more detailed instructions on all operating systems:
-http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+```yml
+name: mesmerize
+
+# From the conda ecosystem
+dependencies:
+  - python=3.8
+  - pip
+  - cython==0.29.*
+  - numpy>=1.0.0,<2.0.0
+  - tensorflow==2.6
+  # From the PyPI ecosystem
+  - pip:
+    - tslearn==0.5.2
+    - git+https://github.com/flatironinstitute/CaImAn.git@v1.9.4
+    - git+https://github.com/Blastorios/MESmerize.git
+```
+
+We also provide a **virtual machine** with **mesmerize** and all of its features pre-installed:
+http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
+
+We do not provide a Docker Image due to the graphical nature of mesmerize. If you have a secure, non-sudo, Image by which you run mesmerize: feel free to share it with us at any time!
 
 ### Caiman
-In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize documentation for more details.
 
-Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
+Caiman is used for the following Viewer modules: `CNMF`, `3D CNMF`, `CNMFE`, `caiman motion correction` and `Detrend DFOF`.
 
 ### tslearn
-In order to use tslearn features you will need ``tslearn``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+In order to use tslearn features you will need `tslearn`. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
 
-tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes.
+tslearn is used for `KShape clustering`, `cross-correlation analysis`, and some flowchart nodes.
 
 ### tensorflow
-In order to use nuset segmentation you will need ``tensorflow v1.15``. You can use either ``tensorflow`` (CPU bound) or ``tensorflow-gpu``
+In order to use nuset segmentation you will need `tensorflow`.
 
 ```
-pip install --upgrade pip setuptools
 pip install tensorflow~=1.15
 ```
-
-### VM (no virtual/conda environment setup required)
-
-If you do not want to setup conda or virtual environments, you can import a VM with Mesmerize pre-installed and ready to go with all features:
-http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
 
 ---
 
