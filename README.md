@@ -42,11 +42,13 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 # Installation
 
-You can install **mesmerize** in any virtual environment using **pip**. 
+**Mesmerize** is available through **pip**: 
 
 ```bash
 pip install mesmerize
 ```
+
+This will only install the core packages. Please see `Conda Environment` for an easy-to-use installation procedure with all features enabled.
 
 ### CaImAn
 In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize documentation for more details.
@@ -85,6 +87,7 @@ dependencies:
     - git+https://github.com/Blastorios/MESmerize.git
 ```
 
+### Virtual Machine
 We also provide a **virtual machine** with **mesmerize** and all of its features pre-installed:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
 
