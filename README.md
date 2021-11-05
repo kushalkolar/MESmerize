@@ -48,7 +48,25 @@ You can install **mesmerize** in any virtual environment using **pip**.
 pip install mesmerize
 ```
 
-If you would like to have a **mesmerize** with all of its features installed, the easiest solution is to use the following **conda** environment.yml.
+### CaImAn
+In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize documentation for more details.
+
+Caiman is used for the following Viewer modules: `CNMF`, `3D CNMF`, `CNMFE`, `caiman motion correction` and `Detrend DFOF`.
+
+### Tslearn
+In order to use tslearn features you will need `tslearn`. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+
+tslearn is used for `KShape clustering`, `cross-correlation analysis`, and some flowchart nodes.
+
+### Tensorflow
+In order to use nuset segmentation you will need `tensorflow`.
+
+```
+pip install tensorflow~=1.15
+```
+
+### Conda Environment
+If you would like to have **mesmerize** with all of its features, the easiest solution is to use the following **conda** environment.yml.
 
 ```yml
 name: mesmerize
@@ -70,24 +88,7 @@ dependencies:
 We also provide a **virtual machine** with **mesmerize** and all of its features pre-installed:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
 
-We do not provide a Docker Image due to the graphical nature of mesmerize. If you have a secure, non-sudo, Image by which you run mesmerize: feel free to share it with us at any time!
-
-### Caiman
-In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize documentation for more details.
-
-Caiman is used for the following Viewer modules: `CNMF`, `3D CNMF`, `CNMFE`, `caiman motion correction` and `Detrend DFOF`.
-
-### tslearn
-In order to use tslearn features you will need `tslearn`. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
-
-tslearn is used for `KShape clustering`, `cross-correlation analysis`, and some flowchart nodes.
-
-### tensorflow
-In order to use nuset segmentation you will need `tensorflow`.
-
-```
-pip install tensorflow~=1.15
-```
+We do not provide a *Docker Image* due to the graphical nature of mesmerize. If you have a *secure, non-sudo* image by which you run mesmerize: feel free to share it with us at any time!
 
 ---
 
@@ -96,6 +97,14 @@ pip install tensorflow~=1.15
 Feel free to ask questions or discuss things on <a href="https://gitter.im/mesmerize_discussion">gitter</a>. For larger bugs/issues please use the issue tracker.
 
 **Issue tracker:** https://github.com/kushalkolar/MESmerize/issues
+
+---
+
+# Upcoming
+
+- Experimental use of the bioformats importer for the Viewer.
+- Export lite versions of projects for easier sharing.
+- Browsers based visualizations for sharing analysis results.
 
 ---
 
@@ -159,14 +168,6 @@ https://doi.org/10.1101/840488
 <a href="https://doi.org/10.1101/840488">
 <img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
 </a>
-
----
-
-# Upcoming
-
-- Experimental use of the bioformats importer for the Viewer.
-- Export lite versions of projects for easier sharing.
-- Browsers based visualizations for sharing analysis results.
 
 ---
 
