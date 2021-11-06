@@ -58,6 +58,7 @@ from datetime import datetime
 import numpy as np
 from PyQt5 import QtWidgets
 from warnings import warn
+from ...common import is_app
 
 try:
     import xmltodict

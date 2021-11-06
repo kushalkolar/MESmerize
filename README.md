@@ -42,42 +42,56 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 # Installation
 
-You can install **mesmerize** natively using conda or virtual environments. If you want a quick and easy installation you can import a VM that comes with **mesmerize** pre-installed and ready-to-go with all features.
+**Mesmerize** is available through **pip**: 
 
-## Virtual/Conda Environments
-If you're familiar with anaconda or virtual environments, install with pip:
-
-```
+```bash
 pip install mesmerize
 ```
 
-After installation just call ``mesmerize`` from inside the virtual environment to launch it.
+This will only install the core packages. Please see `Conda Environment` for an easy-to-use installation procedure with all features enabled.
 
-See the docs for more detailed instructions on all operating systems:
-http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+### CaImAn
+In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize documentation for more details.
 
-### Caiman
-In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+Caiman is used for the following Viewer modules: `CNMF`, `3D CNMF`, `CNMFE`, `caiman motion correction` and `Detrend DFOF`.
 
-Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
+### Tslearn
+In order to use tslearn features you will need `tslearn`. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
 
-### tslearn
-In order to use tslearn features you will need ``tslearn``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
+tslearn is used for `KShape clustering`, `cross-correlation analysis`, and some flowchart nodes.
 
-tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes.
-
-### tensorflow
-In order to use nuset segmentation you will need ``tensorflow v1.15``. You can use either ``tensorflow`` (CPU bound) or ``tensorflow-gpu``
+### Tensorflow
+In order to use nuset segmentation you will need `tensorflow`.
 
 ```
-pip install --upgrade pip setuptools
 pip install tensorflow~=1.15
 ```
 
-### VM (no virtual/conda environment setup required)
+### Conda Environment
+If you would like to have **mesmerize** with all of its features, the easiest solution is to use the following **conda** environment.yml.
 
-If you do not want to setup conda or virtual environments, you can import a VM with Mesmerize pre-installed and ready to go with all features:
+```yml
+name: mesmerize
+
+# From the conda ecosystem
+dependencies:
+  - python=3.8
+  - pip
+  - cython==0.29.*
+  - numpy>=1.0.0,<2.0.0
+  - tensorflow==2.6
+  # From the PyPI ecosystem
+  - pip:
+    - tslearn==0.5.2
+    - git+https://github.com/flatironinstitute/CaImAn.git@v1.9.4
+    - git+https://github.com/Blastorios/MESmerize.git
+```
+
+### Virtual Machine
+We also provide a **virtual machine** with **mesmerize** and all of its features pre-installed:
 http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
+
+We do not provide a *Docker Image* due to the graphical nature of mesmerize. If you have a *secure, non-sudo* image by which you run mesmerize: feel free to share it with us at any time!
 
 ---
 
@@ -86,6 +100,14 @@ http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platfor
 Feel free to ask questions or discuss things on <a href="https://gitter.im/mesmerize_discussion">gitter</a>. For larger bugs/issues please use the issue tracker.
 
 **Issue tracker:** https://github.com/kushalkolar/MESmerize/issues
+
+---
+
+# Upcoming
+
+- Experimental use of the bioformats importer for the Viewer.
+- Export lite versions of projects for easier sharing.
+- Browsers based visualizations for sharing analysis results.
 
 ---
 
@@ -149,14 +171,6 @@ https://doi.org/10.1101/840488
 <a href="https://doi.org/10.1101/840488">
 <img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
 </a>
-
----
-
-# Upcoming
-
-- Experimental use of the bioformats importer for the Viewer.
-- Export lite versions of projects for easier sharing.
-- Browsers based visualizations for sharing analysis results.
 
 ---
 
