@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./newbanner.png" alt="Mesmerize Banner">
+<img src="./docs/newbanner.png" alt="Mesmerize Banner">
 </p>
 
 <p align="center">
