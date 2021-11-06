@@ -56,7 +56,6 @@ requires = [
         "scikit-learn<=1.0.0",
         "scipy>=1.2.1,<2.0.0",
         
-        
         # Parser
         "xmltodict",
 ]

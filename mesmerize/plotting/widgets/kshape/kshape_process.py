@@ -13,7 +13,7 @@ import sys
 import numpy as np
 import pickle
 import os
-from mesmerize.common.configuration import HAS_TSLEARN, get_sys_config
+from ....common.configuration import HAS_TSLEARN, get_sys_config
 if HAS_TSLEARN:
     from tslearn.clustering import KShape
 from joblib import Parallel, delayed

@@ -34,7 +34,7 @@ import tifffile
 
 # must be within this block, else windows gives issues
 if __name__ == '__main__':
-    from mesmerize.common.utils import HdfTools
+    from ....common.utils import HdfTools
 
 if not sys.argv[0] == __file__:
     from ..roi_manager import ModuleGUI

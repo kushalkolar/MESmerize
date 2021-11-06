@@ -10,7 +10,7 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
 
 from PyQt5 import QtWidgets, QtCore
-from mesmerize import Transmission
+from .... import Transmission
 from ..base import BasePlotWidget
 from ....common.qdialogs import exceptions_label
 from ....common.configuration import console_history_path

@@ -27,8 +27,7 @@ def ncc_c(x: np.ndarray, y: np.ndarray) -> np.ndarray:
     :return:  Returns the normalized cross correlation function (as an array) of the two input vector arguments "x" and "y"
     :rtype: np.ndarray
     """
-    cc = normalized_cc(x.reshape(-1, 1), y.reshape(-1, 1))
-    return cc
+    return normalized_cc(x.reshape(-1, 1), y.reshape(-1, 1))
 
 
 def get_omega(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> int:
@@ -44,8 +43,7 @@ def get_omega(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None)
     """
     if cc is None:
         cc = ncc_c(x, y)
-    w = np.argmax(cc)
-    return w
+    return np.argmax(cc)
 
 
 def get_lag(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = None) -> float:
@@ -81,8 +79,7 @@ def get_epsilon(x: np.ndarray = None, y: np.ndarray = None, cc: np.ndarray = Non
     """
     if cc is None:
         cc = ncc_c(x, y)
-    e = np.max(cc)
-    return e
+    return np.max(cc)
 
 
 def get_lag_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndarray:
@@ -96,12 +93,12 @@ def get_lag_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.ndar
     :rtype: np.ndarray
     """
     if ccs is None:
-        m = curves.shape[0]
-        a = np.zeros((m, m))
+        rows = curves.shape[0]
+        M = np.zeros((rows, rows))
 
-        for i, j in product(*(range(m),) * 2):
-            a[i, j] = get_lag(curves[i], curves[j])
-        return a
+        for i, j in product(*(range(rows),) * 2):
+            M[i, j] = get_lag(curves[i], curves[j])
+        return M
 
     return _compute_from_ccs(ccs, get_lag)
 
@@ -117,21 +114,21 @@ def get_epsilon_matrix(curves: np.ndarray = None, ccs: np.ndarray = None) -> np.
     :rtype: np.ndarray
     """
     if ccs is None:
-        m = curves.shape[0]
-        a = np.zeros((m, m))
-        for i, j in product(*(range(m),) * 2):
-            a[i, j] = get_epsilon(curves[i], curves[j])
-        return a
+        rows = curves.shape[0]
+        M = np.zeros((rows, rows))
+        for i, j in product(*(range(rows),) * 2):
+            M[i, j] = get_epsilon(curves[i], curves[j])
+        return M
 
     return _compute_from_ccs(ccs, get_epsilon)
 
 
 def _compute_from_ccs(ccs: np.ndarray, func: callable) -> np.ndarray:
-    m = ccs.shape[0]
-    a = np.zeros(shape=(m, m))
-    for i, j in product(*(range(m),) * 2):
-        a[i, j] = func(cc=ccs[i, j, :])
-    return a
+    rows = ccs.shape[0]
+    M = np.zeros(shape=(rows, rows))
+    for i, j in product(*(range(rows),) * 2):
+        M[i, j] = func(cc=ccs[i, j, :])
+    return M
 
 
 class CC_Data:
@@ -253,10 +250,10 @@ def compute_ccs(a: np.ndarray) -> np.ndarray:
 
     :rtype: np.ndarray
     """
-    n = a.shape[0]
-    m = a.shape[1]
-    out = np.zeros(shape=(n, n, (2 * m) - 1))
+    rows = a.shape[0]
+    columns = a.shape[1]
+    M = np.zeros(shape=(rows, rows, (2 * columns) - 1))
 
-    for i, j in product(*(range(n),) * 2):
-        out[i, j, :] = ncc_c(a[i], a[j])
-    return out
+    for i, j in product(*(range(rows),) * 2):
+        M[i, j, :] = ncc_c(a[i], a[j])
+    return M

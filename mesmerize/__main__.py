@@ -13,22 +13,22 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
 import sys
 import warnings
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 print('Loading, please wait... ')
-from mesmerize import configuration
+
+from common.configuration import IS_WINDOWS, sys_cfg_dir
 from PyQt5.QtWidgets import QApplication
-from mesmerize.common.window_manager import WindowManager
-from mesmerize.project_manager import ProjectManager
-from mesmerize.common.welcome_window import MainWindow
-from mesmerize.scripts import *
-from mesmerize import Transmission
-from mesmerize.plotting import open_plot_file
+from common.window_manager import WindowManager
+from project_manager import ProjectManager
+from common.welcome_window import MainWindow
+from plotting import open_plot_file
+
 import os
 import logging
 from datetime import datetime
 from glob import glob
 import click
-import traceback
 from zipfile import ZipFile, ZIP_LZMA
 
 
@@ -92,7 +92,7 @@ def main(
         open_plot
 ):
     if log_file_dir is None:
-        log_file_dir = configuration.sys_cfg_dir
+        log_file_dir = sys_cfg_dir
 
     if not os.path.exists(log_file_dir):
         os.makedirs(log_file_dir, exist_ok=True)
@@ -129,7 +129,7 @@ def main(
         logging.StreamHandler(sys.stderr)
     )
 
-    if not configuration.IS_WINDOWS:
+    if not IS_WINDOWS:
         move_old_logfiles(root_logger, log_file_dir)
 
     if not len(sys.argv) > 1:
@@ -157,20 +157,6 @@ def main(
     else:
         app = start_welcome_window()
         app.exec_()
-    #
-    # elif sys.argv[1] == 'lighten':
-    #     create_lite_project.main(*sys.argv[2:])
-    #
-    # elif sys.argv[1] == 'show-graph':
-    #     path = sys.argv[2]
-    #     if not os.path.isfile(path):
-    #         raise FileNotFoundError("File does not exist")
-    #
-    #     t = Transmission.from_hdf5(path)
-    #     dbs = t.history_trace.data_blocks
-    #     for db in dbs:
-    #         t.history_trace.draw_graph(data_block_id=db, view=True)
-    #
 
 
 if __name__ == '__main__':

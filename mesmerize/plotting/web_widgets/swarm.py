@@ -1,14 +1,13 @@
-import sys
-from bokeh.plotting import figure, Figure, gridplot, curdoc
-from bokeh.models import HoverTool, ColumnDataSource, TapTool, Slider, TextInput, Select
+
+from bokeh.plotting import figure
+from bokeh.models import ColumnDataSource
 from bokeh.transform import jitter
 import pandas as pd
 from pathlib import Path
 from typing import *
-from mesmerize.plotting.web_widgets.core import WebPlot, BokehCallbackSignal
-from mesmerize.plotting.web_widgets.datapoint_tracer import DatapointTracer
-from mesmerize import Transmission
-import pickle
+from ...plotting.web_widgets.core import WebPlot, BokehCallbackSignal
+from ...plotting.web_widgets.datapoint_tracer import DatapointTracer
+from ... import Transmission
 
 
 # The default figure opts that are used

@@ -1,9 +1,11 @@
 from bokeh.plotting import figure, Figure
 from bokeh.models.glyphs import Image, MultiLine
-from bokeh.models import HoverTool, ColumnDataSource, TapTool, Slider, TextInput, Select, \
-    BoxAnnotation, Patches
+from bokeh.models import (
+    ColumnDataSource, Slider, 
+    TextInput, Select,
+    BoxAnnotation, Patches)
 from bokeh.models.mappers import LogColorMapper
-from bokeh.layouts import gridplot, column, row
+from bokeh.layouts import column, row
 import os
 import numpy as np
 import pandas as pd
@@ -11,10 +13,9 @@ from uuid import UUID
 from pathlib import Path
 from typing import *
 import tifffile
-from mesmerize.plotting.utils import auto_colormap, map_labels_to_colors
-from mesmerize.plotting.web_widgets.core import BokehCallbackSignal, WebPlot
+from ...plotting.utils import auto_colormap, map_labels_to_colors
+from ...plotting.web_widgets.core import BokehCallbackSignal, WebPlot
 import logging
-import pickle
 
 
 logger = logging.getLogger()
@@ -163,19 +164,6 @@ class DatapointTracer(WebPlot):
 
         self.label_filesize: TextInput = TextInput(value='', title='Filesize (GB):')
         self.label_sample_id: TextInput = TextInput(value='', title="SampleID:")
-
-    # def remove_sample(self):
-    #     self.parent.dataframe = self.parent.dataframe[
-    #         self.parent.dataframe['SampleID'] != self.sample_id
-    #     ]
-    #
-    #     sid = self.parent.dataframe['SampleID'].unique()[0]
-    #
-    #     self.set_sample(
-    #         self.parent.dataframe[self.parent.dataframe['SampleID'] == sid]
-    #     )
-    #
-    #     self.parent.update_glyph()
 
     def _check_sample(self, dataframe: pd.DataFrame):
         if len(dataframe['SampleID'].unique()) > 1:
