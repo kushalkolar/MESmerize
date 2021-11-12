@@ -1,8 +1,7 @@
-# 0.x.0 (planned)
-
+# 0.8.0
 ### New
-- Experimental use of the bioformats importer for the Viewer.
-- Export lite versions of projects for easier sharing.
+- Import `.isxd` movies aquired by inscopix acquisition software
+- Import freehand & circular ImageJ ROIs
 
 # 0.7.1
 ### Fixed
