@@ -78,6 +78,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'tsub': self.ui.spinBox_tsub.value(),
                 'method_init': self.ui.comboBox_method_init.currentText(),
                 'border_pix': bord_px,
+                'fr': self.vi.viewer.workEnv.imgdata.meta['fps']
             }
 
         # Any additional cnmf kwargs set in the text entry

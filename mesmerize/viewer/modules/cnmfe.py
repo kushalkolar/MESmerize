@@ -96,7 +96,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'low_rank_background': self.ui.checkBox_low_rank_background.isChecked(),
                 'ring_size_factor': self.ui.doubleSpinBox_ring_size_factor.value(),
                 'update_background_components': True,
-                'del_duplicates': True
+                'del_duplicates': True,
+                'fr': self.vi.viewer.workEnv.imgdata.meta['fps']
             }
 
         # Any additional CNMFE kwargs set in the text entry
