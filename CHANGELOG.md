@@ -1,6 +1,6 @@
 # 0.8.0
 ### New
-- Import `.isxd` movies aquired by inscopix acquisition software
+- Import `.isxd` movies aquired by inscopix acquisition software (requires python>=3.8)
 - Import freehand & circular ImageJ ROIs
 
 # 0.7.1
