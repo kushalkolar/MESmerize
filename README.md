@@ -48,11 +48,7 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 pip install mesmerize
 ```
 
-Now you can call the application in your terminal:
-
-```bash
-mesmerize
-```
+Activate by calling `mesmerize` in the terminal.
 
 **Note**: The *pip* module will only install the core packages. Please see the `Conda Environment` for an easy-to-use installation procedure with all features enabled.
 
