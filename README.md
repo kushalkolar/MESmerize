@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./docs/banner.png" alt="Mesmerize Banner" width="900" height="289">
+<img src="./docs/banner.png" alt="Mesmerize Banner" width="900">
 </p>
 
 <p align="center">
