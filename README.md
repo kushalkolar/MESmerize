@@ -67,6 +67,9 @@ Please check the [Mesmerize documentation](http://docs.mesmerizelab.org/en/maste
 ### Conda Environment
 The easiest solution for installing mesmerize with **all of its features** is to use the following *conda* `environment.yml`. It is advised to use [mamba](https://github.com/mamba-org/mamba) as it's a faster `C++` implementation of the conda CLI. You can still use the `environment.yml` by creating a mamba environment prior to downloading the packages, using: `mamba create -n mesmerize && mamba env update -n mesmerize --f environment.yml` (directly invoking the use of a file will trigger the underlying conda CLI, the listed commands will ensure we force mamba to do the heavy lifting). You can start this environment with the regular conda CLI: `conda activate mesmerize`.
 
+On Windows, before the conda installation Install Microsoft Build Tools for Visual Studio 2017
+Link to detailed mesmerize install with screenshots
+
 ```yml
 name: mesmerize
 
