@@ -3,6 +3,10 @@ Citation guide
 
 Mesmerize provides interfaces to many great tools that were created by other developers. Please cite the papers for the following Viewer Modules and analysis methods that you use in addition to citing Mesmerize. I would also suggest citing numpy, pandas, scipy, sklearn, and matplotlib.
 
+Citing Mesmerize:
+
+Kolar, K., Dondorp, D., Zwiggelaar, J.C. et al. Mesmerize is a dynamically adaptable user-friendly analysis platform for 2D and 3D calcium imaging data. Nat Commun 12, 6569 (2021). https://doi.org/10.1038/s41467-021-26550-y
+
 Mesmerize relies heavily on `pyqtgraph widgets <pyqtgraph.org>`_. `Citing pyqtgraph. <https://groups.google.com/forum/#!msg/pyqtgraph/fnNGN6j132E/WPr89jpSb_QJ>`_
 
 Viewer
