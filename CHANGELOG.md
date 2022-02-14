@@ -1,3 +1,10 @@
+# 0.9.0
+### New
+- conda installation supported
+
+### Modified
+- use `imagej=False` when saving tiff files, see #78
+
 # 0.8.0
 ### New
 - Import `.isxd` movies aquired by inscopix acquisition software (requires python>=3.8)
