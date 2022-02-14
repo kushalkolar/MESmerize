@@ -12,10 +12,10 @@
     <img src="https://pepy.tech/badge/mesmerize" alt="Downloads">
 </a>
 
-<a href="https://codeclimate.com/github/kushalkolar/MESmerize/maintainability" target="_blank">
-    <img src="https://api.codeclimate.com/v1/badges/950e956456b688c0886e/maintainability" alt="Coverage">
+<a href='http://docs.mesmerizelab.org/en/master/?badge=master'>
+    <img src='https://readthedocs.org/projects/mesmerize/badge/?version=master' alt='Documentation Status' />
 </a>
-
+  
 <a href="https://www.gnu.org/licenses/gpl-3.0" target="_blank">
     <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License">
 </a>
