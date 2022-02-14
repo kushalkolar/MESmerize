@@ -45,8 +45,6 @@ install_requires = \
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
         "tcl",
-        "bokeh<2.5.0,>=2.4.0",
-        "nuset-lib",
         "sk-video",
         "click",
         "xmltodict"  # for OME xml
