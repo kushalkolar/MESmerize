@@ -24,7 +24,7 @@ from .core.data_types import ImgData
 from ..common import configuration, doc_pages
 from ..common import get_window_manager
 from .image_menu.main import ImageMenu
-from spyder.widgets.variableexplorer import objecteditor
+#from spyder.widgets.variableexplorer import objecteditor
 import traceback
 from .core.add_to_project import AddToProjectDialog
 import os
