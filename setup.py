@@ -6,29 +6,26 @@ entry_points = {'console_scripts': ['mesmerize=mesmerize.__main__:main']}
 
 install_requires = \
     [
-        "cycler==0.10.0",
         "dask>=1.1.1",
         "future>=0.18.2",
         "h5py~=2.10.0",
         "ipykernel>=4.10",
         "ipython>=7.15.0",
         "ipyparallel>=6.3",
-        "MarkupSafe>=1.1.1",
-        "matplotlib<=3.2.1",
+        "matplotlib",
         "opencv-contrib-python>=4.2",
         "opencv-python>=4.2",
         "pandas",  # do not change
         "Pillow>=5.4.1",
         "psutil",
-        "PyQt5>=5.9.2,<=5.12",
-        "python-dateutil>=2.8.0",
+        "PyQt5",
         "QtPy>=1.6.0",
         "qtap",
-        "scikit-image~=0.15.0",  # do not change
-        "scikit-learn~=0.23.1",  # tslearn 0.4 has issues with newer sklearn
+        "scikit-image",  # do not change
+        "scikit-learn",  # tslearn 0.4 has issues with newer sklearn
         "scipy>=1.2.1",  # do not change
-        "seaborn==0.9.0",  # do not change
-        "spyder==3.3.3",  # do not change
+        "seaborn",  # do not change
+        "spyder",  # do not change
         "tifffile",  # do not change
         "tqdm>=4.37.0",
         "PeakUtils",  # caiman requirement
@@ -38,12 +35,11 @@ install_requires = \
         "graphviz>=0.13",
         "numba>=0.50.0",
         #"bottleneck==1.2.1",  # do not change
-        "holoviews",
         "jupyter",
         "pynwb",  # caiman requirement
         "pyqtgraph",
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
-        "tk",  # do not change
+        "tk",  # do not changehb
         "tcl",
         "sk-video",
         "click",

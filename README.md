@@ -48,21 +48,23 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 pip install mesmerize
 ```
 
-Activate by calling `mesmerize` in the terminal.
+Launch Mesmerize by calling `mesmerize` in the terminal within the virtual environment.
 
-**Note**: The *pip* module will only install the core packages. Please see the `Conda Environment` for an easy-to-use installation procedure with all features enabled.
+**Note**: The *pip* module will only install the core packages. Please see the **Conda Environment** section below for an easy-to-use installation procedure that includes all features.
 
 ### Module Specific Installations
 Please check the [Mesmerize documentation](http://docs.mesmerizelab.org/en/master/user_guides/installation.html) for more details. The following sections will specify which packages are required per module.
 
 #### CaImAn
-[CaImAn](https://github.com/flatironinstitute/CaImAn) is used for: `CNMF`, `3D CNMF`, `CNMFE`, `caiman motion correction` and `Detrend DFOF`.
+[CaImAn](https://github.com/flatironinstitute/CaImAn) is used for: `CNMF`, `3D CNMF`, `CNMFE`, `caiman motion correction` (NoRMCorre) and `Detrend DFOF`.
+
+**In order to use CaImAn features you will need to have CaImAn installed into your environment. Installing just Mesmerize does not install CaImAn!**
 
 #### tslearn
 [tslearn](https://github.com/tslearn-team/tslearn) is used for: `KShape clustering`, `cross-correlation analysis` and some [flowchart nodes](http://docs.mesmerizelab.org/en/master/user_guides/flowchart/nodes.html).
 
 #### TensorFlow and NuSeT
-[TensorFlow](https://github.com/tensorflow/tensorflow) and [NuSeT-lib](https://github.com/kushalkolar/nuset-lib) are used for: `nuset segmentation`.
+[TensorFlow](https://github.com/tensorflow/tensorflow) and [nuset-lib](https://pypi.org/project/nuset-lib/) are used for: `nuset segmentation`.
 
 ### Conda Environment
 The easiest solution for installing mesmerize with **all of its features** is to use the following *conda* `environment.yml`. It is advised to use [mamba](https://github.com/mamba-org/mamba) as it's a faster `C++` implementation of the conda CLI. You can still use the `environment.yml` by creating a mamba environment prior to downloading the packages, using: `mamba create -n mesmerize && mamba env update -n mesmerize --f environment.yml` (directly invoking the use of a file will trigger the underlying conda CLI, the listed commands will ensure we force mamba to do the heavy lifting). You can start this environment with the regular conda CLI: `conda activate mesmerize`.
