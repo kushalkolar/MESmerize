@@ -15,7 +15,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from .main_widget import ProjectBrowserWidget
 from ...pyqtgraphCore.console import ConsoleWidget
 from .pytemplates.mainwindow_pytemplate import Ui_MainWindow
-from spyder.widgets.variableexplorer import objecteditor
+#from spyder.widgets.variableexplorer import objecteditor
 import pandas as pd
 import os
 from ...common import configuration, get_project_manager
