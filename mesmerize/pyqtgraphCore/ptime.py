@@ -13,7 +13,7 @@ time = None
 
 def winTime():
     """Return the current time in seconds with high precision (windows version, use Manager.time() to stay platform independent)."""
-    return systime.clock() + START_TIME
+    return systime.process_time() + START_TIME
     #return systime.time()
 
 def unixTime():
@@ -21,10 +21,9 @@ def unixTime():
     return systime.time()
 
 if sys.platform.startswith('win'):
-    cstart = systime.clock()  ### Required to start the clock in windows
+    cstart = systime.process_time()  ### Required to start the clock in windows
     START_TIME = systime.time() - cstart
-    
+
     time = winTime
 else:
     time = unixTime
-
