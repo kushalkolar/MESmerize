@@ -249,12 +249,15 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBoxMinPNR">
+         <widget class="QDoubleSpinBox" name="doubleSpinBoxMinPNR">
           <property name="maximum">
-           <number>999</number>
+           <double>100.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.250000000000000</double>
           </property>
           <property name="value">
-           <number>4</number>
+           <double>2.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -728,9 +731,12 @@ Use single quotes for strings, do not use double quotes.</string>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinBoxMinSNR">
+         <widget class="QDoubleSpinBox" name="doubleSpinBoxMinSNR">
+          <property name="singleStep">
+           <double>0.500000000000000</double>
+          </property>
           <property name="value">
-           <number>1</number>
+           <double>1.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -845,7 +851,7 @@ If lower more components will be accepted, potentially with worse quality</strin
 Use single quotes for strings, do not use double quotes</string>
         </property>
         <property name="title">
-         <string>Use e&amp;valuation params</string>
+         <string>Use e&amp;valuation param kwargs</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -915,7 +921,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>lineEditAin</tabstop>
   <tabstop>spinBox_p</tabstop>
   <tabstop>doubleSpinBoxMinCorr</tabstop>
-  <tabstop>spinBoxMinPNR</tabstop>
+  <tabstop>doubleSpinBoxMinPNR</tabstop>
   <tabstop>spinBoxRf</tabstop>
   <tabstop>spinBoxOverlap</tabstop>
   <tabstop>spinBoxGnb</tabstop>
@@ -929,7 +935,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>doubleSpinBoxMergeThresh</tabstop>
   <tabstop>groupBox_cnmf_kwargs</tabstop>
   <tabstop>plainTextEdit_cnmf_kwargs</tabstop>
-  <tabstop>spinBoxMinSNR</tabstop>
+  <tabstop>doubleSpinBoxMinSNR</tabstop>
   <tabstop>doubleSpinBoxRValuesMin</tabstop>
   <tabstop>doubleSpinBoxDecayTime</tabstop>
   <tabstop>groupBox_eval_kwargs</tabstop>
