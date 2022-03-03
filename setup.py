@@ -40,7 +40,7 @@ install_requires = \
         #"bottleneck==1.2.1",  # do not change
         "holoviews",
         "jupyter",
-        "pynwb",  # caiman requirement
+        #"pynwb",  # caiman requirement
         "pyqtgraph",
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
