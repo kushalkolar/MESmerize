@@ -180,11 +180,6 @@ If you double click on “meta” above you can see your meta data.
 
 You can view your meta data more quickly using the console.
 
-Open the console by going to View -> Console.
-You can then call ``get_meta()`` to print the meta data dict.
-
-.. image:: ./overview/11.png
-
 Console
 ^^^^^^^
 
@@ -202,6 +197,11 @@ Open these docs
 
 Console
 =======
+
+Open the console by going to View -> Console.
+You can then call ``get_meta()`` to print the meta data dict.
+
+.. image:: ./overview/11.png
 
 You can interact directly with the :ref:`work environment <ViewerWorkEnv>` using the console.
 

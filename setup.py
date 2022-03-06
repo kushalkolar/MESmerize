@@ -24,7 +24,7 @@ install_requires = \
         "python-dateutil>=2.8.0",
         "QtPy>=1.6.0",
         "qtap",
-        "scikit-image~=0.15.0",  # do not change
+        "scikit-image",
         "scikit-learn~=0.23.1",  # tslearn 0.4 has issues with newer sklearn
         "scipy>=1.2.1",  # do not change
         "seaborn==0.9.0",  # do not change
@@ -40,7 +40,7 @@ install_requires = \
         #"bottleneck==1.2.1",  # do not change
         "holoviews",
         "jupyter",
-        "pynwb",  # caiman requirement
+        #"pynwb",  # caiman requirement
         "pyqtgraph",
         #"tensorflow~=1.15.0",  # do not change, caiman requirement
         "tk",  # do not change
@@ -88,6 +88,6 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=classifiers,
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=install_requires
 )
