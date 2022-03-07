@@ -69,7 +69,7 @@ class ModuleGUI(QtWidgets.QMainWindow):
         return self.ui.tabWidget.currentWidget()
 
     def open_temp_script(self):
-        home_dir = os.environ['HOME']
+        home_dir = os.environ[HOME]
         tmp_script = home_dir + '/mtemp.py'
         if not os.path.isfile(tmp_script):
             open(tmp_script, 'w').close()
