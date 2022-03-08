@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './ui_files/cnmfe_pytemplate.ui'
+# Form implementation generated from reading ui file 'ui_files/cnmfe_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.12
 #
 # WARNING! All changes made in this file will be lost!
-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -124,11 +123,11 @@ class Ui_DockWidget(object):
         self.label_10 = QtWidgets.QLabel(self.dockWidgetContents)
         self.label_10.setObjectName("label_10")
         self.horizontalLayout_7.addWidget(self.label_10)
-        self.spinBoxMinPNR = QtWidgets.QSpinBox(self.dockWidgetContents)
-        self.spinBoxMinPNR.setMaximum(999)
-        self.spinBoxMinPNR.setProperty("value", 4)
-        self.spinBoxMinPNR.setObjectName("spinBoxMinPNR")
-        self.horizontalLayout_7.addWidget(self.spinBoxMinPNR)
+        self.doubleSpinBoxMinPNR = QtWidgets.QDoubleSpinBox(self.dockWidgetContents)
+        self.doubleSpinBoxMinPNR.setSingleStep(0.05)
+        self.doubleSpinBoxMinPNR.setProperty("value", 2.0)
+        self.doubleSpinBoxMinPNR.setObjectName("doubleSpinBoxMinPNR")
+        self.horizontalLayout_7.addWidget(self.doubleSpinBoxMinPNR)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem3)
         self.verticalLayout_2.addLayout(self.horizontalLayout_7)
@@ -314,10 +313,11 @@ class Ui_DockWidget(object):
         self.label_12 = QtWidgets.QLabel(self.dockWidgetContents)
         self.label_12.setObjectName("label_12")
         self.horizontalLayout_8.addWidget(self.label_12)
-        self.spinBoxMinSNR = QtWidgets.QSpinBox(self.dockWidgetContents)
-        self.spinBoxMinSNR.setProperty("value", 1)
-        self.spinBoxMinSNR.setObjectName("spinBoxMinSNR")
-        self.horizontalLayout_8.addWidget(self.spinBoxMinSNR)
+        self.doubleSpinBoxMinSNR = QtWidgets.QDoubleSpinBox(self.dockWidgetContents)
+        self.doubleSpinBoxMinSNR.setSingleStep(0.1)
+        self.doubleSpinBoxMinSNR.setProperty("value", 1.0)
+        self.doubleSpinBoxMinSNR.setObjectName("doubleSpinBoxMinSNR")
+        self.horizontalLayout_8.addWidget(self.doubleSpinBoxMinSNR)
         spacerItem13 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_8.addItem(spacerItem13)
         self.verticalLayout.addLayout(self.horizontalLayout_8)
@@ -395,8 +395,8 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.btnAddToBatchCorrPNR, self.lineEditAin)
         DockWidget.setTabOrder(self.lineEditAin, self.spinBox_p)
         DockWidget.setTabOrder(self.spinBox_p, self.doubleSpinBoxMinCorr)
-        DockWidget.setTabOrder(self.doubleSpinBoxMinCorr, self.spinBoxMinPNR)
-        DockWidget.setTabOrder(self.spinBoxMinPNR, self.spinBoxRf)
+        DockWidget.setTabOrder(self.doubleSpinBoxMinCorr, self.doubleSpinBoxMinPNR)
+        DockWidget.setTabOrder(self.doubleSpinBoxMinPNR, self.spinBoxRf)
         DockWidget.setTabOrder(self.spinBoxRf, self.spinBoxOverlap)
         DockWidget.setTabOrder(self.spinBoxOverlap, self.spinBoxGnb)
         DockWidget.setTabOrder(self.spinBoxGnb, self.spinBoxNb_patch)
@@ -409,8 +409,8 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.comboBoxDeconv, self.doubleSpinBoxMergeThresh)
         DockWidget.setTabOrder(self.doubleSpinBoxMergeThresh, self.groupBox_cnmf_kwargs)
         DockWidget.setTabOrder(self.groupBox_cnmf_kwargs, self.plainTextEdit_cnmf_kwargs)
-        DockWidget.setTabOrder(self.plainTextEdit_cnmf_kwargs, self.spinBoxMinSNR)
-        DockWidget.setTabOrder(self.spinBoxMinSNR, self.doubleSpinBoxRValuesMin)
+        DockWidget.setTabOrder(self.plainTextEdit_cnmf_kwargs, self.doubleSpinBoxMinSNR)
+        DockWidget.setTabOrder(self.doubleSpinBoxMinSNR, self.doubleSpinBoxRValuesMin)
         DockWidget.setTabOrder(self.doubleSpinBoxRValuesMin, self.doubleSpinBoxDecayTime)
         DockWidget.setTabOrder(self.doubleSpinBoxDecayTime, self.groupBox_eval_kwargs)
         DockWidget.setTabOrder(self.groupBox_eval_kwargs, self.plainTextEdit_eval_kwargs)
@@ -470,10 +470,12 @@ class Ui_DockWidget(object):
         self.label_16.setText(_translate("DockWidget", "decay_time:"))
         self.groupBox_eval_kwargs.setToolTip(_translate("DockWidget", "You can enter additional parameters to use for component evaluation.\n"
 "Use single quotes for strings, do not use double quotes"))
-        self.groupBox_eval_kwargs.setTitle(_translate("DockWidget", "Use e&valuation params"))
+        self.groupBox_eval_kwargs.setTitle(_translate("DockWidget", "Use e&valuation kwargs"))
         self.plainTextEdit_eval_kwargs.setToolTip(_translate("DockWidget", "You can enter additional parameters to use for component evaluation.\n"
 "Use single quotes for strings, do not use double quotes"))
         self.checkBoxKeepMemmap.setText(_translate("DockWidget", "Keep memmap"))
         self.label_18.setText(_translate("DockWidget", "Perform CNMF-E:"))
         self.lineEdName.setPlaceholderText(_translate("DockWidget", "Enter name"))
         self.btnAddToBatchCNMFE.setText(_translate("DockWidget", "Add to batch"))
+
+
