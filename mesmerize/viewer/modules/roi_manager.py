@@ -10,6 +10,7 @@ Sars International Centre for Marine Molecular Biology
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 """
+import pandas as pd
 
 from ..core.common import ViewerUtils
 from .pytemplates.roi_manager_pytemplate import *
@@ -46,6 +47,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.btnAddROIMenu = QtWidgets.QMenu(self)
         self.btnAddROIMenu.addAction(action_add_ellipse_roi)
+
+
 
         self.ui.btnAddROI.clicked.connect(partial(self.add_manual_roi, 'PolyLineROI'))
         self.ui.btnAddROI.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -84,6 +87,16 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 self.ui.radioButton_spikes
             ]:
             w.clicked.connect(self.set_curveplot_datatype)
+
+        self.ui.btnExport.clicked.connect(self.export_curves)
+
+    def export_curves(self):
+        """Export raw curves when Export Curves button clicked"""
+        save_path = QtGui.QFileDialog.getSaveFileName(self, "Save curves", "", "csv files (*.csv)")[0]
+        df = pd.DataFrame(self.manager.cnmC[self.manager.idx_components].T)
+        df.to_csv(save_path, index=None)
+        logger.info(f'Successfully saved curves to : {save_path}')
+        return
 
     def eventFilter(self, QObject, QEvent):
         """Set some keyboard shortcuts"""
