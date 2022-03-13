@@ -85,7 +85,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'nb_patch': self.ui.spinBoxNb_patch.value(),
                 'K': kval,
                 'min_corr': self.ui.doubleSpinBoxMinCorr.value(),
-                'min_pnr': self.ui.spinBoxMinPNR.value(),
+                'min_pnr': self.ui.doubleSpinBoxMinPNR.value(),
                 'deconv_flag': deconv_flag,
                 'method_deconvolution': method_deconvolution,
                 'Ain': self.ui.lineEditAin.text().replace(' ', '').strip('\n'),
@@ -113,7 +113,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         eval_kwargs = \
             {
                 'fr': self.vi.viewer.workEnv.imgdata.meta['fps'],
-                'min_SNR': self.ui.spinBoxMinSNR.value(),
+                'min_SNR': self.ui.doubleSpinBoxMinSNR.value(),
                 'rval_thr': self.ui.doubleSpinBoxRValuesMin.value(),
                 'decay_time': self.ui.doubleSpinBoxDecayTime.value(),
             }
