@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './roi_manager_pytemplate.ui'
+# Form implementation generated from reading ui file 'ui_files/roi_manager_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(384, 566)
-        DockWidget.setMinimumSize(QtCore.QSize(384, 566))
+        DockWidget.resize(390, 566)
+        DockWidget.setMinimumSize(QtCore.QSize(390, 566))
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -100,8 +101,9 @@ class Ui_DockWidget(object):
         self.radioButton_spikes.setSizePolicy(sizePolicy)
         self.radioButton_spikes.setObjectName("radioButton_spikes")
         self.horizontalLayout_2.addWidget(self.radioButton_spikes)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem)
+        self.pushButton = QtWidgets.QPushButton(self.tabStandard)
+        self.pushButton.setObjectName("pushButton")
+        self.horizontalLayout_2.addWidget(self.pushButton)
         self.verticalLayout_3.addLayout(self.horizontalLayout_2)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
@@ -194,6 +196,7 @@ class Ui_DockWidget(object):
         self.radioButton_dfof.setText(_translate("DockWidget", "ΔF/F"))
         self.radioButton_spikes.setToolTip(_translate("DockWidget", "Plot spikes (if available)"))
         self.radioButton_spikes.setText(_translate("DockWidget", "spi&kes"))
+        self.pushButton.setText(_translate("DockWidget", "Export Curves"))
         self.pushButtonImportFromImageJ.setText(_translate("DockWidget", "Import from ImageJ"))
         self.btnSwitchToManualMode.setText(_translate("DockWidget", "Switch to manual mode"))
         self.label.setText(_translate("DockWidget", "ROIs"))
@@ -202,5 +205,6 @@ class Ui_DockWidget(object):
         self.btnSetROITag.setText(_translate("DockWidget", "Set ROI tag"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabStandard), _translate("DockWidget", "Standard ROIs"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabMetaROI), _translate("DockWidget", "Meta ROIs"))
+
 
 from ..roi_manager_modules.roi_tag_line_edit import ROITagLineEdit
