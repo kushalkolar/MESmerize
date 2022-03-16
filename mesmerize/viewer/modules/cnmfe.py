@@ -47,11 +47,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                            'You can set it manually in the console like this:\nget_meta()["fps"] = <framerate>')
 
         # Get bord_px param if motion correction was performed
-        history_trace = self.vi.viewer.workEnv.history_trace
-        try:
-            bord_px = next(d for ix, d in enumerate(history_trace) if 'caiman_motion_correction' in d)['caiman_motion_correction']['bord_px']
-        except StopIteration:
-            bord_px = 0
+        bord_px = 0
 
         deconv = self.ui.comboBoxDeconv.currentText()
         if deconv == 'SKIP':
