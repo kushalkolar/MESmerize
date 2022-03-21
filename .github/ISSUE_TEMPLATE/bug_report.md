@@ -46,6 +46,10 @@ If applicable, add screenshots to help explain your problem.
  ```
  PASTE OUTPUT OF `pip list` HERE
  ```
+ - If you are using a `conda` environment, please also provide a list of conda packages by running `conda list` in your environment
+ ```
+ PASTE OUTPUT OF `conda list` HERE
+ ```
  
 **Additional context**
 Add any other context about the problem here.
