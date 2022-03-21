@@ -41,5 +41,11 @@ If applicable, add screenshots to help explain your problem.
   - Are you using the pip install, If so which version?**
   - Are you using a clone of the master branch from the GitHub repo installed in development mode?
 
+**Environment**
+ - Please provide a list of installed packages and their versions, run `pip list` in your environment
+ ```
+ PASTE OUTPUT OF `pip list` HERE
+ ```
+ 
 **Additional context**
 Add any other context about the problem here.
