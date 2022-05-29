@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './caiman_motion_correction.ui'
+# Form implementation generated from reading ui file './ui_files/caiman_motion_correction.ui'
 #
-# Created by: PyQt5 UI code generator 5.12
+# Created by: PyQt5 UI code generator 5.12.3
 #
 # WARNING! All changes made in this file will be lost!
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -12,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
-        DockWidget.resize(287, 842)
+        DockWidget.resize(279, 869)
         DockWidget.setFloating(True)
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
@@ -223,6 +224,9 @@ class Ui_DockWidget(object):
         spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_19.addItem(spacerItem8)
         self.verticalLayout.addLayout(self.horizontalLayout_19)
+        self.checkBoxKeepMemmap = QtWidgets.QCheckBox(self.dockWidgetContents)
+        self.checkBoxKeepMemmap.setObjectName("checkBoxKeepMemmap")
+        self.verticalLayout.addWidget(self.checkBoxKeepMemmap)
         self.horizontalLayout_20 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_20.setObjectName("horizontalLayout_20")
         self.lineEditNameElastic = QtWidgets.QLineEdit(self.dockWidgetContents)
@@ -276,8 +280,11 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.spinboxOverlaps, self.sliderOverlaps)
         DockWidget.setTabOrder(self.sliderOverlaps, self.btnShowQuilt)
         DockWidget.setTabOrder(self.btnShowQuilt, self.spinboxUpsample)
-        DockWidget.setTabOrder(self.spinboxUpsample, self.lineEditNameElastic)
+        DockWidget.setTabOrder(self.spinboxUpsample, self.checkBoxKeepMemmap)
+        DockWidget.setTabOrder(self.checkBoxKeepMemmap, self.lineEditNameElastic)
         DockWidget.setTabOrder(self.lineEditNameElastic, self.btnAddToBatchElastic)
+        DockWidget.setTabOrder(self.btnAddToBatchElastic, self.comboBoxProjectionsOption)
+        DockWidget.setTabOrder(self.comboBoxProjectionsOption, self.pushButtonViewProjections)
 
     def retranslateUi(self, DockWidget):
         _translate = QtCore.QCoreApplication.translate
@@ -305,6 +312,7 @@ class Ui_DockWidget(object):
         self.label_19.setText(_translate("DockWidget", "overlaps (pixels): "))
         self.btnShowQuilt.setText(_translate("DockWidget", "Show Grid"))
         self.label_10.setText(_translate("DockWidget", " upsample grid:"))
+        self.checkBoxKeepMemmap.setText(_translate("DockWidget", "Keep memmap"))
         self.lineEditNameElastic.setPlaceholderText(_translate("DockWidget", "Enter name"))
         self.btnAddToBatchElastic.setText(_translate("DockWidget", "Add to batch"))
         self.label_2.setToolTip(_translate("DockWidget", "View Mean, Max or Std projections of the outputs from selected batch items"))
@@ -315,5 +323,3 @@ class Ui_DockWidget(object):
         self.comboBoxProjectionsOption.setItemText(2, _translate("DockWidget", "std"))
         self.pushButtonViewProjections.setToolTip(_translate("DockWidget", "View Mean, Max or Std projections of the outputs from selected batch items"))
         self.pushButtonViewProjections.setText(_translate("DockWidget", "View"))
-
-

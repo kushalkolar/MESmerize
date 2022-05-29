@@ -175,17 +175,19 @@ class ModuleGUI(QtWidgets.QDockWidget):
             bm.df.loc[bm.df['uuid'] == memmap_uuid, 'save_temp_files'] = 1
 
         if self.ui.groupBox_seed_components.isChecked():
-            if self.ui.groupBox_seed_components.isChecked():
-                seed_path = self.ui.lineEdit_seed_components_path.text()
-                if not os.path.isfile(seed_path):
-                    raise FileNotFoundError(
-                        "Seed file does not exist, check the path"
-                    )
+            seed_path = self.ui.lineEdit_seed_components_path.text()
+            if not os.path.isfile(seed_path):
+                raise FileNotFoundError(
+                    "Seed file does not exist, check the path"
+                )
 
-                seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
+            seed_params = HdfTools.load_dict(seed_path, 'data/segment_params')
 
-                d['use_seeds'] = True
-                d['seed_params'] = seed_params
+            d['use_seeds'] = True
+            d['seed_params'] = seed_params
+
+        else:
+            d['use_seeds'] = False
 
         u = bm.add_item(
             module='CNMF_3D',

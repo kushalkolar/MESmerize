@@ -21,7 +21,7 @@ from ....common.configuration import HAS_CAIMAN
 from matplotlib import cm as matplotlib_color_map
 from tqdm import tqdm
 import logging
-
+from itertools import product as iter_product
 
 if HAS_CAIMAN:
     from caiman.utils.visualization import get_contours as caiman_get_contours
@@ -178,11 +178,32 @@ class ManagerManual(AbstractBaseManager):
         """
         ij_roi = read_imagej(path)
         for k in ij_roi.keys():
-            xs = ij_roi[k]['x']
-            ys = ij_roi[k]['y']
-            ps = list(zip(xs, ys))
-
-            roi = ManualROI.from_positions(positions=ps,
+            if ij_roi[k]['type'] in ('oval', 'rectangle'):
+                width=ij_roi[k]['width']
+                height=ij_roi[k]['height']
+                left=ij_roi[k]['left']
+                top=ij_roi[k]['top']
+                if ij_roi[k]['type'] == 'oval':
+                    x_bottom=left
+                    y_bottom=top+height
+                    ps=[x_bottom,y_bottom,width,height]
+                    roi= ManualROI.from_ellipse(positions=ps,
+                                           curve_plot_item=self.get_plot_item(),
+                                           view_box=self.vi.viewer.getView())
+                else:
+                    ps=list(iter_product((left,left+width),(top,top+height)))
+                    ps[2],ps[3]=ps[3],ps[2] #swap coordinates so it draws coordinates in sequence 
+            elif (ij_roi[k]['type']=='freehand'):
+                #freehand ROIs have large number of datapoints, so reducing it by a fifth
+                xs = ij_roi[k]['x'][::5]
+                ys = ij_roi[k]['y'][::5]
+                ps = list(zip(xs, ys))
+            else:
+                xs = ij_roi[k]['x']
+                ys = ij_roi[k]['y']
+                ps = list(zip(xs, ys))                                      
+            if ij_roi[k]['type'] != 'oval':
+                roi = ManualROI.from_positions(positions=ps,
                                            curve_plot_item=self.get_plot_item(),
                                            view_box=self.vi.viewer.getView())
             self.roi_list.append(roi)
@@ -279,9 +300,9 @@ class ManagerVolROI(ManagerScatterROI):
 
     def set_zlevel(self, z: int):
         """Set the current z-level to be visible in the viewer"""
-        if not hasattr(self, 'roi_list'):
-            warn('roi list does not exist, probably empty work environment')
-            return
+        # if not hasattr(self, 'roi_list'):
+        #     warn('roi list does not exist, probably empty work environment')
+        #     return
 
         for roi in self.roi_list:
             roi.set_zlevel(z)
@@ -613,7 +634,10 @@ class ManagerVolMultiCNMFROI(ManagerVolROI):
 
     def set_zlevel(self, z: int):
         """Set the current z-level to be visible in the viewer"""
-        super(ManagerVolMultiCNMFROI, self).set_zlevel(z)
+        # super(ManagerVolMultiCNMFROI, self).set_zlevel(z)
+        for roi in self.roi_list:
+            roi.set_zlevel(z)
+
         for i in range(len(self.roi_sps)):
             if i == z:
                 self.roi_sps[i].show()
@@ -658,7 +682,7 @@ class ManagerVolMultiCNMFROI(ManagerVolROI):
             self.create_roi_list()
 
         for zcenter in range(self.num_zlevels):
-            logger(f"Loading z-level {zcenter}")
+            logger.info(f"Loading z-level {zcenter}")
             contours = caiman_get_contours(
                 self.cnmA[zcenter][:, self.idx_components[zcenter]],
                 self.dims[zcenter],

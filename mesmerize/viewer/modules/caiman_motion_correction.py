@@ -149,6 +149,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
         else:
             d.update({**mc_params})
 
+        d['keep_memmap'] = self.ui.checkBoxKeepMemmap.isChecked()
+
         return d
 
     def add_to_batch_elas_corr(self):

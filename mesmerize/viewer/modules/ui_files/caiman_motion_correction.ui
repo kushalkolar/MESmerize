@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>287</width>
-    <height>842</height>
+    <width>279</width>
+    <height>869</height>
    </rect>
   </property>
   <property name="floating">
@@ -508,6 +508,13 @@ Use single quotes for strings, do not use double quotes.</string>
      </layout>
     </item>
     <item>
+     <widget class="QCheckBox" name="checkBoxKeepMemmap">
+      <property name="text">
+       <string>Keep memmap</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_20">
       <item>
        <widget class="QLineEdit" name="lineEditNameElastic">
@@ -609,8 +616,11 @@ Use single quotes for strings, do not use double quotes.</string>
   <tabstop>sliderOverlaps</tabstop>
   <tabstop>btnShowQuilt</tabstop>
   <tabstop>spinboxUpsample</tabstop>
+  <tabstop>checkBoxKeepMemmap</tabstop>
   <tabstop>lineEditNameElastic</tabstop>
   <tabstop>btnAddToBatchElastic</tabstop>
+  <tabstop>comboBoxProjectionsOption</tabstop>
+  <tabstop>pushButtonViewProjections</tabstop>
  </tabstops>
  <resources/>
  <connections>

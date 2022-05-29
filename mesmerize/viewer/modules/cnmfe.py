@@ -85,7 +85,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'nb_patch': self.ui.spinBoxNb_patch.value(),
                 'K': kval,
                 'min_corr': self.ui.doubleSpinBoxMinCorr.value(),
-                'min_pnr': self.ui.spinBoxMinPNR.value(),
+                'min_pnr': self.ui.doubleSpinBoxMinPNR.value(),
                 'deconv_flag': deconv_flag,
                 'method_deconvolution': method_deconvolution,
                 'Ain': self.ui.lineEditAin.text().replace(' ', '').strip('\n'),
@@ -96,7 +96,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'low_rank_background': self.ui.checkBox_low_rank_background.isChecked(),
                 'ring_size_factor': self.ui.doubleSpinBox_ring_size_factor.value(),
                 'update_background_components': True,
-                'del_duplicates': True
+                'del_duplicates': True,
+                'fr': self.vi.viewer.workEnv.imgdata.meta['fps']
             }
 
         # Any additional CNMFE kwargs set in the text entry
@@ -112,7 +113,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
         eval_kwargs = \
             {
                 'fr': self.vi.viewer.workEnv.imgdata.meta['fps'],
-                'min_SNR': self.ui.spinBoxMinSNR.value(),
+                'min_SNR': self.ui.doubleSpinBoxMinSNR.value(),
                 'rval_thr': self.ui.doubleSpinBoxRValuesMin.value(),
                 'decay_time': self.ui.doubleSpinBoxDecayTime.value(),
             }
@@ -167,6 +168,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 )
         else:
             raise ValueError("Must specify argument `item_type` as either 'corr_pnr' or 'cnmfe'")
+
+        d['keep_memmap'] = self.ui.checkBoxKeepMemmap.isChecked()
 
         return d
 

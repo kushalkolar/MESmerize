@@ -40,3 +40,4 @@ bokeh>=2.2.0
 nuset-lib
 sk-video
 click
+xmltodict

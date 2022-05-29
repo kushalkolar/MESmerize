@@ -56,6 +56,9 @@ class ModuleGUI(QtWidgets.QDockWidget):
 
         self.meta_loader = None
 
+    def file_sink(self, path):
+        self.tiff_file_path = path
+
     @property
     def tiff_file_path(self) -> str:
         return self._tiff_file_path
@@ -85,7 +88,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
             raise ValueError('Must set one of the following methods: imread, asarray, asarray-multi.')
         self._load_method = method
 
-    @use_open_file_dialog('Choose tiff file', '', ['*.tiff', '*.tif'])
+    @use_open_file_dialog('Choose tiff file', '', ['*.tiff', '*.tif', '*.btf'])
     def select_tiff_file(self, path, *args, **kwargs):
         self.tiff_file_path = path
         self.check_meta_path()

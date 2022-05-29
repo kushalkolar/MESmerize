@@ -506,7 +506,7 @@ Use single quotes for strings, do not use double quotes.</string>
          <string/>
         </property>
         <property name="title">
-         <string>Use additional CNMF params</string>
+         <string>&amp;Use additional CNMF params</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -801,6 +801,13 @@ Use single quotes for strings, do not use double quotes</string>
        </layout>
       </item>
       <item>
+       <widget class="QCheckBox" name="checkBoxKeepMemmap">
+        <property name="text">
+         <string>Keep memmap</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <widget class="QLineEdit" name="lineEdName">
@@ -849,6 +856,7 @@ Use single quotes for strings, do not use double quotes</string>
   <tabstop>groupBox_eval_kwargs</tabstop>
   <tabstop>plainTextEdit_eval_kwargs</tabstop>
   <tabstop>checkBoxRefit</tabstop>
+  <tabstop>checkBoxKeepMemmap</tabstop>
   <tabstop>lineEdName</tabstop>
   <tabstop>btnAddToBatchCNMF</tabstop>
  </tabstops>

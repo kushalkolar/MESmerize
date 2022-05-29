@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'cnmf_pytemplate.ui'
+# Form implementation generated from reading ui file './ui_files/cnmf_pytemplate.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12.3
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
@@ -327,6 +329,9 @@ class Ui_DockWidget(object):
         spacerItem14 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem14)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.checkBoxKeepMemmap = QtWidgets.QCheckBox(self.dockWidgetContents)
+        self.checkBoxKeepMemmap.setObjectName("checkBoxKeepMemmap")
+        self.verticalLayout_2.addWidget(self.checkBoxKeepMemmap)
         self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
         self.lineEdName = QtWidgets.QLineEdit(self.dockWidgetContents)
@@ -366,7 +371,8 @@ class Ui_DockWidget(object):
         DockWidget.setTabOrder(self.spinBoxDecayTime, self.groupBox_eval_kwargs)
         DockWidget.setTabOrder(self.groupBox_eval_kwargs, self.plainTextEdit_eval_kwargs)
         DockWidget.setTabOrder(self.plainTextEdit_eval_kwargs, self.checkBoxRefit)
-        DockWidget.setTabOrder(self.checkBoxRefit, self.lineEdName)
+        DockWidget.setTabOrder(self.checkBoxRefit, self.checkBoxKeepMemmap)
+        DockWidget.setTabOrder(self.checkBoxKeepMemmap, self.lineEdName)
         DockWidget.setTabOrder(self.lineEdName, self.btnAddToBatchCNMF)
 
     def retranslateUi(self, DockWidget):
@@ -397,7 +403,7 @@ class Ui_DockWidget(object):
         self.lineEdit_seed_components_path.setPlaceholderText(_translate("DockWidget", "Enter path to masks file"))
         self.groupBox_cnmf_kwargs.setToolTip(_translate("DockWidget", "You can enter additional kwargs to pass for CNMF instantiation.\n"
 "Use single quotes for strings, do not use double quotes."))
-        self.groupBox_cnmf_kwargs.setTitle(_translate("DockWidget", "Use additional CNMF params"))
+        self.groupBox_cnmf_kwargs.setTitle(_translate("DockWidget", "&Use additional CNMF params"))
         self.plainTextEdit_cnmf_kwargs.setToolTip(_translate("DockWidget", "You can enter additional kwargs to pass for CNMF instantiation.\n"
 "Use single quotes for strings, do not use double quotes."))
         self.label_20.setText(_translate("DockWidget", "Signal to noise ratio for accepting a component"))
@@ -417,6 +423,6 @@ class Ui_DockWidget(object):
 "Use single quotes for strings, do not use double quotes"))
         self.label_2.setText(_translate("DockWidget", "perform second iteration of cnmf by re-fitting the components"))
         self.checkBoxRefit.setText(_translate("DockWidget", "refit"))
+        self.checkBoxKeepMemmap.setText(_translate("DockWidget", "Keep memmap"))
         self.lineEdName.setPlaceholderText(_translate("DockWidget", "Enter name"))
         self.btnAddToBatchCNMF.setText(_translate("DockWidget", "Add to batch"))
-

@@ -78,6 +78,7 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'tsub': self.ui.spinBox_tsub.value(),
                 'method_init': self.ui.comboBox_method_init.currentText(),
                 'border_pix': bord_px,
+                'fr': self.vi.viewer.workEnv.imgdata.meta['fps']
             }
 
         # Any additional cnmf kwargs set in the text entry
@@ -121,7 +122,8 @@ class ModuleGUI(QtWidgets.QDockWidget):
                 'item_name': self.ui.lineEdName.text(),
                 'refit': self.ui.checkBoxRefit.isChecked(),
                 'border_pix': bord_px,
-                'is_3d': is_3d
+                'is_3d': is_3d,
+                'keep_memmap': self.ui.checkBoxKeepMemmap.isChecked()
             }
 
         # Group the kwargs of the two parts seperately

@@ -46,7 +46,7 @@ install_requires = \
         "tk",  # do not change
         "tcl",
         "bokeh>=2.2.0",
-        "nuset-lib",
+        "nuset-lib==0.1.1",
         "sk-video",
         "click"
     ]
