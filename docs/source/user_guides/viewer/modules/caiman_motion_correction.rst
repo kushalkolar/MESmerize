@@ -51,7 +51,6 @@ This example shows how to add all tiff files (of image sequences) from a directo
 .. seealso:: This example uses the :ref:`Caiman Motion Correction Module API <API_CaimanMotionCorrection>`, :ref:`ViewerWorkEnv API <API_ViewerWorkEnv>`, and :ref:`Batch Manager API <API_BatchManager>`
 
 .. code-block:: python
-    :linenos:
     
     # Import glob so we can get all tiff files in a dir
     from glob import glob
@@ -138,7 +137,6 @@ This example shows how to crop videos prior to adding them as batch items. This 
 .. seealso:: This example uses the :ref:`Caiman Motion Correction Module API <API_CaimanMotionCorrection>`, :ref:`ViewerWorkEnv API <API_ViewerWorkEnv>`, and :ref:`Batch Manager API <API_BatchManager>`
 
 .. code-block:: python
-    :linenos:
 
     # Import glob so we can get all tiff files in a dir
     from glob import glob

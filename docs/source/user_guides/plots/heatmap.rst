@@ -114,7 +114,6 @@ Export
 .. seealso:: matplotlib API for: `Figure.savefig <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.savefig>`_, `Figure.set_size_inches <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.set_size_inches>`_, `Figure.get_size_inches <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.get_size_inches>`_
 
 .. code-block:: python
-    :linenos:
     
     # Desired size (width, height)
     size = (2.0, 2.5)
@@ -149,7 +148,6 @@ x tick labels
 If the data are in the time domain:
 
 .. code-block:: python
-    :linenos: 
     
     from mesmerize.analysis import get_sampling_rate
     import numpy as np
@@ -184,7 +182,6 @@ If the data are in the time domain:
 If the data are in the frequency domain:
 
 .. code-block:: python
-    :linenos:
     
     from mesmerize.analysis import get_frequency_linspace
     import numpy as np

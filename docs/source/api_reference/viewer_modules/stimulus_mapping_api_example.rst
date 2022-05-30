@@ -5,7 +5,6 @@ You can also download the csv here: :download:`stimulus_pvc7.csv <./stimulus_pvc
 This example is meant to be run through the :ref:`Viewer Script Editor <module_ScriptEditor>`
 
 .. code-block:: python
-    :linenos:
 
     import pandas as pd
     from mesmerize.plotting.utils import get_colormap

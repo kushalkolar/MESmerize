@@ -21,7 +21,6 @@ Instructions
     **Basic Structure**
     
     .. code-block:: python
-        :linenos:
         
         from PyQt5 import QtWidgets
 

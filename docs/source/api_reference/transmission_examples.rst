@@ -6,7 +6,6 @@ Working with Transmission files
 Load a saved Transmission instance using :func:`Transmission.from_hdf5 <mesmerize.Transmission.from_hdf5>`
 
 .. code-block:: python
-    :linenos:
 
     >>> from mesmerize import Transmission
     >>> from uuid import UUID
@@ -141,7 +140,6 @@ Transmissions have a `history_trace` attribute which is an instance of :class:`H
 Use the :func:`get_data_block_history <mesmerize.analysis.data_types.HistoryTrace.get_data_block_history>` and :func:`get_operations_list <mesmerize.analysis.data_types.HistoryTrace.get_operations_list>` methods to view the history log of a data block.
 
 .. code-block:: python
-    :linenos:
 
     # To view the history log, first get the block UUID of the dataframe row of which you want the history log
 

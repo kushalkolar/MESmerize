@@ -71,7 +71,6 @@ Add Corr PNR batch items from a batch that contains motion corrected items. This
 .. seealso:: :ref:`Caiman Motion Correction script usage examples <MotCorScripts>` for how to load images if you want to add Corr PNR items from images that are not in a batch.
 
 .. code-block:: python
-    :linenos:
     
     # Get the batch manager
     bm = get_batch_manager()

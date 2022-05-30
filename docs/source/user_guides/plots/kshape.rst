@@ -100,7 +100,6 @@ Set equal x & y axis ranges for the means plots. Also removes the top & right sp
 
 
 .. code-block:: python
-    :linenos:
     
     from itertools import product
     
@@ -142,7 +141,6 @@ Set the x tick labels in time units instead of frames
 .. seealso::  `matplotlib.axes.Axes.set_xticklabels <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.axes.Axes.set_xticklabels.html#matplotlib.axes.Axes.set_xticklabels>`_ | `matplotlib.axes.Axes.set_xticks <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.axes.Axes.set_xticks.html#matplotlib.axes.Axes.set_xticks>`_.
 
 .. code-block:: python
-    :linenos:
     
     import numpy as np
     from itertools import product
@@ -210,7 +208,6 @@ Replace the ``get_<plot>().fig`` on `line 5` with the desired plot.
 .. seealso:: matplotlib API for: `Figure.savefig <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.savefig>`_, `Figure.set_size_inches <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.set_size_inches>`_, `Figure.get_size_inches <https://matplotlib.org/2.1.2/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.get_size_inches>`_
 
 .. code-block:: python
-    :linenos:
     
     # Desired size (width, height)
     size = (7.0, 10.0)

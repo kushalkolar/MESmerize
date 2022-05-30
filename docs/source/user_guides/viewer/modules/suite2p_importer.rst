@@ -22,7 +22,6 @@ You can also use this module through the :ref:`viewer console <ViewerConsole>`, 
 **Example**
 
 .. code-block:: python
-    :linenos:
     
     # get the module, hide the GUI
     s2p_importer = get_module('suite2p_importer', hide=True)

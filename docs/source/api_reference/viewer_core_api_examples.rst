@@ -22,7 +22,6 @@ Use the :ref:`Viewer Core API <API_ViewerCore>` to open any arbitrary image
 This example loads an image stored using numpy.save(), but this is applicable to images stored in any format that can eventually be represented as a numpy array in python. For example, you could also load image files stored in HDF5 format and load the numpy array that represents your image sequence.
 
 .. code-block:: python
-    :linenos:
 
     import numpy as np
 
@@ -70,7 +69,6 @@ Image sequences are simply numpy arrays. For example extract the image sequence 
 .. seealso:: `Numpy array indexing <https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html>`_
 
 .. code-block:: python
-    :linenos:
 
     # Get the current image sequence
     seq = get_image()

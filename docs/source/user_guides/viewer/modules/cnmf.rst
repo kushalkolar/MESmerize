@@ -48,7 +48,6 @@ A script can be used to add CNMF batch items. This is much faster than using the
 
 
 .. code-block:: python
-    :linenos:
     
     def reset_params():
         # CNMF Params that we will use for each item

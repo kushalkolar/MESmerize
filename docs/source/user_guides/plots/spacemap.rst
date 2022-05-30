@@ -75,7 +75,6 @@ Export
 
 
 .. code-block:: python
-    :linenos:
     
     # Desired size (width, height)
     size = (6,5)

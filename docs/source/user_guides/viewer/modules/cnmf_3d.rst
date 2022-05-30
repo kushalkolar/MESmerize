@@ -49,7 +49,6 @@ A script can be used to add CNMF batch items. This is much faster than using the
 This example loads 3D sequences from disk & adds them to a batch with 3 parameter variants.
 
 .. code-block:: python
-    :linenos:
     
     # just so we can reset the params for each new image file
     def reset_params():

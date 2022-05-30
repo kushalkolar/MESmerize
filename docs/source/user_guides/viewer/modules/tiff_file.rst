@@ -143,7 +143,6 @@ You can also load tiff files through the :ref:`Viewer Console <ViewerConsole>` o
 This example can be run line-by-line through the :ref:`Viewer Console <ViewerConsole>`, or from the :ref:`Script Editor <module_ScriptEditor>`.
 
 .. code-block:: python
-    :linenos:
 
     image_path = # path to tiff file
     meta_path = # path to json meta data file
@@ -159,7 +158,6 @@ This example can be run line-by-line through the :ref:`Viewer Console <ViewerCon
 **Alternatively, you may manually create a meta data dictionary after loading a tiff file:**
 
 .. code-block:: python
-    :linenos:
     
     image_path = # path to tiff file
     

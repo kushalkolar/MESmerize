@@ -12,7 +12,6 @@ You can also use this module through the :ref:`viewer console <ViewerConsole>`, 
 **Example**
 
 .. code-block:: python
-    :linenos:
     
     # get the module, hide the GUI
     caiman_importer = get_module('caiman_importer', hide=True)

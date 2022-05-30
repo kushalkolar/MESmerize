@@ -45,7 +45,6 @@ Example
 -------
 
 .. code-block:: python
-    :linenos:
     
     class Derivative(CtrlNode):
     """Return the Derivative of a curve."""
@@ -125,7 +124,6 @@ The processData() method must return a dict. This dict must have keys that corre
 Here is a trimmed down example from the :class:`LDA node <mesmerize.pyqtgraphCore.flowchart.library.Transform.LDA>`:
 
 .. code-block:: python
-    :linenos:
     
     class LDA(CtrlNode):
     """Linear Discriminant Analysis, uses sklearn"""
