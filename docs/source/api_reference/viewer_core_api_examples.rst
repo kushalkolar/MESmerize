@@ -61,6 +61,51 @@ This example loads an image stored using numpy.save(), but this is applicable to
     update_workEnv()
 
 
+This examples shows how you can import imaging data stored in an hdf5 file.
+
+.. code-block:: python
+
+    import h5py as h5py
+
+    #see h5py documentation, 'r' is for read
+    aa=h5py.File(datapath,'r')   
+
+    # find the name of the dataset object
+    list(aa.keys())  
+
+    # call the dataset object 
+    dset=aa['data']  
+    
+    #convert from h5 dataset to numpy array
+    a=dset[()] 
+    
+    a.shape #in t,x,y
+    
+    type(a) # make sure it's a numpy array
+    
+    meta = \
+        {
+            "origin": "Tutorial example",
+            "fps":    10.0,
+            "date":    "20220602_cd036_000",
+            "scanner_pos":  [0,1,2,3,4,5,6]
+        }
+
+    # Create ImgData instance
+    imgdata = ImgData(a.T, meta)  # use a.T to get [x, y, t] (time last)
+
+    # Create a work environment instance
+    work_env = ViewerWorkEnv(imgdata)
+
+    # Set the current Viewer Work Environment from this new instance
+    vi.viewer.workEnv = work_env
+
+    # Update the viewer with the new work environment
+    # this MUST be run whenever you replace the viewer work environment (the previous line)
+    update_workEnv()
+
+    
+
 Image data
 ^^^^^^^^^^
 
