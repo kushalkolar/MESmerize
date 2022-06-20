@@ -7,6 +7,15 @@
 
 Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
 
+# New Mesmerize Packages
+**The Mesmerize desktop application within this repo is no longer in active development. It is now treated as legacy software. Please checkout the new mesmerize packages which will be ready for public use very soon.**
+
+**These new packages are also MUCH easier to install! They are also much more efficient, faster, and offer richer and more versatile features.**
+
+`mesmerize-core`: https://github.com/nel-lab/mesmerize-core \
+`mesmerize-viz`: https://github.com/kushalkolar/mesmerize-viz \
+`mesmerize-napari`: https://github.com/nel-lab/mesmerize-napari 
+
 ---
 
 Nature Communications paper: https://doi.org/10.1038/s41467-021-26550-y
