@@ -12,6 +12,8 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 
 **These new packages are also MUCH easier to install! They are also much more efficient, faster, and offer richer and more versatile features.**
 
+**The batch management system offered by mesmerize-core is conceptually similar to that within the original Mesmerize package, but it is much more efficient**
+
 `mesmerize-core`: https://github.com/nel-lab/mesmerize-core \
 `mesmerize-viz`: https://github.com/kushalkolar/mesmerize-viz \
 `mesmerize-napari`: https://github.com/nel-lab/mesmerize-napari 
