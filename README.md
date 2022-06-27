@@ -1,12 +1,3 @@
-<p align="center">
-<img src="./docs/new_banner.png" alt="Mesmerize Banner">
-</p>
-
-
-[![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](http://docs.mesmerizelab.org/en/master/?badge=master) [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
-
 # New Mesmerize Packages
 **The Mesmerize desktop application within this repo is no longer in active development. It is now treated as legacy software. Please checkout the new mesmerize packages which will be ready for public use very soon.**
 
@@ -15,8 +6,19 @@ Mesmerize is a platform for the annotation and analysis of neuronal calcium imag
 **The batch management system offered by mesmerize-core is conceptually similar to that within the original Mesmerize package, but it is much more efficient**
 
 `mesmerize-core`: https://github.com/nel-lab/mesmerize-core \
-`mesmerize-viz`: https://github.com/kushalkolar/mesmerize-viz \
+`mesmerize-viz` (WIP): https://github.com/kushalkolar/mesmerize-viz \
 `mesmerize-napari`: https://github.com/nel-lab/mesmerize-napari 
+
+---
+
+<p align="center">
+<img src="./docs/new_banner.png" alt="Mesmerize Banner">
+</p>
+
+
+[![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](http://docs.mesmerizelab.org/en/master/?badge=master) [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
 
 ---
 
