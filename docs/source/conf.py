@@ -204,3 +204,7 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+rst_prolog = """.. attention::
+    This documentation is for the Mesmerize legacy desktop application which is now deprecated. Please see the home page or GitHub repo for more information.
+"""
