@@ -3,6 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+Deprecated - Please use newer mesmerize packages
+************************************************
+
+**The Mesmerize desktop application is no longer in active development and is now treated as legacy software. Please checkout the new mesmerize packages which will be ready for public use very soon!**
+
+**These new packages are also MUCH easier to install! They are also much more efficient, faster, and offer richer and more versatile features.**
+
+**The batch management system offered by ``mesmerize-core`` is conceptually similar to that within the original Mesmerize package, but it is much more efficient.**
+
+| **mesmerize-core:** https://github.com/nel-lab/mesmerize-core
+| **mesmerize-viz (WIP):** https://github.com/kushalkolar/mesmerize-viz
+| **mesmerize-napari:** https://github.com/nel-lab/mesmerize-napari
+
 Mesmerize Documentation
 ***********************
    
@@ -16,22 +29,6 @@ Mesmerize Documentation
 
 .. |gitter_badge| image:: https://badges.gitter.im/mesmerize_discussion/community.svg
                     :target: https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
-
-New: Video Tutorials!
-=====================
-
-**The Main Overview Tutorial playlist provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations:**
-
-.. raw:: html
-
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-|
-
-**Additional tutorials on other aspects of Mesmerize will be placed in this playlist:**
-https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_
-
-    
 
 .. toctree::
 	:maxdepth: 1
