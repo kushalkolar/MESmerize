@@ -6,15 +6,14 @@
 Please see newer mesmerize packages
 ************************************************
 
-**The Mesmerize desktop application is no longer in active development and is now treated as legacy software. Please checkout the new mesmerize packages which will be ready for public use very soon!**
+**The Mesmerize desktop application is no longer in active development and is now treated as legacy software. Please checkout the new mesmerize packages.**
 
-**These new packages are also MUCH easier to install! They are also much more efficient, faster, and offer richer and more versatile features.**
+**These new packages are also MUCH easier to install! They are also much more efficient and offer richer and more versatile features.**
 
-**The batch management system offered by `mesmerize-core` is conceptually similar to that within the original Mesmerize package, but it is much more efficient.**
+**The batch management system offered by the new `mesmerize-core` is conceptually similar to that within the original Mesmerize package, but it is much more efficient.**
 
 | **mesmerize-core:** https://github.com/nel-lab/mesmerize-core
 | **mesmerize-viz (WIP):** https://github.com/kushalkolar/mesmerize-viz
-| **mesmerize-napari:** https://github.com/nel-lab/mesmerize-napari
 
 Mesmerize Documentation
 ***********************
