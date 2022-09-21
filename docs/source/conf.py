@@ -206,5 +206,5 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 todo_include_todos = True
 
 rst_prolog = """.. attention::
-    This documentation is for the Mesmerize legacy desktop application. Please see the home page or GitHub repo for information on the latest packages.
+    This documentation is for the older Mesmerize legacy desktop application. Please see the home page or GitHub repo for information on the latest packages. https://github.com/kushalkolar/MESmerize 
 """
