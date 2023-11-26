@@ -1,161 +1,31 @@
 # New Mesmerize Packages
-### The Mesmerize desktop application within this repo is no longer in active development. It is now treated as legacy software. Please checkout the new mesmerize packages.
+The Mesmerize desktop application within this repo is no longer supported. Please checkout the new mesmerize packages which have longterm support.
 
-**These new packages are MUCH easier to install! They are also much more efficient and offer richer and more versatile features.**
+**These new packages are much easier to install! They are also much more efficient, versatile, and offer rich visualizations.**
 
-**The batch management system offered by the new package is conceptually similar to the original Mesmerize desktop application, but it is much more efficient**
+The batch management system offered by the new package is conceptually similar to the original Mesmerize desktop application, but it is much more efficient.
 
 `mesmerize-core`: https://github.com/nel-lab/mesmerize-core \
-`mesmerize-viz` (WIP): https://github.com/kushalkolar/mesmerize-viz 
+`mesmerize-viz`: https://github.com/kushalkolar/mesmerize-viz 
 
----
+`mesmerize-viz` is the new "GUI"
 
-<p align="center">
-<img src="./docs/new_banner.png" alt="Mesmerize Banner">
-</p>
+### Motion correction visualization using mesmerize-viz
 
+https://github.com/nel-lab/mesmerize-core/assets/9403332/34413fa4-6041-4418-ab66-ddd7dca03e19
 
-[![PyPI version](https://badge.fury.io/py/mesmerize.svg)](https://badge.fury.io/py/mesmerize) [![Downloads](https://pepy.tech/badge/mesmerize)](https://pepy.tech/project/mesmerize) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Documentation Status](https://readthedocs.org/projects/mesmerize/badge/?version=master)](http://docs.mesmerizelab.org/en/master/?badge=master) [![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+### Explore CNMF variants
 
-Mesmerize is a platform for the annotation and analysis of neuronal calcium imaging data. Mesmerize encompasses the entire process of calcium imaging analysis from raw data to interactive visualizations. Mesmerize allows you to create FAIR-functionally linked datasets that are easy to share. The analysis tools are applicable for a broad range of biological experiments and come with GUI interfaces that can be used without requiring a programming background.
+https://github.com/nel-lab/mesmerize-core/assets/9403332/3453d6fb-0dae-4520-b2c2-8156d8ce7b58
 
----
+### CNMF Componment Evaluation
 
-Nature Communications paper: https://doi.org/10.1038/s41467-021-26550-y
+https://github.com/nel-lab/mesmerize-core/assets/9403332/b6e8f6df-6bd4-4167-96eb-38c5095c8770
 
-## Video Tutorials!
-We have recently created detailed video tutorials! The main tutorial series provides a quick overview that takes you from raw imaging data, to downstream analysis and interactive visualizations:\
-https://www.youtube.com/playlist?list=PLgofWiw2s4REPxH8bx8wZo_6ca435OKqg
+### gSig_filt viz for 1p mcorr
 
-Additional videos on specific aspects of Mesmerize will be posted here:\
-[https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_](https://www.youtube.com/playlist?list=PLgofWiw2s4RF_RkGRUfflcj5k5KUTG3o_)
+https://user-images.githubusercontent.com/9403332/231554268-2f0fa7f3-0286-4195-b316-bcdea5921771.mp4
 
-## Installation
+### corr-pnr image viz for 1p CNMFE seeding
 
-You can install `mesmerize` natively using conda or virtual environments. If you want a quick and easy installation you can import a VM that comes with `mesmerize` pre-installed and ready-to-go with all features.
-
-### Virtual/Conda Environments
-If you're familiar with anaconda or virtual environments, install with pip:
-
-```
-pip install mesmerize
-```
-
-After installation just call ``mesmerize`` from inside the virtual environment to launch it.
-
-See the docs for more detailed instructions on all operating systems:
-http://docs.mesmerizelab.org/en/master/user_guides/installation.html
-
-#### Caiman
-In order to use [CaImAn](https://github.com/flatironinstitute/CaImAn) features you will need to have [CaImAn](https://github.com/flatironinstitute/CaImAn) installed into your environment. See the Mesmerize installation instructions linked above for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
-
-Caiman is used for the following Viewer modules: CNMF, 3D CNMF, CNMFE, caiman motion correction and Detrend DFOF.
-
-#### tslearn
-In order to use tslearn features you will need ``tslearn``. This can be installed via pip or conda, see the detailed installation instructions for more details: http://docs.mesmerizelab.org/en/master/user_guides/installation.html
-
-tslearn is used for KShape clustering, cross-correlation analysis, and some of the flowchart nodes.
-
-#### tensorflow
-In order to use nuset segmentation you will need ``tensorflow v1.15``. You can use either ``tensorflow`` (CPU bound) or ``tensorflow-gpu``
-
-```
-pip install --upgrade pip setuptools
-pip install tensorflow~=1.15
-```
-
-### VM (no virtual/conda environment setup required)
-
-If you do not want to setup conda or virtual environments, you can import a VM with Mesmerize pre-installed and ready to go with all features:
-http://docs.mesmerizelab.org/en/master/user_guides/installation.html#all-platforms
-
-## Documentation
-Documentation is available here: [http://docs.mesmerizelab.org/](http://docs.mesmerizelab.org/)
-
-## Questions/Discussions
-
-Feel free to ask questions or discuss things on gitter. For larger bugs/issues please use the issue tracker.
-
-[![Gitter](https://badges.gitter.im/mesmerize_discussion/community.svg)](https://gitter.im/mesmerize_discussion/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-**Issue tracker:** https://github.com/kushalkolar/MESmerize/issues
-
-## News
-
-See the [changelog](https://github.com/kushalkolar/MESmerize/blob/master/CHANGELOG.md) for more details
-
-**November 2021**
-
-Version 0.8.0 released 
-
-- Module for directly importing `.isxd` movies created by Inscopix Acquisition Software
-
-**November 2020**
-
-Changes:
-
-- Bokeh based plots that use a bokeh-based datapoint tracer, still in very early stages
-- k-Shape "gridsearch", select a n-partitions range and number of combinations, returns heatmap of all k-Shape runs with inertia values NOTE: The gridsearch is not saved when the plot is saved. Only the chosen kshape iteration will be saved. This will be fixed in a future release
-- Plot neural dynamics in PCA or LDA space
-- PadArrays flowchart node to pad dataframe arrays when sizes don't match, useful when splicing is undesired
-- View mean, max, or std projection of caiman motion correction outputs by selecting them from the batch manager
-
-**September 2020**
-
-Version 0.3 released
-
-Changes:
-
-- Cross correlation plots with stimulus maps.
-- Support for Femtonics .mes and .mesc recordings.
-- Segmentation using deep learning via NuSeT.
-
-**July 2020**
-
-Changes:
-- Mesmerize can now be installed via pip.
-- Much easier to import imaging meta data from other sources.
-- Create stimulus tuning curve plots.
-- ΔF/F must now be extracted at the Viewer stage for caiman data, or set through other methods. Spikes and ΔF/F can be visualized in the Viewer.
-
-**June 2020**
-
-Version 0.2 released.
-
-Changes:
-
-- Windows is now supported!
-- The Viewer can handle 3D data and 3D ROIs.
-- For development, classes are provided for creating Volumetic ROI types, and a Volumetic ROI manager.
-- Caiman 3D CNMF is supported.
-- Updated CNMF(E) and motion correction modules to use the latest release of CaImAn. Parameter entry GUIs are much more flexible now.
-- CNMF(E) data can be imported directly from hdf5 files from Caiman. Therefore you can use your own scripts/notebooks and existing CNMF hdf5 files for downstream analysis in Mesmerize.
-- More customizable support for use of caiman modules within the Mesmerize viewer's script editor.
-- Suite2p importer added, allowing you to perform downstream analysis of Suite2p output data in Mesmerize.
-- Some cleanup with the batch manager
-- bug fixes
-
-*Please note that batches from v0.1 and v0.2 are not inter-compatible. Use the v0.1 branch if you need v0.1*
-
-**Nov 2019:**
-
-See our recent biorxiv manuscript where we use Mesmerize to analyze a calcium imaging dataset from *Ciona intestinalis* as well as other model organisms!
-
-https://doi.org/10.1101/840488
-
-<a href="https://doi.org/10.1101/840488">
-<img src="https://www.biorxiv.org/sites/default/files/site_logo/bioRxiv_logo_homepage.png" alt="manuscript on biorxiv" width="160"/>
-</a>
-
-## Upcoming
-
-- Experimental use of the bioformats importer for the Viewer.
-- Export lite versions of projects for easier sharing.
-- Browsers based visualizations for sharing analysis results.
-
-## Acknowledgements
-
-- [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph) developers for creating such an expansive library, which we built upon to create many of the interactive elements of Mesmerize. 
-- [CaImAn](https://github.com/flatironinstitute/CaImAn) developers have created a very robust library for pre-processing and signal extraction of calcium imaging data, which Mesmerize is able to interface with.
-- Simon Daste provided sample data and assistance which allowed for creation of the Suite2p importer module.
-- [Jordi Zwiggelaar](https://github.com/Blastorios) created the Mesmerize logo & banner.
+https://user-images.githubusercontent.com/9403332/231554275-4894e728-dbe1-4a2d-8f6f-1896e753f903.mp4
